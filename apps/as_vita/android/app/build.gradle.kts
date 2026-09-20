@@ -85,6 +85,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders["appLabel"] = "AS Vita Club"
     }
 
     signingConfigs {
@@ -103,12 +104,14 @@ android {
             if (isolatedNonReleaseApplicationIdSuffix != null) {
                 applicationIdSuffix = isolatedNonReleaseApplicationIdSuffix
                 versionNameSuffix = "-isolated-qa"
+                manifestPlaceholders["appLabel"] = "AS Vita Club QA"
             }
         }
         getByName("profile") {
             if (isolatedNonReleaseApplicationIdSuffix != null) {
                 applicationIdSuffix = isolatedNonReleaseApplicationIdSuffix
                 versionNameSuffix = "-isolated-qa"
+                manifestPlaceholders["appLabel"] = "AS Vita Club QA"
             }
         }
         release {

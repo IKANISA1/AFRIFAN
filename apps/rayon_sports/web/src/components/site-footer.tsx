@@ -79,14 +79,13 @@ export function SiteFooter({
                 <p className="break-words font-display text-2xl font-black uppercase italic leading-none tracking-tighter text-white">
                   {club.shortName}
                 </p>
-                <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.3em] text-[var(--club-accent)]">
-                  {club.nickname || "The Beloved"}
+                <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.3em] text-white/80">
+                  {club.nickname || club.shortName}
                 </p>
               </div>
             </Link>
             <p className="mb-10 max-w-full break-words text-sm font-bold leading-relaxed text-white/70">
-              Experience the pulse of Rwandan football. From matchday magic at
-              the Cathedral to digital fan engagement across the globe.
+              Follow {club.clubName} through fixtures, club news and supporter activities.
             </p>
             <div className="flex flex-wrap gap-[16px]">
               {socialLinks.map((entry) => {

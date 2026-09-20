@@ -45,7 +45,9 @@ const defaultDependencies: Dependencies = {
 function requireClubId(value: unknown) {
   const clubId = typeof value === "number"
     ? value
-    : Number.parseInt(`${value ?? ""}`, 10);
+    : typeof value === "string" && /^[1-9]\d*$/.test(value.trim())
+    ? Number(value.trim())
+    : NaN;
   if (!Number.isSafeInteger(clubId) || clubId <= 0) {
     throw new HttpError(400, "club_id is invalid.");
   }
@@ -103,7 +105,16 @@ export function createAdminUploadImageHandler(
     if (request.method !== "POST") return jsonError("Method not allowed", 405);
 
     try {
-      const body = await request.json() as Record<string, unknown>;
+      let input: unknown;
+      try {
+        input = await request.json();
+      } catch {
+        throw new HttpError(400, "Request must contain a JSON object.");
+      }
+      if (input === null || typeof input !== "object" || Array.isArray(input)) {
+        throw new HttpError(400, "Request must contain a JSON object.");
+      }
+      const body = input as Record<string, unknown>;
       const clubId = requireClubId(body.club_id);
       await deps.requireClubAdminCaller(request, clubId);
       const kind = typeof body.kind === "string" ? body.kind.trim() : "";

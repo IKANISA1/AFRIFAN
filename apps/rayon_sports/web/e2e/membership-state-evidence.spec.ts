@@ -236,6 +236,7 @@ test("/membership proves all sixteen applicable rendered states", async ({
   const primaryAction = page
     .getByRole("link", { name: /app links coming soon/i })
     .first();
+  await expect(page.locator(".membership-surface")).toHaveAttribute("data-membership-status", "ready");
   await primaryAction.focus();
   await expect(page.locator(".membership-surface")).toHaveAttribute(
     "data-membership-interaction",

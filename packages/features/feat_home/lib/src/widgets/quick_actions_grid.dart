@@ -349,7 +349,7 @@ String _localizedHomeActionTitle(
     return l10n.homeTicketsAction;
   }
   if (key.contains('membership') || route.startsWith('/membership')) {
-    return l10n.homeMembershipAction;
+    return l10n.homeMembershipAction(RuntimeBranding.displayAppName);
   }
   if (key == 'fan_zone' ||
       key.contains('supporter') ||

@@ -1,3 +1,4 @@
+import "@/ui-kit/admin.css";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { AdminClientFrame } from "./admin-client-frame";

@@ -55,6 +55,48 @@ export class FakeAdminClient {
       });
     }
 
+    // Result stub only. The maintained SQL contract and lock-observed race
+    // suite establish transaction semantics against actual Postgres.
+    if (name === "confirm_club_commerce_payment") {
+      const kind = args?.p_kind;
+      const ids = args?.p_record_ids as string[];
+      const rows =
+        (this.tables[kind === "ticket" ? "rs_tickets" : "rs_shop_orders"] ?? [])
+          .filter((row) =>
+            ids.includes(String(row.id)) && row.user_id === args?.p_user_id &&
+            row.momo_reference === args?.p_reference
+          );
+      if (rows.length !== ids.length) {
+        return Promise.resolve({
+          data: { status: "manual_review" },
+          error: null,
+        });
+      }
+      const pending = rows.filter((row) => row.status === "pending");
+      const points = !args?.p_partner_id
+        ? 0
+        : kind === "ticket"
+        ? pending.length * 50
+        : pending.length
+        ? Math.floor(Number(args?.p_amount) / 100)
+        : 0;
+      for (const row of pending) {
+        row.status = kind === "ticket" ? "valid" : "paid";
+      }
+      return Promise.resolve({
+        data: {
+          status: "confirmed",
+          record_ids: ids,
+          parsed_sms_id: args?.p_parsed_sms_id,
+          newly_confirmed: pending.length > 0,
+          points_awarded: points,
+          referral_activated: false,
+          applied_status: kind === "ticket" ? "valid" : String(rows[0].status),
+        },
+        error: null,
+      });
+    }
+
     if (name === "confirm_club_initiative_contribution") {
       const row = this.tables.rs_initiative_contributions?.find((row) =>
         row.id === args?.p_contribution_id && row.user_id === args?.p_user_id
@@ -169,9 +211,8 @@ class FakeQueryBuilder implements PromiseLike<QueryResult> {
   ) {}
 
   select(_columns: string): this {
-    if (this.action !== "insert") {
-      this.action = "select";
-    }
+    // PostgREST select() after insert/update requests returned rows; it does
+    // not turn the mutation back into a read.
     return this;
   }
 
@@ -275,7 +316,10 @@ class FakeQueryBuilder implements PromiseLike<QueryResult> {
       for (const row of limitedRows) {
         Object.assign(row, this.updatePayload);
       }
-      return { data: limitedRows, error: null };
+      return {
+        data: expectSingle ? (limitedRows[0] ?? null) : limitedRows,
+        error: null,
+      };
     }
 
     return {

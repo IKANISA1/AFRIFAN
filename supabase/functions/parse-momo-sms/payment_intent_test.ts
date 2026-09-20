@@ -138,32 +138,29 @@ for (
             : [intent],
         );
       }
-      if (table === "payment_intents" && method === "PATCH") {
+      if (table === "allocate_momo_payment_intent" && method === "POST") {
         writes++;
+        const args = JSON.parse(String(init?.body));
+        assertEquals(args.p_intent_id, intent.id, "exact intent is allocated");
         assertEquals(
-          JSON.parse(String(init?.body)).status,
-          "fulfilled",
-          "declared database status",
+          args.p_parsed_sms_id,
+          "parsed-1",
+          "database reloads stored evidence",
         );
         assertEquals(
-          url.searchParams.get("status"),
-          "eq.pending",
-          "cannot reopen terminal intent",
+          Object.keys(args).length,
+          2,
+          "amount and receiver are not caller attestations",
         );
-        assertEquals(
-          url.searchParams.get("user_id"),
-          "eq.user-1",
-          "claim retains owner",
-        );
-        assertEquals(
-          url.searchParams.get("updated_at"),
-          "eq." + intent.updated_at,
-          "claim retains version",
-        );
-        if (scenario === "write error") {
-          return reply({ message: "write failed" }, 400);
+        if (["write error", "lost claim"].includes(scenario)) {
+          return reply({ message: "INTENT_ALLOCATION_STATE_CONFLICT" }, 400);
         }
-        return reply(scenario === "lost claim" ? [] : [{ id: intent.id }]);
+        return reply({
+          status: "allocated",
+          intent_id: intent.id,
+          parsed_sms_id: "parsed-1",
+          newly_allocated: true,
+        });
       }
       if (
         table === "pending_transactions" && scenario === "legacy read error"
@@ -189,7 +186,7 @@ for (
       }
       assertEquals(
         !!error,
-        scenario.endsWith("error"),
+        scenario.endsWith("error") || scenario === "lost claim",
         "database failure is propagated",
       );
       if (!error) {

@@ -66,7 +66,10 @@ export function writeAdminStateEvidence({
         responsive_profiles: responsiveCaptures.map(
           ({ description }) => description,
         ),
-        applicable_states: governedAdminStates,
+        applicable_states: [
+          ...governedAdminStates,
+          ...responsiveCaptures.map(({ state }) => state),
+        ],
         not_applicable_states: [],
         assertions: {
           authenticated_shell_required: true,

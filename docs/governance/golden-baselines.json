@@ -166,7 +166,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "d33479ad76cf7ec735c131450df4459e39d40fdbfdd882d367876cbc67394b8f"
+      "sha256": "807c737afa2a8ba890b64b249e2a94a22899d4a71b5c8a1053df8780a4585de8",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "home-compact-374-light",
@@ -178,7 +186,15 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "aee101f931814bf2944c0e101e892e98c156b88d68c15ac4168fefc90aae15a4"
+      "sha256": "65fbb1b944bb5b78cc8d30d558e8fb2ecef8d3ca18ea02cae3bf4b6aa12a4af7",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "search-compact-320-dark",
@@ -286,7 +302,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "b92445050a562dd04d00cb967c6bdfe2efd3ea3a69a3de8dce61c11280455539"
+      "sha256": "85791447534be410dfc2099af33b7c2f4670adb18d6c4a6f7a28a9e2a8f75e44",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "onboarding-compact-374-light",
@@ -298,7 +322,15 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "b885908958b877ab18b552fb8544d3b56f85aad9eb4f3577ad3f0f1cc7b1924c"
+      "sha256": "ca04764eef9dca897176bdd86b257012469d5ef7415fb880336b0b110425d571",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "contributions-compact-320-dark",
@@ -406,7 +438,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "f77b255d844550e0fbfcb537028b41f628d5ec86b28d2fc789bae0e24ca3fb3c"
+      "sha256": "590e7173b05ac5cbc89c3a94ebf9e1a2dd23ced58b5fad250f49c00b72148579",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "home-large-430-light",
@@ -418,7 +458,15 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "4a53562650d83656f97a930de150ee039ff18cacc05120cf0cd57ab593eeb4ee"
+      "sha256": "d1f823f1a58a28aef916c065320a544a1911c73ae2d91591d77bea352af2df0f",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "home-wide-599-dark",
@@ -430,7 +478,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "1a5da09e8f7120f72ea64639f96cd2c83b1c7c965959a077367816aaa9f0a6a1"
+      "sha256": "02b74101d67d58e246c00cbb14113cbabb200a9cbfce19c8a382999289796493",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "search-standard-390-dark",
@@ -550,7 +606,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "303d599cbcd86ac6de2a3f1cc15f52d98b6937401a52bdae437abfea93efa4ee"
+      "sha256": "3a55f78a1b05e98afa0496987f6f950fd5d73bec18a54c15c10b8bc2f326c3d1",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "onboarding-large-430-light",
@@ -562,7 +626,15 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "65101af314dbf7cac281b43b0e358ffd6c3431853be146bac0bf1ba6b50ab374"
+      "sha256": "b9c21b543df15325ecf1eefb81b6836779c3bfb1ede04442ca917f0c22acda20",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "onboarding-wide-599-dark",
@@ -574,7 +646,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "6826e589f85299642f925f530da1bcff08bba6e1889001d9c0a0ab2c39d4752e"
+      "sha256": "b3e77b8cecf3303cb435bb6e1237edb8740ebe22d86be5755e92b55a7d2073f9",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "membership-standard-390-dark",
@@ -838,7 +918,15 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "b3a50c040ab885ba49794f59f70ee8c1f06e0efff9a98d13314b8eec250eb0a2"
+      "sha256": "dc1c2a2b23f1c3055a960a401edf535a0702c0a793084a822119a133ad2f4ba9",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "home-tablet-dark-834x1194",
@@ -850,7 +938,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "a1aa2e77d21bde0e33aa5a14630e7151cb528155fb44b902431feacde651f07e"
+      "sha256": "d144b8416bc9f7f0404d04efb57ae3f32dcfb85b697c53e636208ee5cd1bd500",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "search-foldable-half-light-674x842",
@@ -910,7 +1006,15 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "233559fca76ddab5e15d8182e4805e492bd6ed328def518590d0f68bc8ea5970"
+      "sha256": "10df5c3873572aa78e31668d620e777feaae004d011cd4e9c6f069ec6bff3ca6",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "onboarding-tablet-dark-834x1194",
@@ -922,7 +1026,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "c5dd789f1135b23159ff1404cc48913baab90af82a5597fb62698eaca3463c94"
+      "sha256": "b9c33177e29a2b58bc8632143ce6eadf090c660fc31a913fbeedbc6d88ef3a64",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "settings-foldable-half-light-674x842",
@@ -3790,7 +3902,15 @@
       },
       "theme": "high_contrast",
       "data_source": "synthetic",
-      "sha256": "0a8c6f4acac78c705a98f4fd7925b472d895e28b0eca6d29ae63694206036f15"
+      "sha256": "f6841859d0959e5c41d6895dff89b5fe94eb80c46494955cfcc2af767ff953aa",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "settings-standard-light-390x844",
@@ -3934,7 +4054,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "969e777e0e2130a5e38d5e453c3848d2214f07c4398c9d0de127435a1c356232"
+      "sha256": "2c8e8a2e46bc49f8003d038b9d7f08c643b7aa77b5078d61a9690a2cc1132154",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "home-state-empty-dark-390x844",
@@ -3946,7 +4074,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "f77b255d844550e0fbfcb537028b41f628d5ec86b28d2fc789bae0e24ca3fb3c"
+      "sha256": "590e7173b05ac5cbc89c3a94ebf9e1a2dd23ced58b5fad250f49c00b72148579",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "home-state-error-dark-390x844",
@@ -3958,7 +4094,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "74682637a8a0c656d3a289cd7a75b1729af561a246d056edf0ca2e9dc93dbcf1"
+      "sha256": "aee445ca6f87feba5f64592fd517f0cde4429a913cde9cc0611cd3ca698ee6de",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "home-state-large-text-dark-320x720",
@@ -3970,7 +4114,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "4c3bfb4f7983346bde56fe9282d2ad2fe5d9fd28f747b8e3a64edb70eb1af67f"
+      "sha256": "f44b352518ba68e23308df70cf95cf2526666f1e95e3cc8b607e7df5101ff697",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "home-state-offline-dark-390x844",
@@ -3982,7 +4134,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "f72dee5803a69c3e30d4bd5b758731f5a603ab82106524867f778709a2d9256d"
+      "sha256": "769d9627f3a999fd6d854e38a30b9b640153452afedf9b1d12219003537b4cbb",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "home-state-permission-denied-dark-390x844",
@@ -3994,7 +4154,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "027895af17e131a4d0bc4de8e2b3f17d9481d50371f79adf6219f2eee9ecf969"
+      "sha256": "c58f26f6ce4b5cd435940aef115be70eb8114716624f2e8c377940e1664068f8",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "home-state-disabled-dark-390x844",
@@ -4006,7 +4174,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "7b20ae8a241b1d7eb0c1b894b53ccbf225baeeb2e981b68310f8924c8dbd0c41"
+      "sha256": "3cc5947e88ffd361a2b8280498783dc52ef7c18baa996f24e686490532cdab34",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "home-state-focused-dark-390x844",
@@ -4018,7 +4194,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "fb369a3a97e2296f5bebe6aebf27e2c69fdd7671f2b566044bee9165d0d7efd9"
+      "sha256": "e2880b9bc44660fbb62832aed93879c28d4367dd01a93aa30ead65e9fe44b96a",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "home-state-pressed-dark-390x844",
@@ -4030,7 +4214,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "51e630a9f688a48c6e88c4a32272e2384bfa81c5359656fb14adc6868591f7d1"
+      "sha256": "c56e3122d6b700fd384dcbcadb26fd91ced027667ebc43e376097ede10179cbb",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "home-state-selected-dark-390x844",
@@ -4042,7 +4234,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "73e59e49aa8dac170f60876e168a087c86a9d902fa4e457416d78f56a4c454be"
+      "sha256": "055280989c41989fc8ddb193d0b59e3ab017937ab5e9983e705eaad7b96c1487",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "home-state-syncing-dark-390x844",
@@ -4054,7 +4254,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "c4201412b1755abbb7d154a186801c0eefb79c15a4b5912aefc21c1e0db42244"
+      "sha256": "c65dbd7a29a2188eb0f6fefdd64aa515971e6cf90c3ecbed21c5aedfd17d8bff",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "home-state-conflict-dark-390x844",
@@ -4066,7 +4274,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "18402260af839d759066d46fc3707061a6320cc44958b9faeead7b6f0afafc94"
+      "sha256": "993cc37e5f61d1c219d1d48c9d508609770d95e591f9ce86a85318968d21c16b",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "home-state-security-timeout-dark-390x844",
@@ -4078,7 +4294,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "06a132910b6f07570f0f1bcb56f6ced5a9d650a98c4c321b2e24e6fbdb48805d"
+      "sha256": "940ab51256faf5f288015f21122a76c27a7af1f0f1d267045a3929842a9aca80",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "fanzone-state-loading-dark-390x844",
@@ -5615,7 +5839,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "7d3f853d256b141e4c28516086d9352a3c78d2d3c4b19420039995309c26442a"
+      "sha256": "5fc9c4a9e531c23e1a8107816851695d51afbe3059243be44ac7541939db1c11",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "onboarding-state-permission-denied-dark-390x844",
@@ -5639,7 +5871,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "714ca1619dee0248e374d27f1c1be1b390510affcf339e003c7bdd15630fea84"
+      "sha256": "241c783b93870de600ae427e1a97e70ef8e3ed546ba81b56ab311412c4e86b73",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "onboarding-state-focused-dark-390x844",
@@ -5651,7 +5891,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "abdf12e34b025e44e3af360502128a0e883e850658683a01db0adeeef6113a4d"
+      "sha256": "2f51703f119936b9812dbbe5a81ae1c898878567e596c68af6c0b68403fee03d",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "onboarding-state-pressed-dark-390x844",
@@ -5663,7 +5911,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "5b153ce266434cd2292162c7cc35b28a4631acd075d09b04a8bade4e70a19bdc"
+      "sha256": "7b721e37d86be4b409ca0feca8efddcc15ca942b74f8aa166c216e0a0ebe1f54",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "onboarding-state-selected-dark-390x844",
@@ -5675,7 +5931,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "375dab81627c628b3e03b2d5c9e66344f3c3d7c2722cb4865620de3a9736d10b"
+      "sha256": "f1545e82124ae3b711c86cc60837ff72ce0f9ed3cb227d5b38cd021c90f66d8f",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "onboarding-state-large-text-dark-320x720",
@@ -5687,7 +5951,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "98240afaab562ef7907e0b4c4f9f9b0ef6fc9e5a044c9c09eb2d06b4d03959a9"
+      "sha256": "b9becb3a18b436c94995dc97c5f3e23f2c39e7317ba9f2d62ca39029c9950722",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "onboarding-state-syncing-dark-390x844",
@@ -5699,7 +5971,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "a817b0c0357bc1f8c4e704c9843ac9ca721135cda04e799554c63ef010abac99"
+      "sha256": "89bc04be58346da56c16bf4b07b7c06d5d3b99f897c8e36a8e2b2204b12c38bb",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "onboarding-state-conflict-dark-390x844",
@@ -12911,7 +13191,15 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "9bea52783bef4831d3fefc5a7818946fe4761e91107e5bd7f879ce6e3277bf6f"
+      "sha256": "f23393249a493bcaa82b33e76bf3a5d4a452c4778ae16c76658e4595aa188fc2",
+      "revision": {
+        "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
+        "dirty_state": true,
+        "generated_at": "2026-09-19T21:11:51Z",
+        "change": "Configured club identity and shared onboarding copy; Rayon photographs restricted to club 24.",
+        "review": "implementer inspected changed layouts and diff bounds; independent and owner acceptance pending",
+        "evidence": "output/qa/full-stack-20260914/goal-update-native-identity-golden-review/comparison.json"
+      }
     },
     {
       "id": "admin-predict-state-confirm-result-dark-390x844",

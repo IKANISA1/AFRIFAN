@@ -101,8 +101,14 @@ Deno.test("reconcileParsedSms returns manual review when amount is missing", asy
   );
 });
 
-Deno.test("reconcileParsedSms confirms a matched group contribution", async () => {
+Deno.test("reconcileParsedSms cannot confirm a contribution without its receiving group", async () => {
   const tables: TableStore = {
+    african_football_clubs: [{
+      id: 24,
+      currency_code: "RWF",
+      country_iso_code: "RW",
+    }],
+    countries: [{ id: "RW", currency: "RWF" }],
     group_contributions: [
       {
         id: "contribution-1",
@@ -126,35 +132,79 @@ Deno.test("reconcileParsedSms confirms a matched group contribution", async () =
   );
 
   assertEquals(
-    result.matchType,
-    "group_contribution",
-    "group contribution should resolve from the domain row directly",
-  );
-  assertEquals(result.matchStatus, "matched", "matched payment should post");
-  assertEquals(
-    result.targetTable,
-    "group_contributions",
-    "group contribution should be the target table",
-  );
-  assertEquals(
-    result.targetRecordId,
-    "contribution-1",
-    "resolved contribution id should be returned",
-  );
-  assertEquals(
-    result.metadata.group_id,
-    "group-1",
-    "group id should be included in metadata",
+    result.matchStatus,
+    "manual_review",
+    "a missing receiving group requires review",
   );
   assertEquals(
     tables.group_contributions[0]?.status,
-    "confirmed",
-    "group contribution should be confirmed",
+    "pending",
+    "no target may be confirmed from amount and recency alone",
   );
 });
 
+for (
+  const evidence of [
+    { tx_direction: "credit" as const },
+    { tx_direction: "unknown" as const },
+    { parse_status: "failed" as const },
+    { parse_status: "needs_review" as const },
+    { currency: "" },
+  ]
+) {
+  Deno.test(`fallback allocation rejects unusable evidence ${JSON.stringify(evidence)}`, async () => {
+    const tables: TableStore = {
+      african_football_clubs: [{
+        id: 24,
+        currency_code: "RWF",
+        country_iso_code: "RW",
+      }],
+      countries: [{ id: "RW", currency: "RWF" }],
+      group_contributions: [{
+        id: "contribution-1",
+        group_id: "group-1",
+        user_id: "user-1",
+        amount: 10000,
+        momo_reference: "GCT-001",
+        status: "pending",
+        created_at: "2026-03-11T14:57:00.000Z",
+      }],
+    };
+    const result = await reconcileParsedSms(
+      new FakeAdminClient(tables) as unknown as ReturnType<
+        typeof createAdminClient
+      >,
+      sampleRawSms,
+      { ...sampleParsedSms, ...evidence },
+      "parsed-sms-1",
+      "2026-03-11T15:05:00.000Z",
+    );
+    assertEquals(
+      result.matchStatus,
+      "manual_review",
+      "invalid evidence stays in review",
+    );
+    assertEquals(
+      result.ledgerStatus,
+      "draft",
+      "invalid evidence is never posted",
+    );
+    assertEquals(
+      tables.group_contributions[0].status,
+      "pending",
+      "target remains unconfirmed",
+    );
+  });
+}
+
 Deno.test("reconcileParsedSms allocates group payments directly from payee routes", async () => {
   const tables: TableStore = {
+    african_football_clubs: [{
+      id: 24,
+      currency_code: "RWF",
+      country_iso_code: "RW",
+    }],
+    countries: [{ id: "RW", currency: "RWF" }],
     pending_transactions: [],
     groups: [
       {
@@ -164,6 +214,10 @@ Deno.test("reconcileParsedSms allocates group payments directly from payee route
         receiving_momo_code: "250788111222",
         momo_number: null,
         receiving_momo_route_type: "phone_number",
+        currency: "RWF",
+        country: "RW",
+        is_active: true,
+        is_closed: false,
       },
     ],
     group_members: [],
@@ -208,6 +262,12 @@ Deno.test("reconcileParsedSms allocates group payments directly from payee route
 
 Deno.test("reconcileParsedSms leaves unmatched target records in pending review", async () => {
   const tables: TableStore = {
+    african_football_clubs: [{
+      id: 24,
+      currency_code: "RWF",
+      country_iso_code: "RW",
+    }],
+    countries: [{ id: "RW", currency: "RWF" }],
     group_contributions: [],
   };
 
@@ -244,6 +304,12 @@ Deno.test("reconcileParsedSms leaves unmatched target records in pending review"
 
 Deno.test("reconcileParsedSms allocates partner payments directly from payee routes", async () => {
   const tables: TableStore = {
+    african_football_clubs: [{
+      id: 24,
+      currency_code: "RWF",
+      country_iso_code: "RW",
+    }],
+    countries: [{ id: "RW", currency: "RWF" }],
     pending_transactions: [],
     group_contributions: [],
     groups: [],
@@ -251,7 +317,9 @@ Deno.test("reconcileParsedSms allocates partner payments directly from payee rou
       {
         id: "route-1",
         partner_id: "partner-1",
+        country: "RW",
         recipient_code: "250788111222",
+        provider: "mtn_rwanda",
         reconciliation_label: "bank_partner",
         status: "active",
         partners: {
@@ -295,6 +363,12 @@ Deno.test("reconcileParsedSms allocates partner payments directly from payee rou
 
 Deno.test("reconcileParsedSms confirms matched Rayon ticket references", async () => {
   const tables: TableStore = {
+    african_football_clubs: [{
+      id: 24,
+      currency_code: "RWF",
+      country_iso_code: "RW",
+    }],
+    countries: [{ id: "RW", currency: "RWF" }],
     pending_transactions: [
       {
         id: "pending-ticket-1",
@@ -314,6 +388,7 @@ Deno.test("reconcileParsedSms confirms matched Rayon ticket references", async (
     rs_tickets: [
       {
         id: "ticket-1",
+        club_id: 24,
         user_id: "user-1",
         referral_invite_id: null,
         seat_type: "VIP",
@@ -353,7 +428,7 @@ Deno.test("reconcileParsedSms confirms matched Rayon ticket references", async (
   assertEquals(result.matchStatus, "matched", "ticket should be confirmed");
   assertEquals(
     result.targetTable,
-    "rs_tickets",
+    "tickets",
     "ticket reconciliation should target Rayon tickets",
   );
   assertEquals(
@@ -380,6 +455,12 @@ Deno.test("reconcileParsedSms confirms matched Rayon ticket references", async (
 
 Deno.test("reconcileParsedSms confirms matched Rayon shop order references", async () => {
   const tables: TableStore = {
+    african_football_clubs: [{
+      id: 24,
+      currency_code: "RWF",
+      country_iso_code: "RW",
+    }],
+    countries: [{ id: "RW", currency: "RWF" }],
     pending_transactions: [
       {
         id: "pending-shop-1",
@@ -399,6 +480,7 @@ Deno.test("reconcileParsedSms confirms matched Rayon shop order references", asy
     rs_shop_orders: [
       {
         id: "shop-order-1",
+        club_id: 24,
         user_id: "user-1",
         referral_invite_id: null,
         total: 12500,
@@ -413,6 +495,7 @@ Deno.test("reconcileParsedSms confirms matched Rayon shop order references", asy
         id: "route-1",
         partner_id: "partner-rayon-1",
         recipient_code: "250788111222",
+        provider: "mtn_rwanda",
         partner_name: "Rayon Sports FC",
         country: "RW",
         status: "active",
@@ -443,7 +526,7 @@ Deno.test("reconcileParsedSms confirms matched Rayon shop order references", asy
   );
   assertEquals(
     result.targetTable,
-    "rs_shop_orders",
+    "shop_orders",
     "shop confirmation should target Rayon shop orders",
   );
   assertEquals(
@@ -470,6 +553,12 @@ Deno.test("reconcileParsedSms confirms matched Rayon shop order references", asy
 
 Deno.test("reconcileParsedSms confirms matched Rayon initiative references", async () => {
   const tables: TableStore = {
+    african_football_clubs: [{
+      id: 24,
+      currency_code: "RWF",
+      country_iso_code: "RW",
+    }],
+    countries: [{ id: "RW", currency: "RWF" }],
     pending_transactions: [
       {
         id: "pending-support-1",
@@ -489,6 +578,7 @@ Deno.test("reconcileParsedSms confirms matched Rayon initiative references", asy
     rs_initiative_contributions: [
       {
         id: "initiative-contribution-1",
+        club_id: 24,
         user_id: "user-1",
         referral_invite_id: null,
         initiative_id: "initiative-1",
@@ -681,9 +771,15 @@ Deno.test("reconcileParsedSms returns manual review when Rayon initiative rows a
   );
 });
 
-Deno.test("reconcileParsedSms degrades cleanly when RPCs and WhatsApp delivery fail", async () => {
+Deno.test("reconcileParsedSms keeps committed rewards when WhatsApp delivery is unavailable", async () => {
   const adminClient = new FakeAdminClient(
     {
+      african_football_clubs: [{
+        id: 24,
+        currency_code: "RWF",
+        country_iso_code: "RW",
+      }],
+      countries: [{ id: "RW", currency: "RWF" }],
       pending_transactions: [
         {
           id: "pending-ticket-degraded",
@@ -703,6 +799,7 @@ Deno.test("reconcileParsedSms degrades cleanly when RPCs and WhatsApp delivery f
       rs_tickets: [
         {
           id: "ticket-degraded-1",
+          club_id: 24,
           user_id: "user-1",
           referral_invite_id: "invite-1",
           seat_type: "VIP",
@@ -730,18 +827,12 @@ Deno.test("reconcileParsedSms degrades cleanly when RPCs and WhatsApp delivery f
         },
       ],
     },
-    {
-      rpcFailures: {
-        rs_apply_membership_points: "membership points unavailable",
-        activate_referral_invite_for_user: "referral activation unavailable",
-      },
-    },
   );
 
   const result = await reconcileParsedSms(
     adminClient as unknown as ReturnType<typeof createAdminClient>,
-    { ...sampleRawSms, detected_tx_id: "DEGRADED123" },
-    { ...sampleParsedSms, momo_tx_id: "DEGRADED123" },
+    { ...sampleRawSms, detected_tx_id: "RS-TICKET-DEGRADED" },
+    { ...sampleParsedSms, momo_tx_id: "RS-TICKET-DEGRADED" },
     "parsed-sms-degraded-ticket",
     "2026-03-11T15:05:00.000Z",
   );
@@ -753,35 +844,39 @@ Deno.test("reconcileParsedSms degrades cleanly when RPCs and WhatsApp delivery f
   );
   assertEquals(
     result.metadata.points_awarded,
-    0,
-    "failed points RPC should zero out awarded points metadata",
+    50,
+    "committed points remain recorded when notification delivery fails",
   );
   assertEquals(
     result.metadata.referral_activated,
     false,
-    "failed referral RPC should degrade to false",
+    "RPC referral outcome is preserved",
   );
   assertEquals(
     result.metadata.whatsapp_sent,
     false,
     "failed WhatsApp delivery should degrade to false",
   );
-  assert(
-    adminClient.rpcCalls.some((call) =>
-      call.name === "rs_apply_membership_points"
-    ),
-    "membership points RPC should be attempted",
+  assertEquals(
+    adminClient.rpcCalls.length,
+    1,
+    "one atomic RPC commits state, ledger and rewards",
   );
-  assert(
-    adminClient.rpcCalls.some((call) =>
-      call.name === "activate_referral_invite_for_user"
-    ),
-    "referral activation RPC should be attempted",
+  assertEquals(
+    adminClient.rpcCalls[0].name,
+    "confirm_club_commerce_payment",
+    "no separate reward or referral writes",
   );
 });
 
 Deno.test("reconcileParsedSms keeps Rayon ticket replays idempotent", async () => {
   const tables: TableStore = {
+    african_football_clubs: [{
+      id: 24,
+      currency_code: "RWF",
+      country_iso_code: "RW",
+    }],
+    countries: [{ id: "RW", currency: "RWF" }],
     pending_transactions: [
       {
         id: "pending-ticket-replay",
@@ -801,6 +896,7 @@ Deno.test("reconcileParsedSms keeps Rayon ticket replays idempotent", async () =
     rs_tickets: [
       {
         id: "ticket-replay-1",
+        club_id: 24,
         user_id: "user-1",
         referral_invite_id: null,
         seat_type: "VIP",
@@ -869,6 +965,12 @@ Deno.test("reconcileParsedSms keeps Rayon ticket replays idempotent", async () =
 
 Deno.test("reconcileParsedSms keeps Rayon initiative replays idempotent", async () => {
   const tables: TableStore = {
+    african_football_clubs: [{
+      id: 24,
+      currency_code: "RWF",
+      country_iso_code: "RW",
+    }],
+    countries: [{ id: "RW", currency: "RWF" }],
     pending_transactions: [
       {
         id: "pending-support-replay",
@@ -888,6 +990,7 @@ Deno.test("reconcileParsedSms keeps Rayon initiative replays idempotent", async 
     rs_initiative_contributions: [
       {
         id: "initiative-contribution-replay-1",
+        club_id: 24,
         user_id: "user-1",
         referral_invite_id: null,
         initiative_id: "initiative-replay-1",

@@ -7,6 +7,8 @@ environment:
   flutter: ">=3.38.0"
 
 dependencies:
+  club_data:
+    path: ../../data/club_data
   flutter:
     sdk: flutter
   core_l10n:
@@ -22,6 +24,7 @@ dependencies:
   supabase_flutter: ^2.12.2
 
 dev_dependencies:
+  http: ^1.6.0
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0

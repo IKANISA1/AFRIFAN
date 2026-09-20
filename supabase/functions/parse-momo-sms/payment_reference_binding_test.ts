@@ -26,7 +26,23 @@ function fixture(kind: Kind, overrides: Record<string, unknown> = {}) {
     total: 1000,
     ...overrides,
   };
-  const tables: TableStore = { [table]: [row] };
+  const tables: TableStore = {
+    [table]: [row],
+    pending_transactions: [{
+      id: "checkout-1",
+      user_id: "payer-1",
+      reference,
+      recipient_momo: "250788111222",
+      amount: 1000,
+      provider: "mtn_rwanda",
+      status: "pending",
+    }],
+    african_football_clubs: [{
+      id: 24,
+      currency_code: "RWF",
+      country_iso_code: "RW",
+    }],
+  };
   const client = new FakeAdminClient(tables);
   const confirm = (
     user_id: string | null = "payer-1",
@@ -40,6 +56,10 @@ function fixture(kind: Kind, overrides: Record<string, unknown> = {}) {
         timestamp: "2026-09-17T19:00:00Z",
         provider: "mtn_rwanda",
         amount,
+        currency: "RWF",
+        country: "RW",
+        payeeNumberOrCode: "250788111222",
+        transactionId: "SYNTHETIC-REFERENCE",
       },
     );
   return { table, tables, row, client, confirm };

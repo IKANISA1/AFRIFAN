@@ -52,6 +52,7 @@ type AiCallOptions = {
   apiKey?: string;
   model?: string;
   fetchFn?: typeof fetch;
+  timeoutMs?: number;
 };
 
 export const parsedSmsJsonSchema = {
@@ -181,7 +182,10 @@ export function getModel(provider: AiProvider): string {
   return Deno.env.get("OPENAI_SMS_PARSE_MODEL") ?? "gpt-4o-mini";
 }
 
-export function buildPrompt(record: RawSmsRecord, lessons: string[] = []): string {
+export function buildPrompt(
+  record: RawSmsRecord,
+  lessons: string[] = [],
+): string {
   return [
     "You are an expert financial analyst parsing Mobile Money SMS into normalized records.",
     "Your goal is 100% accuracy for lending risk assessment.",
@@ -213,13 +217,48 @@ export function buildPrompt(record: RawSmsRecord, lessons: string[] = []): strin
   ].join("\n");
 }
 
+// Cover both receiving headers and consuming the response body. A provider
+// stall must release the parser so its existing failure/retry path can run.
+async function fetchAiJson(
+  url: string,
+  init: RequestInit,
+  options: AiCallOptions,
+) {
+  const controller = new AbortController();
+  const requestedTimeout = options.timeoutMs ?? 30_000;
+  const timeoutMs = Number.isFinite(requestedTimeout)
+    ? Math.max(1, Math.min(requestedTimeout, 30_000))
+    : 30_000;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      (async () => {
+        const response = await (options.fetchFn ?? fetch)(url, {
+          ...init,
+          signal: controller.signal,
+        });
+        const responseBody = await response.json();
+        return { response, responseBody };
+      })(),
+      new Promise<never>((_resolve, reject) => {
+        timer = setTimeout(() => {
+          const error = new Error("SMS parse provider request timed out.");
+          reject(error);
+          controller.abort(error);
+        }, timeoutMs);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export async function callOpenAi(
   prompt: string,
   options: AiCallOptions = {},
 ) {
   const apiKey = options.apiKey ?? requireEnv("OPENAI_API_KEY");
   const model = options.model ?? getModel("openai");
-  const fetchFn = options.fetchFn ?? fetch;
 
   const requestPayload = {
     model,
@@ -239,7 +278,9 @@ export async function callOpenAi(
     },
   };
 
-  const response = await fetchFn("https://api.openai.com/v1/responses", {
+  const { response, responseBody } = await fetchAiJson(
+    "https://api.openai.com/v1/responses",
+    {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -247,9 +288,9 @@ export async function callOpenAi(
       },
       body: JSON.stringify(requestPayload),
     },
+    options,
   );
 
-  const responseBody = await response.json();
   if (!response.ok) {
     throw new Error(
       `OpenAI SMS parse failed with ${response.status}: ${
@@ -298,7 +339,6 @@ export async function callGemini(
 ) {
   const apiKey = options.apiKey ?? requireEnv("GEMINI_API_KEY");
   const model = options.model ?? getModel("gemini");
-  const fetchFn = options.fetchFn ?? fetch;
 
   const requestPayload = {
     contents: [
@@ -313,16 +353,16 @@ export async function callGemini(
     },
   };
 
-  const response = await fetchFn(
+  const { response, responseBody } = await fetchAiJson(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(requestPayload),
     },
+    options,
   );
 
-  const responseBody = await response.json();
   if (!response.ok) {
     throw new Error(
       `Gemini SMS parse failed with ${response.status}: ${
@@ -400,7 +440,7 @@ export function normalizeParsedSms(
     ["credit", "debit", "unknown"],
     "unknown",
   ) as ParsedSms["tx_direction"];
-  
+
   const amount = asNullableInt(payload["amount"]);
   const feeAmount = asNullableInt(payload["fee_amount"]);
   const balanceAfter = asNullableInt(payload["balance_after"]);

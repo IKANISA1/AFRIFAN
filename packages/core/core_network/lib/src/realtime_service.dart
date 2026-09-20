@@ -6,7 +6,8 @@ import 'supabase_client_factory.dart';
 /// Realtime service for club-scoped channel subscriptions.
 ///
 /// Channel name format: {club_id}:{feature}:{resource_id}
-/// RLS on Realtime: channel topic validated server-side.
+/// Topic names organize subscriptions; they do not authorize access. Postgres
+/// changes are authorized by the table's grants and row-level policies.
 class RealtimeService {
   RealtimeService({required this.clubId, SupabaseClient? client})
     : _client = client;
@@ -37,18 +38,21 @@ class RealtimeService {
 
   /// Subscribe to postgres changes on a table, filtered by club_id.
   RealtimeChannel onTableChanges({
+    String schema = 'public',
     required String table,
     required String filterColumn,
     required String filterValue,
     required void Function(PostgresChangePayload payload) callback,
+    VoidCallback? onSubscribed,
   }) {
-    final channelName = '$clubId:$table:$filterValue';
+    final resource = schema == 'public' ? table : '$schema.$table';
+    final channelName = '$clubId:$resource:$filterValue';
 
     final channel = client.channel(channelName);
     _activeChannels.add(channel);
     channel.onPostgresChanges(
       event: PostgresChangeEvent.all,
-      schema: 'public',
+      schema: schema,
       table: table,
       filter: PostgresChangeFilter(
         type: PostgresChangeFilterType.eq,
@@ -58,7 +62,16 @@ class RealtimeService {
       callback: callback,
     );
 
-    channel.subscribe();
+    if (onSubscribed == null) {
+      channel.subscribe();
+    } else {
+      channel.subscribe((status, error) {
+        if (status == RealtimeSubscribeStatus.subscribed &&
+            _activeChannels.contains(channel)) {
+          onSubscribed();
+        }
+      });
+    }
     return channel;
   }
 

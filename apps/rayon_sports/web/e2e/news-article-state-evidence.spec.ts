@@ -215,6 +215,7 @@ test("news article proves all sixteen applicable rendered states", async ({
   mode = "ready";
   await openArticle(page, "focused");
   const newsroom = page.getByRole("link", { name: /club newsroom/i });
+  await expect(page.locator(".news-article-surface")).toHaveAttribute("data-article-status", "ready");
   await newsroom.focus();
   await expect(page.locator(".news-article-surface")).toHaveAttribute(
     "data-article-interaction",

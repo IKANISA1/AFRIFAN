@@ -15,6 +15,7 @@ export async function generateMetadata() {
   const club = await getClubProfile();
   const copy = getSiteCopy(club.defaultLanguage);
   return buildPageMetadata({
+    club,
     title: copy.pages.privacy.metaTitle,
     description: copy.pages.privacy.metaDescription(club),
     path: "/privacy",

@@ -184,6 +184,8 @@ async function expectNoHorizontalOverflow(page: Page) {
 async function runAdminContributionsMatrix(browser: Browser) {
   const evidenceDirectory = prepareStateEvidence(browser, test.info(), "admin_pwa_contributions_states");
   const context = await browser.newContext({
+    // API fixtures must bypass worker interception; PWA lifecycle has its own tests.
+    serviceWorkers: "block",
     viewport: { width: 1440, height: 1000 },
     deviceScaleFactor: 1,
     colorScheme: "dark",

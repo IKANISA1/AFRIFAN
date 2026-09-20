@@ -21,10 +21,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Prepare the pinned disposable database image
-        run: docker pull public.ecr.aws/supabase/postgres:17.6.1.158
+      - name: Prepare the pinned disposable database and vendor images
+        run: |
+          docker pull public.ecr.aws/supabase/postgres:17.6.1.158
+          docker pull public.ecr.aws/supabase/gotrue:v2.195.0
+          docker pull public.ecr.aws/supabase/storage-api:v1.68.10
 
-      - name: Replay migrations and verify Predict and ticket boundaries
+      - name: Replay all SQL contracts and financial concurrency boundaries
         run: python3 tools/scripts/test_predict_database.py
 
   # ──────────────────────────────────────────────

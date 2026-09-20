@@ -1,9 +1,5 @@
 import { createAdminClient } from "./supabase.ts";
 import { sendTextMessage } from "./whatsapp.ts";
-import {
-  planRayonShopOrderConfirmation,
-  planRayonTicketConfirmation,
-} from "../parse-momo-sms/rayon_confirmation.ts";
 
 type AdminClient = ReturnType<typeof createAdminClient>;
 
@@ -74,6 +70,7 @@ export type RayonPaymentConfirmationContext = {
   timestamp: string;
   provider: string | null;
   amount: number | null;
+  currency?: string | null;
   transactionId?: string | null;
   payeeNumberOrCode?: string | null;
   merchantCode?: string | null;
@@ -548,58 +545,52 @@ function formatAmount(branding: PaymentBranding, amount: number): string {
     : `${amount}`;
 }
 
-async function maybeAwardMembershipPoints(
+async function confirmCommercePayment(
   adminClient: AdminClient,
-  userId: string,
+  kind: "ticket" | "shop",
+  recordIds: string[],
+  referenceMatch: RayonReferenceMatch,
+  context: RayonPaymentConfirmationContext,
+  clubId: number | null,
   partnerId: string | null,
-  points: number,
-): Promise<boolean> {
-  if (!partnerId || points <= 0) {
-    return false;
+): Promise<Record<string, unknown>> {
+  if (!context.parsedSmsId) {
+    throw new Error(
+      "Persisted parsed SMS is required for commerce confirmation.",
+    );
   }
-
-  const result = await adminClient.rpc("rs_apply_membership_points", {
-    p_user_id: userId,
+  const result = await adminClient.rpc("confirm_club_commerce_payment", {
+    p_kind: kind,
+    p_record_ids: recordIds,
+    p_user_id: referenceMatch.user_id,
+    p_reference: referenceMatch.reference,
+    p_amount: context.amount,
+    p_club_id: clubId,
     p_partner_id: partnerId,
-    p_points: points,
+    p_provider: normalizeProviderId(context.provider),
+    p_payee: context.payeeNumberOrCode ?? context.merchantCode,
+    p_currency: context.currency,
+    p_country: context.country,
+    p_parsed_sms_id: context.parsedSmsId,
   });
-
-  if (result.error) {
-    console.error("Failed to award membership points", result.error);
-    return false;
+  if (result.error) throw result.error;
+  const transition = asRecord(result.data);
+  if (transition?.status === "manual_review") return transition;
+  if (
+    transition?.status !== "confirmed" ||
+    JSON.stringify(transition.record_ids) !== JSON.stringify(recordIds) ||
+    transition.parsed_sms_id !== context.parsedSmsId ||
+    typeof transition.newly_confirmed !== "boolean" ||
+    !Number.isSafeInteger(transition.points_awarded) ||
+    Number(transition.points_awarded) < 0 ||
+    typeof transition.referral_activated !== "boolean" ||
+    !["valid", "paid", "confirmed", "packed", "fulfilled"].includes(
+      String(transition.applied_status),
+    )
+  ) {
+    throw new Error("Commerce confirmation result is invalid.");
   }
-
-  return true;
-}
-
-async function maybeActivateReferralInvite(
-  adminClient: AdminClient,
-  inviteId: string | null,
-  inviteeId: string,
-  qualifyingEventType: string,
-  qualifyingEventId: string,
-  inviterPoints: number,
-  inviteePoints: number,
-): Promise<boolean> {
-  if (!inviteId || !inviteeId) {
-    return false;
-  }
-
-  const result = await adminClient.rpc("activate_referral_invite_for_user", {
-    p_referral_invite_id: inviteId,
-    p_invitee_id: inviteeId,
-    p_qualifying_event_type: qualifyingEventType,
-    p_qualifying_event_id: qualifyingEventId,
-    p_inviter_points: inviterPoints,
-    p_invitee_points: inviteePoints,
-  });
-
-  if (result.error) {
-    console.error("Failed to activate referral invite", result.error);
-    return false;
-  }
-
-  return true;
+  return transition;
 }
 
 async function maybeSendWhatsAppConfirmation(
@@ -707,52 +698,31 @@ async function confirmRayonTickets(
     );
   }
 
-  const confirmations = tickets.map((entry) => ({
-    ticket: entry,
-    confirmation: planRayonTicketConfirmation(entry.status),
-  }));
-
-  for (const entry of confirmations) {
-    const updateResult = await adminClient
-      .from("rs_tickets")
-      .update({
-        status: entry.confirmation.nextStatus,
-        updated_at: context.timestamp,
-      })
-      .eq("id", entry.ticket.id);
-
-    if (updateResult.error) {
-      throw updateResult.error;
-    }
-  }
-
-  const pointsToAward = confirmations.reduce(
-    (sum, entry) => sum + entry.confirmation.pointsToAward,
-    0,
-  );
   const branding = await resolvePaymentBranding(adminClient, {
     clubId: ticket.club_id,
     partnerId: ticket.partner_id,
     routeCodeOrNumber: context.payeeNumberOrCode ?? context.merchantCode,
   });
-  const pointsAwarded = await maybeAwardMembershipPoints(
+  const partnerId = ticket.partner_id ?? branding.resolvedPartnerId;
+  const transition = await confirmCommercePayment(
     adminClient,
-    ticket.user_id,
-    ticket.partner_id ?? branding.resolvedPartnerId,
-    pointsToAward,
+    "ticket",
+    tickets.map((row) => row.id),
+    referenceMatch,
+    context,
+    ticket.club_id,
+    partnerId,
   );
-  const referralActivated = await maybeActivateReferralInvite(
-    adminClient,
-    ticket.referral_invite_id,
-    ticket.user_id,
-    "rayon_ticket_bought",
-    ticket.id,
-    140,
-    60,
-  );
-  const shouldSendWhatsApp = confirmations.some((entry) =>
-    entry.confirmation.shouldSendWhatsApp
-  );
+  if (transition.status === "manual_review") {
+    return buildManualReviewResult(
+      "Ticket payment changed or requires review.",
+      {
+        reason: asString(transition.reason) ??
+          "ticket_payment_binding_mismatch",
+      },
+    );
+  }
+  const shouldSendWhatsApp = transition.newly_confirmed === true;
   const contact = shouldSendWhatsApp
     ? await resolveUserContact(adminClient, ticket.user_id)
     : null;
@@ -765,12 +735,14 @@ async function confirmRayonTickets(
     matchType: "rayon_ticket",
     matchStatus: "matched",
     ledgerStatus: "posted",
-    targetTable: "rs_tickets",
+    targetTable: "tickets",
     targetRecordId: ticket.id,
     matchedReference: referenceMatch.reference,
     notes: "Club ticket payment confirmed.",
     metadata: {
       auto_match: true,
+      commerce_persisted: true,
+      business_target_fulfilled: true,
       candidate_score: context.candidateScore ?? null,
       provider: normalizeProviderId(context.provider),
       partner_id: ticket.partner_id,
@@ -778,8 +750,8 @@ async function confirmRayonTickets(
       currency_code: branding.currencyCode,
       ticket_count: tickets.length,
       ticket_ids: tickets.map((entry) => entry.id),
-      points_awarded: pointsAwarded ? pointsToAward : 0,
-      referral_activated: referralActivated,
+      points_awarded: transition.points_awarded,
+      referral_activated: transition.referral_activated,
       whatsapp_sent: whatsappSent,
       source: context.source,
     },
@@ -792,23 +764,6 @@ async function confirmRayonShopOrder(
   context: RayonPaymentConfirmationContext,
   order: RsShopOrderRecord,
 ): Promise<RayonPaymentConfirmationResult> {
-  const confirmation = planRayonShopOrderConfirmation(
-    order.status,
-    order.total,
-  );
-
-  const updateResult = await adminClient
-    .from("rs_shop_orders")
-    .update({
-      status: confirmation.nextStatus,
-      updated_at: context.timestamp,
-    })
-    .eq("id", order.id);
-
-  if (updateResult.error) {
-    throw updateResult.error;
-  }
-
   const branding = await resolvePaymentBranding(adminClient, {
     clubId: order.club_id,
     partnerId: order.partner_id,
@@ -817,22 +772,24 @@ async function confirmRayonShopOrder(
   const partnerId = order.partner_id ??
     branding.resolvedPartnerId ??
     await resolvePartnerIdByNames(adminClient, branding.fallbackPartnerNames);
-  const pointsAwarded = await maybeAwardMembershipPoints(
+  const transition = await confirmCommercePayment(
     adminClient,
-    order.user_id,
+    "shop",
+    [order.id],
+    referenceMatch,
+    context,
+    order.club_id,
     partnerId,
-    confirmation.pointsToAward,
   );
-  const referralActivated = await maybeActivateReferralInvite(
-    adminClient,
-    order.referral_invite_id,
-    order.user_id,
-    "rayon_shop_order_confirmed",
-    order.id,
-    120,
-    50,
-  );
-  const contact = confirmation.shouldSendWhatsApp
+  if (transition.status === "manual_review") {
+    return buildManualReviewResult(
+      "Shop payment changed or requires review.",
+      {
+        reason: asString(transition.reason) ?? "shop_payment_binding_mismatch",
+      },
+    );
+  }
+  const contact = transition.newly_confirmed
     ? await resolveUserContact(adminClient, order.user_id)
     : null;
   const whatsappSent = await maybeSendWhatsAppConfirmation(
@@ -844,22 +801,24 @@ async function confirmRayonShopOrder(
     matchType: "rayon_shop_order",
     matchStatus: "matched",
     ledgerStatus: "posted",
-    targetTable: "rs_shop_orders",
+    targetTable: "shop_orders",
     targetRecordId: order.id,
     matchedReference: referenceMatch.reference,
     notes: "Club shop order payment confirmed.",
     metadata: {
       auto_match: true,
+      commerce_persisted: true,
+      business_target_fulfilled: true,
       candidate_score: context.candidateScore ?? null,
       provider: normalizeProviderId(context.provider),
       partner_id: partnerId,
       club_label: branding.clubLabel,
       currency_code: branding.currencyCode,
-      points_awarded: pointsAwarded ? confirmation.pointsToAward : 0,
-      referral_activated: referralActivated,
+      points_awarded: transition.points_awarded,
+      referral_activated: transition.referral_activated,
       whatsapp_sent: whatsappSent,
       source: context.source,
-      applied_status: confirmation.nextStatus,
+      applied_status: transition.applied_status,
     },
   };
 }
@@ -930,6 +889,54 @@ async function confirmRayonInitiativeContribution(
   };
 }
 
+// Bind a selected business record to stored checkout and club evidence before
+// any fulfillment, loyalty, referral or notification side effect. Recency and
+// an equal amount alone never establish the receiving account or currency.
+async function hasBoundCheckoutEvidence(
+  adminClient: AdminClient,
+  referenceMatch: RayonReferenceMatch,
+  context: RayonPaymentConfirmationContext,
+  clubId: number | null,
+): Promise<boolean> {
+  const provider = normalizeProviderId(context.provider);
+  const payee = (context.payeeNumberOrCode ?? context.merchantCode ?? "")
+    .replace(/\D/g, "");
+  if (
+    !provider || !payee || !context.currency ||
+    !context.transactionId?.trim() || !clubId
+  ) return false;
+  const pending = await adminClient.from("pending_transactions")
+    .select("recipient_momo, provider, amount, status")
+    .eq("reference", referenceMatch.reference).eq(
+      "user_id",
+      referenceMatch.user_id,
+    )
+    .maybeSingle();
+  if (pending.error) throw pending.error;
+  const checkout = pending.data;
+  if (
+    !checkout || !["pending", "confirmed"].includes(checkout.status) ||
+    checkout.amount !== context.amount ||
+    normalizeProviderId(checkout.provider) !== provider ||
+    String(checkout.recipient_momo ?? "").replace(/\D/g, "") !== payee
+  ) return false;
+  const club = await adminClient.from("african_football_clubs")
+    .select("currency_code, country_iso_code").eq("id", clubId).maybeSingle();
+  if (club.error) throw club.error;
+  return club.data?.currency_code === context.currency &&
+    !!club.data?.country_iso_code &&
+    club.data.country_iso_code === context.country;
+}
+
+function unboundCheckoutEvidence(): RayonPaymentConfirmationResult {
+  return buildManualReviewResult(
+    "The receiving route, provider, currency or country does not match the checkout.",
+    {
+      reason: "checkout_evidence_mismatch",
+    },
+  );
+}
+
 export async function confirmRayonReferenceMatch(
   adminClient: AdminClient,
   referenceMatch: RayonReferenceMatch,
@@ -982,6 +989,17 @@ export async function confirmRayonReferenceMatch(
       );
     }
 
+    if (
+      tickets.some((ticket) => ticket.club_id !== tickets[0].club_id) ||
+      !await hasBoundCheckoutEvidence(
+        adminClient,
+        referenceMatch,
+        context,
+        tickets[0].club_id,
+      )
+    ) {
+      return unboundCheckoutEvidence();
+    }
     return await confirmRayonTickets(
       adminClient,
       referenceMatch,
@@ -1015,6 +1033,16 @@ export async function confirmRayonReferenceMatch(
       );
     }
 
+    if (
+      !await hasBoundCheckoutEvidence(
+        adminClient,
+        referenceMatch,
+        context,
+        contribution.club_id,
+      )
+    ) {
+      return unboundCheckoutEvidence();
+    }
     return await confirmRayonInitiativeContribution(
       adminClient,
       referenceMatch,
@@ -1046,6 +1074,16 @@ export async function confirmRayonReferenceMatch(
       });
     }
 
+    if (
+      !await hasBoundCheckoutEvidence(
+        adminClient,
+        referenceMatch,
+        context,
+        order.club_id,
+      )
+    ) {
+      return unboundCheckoutEvidence();
+    }
     return await confirmRayonShopOrder(
       adminClient,
       referenceMatch,

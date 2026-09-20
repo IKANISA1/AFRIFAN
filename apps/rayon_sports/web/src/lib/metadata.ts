@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { absoluteUrl, rayonClub, siteConfig } from "@/lib/config";
+import { getSupportedClubProfile } from "@/lib/content";
 import type {
   ClubProfile,
   MatchItem,
@@ -9,12 +10,32 @@ import type {
 } from "@/lib/types";
 
 interface PageMetadataOptions {
+  club?: ClubProfile;
   title: string;
   description: string;
   path?: string;
   imagePath?: string;
   type?: "website" | "article";
   robots?: Metadata["robots"];
+}
+
+export function getClubWebsiteIdentity(club: ClubProfile) {
+  const isDefault = club.id === siteConfig.defaultClubId;
+  const retainedRayonBrand = isDefault && club.id === rayonClub.numericId;
+  const configuredHost = Object.entries(siteConfig.clubHostMap).find(
+    ([host, value]) => typeof value === "string"
+      && /^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(host)
+      && host.includes(".") && getSupportedClubProfile(value)?.id === club.id,
+  )?.[0];
+  return {
+    name: retainedRayonBrand ? siteConfig.shortTitle : club.shortName,
+    title: retainedRayonBrand ? siteConfig.title : `${club.clubName} | Official club website`,
+    description: retainedRayonBrand ? siteConfig.description
+      : `${club.clubName} website for fixtures, tickets, membership, news, shop, supporter Groups, and fan app journeys.`,
+    // Only configured deployment origins may become canonical. A request Host
+    // header or another club's default URL is not publication evidence.
+    url: isDefault ? siteConfig.siteUrl : configuredHost ? `https://${configuredHost}` : undefined,
+  };
 }
 
 export function renderJsonLdScriptContent(value: unknown) {
@@ -27,6 +48,7 @@ export function renderJsonLdScriptContent(value: unknown) {
 }
 
 export function buildPageMetadata({
+  club,
   title,
   description,
   path = "/",
@@ -34,37 +56,40 @@ export function buildPageMetadata({
   type = "website",
   robots,
 }: PageMetadataOptions): Metadata {
-  const canonical = absoluteUrl(path);
-  const image = absoluteUrl(imagePath);
+  const website = club ? getClubWebsiteIdentity(club) : {
+    name: siteConfig.shortTitle, url: siteConfig.siteUrl,
+  };
+  const canonical = website.url ? new URL(path, website.url).toString() : undefined;
+  const image = website.url ? new URL(imagePath, website.url).toString() : undefined;
 
   return {
-    title,
+    title: club ? { absolute: `${title} | ${website.name}` } : title,
     description,
     alternates: {
       canonical,
     },
-    robots,
+    robots: robots ?? (website.url ? undefined : { index: false, follow: false }),
     openGraph: {
       title,
       description,
       url: canonical,
-      siteName: siteConfig.shortTitle,
+      siteName: website.name,
       locale: "en_US",
       type,
-      images: [
+      images: image ? [
         {
           url: image,
           width: 1200,
           height: 630,
           alt: title,
         },
-      ],
+      ] : [],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [image],
+      images: image ? [image] : [],
     },
   };
 }
@@ -176,26 +201,30 @@ export function buildSquadJsonLd(club: ClubProfile, squad: SquadPlayer[]) {
   };
 }
 
-export function buildSiteJsonLd() {
+export function buildSiteJsonLd(club?: ClubProfile) {
+  const website = club ? getClubWebsiteIdentity(club) : {
+    name: siteConfig.shortTitle, title: siteConfig.title,
+    description: siteConfig.description, url: siteConfig.siteUrl,
+  };
   return {
     "@context": "https://schema.org",
     "@graph": [
       {
         "@type": "WebSite",
-        name: siteConfig.shortTitle,
-        alternateName: siteConfig.title,
-        url: siteConfig.siteUrl,
-        description: siteConfig.description,
+        name: website.name,
+        alternateName: website.title,
+        url: website.url,
+        description: website.description,
         inLanguage: ["en"],
       },
       {
         "@type": "SportsOrganization",
-        name: siteConfig.title,
-        alternateName: siteConfig.shortTitle,
-        url: siteConfig.siteUrl,
-        logo: absoluteUrl("/brand-mark.svg"),
+        name: club?.clubName ?? website.title,
+        alternateName: website.name,
+        url: website.url,
+        logo: website.url ? new URL("/brand-mark.svg", website.url).toString() : undefined,
         sport: "Association football",
-        description: siteConfig.description,
+        description: website.description,
       },
     ],
   };

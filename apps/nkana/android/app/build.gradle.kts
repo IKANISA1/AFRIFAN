@@ -85,6 +85,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders["appLabel"] = "Nkana FC"
     }
 
     signingConfigs {
@@ -103,12 +104,14 @@ android {
             if (isolatedNonReleaseApplicationIdSuffix != null) {
                 applicationIdSuffix = isolatedNonReleaseApplicationIdSuffix
                 versionNameSuffix = "-isolated-qa"
+                manifestPlaceholders["appLabel"] = "Nkana FC QA"
             }
         }
         getByName("profile") {
             if (isolatedNonReleaseApplicationIdSuffix != null) {
                 applicationIdSuffix = isolatedNonReleaseApplicationIdSuffix
                 versionNameSuffix = "-isolated-qa"
+                manifestPlaceholders["appLabel"] = "Nkana FC QA"
             }
         }
         release {

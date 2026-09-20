@@ -65,6 +65,7 @@ export default async function SiteLayout({
       style={themeStyle}
       lang={club.defaultLanguage}
       data-club-locale={club.defaultLanguage}
+      data-match-ribbon={nextMatch ? "present" : "absent"}
     >
       <div className="club-site-atmosphere" aria-hidden="true" />
       <div className="club-site-grid" aria-hidden="true" />

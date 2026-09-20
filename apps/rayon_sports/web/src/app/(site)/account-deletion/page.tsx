@@ -1,15 +1,22 @@
 import { SupportSurface } from "@/components/support-surface";
-import { buildPageMetadata } from "@/lib/metadata";
+import { getClubProfile } from "@/lib/data/public";
+import { buildPageMetadata, getClubWebsiteIdentity } from "@/lib/metadata";
 import { supportEmail } from "@/lib/release-legal-content";
 
-export const metadata = buildPageMetadata({
-  title: "Delete your Gikundiro account",
-  description:
-    "Delete an accessible Gikundiro account in the mobile app or start a privacy-safe public deletion request.",
-  path: "/account-deletion",
-});
+export async function generateMetadata() {
+  const club = await getClubProfile();
+  const brand = getClubWebsiteIdentity(club).name;
+  return buildPageMetadata({
+    club,
+    title: `Delete your ${brand} account`,
+    description:
+      `Delete an accessible ${brand} account in the mobile app or start a privacy-safe public deletion request.`,
+    path: "/account-deletion",
+  });
+}
 
-export default function AccountDeletionPage() {
+export default async function AccountDeletionPage() {
+  const brand = getClubWebsiteIdentity(await getClubProfile()).name;
   return (
     <SupportSurface
       kind="account-deletion"
@@ -23,7 +30,7 @@ export default function AccountDeletionPage() {
         },
         {
           heading: "Request deletion when the app is inaccessible",
-          body: `Email ${supportEmail} with the subject “Gikundiro account deletion request.” Include only the display name or phone number you previously chose to associate with the account and a safe callback address.`,
+          body: `Email ${supportEmail} with the subject “${brand} account deletion request.” Include only the display name or phone number you previously chose to associate with the account and a safe callback address.`,
         },
         {
           heading: "Complete privacy-safe account-control verification",
@@ -37,7 +44,7 @@ export default function AccountDeletionPage() {
       notice="Account deletion is irreversible. Do not send passwords, verification codes, payment credentials, biometric material, or identity documents with a public request."
       actions={[
         {
-          href: `mailto:${supportEmail}?subject=Gikundiro%20account%20deletion%20request`,
+          href: `mailto:${supportEmail}?subject=${encodeURIComponent(`${brand} account deletion request`)}`,
           label: "Start a deletion request",
           primary: true,
         },

@@ -115,7 +115,9 @@ class LocalDiscoverySearchRepository implements DiscoverySearchRepository {
             DiscoveryResult(
               id: 'fixtures',
               title: l10n.searchFixturesTitle,
-              description: l10n.searchFixturesDescription,
+              description: l10n.searchFixturesDescription(
+                RuntimeBranding.displayClubName,
+              ),
               category: DiscoveryCategory.fixtures,
               destination: '/club/fixtures',
               icon: AfriIcons.fixture,

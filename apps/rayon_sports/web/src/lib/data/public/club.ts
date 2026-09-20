@@ -3,7 +3,7 @@
  */
 import { cache } from "react";
 import { getActiveClubReference } from "@/lib/club-context";
-import { fallbackClubProfile } from "@/lib/content";
+import { fallbackClubProfile, getSupportedClubProfile } from "@/lib/content";
 import { getReadOnlySupabase } from "@/lib/supabase/admin";
 import type { ClubProfile } from "@/lib/types";
 import { safeNumber, safeString } from "@/lib/utils";
@@ -78,7 +78,7 @@ export const getClubProfile = cache(async function getClubProfile() {
   const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
   const fallback = {
-    ...fallbackClubProfile,
+    ...(getSupportedClubProfile(activeClub.numericId) ?? fallbackClubProfile),
     id: activeClub.numericId,
     clubName: activeClub.name || fallbackClubProfile.clubName,
     clubSlug: activeClub.slug || fallbackClubProfile.clubSlug,

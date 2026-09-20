@@ -1,47 +1,32 @@
 # AFRICLUB full-stack QA progress
 
-Recorded 19 September 2026. The [full-stack QA plan](full_stack_qa_plan.md) remains incomplete: QA-00–QA-08 are in progress and QA-09 final acceptance is pending.
+Updated 2026-09-20T02:09:35.685765+00:00. **The 37-task goal is incomplete; release readiness is NO-GO.** Tasks 5, 11 and 16 have scoped local closure. Thirty-four task buckets remain open or partial, and MOBILE-DESIGN-100 remains **0/8**.
 
-## Current product scope
+The current execution authority is [the 37-task plan](full_stack_qa_plan.md). Its scope is Vital'O (Burundi), Rayon Sports (Rwanda), Nkana (Zambia) and AS Vita (DR Congo): eight native targets, 28 packages (24 shared plus four club configurations), public/member websites, admin PWA, 18 Edge functions and shared backend/release infrastructure. The other dedicated products are removed; shared football opponents, stadiums, tickets and Wallet remain. Applied migrations are preserved and new migrations have run only in isolated synthetic databases.
 
-The supported products are Vital'O (Burundi), Rayon Sports (Rwanda), Nkana (Zambia) and AS Vita (DR Congo), their public/member websites and the admin PWA. There are four Flutter app shells and 28 packages: 24 shared packages and four club configurations. MOBILE-DESIGN-100 acceptance remains **0/8** Android/iOS targets.
-
-The other sixteen dedicated club apps/configurations were removed in `0d56badcaffdf9ff6167485b8ed3eadd431cec5a`. Shared football opponents and fixtures remain.
-
-The partner venue product is removed: public listings, staff portal, mobile check-in/drinks ordering, admin controls and ticket verifier, corresponding APIs/Edge function, runtime registrations, copy, styles, tests and golden baselines. Existing match stadium details, supporter ticket purchases and Wallet issuance remain. Applied migrations are unchanged; a new forward migration retires 16 operational tables and 13 functions, transfers stadium details into ticket events and narrows the affected read policies. It has been applied only to isolated synthetic databases.
-
-## Current local verification
-
-Commands, failures, corrected reruns, source hashes and per-surface qualifications are in `output/qa/full-stack-20260914/`. Current retirement evidence is indexed by `venue-product-removal.json` and `venue-removal-source-manifest.json`; the per-surface result is `readiness-report.md`.
-
-| Check | Result | Boundary |
+| Verification | Result | Boundary |
 | --- | --- | --- |
-| Flutter | Strict analysis; 654 tests across six affected packages | Includes routes, configuration, localization, Home, Predict/FET Wallet and ticketing; no new mobile release acceptance |
-| Web unit suite | 107 files / 893 tests pass | Local component/API contracts; complete system coverage is not established |
-| Web build and quality | Production-mode build, typecheck, lint and bundle budgets pass | Loopback-only unavailable backend; no deployment or provider traffic |
-| Browser routing | Chromium, Firefox and WebKit pass | Six retired pages and the verifier API return 404; Home, Tickets, Membership and admin sign-in still render |
-| Edge | All 18 entrypoints typecheck; 182 tests pass | Provider responses are controlled; live integrations remain unverified |
-| Database | Fresh replay of 19 migrations and both seeds; 29 SQL files / 422 assertions pass | Isolated vendor Auth/Storage schema; four supported clubs; zero orphan rows across 276 foreign keys |
-| Existing-data upgrade | Existing ticket and Wallet credential preserved; stadium fields transferred; Wallet preparation still succeeds | Synthetic pre-retirement fixture, verified before/after migration |
-| Concurrency | Maintained disposable replay and eight Predict/contribution race scenarios pass | Retry identity, wallet balance, kickoff boundary and atomic contribution confirmation remain covered |
-| Governance | Route generation, architecture, Edge contract, golden manifest and both copy inventories pass | 160 discovered routes across current surfaces; 88 native/internal-native entries; zero visual acceptance inferred |
+| Flutter | 28 packages / 2,569 tests pass; strict analysis passes; 55.45% measured line coverage | Full package suite includes the live-match repair; whole native journeys and visual acceptance remain open. |
+| Web | 111 unit files / 940 tests pass; lint/typecheck pass; production-mode build `aQF1v-pe2Mh6ZL-A1-R07` | Pinned Node 22.23.2 full checks include the CSS/font extraction. No hosted deployment. |
+| Browser baseline | Current build: 581 passed, one harness failure, 12 skipped of 594 | Corrected header check passes 18 repeats across six profiles. All original failures/skips remain recorded. |
+| Member recovery | 63 functional + 12 fixture-cleanup checks across Chromium/Firefox/WebKit | Actual isolated Auth/REST/RPC on build `Cmc0QxLAzr6rgw3Gi4lUU`; provider and installed-PWA acceptance separate. |
+| PWA | Six profiles: origin loss/reconnect, private membership cache, preference denial, update cancellation, older-tab drafts and light/dark contrast pass | Actual workers with a controlled same-schema revision. Installed mode, durable drafts and arbitrary version migrations remain open. |
+| Edge | 283 tests pass across 18 functions | Actual isolated intent handler: 14 checks; commerce handler: 15 checks. AI output/response loss controlled; external providers separate. |
+| Database | Fresh pinned vendor replay: 34 contracts / 585 assertions / 32 races pass | Intent allocation and ticket/shop posting, state and rewards are atomic in scope; generic-intent/group/initiative boundaries remain open. |
+| Storage | 13 vendor API checks and nine actual handler/Auth/Storage outcomes pass; four cleanup assertions pass | Includes role removal, tenant denial, exact bytes, MIME/size and RLS. First harness-limit failure remains recorded; hosted acceptance separate. |
+| Realtime | Actual public WebSocket/controller recovery passes, including reconnect and foreground catch-up | Private cross-account subscriptions and installed devices remain open. |
+| Android | Four current debug builds, physical installation/readback, four emulator launches/readbacks and 16 guest checks pass | Physical foreground/hardware/performance and full authenticated workflows remain open. |
+| iOS | Four current simulator builds/installations/launches/readbacks; five Rayon native integration journeys pass | Controlled repositories for those journeys; no physical iPhone, provider or signing acceptance. |
+| Performance | Bundle budgets and admin-volume benchmark pass; every Lighthouse iteration retained | Current cold-cache Lighthouse: eight of nine passes; Home 0.89 misses 0.90. Native/database performance remains open. |
 
-Obsolete product evidence no longer contributes to current readiness. Earlier runs remain available in dated ignored artifacts and Git history with their original source bindings. Corrected test expectations, command setup errors and failed intermediate attempts remain distinguishable from successful reruns. No golden image was regenerated to conceal a visual change.
+Current inventory: 244 Dart test files, four integration-test files, 111 web unit files, 52 Playwright specs, 24 migrations and 34 SQL contracts. Counts are not case-acceptance denominators. The regenerated register has 160 routes, 2,560 route/state cells and 1,796 applicable cells still open; twelve archetypes are mapped. The isolated catalog has 135 application base tables, 295 routines, 312 policies, two storage buckets, two public realtime tables and seven scheduled jobs.
 
-## Retained repairs from the broader QA review
+Implemented repairs include authorized/idempotent manual and automatic intent allocation; strict fallback receiver/currency/provider binding; conditional group confirmation; 30-second AI deadlines; committed allocation/final-status recovery; bounded member requests, durable sign-out and stale-account protection; club-bound activation; truthful public content and retained-club identity; guest Home public reads; joined live-match refresh/reconnect; preference-storage tolerance; private membership-cache exclusion; quarantined legacy mutation queues; usable offline fallback; and explicit PWA updates that preserve unfinished work when cancelled. Current PWA light/dark text uses semantic roles with 48px controls. The web performance follow-up removes unused font preloads and loads operator CSS only with admin routes. Upload input validation rejects malformed club identities and JSON. Public support, deletion, share content, page metadata and site JSON-LD preserve all four club identities. Commerce confirmation commits persisted evidence, ledger, reconciliation, ticket/shop state and rewards together; cancelled/expired/changed targets and reused provider transactions cannot be silently confirmed.
 
-Earlier work repaired currency precision, admin tenant/role boundaries and club selection, dialog focus, responsive layout clearance, service-worker mutation/cache behavior and Auth-to-supporter identity synchronization. The current local suites cover these maintained contracts; earlier live-browser and native evidence retains its original candidate scope.
+Thirty-six changed native golden baselines remain pending independent/owner review. Current web review packets (300 packets / 5006 screenshots) are bound to the current build and remain unreviewed; older sets retain their separate bindings. Design fidelity, usability, accessibility, performance, resilience, security/data correctness and release operations are tracked separately.
 
-Member access now retains confirmed history after failed refreshes, discards stale responses after logout/account changes and requires deliberate membership activation. Complete contribution totals use an owner/club-scoped invoker RPC, exact decimal strings and stable pagination. Earlier three-browser journeys verified those bounded outcomes against an isolated backend; they are not complete current-candidate member acceptance.
+Continue the open tasks, prioritizing linked financial target/reward consistency, parser process-death recovery and durable delivery, remaining identity/membership/Predict/ticket/Wallet/shop and real operator journeys, private storage/realtime/jobs, native/device coverage, reference reconciliation, human accessibility and final candidate checks. Firebase configurations and approved iOS icon assets remain absent for three clubs. Local substitutes do not satisfy provider validation.
 
-Payment reference checks bind payer, amount and allowed status. Initiative confirmation, totals and rewards commit atomically with retry and lock-wait revalidation. Posted SMS evidence is protected against forced reinterpretation, and overlapping parser calls use an owner/version-bound claim. Generic intent selection uses actual schema fields and conditional fulfillment. These are scoped repairs, not complete provider settlement verification.
+The execution directory `output/qa/full-stack-20260914/` contains current logs, retained failures, coverage, findings, source/configuration hashes and artifact evidence. `readiness-report.md`, `execution.json` and `remaining-tasks.md` hold the detailed checkpoint. Disk-pressure attempts and provenance failures remain recorded. The desktop app goal retains its older paused object because available controls cannot edit/resume it; implementation follows the user's current repository objective.
 
-The earlier Rayon Android Club pilot used a synthetic gateway. Five inspected frames and repaired capture timing do not establish four-club production startup, exact reference fidelity, reader usability or physical-device coverage.
-
-## Remaining full-system work
-
-Manual SMS allocation still uses an invalid `completed` status. Complete ledger/reconciliation atomicity, receiver/expiry changes during lock waits, stalled parse recovery, transaction reuse, fallback currency/payee evidence, ticket/shop transitions and notification delivery need further execution and repair.
-
-Complete member account switching, request deadlines, offline restored sessions and failed sign-out; cover remaining admin roles/mutations and installed-PWA update/recovery. Review remaining storage/realtime behavior and performance findings against current query plans.
-
-Complete all four club builds/boots, route/state/source comparisons, reader/enlarged-text checks, performance and recovery evidence. Visual fidelity, usability, accessibility, performance, resilience and security/data correctness remain separate assessments. Independent review, owner acceptance, physical devices, providers, hosted CI, signing, deployment and store/public availability are separate unresolved gates. No production database change, deployment, store submission or third-party message is part of this increment.
+Hosted CI reports startup failure without a newly established cause. Independent review, owner acceptance, physical devices, providers, signing/distribution, authorized deployment and public/store availability remain separate gates. No production mutation, deployment, store submission or third-party message has been performed.

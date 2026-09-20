@@ -25,11 +25,11 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String onboardingBelongBody(String clubName) {
-    return 'Follow $clubName wherever the blue family gathers.';
+    return 'Follow $clubName wherever supporters gather.';
   }
 
   @override
-  String get onboardingKnowTitle => 'Every moment.\nOne blue family.';
+  String get onboardingKnowTitle => 'Every moment.\nOne club family.';
 
   @override
   String onboardingKnowBody(String appName) {
@@ -37,7 +37,9 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get onboardingLiveTitle => 'Closer to\nGikundiro.';
+  String onboardingLiveTitle(String appName) {
+    return 'Closer to\n$appName.';
+  }
 
   @override
   String get onboardingLiveBody =>
@@ -256,8 +258,9 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get searchFixturesTitle => 'Fixtures';
 
   @override
-  String get searchFixturesDescription =>
-      'Upcoming and recent Rayon Sports matches.';
+  String searchFixturesDescription(String clubName) {
+    return 'Upcoming and recent $clubName matches.';
+  }
 
   @override
   String get searchLiveMatchTitle => 'Live match';
@@ -745,9 +748,6 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get membershipReviewPendingUpper => 'Review pending';
-
-  @override
-  String get membershipBrandWatermark => 'GIKUNDIRO';
 
   @override
   String get navHome => 'Home';
@@ -1651,7 +1651,9 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get homeTicketsAction => 'Tickets';
 
   @override
-  String get homeMembershipAction => 'Join Gikundiro';
+  String homeMembershipAction(String appName) {
+    return 'Join $appName';
+  }
 
   @override
   String get homeFanZoneAction => 'Predict';
@@ -2570,9 +2572,6 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'No order was confirmed. Your cart and address are still here. Review them and try again.';
 
   @override
-  String get shopSampleProductName => 'Rayon Home Jersey';
-
-  @override
   String get shopSampleProductDescription =>
       'Official matchday jersey with a premium woven club mark, breathable stadium fabric, and club-blue trim for everyday supporters.';
 
@@ -2585,9 +2584,6 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get shopProductImageUnavailable => 'Product image unavailable';
-
-  @override
-  String get shopOfficialKit => 'Official Rayon kit';
 
   @override
   String get shopPremiumMerchandise => 'Premium matchday merchandise';

@@ -9,6 +9,7 @@ export async function generateMetadata() {
   const club = await getClubProfile();
   const copy = getSiteCopy(club.defaultLanguage);
   return buildPageMetadata({
+    club,
     title: copy.pages.Groups.metaTitle(club),
     description: copy.pages.Groups.metaDescription(club),
     path: "/circles",

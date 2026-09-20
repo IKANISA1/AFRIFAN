@@ -47,6 +47,19 @@ export async function reconcileParsedSms(
     );
   }
 
+  // Every allocation path requires an outgoing, successfully parsed payment.
+  // Checking this only inside generic intents allowed the legacy/group/club
+  // fallbacks to confirm incoming money and failed or incomplete parses.
+  if (
+    parsed.parse_status !== "parsed" || parsed.tx_direction !== "debit" ||
+    !parsed.currency || !/^[A-Z]{3}$/i.test(parsed.currency.trim())
+  ) {
+    return buildManualReviewResult(
+      "Payment evidence needs review before allocation.",
+      { reason: "invalid_payment_evidence" },
+    );
+  }
+
   // 0) Look up receiver account
   const receiverResult = await adminClient
     .from("payment_receiver_accounts")
@@ -95,26 +108,20 @@ export async function reconcileParsedSms(
       );
     }
 
-    // Use the database's declared status and claim the version we checked.
-    // Cancellation, editing or another parser must not be reported as success.
-    const fulfilled = await adminClient
-      .from("payment_intents")
-      .update({
-        status: "fulfilled",
-        updated_at: timestamp,
-      })
-      .eq("id", intent.id)
-      .eq("user_id", rawSms.user_id)
-      .eq("status", "pending")
-      .eq("updated_at", intent.updated_at)
-      .select("id")
-      .maybeSingle();
+    // Revalidate locked evidence and commit intent/ledger/reconciliation in one
+    // database transaction. This allocation does not fulfill a business target.
+    const fulfilled = await adminClient.rpc("allocate_momo_payment_intent", {
+      p_parsed_sms_id: parsedSmsId,
+      p_intent_id: intent.id,
+    });
     if (fulfilled.error) throw fulfilled.error;
-    if (!fulfilled.data) {
-      return buildManualReviewResult(
-        "Payment intent changed during reconciliation.",
-        { reason: "intent_state_changed", intent_id: intent.id },
-      );
+    if (
+      fulfilled.data?.status !== "allocated" ||
+      fulfilled.data.intent_id !== intent.id ||
+      fulfilled.data.parsed_sms_id !== parsedSmsId ||
+      typeof fulfilled.data.newly_allocated !== "boolean"
+    ) {
+      throw new Error("Payment intent allocation result is invalid.");
     }
 
     return {
@@ -124,11 +131,14 @@ export async function reconcileParsedSms(
       targetTable: intent.target_table ?? "payment_intents",
       targetRecordId: intent.target_record_id ?? intent.id,
       matchedReference: parsed.momo_tx_id ?? sourceReference(rawSms, parsed),
-      notes: "Parsed SMS was explicitly matched to a pending intent.",
+      notes:
+        "Payment evidence allocated; linked target fulfillment is separate.",
       metadata: {
         auto_match: true,
         intent_id: intent.id,
         provider: normalizeProviderId(rawSms.provider),
+        allocation_persisted: true,
+        business_target_fulfilled: false,
       },
     };
   } else if (pendingIntents.length > 1) {
@@ -166,6 +176,7 @@ export async function reconcileParsedSms(
             timestamp,
             provider: normalizeProviderId(rawSms.provider),
             amount: parsed.amount,
+            currency: parsed.currency,
             transactionId: parsed.momo_tx_id ?? rawSms.detected_tx_id,
             payeeNumberOrCode: parsed.payee_number_or_code,
             merchantCode: parsed.merchant_code,
@@ -215,7 +226,10 @@ export async function reconcileParsedSms(
     parsed,
     timestamp,
   );
-  if (groupRouteMatch?.targetTable === "group_contributions") {
+  if (
+    groupRouteMatch?.matchStatus === "manual_review" ||
+    groupRouteMatch?.targetTable === "group_contributions"
+  ) {
     return groupRouteMatch;
   }
 
@@ -237,13 +251,17 @@ export async function reconcileParsedSms(
   }
 
   if (contributionCandidate) {
-    const matchedReference = contributionCandidate.momo_reference ??
-      sourceReference(rawSms, parsed);
+    const matchedReference = sourceReference(rawSms, parsed);
 
     await confirmGroupContribution(
       adminClient,
       contributionCandidate.id,
       matchedReference,
+      {
+        userId: rawSms.user_id,
+        groupId: contributionCandidate.group_id!,
+        amount: parsed.amount!,
+      },
     );
 
     return {
@@ -289,6 +307,7 @@ export async function reconcileParsedSms(
       timestamp,
       provider: normalizeProviderId(rawSms.provider),
       amount: parsed.amount,
+      currency: parsed.currency,
       transactionId: parsed.momo_tx_id ?? rawSms.detected_tx_id,
       payeeNumberOrCode: parsed.payee_number_or_code,
       merchantCode: parsed.merchant_code,

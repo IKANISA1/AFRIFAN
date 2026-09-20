@@ -26,6 +26,9 @@ function validateProductionBuild(web: string): Record<string, string> {
 export function stateEvidenceContextOptions(testInfo: TestInfo): BrowserContextOptions {
   const profile = testInfo.project.use;
   return {
+    // Controlled route responses require the browser request to reach the
+    // interceptor. Actual service-worker lifecycle is exercised separately.
+    serviceWorkers: "block",
     viewport: profile.viewport ?? { width: 1440, height: 900 },
     deviceScaleFactor: profile.deviceScaleFactor ?? 1,
     isMobile: profile.isMobile ?? false,

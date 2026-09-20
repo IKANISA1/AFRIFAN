@@ -9,8 +9,9 @@ export async function generateMetadata({
 }: {
   params: Promise<{ matchId: string }>;
 }) {
-  const { matchId } = await params;
+  const [{ matchId }, club] = await Promise.all([params, getClubProfile()]);
   return buildPageMetadata({
+    club,
     title: "Ticket detail",
     description: "Confirmed public match pricing, availability, and supporter-app handoff.",
     path: `/tickets/${encodeURIComponent(matchId)}`,

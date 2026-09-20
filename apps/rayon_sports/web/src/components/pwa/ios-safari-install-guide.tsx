@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { readPwaPreference, writePwaPreference } from "@/lib/pwa-preferences";
 
 /**
  * Detects iOS Safari in browser mode and shows an animated
@@ -53,7 +54,7 @@ export function IosSafariInstallGuide({
   useEffect(() => {
     if (!enabled || !isIosSafari() || isStandalone()) return;
 
-    if (sessionStorage.getItem(DISMISSED_KEY) === "true") return;
+    if (readPwaPreference("session", DISMISSED_KEY) === "true") return;
 
     // Show only after the user has spent real time on the site.
     const timer = setTimeout(() => {
@@ -65,7 +66,7 @@ export function IosSafariInstallGuide({
   }, [enabled, onShown, showAfterMs]);
 
   function dismiss() {
-    sessionStorage.setItem(DISMISSED_KEY, "true");
+    writePwaPreference("session", DISMISSED_KEY, "true");
     setVisible(false);
     onDismiss?.();
   }

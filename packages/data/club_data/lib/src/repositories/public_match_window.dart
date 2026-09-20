@@ -15,8 +15,25 @@ class PublicMatchWindow {
     final timestamp = instant.toIso8601String();
     final day = timestamp.substring(0, 10);
     final time = timestamp.substring(11, 19);
-    const live = ['live', 'in_progress', '1h', 'ht', '2h', 'et', 'p'];
-    const finished = ['completed', 'finished', 'full_time', 'ft', 'aet', 'pen'];
+    const live = [
+      'live',
+      'in_progress',
+      'halftime',
+      '1h',
+      'ht',
+      '2h',
+      'et',
+      'p',
+    ];
+    const finished = [
+      'completed',
+      'finished',
+      'fulltime',
+      'full_time',
+      'ft',
+      'aet',
+      'pen',
+    ];
     final limit = limitPerSection.clamp(1, 80);
     final batches = await Future.wait([
       client
@@ -33,7 +50,7 @@ class PublicMatchWindow {
           .not(
             'match_status',
             'in',
-            '(completed,finished,full_time,ft,aet,pen,cancelled,postponed,live,in_progress,1h,ht,2h,et,p)',
+            '(completed,finished,fulltime,full_time,ft,aet,pen,cancelled,postponed,live,in_progress,halftime,1h,ht,2h,et,p)',
           )
           .or(
             'kickoff_at.gte.$timestamp,and(kickoff_at.is.null,or(match_date.gt.$day,and(match_date.eq.$day,kickoff_time.gte.$time)))',

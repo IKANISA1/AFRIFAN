@@ -9,6 +9,7 @@ export async function generateMetadata() {
   const club = await getClubProfile();
   const copy = getSiteCopy(club.defaultLanguage);
   return buildPageMetadata({
+    club,
     title: copy.pages.shop.metaTitle(club),
     description: copy.pages.shop.metaDescription(club),
     path: "/shop",

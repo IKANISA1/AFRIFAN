@@ -24,8 +24,42 @@ import 'package:test_support/touch_target_audit.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadAppFonts);
+  setUp(
+    () => RuntimeBranding.configure(
+      appName: 'Gikundiro',
+      clubName: 'Rayon Sports FC',
+    ),
+  );
+  tearDown(RuntimeBranding.resetForTest);
 
   group('HomeScreen states', () {
+    for (final appName in [
+      "Vital'O",
+      'Gikundiro',
+      'Nkana FC',
+      'AS Vita Club',
+    ]) {
+      testWidgets('$appName names its own membership action', (tester) async {
+        RuntimeBranding.configure(appName: appName, clubName: appName);
+        await tester.pumpWidget(
+          _buildApp(
+            homeRepository: const _FakeHomeFeedRepository(
+              snapshot: HomeFeedSnapshot(status: HomeFeedStatus.empty),
+            ),
+            latestIntelRepository: const _FakeLatestIntelRepository(
+              LatestIntelSnapshot(status: LatestIntelStatus.empty),
+            ),
+            child: const HomeScreen(),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('Join $appName'), findsWidgets);
+        if (appName != 'Gikundiro') {
+          expect(find.text('Join Gikundiro'), findsNothing);
+        }
+      });
+    }
+
     testWidgets('shows loading skeletons before home data resolves', (
       tester,
     ) async {

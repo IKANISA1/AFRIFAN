@@ -127,13 +127,13 @@ abstract class AfriLocalizations {
   /// No description provided for @onboardingBelongBody.
   ///
   /// In en, this message translates to:
-  /// **'Follow {clubName} wherever the blue family gathers.'**
+  /// **'Follow {clubName} wherever supporters gather.'**
   String onboardingBelongBody(String clubName);
 
   /// No description provided for @onboardingKnowTitle.
   ///
   /// In en, this message translates to:
-  /// **'Every moment.\nOne blue family.'**
+  /// **'Every moment.\nOne club family.'**
   String get onboardingKnowTitle;
 
   /// No description provided for @onboardingKnowBody.
@@ -145,8 +145,8 @@ abstract class AfriLocalizations {
   /// No description provided for @onboardingLiveTitle.
   ///
   /// In en, this message translates to:
-  /// **'Closer to\nGikundiro.'**
-  String get onboardingLiveTitle;
+  /// **'Closer to\n{appName}.'**
+  String onboardingLiveTitle(String appName);
 
   /// No description provided for @onboardingLiveBody.
   ///
@@ -511,8 +511,8 @@ abstract class AfriLocalizations {
   /// No description provided for @searchFixturesDescription.
   ///
   /// In en, this message translates to:
-  /// **'Upcoming and recent Rayon Sports matches.'**
-  String get searchFixturesDescription;
+  /// **'Upcoming and recent {clubName} matches.'**
+  String searchFixturesDescription(String clubName);
 
   /// No description provided for @searchLiveMatchTitle.
   ///
@@ -1305,12 +1305,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Review pending'**
   String get membershipReviewPendingUpper;
-
-  /// No description provided for @membershipBrandWatermark.
-  ///
-  /// In en, this message translates to:
-  /// **'GIKUNDIRO'**
-  String get membershipBrandWatermark;
 
   /// No description provided for @navHome.
   ///
@@ -2802,8 +2796,8 @@ abstract class AfriLocalizations {
   /// No description provided for @homeMembershipAction.
   ///
   /// In en, this message translates to:
-  /// **'Join Gikundiro'**
-  String get homeMembershipAction;
+  /// **'Join {appName}'**
+  String homeMembershipAction(String appName);
 
   /// No description provided for @homeFanZoneAction.
   ///
@@ -4390,12 +4384,6 @@ abstract class AfriLocalizations {
   /// **'No order was confirmed. Your cart and address are still here. Review them and try again.'**
   String get shopCheckoutFailureMessage;
 
-  /// No description provided for @shopSampleProductName.
-  ///
-  /// In en, this message translates to:
-  /// **'Rayon Home Jersey'**
-  String get shopSampleProductName;
-
   /// No description provided for @shopSampleProductDescription.
   ///
   /// In en, this message translates to:
@@ -4419,12 +4407,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Product image unavailable'**
   String get shopProductImageUnavailable;
-
-  /// No description provided for @shopOfficialKit.
-  ///
-  /// In en, this message translates to:
-  /// **'Official Rayon kit'**
-  String get shopOfficialKit;
 
   /// No description provided for @shopPremiumMerchandise.
   ///

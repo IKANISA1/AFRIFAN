@@ -307,8 +307,10 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
   SupabaseHomeFeedRepository({
     required this.client,
     required this.storeReleasePolicy,
-  });
+    ClubScopeResolver? scopeResolver,
+  }) : _scopeResolver = scopeResolver ?? ClubScopeResolver(client: client);
 
+  final ClubScopeResolver _scopeResolver;
   final SupabaseClient client;
   final StoreReleasePolicy storeReleasePolicy;
 
@@ -318,7 +320,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
     late final ClubScope scope;
 
     try {
-      scope = await ClubScopeResolver(client: client).requireResolved();
+      scope = await _scopeResolver.requireResolved();
     } catch (error, stackTrace) {
       AfriLogger.warn(
         'HomeContentRepository',
@@ -392,7 +394,9 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
 
     Future<void> loadMemberships() async {
       try {
-        if (allowsCrossUserLeaderboard || currentUserId != null) {
+        // Membership rows require an authenticated session even when the
+        // development policy permits displaying a supporter leaderboard.
+        if (currentUserId != null) {
           var membershipsQuery = client
               .from('fan_memberships')
               .select(
@@ -408,7 +412,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
                 ? await membershipsQuery
                       .order('points', ascending: false)
                       .limit(20)
-                : await membershipsQuery.eq('user_id', currentUserId!).limit(1),
+                : await membershipsQuery.eq('user_id', currentUserId).limit(1),
           );
         }
       } catch (error) {
@@ -485,7 +489,9 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
         ? _mapMatchSlides(matches)
         : const <MatchSlide>[];
 
-    if (membershipsError != null || matchesError != null) {
+    if (membershipsError != null ||
+        matchesError != null ||
+        quickActionsError != null) {
       return HomeFeedSnapshot(
         heroSlides: heroSlides,
         leaderboard: leaderboard,
@@ -497,6 +503,8 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
         status: HomeFeedStatus.degraded,
         notice: quickActionsError == null
             ? HomeFeedNotice.partialUnavailable
+            : membershipsError == null && matchesError == null
+            ? HomeFeedNotice.offlineShortcuts
             : HomeFeedNotice.partialShortcutsUnavailable,
         showFixturePlaceholder: matchesError == null && heroSlides.isEmpty,
       );
@@ -506,7 +514,8 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
         leaderboard.isEmpty &&
         userFet == 0 &&
         fanRank == 0) {
-      return const HomeFeedSnapshot(
+      return HomeFeedSnapshot(
+        quickActions: quickActions,
         status: HomeFeedStatus.empty,
         notice: HomeFeedNotice.matchdayPending,
         showFixturePlaceholder: true,

@@ -19,6 +19,10 @@ export type GroupRouteRecord = {
   receiving_momo_code: string | null;
   momo_number: string | null;
   receiving_momo_route_type: string | null;
+  currency: string | null;
+  country: string | null;
+  is_active: boolean;
+  is_closed: boolean;
 };
 
 export type PartnerRouteRecord = {
@@ -26,6 +30,8 @@ export type PartnerRouteRecord = {
   partner_id: string;
   partner_name: string | null;
   partner_slug: string | null;
+  provider: string | null;
+  country: string | null;
   recipient_code: string | null;
   reconciliation_label: string | null;
   status: string | null;
@@ -125,7 +131,9 @@ export function digitsMatch(
   if (!left || !right) {
     return false;
   }
-  return left === right || left.endsWith(right) || right.endsWith(left);
+  // Receipt suffixes cannot establish a receiving account. Only complete
+  // normalized routes are eligible for automatic allocation.
+  return left === right;
 }
 
 export function payeeRouteDigits(parsed: ParsedSms): string | null {
@@ -248,11 +256,14 @@ export function asGroupRouteRecord(
     id: asString(value["id"]) ?? "",
     name: asString(value["name"]) ?? "Savings group",
     type: asString(value["type"]) ?? asString(value["group_type"]),
-    receiving_momo_code:
-      asString(value["receiving_momo_code"]) ??
+    receiving_momo_code: asString(value["receiving_momo_code"]) ??
       asString(value["momo_recipient_code"]),
     momo_number: asString(value["momo_number"]),
     receiving_momo_route_type: asString(value["receiving_momo_route_type"]),
+    currency: asString(value["currency"]),
+    country: asString(value["country"]),
+    is_active: value["is_active"] === true,
+    is_closed: value["is_closed"] !== false,
   };
 }
 
@@ -265,6 +276,8 @@ export function asPartnerRouteRecord(
     partner_id: asString(value["partner_id"]) ?? "",
     partner_name: asString(partner?.["name"]),
     partner_slug: asString(partner?.["slug"]),
+    provider: asString(value["provider"]),
+    country: asString(value["country"]),
     recipient_code: asString(value["recipient_code"]),
     reconciliation_label: asString(value["reconciliation_label"]),
     status: asString(value["status"]),

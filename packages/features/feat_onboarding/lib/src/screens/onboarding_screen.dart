@@ -60,7 +60,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             ),
             OnboardingSlideId.live => _WelcomeSlide(
               imagePath: 'assets/onboarding/rayon_new_signing.webp',
-              title: l10n.onboardingLiveTitle,
+              title: l10n.onboardingLiveTitle(appLabel),
               body: l10n.onboardingLiveBody,
               semanticLabel: l10n.onboardingLiveImageSemantic(clubLabel),
             ),
@@ -204,7 +204,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               slide: slides[index],
               index: index,
               count: slides.length,
-              rightsApproved: widget.mediaRightsApproved,
+              // These governed assets depict Rayon, not another club.
+              rightsApproved:
+                  widget.mediaRightsApproved && clubConfig?.clubId == '24',
             ),
           ),
           DecoratedBox(

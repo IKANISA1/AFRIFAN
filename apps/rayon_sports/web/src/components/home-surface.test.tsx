@@ -74,7 +74,9 @@ function renderHome(locale = "en") {
   return render(
     <HomeSurface
       locale={locale}
+      clubId={24}
       clubShortName="Rayon Sports"
+      currencyCode="RWF"
       fanAppHref="/supporters"
       hasExternalAppUrl={false}
     />,
@@ -130,6 +132,29 @@ describe("HomeSurface", () => {
   });
 
   afterEach(() => vi.useRealTimers());
+
+  it.each([
+    [44, "Vital'O", "BIF"],
+    [24, "Rayon Sports", "RWF"],
+    [26, "Nkana", "ZMW"],
+    [6, "AS Vita", "CDF"],
+  ])("uses club %s identity and currency without asserting an unverified result", async (clubId, clubShortName, currencyCode) => {
+    vi.spyOn(globalThis, "fetch").mockImplementation(readyHome);
+    const { container } = render(
+      <HomeSurface locale="en" clubId={Number(clubId)} clubShortName={String(clubShortName)}
+        currencyCode={String(currencyCode)} fanAppHref="/supporters" hasExternalAppUrl={false} />,
+    );
+    await screen.findByText("Confirmed club update");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(`${clubShortName}. Matchday starts here.`);
+    expect(container.querySelector(".blue-wall-score")).toBeNull();
+    expect(container.querySelector(".circles-eyebrow")).toHaveTextContent("Official club home");
+    const formatted = new Intl.NumberFormat("en", { style: "currency", currency: String(currencyCode) }).format(35_000);
+    expect(screen.getByText(formatted.replace(/\s/g, " "))).toBeVisible();
+    if (clubId !== 24) {
+      expect(container.querySelector('img[src*="youtube"]')).toBeNull();
+      expect(container.querySelector(".blue-wall-feature-grid")).not.toHaveTextContent(/Gikundiro|Blue Wall|Rayon/);
+    }
+  });
 
   it("renders confirmed highlights and supports real action selection", async () => {
     vi.spyOn(globalThis, "fetch").mockImplementation(readyHome);

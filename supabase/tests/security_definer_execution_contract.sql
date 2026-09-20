@@ -107,6 +107,8 @@ insert into expected_authenticated_security_definer_functions (signature) values
   ('club_public_content_manifest_v1(bigint)'),
   ('membership_qualification_v1(bigint)'),
   ('activate_free_fan_membership()'),
+  ('allocate_momo_manual_review(uuid,uuid,text)'),
+  ('admin_reject_momo_sms_manual_review(uuid,text)'),
   ('admin_get_shop_products(integer,integer,boolean)'),
   ('bootstrap_supporter_profile(bigint,text,text,text,text)'),
   ('cancel_pending_group_contribution_payment_launch(uuid)'),
@@ -129,6 +131,7 @@ insert into expected_authenticated_security_definer_functions (signature) values
   ('get_club_member_registry(bigint,text,text,text,integer,integer)'),
   ('get_feature_access_state(text,text,bigint,boolean,text[])'),
   ('get_momo_sms_operational_summary()'),
+  ('get_momo_sms_manual_review_queue(integer,integer)'),
   ('get_partner_member_registry(uuid,text,text,text,integer,integer)'),
   ('get_platform_config(text,bigint)'),
   ('get_platform_option_set(text,text,bigint)'),
@@ -177,7 +180,7 @@ where p.prosecdef
 
 select is(
   (select count(*)::integer from actual_authenticated_security_definer_functions),
-  63,
+  66,
   'authenticated execution is limited to the governed endpoint count'
 );
 

@@ -19,6 +19,7 @@ export async function generateMetadata({
 
   if (article == null) {
     return buildPageMetadata({
+    club,
       title: copy.pages.news.metaTitle(club),
       description: copy.pages.news.metaDescription(club),
       path: `/news/${articleId}`,
@@ -27,6 +28,7 @@ export async function generateMetadata({
   }
 
   return buildPageMetadata({
+    club,
     title: article.title,
     description: article.excerpt,
     path: `/news/${article.id}`,

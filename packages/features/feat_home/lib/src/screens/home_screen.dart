@@ -361,7 +361,10 @@ class HomeScreen extends ConsumerWidget {
                 ? context.afriL10n.membershipCurrentStatus(
                     snapshot.membershipTier!.trim(),
                   )
-                : context.afriL10n.homeMembershipAction,
+                : context.afriL10n.homeMembershipAction(
+                    ClubConfigScope.maybeOf(context)?.appName ??
+                        RuntimeBranding.displayAppName,
+                  ),
             subtitle: reviewPending
                 ? context.afriL10n.profileMembershipReviewPending
                 : context.afriL10n.searchMembershipDescription,

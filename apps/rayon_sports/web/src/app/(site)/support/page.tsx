@@ -1,20 +1,27 @@
 import { SupportSurface } from "@/components/support-surface";
-import { buildPageMetadata } from "@/lib/metadata";
+import { getClubProfile } from "@/lib/data/public";
+import { buildPageMetadata, getClubWebsiteIdentity } from "@/lib/metadata";
 import { supportEmail } from "@/lib/release-legal-content";
 
-export const metadata = buildPageMetadata({
-  title: "Gikundiro support",
-  description:
-    "Official Gikundiro support routes for accounts, membership, tickets, orders, privacy, and account deletion.",
-  path: "/support",
-});
+export async function generateMetadata() {
+  const club = await getClubProfile();
+  const brand = getClubWebsiteIdentity(club).name;
+  return buildPageMetadata({
+    club,
+    title: `${brand} support`,
+    description:
+      `Official ${brand} support routes for accounts, membership, tickets, orders, privacy, and account deletion.`,
+    path: "/support",
+  });
+}
 
-export default function SupportPage() {
+export default async function SupportPage() {
+  const brand = getClubWebsiteIdentity(await getClubProfile()).name;
   return (
     <SupportSurface
       kind="support"
       eyebrow="Support"
-      title="Get help through the right Gikundiro channel."
+      title={`Get help through the right ${brand} channel.`}
       description="Authenticated account, membership, ticket, order, and contribution questions are safest in the mobile app. Public support remains available when you cannot sign in."
       steps={[
         {
@@ -33,8 +40,8 @@ export default function SupportPage() {
       notice="Never email a password, one-time code, payment credential, full identity document, biometric material, or private recovery secret. Support will not ask for them through this page."
       actions={[
         {
-          href: `mailto:${supportEmail}?subject=Gikundiro%20support%20request`,
-          label: "Email Gikundiro support",
+          href: `mailto:${supportEmail}?subject=${encodeURIComponent(`${brand} support request`)}`,
+          label: `Email ${brand} support`,
           primary: true,
         },
         { href: "/account-deletion", label: "Account deletion" },

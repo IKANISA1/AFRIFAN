@@ -53,11 +53,41 @@ export function GlobalNav({
   const [scrolled, setScrolled] = useState(false);
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [desktopFits, setDesktopFits] = useState(false);
   const headerRef = useRef<HTMLDivElement>(null);
+  const navigationRef = useRef<HTMLElement>(null);
+  const brandRef = useRef<HTMLAnchorElement>(null);
+  const desktopLinksRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLAnchorElement>(null);
+  const portalRef = useRef<HTMLAnchorElement>(null);
   const closeMobileMenu = useCallback(
     () => setMobileMenuOpen(false),
     [setMobileMenuOpen],
   );
+
+  useEffect(() => {
+    const navigation = navigationRef.current;
+    const brand = brandRef.current;
+    const links = desktopLinksRef.current;
+    const search = searchRef.current;
+    const portal = portalRef.current;
+    if (!navigation || !brand || !links || !search || !portal) return;
+    const measure = () => {
+      const style = getComputedStyle(navigation);
+      const available = navigation.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+      const searchWidth = search.getBoundingClientRect().width;
+      const required = brand.getBoundingClientRect().width + links.getBoundingClientRect().width
+        + portal.getBoundingClientRect().width + searchWidth
+        + (searchWidth > 0 ? 12 : 0) + 2 * parseFloat(style.columnGap);
+      setDesktopFits(available > 0 && required <= available);
+    };
+    measure();
+    // Keep the intrinsic link row measurable while hidden. Observe fonts,
+    // text enlargement, configured labels and the available container width.
+    const observer = new ResizeObserver(measure);
+    for (const element of [navigation, brand, links, search, portal]) observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40);
@@ -138,17 +168,17 @@ export function GlobalNav({
             >
               History
             </Link>
-            <div className="flex items-center gap-2 text-[var(--club-accent)]">
+            <div className="flex items-center gap-2 text-white/80">
               <Globe size={10} />
-              <span>Gikundiro Global</span>
+              <span>{club.nickname || club.shortName}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Main Nav */}
-      <nav aria-label="Primary navigation" className="site-primary-navigation page-shell flex h-16 items-center justify-between gap-[16px] px-[16px] lg:h-20 lg:px-[24px]">
-        <Link href="/" className="flex min-h-[48px] min-w-[48px] shrink-0 items-center gap-[12px]">
+      <nav ref={navigationRef} data-desktop-fits={desktopFits} aria-label="Primary navigation" className="site-primary-navigation page-shell flex h-16 items-center justify-between gap-[16px] px-[16px] lg:h-20 lg:px-[24px]">
+        <Link ref={brandRef} href="/" className="flex min-h-[48px] min-w-[48px] shrink-0 items-center gap-[12px]">
           <div className="relative h-[40px] w-[40px] overflow-hidden rounded-full border-2 border-white/20 bg-white lg:h-[48px] lg:w-[48px]">
             <Image
               src={logoUrl}
@@ -162,13 +192,13 @@ export function GlobalNav({
               {club.shortName}
             </p>
             <p className="mt-1 text-[9px] font-bold uppercase tracking-[0.2em] text-white/50">
-              The Beloved
+              {club.nickname || club.clubName}
             </p>
           </div>
         </Link>
 
         {/* Desktop Links */}
-        <div className="site-desktop-links hidden flex-1 items-center justify-center gap-1 xl:flex">
+        <div ref={desktopLinksRef} aria-hidden={!desktopFits} className="site-desktop-links hidden flex-1 items-center justify-center gap-1 xl:flex">
           {navItems.map((item) => (
             <div
               key={item.href}
@@ -207,6 +237,7 @@ export function GlobalNav({
         {/* Actions */}
         <div className="flex min-w-0 items-center gap-[12px]">
           <Link
+            ref={searchRef}
             href="/search"
             aria-label="Search site"
             className="hidden h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20 lg:flex"
@@ -214,9 +245,10 @@ export function GlobalNav({
             <Search size={18} />
           </Link>
           <Link
+            ref={portalRef}
             href={resolveFanAppHref()}
             aria-label="Fan Portal"
-            className="site-portal-link flex min-h-[48px] min-w-[48px] items-center gap-[8px] rounded-full bg-[var(--club-accent)] px-[20px] py-[10px] text-xs font-bold uppercase tracking-wider text-slate-950 shadow-lg transition-transform hover:scale-105 active:scale-95"
+            className="site-portal-link flex min-h-[48px] min-w-[48px] items-center gap-[8px] rounded-full bg-[var(--club-accent)] px-[20px] py-[10px] text-xs font-bold uppercase tracking-wider text-[var(--club-ink)] shadow-lg transition-transform hover:scale-105 active:scale-95"
           >
             <User size={16} />
             <span className="site-portal-label hidden sm:inline">Fan Portal</span>
@@ -250,36 +282,12 @@ export function GlobalNav({
             <div className="grid grid-cols-4 gap-12">
               <div className="col-span-2">
                 <p className="mb-6 text-xs font-bold uppercase tracking-widest text-white/40">
-                  Next Fixture
+                  Match centre
                 </p>
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-8">
-                  <div className="flex items-center justify-between text-center">
-                    <div className="space-y-4">
-                      <div className="h-16 w-16 mx-auto rounded-full bg-white/10" />
-                      <p className="font-bold text-white uppercase tracking-tight">
-                        {club.shortName}
-                      </p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-3xl font-black text-white/20 italic">
-                        VS
-                      </p>
-                      <p className="mt-2 text-xs font-bold text-[var(--club-accent)]">
-                        20 APR · 18:00
-                      </p>
-                    </div>
-                    <div className="space-y-4">
-                      <div className="h-16 w-16 mx-auto rounded-full bg-white/10" />
-                      <p className="font-bold text-white uppercase tracking-tight">
-                        APR FC
-                      </p>
-                    </div>
-                  </div>
-                  <Link
-                    href="/tickets"
-                    className="mt-8 block w-full rounded-xl bg-white py-3 text-center text-sm font-bold uppercase tracking-widest text-[var(--club-primary)] hover:bg-[var(--club-accent)] transition-colors"
-                  >
-                    Get Tickets Now
+                  <p className="font-bold text-white">{club.shortName}</p>
+                  <Link href="/fixtures" className="mt-4 inline-flex min-h-[48px] items-center text-white underline">
+                    View confirmed fixtures
                   </Link>
                 </div>
               </div>
@@ -326,12 +334,10 @@ export function GlobalNav({
                 <div className="absolute inset-0 opacity-20 bg-[url('/brand-surface.svg')] bg-cover bg-center" />
                 <div className="relative z-10">
                   <p className="text-xs font-bold uppercase tracking-widest text-[var(--club-accent)]">
-                    Season 2025/26
+                    Club history
                   </p>
                   <p className="mt-2 text-2xl font-black text-white uppercase leading-none">
-                    The Quest for
-                    <br />
-                    Continental Glory
+                    {club.shortName}
                   </p>
                   <Link
                     href="/history"
@@ -345,31 +351,6 @@ export function GlobalNav({
           )}
           {activeMenu === "squad" && (
             <div className="grid grid-cols-4 gap-8">
-              {[1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className="group relative aspect-[3/4] overflow-hidden rounded-xl bg-white/5"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--club-primary)] via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <p className="text-2xl font-black text-white italic leading-none">
-                      {i === 1 ? "17" : i === 2 ? "11" : i === 3 ? "09" : "01"}
-                    </p>
-                    <p className="text-sm font-bold uppercase tracking-tight text-white">
-                      {i === 1
-                        ? "Kevin Muhire"
-                        : i === 2
-                          ? "Yannick Mukunzi"
-                          : i === 3
-                            ? "Fall Ngagne"
-                            : "Mugenzi M."}
-                    </p>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--club-accent)]">
-                      First Team
-                    </p>
-                  </div>
-                </div>
-              ))}
               <div className="col-span-4 mt-8 flex justify-center">
                 <Link
                   href="/squad"

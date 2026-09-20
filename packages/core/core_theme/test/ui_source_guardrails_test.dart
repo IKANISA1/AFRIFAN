@@ -7,27 +7,30 @@ void main() {
   final repoRoot = _findRepoRoot();
 
   group('DESIGN.md UI Guardrails', () {
-    test('Root DESIGN.md is the only design authority document', () {
+    test('Repository design documents do not introduce competing rules', () {
       final violations = _findSecondaryDesignAuthorityFiles(repoRoot);
 
       expect(
         violations,
         isEmpty,
         reason: _formatViolations(
-          'Found secondary design authority files. Delete them or rewrite as implementation docs that only reference root DESIGN.md.',
+          'Found competing design rules. Keep product mappings in DESIGN.md and bind them to the selected skill authority.',
           violations,
         ),
       );
     });
 
-    test('Repo exposes a generated DESIGN.md compliance gate', () {
+    test('Generated design gate validates the selected skill authority', () {
       final gate = File(
         '${repoRoot.path}/tools/scripts/design_compliance_report.sh',
       );
 
       expect(gate.existsSync(), isTrue);
       final content = gate.readAsStringSync();
-      expect(content, contains(r'${SOURCE_DESIGN:-$ROOT/DESIGN.md}'));
+      expect(content, contains('validate_design_authority.mjs'));
+      expect(content, contains('.authority_sha256'));
+      expect(content, contains('design-authority-binding.json'));
+      expect(content, isNot(contains(r'${SOURCE_DESIGN:-$ROOT/DESIGN.md}')));
       expect(content, contains('output/design_compliance'));
       expect(content, contains('route_evidence_matrix.md'));
     });
@@ -1491,7 +1494,10 @@ List<String> _findForbiddenStaticDesignReferences(Directory repoRoot) {
         path.endsWith(
           '/apps/rayon_sports/web/src/app/brand-surface.svg/route.ts',
         ) ||
-        path.endsWith('/tools/scripts/design_compliance_report.sh'),
+        path.endsWith('/tools/scripts/design_compliance_report.sh') ||
+        // This negative-test fixture verifies the same registered-media gate;
+        // its synthetic crest path is never loaded by product runtime code.
+        path.endsWith('/tools/scripts/design_registered_media.test.mjs'),
   );
 }
 
@@ -1610,6 +1616,10 @@ bool _isGeneratedPath(String normalizedPath) {
       normalizedPath.endsWith('/.next') ||
       normalizedPath.contains('/.open-next/') ||
       normalizedPath.endsWith('/.open-next') ||
+      normalizedPath.contains('/apps/rayon_sports/web/test-results/') ||
+      normalizedPath.endsWith('/apps/rayon_sports/web/test-results') ||
+      normalizedPath.contains('/apps/rayon_sports/web/playwright-report/') ||
+      normalizedPath.endsWith('/apps/rayon_sports/web/playwright-report') ||
       normalizedPath.contains('/test/failures/') ||
       normalizedPath.endsWith('/test/failures') ||
       normalizedPath.contains('/coverage/') ||

@@ -29,7 +29,8 @@ Every baseline listed in `docs/governance/golden-baselines.json` must:
 2. Run the focused golden test without updating baselines.
 3. Treat any pixel difference as a failure until reviewed.
 4. Confirm the changed state is intentional, accessible, privacy-safe, and
-   consistent with `DESIGN.md`.
+   consistent with the selected `revolut-design` skill. Repository design files
+   record product mappings and evidence; they do not override that authority.
 5. If accepted, regenerate only the affected baseline with
    `flutter test --update-goldens <test-file>`.
 6. Run the focused test again without `--update-goldens`.
@@ -59,7 +60,8 @@ silently omitted.
 
 A baseline is accepted only when:
 
-- the rendered hierarchy is football-first and matches `DESIGN.md`;
+- the rendered hierarchy preserves football workflows and follows the selected
+  skill's visual typology;
 - touch targets, focus order, text scaling, contrast, semantics, and safe-area
   handling pass;
 - loading and recovery preserve layout stability;

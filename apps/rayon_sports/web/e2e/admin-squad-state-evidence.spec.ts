@@ -142,6 +142,8 @@ async function expectNoHorizontalOverflow(page: Page) {
 async function runAdminSquadMatrix(browser: Browser) {
   const evidenceDirectory = prepareStateEvidence(browser, test.info(), "admin_pwa_squad_states");
   const context = await browser.newContext({
+    // API fixtures must bypass worker interception; PWA lifecycle has its own tests.
+    serviceWorkers: "block",
     viewport: { width: 1440, height: 1000 },
     deviceScaleFactor: 1,
     colorScheme: "dark",
@@ -267,6 +269,7 @@ async function runAdminSquadMatrix(browser: Browser) {
   );
   await capture("pressed");
   await page.mouse.up();
+  await expectStatus("ready", /squad operations confirmed/i);
 
   const firstRow = page.locator("tr[data-row-id='player-1']");
   await firstRow.focus();

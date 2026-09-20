@@ -1,7 +1,7 @@
-const STATIC_CACHE = "gikundiro-static-v7";
-const PAGE_CACHE = "gikundiro-pages-v7";
-const ASSET_CACHE = "gikundiro-assets-v7";
-const API_CACHE = "gikundiro-api-v7";
+const STATIC_CACHE = "gikundiro-static-v8";
+const PAGE_CACHE = "gikundiro-pages-v8";
+const ASSET_CACHE = "gikundiro-assets-v8";
+const API_CACHE = "gikundiro-api-v8";
 const PRECACHE_URLS = [
   "/offline",
   "/admin-offline",
@@ -13,7 +13,25 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
       .open(STATIC_CACHE)
-      .then((cache) => cache.addAll(PRECACHE_URLS)),
+      .then(async (cache) => {
+        await cache.addAll(PRECACHE_URLS);
+        // Recovery must render even when its first navigation has no network.
+        // These pages use the shared stylesheet and locally hosted fonts.
+        const assets = new Set();
+        for (const pathname of ["/offline", "/admin-offline"]) {
+          const response = await cache.match(pathname);
+          if (!response) continue;
+          const html = await response.text();
+          for (const link of html.matchAll(/<link\b[^>]*>/gi)) {
+            if (!/\brel=["']stylesheet["']|\bas=["']font["']/i.test(link[0])) continue;
+            const href = /\bhref=["']([^"']+)["']/i.exec(link[0])?.[1];
+            if (!href) continue;
+            const url = new URL(href, self.location.origin);
+            if (url.origin === self.location.origin && url.pathname.startsWith("/_next/static/")) assets.add(url.href);
+          }
+        }
+        if (assets.size) await cache.addAll([...assets]);
+      }),
   );
 });
 
@@ -77,7 +95,18 @@ async function storePublicResponse(cache, request, response) {
 async function offlineRecovery(pathname) {
   try {
     const response = await caches.match(pathname);
-    if (response) return response;
+    if (response) {
+      const headers = new Headers(response.headers);
+      // Render the server's recovery document without hydrating a different
+      // route or loading unavailable Next chunks. Its links remain ordinary
+      // navigation and recover normally once the origin is reachable again.
+      headers.set("Content-Security-Policy", "default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'none'");
+      headers.set("Cache-Control", "no-store");
+      headers.set("X-Africlub-Offline", "1");
+      headers.delete("content-length");
+      headers.delete("content-encoding");
+      return new Response(await response.text(), { status: response.status, headers });
+    }
   } catch {
     // A first visit or denied storage can leave the offline shell unavailable.
   }
@@ -88,7 +117,7 @@ async function offlineRecovery(pathname) {
 }
 
 function isPrivatePath(pathname) {
-  return /^\/(?:admin|supporters)(?:\/|$)/.test(pathname);
+  return /^\/(?:admin|supporters|membership)(?:\/|$)/.test(pathname);
 }
 
 async function networkFirst(request) {
@@ -107,7 +136,8 @@ async function networkFirst(request) {
 
 async function staleWhileRevalidate(request) {
   const cache = await openCache(ASSET_CACHE);
-  const cached = await readCache(cache, request);
+  const cached = await readCache(cache, request) ??
+    await readCache(await openCache(STATIC_CACHE), request);
   const network = fetch(request)
     .then(async (response) => {
       await storePublicResponse(cache, request, response);
@@ -249,59 +279,14 @@ self.addEventListener("notificationclick", (event) => {
   );
 });
 
-/* ─── Background Sync — Replay Offline Mutations ─────────── */
-
-const OFFLINE_QUEUE_STORE = "gikundiro-offline-queue";
-
-async function openOfflineDB() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(OFFLINE_QUEUE_STORE, 1);
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains("requests")) {
-        db.createObjectStore("requests", { keyPath: "id", autoIncrement: true });
-      }
-    };
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-}
+/* ─── Background Sync — Preserve Legacy Mutations ────────── */
 
 async function replayOfflineQueue() {
-  try {
-    const db = await openOfflineDB();
-    const tx = db.transaction("requests", "readwrite");
-    const store = tx.objectStore("requests");
-    const all = await new Promise((resolve, reject) => {
-      const req = store.getAll();
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(req.error);
-    });
-
-    for (const entry of all) {
-      try {
-        const target = new URL(entry.url, self.location.origin);
-        // Legacy operator entries have no account binding or idempotency key.
-        // Retain them for reconciliation; never replay under a later session.
-        if (target.origin !== self.location.origin || /^\/api\/(?:admin)(?:\/|$)/.test(target.pathname)) continue;
-        const response = await fetch(target.href, {
-          method: entry.method,
-          headers: entry.headers,
-          body: entry.body,
-        });
-        if (!response.ok) break;
-        // Remove successfully replayed request
-        const deleteTx = db.transaction("requests", "readwrite");
-        deleteTx.objectStore("requests").delete(entry.id);
-      } catch {
-        // Leave it in queue for next sync
-        console.log("[sw] Failed to replay request, will retry:", entry.url);
-        break;
-      }
-    }
-  } catch {
-    console.error("[sw] Background sync replay failed");
-  }
+  // Every legacy record lacks an account binding and an idempotency key.
+  // A later session cannot safely infer who submitted it or whether the first
+  // request committed. Preserve IndexedDB records for explicit reconciliation;
+  // do not send or delete any of them, including non-admin and renamed routes.
+  return;
 }
 
 self.addEventListener("sync", (event) => {

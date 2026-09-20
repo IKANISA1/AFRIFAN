@@ -5,7 +5,7 @@
   "retry": "Retry",
   "connectionRequired": "Connection required",
   "onboardingBelongTitle": "Your club.\nYour matchday.",
-  "onboardingBelongBody": "Follow {clubName} wherever the blue family gathers.",
+  "onboardingBelongBody": "Follow {clubName} wherever supporters gather.",
   "@onboardingBelongBody": {
     "placeholders": {
       "clubName": {
@@ -13,7 +13,7 @@
       }
     }
   },
-  "onboardingKnowTitle": "Every moment.\nOne blue family.",
+  "onboardingKnowTitle": "Every moment.\nOne club family.",
   "onboardingKnowBody": "Get official {appName} news, fixtures, tickets, and membership.",
   "@onboardingKnowBody": {
     "placeholders": {
@@ -22,7 +22,14 @@
       }
     }
   },
-  "onboardingLiveTitle": "Closer to\nGikundiro.",
+  "onboardingLiveTitle": "Closer to\n{appName}.",
+  "@onboardingLiveTitle": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
   "onboardingLiveBody": "Meet the squad and carry your club with you every day.",
   "onboardingSkip": "Skip",
   "onboardingNext": "Next",
@@ -114,7 +121,14 @@
   "searchFanRegistryTitle": "Fan registry",
   "searchFanRegistryDescription": "Browse the club supporter registry.",
   "searchFixturesTitle": "Fixtures",
-  "searchFixturesDescription": "Upcoming and recent Rayon Sports matches.",
+  "searchFixturesDescription": "Upcoming and recent {clubName} matches.",
+  "@searchFixturesDescription": {
+    "placeholders": {
+      "clubName": {
+        "type": "String"
+      }
+    }
+  },
   "searchLiveMatchTitle": "Live match",
   "searchLiveMatchDescription": "Open the current match centre when live coverage exists.",
   "searchStandingsTitle": "League standings",
@@ -382,7 +396,6 @@
   },
   "membershipFanCard": "Fan card",
   "membershipReviewPendingUpper": "Review pending",
-  "membershipBrandWatermark": "GIKUNDIRO",
   "navHome": "Home",
   "navClub": "Club",
   "navFanZone": "Predict",
@@ -869,7 +882,14 @@
     }
   },
   "homeTicketsAction": "Tickets",
-  "homeMembershipAction": "Join Gikundiro",
+  "homeMembershipAction": "Join {appName}",
+  "@homeMembershipAction": {
+    "placeholders": {
+      "appName": {
+        "type": "String"
+      }
+    }
+  },
   "homeFanZoneAction": "Predict",
   "homeShopAction": "Shop",
   "homeFetLabel": "FET",
@@ -1413,12 +1433,10 @@
   "shopCheckoutDeniedMessage": "Your account cannot place this order. Your cart and address are still here. Contact club support before trying again.",
   "shopCheckoutFailureTitle": "Checkout could not start",
   "shopCheckoutFailureMessage": "No order was confirmed. Your cart and address are still here. Review them and try again.",
-  "shopSampleProductName": "Rayon Home Jersey",
   "shopSampleProductDescription": "Official matchday jersey with a premium woven club mark, breathable stadium fabric, and club-blue trim for everyday supporters.",
   "shopOfficialBadge": "Official",
   "shopSampleProductSummary": "Official kit · S M L XL · 47 available",
   "shopProductImageUnavailable": "Product image unavailable",
-  "shopOfficialKit": "Official Rayon kit",
   "shopPremiumMerchandise": "Premium matchday merchandise",
   "ticketQrAccessUnavailableTitle": "E-ticket access unavailable",
   "ticketQrAccessUnavailableMessage": "Entry codes are disabled for this build. Return to your ticket wallet for status updates.",

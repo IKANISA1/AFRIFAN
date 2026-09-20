@@ -65,16 +65,24 @@ class FakeAuthRepository extends AuthRepository {
 }
 
 class _RayonTestConfig extends ClubConfig {
-  const _RayonTestConfig();
+  const _RayonTestConfig({
+    this.id = '24',
+    this.club = 'Rayon Sports FC',
+    this.app = 'Gikundiro',
+  });
+
+  final String id;
+  final String club;
+  final String app;
 
   @override
-  String get clubId => '24';
+  String get clubId => id;
 
   @override
-  String get clubName => 'Rayon Sports FC';
+  String get clubName => club;
 
   @override
-  String get appName => 'Gikundiro';
+  String get appName => app;
 
   @override
   String get country => 'Rwanda';
@@ -365,6 +373,57 @@ void main() {
     expectTapTargetsMeetMinimum(tester);
   });
 
+  for (final club in const [
+    _RayonTestConfig(id: '44', club: "Vital'O FC", app: "Vital'O"),
+    _RayonTestConfig(id: '26', club: 'Nkana FC', app: 'Nkana FC'),
+    _RayonTestConfig(id: '6', club: 'AS Vita Club', app: 'AS Vita Club'),
+  ]) {
+    testWidgets(
+      '${club.appName} keeps its identity and excludes Rayon photos',
+      (tester) async {
+        _setMobileSurface(tester);
+        await tester.pumpWidget(
+          ProviderScope(
+            child: ClubConfigScope(
+              config: club,
+              child: const MaterialApp(
+                home: OnboardingScreen(mediaRightsApproved: true),
+              ),
+            ),
+          ),
+        );
+        await tester.pump();
+        expect(
+          find.text('Follow ${club.clubName} wherever supporters gather.'),
+          findsOneWidget,
+        );
+        expect(find.byType(Image), findsNothing);
+        expect(
+          tester
+              .widget<AfriGovernedImage>(find.byType(AfriGovernedImage))
+              .rightsApproved,
+          isFalse,
+        );
+        await tester.flingFrom(
+          const Offset(350, 250),
+          const Offset(-320, 0),
+          900,
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('Every moment.\nOne club family.'), findsOneWidget);
+        await tester.flingFrom(
+          const Offset(350, 250),
+          const Offset(-320, 0),
+          900,
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('Closer to\n${club.appName}.'), findsOneWidget);
+        expect(find.textContaining('Gikundiro'), findsNothing);
+        expect(find.byType(Image), findsNothing);
+      },
+    );
+  }
+
   testWidgets('onboarding first viewport uses Rayon club identity', (
     tester,
   ) async {
@@ -383,7 +442,7 @@ void main() {
 
     expect(find.text('Your club.\nYour matchday.'), findsOneWidget);
     expect(
-      find.text('Follow Rayon Sports FC wherever the blue family gathers.'),
+      find.text('Follow Rayon Sports FC wherever supporters gather.'),
       findsOneWidget,
     );
     expect(find.text('RS'), findsOneWidget);
@@ -413,7 +472,7 @@ void main() {
 
     await tester.flingFrom(const Offset(350, 250), const Offset(-320, 0), 900);
     await tester.pumpAndSettle();
-    expect(find.text('Every moment.\nOne blue family.'), findsOneWidget);
+    expect(find.text('Every moment.\nOne club family.'), findsOneWidget);
 
     await tester.flingFrom(const Offset(350, 250), const Offset(-320, 0), 900);
     await tester.pumpAndSettle();
@@ -479,11 +538,11 @@ void main() {
         900,
       );
       await tester.pumpAndSettle();
-      expect(find.text('Every moment.\nOne blue family.'), findsOneWidget);
+      expect(find.text('Every moment.\nOne club family.'), findsOneWidget);
 
       tester.view.physicalSize = const Size(852, 393);
       await tester.pumpAndSettle();
-      expect(find.text('Every moment.\nOne blue family.'), findsOneWidget);
+      expect(find.text('Every moment.\nOne club family.'), findsOneWidget);
 
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
@@ -494,7 +553,7 @@ void main() {
       tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
       await tester.pumpAndSettle();
 
-      expect(find.text('Every moment.\nOne blue family.'), findsOneWidget);
+      expect(find.text('Every moment.\nOne club family.'), findsOneWidget);
       expect(find.byType(PageView), findsOneWidget);
       expect(tester.takeException(), isNull);
     },

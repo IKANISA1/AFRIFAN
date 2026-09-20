@@ -17,6 +17,7 @@ export async function generateMetadata({
   const copy = getSiteCopy(club.defaultLanguage);
 
   return buildPageMetadata({
+    club,
     title: product?.name ?? copy.pages.shop.metaTitle(club),
     description: product?.subtitle ?? copy.pages.shop.metaDescription(club),
     path: `/shop/${productId}`,

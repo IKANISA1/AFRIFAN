@@ -56,7 +56,7 @@ describe("Admin authentication contrast contract", () => {
       shell.indexOf("function AdminUnauthorizedCard"),
     );
     const theme = readFileSync(
-      join(process.cwd(), "src/ui-kit/theme.css"),
+      join(process.cwd(), "src/ui-kit/admin.css"),
       "utf8",
     );
 

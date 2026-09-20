@@ -79,6 +79,8 @@ jobs:
         run: |
           set -euo pipefail
           docker pull public.ecr.aws/supabase/postgres:17.6.1.158
+          docker pull public.ecr.aws/supabase/gotrue:v2.195.0
+          docker pull public.ecr.aws/supabase/storage-api:v1.68.10
           python3 tools/scripts/test_predict_database.py
 
   web:

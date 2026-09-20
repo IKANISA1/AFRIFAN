@@ -1,12 +1,12 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import {
-  corsPreflightResponse,
   corsHeaders,
-  jsonOk,
+  corsPreflightResponse,
   jsonError,
+  jsonOk,
 } from "../_shared/response.ts";
-import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
+import { isErrorResponse, validateRequest } from "../_shared/validation.ts";
 import {
   recordEdgeFunctionFailure,
   recordOperationalHealthEvent,
@@ -55,6 +55,8 @@ function deriveLedgerScope(
     case "group_contributions":
       return "group";
     case "partner_payment_routes":
+    case "tickets":
+    case "shop_orders":
     case "rs_tickets":
     case "rs_shop_orders":
     case "rs_initiative_contributions":
@@ -127,14 +129,81 @@ export async function handleRequest(request: Request) {
         adminClient.from("momo_ledger_entries").select("id")
           .eq("parsed_sms_id", previousParse.data.id)
           .eq("ledger_status", "posted").maybeSingle(),
-        adminClient.from("momo_reconciliations").select("id")
+        adminClient.from("momo_reconciliations").select("id,metadata")
           .eq("parsed_sms_id", previousParse.data.id)
           .eq("match_status", "matched").maybeSingle(),
       ]);
       if (ledger.error) throw ledger.error;
       if (reconciliation.error) throw reconciliation.error;
       if (ledger.data || reconciliation.data) {
-        return jsonError("Reconciled payment evidence cannot be reparsed.", 409);
+        const intentId = reconciliation.data?.metadata?.intent_id;
+        const commerceRequest = reconciliation.data?.metadata?.commerce_request;
+        const commerceRecovery =
+          reconciliation.data?.metadata?.commerce_persisted === true &&
+          commerceRequest && typeof commerceRequest === "object" &&
+          !Array.isArray(commerceRequest) &&
+          commerceRequest.p_parsed_sms_id === previousParse.data.id &&
+          commerceRequest.p_user_id === userId;
+        if (
+          !body.forceReparse && ledger.data &&
+          (commerceRecovery ||
+            (reconciliation.data?.metadata?.allocation_persisted === true &&
+              typeof intentId === "string"))
+        ) {
+          // Recover a posting committed before its HTTP response or final
+          // raw-status write was lost, without AI or another financial write.
+          const recovery = commerceRecovery
+            ? await adminClient.rpc(
+              "confirm_club_commerce_payment",
+              commerceRequest,
+            )
+            : await adminClient.rpc("allocate_momo_payment_intent", {
+              p_parsed_sms_id: previousParse.data.id,
+              p_intent_id: intentId,
+            });
+          if (recovery.error) throw recovery.error;
+          if (
+            recovery.data?.parsed_sms_id !== previousParse.data.id ||
+            (commerceRecovery
+              ? recovery.data?.status !== "confirmed" ||
+                recovery.data.newly_confirmed !== false ||
+                JSON.stringify(recovery.data.record_ids) !==
+                  JSON.stringify(commerceRequest.p_record_ids)
+              : recovery.data?.status !== "allocated" ||
+                recovery.data.newly_allocated !== false ||
+                recovery.data.intent_id !== intentId)
+          ) {
+            throw new Error(
+              "Committed payment allocation could not be verified.",
+            );
+          }
+          const recovered = await adminClient.from("momo_sms_raw")
+            .update({
+              parse_status: "parsed",
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", rawSmsId).eq("user_id", userId)
+            .eq("updated_at", rawSmsResult.data.updated_at)
+            .select("id").maybeSingle();
+          if (recovered.error) throw recovered.error;
+          if (!recovered.data) {
+            return jsonError(
+              "SMS state changed during recovery. Refresh before retrying.",
+              409,
+            );
+          }
+          return jsonOk({
+            success: true,
+            skipped: true,
+            reason: "already_reconciled",
+            rawSmsId,
+            parsedSmsId: previousParse.data.id,
+          });
+        }
+        return jsonError(
+          "Reconciled payment evidence cannot be reparsed.",
+          409,
+        );
       }
     }
 
@@ -144,7 +213,10 @@ export async function handleRequest(request: Request) {
     // force request cannot overtake a running parse or a just-finished parse.
     const claim = await adminClient
       .from("momo_sms_raw")
-      .update({ parse_status: "processing", updated_at: new Date().toISOString() })
+      .update({
+        parse_status: "processing",
+        updated_at: new Date().toISOString(),
+      })
       .eq("id", rawSmsId)
       .eq("user_id", userId)
       .eq("parse_status", rawSmsResult.data.parse_status)
@@ -154,7 +226,10 @@ export async function handleRequest(request: Request) {
       .maybeSingle();
     if (claim.error) throw claim.error;
     if (!claim.data) {
-      return jsonError("SMS parsing is in progress or its state changed. Refresh before retrying.", 409);
+      return jsonError(
+        "SMS parsing is in progress or its state changed. Refresh before retrying.",
+        409,
+      );
     }
     const runProviderAttempt = async (provider: AiProvider) => {
       const model = getModel(provider);
@@ -325,7 +400,9 @@ export async function handleRequest(request: Request) {
       if (
         parsed.amount != null &&
         parsed.amount > 0 &&
-        autoReconciliation.matchStatus === "matched"
+        autoReconciliation.matchStatus === "matched" &&
+        autoReconciliation.metadata.allocation_persisted !== true &&
+        autoReconciliation.metadata.commerce_persisted !== true
       ) {
         const payeeGroupId = asString(autoReconciliation.metadata.group_id);
         const payeePartnerId = asString(autoReconciliation.metadata.partner_id);
@@ -375,51 +452,64 @@ export async function handleRequest(request: Request) {
         }
       }
 
-      const reconciliationUpsert = await adminClient
-        .from("momo_reconciliations")
-        .upsert({
-          parsed_sms_id: parsedSmsId,
-          user_id: rawSms.user_id,
-          country_code: rawSms.country_code ?? null,
-          target_table: autoReconciliation.targetTable,
-          target_record_id: autoReconciliation.targetRecordId,
-          match_type: autoReconciliation.matchType,
-          match_status: autoReconciliation.matchStatus,
-          confidence: parsed.confidence,
-          notes: autoReconciliation.notes ?? parsed.notes,
-          metadata: {
-            parser_provider: provider,
-            parser_model: aiResult.model,
-            source_raw_sms_id: rawSms.id,
-            matched_reference: autoReconciliation.matchedReference,
-            ...autoReconciliation.metadata,
-          },
-          reconciled_at: autoReconciliation.matchStatus === "matched"
-            ? timestamp
-            : null,
-          updated_at: timestamp,
-        }, { onConflict: "parsed_sms_id" });
+      if (
+        autoReconciliation.metadata.allocation_persisted !== true &&
+        autoReconciliation.metadata.commerce_persisted !== true
+      ) {
+        const reconciliationUpsert = await adminClient
+          .from("momo_reconciliations")
+          .upsert({
+            parsed_sms_id: parsedSmsId,
+            user_id: rawSms.user_id,
+            country_code: rawSms.country_code ?? null,
+            target_table: autoReconciliation.targetTable,
+            target_record_id: autoReconciliation.targetRecordId,
+            match_type: autoReconciliation.matchType,
+            match_status: autoReconciliation.matchStatus,
+            confidence: parsed.confidence,
+            notes: autoReconciliation.notes ?? parsed.notes,
+            metadata: {
+              parser_provider: provider,
+              parser_model: aiResult.model,
+              source_raw_sms_id: rawSms.id,
+              matched_reference: autoReconciliation.matchedReference,
+              ...autoReconciliation.metadata,
+            },
+            reconciled_at: autoReconciliation.matchStatus === "matched"
+              ? timestamp
+              : null,
+            updated_at: timestamp,
+          }, { onConflict: "parsed_sms_id" });
 
-      if (reconciliationUpsert.error) {
-        throw reconciliationUpsert.error;
+        if (reconciliationUpsert.error) {
+          throw reconciliationUpsert.error;
+        }
       }
 
-      await adminClient
+      const completedAttempt = await adminClient
         .from("momo_parse_attempts")
         .update({
           status: "success",
           request_payload: aiResult.requestPayload,
           response_payload: aiResult.responseBody,
         })
-        .eq("id", selectedAttemptId);
+        .eq("id", selectedAttemptId)
+        .eq("user_id", userId)
+        .select("id")
+        .single();
+      if (completedAttempt.error) throw completedAttempt.error;
 
-      await adminClient
+      const completedRaw = await adminClient
         .from("momo_sms_raw")
         .update({
           parse_status: "parsed",
           updated_at: timestamp,
         })
-        .eq("id", rawSmsId);
+        .eq("id", rawSmsId)
+        .eq("user_id", userId)
+        .select("id")
+        .single();
+      if (completedRaw.error) throw completedRaw.error;
 
       await recordOperationalHealthEvent(adminClient, {
         service: "momo_parsing",
@@ -562,11 +652,17 @@ export async function handleRequest(request: Request) {
 }
 
 if (import.meta.main) {
-  Deno.serve((req: Request) => handleRequest(req).then(
-    (res) => new Response(res.body, {
-      status: res.status,
-      statusText: res.statusText,
-      headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() },
-    })
-  ));
+  Deno.serve((req: Request) =>
+    handleRequest(req).then(
+      (res) =>
+        new Response(res.body, {
+          status: res.status,
+          statusText: res.statusText,
+          headers: {
+            ...Object.fromEntries(res.headers.entries()),
+            ...corsHeaders(),
+          },
+        }),
+    )
+  );
 }

@@ -32,6 +32,37 @@ export const fallbackClubProfile: ClubProfile = {
   },
 };
 
+// Bootstrap identity only, sourced from the four ClubConfig implementations
+// and seed-clubs.sql. Fixtures, prices, content and account state stay live.
+export const supportedClubProfiles: readonly ClubProfile[] = [
+  fallbackClubProfile,
+  ...[
+    { id: 44, clubName: "Vital'O FC", clubSlug: "vitalo_bi", shortName: "Vital'O",
+      countryCode: "BI", currencyCode: "BIF", currencySymbol: "FBu",
+      primaryColorHex: "#7B2D8E", secondaryColorHex: "#D1D5DB", accentColorHex: "#FFD700" },
+    { id: 26, clubName: "Nkana FC", clubSlug: "nkana_zm", shortName: "Nkana FC",
+      countryCode: "ZM", currencyCode: "ZMW", currencySymbol: "ZK",
+      primaryColorHex: "#CC0000", secondaryColorHex: "#D1D5DB", accentColorHex: "#000000" },
+    { id: 6, clubName: "AS Vita Club", clubSlug: "as_vita_cd", shortName: "AS Vita Club",
+      countryCode: "CD", currencyCode: "CDF", currencySymbol: "FC",
+      primaryColorHex: "#006400", secondaryColorHex: "#000000", accentColorHex: "#FFD700" },
+  ].map((identity) => ({
+    ...identity, nickname: identity.shortName, league: "", region: "",
+    defaultLanguage: "en", supportedLanguages: ["en"],
+    officialContact: "Official club channels and matchday help desk",
+    facebookUrl: null, xUrl: null, instagramUrl: null, tiktokUrl: null,
+    officialLogoUrl: "/brand-mark.svg", featureFlags: {},
+  })),
+];
+
+export function getSupportedClubProfile(value: string | number) {
+  const normalized = String(value).trim().toLowerCase().replace(/-/g, "_");
+  return supportedClubProfiles.find((club) =>
+    String(club.id) === normalized || club.clubSlug === normalized ||
+    club.clubSlug.replace(/_(rw|bi|zm|cd)$/, "") === normalized,
+  ) ?? null;
+}
+
 export const adminNavigation = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/access", label: "Access" },

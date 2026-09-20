@@ -30,6 +30,7 @@ import {
 export async function findGroupRouteMatches(
   adminClient: ReturnType<typeof createAdminClient>,
   parsed: ParsedSms,
+  rawSms: RawSmsRecord,
 ): Promise<GroupRouteRecord[]> {
   const digits = payeeRouteDigits(parsed);
   if (!digits) {
@@ -59,8 +60,11 @@ export async function findGroupRouteMatches(
     return rows
       .map((row) => asGroupRouteRecord(row as Record<string, unknown>))
       .filter((group) =>
-        digitsMatch(normalizeDigits(group.receiving_momo_code), digits) ||
-        digitsMatch(normalizeDigits(group.momo_number), digits)
+        group.is_active && !group.is_closed &&
+        group.currency === parsed.currency &&
+        group.country === rawSms.country_code &&
+        (digitsMatch(normalizeDigits(group.receiving_momo_code), digits) ||
+          digitsMatch(normalizeDigits(group.momo_number), digits))
       );
   }
 
@@ -70,29 +74,54 @@ export async function findGroupRouteMatches(
 export async function confirmGroupContribution(
   adminClient: ReturnType<typeof createAdminClient>,
   contributionId: string,
-  matchedReference?: string | null,
+  matchedReference: string,
+  binding: { userId: string; groupId: string; amount: number },
 ): Promise<void> {
+  if (
+    !matchedReference.trim() || !Number.isSafeInteger(binding.amount) ||
+    binding.amount <= 0
+  ) {
+    throw new Error("Group contribution payment binding is invalid.");
+  }
   const payload: Record<string, unknown> = {
     status: "confirmed",
+    momo_reference: matchedReference,
   };
-  if (matchedReference && matchedReference.trim().length > 0) {
-    payload.momo_reference = matchedReference;
-  }
 
   const result = await adminClient
     .from("group_contributions")
     .update(payload)
     .eq("id", contributionId)
-    .eq("status", "pending");
+    .eq("user_id", binding.userId)
+    .eq("group_id", binding.groupId)
+    .eq("amount", binding.amount)
+    .eq("status", "pending")
+    .select("id")
+    .maybeSingle();
 
-  if (result.error) {
-    throw result.error;
-  }
+  if (result.error) throw result.error;
+  if (result.data?.id === contributionId) return;
+
+  // A concurrent confirmation can be an identical retry, a cancellation or
+  // another payment. A successful HTTP response alone does not distinguish it.
+  const current = await adminClient.from("group_contributions")
+    .select("id,user_id,group_id,amount,status,momo_reference")
+    .eq("id", contributionId).maybeSingle();
+  if (current.error) throw current.error;
+  if (
+    current.data?.status === "confirmed" &&
+    current.data.momo_reference === matchedReference &&
+    current.data.user_id === binding.userId &&
+    current.data.group_id === binding.groupId &&
+    current.data.amount === binding.amount
+  ) return;
+  throw new Error("Group contribution changed during confirmation.");
 }
 
 export async function findPartnerRouteMatches(
   adminClient: ReturnType<typeof createAdminClient>,
   parsed: ParsedSms,
+  rawSms: RawSmsRecord,
 ): Promise<PartnerRouteRecord[]> {
   const digits = payeeRouteDigits(parsed);
   if (!digits) {
@@ -102,7 +131,7 @@ export async function findPartnerRouteMatches(
   const result = await adminClient
     .from("partner_payment_routes")
     .select(
-      "id, partner_id, recipient_code, reconciliation_label, status, partners(name, slug)",
+      "id, partner_id, recipient_code, reconciliation_label, status, provider, country, partners(name, slug)",
     )
     .eq("status", "active");
 
@@ -110,10 +139,20 @@ export async function findPartnerRouteMatches(
     throw result.error;
   }
 
+  const countryResult = await adminClient.from("countries")
+    .select("currency").eq("id", rawSms.country_code ?? "").maybeSingle();
+  if (countryResult.error) throw countryResult.error;
+  if (
+    !countryResult.data?.currency ||
+    countryResult.data.currency !== parsed.currency
+  ) return [];
+  const provider = normalizeProviderId(rawSms.provider);
   const rows = Array.isArray(result.data) ? result.data : [];
   return rows
     .map((row) => asPartnerRouteRecord(row as Record<string, unknown>))
     .filter((route) =>
+      provider !== null && normalizeProviderId(route.provider) === provider &&
+      route.country === rawSms.country_code &&
       digitsMatch(normalizeDigits(route.recipient_code), digits)
     );
 }
@@ -180,9 +219,9 @@ async function resolveExistingGroupContributionByPayeeRoute(
     .eq("group_id", group.id)
     .eq("user_id", rawSms.user_id)
     .eq("amount", amount)
-    .in("status", ["pending", "confirmed", "completed"])
+    .eq("status", "pending")
     .order("created_at", { ascending: false })
-    .limit(1)
+    .limit(2)
     .maybeSingle();
 
   if (result.error) {
@@ -222,6 +261,7 @@ export async function ensureGroupContributionByPayeeRoute(
       adminClient,
       existing.id,
       matchedReference,
+      { userId: rawSms.user_id, groupId: group.id, amount: parsed.amount! },
     );
 
     return {
@@ -254,6 +294,7 @@ export async function ensureGroupContributionByPayeeRoute(
     adminClient,
     insertedId,
     matchedReference,
+    { userId: rawSms.user_id, groupId: group.id, amount: parsed.amount! },
   );
 
   return {
@@ -300,6 +341,12 @@ export async function findGroupContributionCandidate(
 
   for (const value of Array.isArray(result.data) ? result.data : []) {
     const row = value as Record<string, unknown>;
+    // An equal amount cannot reuse a previously confirmed, different payment.
+    // Replays must carry the exact provider reference already persisted.
+    if (
+      row.status !== "pending" &&
+      row.momo_reference !== sourceReference(rawSms, parsed)
+    ) continue;
     const groupId = asString(row.group_id);
     let routeDigits: string | null = null;
     if (groupId) {
@@ -324,10 +371,18 @@ export async function findGroupContributionCandidate(
             continue;
           }
 
+          const group = asGroupRouteRecord(groupResult.data ?? {});
+          if (
+            !group.is_active || group.is_closed ||
+            group.currency !== parsed.currency ||
+            group.country !== rawSms.country_code
+          ) {
+            continue;
+          }
           routeDigits =
             normalizeDigits(groupResult.data?.momo_recipient_code) ??
-            normalizeDigits(groupResult.data?.receiving_momo_code) ??
-            normalizeDigits(groupResult.data?.momo_number);
+              normalizeDigits(groupResult.data?.receiving_momo_code) ??
+              normalizeDigits(groupResult.data?.momo_number);
           if (routeDigits) {
             break;
           }
@@ -337,6 +392,10 @@ export async function findGroupContributionCandidate(
       }
       routeDigits = groupRouteDigits.get(groupId) ?? null;
     }
+
+    // Amount and recency rank already-bound evidence; they cannot replace
+    // a complete receiving route, currency, country and active group.
+    if (!digitsMatch(routeDigits, payeeDigits)) continue;
 
     const candidate: GroupContributionCandidateRecord = {
       id: asString(row.id) ?? "",
@@ -375,8 +434,12 @@ export async function reconcileByPayeeRoute(
     return null;
   }
 
-  const groupMatches = await findGroupRouteMatches(adminClient, parsed);
-  const partnerMatches = await findPartnerRouteMatches(adminClient, parsed);
+  const groupMatches = await findGroupRouteMatches(adminClient, parsed, rawSms);
+  const partnerMatches = await findPartnerRouteMatches(
+    adminClient,
+    parsed,
+    rawSms,
+  );
 
   if (groupMatches.length + partnerMatches.length == 0) {
     return null;

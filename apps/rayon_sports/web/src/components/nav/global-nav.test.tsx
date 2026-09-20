@@ -30,6 +30,10 @@ const club: ClubProfile = {
 
 describe("GlobalNav", () => {
   beforeEach(() => {
+    vi.stubGlobal("ResizeObserver", class {
+      observe() {}
+      disconnect() {}
+    });
     Object.defineProperty(window, "matchMedia", {
       configurable: true,
       value: vi.fn().mockImplementation(() => ({
@@ -39,6 +43,8 @@ describe("GlobalNav", () => {
       })),
     });
   });
+
+  afterEach(() => vi.unstubAllGlobals());
 
   it("keeps primary routes available and opens the mobile drawer when runtime configuration is unavailable", () => {
     render(
@@ -50,7 +56,7 @@ describe("GlobalNav", () => {
       />,
     );
 
-    expect(screen.getAllByRole("link", { name: "Fixtures" }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("link", { name: "Fixtures", hidden: true }).length).toBeGreaterThan(0);
 
     const menu = screen.getByRole("button", { name: "Open menu" });
     fireEvent.click(menu);

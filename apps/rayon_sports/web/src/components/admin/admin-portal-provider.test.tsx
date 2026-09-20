@@ -64,7 +64,7 @@ describe("AdminPortalProvider", () => {
       },
     };
     vi.mocked(getBrowserSupabase).mockReturnValue(
-      client as ReturnType<typeof getBrowserSupabase>,
+      client as unknown as ReturnType<typeof getBrowserSupabase>,
     );
 
     render(
@@ -124,7 +124,7 @@ describe("AdminPortalProvider", () => {
       },
     };
     vi.mocked(getBrowserSupabase).mockReturnValue(
-      client as ReturnType<typeof getBrowserSupabase>,
+      client as unknown as ReturnType<typeof getBrowserSupabase>,
     );
 
     render(
@@ -160,7 +160,7 @@ describe("AdminPortalProvider", () => {
       },
     };
     vi.mocked(getBrowserSupabase).mockReturnValue(
-      client as ReturnType<typeof getBrowserSupabase>,
+      client as unknown as ReturnType<typeof getBrowserSupabase>,
     );
 
     render(

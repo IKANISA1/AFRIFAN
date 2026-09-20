@@ -89,6 +89,50 @@ void main() {
       verify(() => tableChannel.subscribe()).called(1);
     });
 
+    test(
+      'schema-qualified subscription reports every rejoin and ignores disposed callbacks',
+      () async {
+        void Function(RealtimeSubscribeStatus, Object?)? statusCallback;
+        when(
+          () => client.channel('24:football.fixtures:fixture-9'),
+        ).thenReturn(tableChannel);
+        when(() => tableChannel.subscribe(any())).thenAnswer((invocation) {
+          statusCallback =
+              invocation.positionalArguments.first
+                  as void Function(RealtimeSubscribeStatus, Object?);
+          return tableChannel;
+        });
+        var joins = 0;
+        service.onTableChanges(
+          schema: 'football',
+          table: 'fixtures',
+          filterColumn: 'id',
+          filterValue: 'fixture-9',
+          callback: (_) {},
+          onSubscribed: () => joins++,
+        );
+        verify(
+          () => tableChannel.onPostgresChanges(
+            event: PostgresChangeEvent.all,
+            schema: 'football',
+            table: 'fixtures',
+            filter: any(named: 'filter'),
+            callback: any(named: 'callback'),
+          ),
+        ).called(1);
+        statusCallback!(RealtimeSubscribeStatus.subscribed, null);
+        statusCallback!(
+          RealtimeSubscribeStatus.channelError,
+          StateError('offline'),
+        );
+        statusCallback!(RealtimeSubscribeStatus.subscribed, null);
+        expect(joins, 2);
+        await service.dispose();
+        statusCallback!(RealtimeSubscribeStatus.subscribed, null);
+        expect(joins, 2);
+      },
+    );
+
     test('unsubscribe removes a channel from the registry', () async {
       final channel = service.subscribe(
         feature: 'live',

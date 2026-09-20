@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="as_vita"
+        android:label="${appLabel}"
         android:name="${applicationName}">
         <activity
             android:name=".MainActivity"

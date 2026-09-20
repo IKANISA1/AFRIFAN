@@ -181,7 +181,7 @@ void main() {
           900,
         );
         await tester.pumpAndSettle();
-        expect(find.text('Every moment.\nOne blue family.'), findsOneWidget);
+        expect(find.text('Every moment.\nOne club family.'), findsOneWidget);
       },
     );
   });

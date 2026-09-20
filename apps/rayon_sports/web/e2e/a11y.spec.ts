@@ -1,6 +1,47 @@
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
+test("empty-schedule detail spacing stays stable across header hydration", async ({ page }, testInfo) => {
+  for (const width of [390, 1100, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    let releaseChunks!: () => void;
+    const chunksReady = new Promise<void>((resolve) => { releaseChunks = resolve; });
+    await page.route(/\/_next\/static\/chunks\/.*\.js/, async (route) => {
+      await chunksReady; await route.continue();
+    });
+    let before = 0;
+    try {
+      await page.goto("/news", { waitUntil: "commit" });
+      await expect(page.locator('.club-site[data-match-ribbon="absent"]')).toBeVisible();
+      const shell = page.locator(".news-surface > .page-shell");
+      await expect(shell).toBeVisible();
+      // Both CSS values can change while streamed stylesheets settle. Compare
+      // them in the same layout snapshot before retaining the SSR baseline.
+      // Application chunks remain withheld, so client effects cannot mask it.
+      await expect.poll(() => page.evaluate(() => {
+        const padding = parseFloat(getComputedStyle(document.querySelector(".news-surface > .page-shell")!).paddingTop);
+        const height = document.querySelector("[data-site-header]")!.getBoundingClientRect().height;
+        return padding - height;
+      })).toBe(32);
+      const measured = await page.evaluate(() => ({
+        padding: parseFloat(getComputedStyle(document.querySelector(".news-surface > .page-shell")!).paddingTop),
+        height: document.querySelector("[data-site-header]")!.getBoundingClientRect().height,
+      }));
+      before = measured.padding;
+      const header = measured.height;
+      const geometry = await page.locator("[data-site-header]").evaluate((element) => [element, ...element.children].map((item) => ({
+        tag: item.tagName, class: item.className, height: item.getBoundingClientRect().height,
+        position: getComputedStyle(item).position, lineHeight: getComputedStyle(item).lineHeight,
+      })));
+      await testInfo.attach(`header-before-${width}.json`, { contentType: "application/json", body: JSON.stringify(geometry) });
+      if (before !== header + 32) console.log(JSON.stringify({ width, before, header, geometry }));
+      expect(before).toBe(header + 32);
+    } finally { releaseChunks(); await page.unrouteAll({ behavior: "wait" }); }
+    await expect(page.getByRole("button", { name: "Open menu" })).toBeEnabled();
+    expect(await page.locator(".news-surface > .page-shell").evaluate((element) => parseFloat(getComputedStyle(element).paddingTop))).toBe(before);
+  }
+});
+
 test("compact menu waits for client initialization before accepting input", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 900 });
   await page.emulateMedia({ reducedMotion: "reduce" });
@@ -184,6 +225,7 @@ test("public home page has no critical a11y violations", async ({
 }) => {
   await page.goto("/", { waitUntil: "domcontentloaded" });
 
+  await expect(page.locator(".circles-content")).toHaveAttribute("aria-busy", "false");
   const builder = new AxeBuilder({ page }).withTags([
     "wcag2a",
     "wcag2aa",
@@ -210,6 +252,20 @@ test("public home page has no critical a11y violations", async ({
   }
 
   expect(critical).toHaveLength(0);
+});
+
+test("home empty state retains readable contrast after content settles", async ({ page }) => {
+  await page.route("**/api/public-content?resource=home", (route) => route.fulfill({
+    status: 200,
+    contentType: "application/json",
+    body: JSON.stringify({ code: "PUBLIC_HOME_EMPTY", matches: [], news: [], products: [], memberships: [] }),
+  }));
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await expect(page.locator(".circles-content")).toHaveAttribute("aria-busy", "false");
+  await expect(page.locator(".circles-empty h2")).toHaveText("No public highlights");
+  const result = await new AxeBuilder({ page }).include(".circles-empty").withRules(["color-contrast"]).analyze();
+  expect(result.violations).toEqual([]);
+  expect(result.incomplete).toEqual([]);
 });
 
 /* ────────────────────────────────────────────────────────── */

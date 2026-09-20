@@ -58,7 +58,7 @@ test("public home preserves club identity and primary journeys", async ({ page }
   await expect(home.getByRole("heading", { level: 1 })).toBeVisible();
   const tickets = home.getByRole("link", { name: "Get tickets", exact: true });
   await expect(tickets).toHaveAttribute("href", "/tickets");
-  await expect(home.getByRole("link", { name: "Join Gikundiro", exact: true }))
+  await expect(home.getByRole("link", { name: "Join Rayon Sports FC", exact: true }))
     .toHaveAttribute("href", "/membership");
   await tickets.click();
   await expect(page).toHaveURL(/\/tickets(?:\?.*)?$/);
@@ -68,7 +68,7 @@ test("supporters handoff page renders on tablet", async ({ page }) => {
   await page.goto("/supporters", { waitUntil: "domcontentloaded" });
   await expect(
     page.getByRole("heading", {
-      name: /rayon sports rewards and public ranking/i,
+      name: /rayon sports fc rewards and public ranking/i,
     }),
   ).toBeVisible();
   await expect(
@@ -86,11 +86,6 @@ test("admin route renders the phone OTP sign-in surface", async ({
   page,
   browserName,
 }) => {
-  test.skip(
-    browserName === "webkit",
-    "Playwright WebKit can remain on the admin loading shell during auth bootstrap.",
-  );
-
   await page.goto("/admin", {
     waitUntil: browserName === "webkit" ? "networkidle" : "domcontentloaded",
   });
@@ -147,13 +142,7 @@ test("pwa manifest and offline route are reachable", async ({
 
 test("admin surfaces an offline indicator when the browser reports offline", async ({
   page,
-  browserName,
 }) => {
-  test.skip(
-    browserName === "webkit",
-    "Playwright WebKit is unreliable for admin service worker control checks.",
-  );
-
   // First visit the admin shell so the page has a mounted offline listener.
   await page.goto("/admin", { waitUntil: "domcontentloaded" });
   await expect(page.getByText(/secure sign in/i)).toBeVisible();

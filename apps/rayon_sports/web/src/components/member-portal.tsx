@@ -17,8 +17,14 @@ import {
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
+import {
+  boundedMemberRequest,
+  isMemberSignOutPending,
+  memberSignOutStorageKey,
+  setMemberSignOutPending,
+} from "@/lib/member-session";
 
-type AuthStep = "loading" | "unavailable" | "phone" | "otp" | "join" | "member";
+type AuthStep = "loading" | "unavailable" | "signout" | "phone" | "otp" | "join" | "member";
 
 type MemberRecord = {
   club_id: number;
@@ -58,6 +64,9 @@ type ContributionIntent = {
 
 type MemberPortalProps = {
   clubShortName: string;
+  clubId?: number;
+  countryCode?: string;
+  currencyCode?: string;
 };
 
 const amountPresets = [1_000, 5_000, 10_000, 25_000];
@@ -68,6 +77,17 @@ export function normalizeRwandaPhone(value: string) {
   if (/^07\d{8}$/.test(digits)) return `+250${digits.slice(1)}`;
   if (/^7\d{8}$/.test(digits)) return `+250${digits}`;
   return null;
+}
+
+export function normalizeMemberPhone(value: string, countryCode: string) {
+  if (countryCode === "RW") {
+    const national = normalizeRwandaPhone(value);
+    if (national) return national;
+  }
+  // International access also supports supporters living outside the club's
+  // country. Auth verifies ownership; the phone prefix never selects a club.
+  const normalized = value.trim().replace(/[ ()-]/g, "").replace(/^00/, "+");
+  return /^\+[1-9]\d{7,14}$/.test(normalized) ? normalized : null;
 }
 
 export function buildUssdTelHref(ussdCode: string) {
@@ -119,10 +139,10 @@ export function parseContributionHistory(value: unknown): ContributionHistory {
   };
 }
 
-function formatRwf(value: number | bigint) {
-  return new Intl.NumberFormat("en-RW", {
+function formatMemberAmount(value: number | bigint, currencyCode: string) {
+  return new Intl.NumberFormat("en", {
     style: "currency",
-    currency: "RWF",
+    currency: currencyCode,
     maximumFractionDigits: 0,
   }).format(value);
 }
@@ -131,6 +151,9 @@ function cleanError(message: string | undefined) {
   const normalized = message?.toLowerCase() ?? "";
   if (normalized.includes("rate") || normalized.includes("seconds")) {
     return "Please wait before requesting another code.";
+  }
+  if (normalized.includes("member_club_mismatch")) {
+    return "This account belongs to another club. Sign out and use an account for this club.";
   }
   if (normalized.includes("momo route")) {
     return "The official club MoMo route is not available yet. No payment intent was created.";
@@ -144,9 +167,10 @@ function cleanError(message: string | undefined) {
   return "We could not complete that request. Please try again.";
 }
 
-export function MemberPortal({ clubShortName }: MemberPortalProps) {
+export function MemberPortal({ clubShortName, clubId = 24, countryCode = "RW", currencyCode = "RWF" }: MemberPortalProps) {
+  const initialPhone = countryCode === "RW" ? "+250 " : "";
   const [step, setStep] = useState<AuthStep>("loading");
-  const [phone, setPhone] = useState("+250 ");
+  const [phone, setPhone] = useState(initialPhone);
   const [verifiedPhone, setVerifiedPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [member, setMember] = useState<MemberRecord | null>(null);
@@ -187,6 +211,11 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
   }, []);
 
   const loadMemberArea = useCallback(async (activateMembership = false) => {
+    if (isMemberSignOutPending()) {
+      setStep("signout");
+      setMessage("Sign-out is not confirmed. Retry when connected to finish signing out.");
+      return;
+    }
     const version = ++loadVersion.current;
     historyRequest.current = false;
     setLoadingHistory(false);
@@ -201,8 +230,10 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
     setBusy(true);
     setMessage(null);
     try {
-      const { data: userResult, error: userError } = await supabase.auth.getUser();
+      const { data: userResult, error: userError } = await boundedMemberRequest(supabase.auth.getUser());
       if (!isCurrent()) return;
+      if (userError && userError.name !== "AuthSessionMissingError" &&
+          userError.status !== 401 && userError.status !== 403) throw userError;
       if (userError || !userResult.user) {
         identity.current = null;
         clearPrivateState();
@@ -212,19 +243,19 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
       identity.current = userResult.user.id;
 
       if (activateMembership) {
-        const activation = await supabase.rpc("activate_free_fan_membership");
+        const activation = await boundedMemberRequest(supabase.rpc("activate_free_fan_membership_for_club", { p_expected_club_id: clubId }));
         if (!isCurrent()) return;
         if (activation.error) throw activation.error;
       }
 
-      const membershipResult = await supabase
+      const membershipResult = await boundedMemberRequest(supabase
         .from("fan_memberships")
         .select("club_id,member_code,membership_number,tier,status,joined_at,updated_at")
         .eq("user_id", userResult.user.id)
         .eq("status", "active")
         .order("updated_at", { ascending: false })
         .limit(1)
-        .maybeSingle();
+        .maybeSingle());
       if (!isCurrent()) return;
       if (membershipResult.error) throw membershipResult.error;
       if (!membershipResult.data) {
@@ -237,7 +268,14 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
         throw new Error("Membership club is unavailable.");
       }
 
-      const [initiativeResult, contributionResult] = await Promise.all([
+      if (confirmedMember.club_id !== clubId) {
+        clearPrivateState();
+        setStep("unavailable");
+        setMessage("This membership belongs to another club. Sign out and use an account for this club.");
+        return;
+      }
+
+      const [initiativeResult, contributionResult] = await boundedMemberRequest(Promise.all([
         supabase
           .from("initiatives")
           .select("id,title,description,raised_amount,goal_amount")
@@ -247,7 +285,7 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
           .order("created_at", { ascending: false })
           .limit(6),
         supabase.rpc("member_contribution_history"),
-      ]);
+      ]));
       if (!isCurrent()) return;
       if (initiativeResult.error) throw initiativeResult.error;
       if (contributionResult.error) throw contributionResult.error;
@@ -265,20 +303,23 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
           : confirmedInitiatives[0]?.id ?? "",
       );
       setStep("member");
-    } catch {
+    } catch (error) {
       if (!isCurrent()) return;
-      setMessage("Member information could not be refreshed. Previously confirmed information is unchanged. Please retry.");
+      const code = error && typeof error === "object" && "message" in error ? String(error.message) : "";
+      setMessage(code.includes("MEMBER_CLUB_MISMATCH") ? cleanError(code) : "Member information could not be refreshed. Previously confirmed information is unchanged. Please retry.");
       setStep((current) => current === "member" ? current : "unavailable");
     } finally {
       if (isCurrent()) setBusy(false);
     }
-  }, [clearPrivateState]);
+  }, [clearPrivateState, clubId]);
 
   useEffect(() => {
     const supabase = getBrowserSupabase();
     let reload: ReturnType<typeof setTimeout> | undefined;
     const subscription = supabase?.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
       if (event === "INITIAL_SESSION") return;
+      if (event === "SIGNED_OUT") setMemberSignOutPending(false);
+      else if (isMemberSignOutPending()) return;
       const nextIdentity = session?.user.id ?? null;
       if (event !== "SIGNED_OUT" && nextIdentity === identity.current) return;
       identity.current = nextIdentity;
@@ -288,8 +329,16 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
       // Auth callbacks run under the client's session lock. Load after it releases.
       if (nextIdentity) reload = setTimeout(() => void loadMemberArea(false), 0);
     }).data.subscription;
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== memberSignOutStorageKey) return;
+      identity.current = null;
+      clearPrivateState();
+      setStep(isMemberSignOutPending() ? "signout" : "phone");
+    };
+    window.addEventListener("storage", onStorage);
     void loadMemberArea(false);
     return () => {
+      window.removeEventListener("storage", onStorage);
       clearTimeout(reload);
       loadVersion.current += 1;
       identityVersion.current += 1;
@@ -305,10 +354,10 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
     setLoadingHistory(true);
     setMessage(null);
     try {
-      const result = await supabase.rpc("member_contribution_history", {
+      const result = await boundedMemberRequest(supabase.rpc("member_contribution_history", {
         p_before_created_at: historyCursor.created_at,
         p_before_id: historyCursor.id,
-      });
+      }));
       if (version !== loadVersion.current) return;
       if (result.error) throw result.error;
       const history = parseContributionHistory(result.data);
@@ -331,9 +380,9 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
   }
 
   async function requestOtp() {
-    const normalizedPhone = normalizeRwandaPhone(phone);
+    const normalizedPhone = normalizeMemberPhone(phone, countryCode);
     if (!normalizedPhone) {
-      setMessage("Enter a valid Rwanda WhatsApp number, for example +250 788 123 456.");
+      setMessage("Enter your WhatsApp number in international format, including + and the country code.");
       return;
     }
 
@@ -346,18 +395,25 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
     setBusy(true);
     setMessage(null);
     const version = identityVersion.current;
-    const { error } = await supabase.auth.signInWithOtp({
-      phone: normalizedPhone,
-      options: { channel: "whatsapp", shouldCreateUser: true },
-    });
-    if (version !== identityVersion.current) return;
-    setBusy(false);
-    if (error) {
-      setMessage(cleanError(error.message));
-      return;
+    try {
+      const { error } = await boundedMemberRequest(supabase.auth.signInWithOtp({
+        phone: normalizedPhone,
+        options: { channel: "whatsapp", shouldCreateUser: true },
+      }));
+      if (version !== identityVersion.current) return;
+      if (error) {
+        setMessage(cleanError(error.message));
+        return;
+      }
+      setVerifiedPhone(normalizedPhone);
+      setStep("otp");
+    } catch {
+      if (version === identityVersion.current) {
+        setMessage("The code request could not be confirmed. Please retry when connected.");
+      }
+    } finally {
+      if (version === identityVersion.current) setBusy(false);
     }
-    setVerifiedPhone(normalizedPhone);
-    setStep("otp");
   }
 
   async function verifyOtp() {
@@ -371,18 +427,25 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
     setBusy(true);
     setMessage(null);
     const version = identityVersion.current;
-    const { error } = await supabase.auth.verifyOtp({
-      phone: verifiedPhone,
-      token: otp,
-      type: "sms",
-    });
-    if (version !== identityVersion.current) return;
-    if (error) {
-      setBusy(false);
-      setMessage(cleanError(error.message));
-      return;
+    try {
+      const { error } = await boundedMemberRequest(supabase.auth.verifyOtp({
+        phone: verifiedPhone,
+        token: otp,
+        type: "sms",
+      }));
+      if (version !== identityVersion.current) return;
+      if (error) {
+        setMessage(cleanError(error.message));
+        return;
+      }
+      await loadMemberArea(false);
+    } catch {
+      if (version === identityVersion.current) {
+        setMessage("Verification could not be confirmed. Please retry when connected.");
+      }
+    } finally {
+      if (version === identityVersion.current) setBusy(false);
     }
-    await loadMemberArea(false);
   }
 
   async function createContribution() {
@@ -392,7 +455,7 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
       return;
     }
     if (parsedAmount < 100 || parsedAmount > 5_000_000) {
-      setMessage("Choose an amount between 100 and 5,000,000 RWF.");
+      setMessage(`Choose an amount between 100 and 5,000,000 ${currencyCode}.`);
       return;
     }
 
@@ -402,39 +465,59 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
     setMessage(null);
     setIntent(null);
     const version = identityVersion.current;
-    const { data, error } = await supabase.rpc(
-      "create_member_contribution_intent",
-      {
-        p_initiative_id: selectedInitiative,
-        p_amount: parsedAmount,
-      },
-    );
-    if (version !== identityVersion.current) return;
-    setBusy(false);
-    if (error || !data?.[0]) {
-      setMessage(cleanError(error?.message));
-      return;
-    }
+    try {
+      const { data, error } = await boundedMemberRequest(supabase.rpc(
+        "create_member_contribution_intent",
+        {
+          p_initiative_id: selectedInitiative,
+          p_amount: parsedAmount,
+        },
+      ));
+      if (version !== identityVersion.current) return;
+      if (error || !data?.[0]) {
+        setMessage(cleanError(error?.message));
+        return;
+      }
 
-    const nextIntent = data[0] as ContributionIntent;
-    const telHref = buildUssdTelHref(nextIntent.ussd_code);
-    if (!telHref) {
-      setMessage("The official club MoMo route could not be validated.");
-      return;
+      const nextIntent = data[0] as ContributionIntent;
+      const telHref = buildUssdTelHref(nextIntent.ussd_code);
+      if (!telHref) {
+        setMessage("The official club MoMo route could not be validated.");
+        return;
+      }
+      setIntent(nextIntent);
+      window.location.assign(telHref);
+    } catch {
+      if (version === identityVersion.current) {
+        setMessage("The contribution request could not be confirmed. Check your history, then retry the same amount when connected.");
+      }
+    } finally {
+      if (version === identityVersion.current) setBusy(false);
     }
-    setIntent(nextIntent);
-    window.location.assign(telHref);
   }
 
   async function signOut() {
+    setMemberSignOutPending(true);
     identity.current = null;
     clearPrivateState();
-    setPhone("+250 ");
-    setStep("phone");
-    const supabase = getBrowserSupabase();
-    if (!supabase) return;
-    const { error } = await supabase.auth.signOut();
-    if (error) setMessage("Secure sign-out could not be confirmed. Please retry signing out.");
+    setPhone(initialPhone);
+    setStep("signout");
+    setBusy(true);
+    const version = identityVersion.current;
+    try {
+      const supabase = getBrowserSupabase();
+      if (!supabase) throw new Error("Member access is unavailable.");
+      const { error } = await boundedMemberRequest(supabase.auth.signOut());
+      if (error) throw error;
+      setMemberSignOutPending(false);
+      if (version === identityVersion.current) setStep("phone");
+    } catch {
+      if (version === identityVersion.current) {
+        setMessage("Sign-out is not confirmed. Your member area remains locked. Retry when connected.");
+      }
+    } finally {
+      if (version === identityVersion.current) setBusy(false);
+    }
   }
 
   async function copyMemberCode() {
@@ -447,8 +530,8 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
   return (
     <section className="member-portal" aria-labelledby="member-portal-title">
       <div className="member-portal-intro">
-        <p className="member-portal-kicker">Gikundiro member area</p>
-        <h2 id="member-portal-title">Your place in the Blue Wall.</h2>
+        <p className="member-portal-kicker">{clubId === 24 ? "Gikundiro" : clubShortName} member area</p>
+        <h2 id="member-portal-title">{clubId === 24 ? "Your place in the Blue Wall." : `Your place at ${clubShortName}.`}</h2>
         <p>
           WhatsApp is your key. Sign in once to receive a private six-digit
           member number, see confirmed contributions, and support {clubShortName}{" "}
@@ -463,6 +546,15 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
 
       <div className="member-portal-panel">
         {step === "loading" ? <p role="status">Loading your member area…</p> : null}
+        {step === "signout" ? (
+          <div className="member-auth-form">
+            <h3>Finish signing out</h3>
+            <p>Your private member information is hidden while sign-out is pending.</p>
+            <button className="member-primary-action" type="button" disabled={busy} onClick={() => void signOut()}>
+              {busy ? "Signing out…" : "Retry sign out"}
+            </button>
+          </div>
+        ) : null}
         {step === "unavailable" ? (
           <div className="member-auth-form">
             <h3>Member area unavailable</h3>
@@ -495,7 +587,7 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
                 autoComplete="tel"
                 value={phone}
                 onChange={(event) => setPhone(event.target.value.slice(0, 24))}
-                placeholder="+250 788 123 456"
+                placeholder={countryCode === "RW" ? "+250 788 123 456" : "+country code and number"}
                 required
               />
             </div>
@@ -545,7 +637,7 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
         {step === "join" ? (
           <div className="member-auth-form">
             <span className="member-step">02 / Membership activation</span>
-            <h3>Join the Blue Wall</h3>
+            <h3>{clubId === 24 ? "Join the Blue Wall" : `Join ${clubShortName}`}</h3>
             <p>
               Create or reactivate your free {clubShortName} fan membership.
               This action is separate from signing in.
@@ -592,7 +684,7 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
             <dl className="member-metrics">
               <div><dt>Status</dt><dd>{member.status}</dd></div>
               <div><dt>Tier</dt><dd>{member.tier}</dd></div>
-              <div><dt>Total confirmed</dt><dd>{formatRwf(total)}</dd></div>
+              <div><dt>Total confirmed</dt><dd>{formatMemberAmount(total, currencyCode)}</dd></div>
             </dl>
 
             <div className="member-contribution-card">
@@ -615,7 +707,7 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
                   <option value={initiative.id} key={initiative.id}>{initiative.title}</option>
                 ))}
               </select>
-              <label htmlFor="member-amount">Amount in RWF</label>
+              <label htmlFor="member-amount">Amount in {currencyCode}</label>
               <input
                 id="member-amount"
                 type="number"
@@ -629,7 +721,7 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
               <div className="member-amount-presets" aria-label="Contribution amount presets">
                 {amountPresets.map((preset) => (
                   <button type="button" key={preset} aria-pressed={amount === String(preset)} onClick={() => setAmount(String(preset))}>
-                    {formatRwf(preset)}
+                    {formatMemberAmount(preset, currencyCode)}
                   </button>
                 ))}
               </div>
@@ -681,7 +773,7 @@ export function MemberPortal({ clubShortName }: MemberPortalProps) {
                     <li key={entry.id}>
                       <span className={`member-status-dot member-status-${entry.status}`} aria-hidden="true" />
                       <div>
-                        <strong>{formatRwf(entry.amount)}</strong>
+                        <strong>{formatMemberAmount(entry.amount, currencyCode)}</strong>
                         <span>{entry.momo_reference ?? "Reference pending"}</span>
                       </div>
                       <em>{entry.status}</em>

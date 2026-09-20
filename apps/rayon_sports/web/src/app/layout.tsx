@@ -6,8 +6,8 @@ import {
   Space_Grotesk,
 } from "next/font/google";
 import "./globals.css";
-import { absoluteUrl, siteConfig } from "@/lib/config";
-import { buildSiteJsonLd, renderJsonLdScriptContent } from "@/lib/metadata";
+import { getClubProfile } from "@/lib/data/public";
+import { buildSiteJsonLd, getClubWebsiteIdentity, renderJsonLdScriptContent } from "@/lib/metadata";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -30,64 +30,69 @@ const inter = Inter({
 const barlowCondensed = Barlow_Condensed({
   variable: "--font-matchday",
   subsets: ["latin"],
-  weight: ["700", "800", "900"],
+  weight: ["900"],
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.siteUrl),
-  title: {
-    default: siteConfig.title,
-    template: `%s | ${siteConfig.shortTitle}`,
-  },
-  description: siteConfig.description,
-  applicationName: siteConfig.shortTitle,
-  keywords: [
-    siteConfig.shortTitle,
-    "football club",
-    "white-label sports website",
-    "fan app",
-    "tickets",
-    "membership",
-  ],
-  verification: {
-    google: process.env.NEXT_PUBLIC_GSC_TOKEN ?? undefined,
-  },
-  openGraph: {
-    title: siteConfig.title,
-    description: siteConfig.description,
-    url: siteConfig.siteUrl,
-    siteName: siteConfig.shortTitle,
-    locale: "en_US",
-    type: "website",
-    images: [
-      {
-        url: absoluteUrl("/brand-mark.svg"),
-        width: 512,
-        height: 512,
-        alt: `${siteConfig.shortTitle} brand mark`,
-      },
+export async function generateMetadata(): Promise<Metadata> {
+  const website = getClubWebsiteIdentity(await getClubProfile());
+  const image = website.url ? new URL("/brand-mark.svg", website.url).toString() : undefined;
+  return {
+    metadataBase: website.url ? new URL(website.url) : undefined,
+    robots: website.url ? undefined : { index: false, follow: false },
+    title: {
+      default: website.title,
+      template: `%s | ${website.name}`,
+    },
+    description: website.description,
+    applicationName: website.name,
+    keywords: [
+      website.name,
+      "football club",
+      "white-label sports website",
+      "fan app",
+      "tickets",
+      "membership",
     ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: siteConfig.title,
-    description: siteConfig.description,
-    images: [absoluteUrl("/brand-mark.svg")],
-  },
-  alternates: {
-    canonical: siteConfig.siteUrl,
-  },
-  icons: {
-    icon: "/brand-mark.svg",
-    apple: "/brand-mark.svg",
-  },
-  appleWebApp: {
-    capable: true,
-    title: siteConfig.shortTitle,
-    statusBarStyle: "black-translucent",
-  },
-};
+    verification: {
+      google: process.env.NEXT_PUBLIC_GSC_TOKEN ?? undefined,
+    },
+    openGraph: {
+      title: website.title,
+      description: website.description,
+      url: website.url,
+      siteName: website.name,
+      locale: "en_US",
+      type: "website",
+      images: image ? [
+        {
+          url: image,
+          width: 512,
+          height: 512,
+          alt: `${website.name} brand mark`,
+        },
+      ] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: website.title,
+      description: website.description,
+      images: image ? [image] : [],
+    },
+    alternates: {
+      canonical: website.url,
+    },
+    icons: {
+      icon: "/brand-mark.svg",
+      apple: "/brand-mark.svg",
+    },
+    appleWebApp: {
+      capable: true,
+      title: website.name,
+      statusBarStyle: "black-translucent",
+    },
+  };
+}
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -96,12 +101,12 @@ export const viewport: Viewport = {
   themeColor: "#0A111B",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const siteJsonLd = buildSiteJsonLd();
+  const siteJsonLd = buildSiteJsonLd(await getClubProfile());
 
   return (
     <html

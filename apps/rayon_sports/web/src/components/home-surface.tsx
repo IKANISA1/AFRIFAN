@@ -79,7 +79,9 @@ type HomeInteraction = "idle" | "focused" | "pressed" | "selected";
 
 type HomeSurfaceProps = {
   locale: string;
+  clubId: number;
   clubShortName: string;
+  currencyCode: string;
   fanAppHref: string;
   hasExternalAppUrl: boolean;
 };
@@ -175,10 +177,10 @@ const en: HomeCopy = {
   tickets: "Tickets",
   supporters: "Supporters",
   selected: "Selected",
-  boundaryEyebrow: "Public home boundary",
-  boundaryTitle: "Discover here. Complete protected tasks in approved channels.",
+  boundaryEyebrow: "Stay close to your club",
+  boundaryTitle: "Your next matchday starts here.",
   boundaryDetail:
-    "This page exposes no supporter identity, private membership state, ticket booking, cart, order, delivery address, payment detail, receipt, internal lineup, or authenticated mutation.",
+    "Explore club news and fixtures, choose your tickets, or open your member area to view your membership and confirmed contributions.",
 };
 
 function localizedCopy(_locale: string): HomeCopy {
@@ -430,15 +432,14 @@ function useHomeResource() {
   return { snapshot, status, load };
 }
 
-function formatPrice(value: number, _locale: string) {
+function formatPrice(value: number, currencyCode: string) {
   try {
     return new Intl.NumberFormat("en", {
       style: "currency",
-      currency: "RWF",
-      maximumFractionDigits: 0,
+      currency: currencyCode,
     }).format(value);
   } catch {
-    return `${value.toLocaleString()} RWF`;
+    return `${value.toLocaleString()} ${currencyCode}`;
   }
 }
 
@@ -457,7 +458,9 @@ function formatMatchDate(value: string, _locale: string) {
 
 export function HomeSurface({
   locale,
+  clubId,
   clubShortName,
+  currencyCode,
   fanAppHref,
   hasExternalAppUrl,
 }: HomeSurfaceProps) {
@@ -492,6 +495,7 @@ export function HomeSurface({
   ];
   const selected = actions.find(({ id }) => id === selectedAction) ?? actions[0];
   const match = snapshot.matches[0] ?? null;
+  const hasRayonMedia = clubId === 24;
   const press = (event: PointerEvent<HTMLElement>) => {
     if ("disabled" in event.currentTarget && event.currentTarget.disabled)
       return;
@@ -507,31 +511,20 @@ export function HomeSurface({
     >
       <div className="page-shell section-grid pb-20">
         <header className="circles-hero home-hero">
-          <Image
+          {hasRayonMedia && <Image
             className="blue-wall-hero-media"
             src="https://img.youtube.com/vi/36FYr-CL0ww/maxresdefault.jpg"
-            alt="Rayon Sports players entering Amahoro Stadium for the CECAFA Kagame Cup"
+            alt="Rayon Sports players entering the stadium"
             fill
             priority
+            fetchPriority="high"
             sizes="100vw"
-          />
+          />}
           <div>
-            <p className="circles-eyebrow">CECAFA Kagame Cup 2026 · Final</p>
-            <h1 aria-label="Champions again.">
-              <span>Champions</span>
-              <span>again.</span>
-            </h1>
-            <div className="blue-wall-score" aria-label="Full time: Rayon Sports 2, Gor Mahia 1">
-              <span>Full time</span>
-              <strong>Rayon Sports</strong>
-              <b>2</b>
-              <i aria-hidden="true">—</i>
-              <b>1</b>
-              <strong>Gor Mahia</strong>
-            </div>
+            <p className="circles-eyebrow">{copy.eyebrow}</p>
+            <h1>{copy.title(clubShortName)}</h1>
             <p className="circles-description">
-              {clubShortName}. Gikundiro, the beloved. Matchday, membership,
-              tickets, shop and supporter culture in one official clubhouse.
+              Matchday, membership, tickets, shop and supporter culture with {clubShortName}.
             </p>
           </div>
           <aside
@@ -550,14 +543,12 @@ export function HomeSurface({
             </div>
           </aside>
           <div className="circles-actions">
-            <a
-              href="https://www.youtube.com/watch?v=5TPQFCu2DsE"
-              target="_blank"
-              rel="noreferrer"
+            <Link
+              href="/news"
               className="home-action circles-action circles-action-primary"
             >
-              Watch real highlights <ArrowRight aria-hidden="true" />
-            </a>
+              {copy.latestNews} <ArrowRight aria-hidden="true" />
+            </Link>
             <Link href="/tickets" className="home-action circles-action circles-action-secondary">
               Get tickets <Ticket aria-hidden="true" />
             </Link>
@@ -601,33 +592,33 @@ export function HomeSurface({
           </dl>
         </header>
 
-        <section className="blue-wall-feature-grid" aria-label="Gikundiro highlights">
+        <section className="blue-wall-feature-grid" aria-label={`${clubShortName} highlights`}>
           <article className="blue-wall-feature blue-wall-feature-matchday">
-            <Image
+            {hasRayonMedia && <Image
               src="https://img.youtube.com/vi/_ZVYBy0DXF8/maxresdefault.jpg"
               alt="Rayon Sports supporters wearing the club colours"
               fill
               sizes="(max-width: 800px) 100vw, 58vw"
-            />
+            />}
             <div>
               <span>Matchday</span>
-              <h2>Your place in the Blue Wall.</h2>
+              <h2>{hasRayonMedia ? "Your place in the Blue Wall." : "Your place on matchday."}</h2>
               <p>Choose a fixture, stand and quantity, then complete the protected mobile ticket journey.</p>
               <Link href="/tickets">Start ticket journey <ArrowRight aria-hidden="true" /></Link>
             </div>
           </article>
           <article className="blue-wall-feature blue-wall-feature-membership">
-            <Image
+            {hasRayonMedia && <Image
               src="https://img.youtube.com/vi/9GH2mnKXX4s/maxresdefault.jpg"
               alt="Rayon Sports supporters presenting the official blue and white kits"
               fill
               sizes="(max-width: 800px) 100vw, 42vw"
-            />
+            />}
             <div>
               <span>Membership</span>
               <h2>The club belongs to its people.</h2>
               <p>WhatsApp-secured membership, a private six-digit member number and confirmed contribution history.</p>
-              <Link href="/membership">Join Gikundiro <ArrowRight aria-hidden="true" /></Link>
+              <Link href="/membership">Join {clubShortName} <ArrowRight aria-hidden="true" /></Link>
             </div>
           </article>
         </section>
@@ -747,7 +738,7 @@ export function HomeSurface({
                         <span>{product.category}</span>
                         <h3>{product.name}</h3>
                         <p>{product.subtitle}</p>
-                        <strong>{formatPrice(product.price, locale)}</strong>
+                        <strong>{formatPrice(product.price, currencyCode)}</strong>
                         <Link href={`/shop/${encodeURIComponent(product.id)}`}>
                           {copy.shop} <ArrowRight aria-hidden="true" />
                         </Link>
@@ -771,7 +762,7 @@ export function HomeSurface({
                         <h3>{membership.title}</h3>
                         <p>{membership.description}</p>
                         <strong>
-                          {formatPrice(membership.annualPrice, locale)}
+                          {formatPrice(membership.annualPrice, currencyCode)}
                         </strong>
                       </article>
                     ))}

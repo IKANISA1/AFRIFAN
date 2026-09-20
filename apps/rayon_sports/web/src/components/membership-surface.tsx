@@ -41,6 +41,9 @@ type MembershipInteraction = "idle" | "focused" | "pressed" | "selected";
 type MembershipSurfaceProps = {
   locale: string;
   clubShortName: string;
+  clubId?: number;
+  countryCode?: string;
+  currencyCode?: string;
   fanAppHref: string;
   hasExternalAppUrl: boolean;
 };
@@ -214,21 +217,24 @@ export function resolveMembershipCopy(locale: string) {
   return localizedCopy(locale);
 }
 
-function formatPrice(value: number, _locale: string) {
+function formatPrice(value: number, currencyCode: string) {
   try {
     return new Intl.NumberFormat("en", {
       style: "currency",
-      currency: "RWF",
+      currency: currencyCode,
       maximumFractionDigits: 0,
     }).format(value);
   } catch {
-    return `${value.toLocaleString()} RWF`;
+    return `${value.toLocaleString()} ${currencyCode}`;
   }
 }
 
 export function MembershipSurface({
   locale,
   clubShortName,
+  clubId = 24,
+  countryCode = "RW",
+  currencyCode = "RWF",
   fanAppHref,
   hasExternalAppUrl,
 }: MembershipSurfaceProps) {
@@ -422,7 +428,7 @@ export function MembershipSurface({
           </dl>
         </header>
 
-        <MemberPortal clubShortName={clubShortName} />
+        <MemberPortal clubId={clubId} clubShortName={clubShortName} countryCode={countryCode} currencyCode={currencyCode} />
 
         {isRecovery ? (
           <aside className="circles-recovery" role="status">
@@ -444,7 +450,7 @@ export function MembershipSurface({
                 <dl className="circles-featured-stats">
                   <div>
                     <dt>{copy.annualPrice}</dt>
-                    <dd>{formatPrice(selected.annualPrice, locale)}</dd>
+                    <dd>{formatPrice(selected.annualPrice, currencyCode)}</dd>
                   </div>
                   <div>
                     <dt>{copy.included}</dt>
@@ -526,7 +532,7 @@ export function MembershipSurface({
                     <span>
                       <strong>{membershipPackage.title}</strong>
                       <small>
-                        {formatPrice(membershipPackage.annualPrice, locale)}
+                        {formatPrice(membershipPackage.annualPrice, currencyCode)}
                         {" · "}
                         {membershipPackage.perks.length} {copy.included}
                       </small>

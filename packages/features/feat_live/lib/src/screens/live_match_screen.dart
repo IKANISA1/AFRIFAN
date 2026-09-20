@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../providers/live_match_controller.dart';
 import '../widgets/live_match_widgets.dart';
 
 class LiveMatchScreen extends ConsumerStatefulWidget {
@@ -17,131 +18,56 @@ class LiveMatchScreen extends ConsumerStatefulWidget {
   ConsumerState<LiveMatchScreen> createState() => _LiveMatchScreenState();
 }
 
-class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
-  Map<String, dynamic>? _match;
-  bool _isLoading = true;
-  String? _error;
-  RealtimeService? _realtimeService;
+class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen>
+    with WidgetsBindingObserver {
+  late final LiveMatchController _controller;
+  Map<String, dynamic>? get _match => _controller.match;
+  bool get _isLoading => _controller.loading;
+  String? get _error =>
+      _controller.error == null ? null : context.afriL10n.liveMatchLoadError;
 
   @override
   void initState() {
     super.initState();
-    unawaited(_loadMatch());
+    WidgetsBinding.instance.addObserver(this);
+    _controller = LiveMatchController(client: ref.read(supabaseClientProvider));
+    _controller.addListener(_onChanged);
+    unawaited(_controller.start());
+  }
+
+  void _onChanged() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _controller.setActive(state == AppLifecycleState.resumed);
   }
 
   @override
   void dispose() {
-    unawaited(_realtimeService?.dispose());
+    WidgetsBinding.instance.removeObserver(this);
+    _controller.removeListener(_onChanged);
+    _controller.dispose();
     super.dispose();
   }
 
-  Future<void> _loadMatch() async {
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final client = ref.read(supabaseClientProvider);
-      final resolver = ClubScopeResolver(client: client);
-      final scope = await resolver.requireResolved();
-      var query = client.from('unified_matches').select();
-      query = resolver.apply(query, scope);
-      final rows = await query.order('match_date', ascending: true).limit(12);
-      final matches = List<Map<String, dynamic>>.from(rows);
-      final selected = _pickFeaturedMatch(matches);
-
-      if (!mounted) return;
-
-      setState(() {
-        _match = selected;
-        _isLoading = false;
-        _error = null;
-      });
-
-      if (selected != null) {
-        unawaited(_subscribeToMatch(scope, selected['id']?.toString()));
-      }
-    } catch (error) {
-      if (!mounted) return;
-      setState(() {
-        _error = context.afriL10n.liveMatchLoadError;
-        _isLoading = false;
-      });
-    }
-  }
-
-  Map<String, dynamic>? _pickFeaturedMatch(List<Map<String, dynamic>> matches) {
-    if (matches.isEmpty) return null;
-
-    final priority = <String, int>{
-      'live': 0,
-      'halftime': 1,
-      'scheduled': 2,
-      'fulltime': 3,
-      'postponed': 4,
-      'cancelled': 5,
-    };
-
-    matches.sort((left, right) {
-      final leftPriority = priority[_statusOf(left)] ?? 10;
-      final rightPriority = priority[_statusOf(right)] ?? 10;
-      if (leftPriority != rightPriority) {
-        return leftPriority.compareTo(rightPriority);
-      }
-
-      final leftDate = DateTime.tryParse(left['match_date']?.toString() ?? '');
-      final rightDate = DateTime.tryParse(
-        right['match_date']?.toString() ?? '',
-      );
-      if (leftDate == null && rightDate == null) return 0;
-      if (leftDate == null) return 1;
-      if (rightDate == null) return -1;
-      return leftDate.compareTo(rightDate);
-    });
-
-    return matches.first;
-  }
-
-  Future<void> _subscribeToMatch(ClubScope scope, String? matchId) async {
-    if (matchId == null || matchId.isEmpty) {
-      return;
-    }
-
-    final client = ref.read(supabaseClientProvider);
-    await _realtimeService?.dispose();
-    final realtimeService = RealtimeService(
-      clubId: _realtimeScopeId(scope),
-      client: client,
-    );
-    realtimeService.onTableChanges(
-      table: 'matches',
-      filterColumn: 'id',
-      filterValue: matchId,
-      callback: (payload) {
-        final next = payload.newRecord;
-        if (!mounted || next.isEmpty) return;
-        setState(() {
-          _match = Map<String, dynamic>.from(next);
-        });
-      },
-    );
-
-    if (!mounted) {
-      await realtimeService.dispose();
-      return;
-    }
-    _realtimeService = realtimeService;
-  }
-
-  String _realtimeScopeId(ClubScope scope) {
-    return scope.clubId?.toString() ?? scope.partnerId;
-  }
+  Future<void> _loadMatch() => _controller.refresh();
 
   String _statusOf(Map<String, dynamic> match) {
     final raw = match['match_status']?.toString().trim().toLowerCase();
     if (raw != null && raw.isNotEmpty) {
-      return raw;
+      return switch (raw) {
+        'in_progress' || '1h' || '2h' || 'et' || 'p' => 'live',
+        'ht' => 'halftime',
+        'completed' ||
+        'finished' ||
+        'full_time' ||
+        'ft' ||
+        'aet' ||
+        'pen' => 'fulltime',
+        _ => raw,
+      };
     }
 
     final matchDate = DateTime.tryParse(match['match_date']?.toString() ?? '');
@@ -403,6 +329,23 @@ class _LiveMatchScreenState extends ConsumerState<LiveMatchScreen> {
             parent: AlwaysScrollableScrollPhysics(),
           ),
           slivers: [
+            if (_error != null)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                  child: AfriStateBanner(
+                    icon: AfriIcons.warning,
+                    title: context.afriL10n.liveCenterUnavailable,
+                    subtitle: _error,
+                    tone: AfriStateBannerTone.warning,
+                    trailing: AfriButton(
+                      label: context.afriL10n.liveRefresh,
+                      variant: AfriButtonVariant.outline,
+                      onTap: () => unawaited(_loadMatch()),
+                    ),
+                  ),
+                ),
+              ),
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(
