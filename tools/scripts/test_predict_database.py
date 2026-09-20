@@ -398,5 +398,7 @@ try:
         print('PASS automatic/manual' if manual else 'PASS automatic/automatic', 'cross-account allocation cannot reuse one provider transaction', flush=True)
     from commerce_confirmation_concurrency import run_commerce_concurrency
     run_commerce_concurrency(sql, operations_after_lock, ROOT)
+    from momo_parser_concurrency import run_parser_concurrency
+    run_parser_concurrency(sql, operations_after_lock, ROOT)
 finally:
     subprocess.run([DOCKER, 'rm', '-f', NAME + '-auth', NAME + '-storage', NAME], capture_output=True, timeout=60)

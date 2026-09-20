@@ -53,22 +53,31 @@ for (const failedTable of ["momo_parse_attempts", "momo_sms_raw"]) {
       }
       if (table === "momo_sms_raw") {
         if (method === "GET") return json([{ ...raw, parse_status: "failed" }]);
-        rawStates.push(body.parse_status);
-        if (failedTable === table && body.parse_status === "parsed") {
+        throw new Error(
+          "Raw status must be completed by the fenced transaction",
+        );
+      }
+      if (table === "claim_momo_sms_parse") {
+        return json({ status: "claimed", token: "lease-1" });
+      }
+      if (table === "persist_momo_sms_parse") return json({ id: "parsed-1" });
+      if (table === "finish_momo_sms_parse") {
+        assertEquals(body.p_token, "lease-1", "completion retains its claim");
+        if (body.p_success) {
           failures++;
-          return json({ message: "Completion unavailable" }, 503);
+          return json(
+            { message: `${failedTable} completion unavailable` },
+            503,
+          );
         }
-        return json({ id: raw.id });
+        rawStates.push("failed");
+        return json(true);
       }
       if (table === "momo_sms_parsed") {
         return method === "GET" ? json([]) : json({ id: "parsed-1" });
       }
       if (table === "momo_parse_attempts") {
         if (method === "GET") return json([]);
-        if (failedTable === table && body.status === "success") {
-          failures++;
-          return json({ message: "Completion unavailable" }, 503);
-        }
         return json({ id: "attempt-1" });
       }
       if (
@@ -276,6 +285,29 @@ for (
             newly_allocated: false,
           });
       }
+      if (table === "claim_momo_sms_parse") {
+        if (scenario.error === "momo_sms_raw") {
+          return json({ message: "Claim unavailable" }, 503);
+        }
+        claims++;
+        const args = JSON.parse(String(init?.body));
+        assertEquals(
+          args.p_user_id,
+          "user-1",
+          "claim retains authenticated ownership",
+        );
+        assertEquals(
+          args.p_expected_updated_at,
+          raw.updated_at,
+          "claim retains the read version",
+        );
+        assertEquals(
+          args.p_force_reparse,
+          true,
+          "force is checked under the database lock",
+        );
+        return json({ status: "changed" });
+      }
       if (scenario.error === table) {
         return json({ message: "Synthetic database failure" }, 503);
       }
@@ -320,23 +352,7 @@ for (
           );
           return json({ id: raw.id });
         }
-        claims++;
-        assertEquals(
-          url.searchParams.get("user_id"),
-          "eq.user-1",
-          "claim retains authenticated ownership",
-        );
-        assertEquals(
-          url.searchParams.get("updated_at"),
-          "eq." + raw.updated_at,
-          "claim retains the read version",
-        );
-        assertEquals(
-          url.searchParams.getAll("parse_status").includes("neq.processing"),
-          true,
-          "force cannot take over a running parse",
-        );
-        return json([]);
+        throw new Error("Parse claims must use their database fence");
       }
       throw new Error(`Unexpected request ${method} ${table}`);
     };

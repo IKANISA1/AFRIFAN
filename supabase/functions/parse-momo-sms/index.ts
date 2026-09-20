@@ -209,28 +209,35 @@ export async function handleRequest(request: Request) {
 
     const prompt = buildPrompt(rawSms);
 
-    // The original version must still own this attempt. In particular, a
-    // force request cannot overtake a running parse or a just-finished parse.
-    const claim = await adminClient
-      .from("momo_sms_raw")
-      .update({
-        parse_status: "processing",
-        updated_at: new Date().toISOString(),
-      })
-      .eq("id", rawSmsId)
-      .eq("user_id", userId)
-      .eq("parse_status", rawSmsResult.data.parse_status)
-      .eq("updated_at", rawSmsResult.data.updated_at)
-      .neq("parse_status", "processing")
-      .select("id")
-      .maybeSingle();
+    // Expired pre-parse work can be replaced. Every subsequent interpretation
+    // and completion write must retain this claim's opaque fencing token.
+    const claim = await adminClient.rpc("claim_momo_sms_parse", {
+      p_raw_sms_id: rawSmsId,
+      p_user_id: userId,
+      p_expected_updated_at: rawSmsResult.data.updated_at,
+      p_force_reparse: body.forceReparse === true,
+    });
     if (claim.error) throw claim.error;
-    if (!claim.data) {
+    if (claim.data?.status === "already_parsed") {
+      return jsonOk({
+        success: true,
+        skipped: true,
+        reason: "already_parsed",
+        rawSmsId,
+      });
+    }
+    if (
+      claim.data?.status !== "claimed" || typeof claim.data.token !== "string"
+    ) {
       return jsonError(
-        "SMS parsing is in progress or its state changed. Refresh before retrying.",
+        claim.data?.status === "review_required" ||
+          claim.data?.status === "receipt_required"
+          ? "Existing SMS processing needs review before another parse can start."
+          : "SMS parsing is in progress or its state changed. Refresh before retrying.",
         409,
       );
     }
+    const claimToken = claim.data.token;
     const runProviderAttempt = async (provider: AiProvider) => {
       const model = getModel(provider);
       const attemptsResult = await adminClient
@@ -318,12 +325,11 @@ export async function handleRequest(request: Request) {
       const { aiResult, parsed, provider } = selectedAttempt;
       const timestamp = new Date().toISOString();
 
-      const parsedUpsert = await adminClient
-        .from("momo_sms_parsed")
-        .upsert({
-          raw_sms_id: rawSms.id,
-          user_id: rawSms.user_id,
-          country_code: rawSms.country_code ?? null,
+      const parsedUpsert = await adminClient.rpc("persist_momo_sms_parse", {
+        p_raw_sms_id: rawSmsId,
+        p_user_id: userId,
+        p_token: claimToken,
+        p_payload: {
           parser_provider: provider,
           parser_model: aiResult.model,
           parse_status: parsed.parse_status,
@@ -351,13 +357,14 @@ export async function handleRequest(request: Request) {
           recurring_pattern_hint: parsed.recurring_pattern_hint,
           narrative: parsed.narrative ?? parsed.notes,
           structured_data: parsed,
-          updated_at: timestamp,
-        }, { onConflict: "raw_sms_id" })
-        .select("id")
-        .single();
+        },
+      });
 
       if (parsedUpsert.error) {
         throw parsedUpsert.error;
+      }
+      if (typeof parsedUpsert.data?.id !== "string") {
+        throw new Error("Persisted SMS interpretation could not be verified.");
       }
 
       const parsedSmsId = parsedUpsert.data.id as string;
@@ -486,30 +493,19 @@ export async function handleRequest(request: Request) {
         }
       }
 
-      const completedAttempt = await adminClient
-        .from("momo_parse_attempts")
-        .update({
-          status: "success",
-          request_payload: aiResult.requestPayload,
-          response_payload: aiResult.responseBody,
-        })
-        .eq("id", selectedAttemptId)
-        .eq("user_id", userId)
-        .select("id")
-        .single();
-      if (completedAttempt.error) throw completedAttempt.error;
-
-      const completedRaw = await adminClient
-        .from("momo_sms_raw")
-        .update({
-          parse_status: "parsed",
-          updated_at: timestamp,
-        })
-        .eq("id", rawSmsId)
-        .eq("user_id", userId)
-        .select("id")
-        .single();
-      if (completedRaw.error) throw completedRaw.error;
+      const completion = await adminClient.rpc("finish_momo_sms_parse", {
+        p_raw_sms_id: rawSmsId,
+        p_user_id: userId,
+        p_token: claimToken,
+        p_success: true,
+        p_attempt_id: selectedAttemptId,
+        p_request_payload: aiResult.requestPayload,
+        p_response_payload: aiResult.responseBody,
+      });
+      if (completion.error) throw completion.error;
+      if (completion.data !== true) {
+        throw new Error("SMS processing ownership changed before completion.");
+      }
 
       await recordOperationalHealthEvent(adminClient, {
         service: "momo_parsing",
@@ -591,25 +587,21 @@ export async function handleRequest(request: Request) {
         },
       });
     } catch (error) {
-      if (selectedAttemptId != null) {
-        await adminClient
-          .from("momo_parse_attempts")
-          .update({
-            status: "failed",
-            error_message: error instanceof Error
-              ? error.message
-              : "AI parse failed",
-          })
-          .eq("id", selectedAttemptId);
+      // A late failure must not overwrite the replacement worker or a
+      // completed record. SQL checks the same token and source version.
+      const cleanup = await adminClient.rpc("finish_momo_sms_parse", {
+        p_raw_sms_id: rawSmsId,
+        p_user_id: userId,
+        p_token: claimToken,
+        p_success: false,
+        p_error: error instanceof Error ? error.message : "AI parse failed",
+      });
+      if (cleanup.error) {
+        console.error(
+          "parse-momo-sms failure state could not be persisted",
+          cleanup.error,
+        );
       }
-
-      await adminClient
-        .from("momo_sms_raw")
-        .update({
-          parse_status: "failed",
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", rawSmsId);
 
       await recordOperationalHealthEvent(adminClient, {
         service: "momo_parsing",
