@@ -14,18 +14,16 @@ export const requiredAuthorityFiles = [
   "references/component-contracts.md",
   "references/quality-standard.md",
   "references/operational-checklist.md",
-  "references/mobile-design-100.md",
 ];
 const digest = (value) => createHash("sha256").update(value).digest("hex");
 
 // This checks the product's authority binding only. It does not score visual
-// fidelity or create MOBILE-DESIGN-100 acceptance from metadata or tests.
+// fidelity or grant visual approval from metadata or tests.
 export function validateDesignAuthority({ root, register, authorityRoot }) {
   const errors = [];
   const result = {
     scope: "design_authority_binding_only",
     status: "fail",
-    mobile_design_100_acceptance: "unverified",
     design_complete: false,
     errors,
   };
@@ -52,20 +50,14 @@ export function validateDesignAuthority({ root, register, authorityRoot }) {
       if (entry.sha256 !== actual) errors.push(`Authority hash mismatch: ${entry.path}`);
     }
     const skillHash = digest(readFileSync(source));
-    const ruleHash = digest(readFileSync(path.join(directory, "references/mobile-design-100.md")));
     const adapterHash = digest(readFileSync(path.join(root, adapter.path)));
     if (authority.sha256 !== skillHash) errors.push("Selected skill revision is stale.");
     if (adapter.sha256 !== adapterHash) errors.push("Product adapter revision is stale.");
-    const rule = document.mobile_acceptance;
-    if (rule?.rule !== "MOBILE-DESIGN-100"
-      || rule?.path !== "references/mobile-design-100.md"
-      || rule?.sha256 !== ruleHash) errors.push("The current MOBILE-DESIGN-100 rule must be bound.");
     Object.assign(result, {
       authority_root: directory,
       authority_path: source,
       authority_sha256: skillHash,
       product_adapter_sha256: adapterHash,
-      mobile_rule_sha256: ruleHash,
       bound_file_count: bindings.length,
     });
     if (errors.length === 0) result.status = "pass";

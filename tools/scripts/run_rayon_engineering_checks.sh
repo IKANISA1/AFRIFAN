@@ -40,4 +40,4 @@ echo "==> Web typecheck, tests, build, audit"
   corepack npm audit --audit-level=high
 )
 
-echo "Rayon Sports engineering checks passed; installed mobile design acceptance is checked separately."
+echo "Rayon Sports engineering checks passed. Visual review follows revolut-design; device, provider, signing and release evidence remain separate."

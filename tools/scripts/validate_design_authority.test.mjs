@@ -28,10 +28,6 @@ function fixture(t) {
       bound_files,
     },
     product_adapter: { path: "DESIGN.md", sha256: digest(readFileSync(path.join(root, "DESIGN.md"))) },
-    mobile_acceptance: {
-      rule: "MOBILE-DESIGN-100", path: "references/mobile-design-100.md",
-      sha256: bound_files.find((entry) => entry.path === "references/mobile-design-100.md").sha256,
-    },
   };
   const register = path.join(root, "binding.json");
   return { root, authorityRoot, document, run() {
@@ -44,7 +40,7 @@ test("current authority and adapter bindings never manufacture visual acceptance
   const result = fixture(t).run();
   assert.equal(result.status, "pass");
   assert.equal(result.design_complete, false);
-  assert.equal(result.mobile_design_100_acceptance, "unverified");
+  assert.equal(result.bound_file_count, requiredAuthorityFiles.length);
 });
 test("a repository file cannot declare itself the selected skill", (t) => {
   const f = fixture(t); f.document.design_authority.path = "DESIGN.md";
@@ -59,9 +55,9 @@ test("a changed product adapter invalidates its recorded revision", (t) => {
   const f = fixture(t); writeFileSync(path.join(f.root, "DESIGN.md"), "Changed adapter");
   assert.match(f.run().errors.join("\n"), /Product adapter revision is stale/);
 });
-test("a renamed mobile rule cannot satisfy MOBILE-DESIGN-100", (t) => {
-  const f = fixture(t); f.document.mobile_acceptance.rule = "LOCAL-PASS";
-  assert.match(f.run().errors.join("\n"), /MOBILE-DESIGN-100 rule must be bound/);
+test("an alternative design authority cannot replace the selected skill", (t) => {
+  const f = fixture(t); f.document.design_authority.skill = "local-style-guide";
+  assert.match(f.run().errors.join("\n"), /selected revolut-design SKILL.md must be the authority/);
 });
 test("omitting or duplicating an authority reference fails closed", (t) => {
   const f = fixture(t);
@@ -72,10 +68,10 @@ test("missing external authority bytes cannot be replaced by metadata", (t) => {
   const f = fixture(t); rmSync(path.join(f.authorityRoot, "SKILL.md"));
   assert.equal(f.run().status, "fail");
 });
-test("stale skill and mobile rule revisions are both rejected", (t) => {
+test("a stale skill revision is rejected", (t) => {
   const f = fixture(t);
   f.document.design_authority.sha256 = "0".repeat(64);
-  f.document.mobile_acceptance.sha256 = "0".repeat(64);
   const result = f.run();
-  assert.equal(result.status, "fail"); assert.equal(result.errors.length, 2);
+  assert.equal(result.status, "fail");
+  assert.deepEqual(result.errors, ["Selected skill revision is stale."]);
 });

@@ -686,7 +686,6 @@ fi
   printf '%s\n\n' "- Selected SKILL.md SHA-256: \`$source_design_sha\`"
   printf '%s\n' "- Automated source-compliance status: \`$status\`"
   printf '%s\n' "- Design-complete conclusion: \`false\`"
-  printf '%s\n' "- MOBILE-DESIGN-100 release acceptance: \`unverified; source controls cannot approve artifacts or reviews\`"
   if [ "$route_evidence_complete" = "true" ]; then
     printf '%s\n\n' "- Route evidence closure: \`complete for the governed local ledger; external human, device, approval, and release gates remain separate\`"
   else
@@ -725,7 +724,6 @@ payload = {
     "scope": "automated_source_compliance_only",
     "status": sys.argv[2],
     "design_complete": False,
-    "mobile_design_100_acceptance": "unverified",
     "authority_binding": json.loads(pathlib.Path(sys.argv[21]).read_text()),
     "route_evidence_complete": sys.argv[19] == "true",
     "violation_count": int(sys.argv[3]),

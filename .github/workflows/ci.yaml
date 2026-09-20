@@ -83,7 +83,7 @@ jobs:
           tools/scripts/design_registered_media.test.mjs
           tools/scripts/android_release_contract.test.mjs
           tools/scripts/native_qa_isolation.test.mjs
-          tools/scripts/validate_mobile_design_release.test.mjs
+          tools/scripts/route_inventory_provenance.test.mjs
 
       - name: Enforce football-only repository boundary
         run: node tools/scripts/validate_repository_boundary.mjs

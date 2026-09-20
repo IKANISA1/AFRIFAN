@@ -2,7 +2,5 @@
   "schema_version": "1.0",
   "workspace": ".",
   "manifest_name": "build-provenance.json",
-  "bundles": [],
-  "mobile_reviewers": [],
-  "mobile_release_acceptances": []
+  "bundles": []
 }

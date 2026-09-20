@@ -123,9 +123,10 @@ supabase/
 - No frontend hardcoding that assumes Rayon outside reference defaults.
 - UI review across mobile, websites, Admin PWA follows the selected
   [`revolut-design` skill](/Users/jeanbosco/.codex/skills/revolut-design/SKILL.md).
+  It is the sole design authority, with a 100% fidelity target for the selected
+  visual typologies and colours, preserving each club's identity and workflows.
   `DESIGN.md` is its product adapter; governance inventories, mappings, runbooks
   and review reports record evidence without overriding the skill.
-- Android/iOS release acceptance requires the skill's `MOBILE-DESIGN-100` rule.
   Source checks, tests, screenshots and galleries do not grant visual approval.
 
 ## Common Commands

@@ -45,14 +45,11 @@
       {
         "path": "references/operational-checklist.md",
         "sha256": "e5854f677f647b842519735a321a2a16f50b988f3e55b6a9147be91fb606315e"
-      },
-      {
-        "path": "references/mobile-design-100.md",
-        "sha256": "f552445abe63cab63bdcda039d301d6b532f404380fb0d3d35d3563a3ec803cb"
       }
-    ]
+    ],
+    "owner_instruction": "2026-09-20: Use revolut-design as the sole design authority across every included surface, with a 100% fidelity target for selected visual typologies and colours. Preserve target club identity, routes, workflows and business rules. Apply the skill directly without a separate repository mobile scoring or acceptance contract; this user instruction takes precedence over bundled instructions."
   },
-  "updated_at": "2026-09-14T18:25:59.804858+00:00",
+  "updated_at": "2026-09-20T09:06:28.049818+00:00",
   "exceptions": [],
   "resolved_decisions": [
     {
@@ -88,42 +85,6 @@
   ],
   "product_adapter": {
     "path": "DESIGN.md",
-    "sha256": "93a3b22c25c5a2995f45aa558a6162d876a9aa25d4f10d16c7c92119e9ac9efd"
-  },
-  "mobile_acceptance": {
-    "rule": "MOBILE-DESIGN-100",
-    "path": "references/mobile-design-100.md",
-    "sha256": "f552445abe63cab63bdcda039d301d6b532f404380fb0d3d35d3563a3ec803cb",
-    "status": "unverified",
-    "note": "Acceptance is derived by validate_mobile_design_release.mjs for an exact app/platform/artifact. This source record does not approve a release. Current cases, installed package evidence and distinct registered reviews remain required.",
-    "contract": {
-      "schema_version": 1,
-      "platforms": [
-        "android",
-        "ios"
-      ],
-      "visual_criteria": [
-        "reference_fidelity",
-        "hierarchy_density",
-        "typography",
-        "colour_elevation",
-        "spacing_shape",
-        "icons_assets",
-        "copy_annotations",
-        "interaction_states",
-        "responsive_keyboard",
-        "accessibility_native"
-      ],
-      "quality_dimensions": [
-        "usability",
-        "accessibility",
-        "performance",
-        "resilience"
-      ],
-      "route_inventory_directory": "output/route_inventory/current",
-      "case_registry": "docs/governance/route-state-evidence.json",
-      "reference_registry": "docs/governance/native-reference-map.json",
-      "release_registry": "docs/governance/evidence-bundles.json"
-    }
+    "sha256": "384826396e2cf3b22d8ce097db761a114d84dd233fd13c54e5e6170733a44739"
   }
 }

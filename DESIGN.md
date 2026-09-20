@@ -302,14 +302,19 @@ Visual evidence must use sanitized data. Screenshots must not expose secrets, ra
 
 ## Implementation and verification
 
-Mobile release acceptance must satisfy the skill's
-[MOBILE-DESIGN-100](/Users/jeanbosco/.codex/skills/revolut-design/references/mobile-design-100.md)
-for the exact Android and iOS artifacts. Required route/state/role/club/platform
-cases, all ten visual criteria, source and installed-artifact hashes, current
-annotations, implementer review, independent visual review and owner acceptance
-must be current and complete. Missing or stale evidence blocks acceptance.
-The source-compliance report verifies authority bindings and source controls;
-it does not implement or substitute for the complete mobile acceptance gate.
+The selected [`revolut-design` skill](/Users/jeanbosco/.codex/skills/revolut-design/SKILL.md)
+is the sole design authority for Android, iOS, public and member websites, and
+Admin PWA. Match the selected visual typologies and colours with a 100% fidelity
+target while preserving each club's name, logo, routes, workflows and business
+rules. The owner's 20 September 2026 instruction takes precedence over bundled
+instructions: apply the skill directly, without a separate mobile scoring or
+acceptance contract in this repository.
+
+Record rendered comparisons and unresolved differences in the existing route,
+reference and review registers. Keep implementer observations, independent
+review and owner decisions distinct and report their actual status. The
+source-compliance report verifies authority bindings and source controls;
+it does not establish visual fidelity or approve an artifact for release.
 
 Keep providers, repositories, domain models, server validation, role guards and
 canonical routes separate from presentation. Keep the four app shells thin.
