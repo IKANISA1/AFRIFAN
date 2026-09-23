@@ -143,8 +143,6 @@ class _Gateway implements ClubContentGateway {
   @override
   Future<List<ClubNewsItem>> loadNews() async => const [];
   @override
-  Future<List<ClubProjectItem>> loadProjects() async => const [];
-  @override
   Future<List<ClubSquadMember>> loadSquad() async => const [
     ClubSquadMember(
       id: 'synthetic-captain',

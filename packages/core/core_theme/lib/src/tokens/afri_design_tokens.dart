@@ -7,11 +7,11 @@ import 'shape_tokens.dart';
 import 'spacing_tokens.dart';
 import 'tap_tokens.dart';
 
-/// Runtime implementation of the non-color token families in root DESIGN.md.
+/// Runtime implementation of the non-color token families in the revolut-design runtime adapter.
 ///
 /// The values here are semantic implementation tokens. They are not a second
 /// design authority; they encode the mandatory responsive, motion, focus,
-/// and admin contracts from the repository-level DESIGN.md.
+/// and admin contracts from the revolut-design skill.
 class AfriDesignTokens extends ThemeExtension<AfriDesignTokens> {
   const AfriDesignTokens({
     required this.spaceStep,

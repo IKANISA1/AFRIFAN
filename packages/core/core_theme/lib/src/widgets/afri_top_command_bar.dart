@@ -130,10 +130,6 @@ class _CommandAvatar extends StatelessWidget {
               child: icon == null
                   ? const AfriBrandMark(
                       size: AfriChromeTokens.commandBrandSize,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(ShapeTokens.radiusFull),
-                      ),
-                      showBorder: false,
                     )
                   : Icon(
                       icon,

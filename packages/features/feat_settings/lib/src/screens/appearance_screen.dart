@@ -55,7 +55,7 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
                       for (final route in [
                         '/home',
                         '/club',
-                        '/fanzone',
+                        '/predict',
                         '/membership',
                       ])
                         Padding(

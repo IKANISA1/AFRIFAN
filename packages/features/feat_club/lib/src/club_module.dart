@@ -88,7 +88,9 @@ class ClubModule extends FeatureModule {
     GoRoute(
       path: 'fixtures',
       name: 'club-fixtures',
-      builder: (context, state) => const ClubFixturesScreen(),
+      builder: (context, state) => ClubFixturesScreen(
+        results: state.uri.queryParameters['tab'] == 'results',
+      ),
       routes: <RouteBase>[
         GoRoute(
           path: ':matchId',
@@ -102,7 +104,7 @@ class ClubModule extends FeatureModule {
     GoRoute(
       path: 'results',
       name: 'club-results',
-      builder: (context, state) => const ClubResultsScreen(),
+      redirect: (_, __) => '/club/fixtures?tab=results',
     ),
     GoRoute(
       path: 'standings',
@@ -117,14 +119,15 @@ class ClubModule extends FeatureModule {
     GoRoute(
       path: 'projects',
       name: 'club-projects',
-      builder: (context, state) => const ClubProjectsScreen(),
+      redirect: (_, state) => state.uri.path == '/club/projects'
+          ? '/contribute?type=project'
+          : null,
       routes: <RouteBase>[
         GoRoute(
           path: ':projectId',
           name: 'club-project-detail',
-          builder: (context, state) => ClubProjectDetailScreen(
-            projectId: state.pathParameters['projectId'] ?? '',
-          ),
+          redirect: (_, state) =>
+              '/contribute/group/${Uri.encodeComponent(state.pathParameters['projectId'] ?? '')}',
         ),
       ],
     ),
@@ -216,11 +219,10 @@ class ClubModule extends FeatureModule {
     ),
     RoutePresentationDecision(
       path: '/club/results',
-      presentation: RoutePresentation.fullScreen,
-      recommendation: 'keep',
-      targetPath: '/club',
-      rationale: 'Published results are a primary football record.',
-      renderedStateContract: 'controlled_club_information_surface',
+      presentation: RoutePresentation.redirect,
+      targetPath: '/club/fixtures?tab=results',
+      recommendation: 'delete duplicate',
+      rationale: 'One canonical browser and detail per supporter task.',
     ),
     RoutePresentationDecision(
       path: '/club/standings',
@@ -240,21 +242,17 @@ class ClubModule extends FeatureModule {
     ),
     RoutePresentationDecision(
       path: '/club/projects',
-      presentation: RoutePresentation.fullScreen,
-      recommendation: 'keep',
-      targetPath: '/club',
-      rationale:
-          'Approved club projects require a first-class discovery route.',
-      renderedStateContract: 'controlled_club_information_surface',
+      presentation: RoutePresentation.redirect,
+      targetPath: '/contribute?type=project',
+      recommendation: 'delete duplicate',
+      rationale: 'One canonical browser and detail per supporter task.',
     ),
     RoutePresentationDecision(
       path: '/club/projects/:projectId',
-      presentation: RoutePresentation.fullScreen,
-      recommendation: 'keep',
-      targetPath: '/club/projects',
-      rationale:
-          'Project detail explains governed progress before contribution actions.',
-      renderedStateContract: 'controlled_club_information_surface',
+      presentation: RoutePresentation.redirect,
+      targetPath: '/contribute/group/:projectId',
+      recommendation: 'delete duplicate',
+      rationale: 'One canonical browser and detail per supporter task.',
     ),
   ];
 }

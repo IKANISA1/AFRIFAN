@@ -41,6 +41,85 @@ void main() {
     ]) {
       testWidgets('$appName names its own membership action', (tester) async {
         RuntimeBranding.configure(appName: appName, clubName: appName);
+        final clubId = {
+          "Vital'O": 'vitalo',
+          'Gikundiro': 'rayon_sports',
+          'Nkana FC': 'nkana',
+          'AS Vita Club': 'as_vita',
+        }[appName]!;
+        await _pumpHomeStateGolden(
+          tester,
+          id: 'club_$clubId',
+          homeRepository: const _FakeHomeFeedRepository(
+            snapshot: HomeFeedSnapshot(status: HomeFeedStatus.empty),
+          ),
+        );
+        expect(find.text('Join $appName'), findsWidgets);
+        if (appName != 'Gikundiro') {
+          expect(find.text('Join Gikundiro'), findsNothing);
+        }
+      });
+    }
+
+    for (final scenario
+        in <({String name, FeatureConfigService service, bool available})>[
+          (
+            name: 'registered and permitted',
+            service: const FeatureConfigService(
+              _testFeatureConfigSnapshot,
+              storeReleasePolicy: StoreReleasePolicy.unenforced(),
+            ),
+            available: true,
+          ),
+          (
+            name: 'unregistered',
+            service: const FeatureConfigService(
+              PlatformConfigSnapshot(),
+              storeReleasePolicy: StoreReleasePolicy.unenforced(),
+            ),
+            available: false,
+          ),
+          (
+            name: 'disabled',
+            service: const FeatureConfigService(
+              _disabledHomeFeatureConfigSnapshot,
+              storeReleasePolicy: StoreReleasePolicy.unenforced(),
+            ),
+            available: false,
+          ),
+          (
+            name: 'hidden',
+            service: const FeatureConfigService(
+              PlatformConfigSnapshot(
+                contentBlocks: [
+                  ContentBlock(
+                    blockKey: 'home_match_score',
+                    blockType: 'widget',
+                    placementKey: 'home_hero',
+                    content: {'widget': 'match_score_card'},
+                  ),
+                ],
+                features: [
+                  PlatformFeature(
+                    featureKey: 'predict',
+                    displayName: 'Predict',
+                    visibilityState: 'hidden',
+                  ),
+                ],
+              ),
+              storeReleasePolicy: StoreReleasePolicy.unenforced(),
+            ),
+            available: false,
+          ),
+          (
+            name: 'store policy blocked',
+            service: const FeatureConfigService(_testFeatureConfigSnapshot),
+            available: false,
+          ),
+        ]) {
+      testWidgets('empty match action respects ${scenario.name} Predict', (
+        tester,
+      ) async {
         await tester.pumpWidget(
           _buildApp(
             homeRepository: const _FakeHomeFeedRepository(
@@ -49,14 +128,25 @@ void main() {
             latestIntelRepository: const _FakeLatestIntelRepository(
               LatestIntelSnapshot(status: LatestIntelStatus.empty),
             ),
+            overrides: [
+              featureConfigServiceProvider.overrideWithValue(scenario.service),
+            ],
             child: const HomeScreen(),
           ),
         );
         await tester.pumpAndSettle();
-        expect(find.text('Join $appName'), findsWidgets);
-        if (appName != 'Gikundiro') {
-          expect(find.text('Join Gikundiro'), findsNothing);
-        }
+        expect(find.text('Matchday'), findsOneWidget);
+        expect(
+          find.text('Open Predict'),
+          scenario.available ? findsOneWidget : findsNothing,
+        );
+        final state = tester.widget<AfriStateView>(
+          find.descendant(
+            of: find.byKey(const ValueKey<String>('home-hero-state-compact')),
+            matching: find.byType(AfriStateView),
+          ),
+        );
+        expect(state.onAction, scenario.available ? isNotNull : isNull);
       });
     }
 
@@ -208,7 +298,7 @@ void main() {
           findsOneWidget,
         );
         expect(find.text('Matchday'), findsOneWidget);
-        expect(find.text('Open Predict'), findsOneWidget);
+        expect(find.text('Open Predict'), findsNothing);
         await _scrollHomeTo(tester, find.text('Tickets'));
         expect(find.text('Tickets'), findsOneWidget);
         expect(find.text('Join Gikundiro'), findsWidgets);
@@ -596,14 +686,14 @@ void main() {
           status: HomeFeedStatus.success,
           heroSlides: [
             MatchSlide(
-              homeTeam: 'Home club',
-              awayTeam: 'Visiting club',
+              homeTeam: 'Rayon Sports FC',
+              awayTeam: 'APR FC',
               homeScore: 2,
               awayScore: 1,
               status: 'Full time',
               dateInfo: 'Saturday · 18:00',
               venue: 'Club stadium',
-              route: '/fanzone',
+              route: '/predict',
             ),
           ],
           quickActions: homeFeedLocalFallbackActions,
@@ -612,6 +702,21 @@ void main() {
         ),
       ),
       featureConfigSnapshot: const PlatformConfigSnapshot(),
+      beforeCapture: (tester) async {
+        final match = find.byType(AfriFixtureTeams);
+        expect(
+          find.descendant(of: match, matching: find.text('RAY')),
+          findsOneWidget,
+        );
+        expect(
+          find.descendant(of: match, matching: find.text('APR')),
+          findsOneWidget,
+        );
+        final crests = tester.widgetList<RawImage>(
+          find.descendant(of: match, matching: find.byType(RawImage)),
+        );
+        expect(crests.where((image) => image.image != null), hasLength(2));
+      },
     );
   });
 
@@ -753,15 +858,15 @@ void main() {
       beforeCapture: (tester) async {
         expect(find.text('Matchday unavailable'), findsOneWidget);
         expect(find.text('Predict\nUnavailable'), findsOneWidget);
-        final fanZoneAction = tester.widget<AfriQuickAction>(
+        final predictAction = tester.widget<AfriQuickAction>(
           find.descendant(
             of: find.byKey(
-              const ValueKey<String>('home-primary-action-fan_zone'),
+              const ValueKey<String>('home-primary-action-predict'),
             ),
             matching: find.byType(AfriQuickAction),
           ),
         );
-        expect(fanZoneAction.enabled, isFalse);
+        expect(predictAction.enabled, isFalse);
       },
     );
   });
@@ -1019,6 +1124,17 @@ Future<void> _pumpHomeStateGolden(
     await tester.pump();
   }
 
+  await tester.runAsync(() async {
+    final context = tester.element(find.byType(HomeScreen));
+    await Future.wait(
+      tester
+          .widgetList<Image>(find.byType(Image))
+          .where((image) => image.image is AssetImage)
+          .map((image) => precacheImage(image.image, context)),
+    );
+  });
+  await tester.pump();
+
   await beforeCapture?.call(tester);
 
   final topChrome = find.byKey(const ValueKey<String>('home-top-chrome'));
@@ -1158,8 +1274,8 @@ void _setMobileSurface(WidgetTester tester) {
 const _testFeatureConfigSnapshot = PlatformConfigSnapshot(
   features: [
     PlatformFeature(
-      featureKey: 'fanzone',
-      displayName: 'Fan Zone',
+      featureKey: 'predict',
+      displayName: 'Predict',
       channel: FeatureChannelConfig(showOnHome: true),
     ),
     PlatformFeature(
@@ -1222,8 +1338,8 @@ const _testFeatureConfigSnapshot = PlatformConfigSnapshot(
 const _disabledHomeFeatureConfigSnapshot = PlatformConfigSnapshot(
   features: [
     PlatformFeature(
-      featureKey: 'fanzone',
-      displayName: 'Fan Zone',
+      featureKey: 'predict',
+      displayName: 'Predict',
       isEnabled: false,
       visibilityState: 'visible',
       channel: FeatureChannelConfig(showOnHome: true),
@@ -1292,7 +1408,7 @@ const _interactiveHomeSnapshot = HomeFeedSnapshot(
       awayTeam: 'AS Kigali',
       status: 'UPCOMING',
       dateInfo: '12 APR • 15:00',
-      route: '/fanzone',
+      route: '/predict',
     ),
   ],
   quickActions: homeFeedLocalFallbackActions,

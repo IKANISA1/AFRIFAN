@@ -53,13 +53,11 @@ class TicketCheckoutStep extends StatelessWidget {
                   style: TypographyTokens.labelLarge(),
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
-                TicketSummaryRow(
-                  label: context.afriL10n.ticketMatchLabel,
-                  value: context.afriL10n.ticketMatchVersus(
-                    match.homeTeam,
-                    match.awayTeam,
-                  ),
+                AfriFixtureTeams(
+                  homeTeam: match.homeTeam,
+                  awayTeam: match.awayTeam,
                 ),
+                const SizedBox(height: SpacingTokens.spacing3),
                 TicketSummaryRow(
                   label: context.afriL10n.ticketSeatTypeLabel,
                   value: selectedSeatType.label,

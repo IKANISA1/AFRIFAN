@@ -222,8 +222,8 @@ for (const configuration of routeConfigurations) {
     };
     const readyRecord =
       configuration.mode === "tickets"
-        ? /rayon sports vs apr fc/i
-        : /rayon sports vs police fc/i;
+        ? /rayon sports versus apr fc/i
+        : /rayon sports versus police fc/i;
 
     responseMode = "loading";
     await open("loading");
@@ -263,14 +263,14 @@ for (const configuration of routeConfigurations) {
     await context.setOffline(true);
     await page.evaluate(() => window.dispatchEvent(new Event("offline")));
     await expectStatus(page, "offline", /you are offline/i);
-    await expect(page.getByText(readyRecord).first()).toBeVisible();
+    await expect(page.getByRole("group", { name: readyRecord }).first()).toBeVisible();
     await capture("offline_dark");
     await context.setOffline(false);
 
     responseMode = "permission_denied";
     await open("permission");
     await expectStatus(page, "permission_denied", /match access denied/i);
-    await expect(page.getByText(readyRecord)).toHaveCount(0);
+    await expect(page.getByRole("group", { name: readyRecord })).toHaveCount(0);
     await capture("permission_denied_dark");
 
     responseMode = "ready";
@@ -391,7 +391,7 @@ for (const configuration of routeConfigurations) {
       .getByRole("button", { name: /refresh matches/i })
       .dispatchEvent("click");
     await expectStatus(page, "syncing", /refreshing match information/i);
-    await expect(page.getByText(readyRecord).first()).toBeVisible();
+    await expect(page.getByRole("group", { name: readyRecord }).first()).toBeVisible();
     await capture("syncing_dark");
 
     responseMode = "conflict";

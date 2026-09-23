@@ -31,9 +31,9 @@ import { StandingEditorForm } from "./_components/standing-editor-form";
 import { emptyForm, type StandingForm } from "./_components/standing-state";
 
 const formBadge: Record<string, string> = {
-  W: "bg-emerald-500/18 text-emerald-300",
+  W: "bg-success/18 text-success",
   D: "bg-[var(--admin-zinc-800)] text-[var(--admin-text-strong)]",
-  L: "bg-rose-500/18 text-rose-300",
+  L: "bg-error/18 text-error",
 };
 
 const emptyStandings: AdminStandingRow[] = [];
@@ -390,7 +390,7 @@ export default function AdminStandingsPage() {
                   <tr
                     key={row.id}
                     data-row-id={row.id}
-                    className={cn(isHighlighted && "bg-club-accent/5")}
+                    className={cn(isHighlighted && "bg-[var(--admin-accent)]/5")}
                   >
                     <td className="text-center font-mono text-xs text-[var(--admin-zinc-500)]">
                       {row.position}
@@ -398,7 +398,7 @@ export default function AdminStandingsPage() {
                     <td>
                       <p className="admin-row-title">{row.club}</p>
                       {isHighlighted ? (
-                        <span className="text-[9px] font-bold uppercase text-club-accent">
+                        <span className="text-xs font-medium normal-case text-[var(--admin-accent)]">
                           Current focus
                         </span>
                       ) : null}
@@ -407,7 +407,7 @@ export default function AdminStandingsPage() {
                     <td className="text-center text-[var(--admin-zinc-400)]">
                       {row.goalDifference}
                     </td>
-                    <td className="text-center font-bold text-[var(--admin-text-strong)]">
+                    <td className="text-center font-medium text-[var(--admin-text-strong)]">
                       {row.points}
                     </td>
                     <td>
@@ -416,7 +416,7 @@ export default function AdminStandingsPage() {
                           <span
                             key={`${item}-${index}`}
                             className={cn(
-                              "flex h-5 w-5 items-center justify-center rounded-full text-[8px] font-bold",
+                              "flex h-5 w-5 items-center justify-center rounded-full text-xs font-medium",
                               formBadge[item] || formBadge.D,
                             )}
                           >

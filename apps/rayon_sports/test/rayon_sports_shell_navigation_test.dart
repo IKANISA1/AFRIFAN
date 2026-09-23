@@ -30,7 +30,7 @@ void main() {
         _FakeMembershipModule(),
         _FakeSettingsModule(),
       ];
-      ColorTokens.init(config.colors);
+      ColorTokens.init();
       router = AppRouter(
         modules: modules,
         initialLocation: '/home',
@@ -246,7 +246,7 @@ class _FakeClubConfig implements ClubConfig {
 
   @override
   Map<String, bool> get features => const <String, bool>{
-    'fanzone': true,
+    'predict': true,
     'home': true,
     'settings': true,
   };
@@ -309,14 +309,14 @@ class _FakeClubModule extends FeatureModule {
 
 class _FakePredictModule extends FeatureModule {
   @override
-  String get featureKey => 'fanzone';
+  String get featureKey => 'predict';
 
   @override
   TabRoute get tabRoute => TabRoute(
     path: '/predict',
     label: 'Predict',
-    icon: AfriIcons.fanzone,
-    activeIcon: AfriIcons.fanzone,
+    icon: AfriIcons.predict,
+    activeIcon: AfriIcons.predict,
     builder: (context, state) =>
         const Scaffold(body: Center(child: Text('Predict Screen'))),
   );

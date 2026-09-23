@@ -109,11 +109,16 @@ class _PredictOpsScreenState extends ConsumerState<PredictOpsScreen> {
               for (final row in rows)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16),
-                  child: AfriSectionCard(
-                    title: '${row.home} · ${row.away}',
+                  child: GlassCard(
+                    animate: false,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        AfriFixtureTeams(
+                          homeTeam: row.home,
+                          awayTeam: row.away,
+                        ),
+                        const SizedBox(height: 12),
                         Text(
                           '${row.competition} · ${labels[row.status] ?? l.predictUnavailable}',
                         ),
@@ -139,15 +144,20 @@ class _PredictOpsScreenState extends ConsumerState<PredictOpsScreen> {
                             onTap: () => _act(PredictAdminAction.prepare, row),
                           )
                         else if (!row.completed) ...[
-                          if (row.canConfirm)
-                            AfriButton(
-                              label:
-                                  '${l.predictAdminConfirm} · ${row.homeScore}–${row.awayScore}',
-                              enabled: state.canAct && online,
-                              onTap: () =>
-                                  _act(PredictAdminAction.confirmResult, row),
+                          Text(
+                            row.hasFinalScore
+                                ? '${l.predictAdminFinalScore} · ${row.homeScore}–${row.awayScore}'
+                                : l.predictAdminAwaitingResult,
+                            style: TypographyTokens.titleMedium(),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            l.predictAdminAutomaticResults,
+                            style: TypographyTokens.bodyMedium(
+                              ColorTokens.onSurfaceVariant,
                             ),
-                          if (row.confirmed && row.canConfirm) ...[
+                          ),
+                          if (row.confirmed && row.hasFinalScore) ...[
                             const SizedBox(height: 8),
                             AfriButton(
                               label: l.predictAdminSettle,
@@ -207,7 +217,7 @@ class _PredictAdminFormState extends State<_PredictAdminForm> {
       PredictAdminAction.settings =>
         (int.tryParse(value) ?? 0) >= 1 &&
             (int.tryParse(value) ?? 100001) <= 100000,
-      PredictAdminAction.prepare || PredictAdminAction.confirmResult =>
+      PredictAdminAction.prepare =>
         value.length <= 2000 &&
             Uri.tryParse(value)?.scheme == 'https' &&
             (Uri.tryParse(value)?.host.isNotEmpty ?? false),
@@ -222,7 +232,6 @@ class _PredictAdminFormState extends State<_PredictAdminForm> {
     final label = switch (widget.action) {
       PredictAdminAction.settings => l.predictAdminSave,
       PredictAdminAction.prepare => l.predictAdminPrepare,
-      PredictAdminAction.confirmResult => l.predictAdminConfirm,
       PredictAdminAction.settle => l.predictAdminSettle,
       PredictAdminAction.refund => l.predictAdminRefund,
     };
@@ -234,7 +243,7 @@ class _PredictAdminFormState extends State<_PredictAdminForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (widget.fixture case final fixture?)
-            Text('${fixture.home} · ${fixture.away}'),
+            AfriFixtureTeams(homeTeam: fixture.home, awayTeam: fixture.away),
           if (widget.action == PredictAdminAction.settings) ...[
             AfriSwitchListTile(
               contentPadding: EdgeInsets.zero,
@@ -246,10 +255,6 @@ class _PredictAdminFormState extends State<_PredictAdminForm> {
           ],
           if (widget.action == PredictAdminAction.prepare)
             Text('${widget.data.entryFet} FET'),
-          if (widget.action == PredictAdminAction.confirmResult)
-            Text(
-              '${l.predictAdminConfirmBody}\n${widget.fixture!.homeScore}–${widget.fixture!.awayScore}',
-            ),
           if (widget.action == PredictAdminAction.settle)
             Text(l.predictAdminSettleBody)
           else
@@ -286,13 +291,8 @@ class _PredictAdminFormState extends State<_PredictAdminForm> {
                   if (widget.action != PredictAdminAction.prepare &&
                       widget.action != PredictAdminAction.settings)
                     'p_pool_id': widget.fixture!.poolId,
-                  if (widget.action == PredictAdminAction.prepare ||
-                      widget.action == PredictAdminAction.confirmResult)
+                  if (widget.action == PredictAdminAction.prepare)
                     'p_source_url': input.text.trim(),
-                  if (widget.action == PredictAdminAction.confirmResult) ...{
-                    'p_home_score': widget.fixture!.homeScore,
-                    'p_away_score': widget.fixture!.awayScore,
-                  },
                   if (widget.action == PredictAdminAction.refund)
                     'p_void_reason': input.text.trim(),
                 })

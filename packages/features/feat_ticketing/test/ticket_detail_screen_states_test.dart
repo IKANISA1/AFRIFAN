@@ -225,6 +225,20 @@ void main() {
       tester,
       id: 'dark',
       value: AsyncData<TicketDetailState>(_ready()),
+      check: (tester) async {
+        expect(find.textContaining('Official ticket categories'), findsNothing);
+        expect(find.text('RWF 5,000'), findsOneWidget);
+        expect(find.text('RWF 15,000'), findsOneWidget);
+        final down = find.byKey(const ValueKey('ticket-quantity-decrease'));
+        final up = find.byKey(const ValueKey('ticket-quantity-increase'));
+        final count = find.byKey(const ValueKey('ticket-quantity-value'));
+        expect(
+          tester.getRect(down).right,
+          lessThan(tester.getRect(count).left),
+        );
+        expect(tester.getRect(count).right, lessThan(tester.getRect(up).left));
+        expect(tester.getSize(up).width, greaterThanOrEqualTo(48));
+      },
     );
   });
 

@@ -1,36 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import {
-  Barlow_Condensed,
-  Inter,
-  Manrope,
-  Space_Grotesk,
-} from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { getClubProfile } from "@/lib/data/public";
 import { buildSiteJsonLd, getClubWebsiteIdentity, renderJsonLdScriptContent } from "@/lib/metadata";
 
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
-  subsets: ["latin"],
-  display: "swap",
-});
-
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
-  display: "swap",
-});
-
-const barlowCondensed = Barlow_Condensed({
-  variable: "--font-matchday",
-  subsets: ["latin"],
-  weight: ["900"],
   display: "swap",
 });
 
@@ -98,7 +74,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#0A111B",
+  themeColor: "#000000",
 };
 
 export default async function RootLayout({
@@ -111,7 +87,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${spaceGrotesk.variable} ${inter.variable} ${barlowCondensed.variable} h-full antialiased`}
+      className={`${inter.variable} h-full antialiased`}
     >
       <head />
       <body className="min-h-full flex flex-col">

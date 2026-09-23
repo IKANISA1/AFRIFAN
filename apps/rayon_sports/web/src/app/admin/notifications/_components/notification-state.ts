@@ -26,11 +26,3 @@ export const emptyForm: NotificationForm = {
   scheduledAt: "",
   imageUrl: "",
 };
-
-export const notifStatusColors: Record<string, string> = {
-  sent: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-  delivered: "bg-emerald-500/15 text-emerald-400 border-emerald-500/30",
-  scheduled: "bg-amber-500/15 text-amber-400 border-amber-500/30",
-  failed: "bg-rose-500/15 text-rose-300 border-rose-500/30",
-  pending: "bg-white/8 text-slate-300 border-border-soft",
-};

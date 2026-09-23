@@ -3,39 +3,36 @@ import { resolveFanAppHref } from "@/lib/config";
 
 export default function NotFound() {
   return (
-    <div className="page-shell py-16">
-      <div className="glass-panel-elevated rounded-[36px] p-8 sm:p-10">
-        <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
-          404
-        </p>
-        <h1 className="mt-4 font-display text-5xl font-bold uppercase leading-none text-white">
-          That route does not exist
+    <main className="recovery-page">
+      <section className="recovery-panel" aria-labelledby="not-found-title">
+        <p className="recovery-eyebrow">404</p>
+        <h1 id="not-found-title" className="recovery-title">
+          Page not found
         </h1>
-        <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300">
-          The supporter journey should remain clear even when a route is missing.
-          Use the links below to get back to a live public page or the fan app.
+        <p className="recovery-description">
+          This page may have moved. Return home, check the fixtures, or open the fan app.
         </p>
-        <div className="mt-6 flex flex-wrap gap-3">
+        <div className="recovery-actions">
           <Link
             href="/"
-            className="rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light"
+            className="recovery-action recovery-action-primary"
           >
             Return home
           </Link>
           <Link
             href="/fixtures"
-            className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+            className="recovery-action recovery-action-secondary"
           >
             Fixtures
           </Link>
           <Link
             href={resolveFanAppHref()}
-            className="rounded-full border border-border-soft bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+            className="recovery-action recovery-action-secondary"
           >
             Fan app
           </Link>
         </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }

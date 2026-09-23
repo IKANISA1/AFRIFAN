@@ -32,13 +32,13 @@ export function NotificationForm({
         onSubmit();
       }}
     >
-      <p className="font-display text-3xl font-bold uppercase leading-none">
+      <p className="font-display text-3xl font-medium normal-case leading-none">
         Compose broadcast
       </p>
       <label className="grid gap-2 text-sm">
         <div className="flex items-center justify-between">
           <span>Title</span>
-          <span className="font-mono text-[10px] font-semibold text-[var(--admin-text-muted)]">{form.title.length}/120</span>
+          <span className="font-mono text-xs font-semibold text-[var(--admin-text-muted)]">{form.title.length}/120</span>
         </div>
         <input
           value={form.title}
@@ -55,7 +55,7 @@ export function NotificationForm({
       <label className="grid gap-2 text-sm">
         <div className="flex items-center justify-between">
           <span>Body</span>
-          <span className="font-mono text-[10px] font-semibold text-[var(--admin-text-muted)]">{form.body.length}/500</span>
+          <span className="font-mono text-xs font-semibold text-[var(--admin-text-muted)]">{form.body.length}/500</span>
         </div>
         <textarea
           rows={6}
@@ -202,7 +202,7 @@ export function NotificationForm({
         <button
           type="submit"
           disabled={submitting || disabled}
-          className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary disabled:opacity-60"
+          className="rounded-full bg-action-blue px-5 py-3 font-semibold text-white transition hover:bg-action-blue-hover disabled:opacity-60"
         >
           {form.deliveryMode === "schedule" ? "Schedule notification" : "Send notification"}
         </button>
@@ -210,7 +210,7 @@ export function NotificationForm({
           type="button"
           disabled={submitting || disabled}
           onClick={onCopyPayload}
-          className="rounded-full border border-border-soft px-5 py-3 font-semibold text-[var(--admin-text-strong)] disabled:opacity-60 transition hover:bg-white/8"
+          className="rounded-full border border-border-soft px-5 py-3 font-semibold text-[var(--admin-text-strong)] disabled:opacity-60 transition hover:bg-[var(--admin-surface-hover)]"
         >
           Copy payload
         </button>

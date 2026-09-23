@@ -48,6 +48,37 @@ void main() {
     expect(controller.refreshCalls, 1);
   });
 
+  for (final brightness in Brightness.values) {
+    testWidgets('seat categories remain distinct and readable in $brightness', (
+      tester,
+    ) async {
+      await _pumpRoute(
+        tester,
+        controller: _Controller(AsyncData<TicketDetailState>(_ready())),
+        capture: false,
+        brightness: brightness,
+      );
+      final colors = <int>{};
+      for (final label in <String>['VIP', 'Tribune', 'Standing']) {
+        final marker = tester.widget<Container>(
+          find.byKey(ValueKey<String>('seat-zone-$label')),
+        );
+        final color = (marker.decoration! as BoxDecoration).color!;
+        colors.add(color.toARGB32());
+        final luminances = <double>[
+          color.computeLuminance(),
+          ColorTokens.surface.computeLuminance(),
+        ]..sort();
+        expect(
+          (luminances.last + 0.05) / (luminances.first + 0.05),
+          greaterThanOrEqualTo(3),
+          reason: label,
+        );
+      }
+      expect(colors.length, 3);
+    });
+  }
+
   testWidgets('golden Seat map loading state', (tester) async {
     await _pumpState(
       tester,

@@ -58,7 +58,7 @@ test("public home preserves club identity and primary journeys", async ({ page }
   await expect(home.getByRole("heading", { level: 1 })).toBeVisible();
   const tickets = home.getByRole("link", { name: "Get tickets", exact: true });
   await expect(tickets).toHaveAttribute("href", "/tickets");
-  await expect(home.getByRole("link", { name: "Join Rayon Sports FC", exact: true }))
+  await expect(home.getByRole("link", { name: "Join Rayon Sports", exact: true }))
     .toHaveAttribute("href", "/membership");
   await tickets.click();
   await expect(page).toHaveURL(/\/tickets(?:\?.*)?$/);
@@ -68,7 +68,7 @@ test("supporters handoff page renders on tablet", async ({ page }) => {
   await page.goto("/supporters", { waitUntil: "domcontentloaded" });
   await expect(
     page.getByRole("heading", {
-      name: /rayon sports fc rewards and public ranking/i,
+      name: /rayon sports rewards and public ranking/i,
     }),
   ).toBeVisible();
   await expect(
@@ -297,7 +297,7 @@ test("retired product routes return 404 while club journeys remain available", a
   for (const route of ["/venue", "/venue/orders", "/venue/tickets/verify", "/venues", "/admin/venues", "/admin/tickets/verifiers"]) {
     const response = await page.goto(route);
     expect(response?.status(), route).toBe(404);
-    await expect(page.getByRole("heading", { name: "That route does not exist", exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Page not found", exact: true })).toBeVisible();
   }
   const api = await request.post("/api/venue/tickets/verify", { data: { barcode: "retired-product-probe" } });
   expect(api.status()).toBe(404);

@@ -107,7 +107,7 @@ export function AdminImageField({
   return (
     <div
       className={cn(
-        "grid gap-3 rounded-[22px] border border-border-soft bg-white/5 p-4",
+        "grid gap-3 rounded-[22px] border border-border-soft bg-[var(--admin-surface-muted)] p-4",
         className,
       )}
     >
@@ -124,7 +124,7 @@ export function AdminImageField({
             type="button"
             onClick={() => onChange("")}
             disabled={disabled}
-            className="min-h-12 min-w-12 rounded-full border border-border-soft p-3 text-[var(--admin-text-strong)] transition hover:bg-white/8"
+            className="min-h-12 min-w-12 rounded-full border border-border-soft p-3 text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)]"
             title="Remove image"
           >
             <Trash2 size={14} />
@@ -137,7 +137,7 @@ export function AdminImageField({
           htmlFor={inputId}
           aria-disabled={disabled || uploading || generating}
           className={cn(
-            "inline-flex min-h-12 items-center gap-2 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-white/8",
+            "inline-flex min-h-12 items-center gap-2 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)]",
             disabled || uploading || generating
               ? "cursor-not-allowed opacity-60"
               : "cursor-pointer",
@@ -160,7 +160,7 @@ export function AdminImageField({
             void handleGenerate();
           }}
           disabled={disabled || uploading || generating || !prompt.trim()}
-          className="inline-flex min-h-12 items-center gap-2 rounded-full bg-club-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-club-secondary disabled:opacity-60"
+          className="inline-flex min-h-12 items-center gap-2 rounded-full bg-action-blue px-4 py-3 text-sm font-semibold text-white transition hover:bg-action-blue-hover disabled:opacity-60"
         >
           <Sparkles size={14} />
           {generating ? "Generating..." : "Generate image"}
@@ -183,7 +183,7 @@ export function AdminImageField({
       </label>
 
       {value ? (
-        <div className="overflow-hidden rounded-[20px] border border-border-soft bg-slate-950/40">
+        <div className="overflow-hidden rounded-[20px] border border-border-soft bg-background/40">
           {/* eslint-disable-next-line @next/next/no-img-element -- Admin media previews can point to runtime-generated Supabase storage URLs. */}
           <img src={value} alt={previewAlt} className="h-32 w-full object-cover" />
         </div>

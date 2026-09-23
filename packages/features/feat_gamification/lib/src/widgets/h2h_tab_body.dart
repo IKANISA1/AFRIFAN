@@ -227,38 +227,10 @@ class H2hTabBody extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
             child: GlassCard(
               animate: false,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      e.homeTeam,
-                      style: TypographyTokens.bodyMedium(),
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: SpacingTokens.spacing3,
-                      vertical: SpacingTokens.spacing2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: ColorTokens.surfaceContainerHigh,
-                      borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
-                    ),
-                    child: Text(
-                      context.afriL10n.gameScore(e.homeScore, e.awayScore),
-                      style: TypographyTokens.titleMedium().copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      e.awayTeam,
-                      textAlign: TextAlign.end,
-                      style: TypographyTokens.bodyMedium(),
-                    ),
-                  ),
-                ],
+              child: AfriFixtureTeams(
+                homeTeam: e.homeTeam,
+                awayTeam: e.awayTeam,
+                score: '${e.homeScore}–${e.awayScore}',
               ),
             ),
           );

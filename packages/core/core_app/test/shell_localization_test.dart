@@ -13,7 +13,7 @@ void main() {
       expect(localizedPrimaryLabel(l10n, 'home', 'fallback'), l10n.navHome);
       expect(localizedPrimaryLabel(l10n, 'club', 'fallback'), l10n.navClub);
       expect(
-        localizedPrimaryLabel(l10n, 'fanzone', 'fallback'),
+        localizedPrimaryLabel(l10n, 'predict', 'fallback'),
         l10n.predictTitle,
       );
       expect(

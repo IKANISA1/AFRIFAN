@@ -1,5 +1,19 @@
 # AFRICLUB full-stack QA progress
 
+## Frontend approval and implementation resumed — 20 September 2026
+
+The owner approved all presented screens and instructed continued implementation. The reviewed gallery and image hashes are bound by `output/qa/full-stack-20260914/frontend-owner-approval-20260920.json`; the existing native reference map records this decision. The corresponding UI is implemented in the shared production modules. Work now continues on actual backend/API outcomes, automatic paid memberships, integration and native build/device checks. Technical, provider, hosted-CI, signing and release acceptance remain separate. No production deployment or provider messages are authorized by this approval.
+
+The current frontend checks are 2,347 Flutter tests, 26 shell tests, 953 web unit tests and 288 browser passes with three explicit skips. The detailed records are `frontend-consolidation-native-verification-20260920.json` and `frontend-consolidation-web-verification-20260920.json`. Older results below retain their original scope and are not renewed by frontend approval.
+
+## Post-approval implementation — paid membership
+
+Three reproduced defects are repaired in forward migrations: reconciliation incorrectly retained an unfulfilled flag after activation (QA-MONEY-013); concurrent checkout/allocation could deadlock (QA-MONEY-014); and membership activation did not bind the selected payment provider/country (QA-MONEY-015). The existing CI-registered PostgreSQL harness now exercises real allocation and activation together, wrong-evidence refusal, late-write rollback, lock-observed contention, four concurrent checkouts, four concurrent allocation retries, receipt repair and exact-once renewal. All pass on a fresh task-owned native PostgreSQL 17 fixture. The 20 scoped cases and source hashes are in `post-approval-membership-implementation-20260920.json`.
+
+Current Edge typechecks and 289 tests also pass. Docker is unresponsive, so the full pinned Supabase/vendor replay and actual Auth/REST/Edge membership journey remain unverified for these migrations. Older pending orders without provider snapshots require a fresh bound checkout; mixed-version rollout and pre-existing paid-but-unprocessed evidence need separate validation. No migration has been applied to a hosted environment. The 37-task goal remains incomplete.
+
+## Earlier full-stack checkpoint
+
 Updated 2026-09-20T09:13:24.407225+00:00. **The 37-task goal is incomplete; release readiness is NO-GO.** Tasks 5, 11 and 16 have scoped local closure. Thirty-four task buckets remain open or partial. Visual review uses `revolut-design` as the sole design authority; full visual fidelity remains unverified.
 
 The 20 September design-scope change removes the separate mobile scoring contract, validator, release wrapper and empty approval registries. The selected skill is the sole design authority across all included surfaces. Local verification passes 58 governance/release-control tests, two route-generation tests (160 routes across four clubs), authority binding and source compliance (zero violations; two existing evidence warnings). The first broader test attempt lacked the pinned bundletool path and is retained with its failure; the configured rerun passes. Historical local records edited to remove retired metadata are explicitly qualified and hashed in `goal-update-design-scope-cleanup.json`; they cannot be treated as unchanged capture originals. Visual review and the remaining QA work stay open.

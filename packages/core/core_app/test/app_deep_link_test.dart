@@ -18,7 +18,7 @@ void main() {
 
     setUp(() {
       config = const _FakeClubConfig();
-      ColorTokens.init(config.colors);
+      ColorTokens.init();
     });
 
     testWidgets(

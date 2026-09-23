@@ -72,74 +72,31 @@ void main() {
     );
   });
 
-  group('Fanzone surface', () {
-    late FeatureModule fanzone;
-
-    setUp(() {
-      fanzone = modules.firstWhere((m) => m.featureKey == 'fanzone');
-    });
-
-    test(
-      '/fanzone keeps compatibility routes but redirects section content',
-      () {
-        final subPaths = fanzone.standaloneRoutes
-            .whereType<GoRoute>()
-            .singleWhere((r) => r.path == '/fanzone')
-            .routes
+  group('Predict surface', () {
+    test('only canonical Predict tasks are registered', () {
+      final predict = modules.firstWhere((m) => m.featureKey == 'predict');
+      expect(
+        predict.standaloneRoutes
             .whereType<GoRoute>()
             .map((r) => r.path)
-            .toSet();
-
-        expect(
-          subPaths,
-          containsAll(<String>{
-            'fixtures',
-            'live',
-            'my',
-            'match/:fixtureId',
-            'wallet',
-            'rewards',
-            'history',
-            'offers',
-            'leaderboard',
-            'notifications',
-            'badges',
-            'streak',
-            'share',
-            'league',
-            'league/:competitionSlug',
-            'standings/:competitionSlug',
-            'team/:teamSlug',
-            'club-zone',
-            'fan-id',
-            'social',
-            'privacy',
-          }),
-        );
-        expect(subPaths, isNot(contains('challenges')));
-        expect(subPaths, isNot(contains('jackpot')));
-        expect(subPaths, isNot(contains('friends')));
-        expect(subPaths, isNot(contains('predict')));
-
-        final decisions = {
-          for (final decision in fanzone.routePresentationDecisions)
-            decision.path: decision.presentation,
-        };
-        expect(decisions['/predict'], RoutePresentation.fullScreen);
-        expect(decisions['/fanzone'], RoutePresentation.redirect);
-        expect(
-          decisions['/fanzone/match/:fixtureId'],
-          RoutePresentation.fullScreen,
-        );
-        expect(decisions['/fanzone/wallet'], RoutePresentation.redirect);
-        expect(decisions['/fanzone/fixtures'], RoutePresentation.redirect);
-        expect(decisions['/fanzone/leaderboard'], RoutePresentation.redirect);
-        expect(decisions['/fanzone/offers'], RoutePresentation.redirect);
-        expect(decisions['/fanzone/rewards'], RoutePresentation.redirect);
-        expect(decisions['/fanzone/history'], RoutePresentation.redirect);
-        expect(decisions['/fanzone/club-zone'], RoutePresentation.redirect);
-      },
-    );
+            .toSet(),
+        {
+          '/predict/match/:fixtureId',
+          '/predict/picks/:predictionId',
+          '/predict/share',
+        },
+      );
+      final decisions = {
+        for (final d in predict.routePresentationDecisions)
+          d.path: d.presentation,
+      };
+      expect(decisions['/predict'], RoutePresentation.fullScreen);
+      expect(
+        decisions['/predict/picks/:predictionId'],
+        RoutePresentation.fullHeightSheet,
+      );
+      expect(decisions['/predict/share'], RoutePresentation.modalSheet);
+    });
   });
 
   group('Settings and admin', () {
@@ -328,10 +285,10 @@ void main() {
           '/club/fixtures',
           '/club/fixtures/:matchId',
           '/club/results',
-          '/club/standings',
-          '/club/history',
           '/club/projects',
           '/club/projects/:projectId',
+          '/club/standings',
+          '/club/history',
         }),
       );
     });
@@ -365,13 +322,10 @@ void main() {
           '/club/news/:articleId',
           '/club/fixtures',
           '/club/fixtures/:matchId',
-          '/club/results',
           '/club/standings',
           '/club/history',
-          '/club/projects',
-          '/club/projects/:projectId',
           '/predict',
-          '/fanzone/match/:fixtureId',
+          '/predict/match/:fixtureId',
           '/settings',
           '/tickets',
           '/e-ticket/:id',

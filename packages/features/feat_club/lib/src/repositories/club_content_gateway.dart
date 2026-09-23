@@ -16,8 +16,6 @@ abstract interface class ClubContentGateway {
   Future<List<ClubStandingItem>> loadStandings();
 
   Future<List<ClubHistoryItem>> loadHistory();
-
-  Future<List<ClubProjectItem>> loadProjects();
 }
 
 abstract interface class ClubEntityGateway {
@@ -158,20 +156,5 @@ class SupabaseClubContentGateway
               ClubHistoryItem.fromJson(Map<String, dynamic>.from(row as Map)),
         )
         .toList(growable: false);
-  }
-
-  @override
-  Future<List<ClubProjectItem>> loadProjects() async {
-    final clubId = await _requireClubId();
-    final rows = await _client
-        .from('contribution_groups')
-        .select(
-          'id, name, description, current_total, target_amount, member_count',
-        )
-        .eq('club_id', clubId)
-        .eq('is_active', true)
-        .order('created_at', ascending: false)
-        .limit(30);
-    return rows.map(ClubProjectItem.fromJson).toList(growable: false);
   }
 }

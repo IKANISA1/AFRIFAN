@@ -199,7 +199,7 @@ void main() {
               title: 'Rayon Sports vs APR',
               description: 'Live fixture from the active club.',
               category: DiscoveryCategory.fixtures,
-              destination: '/fanzone/match/fixture-live',
+              destination: '/predict/match/fixture-live',
               icon: AfriIcons.fixture,
             ),
           ]),

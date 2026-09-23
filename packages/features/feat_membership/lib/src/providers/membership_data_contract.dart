@@ -8,10 +8,6 @@ abstract final class MembershipReadProjection {
       'membership_number,display_name,expires_at,renewed_at,payment_status,'
       'status,created_at,updated_at';
 
-  static const String application =
-      'id,user_id,club_id,tier,status,payment_status,application_date,'
-      'review_date,reviewer_id,notes,metadata,created_at,updated_at';
-
   static const String tier =
       'id,partner_id,club_id,tier,category_slug,title,name,subtitle,'
       'description,benefits,annual_price,price,is_active,active,sort_order,'

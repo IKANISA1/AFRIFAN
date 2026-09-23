@@ -25,21 +25,21 @@ export function AdminStateCard({
   const isLoading = value === "..." || value === "";
   const toneClass =
     tone === "success"
-      ? "border-emerald-500/20"
+      ? "border-success/20"
       : tone === "warning"
-        ? "border-amber-500/20"
+        ? "border-warning/20"
         : tone === "danger"
-          ? "border-rose-500/20"
+          ? "border-error/20"
           : tone === "info"
-            ? "border-sky-500/20"
+            ? "border-accent/20"
             : tone === "accent"
-              ? "border-[var(--club-accent)]/25"
+              ? "border-[var(--action-neutral)]/25"
               : "";
 
   return (
     <article className={`${ui.panel} ${ui.cardInteractive} ${toneClass} group rounded-[28px] border-[1.2px] p-5 sm:p-6`}>
       <div className="flex items-start justify-between gap-3">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[var(--admin-text-muted)]">
+        <p className="text-xs font-semibold normal-case tracking-normal text-[var(--admin-text-muted)]">
           {label}
         </p>
         {Icon ? (
@@ -57,16 +57,16 @@ export function AdminStateCard({
       ) : (
         <>
           <div className="mt-5 flex items-end gap-3">
-            <p className="font-display text-[2.25rem] font-bold leading-none tracking-[-0.055em] text-[var(--admin-text-strong)] sm:text-[2.7rem]">
+            <p className="font-display text-[2.25rem] font-medium leading-none tracking-[-0.055em] text-[var(--admin-text-strong)] sm:text-[2.7rem]">
               {value}
             </p>
             {trend && trendLabel ? (
               <span
                 className={cn(
-                  "mb-1 flex items-center gap-1 rounded-full border px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em]",
-                  trend === "up" && "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
-                  trend === "down" && "border-rose-500/30 bg-rose-500/10 text-rose-300",
-                  trend === "neutral" && "border-border-soft bg-white/5 text-slate-400",
+                  "mb-1 flex items-center gap-1 rounded-full border px-2 py-1 text-xs font-semibold normal-case tracking-normal",
+                  trend === "up" && "border-success/30 bg-success/10 text-success",
+                  trend === "down" && "border-error/30 bg-error/10 text-error",
+                  trend === "neutral" && "border-border-soft bg-[var(--admin-surface-muted)] text-[var(--admin-text-muted)]",
                 )}
               >
                 {trend === "up" ? "↑" : trend === "down" ? "↓" : "–"} {trendLabel}

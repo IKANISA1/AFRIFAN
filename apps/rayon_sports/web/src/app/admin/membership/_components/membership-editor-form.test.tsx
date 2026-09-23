@@ -41,7 +41,7 @@ describe("MembershipEditorForm accessibility recovery", () => {
     );
     await user.type(
       screen.getByRole("spinbutton", { name: "Annual price (RWF)" }),
-      "0",
+      "1000",
     );
     await user.click(screen.getByRole("button", { name: "Create tier" }));
 
@@ -83,7 +83,7 @@ describe("MembershipEditorForm accessibility recovery", () => {
     );
     await user.type(
       screen.getByRole("spinbutton", { name: "Annual price (RWF)" }),
-      "0",
+      "1000",
     );
     expect(screen.getByRole("textbox", { name: "Title" })).toBeRequired();
     expect(screen.getByRole("spinbutton", { name: "Annual price (RWF)" })).toHaveAttribute(
@@ -102,6 +102,18 @@ describe("MembershipEditorForm accessibility recovery", () => {
     await waitFor(() =>
       expect(screen.getByRole("button", { name: "Create tier" })).toBeEnabled(),
     );
+  });
+
+  it("refuses a zero-price membership tier", async () => {
+    const user = userEvent.setup();
+    render(<Harness />);
+    await user.type(screen.getByRole("textbox", { name: "Title" }), "Gold");
+    await user.type(screen.getByRole("textbox", { name: "Description" }), "Gold benefits");
+    const price = screen.getByRole("spinbutton", { name: "Annual price (RWF)" });
+    await user.type(price, "0");
+    await user.click(screen.getByRole("button", { name: "Create tier" }));
+    expect(price).toBeInvalid();
+    expect(saveAdminMembershipPackage).not.toHaveBeenCalled();
   });
 
   it("clears an edit draft only through the explicit cancellation action", async () => {

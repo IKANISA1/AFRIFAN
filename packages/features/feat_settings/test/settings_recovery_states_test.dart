@@ -503,11 +503,16 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Saved notification settings'), findsOneWidget);
-      expect(find.text('Connection required'), findsOneWidget);
-      final toggle = tester.widget<AfriButton>(
-        find.widgetWithText(AfriButton, 'Connection required'),
-      );
-      expect(toggle.enabled, isFalse);
+      for (final key in <String>[
+        'notifications-delivery-action',
+        'notifications-save-action',
+      ]) {
+        final action = find.byKey(ValueKey<String>(key));
+        await tester.ensureVisible(action);
+        final button = tester.widget<AfriButton>(action);
+        expect(button.label, 'Connection required');
+        expect(button.enabled, isFalse, reason: key);
+      }
     },
   );
 }

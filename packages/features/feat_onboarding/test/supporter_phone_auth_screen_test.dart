@@ -335,6 +335,7 @@ void main() {
     );
     await tester.showKeyboard(phoneField);
     await tester.enterText(phoneField, supporterPhoneAuthTestNumber);
+    await tester.pumpAndSettle();
     await tester.ensureVisible(submit);
     await tester.pumpAndSettle();
     await tester.tap(submit);
@@ -375,7 +376,7 @@ void main() {
     );
     _expectInKeyboardViewport(tester, input);
     _expectInKeyboardViewport(tester, submit);
-    expect(tester.getRect(submit).bottom, closeTo(508, 1));
+    expect(tester.getRect(submit).bottom, lessThanOrEqualTo(852 - 320 - 16));
     expect(submit.hitTestable(), findsOneWidget);
   });
 

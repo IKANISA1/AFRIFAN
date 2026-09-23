@@ -1,8 +1,8 @@
 import 'package:core_auth/core_auth.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:feat_onboarding/feat_onboarding.dart';
 import 'package:feat_onboarding/src/screens/onboarding_screen.dart';
-import 'package:feat_onboarding/src/screens/splash_screen.dart';
 import 'package:feat_onboarding/src/screens/supporter_phone_auth_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -149,9 +149,8 @@ GoRouter _buildRouter(String initialLocation) {
   return GoRouter(
     initialLocation: initialLocation,
     routes: [
-      GoRoute(
-        path: '/splash',
-        builder: (context, state) => const SplashScreen(),
+      OnboardingModule().routes.whereType<GoRoute>().singleWhere(
+        (route) => route.path == '/splash',
       ),
       GoRoute(
         path: '/onboarding',
@@ -212,55 +211,6 @@ void main() {
   });
 
   group('Onboarding auth flow — §2.2 compliant', () {
-    testWidgets('splash routes authenticated users with MOMO to home', (
-      tester,
-    ) async {
-      final repository = FakeAuthRepository(
-        restoreResult: const UserProfile(
-          id: 'user-1',
-          clubId: '24',
-          publicUserId: '483912',
-          momoNumber: '0781234567',
-          momoProvider: 'MoMo',
-        ),
-      );
-
-      await _pumpApp(
-        tester,
-        initialLocation: '/splash',
-        repository: repository,
-      );
-
-      await _pumpPastSplash(tester);
-
-      expect(find.text('Home Route'), findsOneWidget);
-    });
-
-    testWidgets(
-      '§2.2: splash routes restored users WITHOUT MOMO straight to home (no gate)',
-      (tester) async {
-        // Restored users ALWAYS land on /home after restore.
-        final repository = FakeAuthRepository(
-          restoreResult: const UserProfile(
-            id: 'user-2',
-            clubId: '24',
-            publicUserId: '483912',
-          ),
-        );
-
-        await _pumpApp(
-          tester,
-          initialLocation: '/splash',
-          repository: repository,
-        );
-
-        await _pumpPastSplash(tester);
-
-        // Always go to /home during launch.
-        expect(find.text('Home Route'), findsOneWidget);
-      },
-    );
-
     testWidgets(
       '§2.2: onboarding guest browsing reaches Home without authentication',
       (tester) async {
@@ -301,7 +251,7 @@ void main() {
       },
     );
 
-    testWidgets('splash routes unauthenticated users to onboarding', (
+    testWidgets('legacy splash link opens the canonical onboarding screen', (
       tester,
     ) async {
       final repository = FakeAuthRepository(restoreResult: null);
@@ -316,44 +266,6 @@ void main() {
 
       expect(find.byType(OnboardingScreen), findsOneWidget);
     });
-
-    testWidgets(
-      'splash clears a broken session and routes to onboarding when restore throws',
-      (tester) async {
-        final repository = FakeAuthRepository(
-          restoreError: Exception('temporary backend outage'),
-        );
-
-        await _pumpApp(
-          tester,
-          initialLocation: '/splash',
-          repository: repository,
-        );
-
-        await _pumpPastSplash(tester);
-
-        expect(find.byType(OnboardingScreen), findsOneWidget);
-      },
-    );
-
-    testWidgets(
-      'splash sends users to onboarding only when restore fails and no fallback session exists',
-      (tester) async {
-        final repository = FakeAuthRepository(
-          restoreError: Exception('broken session'),
-        );
-
-        await _pumpApp(
-          tester,
-          initialLocation: '/splash',
-          repository: repository,
-        );
-
-        await _pumpPastSplash(tester);
-
-        expect(find.byType(OnboardingScreen), findsOneWidget);
-      },
-    );
   });
 
   testWidgets('matches the onboarding editorial layout on mobile', (
@@ -397,7 +309,12 @@ void main() {
           find.text('Follow ${club.clubName} wherever supporters gather.'),
           findsOneWidget,
         );
-        expect(find.byType(Image), findsNothing);
+        expect(
+          find.byWidgetPredicate(
+            (widget) => widget is Image && widget.image is! AssetImage,
+          ),
+          findsNothing,
+        );
         expect(
           tester
               .widget<AfriGovernedImage>(find.byType(AfriGovernedImage))
@@ -419,7 +336,12 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.text('Closer to\n${club.appName}.'), findsOneWidget);
         expect(find.textContaining('Gikundiro'), findsNothing);
-        expect(find.byType(Image), findsNothing);
+        expect(
+          find.byWidgetPredicate(
+            (widget) => widget is Image && widget.image is! AssetImage,
+          ),
+          findsNothing,
+        );
       },
     );
   }
@@ -445,13 +367,24 @@ void main() {
       find.text('Follow Rayon Sports FC wherever supporters gather.'),
       findsOneWidget,
     );
-    expect(find.text('RS'), findsOneWidget);
+    expect(find.text('RS'), findsNothing);
+    expect(
+      tester
+          .widgetList<Image>(find.byType(Image))
+          .where((image) => image.image is AssetImage),
+      hasLength(1),
+    );
     expect(find.byType(PageView), findsOneWidget);
     final governedImage = tester.widget<AfriGovernedImage>(
       find.byType(AfriGovernedImage),
     );
     expect(governedImage.rightsApproved, isFalse);
-    expect(find.byType(Image), findsNothing);
+    expect(
+      find.byWidgetPredicate(
+        (widget) => widget is Image && widget.image is! AssetImage,
+      ),
+      findsNothing,
+    );
   });
 
   testWidgets('onboarding exposes three swipeable governed media slides', (
@@ -468,7 +401,12 @@ void main() {
       ),
     );
     await tester.pump();
-    expect(find.byType(Image), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (widget) => widget is Image && widget.image is! AssetImage,
+      ),
+      findsOneWidget,
+    );
 
     await tester.flingFrom(const Offset(350, 250), const Offset(-320, 0), 900);
     await tester.pumpAndSettle();

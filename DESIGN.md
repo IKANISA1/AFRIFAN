@@ -138,12 +138,10 @@ or simulate a successful financial/action outcome for visual effect.
   match, score, image or club metadata.
 - Club: own identity and concise proposition followed by grouped routes for
   team, news, fixtures, results, standings, history, projects, tickets and shop.
-- Predict: one canonical `/predict` shell destination replaces the separate
-  Predict, Challenge and Fan Zone hubs. Use LIVE-026 violet/blue-violet discovery
+- Predict: `/predict` is the sole prediction shell destination. Use LIVE-026 violet/blue-violet discovery
   chrome and tonal cards, with Fixtures, My picks and FET activity sections.
   The available FET balance is server-derived; only future open fixtures accept
-  Home / Draw / Away entries. Old `/challenge` and `/fanzone` links resolve to the
-  consolidated journey or the actual Club/Fan Clubs content. Match detail remains a focused secondary route. Preserve existing
+  Home / Draw / Away entries. Removed prediction products have no registered routes or compatibility redirects. Match detail remains a focused secondary route. Preserve existing
   authorization, pending/reconciliation, ledger and kickoff rules.
 - Membership: own digital card/status uses the LIVE-048 purple card treatment
   (`#6219E5` to `#8017EE`, colour-managed rendered samples, not source tokens),

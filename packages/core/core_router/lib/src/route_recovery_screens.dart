@@ -78,12 +78,11 @@ class RouteRecoveryScreen extends StatelessWidget {
         .toList(growable: false);
     final firstSegment = segments.isEmpty ? null : segments.first;
     return switch (firstSegment) {
-      'fanzone' => 'Fan Zone',
+      'predict' => 'Predict',
       'membership' => 'Membership',
       'tickets' => 'Tickets',
       'shop' => 'Shop',
       'settings' => 'Settings',
-      'predict' => 'Predict',
       'contribute' => 'Supporters',
       'live' || 'live-match' => 'Live',
       'home' => 'Home',

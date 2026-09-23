@@ -73,8 +73,11 @@ void main() {
     final csv = buildStatementCsv(
       StatementState(snapshot: _snapshot(), sort: StatementSort.amount),
     );
-    expect(csv, startsWith('Alias,Amount,Status,Date'));
-    expect(csv.indexOf('#FAN2048'), lessThan(csv.indexOf('#BLUEARMY')));
+    expect(csv, startsWith('Alias,Amount,Date'));
+    expect(csv, contains('#FAN2048'));
+    expect(csv, isNot(contains('#BLUEARMY')));
+    expect(csv, isNot(contains('Status')));
+    expect(csv, isNot(contains('PROCESSING')));
     expect(csv, isNot(contains('Reference')));
     expect(csv, isNot(contains('user_id')));
     expect(csv, isNot(contains('momo')));

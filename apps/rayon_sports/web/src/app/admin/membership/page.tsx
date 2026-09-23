@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { ClipboardCheck, Crown, Plus, Search, Users } from "lucide-react";
+import { Crown, Plus, Search, Users } from "lucide-react";
 import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
 import { AdminDataGrid } from "@/components/admin/admin-data-grid";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
@@ -27,14 +27,10 @@ import {
   normalizeAdminMembershipPackages,
 } from "@/lib/data/admin/membership";
 import {
-  getAdminMembershipApplications,
   getAdminSupporterRegistry,
-  normalizeAdminMembershipApplications,
   normalizeAdminSupporters,
-  reviewMembershipApplication,
 } from "@/lib/data/admin/membership-ops";
 import type {
-  AdminMembershipApplication,
   AdminMembershipPackage,
   AdminSupporter,
 } from "@/lib/types";
@@ -49,24 +45,21 @@ import {
   type MembershipForm,
 } from "./_components/membership-state";
 
-type MembershipTab = "tiers" | "registry" | "applications";
+type MembershipTab = "tiers" | "registry";
 
 type MembershipSnapshot = {
   packages: AdminMembershipPackage[];
   supporters: AdminSupporter[];
-  applications: AdminMembershipApplication[];
 };
 
 const emptyMembershipSnapshot: MembershipSnapshot = {
   packages: [],
   supporters: [],
-  applications: [],
 };
 
 const membershipSnapshotIsEmpty = (snapshot: MembershipSnapshot) =>
   snapshot.packages.length === 0 &&
-  snapshot.supporters.length === 0 &&
-  snapshot.applications.length === 0;
+  snapshot.supporters.length === 0;
 
 function normalizeMembershipSnapshot(value: unknown): MembershipSnapshot {
   if (value == null || typeof value !== "object" || Array.isArray(value)) {
@@ -76,7 +69,6 @@ function normalizeMembershipSnapshot(value: unknown): MembershipSnapshot {
   return {
     packages: normalizeAdminMembershipPackages(snapshot.packages),
     supporters: normalizeAdminSupporters(snapshot.supporters),
-    applications: normalizeAdminMembershipApplications(snapshot.applications),
   };
 }
 
@@ -94,7 +86,7 @@ const statusCopy: Record<
   },
   empty: {
     label: "No membership records in this scope",
-    detail: "Create an approved tier or wait for supporter activity.",
+    detail: "Create a paid tier or wait for supporter activity.",
   },
   error: {
     label: "Membership operations unavailable",
@@ -132,20 +124,18 @@ export default function AdminMembershipPage() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [detailSupporter, setDetailSupporter] =
     useState<AdminSupporter | null>(null);
-  const [detailApplication, setDetailApplication] =
-    useState<AdminMembershipApplication | null>(null);
+
   const [interaction, setInteraction] =
     useState<AdminResourceInteraction>("idle");
 
   const loadMembership = useCallback(
     async (signal: AbortSignal) => {
       if (client == null) return emptyMembershipSnapshot;
-      const [packages, supporters, applications] = await Promise.all([
+      const [packages, supporters] = await Promise.all([
         getAdminMembershipPackages(client, access, { signal }),
         getAdminSupporterRegistry(client, access, { signal }),
-        getAdminMembershipApplications(client, access, { signal }),
       ]);
-      return { packages, supporters, applications };
+      return { packages, supporters };
     },
     [access, client],
   );
@@ -155,7 +145,6 @@ export default function AdminMembershipPage() {
     setForm(emptyForm);
     setDrawerOpen(false);
     setDetailSupporter(null);
-    setDetailApplication(null);
     setInteraction("idle");
   }, []);
 
@@ -177,7 +166,7 @@ export default function AdminMembershipPage() {
     resourceLabel: "membership operations",
   });
 
-  const { packages, supporters, applications } = snapshot;
+  const { packages, supporters } = snapshot;
 
   const supporterCollection = useAdminCollection({
     records: supporters,
@@ -212,37 +201,7 @@ export default function AdminMembershipPage() {
     pageSize: 25,
   });
 
-  const applicationCollection = useAdminCollection({
-    records: applications,
-    getId: (application) => application.id,
-    getSearchValues: (application) => [
-      application.userName,
-      application.userPhone,
-      application.tier,
-      application.status,
-      application.paymentStatus,
-    ],
-    getSortValue: (
-      application,
-      key: "applicant" | "tier" | "status" | "payment" | "date",
-    ) => {
-      switch (key) {
-        case "applicant":
-          return application.userName;
-        case "tier":
-          return application.tier;
-        case "status":
-          return application.status;
-        case "payment":
-          return application.paymentStatus;
-        case "date":
-          return new Date(application.applicationDate);
-      }
-    },
-    initialSortKey: "date" as const,
-    initialSortDirection: "descending",
-    pageSize: 25,
-  });
+
 
   const mutationLocked = status !== "ready" && status !== "empty";
   const unrecoveredFailure =
@@ -269,43 +228,7 @@ export default function AdminMembershipPage() {
     setDrawerOpen(true);
   }
 
-  async function handleReview(
-    application: AdminMembershipApplication,
-    decision: "approved" | "rejected",
-  ) {
-    if (client == null || mutationLocked) return;
-    const confirmed = confirmAdminDestructiveAction({
-      action: decision === "approved" ? "Approve" : "Reject",
-      subject: application.userName ?? "membership application",
-      scope: `Application ${application.id} · active club ${access.clubId ?? "not selected"}`,
-      impact:
-        decision === "approved"
-          ? "The paid application will be accepted into the membership workflow."
-          : "The application will be rejected and cannot be approved without a new review.",
-      undo: "manual_recovery",
-    });
-    if (!confirmed) return;
 
-    showAdminToast(`Reviewing application as ${decision}...`, "info");
-    try {
-      await reviewMembershipApplication(
-        client,
-        access,
-        application.id,
-        application.updatedAt,
-        decision,
-      );
-      await refresh();
-      setDetailApplication(null);
-      showAdminToast(`Application ${decision}.`, "success");
-    } catch (caught) {
-      applyFailure(caught);
-      if (isAdminMutationConflict(caught)) {
-        await refresh();
-      }
-      showAdminToast("Could not confirm the membership review.", "error");
-    }
-  }
 
   return (
     <section
@@ -360,23 +283,7 @@ export default function AdminMembershipPage() {
           helper="Strict registry window, capped at 500."
           icon={Users}
         />
-        <AdminStateCard
-          label="Pending applications"
-          value={
-            initialLoading
-              ? "..."
-              : applications
-                  .filter((application) => application.status === "pending")
-                  .length.toString()
-          }
-          tone={
-            applications.some((application) => application.status === "pending")
-              ? "warning"
-              : "neutral"
-          }
-          helper="Payment and review controls remain scoped."
-          icon={ClipboardCheck}
-        />
+
         <AdminStateCard
           label="Active tiers"
           value={
@@ -421,7 +328,7 @@ export default function AdminMembershipPage() {
             role="tablist"
             aria-label="Membership workspaces"
           >
-            {(["tiers", "registry", "applications"] as MembershipTab[]).map(
+            {(["tiers", "registry"] as MembershipTab[]).map(
               (tab) => (
                 <button
                   key={tab}
@@ -502,7 +409,7 @@ export default function AdminMembershipPage() {
                     onChange={(event) =>
                       supporterCollection.setQuery(event.target.value)
                     }
-                    placeholder="Search supporter, membership, tier, or chapter"
+                    placeholder="Search supporter, membership, tier, or FanClubs"
                   />
                 </label>
               </AdminFilterBar>
@@ -586,137 +493,7 @@ export default function AdminMembershipPage() {
             </div>
           ) : null}
 
-          {activeTab === "applications" ? (
-            <div className="admin-surface min-w-0">
-              <AdminFilterBar>
-                <label className="admin-search-field">
-                  <Search size={16} aria-hidden="true" />
-                  <span className="sr-only">
-                    Search membership applications
-                  </span>
-                  <input
-                    type="search"
-                    value={applicationCollection.query}
-                    onChange={(event) =>
-                      applicationCollection.setQuery(event.target.value)
-                    }
-                    placeholder="Search applicant, tier, status, or payment"
-                  />
-                </label>
-              </AdminFilterBar>
-              <AdminDataGrid
-                caption="Membership applications"
-                onRowActivate={(rowId) => {
-                  setDetailApplication(
-                    applications.find(
-                      (application) => application.id === rowId,
-                    ) ?? null,
-                  );
-                  setInteraction("selected");
-                }}
-                columns={[
-                  { key: "applicant", label: "Applicant", priority: "primary", sortable: true, sortDirection: applicationCollection.sortDirectionFor("applicant"), onSort: () => applicationCollection.toggleSort("applicant") },
-                  { key: "request", label: "Requested tier", priority: "primary", sortable: true, sortDirection: applicationCollection.sortDirectionFor("tier"), onSort: () => applicationCollection.toggleSort("tier") },
-                  { key: "status", label: "Status", priority: "primary", sortable: true, sortDirection: applicationCollection.sortDirectionFor("status"), onSort: () => applicationCollection.toggleSort("status") },
-                  { key: "payment", label: "Payment", priority: "secondary", sortable: true, sortDirection: applicationCollection.sortDirectionFor("payment"), onSort: () => applicationCollection.toggleSort("payment") },
-                  { key: "date", label: "Applied date", priority: "secondary", sortable: true, sortDirection: applicationCollection.sortDirectionFor("date"), onSort: () => applicationCollection.toggleSort("date") },
-                  { key: "actions", label: "Actions", priority: "primary", className: "text-right" },
-                ]}
-              >
-                {applicationCollection.pageResult.items.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="admin-membership-empty-cell">
-                      {applicationCollection.query
-                        ? "No applications match the current search."
-                        : "No membership applications found."}
-                    </td>
-                  </tr>
-                ) : (
-                  applicationCollection.pageResult.items.map((application) => (
-                    <tr key={application.id} data-row-id={application.id}>
-                      <td>
-                        <p className="admin-row-title">
-                          {application.userName ?? "Identity unavailable"}
-                        </p>
-                        <p className="admin-row-meta">
-                          {application.userPhone ?? "Phone unavailable"}
-                        </p>
-                      </td>
-                      <td>
-                        <AdminStatusBadge label={application.tier} tone="info" />
-                      </td>
-                      <td>
-                        <AdminStatusBadge
-                          label={application.status}
-                          tone={
-                            application.status === "approved"
-                              ? "success"
-                              : application.status === "rejected"
-                                ? "danger"
-                                : "warning"
-                          }
-                        />
-                      </td>
-                      <td>
-                        <AdminStatusBadge
-                          label={application.paymentStatus}
-                          tone={
-                            application.paymentStatus === "paid"
-                              ? "success"
-                              : "neutral"
-                          }
-                        />
-                      </td>
-                      <td className="admin-row-meta">
-                        {new Date(
-                          application.applicationDate,
-                        ).toLocaleDateString()}
-                      </td>
-                      <td className="text-right">
-                        {application.status === "pending" ? (
-                          <div className="admin-membership-review-actions">
-                            <button
-                              type="button"
-                              onClick={() =>
-                                void handleReview(application, "approved")
-                              }
-                              className="admin-action-button admin-membership-approve-button"
-                              disabled={
-                                mutationLocked ||
-                                application.paymentStatus !== "paid"
-                              }
-                              title={
-                                application.paymentStatus === "paid"
-                                  ? "Approve application"
-                                  : "Payment must be marked paid before approval"
-                              }
-                            >
-                              Approve
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                void handleReview(application, "rejected")
-                              }
-                              className="admin-action-button admin-action-button-danger"
-                              disabled={mutationLocked}
-                            >
-                              Reject
-                            </button>
-                          </div>
-                        ) : null}
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </AdminDataGrid>
-              <AdminPagination
-                page={applicationCollection.pageResult}
-                onPageChange={applicationCollection.setPage}
-                label="Membership applications"
-              />
-            </div>
-          ) : null}
+
         </>
       )}
 
@@ -788,41 +565,7 @@ export default function AdminMembershipPage() {
         ) : null}
       </AdminActionDrawer>
 
-      <AdminActionDrawer
-        open={detailApplication != null}
-        onClose={() => {
-          setDetailApplication(null);
-          setInteraction("idle");
-        }}
-        title="Membership application details"
-      >
-        {detailApplication ? (
-          <dl className="admin-membership-detail-list">
-            <div>
-              <dt>Applicant</dt>
-              <dd>{detailApplication.userName ?? "Identity unavailable"}</dd>
-            </div>
-            <div>
-              <dt>Requested tier</dt>
-              <dd>{detailApplication.tier}</dd>
-            </div>
-            <div>
-              <dt>Status</dt>
-              <dd>{detailApplication.status}</dd>
-            </div>
-            <div>
-              <dt>Payment</dt>
-              <dd>{detailApplication.paymentStatus}</dd>
-            </div>
-            <div>
-              <dt>Applied</dt>
-              <dd>
-                {new Date(detailApplication.applicationDate).toLocaleString()}
-              </dd>
-            </div>
-          </dl>
-        ) : null}
-      </AdminActionDrawer>
+
     </section>
   );
 }

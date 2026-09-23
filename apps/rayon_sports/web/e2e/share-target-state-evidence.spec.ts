@@ -65,7 +65,7 @@ test("share target proves nine rendered states including invalid URLs", async ({
     await page.locator(".share-target-title").evaluate((element) => {
       return getComputedStyle(element).color;
     }),
-  ).toBe("rgb(246, 248, 252)");
+  ).toBe("rgb(244, 244, 244)");
   await capture(page, "dark_dark");
 
   const axeResults = await new AxeBuilder({ page })
@@ -115,16 +115,12 @@ test("share target proves nine rendered states including invalid URLs", async ({
   ).not.toBe("none");
   await capture(page, "focused_dark");
 
-  const primaryBox = await primary.boundingBox();
-  expect(primaryBox).not.toBeNull();
-  await page.mouse.move(
-    primaryBox!.x + primaryBox!.width / 2,
-    primaryBox!.y + primaryBox!.height / 2,
-  );
+  // Full-page captures can leave this link below the mobile viewport. Hover
+  // scrolls the actual target into view before the pointer press is measured.
+  await primary.hover();
   await page.mouse.down();
-  await page.waitForTimeout(50);
-  expect(
-    await primary.evaluate((element) => getComputedStyle(element).transform),
+  await expect.poll(() =>
+    primary.evaluate((element) => getComputedStyle(element).transform),
   ).not.toBe("none");
   await capture(page, "pressed_dark");
   await page.mouse.move(1, 1);
@@ -164,7 +160,7 @@ test("share target proves nine rendered states including invalid URLs", async ({
     await page.locator(".share-target-title").evaluate((element) => {
       return getComputedStyle(element).color;
     }),
-  ).toBe("rgb(13, 22, 39)");
+  ).toBe("rgb(25, 28, 31)");
   expect(
     await page
       .locator(".share-target-action-primary")

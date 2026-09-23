@@ -40,7 +40,7 @@ class PrivacySafeAnalyticsPolicy {
     'search_success': <String>{'category', 'result_count_bucket'},
     'ticket_completion': <String>{'ticket_type', 'payment_channel'},
     'contribution_completion': <String>{'payment_channel', 'value_bucket'},
-    'fanzone_engagement': <String>{'surface', 'action'},
+    'predict_engagement': <String>{'surface', 'action'},
     'support_access': <String>{'channel'},
     'error_recovery': <String>{'surface', 'outcome'},
     'task_abandonment': <String>{'task', 'stage'},

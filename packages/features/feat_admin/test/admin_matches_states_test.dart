@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:test_support/app_font_loader.dart';
 
 const _goldenViewport = Size(390, 844);
@@ -15,7 +16,10 @@ const _goldenViewportId = '390x844';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  setUpAll(loadAppFonts);
+  setUpAll(() async {
+    await loadAppFonts();
+    await initializeDateFormatting();
+  });
 
   setUp(() {
     ConnectivityService.setOnlineForTest(true);
@@ -36,7 +40,7 @@ void main() {
     );
 
     expect(find.text('Loading match workspace'), findsOneWidget);
-    expect(find.textContaining('APR FC'), findsNothing);
+    expect(find.text(teamInitials('APR FC')), findsNothing);
     await _expectStateGolden(tester, 'loading');
     pending.complete(_workspace);
     await tester.pumpAndSettle();
@@ -74,7 +78,7 @@ void main() {
     );
 
     expect(find.text('Match workspace offline'), findsOneWidget);
-    expect(find.textContaining('APR FC'), findsNothing);
+    expect(find.text(teamInitials('APR FC')), findsNothing);
     await _expectStateGolden(tester, 'offline');
   });
 
@@ -87,7 +91,7 @@ void main() {
     );
 
     expect(find.text('Match access unavailable'), findsOneWidget);
-    expect(find.textContaining('APR FC'), findsNothing);
+    expect(find.text(teamInitials('APR FC')), findsNothing);
     await _expectStateGolden(tester, 'permission_denied');
   });
 
@@ -106,6 +110,38 @@ void main() {
     await _expectStateGolden(tester, 'disabled');
   });
 
+  testWidgets('match editor keeps automatic results read only', (tester) async {
+    final gateway = _Gateway(<Object>[_workspace]);
+    await _pumpMatches(tester, gateway: gateway);
+    final action = find.byKey(const ValueKey<String>('admin-match-match-2'));
+    await tester.ensureVisible(action);
+    await tester.pumpAndSettle();
+    await tester.tap(action);
+    await tester.pumpAndSettle();
+    final notice = find.text(
+      'Scores, match status and live minutes are managed by the LiveScore integration.',
+    );
+    await tester.ensureVisible(notice);
+    await tester.pumpAndSettle();
+    expect(notice, findsOneWidget);
+    expect(find.text('Home score'), findsNothing);
+    expect(find.text('Away score'), findsNothing);
+    expect(find.text('Live minute'), findsNothing);
+    expect(find.byType(AfriDropdownField<String>), findsNothing);
+    expect(tester.takeException(), isNull);
+    await _expectStateGolden(tester, 'automatic_results_editor');
+    final save = find.widgetWithText(AfriButton, 'Update match');
+    await tester.ensureVisible(save);
+    await tester.pumpAndSettle();
+    await tester.tap(save);
+    await tester.pumpAndSettle();
+    expect(gateway.savedDraft?.payload['match_status'], 'live');
+    expect(gateway.savedDraft?.payload['home_score'], 2);
+    expect(gateway.savedDraft?.payload['away_score'], 1);
+    expect(gateway.savedDraft?.payload['live_minute'], 67);
+    expect(gateway.savedMatchId, 'match-2');
+  });
+
   testWidgets('selected filter exposes current selection', (tester) async {
     await _pumpMatches(tester, gateway: _Gateway(<Object>[_workspace]));
 
@@ -116,8 +152,8 @@ void main() {
       find.widgetWithText(AfriChoiceChip, 'Live'),
     );
     expect(selected.selected, isTrue);
-    expect(find.textContaining('Police FC'), findsOneWidget);
-    expect(find.textContaining('APR FC'), findsNothing);
+    expect(find.text(teamInitials('Police FC')), findsOneWidget);
+    expect(find.text(teamInitials('APR FC')), findsNothing);
     await _expectStateGolden(tester, 'selected');
   });
 
@@ -208,7 +244,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('Checking fixture information'), findsOneWidget);
-    expect(find.textContaining('APR FC'), findsOneWidget);
+    expect(find.text(teamInitials('APR FC')), findsOneWidget);
     await _expectStateGolden(tester, 'syncing');
     pending.complete(_workspace);
     await tester.pumpAndSettle();
@@ -227,7 +263,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('Fixture information changed'), findsOneWidget);
-    expect(find.textContaining('APR FC'), findsOneWidget);
+    expect(find.text(teamInitials('APR FC')), findsOneWidget);
     expect(find.textContaining('Controls are paused'), findsOneWidget);
     await _expectStateGolden(tester, 'conflict');
   });
@@ -245,7 +281,7 @@ void main() {
     await tester.pump();
 
     expect(find.text('Security check timed out'), findsOneWidget);
-    expect(find.textContaining('APR FC'), findsOneWidget);
+    expect(find.text(teamInitials('APR FC')), findsOneWidget);
     expect(find.textContaining('private-admin-id'), findsNothing);
     await _expectStateGolden(tester, 'security_timeout');
   });
@@ -390,6 +426,8 @@ class _Gateway implements AdminMatchesGateway {
 
   final List<Object> outcomes;
   int loadCount = 0;
+  AdminMatchDraft? savedDraft;
+  String? savedMatchId;
 
   @override
   Future<AdminMatchesSnapshot> load() async {
@@ -401,5 +439,8 @@ class _Gateway implements AdminMatchesGateway {
   }
 
   @override
-  Future<void> save(AdminMatchDraft draft, {String? matchId}) async {}
+  Future<void> save(AdminMatchDraft draft, {String? matchId}) async {
+    savedDraft = draft;
+    savedMatchId = matchId;
+  }
 }

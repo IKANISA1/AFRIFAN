@@ -43,7 +43,6 @@ describe("admin optimistic-concurrency adoption", () => {
     "cms/content/page.tsx",
     "cms/content-blocks/page.tsx",
     "community/page.tsx",
-    "contributions/page.tsx",
     "football-sync/page.tsx",
     "membership/page.tsx",
     "gamification/page.tsx",
@@ -71,10 +70,6 @@ describe("admin optimistic-concurrency adoption", () => {
 
   it.each([
     ["features.ts", "admin_update_platform_feature_if_unchanged"],
-    [
-      "membership-ops.ts",
-      "review_membership_application_if_unchanged",
-    ],
   ])("%s uses a transactional version-checked RPC", (file, rpc) => {
     const value = source(dataRoot, file);
     expect(value).toContain("requireExpectedUpdatedAt");

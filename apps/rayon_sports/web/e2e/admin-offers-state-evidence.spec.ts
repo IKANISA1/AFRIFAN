@@ -58,7 +58,7 @@ const offers = Array.from({ length: 30 }, (_, index) => {
     ctaLabel: "View journey",
     verificationMode:
       number % 2 === 0 ? "mobility_confirmation" : "manual_review",
-    deeplinkRoute: `/fanzone/offers/offer-${number}`,
+    deeplinkRoute: "/predict?section=wallet",
     externalUrl: `https://partner.example/offers/${number}`,
     isFeatured: number % 5 === 0,
     isActive: number % 7 !== 0,

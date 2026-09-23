@@ -52,15 +52,11 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
   late final TextEditingController _generalController;
   late final TextEditingController _vipController;
   late final TextEditingController _capacityController;
-  late final TextEditingController _homeScoreController;
-  late final TextEditingController _awayScoreController;
-  late final TextEditingController _liveMinuteController;
   late final TextEditingController _summaryController;
 
   late DateTime _selectedDate;
   late TimeOfDay _selectedTime;
   late bool _isOnSale;
-  late String _matchStatus;
   String? _errorText;
   bool _saving = false;
 
@@ -88,15 +84,6 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
     _capacityController = TextEditingController(
       text: '${_existing?.capacity ?? 18000}',
     );
-    _homeScoreController = TextEditingController(
-      text: '${_existing?.homeScore ?? 0}',
-    );
-    _awayScoreController = TextEditingController(
-      text: '${_existing?.awayScore ?? 0}',
-    );
-    _liveMinuteController = TextEditingController(
-      text: '${_existing?.liveMinute ?? 0}',
-    );
     _summaryController = TextEditingController(text: _existing?.summary ?? '');
 
     _selectedDate =
@@ -105,7 +92,6 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
         _parseTime(_existing?.kickoffTime) ??
         const TimeOfDay(hour: 15, minute: 30);
     _isOnSale = _existing?.isOnSale ?? false;
-    _matchStatus = _existing?.status ?? 'scheduled';
   }
 
   @override
@@ -117,9 +103,6 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
     _generalController.dispose();
     _vipController.dispose();
     _capacityController.dispose();
-    _homeScoreController.dispose();
-    _awayScoreController.dispose();
-    _liveMinuteController.dispose();
     _summaryController.dispose();
     super.dispose();
   }
@@ -163,10 +146,10 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
         'ticket_general_price': int.tryParse(_generalController.text.trim()),
         'ticket_vip_price': int.tryParse(_vipController.text.trim()),
         'capacity': int.tryParse(_capacityController.text.trim()),
-        'match_status': _matchStatus,
-        'home_score': int.tryParse(_homeScoreController.text.trim()),
-        'away_score': int.tryParse(_awayScoreController.text.trim()),
-        'live_minute': int.tryParse(_liveMinuteController.text.trim()),
+        'match_status': _existing?.status ?? 'scheduled',
+        'home_score': _existing?.homeScore ?? 0,
+        'away_score': _existing?.awayScore ?? 0,
+        'live_minute': _existing?.liveMinute ?? 0,
         'match_summary': _summaryController.text.trim(),
       };
 
@@ -238,14 +221,26 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
                 ),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
-              AfriInputField(
-                controller: _homeController,
-                label: context.afriL10n.adminMatchHomeTeam,
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              AfriInputField(
-                controller: _awayController,
-                label: context.afriL10n.adminMatchAwayTeam,
+              Row(
+                children: [
+                  Expanded(
+                    child: AfriTeamField(
+                      value: _homeController.text,
+                      semanticLabel: context.afriL10n.adminMatchHomeTeam,
+                      onChanged: (value) =>
+                          setState(() => _homeController.text = value),
+                    ),
+                  ),
+                  const SizedBox(width: SpacingTokens.spacing3),
+                  Expanded(
+                    child: AfriTeamField(
+                      value: _awayController.text,
+                      semanticLabel: context.afriL10n.adminMatchAwayTeam,
+                      onChanged: (value) =>
+                          setState(() => _awayController.text = value),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               AfriInputField(
@@ -318,66 +313,11 @@ class _MatchComposerSheetState extends State<_MatchComposerSheet> {
                 onChanged: (value) => setState(() => _isOnSale = value),
               ),
               const SizedBox(height: SpacingTokens.spacing3),
-              AfriDropdownField<String>(
-                initialValue: _matchStatus,
-                label: context.afriL10n.adminMatchStatus,
-                items: [
-                  DropdownMenuItem(
-                    value: 'scheduled',
-                    child: Text(context.afriL10n.adminMatchStatusScheduled),
-                  ),
-                  DropdownMenuItem(
-                    value: 'live',
-                    child: Text(context.afriL10n.adminMatchStatusLive),
-                  ),
-                  DropdownMenuItem(
-                    value: 'halftime',
-                    child: Text(context.afriL10n.adminMatchStatusHalfTime),
-                  ),
-                  DropdownMenuItem(
-                    value: 'fulltime',
-                    child: Text(context.afriL10n.adminMatchStatusFullTime),
-                  ),
-                  DropdownMenuItem(
-                    value: 'postponed',
-                    child: Text(context.afriL10n.adminMatchStatusPostponed),
-                  ),
-                  DropdownMenuItem(
-                    value: 'cancelled',
-                    child: Text(context.afriL10n.adminMatchStatusCancelled),
-                  ),
-                ],
-                onChanged: (value) {
-                  if (value != null) setState(() => _matchStatus = value);
-                },
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              Row(
-                children: [
-                  Expanded(
-                    child: AfriInputField(
-                      controller: _homeScoreController,
-                      keyboardType: TextInputType.number,
-                      label: context.afriL10n.adminMatchHomeScore,
-                    ),
-                  ),
-                  const SizedBox(width: SpacingTokens.spacing3),
-                  Expanded(
-                    child: AfriInputField(
-                      controller: _awayScoreController,
-                      keyboardType: TextInputType.number,
-                      label: context.afriL10n.adminMatchAwayScore,
-                    ),
-                  ),
-                  const SizedBox(width: SpacingTokens.spacing3),
-                  Expanded(
-                    child: AfriInputField(
-                      controller: _liveMinuteController,
-                      keyboardType: TextInputType.number,
-                      label: context.afriL10n.adminMatchLiveMinute,
-                    ),
-                  ),
-                ],
+              Text(
+                context.afriL10n.adminMatchAutomaticResults,
+                style: TypographyTokens.bodyMedium(
+                  ColorTokens.onSurfaceVariant,
+                ),
               ),
               const SizedBox(height: SpacingTokens.spacing3),
               AfriInputField(

@@ -29,6 +29,7 @@ const parsed = normalizeParsedSms({
 for (
   const scenario of [
     "matching",
+    "membership",
     "wrong currency",
     "wrong receiver",
     "foreign owner",
@@ -68,6 +69,7 @@ for (
       is_active: true,
     };
     const evidence = { ...parsed };
+    if (scenario === "membership") intent.target_table = "membership_payment_orders";
     if (scenario === "wrong currency") evidence.currency = "USD";
     if (scenario === "wrong receiver") {
       intent.receiving_account_id = "receiver-2";
@@ -192,20 +194,21 @@ for (
       if (!error) {
         assertEquals(
           result?.matchStatus,
-          scenario === "matching" ? "matched" : "manual_review",
+          ["matching", "membership"].includes(scenario) ? "matched" : "manual_review",
           "truthful match outcome",
         );
-        if (scenario === "matching") {
+        if (["matching", "membership"].includes(scenario)) {
           assertEquals(
             result?.matchType,
-            "intent_initiative_contributions",
+            `intent_${intent.target_table}`,
             "schema target kind",
           );
+          assertEquals(result?.metadata.business_target_fulfilled, scenario === "membership", "only automatic membership activation fulfills this target");
         }
       }
       assertEquals(
         writes,
-        ["matching", "write error", "lost claim"].includes(scenario) ? 1 : 0,
+        ["matching", "membership", "write error", "lost claim"].includes(scenario) ? 1 : 0,
         "mismatched evidence cannot mutate intent",
       );
       assertEquals(

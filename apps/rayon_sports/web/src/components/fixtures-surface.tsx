@@ -1,5 +1,7 @@
 "use client";
 
+import { FixtureTeams, TeamCard } from "@/components/team-card";
+
 import Link from "next/link";
 import {
   type PointerEvent,
@@ -499,8 +501,7 @@ export function FixturesSurface({
                 </p>
                 <div className="fixtures-score">
                   <div>
-                    <span>Home</span>
-                    <strong>{selectedFixture.homeTeam}</strong>
+                    <TeamCard name={selectedFixture.homeTeam} vertical />
                   </div>
                   <b aria-label="Score">
                     {isLive(selectedFixture.matchStatus) ||
@@ -509,8 +510,7 @@ export function FixturesSurface({
                       : "VS"}
                   </b>
                   <div>
-                    <span>Away</span>
-                    <strong>{selectedFixture.awayTeam}</strong>
+                    <TeamCard name={selectedFixture.awayTeam} vertical />
                   </div>
                 </div>
                 <dl className="fixtures-meta">
@@ -585,7 +585,7 @@ export function FixturesSurface({
                     <span className="fixtures-card-copy">
                       <small>{fixture.competition}</small>
                       <strong>
-                        {fixture.homeTeam} vs {fixture.awayTeam}
+                        <FixtureTeams homeTeam={fixture.homeTeam} awayTeam={fixture.awayTeam} />
                       </strong>
                       <time dateTime={fixture.matchDate}>
                         {formatFixtureDate(fixture.matchDate, locale)}

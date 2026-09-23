@@ -28,8 +28,8 @@ export function CommunityContentEditor({
     <form onSubmit={handleSubmit} className="grid gap-4 p-4">
       <fieldset disabled={disabled} className="contents">
         <div className="flex items-center justify-between gap-3">
-          <p className="font-display text-2xl font-bold uppercase leading-none text-[var(--admin-text-strong)]">
-            {form.id ? "Edit chapter" : "New chapter"}
+          <p className="font-display text-2xl font-medium normal-case leading-none text-[var(--admin-text-strong)]">
+            {form.id ? "Edit FanClubs" : "New FanClubs"}
           </p>
           {form.id ? (
             <button
@@ -44,7 +44,7 @@ export function CommunityContentEditor({
 
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
-            Chapter name
+            FanClubs name
             <input
               name="name"
               required
@@ -151,7 +151,7 @@ export function CommunityContentEditor({
         </div>
 
         <AdminImageField
-          label="Chapter banner"
+          label="FanClubs banner"
           name="bannerImageUrl"
           value={form.bannerImageUrl}
           onChange={(nextValue) =>
@@ -162,8 +162,8 @@ export function CommunityContentEditor({
           }
           mediaKind="fan_club"
           subject={form.name}
-          previewAlt="Chapter banner preview"
-          promptPlaceholder="Example: Supporters chapter banner with a vibrant crowd, local community energy, club colors throughout, cinematic but welcoming."
+          previewAlt="FanClubs banner preview"
+          promptPlaceholder="Example: Supporters FanClubs banner with a vibrant crowd, local community energy, club colors throughout, cinematic but welcoming."
         />
 
         <label className="flex min-h-12 items-center gap-3 rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] px-4 py-3 text-sm text-[var(--admin-text-strong)]">
@@ -183,9 +183,9 @@ export function CommunityContentEditor({
 
         <button
           type="submit"
-          className="admin-action-button min-h-12 !bg-club-primary !text-white hover:!bg-club-primary-light disabled:opacity-70"
+          className="admin-action-button min-h-12 !bg-action-blue !text-white hover:!bg-action-blue-hover disabled:opacity-70"
         >
-          {form.id ? "Save chapter" : "Add chapter"}
+          {form.id ? "Save FanClubs" : "Add FanClubs"}
         </button>
       </fieldset>
     </form>

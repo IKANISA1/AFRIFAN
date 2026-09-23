@@ -14,7 +14,7 @@ Widget buildClubShellSmokeApp({
   required ClubConfig config,
   String initialLocation = '/home',
 }) {
-  ColorTokens.init(config.colors);
+  ColorTokens.init();
   final modules = AppModuleRegistry.build(config);
   final router = AppRouter(
     modules: modules,

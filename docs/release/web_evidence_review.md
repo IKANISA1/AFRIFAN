@@ -1,5 +1,61 @@
 # Browser evidence review
 
+## 20 September 2026 implementation revision
+
+The sole authority remains `revolut-design`. The owner requested replacement of
+conflicting presentation across the repository and a `review-agent` review.
+The latter is a read-only defect review of the implementation diff, not another
+design standard or an owner-acceptance decision.
+
+The public reference was inspected at https://www.revolut.com/ on 20 September:
+photographic hero, sentence-case heading (500 weight; 48/48px at 390px and about
+84.7/84.7px at 1280px), dark pill call to action, restrained navigation. The club
+website retains its own photos, names, content, routes and feature flags. Inter
+is the self-hosted product typography adapter from the historical UI Kit; the
+live public site's Aeonik Pro font is not bundled here. Exact font equivalence
+therefore remains open, rather than being claimed from similar geometry.
+
+`src/ui-kit/tokens.css` implements semantic colours from the skill's versioned
+UI Kit and signed-out web evidence. It replaces the falsely labelled generated
+token file. The club palette derivation module is removed; tenant colour values
+remain identity data for marks and swatches. Public and admin/PWA chrome, ordinary
+groups, inputs and actions use neutral roles. Status colours remain distinct.
+Blue Home, violet membership and photographic editorial content are explicitly
+selected product adaptations; they do not establish source-page equivalence.
+The native Dark · Glow sources are not presented as web geometry evidence.
+
+The unused legacy hero, gold UI accents, condensed 900-weight display face,
+uppercase tracking, bevelled groups and per-club page washes are replaced.
+The signed-out admin form retains WhatsApp OTP, permissions and session behavior;
+provider colour no longer defines its controls. The public bottom navigation
+retains its destinations and safe-area clearance in a floating neutral group.
+
+Before/after command logs, retained failures, native contrast diffs and new
+browser captures are stored under `output/qa/full-stack-20260914/goal-update-revolut-*`.
+Older browser packets belong to the earlier source and are not acceptance of
+this revision. Current captures are engineering evidence until compared and
+accepted through the existing registers. A backend storage-quota restriction
+observed during the first run is separate from isolated UI outcomes.
+
+### Frontend approval candidate
+
+The current refinement removes duplicate admin CSS and theme-specific utility
+colours, aligns admin inputs, buttons, chips and notices with the shared semantic
+roles, and keeps both light and dark themes readable. The public compact drawer
+covers the viewport. A single optional Home tab fits its label instead of filling
+the phone width. Unavailable home content has one recovery notice and unknown
+summary counts remain unknown. Membership inputs and labels use readable sizes,
+shared spacing and grouped history rows. These are frontend presentation changes;
+provider availability and owner acceptance are separate and remain unclaimed.
+
+The next review packet uses the `goal-update-frontend-*` command logs and captures
+under `output/qa/full-stack-20260914/`. Earlier failed or interrupted runs remain
+there as diagnostic evidence. The gallery is a local review aid assembled from
+existing route and baseline registers, not an acceptance register. Backend,
+provider, hosted CI and release work waits for owner approval of the frontend.
+
+## Provenance and review procedure
+
 Production builds and raw captures must remain tied to their exact source. Run
 the pinned web `corepack npm run build` command with the intended QA environment.
 It seals production inputs, the build ID and compiled artifacts. Browser state

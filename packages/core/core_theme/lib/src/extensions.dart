@@ -21,7 +21,7 @@ extension AfriThemeExtension on BuildContext {
   AfriSemanticColors get afriSemanticColors =>
       Theme.of(this).extension<AfriSemanticColors>() ?? AfriSemanticColors.dark;
 
-  /// Access the non-color design tokens from root DESIGN.md.
+  /// Access the non-color design tokens from the revolut-design runtime adapter.
   AfriDesignTokens get afriDesignTokens =>
       Theme.of(this).extension<AfriDesignTokens>() ??
       AfriDesignTokens.standard();

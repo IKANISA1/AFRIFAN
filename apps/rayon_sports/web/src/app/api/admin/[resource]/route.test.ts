@@ -98,7 +98,6 @@ vi.mock("@/lib/data/admin", () => {
       getAdminLiveScoreCompetitionSourcesMock,
     getAdminRuntimeRegistrySnapshot: getAdminRuntimeRegistrySnapshotMock,
     getAdminMatches: noop,
-    getAdminMembershipApplications: noop,
     getAdminMembershipPackages: noop,
     getAdminNotificationContext: noop,
     getAdminOffers: noop,

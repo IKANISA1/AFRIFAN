@@ -281,7 +281,7 @@ export default function AdminConfigPage() {
           >
             <fieldset disabled={mutationLocked} className="contents">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="font-display text-3xl font-bold uppercase leading-none text-[var(--admin-text-strong)]">
+                <p className="font-display text-3xl font-medium normal-case leading-none text-[var(--admin-text-strong)]">
                   {form.isEditing ? "Edit configuration" : "New configuration"}
                 </p>
                 {form.isEditing ? (
@@ -291,7 +291,7 @@ export default function AdminConfigPage() {
                       setForm(emptyForm);
                       setInteraction("idle");
                     }}
-                    className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-white/8"
+                    className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)]"
                   >
                     Cancel editing
                   </button>
@@ -351,7 +351,7 @@ export default function AdminConfigPage() {
               </div>
               <button
                 type="submit"
-                className="min-h-12 rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light disabled:cursor-not-allowed disabled:opacity-70"
+                className="min-h-12 rounded-full bg-action-blue px-5 py-3 text-sm font-semibold text-white transition hover:bg-action-blue-hover disabled:cursor-not-allowed disabled:opacity-70"
               >
                 <Plus size={16} className="mr-1 inline" aria-hidden="true" />
                 {form.isEditing ? "Update" : "Add"} configuration
@@ -414,7 +414,7 @@ export default function AdminConfigPage() {
                     className={cn(
                       "flex flex-wrap items-center justify-between gap-4 rounded-[20px] border bg-[var(--admin-surface-muted)] p-4",
                       form.id === entry.id
-                        ? "border-club-accent"
+                        ? "border-[var(--admin-accent)]"
                         : "border-border-soft",
                     )}
                   >
@@ -422,14 +422,14 @@ export default function AdminConfigPage() {
                       <div className="flex flex-wrap items-center gap-2">
                         <Settings2
                           size={16}
-                          className="shrink-0 text-club-accent"
+                          className="shrink-0 text-[var(--admin-accent)]"
                           aria-hidden="true"
                         />
                         <p className="break-all font-mono text-sm font-semibold text-[var(--admin-text-strong)]">
                           {entry.key}
                         </p>
                         {entry.country ? (
-                          <span className="rounded-full border border-border-soft px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--admin-text-strong)]">
+                          <span className="rounded-full border border-border-soft px-2 py-1 text-xs font-medium normal-case tracking-normal text-[var(--admin-text-strong)]">
                             {entry.country}
                           </span>
                         ) : null}
@@ -448,7 +448,7 @@ export default function AdminConfigPage() {
                         type="button"
                         onClick={() => beginEdit(entry)}
                         disabled={mutationLocked}
-                        className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border-soft p-3 text-[var(--admin-text-strong)] transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-70"
+                        className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border-soft p-3 text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)] disabled:cursor-not-allowed disabled:opacity-70"
                         aria-label={`Edit ${entry.key}`}
                       >
                         <Edit3 size={16} aria-hidden="true" />
@@ -457,7 +457,7 @@ export default function AdminConfigPage() {
                         type="button"
                         onClick={() => void remove(entry)}
                         disabled={mutationLocked || entry.id == null}
-                        className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-red-500/40 p-3 text-red-300 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-70"
+                        className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-error/40 p-3 text-error transition hover:bg-error/10 disabled:cursor-not-allowed disabled:opacity-70"
                         aria-label={`Delete ${entry.key}`}
                       >
                         <Trash2 size={16} aria-hidden="true" />

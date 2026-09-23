@@ -2,7 +2,7 @@ import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import '../models/fanzone_models.dart';
+import '../models/football_models.dart';
 import '../models/prediction_models.dart';
 
 part 'prediction_repo_fixtures.dart';
@@ -42,14 +42,6 @@ class PredictionRepository {
 
   final SupabaseClient _client;
   final StoreReleasePolicy _storeReleasePolicy;
-
-  void _requireStakedCompetitionAuthorization() {
-    if (!_storeReleasePolicy.allowsStakedCompetitions) {
-      throw UnsupportedError(
-        'Challenge and prize-pool entries are unavailable in this store release.',
-      );
-    }
-  }
 
   Map<String, dynamic> _sanitizeLeaderboardIdentity(Map<String, dynamic> row) {
     if (_storeReleasePolicy.allowsCrossUserText) {

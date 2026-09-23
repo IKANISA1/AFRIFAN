@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('FanClubsResultsSliver', () {
-    testWidgets('hides empty fan club placeholder copy when clubs are empty', (
+    testWidgets('explains an empty directory without inventing fan clubs', (
       tester,
     ) async {
       await tester.pumpWidget(
@@ -13,16 +13,13 @@ void main() {
             isLoading: false,
             error: null,
             visibleClubs: const [],
-            joinedClubIds: const {},
-            pendingClubIds: const {},
             onRetry: () {},
             onOpenClub: (_) {},
-            onJoinToggled: (_) {},
           ),
         ),
       );
 
-      expect(find.textContaining('No fan clubs'), findsNothing);
+      expect(find.text('No fan clubs found'), findsOneWidget);
       expect(find.textContaining('No clubs found'), findsNothing);
       expect(find.textContaining('New fan clubs'), findsNothing);
     });
@@ -39,24 +36,25 @@ void main() {
         },
       ];
 
+      String? opened;
       await tester.pumpWidget(
         _ResultsHarness(
           sliver: FanClubsResultsSliver(
             isLoading: false,
             error: null,
             visibleClubs: clubs,
-            joinedClubIds: const {},
-            pendingClubIds: const {},
             onRetry: () {},
-            onOpenClub: (_) {},
-            onJoinToggled: (_) {},
+            onOpenClub: (id) => opened = id,
           ),
         ),
       );
 
+      await tester.tap(find.text('Ikipe Yacu Nyarugenge'));
+      expect(opened, 'ikipe-yacu-nyarugenge');
       expect(find.text('Ikipe Yacu Nyarugenge'), findsOneWidget);
       expect(find.text('Kigali • 42 members'), findsOneWidget);
-      expect(find.text('View joining options'), findsOneWidget);
+      expect(find.text('View joining options'), findsNothing);
+      expect(find.text('Status'), findsNothing);
       expect(find.textContaining('No fan clubs'), findsNothing);
     });
   });

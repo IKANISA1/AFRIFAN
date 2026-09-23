@@ -115,6 +115,7 @@ export interface FanClubItem {
 }
 
 export interface ContributionGroup {
+  imageUrl?: string;
   id: string;
   name: string;
   description: string;

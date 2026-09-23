@@ -261,7 +261,7 @@ test("/membership proves all sixteen applicable rendered states", async ({
     isPrimary: true,
   });
 
-  const gold = page.getByRole("button", { name: /blue gold/i });
+  const gold = page.getByRole("button", { name: /^blue gold\b/i });
   await gold.click();
   await expect(gold).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(".membership-surface")).toHaveAttribute(

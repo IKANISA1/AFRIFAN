@@ -97,7 +97,7 @@ export const adminOperationalQueues: readonly AdminOperationalQueueContract[] = 
   {
     id: "community.chapters",
     route: "/admin/community",
-    label: "Community chapters",
+    label: "Community FanClubs",
     sourceFile: "src/app/admin/community/page.tsx",
     rendering: "table",
     selection: singleRecordSelection,
@@ -120,15 +120,6 @@ export const adminOperationalQueues: readonly AdminOperationalQueueContract[] = 
     rendering: "table",
     selection: readOnlySelection,
     details: "drawer",
-  },
-  {
-    id: "contributions.initiatives",
-    route: "/admin/contributions",
-    label: "Public contribution initiatives",
-    sourceFile: "src/app/admin/contributions/_components/group-list.tsx",
-    rendering: "table",
-    selection: singleRecordSelection,
-    details: "editor",
   },
   {
     id: "football.sources",

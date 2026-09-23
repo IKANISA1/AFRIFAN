@@ -83,7 +83,8 @@ export function AppBottomNav({
     // Reserve the fixed bar's complete height, including wrapped labels and
     // the device safe area, so the end of the page remains readable.
     const measure = () => {
-      space.style.height = `${Math.ceil(nav.getBoundingClientRect().height)}px`;
+      const bottom = Number.parseFloat(getComputedStyle(nav).bottom) || 0;
+      space.style.height = `${Math.ceil(nav.getBoundingClientRect().height + bottom + 12)}px`;
     };
     measure();
     const observer = new ResizeObserver(measure);
@@ -111,14 +112,14 @@ export function AppBottomNav({
     <div
       ref={spaceRef}
       className="shrink-0 md:hidden"
-      style={{ height: "calc(4rem + env(safe-area-inset-bottom))" }}
+      style={{ height: "calc(6rem + env(safe-area-inset-bottom))" }}
     >
       <nav
         ref={navRef}
-        className="fixed inset-x-0 bottom-0 z-50 border-t border-white/10 bg-[var(--club-primary)]/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden"
+        className="fixed inset-x-[12px] bottom-[calc(12px+env(safe-area-inset-bottom))] z-50 mx-auto w-fit max-w-[calc(100%-24px)] rounded-[32px] border border-white/20 bg-[var(--glass-fill)] backdrop-blur-xl md:hidden"
         aria-label="Main navigation"
       >
-        <div className="mx-auto flex max-w-md items-stretch justify-around px-[8px] pt-[8px]">
+        <div className="mx-auto flex max-w-md items-stretch justify-around px-[8px] py-[4px]">
           {tabs.map((tab) => {
             const active = tab.id === activeTab;
             const Icon = tab.icon;
@@ -130,13 +131,13 @@ export function AppBottomNav({
                 prefetch={false}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex min-w-0 flex-1 flex-col items-center gap-[6px] py-[8px] transition-all duration-300 active:scale-95",
-                  active ? "text-[var(--club-accent)]" : "text-white/80 hover:text-white"
+                  "flex min-h-[48px] min-w-[80px] flex-1 flex-col items-center gap-[6px] py-[8px] transition-all duration-300 active:scale-95",
+                  active ? "text-[var(--action-neutral)]" : "text-white/80 hover:text-white"
                 )}
               >
                 <div className={cn(
                   "flex h-[32px] w-[48px] items-center justify-center rounded-full transition-all duration-300",
-                  active && "bg-[var(--club-accent)]/10"
+                  active && "bg-[var(--action-neutral)]/10"
                 )}>
                   <Icon
                     size={20}
@@ -144,7 +145,7 @@ export function AppBottomNav({
                   />
                 </div>
                 <span className={cn(
-                  "max-w-full text-center text-[0.5625rem] font-black uppercase tracking-normal transition-colors [overflow-wrap:anywhere]",
+                  "max-w-full text-center text-[0.6875rem] font-medium normal-case tracking-normal transition-colors [overflow-wrap:anywhere]",
                   active ? "text-white" : "text-white/80"
                 )}>
                   {tab.label}

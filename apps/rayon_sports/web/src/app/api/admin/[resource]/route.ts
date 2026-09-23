@@ -33,7 +33,6 @@ import {
   getAdminFetWalletSnapshot,
   getAdminFanEngagementTokens,
   getAdminFanClubs,
-  getAdminMembershipApplications,
   getAdminMatches,
   getAdminMembershipPackages,
   getAdminNotificationContext,
@@ -416,10 +415,6 @@ async function handleGet(
         return NextResponse.json({
           data: await getAdminSupporterRegistry(adminClient, access),
         });
-      case "membership-applications":
-        return NextResponse.json({
-          data: await getAdminMembershipApplications(adminClient, access),
-        });
       case "shop":
         return NextResponse.json({
           data: await getAdminProducts(adminClient, access),
@@ -669,7 +664,7 @@ async function handlePost(
           ),
         });
       case "gamification-wallet":
-        return withScopedFeatureGuard(access, "fanzone", async () =>
+        return withScopedFeatureGuard(access, "predict", async () =>
           NextResponse.json({
             data: await adjustAdminFetWalletBalance(serverClient, access, {
               userId: String(body.userId ?? ""),
@@ -707,7 +702,7 @@ async function handlePost(
           data: await saveAdminFixture(adminClient, access, body as never),
         });
       case "partner-prediction-pools":
-        return withScopedFeatureGuard(access, "fanzone", async () =>
+        return withScopedFeatureGuard(access, "predict", async () =>
           NextResponse.json({
             data: await saveAdminPartnerPredictionPool(
               serverClient,
@@ -717,7 +712,7 @@ async function handlePost(
           }),
         );
       case "partner-prediction-pool-settlement":
-        return withScopedFeatureGuard(access, "fanzone", async () =>
+        return withScopedFeatureGuard(access, "predict", async () =>
           NextResponse.json({
             data: await settleAdminPartnerPredictionPool(
               serverClient,

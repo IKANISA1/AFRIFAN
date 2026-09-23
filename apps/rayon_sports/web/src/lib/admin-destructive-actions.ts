@@ -78,7 +78,7 @@ export const adminDestructiveActions: readonly AdminDestructiveActionContract[] 
     ),
     clubDelete(
       "delete-supporter-chapter",
-      "Delete supporter chapter",
+      "Delete supporter FanClubs",
       "fan-clubs",
       "admin_community",
     ),

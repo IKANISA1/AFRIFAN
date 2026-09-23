@@ -154,7 +154,7 @@ test("privacy and terms prove their six applicable document states", async ({
       await page
         .locator(`[data-legal-document="${route.kind}"]`)
         .evaluate((element) => getComputedStyle(element).color),
-    ).toBe("rgb(248, 250, 252)");
+    ).toBe("rgb(244, 244, 244)");
     await expectNoSeriousAxeViolations(page);
     await capture(page, route.kind, "dark_dark");
     capturedStates.push({
@@ -204,7 +204,7 @@ test("privacy and terms prove their six applicable document states", async ({
       await page
         .locator(`[data-legal-document="${route.kind}"]`)
         .evaluate((element) => getComputedStyle(element).color),
-    ).toBe("rgb(15, 23, 42)");
+    ).toBe("rgb(25, 28, 31)");
     await expectNoSeriousAxeViolations(page);
     await capture(page, route.kind, "light_light");
     capturedStates.push({

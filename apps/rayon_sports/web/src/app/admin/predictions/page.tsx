@@ -16,6 +16,8 @@ import {
   Handshake,
   Search,
 } from "lucide-react";
+import { FixtureTeams } from "@/components/team-card";
+import { fixtureInitials } from "@/lib/team-identity";
 import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
 import { AdminDataGrid } from "@/components/admin/admin-data-grid";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
@@ -40,7 +42,6 @@ import {
   normalizeAdminPredictionsWorkspace,
   saveAdminPredictionMarket,
   saveAdminCompetition,
-  saveAdminFixture,
 } from "@/lib/data/admin/predictions";
 import { isAdminMutationConflict } from "@/lib/data/admin/http";
 import type {
@@ -48,7 +49,6 @@ import type {
   AdminCompetition,
   AdminFixture,
   AdminPredictionsWorkspace,
-  AdminFixtureStatus,
 } from "@/lib/data/admin/predictions";
 import {
   saveAdminPartnerPredictionPool,
@@ -462,34 +462,6 @@ export default function AdminPredictionsPage() {
     }
   }
 
-  async function updateFixtureStatus(
-    fixture: AdminFixture,
-    nextStatus: AdminFixtureStatus,
-  ) {
-    if (client == null || globalMutationLocked) return;
-    setMutationPending(true);
-    try {
-      await saveAdminFixture(client, access, {
-        id: fixture.id,
-        expectedUpdatedAt: fixture.updatedAt,
-        status: nextStatus,
-      });
-      await refresh();
-      showAdminToast(
-        `${fixture.homeTeamShortName} vs ${fixture.awayTeamShortName} → ${nextStatus}.`,
-        "success",
-      );
-    } catch (caught) {
-      applyFailure(caught);
-      if (isAdminMutationConflict(caught)) {
-        await refresh();
-      }
-      showAdminToast("Could not confirm the fixture change.", "error");
-    } finally {
-      setMutationPending(false);
-    }
-  }
-
   async function handleCreatePartnerPool(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (client == null || mutationLocked) return;
@@ -687,7 +659,7 @@ export default function AdminPredictionsPage() {
             {Array.from({ length: 5 }).map((_, i) => (
               <div
                 key={i}
-                className="rounded-[22px] border border-border-soft bg-white/5 p-4"
+                className="rounded-[22px] border border-border-soft bg-[var(--admin-surface-muted)] p-4"
               >
                 <Skeleton className="skeleton-text h-5 w-1/3" />
                 <Skeleton className="skeleton-text mt-2 h-3 w-2/3" />
@@ -728,21 +700,21 @@ export default function AdminPredictionsPage() {
               {activeTab === "partnerPools" && (
                 <div className="space-y-6">
                   <div>
-                    <p className="font-display text-2xl font-bold uppercase">
+                    <p className="font-display text-2xl font-medium normal-case">
                       Partner WDW Pools ({partnerPools.length})
                     </p>
-                    <p className="mt-1 text-sm text-slate-400">
+                    <p className="mt-1 text-sm text-[var(--admin-text-muted)]">
                       Partner-funded football result pools using fixed fan entry
-                      FET and Home win / Draw / Away win picks.
+                      FET. Pick either team to win or choose a draw.
                     </p>
                   </div>
 
                   <form
                     onSubmit={handleCreatePartnerPool}
-                    className="grid gap-4 rounded-[24px] border border-border-soft bg-white/5 p-5"
+                    className="grid gap-4 rounded-[24px] border border-border-soft bg-[var(--admin-surface-muted)] p-5"
                   >
                     <div className="grid gap-4 lg:grid-cols-2">
-                      <label className="grid gap-2 text-sm text-slate-300">
+                      <label className="grid gap-2 text-sm text-[var(--admin-text-muted)]">
                         Partner
                         <select
                           required
@@ -765,7 +737,7 @@ export default function AdminPredictionsPage() {
                         </select>
                       </label>
 
-                      <label className="grid gap-2 text-sm text-slate-300">
+                      <label className="grid gap-2 text-sm text-[var(--admin-text-muted)]">
                         Fixture
                         <select
                           required
@@ -782,11 +754,7 @@ export default function AdminPredictionsPage() {
                           <option value="">Select upcoming fixture</option>
                           {upcomingFixtures.map((fixture) => (
                             <option key={fixture.id} value={fixture.id}>
-                              {fixture.homeTeamShortName ||
-                                fixture.homeTeamName}{" "}
-                              vs{" "}
-                              {fixture.awayTeamShortName ||
-                                fixture.awayTeamName}{" "}
+                              {fixtureInitials(fixture.homeTeamName, fixture.awayTeamName)}{" "}
                               · {formatKickoff(fixture.kickoffAt)}
                             </option>
                           ))}
@@ -794,7 +762,7 @@ export default function AdminPredictionsPage() {
                       </label>
                     </div>
 
-                    <label className="grid gap-2 text-sm text-slate-300">
+                    <label className="grid gap-2 text-sm text-[var(--admin-text-muted)]">
                       Pool title
                       <input
                         required
@@ -813,7 +781,7 @@ export default function AdminPredictionsPage() {
                     </label>
 
                     <div className="grid gap-4 md:grid-cols-4">
-                      <label className="grid gap-2 text-sm text-slate-300">
+                      <label className="grid gap-2 text-sm text-[var(--admin-text-muted)]">
                         Partner-funded FET
                         <input
                           required
@@ -831,7 +799,7 @@ export default function AdminPredictionsPage() {
                           className="dashboard-input"
                         />
                       </label>
-                      <label className="grid gap-2 text-sm text-slate-300">
+                      <label className="grid gap-2 text-sm text-[var(--admin-text-muted)]">
                         Fan entry FET
                         <input
                           required
@@ -849,7 +817,7 @@ export default function AdminPredictionsPage() {
                           className="dashboard-input"
                         />
                       </label>
-                      <label className="grid gap-2 text-sm text-slate-300">
+                      <label className="grid gap-2 text-sm text-[var(--admin-text-muted)]">
                         Eligibility
                         <select
                           disabled={mutationLocked}
@@ -868,7 +836,7 @@ export default function AdminPredictionsPage() {
                           <option value="open_to_all">Open to all fans</option>
                         </select>
                       </label>
-                      <label className="grid gap-2 text-sm text-slate-300">
+                      <label className="grid gap-2 text-sm text-[var(--admin-text-muted)]">
                         Entry limit
                         <input
                           disabled={mutationLocked}
@@ -889,8 +857,8 @@ export default function AdminPredictionsPage() {
                     </div>
 
                     <div className="flex flex-wrap items-center justify-between gap-3">
-                      <p className="text-xs text-slate-500">
-                        WDW only: Home win, Draw, Away win. No multipliers or
+                      <p className="text-xs text-[var(--admin-text-muted)]">
+                        Pick either team to win or choose a draw. No multipliers or
                         dynamic odds are used.
                       </p>
                       <button
@@ -948,7 +916,7 @@ export default function AdminPredictionsPage() {
                     </label>
                   </AdminFilterBar>
                   {poolCollection.pageResult.items.length === 0 ? (
-                    <p className="rounded-[24px] border border-dashed border-border-soft bg-white/5 p-5 text-sm text-slate-400">
+                    <p className="rounded-[24px] border border-dashed border-border-soft bg-[var(--admin-surface-muted)] p-5 text-sm text-[var(--admin-text-muted)]">
                       {poolCollection.query
                         ? "No partner WDW pools match the current search."
                         : "No partner WDW pools yet."}
@@ -961,12 +929,12 @@ export default function AdminPredictionsPage() {
                       return (
                         <article
                           key={pool.id}
-                          className="admin-predictions-pool-card rounded-[24px] border border-border-soft bg-white/5 p-5"
+                          className="admin-predictions-pool-card rounded-[24px] border border-border-soft bg-[var(--admin-surface-muted)] p-5"
                         >
                           <div className="flex flex-wrap items-start justify-between gap-4">
                             <div className="min-w-0 flex-1">
                               <div className="flex flex-wrap items-center gap-2">
-                                <p className="font-semibold text-white">
+                                <p className="font-semibold text-[var(--admin-text-strong)]">
                                   {pool.title}
                                 </p>
                                 <AdminStatusBadge
@@ -974,13 +942,13 @@ export default function AdminPredictionsPage() {
                                   tone={statusTone(pool.status)}
                                 />
                               </div>
-                              <p className="mt-1 text-sm text-slate-400">
+                              <p className="mt-1 text-sm text-[var(--admin-text-muted)]">
                                 {pool.partnerName} ·{" "}
                                 {fixture
-                                  ? `${fixture.homeTeamShortName || fixture.homeTeamName} vs ${fixture.awayTeamShortName || fixture.awayTeamName}`
+                                  ? fixtureInitials(fixture.homeTeamName, fixture.awayTeamName)
                                   : "Linked fixture unavailable"}
                               </p>
-                              <p className="mt-2 text-xs text-slate-500">
+                              <p className="mt-2 text-xs text-[var(--admin-text-muted)]">
                                 Partner {pool.partnerStakeFet.toLocaleString()}{" "}
                                 pts · Fan entry{" "}
                                 {pool.fanEntryFet.toLocaleString()} pts ·{" "}
@@ -988,7 +956,7 @@ export default function AdminPredictionsPage() {
                                 {pool.eligibilityMode.replaceAll("_", " ")}
                               </p>
                               {pool.settlement ? (
-                                <p className="mt-2 text-xs text-slate-400">
+                                <p className="mt-2 text-xs text-[var(--admin-text-muted)]">
                                   Result review:{" "}
                                   {pool.settlement.settlementMode.replaceAll(
                                     "_",
@@ -1032,7 +1000,7 @@ export default function AdminPredictionsPage() {
               {/* Markets tab */}
               {activeTab === "markets" && (
                 <div className="space-y-3">
-                  <p className="font-display text-2xl font-bold uppercase">
+                  <p className="font-display text-2xl font-medium normal-case">
                     Prediction Templates ({markets.length})
                   </p>
                   <AdminFilterBar
@@ -1076,7 +1044,7 @@ export default function AdminPredictionsPage() {
                     </label>
                   </AdminFilterBar>
                   {marketCollection.pageResult.items.length === 0 ? (
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-[var(--admin-text-muted)]">
                       {marketCollection.query
                         ? "No prediction templates match the current search."
                         : "No prediction templates found."}
@@ -1089,14 +1057,14 @@ export default function AdminPredictionsPage() {
                         data-inactive={!market.isActive}
                         className={cn(
                           "admin-predictions-catalog-card flex items-center gap-4 rounded-[22px] border border-border-soft p-4 transition",
-                          market.isActive ? "bg-white/5" : "bg-white/[0.02]",
+                          market.isActive ? "bg-[var(--admin-surface-muted)]" : "bg-[var(--admin-surface-muted)]",
                         )}
                       >
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-white truncate">
+                          <p className="font-semibold text-[var(--admin-text-strong)] truncate">
                             {market.name}
                           </p>
-                          <p className="text-xs text-slate-400 mt-0.5">
+                          <p className="text-xs text-[var(--admin-text-muted)] mt-0.5">
                             {market.marketCategory} · {market.difficultyTier} ·{" "}
                             {market.defaultFetValue} pts
                           </p>
@@ -1105,7 +1073,7 @@ export default function AdminPredictionsPage() {
                               {market.leagueAvailability.map((league) => (
                                 <span
                                   key={league}
-                                  className="rounded-full border border-border-soft px-2 py-0.5 text-[10px] text-slate-400"
+                                  className="rounded-full border border-border-soft px-2 py-0.5 text-xs text-[var(--admin-text-muted)]"
                                 >
                                   {league}
                                 </span>
@@ -1123,7 +1091,7 @@ export default function AdminPredictionsPage() {
                             toggleMarketActive(market).catch(() => {});
                           }}
                           disabled={globalMutationLocked}
-                          className="admin-predictions-catalog-action rounded-full border border-border-soft px-3 py-2 text-xs font-semibold text-slate-300 transition hover:bg-white/8 disabled:cursor-not-allowed"
+                          className="admin-predictions-catalog-action rounded-full border border-border-soft px-3 py-2 text-xs font-semibold text-[var(--admin-text-muted)] transition hover:bg-[var(--admin-surface-hover)] disabled:cursor-not-allowed"
                         >
                           {market.isActive ? "Disable" : "Enable"}
                         </button>
@@ -1141,7 +1109,7 @@ export default function AdminPredictionsPage() {
               {/* Fixtures tab */}
               {activeTab === "fixtures" && (
                 <div className="space-y-3">
-                  <p className="font-display text-2xl font-bold uppercase">
+                  <p className="font-display text-2xl font-medium normal-case">
                     Fixtures ({fixtures.length})
                   </p>
                   <AdminFilterBar>
@@ -1158,6 +1126,9 @@ export default function AdminPredictionsPage() {
                       />
                     </label>
                   </AdminFilterBar>
+                  <p className="mb-4 text-sm text-[var(--admin-text-muted)]">
+                    Match status and results are read-only. LiveScore validates and confirms results automatically.
+                  </p>
                   <AdminDataGrid
                     caption="Prediction fixtures"
                     onRowActivate={(rowId) => {
@@ -1213,7 +1184,7 @@ export default function AdminPredictionsPage() {
                       <tr>
                         <td
                           colSpan={6}
-                          className="py-8 text-center text-sm text-slate-400"
+                          className="py-8 text-center text-sm text-[var(--admin-text-muted)]"
                         >
                           {fixtureCollection.query
                             ? "No fixtures match the current search."
@@ -1224,27 +1195,21 @@ export default function AdminPredictionsPage() {
                       fixtureCollection.pageResult.items.map((fixture) => (
                         <tr key={fixture.id} data-row-id={fixture.id}>
                           <td className="py-3 pr-4">
-                            <span className="font-semibold text-white">
-                              {fixture.homeTeamShortName}
-                            </span>
-                            <span className="text-slate-500 mx-1">vs</span>
-                            <span className="font-semibold text-white">
-                              {fixture.awayTeamShortName}
-                            </span>
+                            <FixtureTeams homeTeam={fixture.homeTeamName} awayTeam={fixture.awayTeamName} />
                           </td>
-                          <td className="py-3 pr-4 text-slate-400">
+                          <td className="py-3 pr-4 text-[var(--admin-text-muted)]">
                             {fixture.competitionName}
                           </td>
-                          <td className="py-3 pr-4 text-slate-400">
+                          <td className="py-3 pr-4 text-[var(--admin-text-muted)]">
                             {formatKickoff(fixture.kickoffAt)}
                           </td>
                           <td className="py-3 pr-4">
                             {fixture.homeScore != null ? (
-                              <span className="font-bold text-white">
+                              <span className="font-medium text-[var(--admin-text-strong)]">
                                 {fixture.homeScore} - {fixture.awayScore}
                               </span>
                             ) : (
-                              <span className="text-slate-500">—</span>
+                              <span className="text-[var(--admin-text-muted)]">—</span>
                             )}
                           </td>
                           <td className="py-3 pr-4">
@@ -1254,24 +1219,14 @@ export default function AdminPredictionsPage() {
                             />
                           </td>
                           <td className="py-3">
-                            <select
-                              value={fixture.status}
-                              onChange={(e) => {
-                                updateFixtureStatus(
-                                  fixture,
-                                  e.target.value as AdminFixtureStatus,
-                                ).catch(() => {});
-                              }}
-                              disabled={globalMutationLocked}
-                              className="admin-predictions-fixture-status rounded-lg border border-border-soft bg-transparent px-2 py-2 text-xs text-slate-300 outline-none disabled:cursor-not-allowed"
-                              aria-label={`Change status for ${fixture.homeTeamShortName} versus ${fixture.awayTeamShortName}`}
+                            <button
+                              type="button"
+                              onClick={() => setDetailFixture(fixture)}
+                              className="min-h-12 rounded-full px-3 text-sm text-[var(--admin-text-strong)] hover:bg-[var(--admin-surface-hover)]"
+                              aria-label={`View fixture ${fixture.homeTeamShortName} versus ${fixture.awayTeamShortName}`}
                             >
-                              <option value="scheduled">Scheduled</option>
-                              <option value="live">Live</option>
-                              <option value="finished">Finished</option>
-                              <option value="postponed">Postponed</option>
-                              <option value="cancelled">Cancelled</option>
-                            </select>
+                              View
+                            </button>
                           </td>
                         </tr>
                       ))
@@ -1288,7 +1243,7 @@ export default function AdminPredictionsPage() {
               {/* Competitions tab */}
               {activeTab === "competitions" && (
                 <div className="space-y-3">
-                  <p className="font-display text-2xl font-bold uppercase">
+                  <p className="font-display text-2xl font-medium normal-case">
                     Competitions ({competitions.length})
                   </p>
                   <AdminFilterBar
@@ -1328,7 +1283,7 @@ export default function AdminPredictionsPage() {
                     </label>
                   </AdminFilterBar>
                   {competitionCollection.pageResult.items.length === 0 ? (
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-[var(--admin-text-muted)]">
                       {competitionCollection.query
                         ? "No competitions match the current search."
                         : "No competitions found."}
@@ -1341,15 +1296,15 @@ export default function AdminPredictionsPage() {
                         data-inactive={!comp.isActive}
                         className={cn(
                           "admin-predictions-catalog-card rounded-[22px] border border-border-soft p-4 transition",
-                          comp.isActive ? "bg-white/5" : "bg-white/[0.02]",
+                          comp.isActive ? "bg-[var(--admin-surface-muted)]" : "bg-[var(--admin-surface-muted)]",
                         )}
                       >
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
-                            <p className="font-semibold text-white truncate">
+                            <p className="font-semibold text-[var(--admin-text-strong)] truncate">
                               {comp.name}
                             </p>
-                            <p className="text-xs text-slate-400 mt-0.5">
+                            <p className="text-xs text-[var(--admin-text-muted)] mt-0.5">
                               {comp.shortName} · {comp.competitionKind} ·{" "}
                               {comp.countryName || comp.region}
                             </p>
@@ -1365,7 +1320,7 @@ export default function AdminPredictionsPage() {
                                 toggleCompetitionActive(comp).catch(() => {});
                               }}
                               disabled={globalMutationLocked}
-                              className="admin-predictions-catalog-action rounded-full border border-border-soft px-3 py-2 text-xs font-semibold text-slate-300 transition hover:bg-white/8 disabled:cursor-not-allowed"
+                              className="admin-predictions-catalog-action rounded-full border border-border-soft px-3 py-2 text-xs font-semibold text-[var(--admin-text-muted)] transition hover:bg-[var(--admin-surface-hover)] disabled:cursor-not-allowed"
                             >
                               {comp.isActive ? "Disable" : "Enable"}
                             </button>
@@ -1385,7 +1340,7 @@ export default function AdminPredictionsPage() {
               {/* Seasons tab */}
               {activeTab === "seasons" && (
                 <div className="space-y-3">
-                  <p className="font-display text-2xl font-bold uppercase">
+                  <p className="font-display text-2xl font-medium normal-case">
                     Seasons ({seasons.length})
                   </p>
                   <AdminFilterBar
@@ -1427,7 +1382,7 @@ export default function AdminPredictionsPage() {
                     </label>
                   </AdminFilterBar>
                   {seasonCollection.pageResult.items.length === 0 ? (
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-[var(--admin-text-muted)]">
                       {seasonCollection.query
                         ? "No seasons match the current search."
                         : "No seasons found."}
@@ -1440,14 +1395,14 @@ export default function AdminPredictionsPage() {
                         data-inactive={!season.isActive}
                         className={cn(
                           "admin-predictions-catalog-card flex items-center gap-4 rounded-[22px] border border-border-soft p-4 transition",
-                          season.isActive ? "bg-white/5" : "bg-white/[0.02]",
+                          season.isActive ? "bg-[var(--admin-surface-muted)]" : "bg-[var(--admin-surface-muted)]",
                         )}
                       >
                         <div className="flex-1 min-w-0">
-                          <p className="font-semibold text-white">
+                          <p className="font-semibold text-[var(--admin-text-strong)]">
                             {season.competitionName} — {season.label}
                           </p>
-                          <p className="text-xs text-slate-400 mt-0.5">
+                          <p className="text-xs text-[var(--admin-text-muted)] mt-0.5">
                             {season.startsOn ?? "Start not recorded"} →{" "}
                             {season.endsOn ?? "End not recorded"} ·{" "}
                             {season.status}
@@ -1481,31 +1436,30 @@ export default function AdminPredictionsPage() {
         {detailFixture ? (
           <dl className="grid gap-4 text-sm">
             <div>
-              <dt className="text-slate-500">Match</dt>
-              <dd className="mt-1 text-slate-100">
-                {detailFixture.homeTeamShortName} vs{" "}
-                {detailFixture.awayTeamShortName}
+              <dt className="text-[var(--admin-text-muted)]">Match</dt>
+              <dd className="mt-1 text-[var(--admin-text-strong)]">
+                <FixtureTeams homeTeam={detailFixture.homeTeamName} awayTeam={detailFixture.awayTeamName} />
               </dd>
             </div>
             <div>
-              <dt className="text-slate-500">Competition</dt>
-              <dd className="mt-1 text-slate-100">
+              <dt className="text-[var(--admin-text-muted)]">Competition</dt>
+              <dd className="mt-1 text-[var(--admin-text-strong)]">
                 {detailFixture.competitionName}
               </dd>
             </div>
             <div>
-              <dt className="text-slate-500">Kickoff</dt>
-              <dd className="mt-1 text-slate-100">
+              <dt className="text-[var(--admin-text-muted)]">Kickoff</dt>
+              <dd className="mt-1 text-[var(--admin-text-strong)]">
                 {new Date(detailFixture.kickoffAt).toLocaleString()}
               </dd>
             </div>
             <div>
-              <dt className="text-slate-500">Status</dt>
-              <dd className="mt-1 text-slate-100">{detailFixture.status}</dd>
+              <dt className="text-[var(--admin-text-muted)]">Status</dt>
+              <dd className="mt-1 text-[var(--admin-text-strong)]">{detailFixture.status}</dd>
             </div>
             <div>
-              <dt className="text-slate-500">Score</dt>
-              <dd className="mt-1 text-slate-100">
+              <dt className="text-[var(--admin-text-muted)]">Score</dt>
+              <dd className="mt-1 text-[var(--admin-text-strong)]">
                 {detailFixture.homeScore == null
                   ? "Not recorded"
                   : `${detailFixture.homeScore} - ${detailFixture.awayScore}`}

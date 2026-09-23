@@ -7,21 +7,6 @@ import {
   resolveRoutingHostname,
 } from "@/lib/host-routing";
 
-const sharedIcons: MetadataRoute.Manifest["icons"] = [
-  {
-    src: "/brand-mark.svg",
-    sizes: "any",
-    type: "image/svg+xml",
-    purpose: "any",
-  },
-  {
-    src: "/brand-mark.svg",
-    sizes: "any",
-    type: "image/svg+xml",
-    purpose: "maskable",
-  },
-];
-
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
   const headersList = await headers();
   const host = resolveRoutingHostname(
@@ -29,6 +14,10 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     headersList.get("host"),
   );
   const club = await getClubProfile();
+  const icons: MetadataRoute.Manifest["icons"] = club.officialLogoUrl
+    ? [{ src: club.officialLogoUrl, purpose: "any" }]
+    : [];
+
 
   if (isAdminHostname(host)) {
     return {
@@ -42,8 +31,8 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
       display: "standalone",
       display_override: ["window-controls-overlay", "standalone"],
       orientation: "portrait",
-      background_color: "#07162f",
-      theme_color: "#0038a8",
+      background_color: "#000000",
+      theme_color: "#000000",
       shortcuts: [
         { name: "Dashboard", short_name: "Dashboard", url: "/admin" },
         { name: "Matches", short_name: "Matches", url: "/admin/matches" },
@@ -54,7 +43,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
         },
         { name: "CMS", short_name: "CMS", url: "/admin/cms" },
       ],
-      icons: sharedIcons,
+      icons,
       share_target: {
         action: "/admin/cms",
         method: "GET",
@@ -78,15 +67,15 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     display: "standalone",
     display_override: ["window-controls-overlay", "standalone"],
     orientation: "portrait",
-    background_color: "#07162f",
-    theme_color: club.primaryColorHex,
+    background_color: "#000000",
+    theme_color: "#000000",
     shortcuts: [
       { name: "Home", short_name: "Home", url: "/" },
       { name: "Tickets", short_name: "Tickets", url: "/tickets" },
       { name: "Support Groups", short_name: "Groups", url: "/Groups" },
       { name: "Fan App", short_name: "Fan App", url: resolveFanAppHref() },
     ],
-    icons: sharedIcons,
+    icons,
     share_target: {
       action: "/share-target",
       method: "GET",

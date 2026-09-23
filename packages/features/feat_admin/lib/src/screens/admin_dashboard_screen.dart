@@ -245,17 +245,6 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
               onTap: () => _openAdminRoute('/admin/notifications'),
             ),
             _AdminActionTile(
-              route: '/admin/settle',
-              title: context.afriL10n.adminSettleFixtures,
-              subtitle: context.afriL10n.adminSettleFixturesDescription,
-              icon: AfriIcons.scoreboard,
-              enabled: enabled,
-              selected:
-                  ref.watch(adminDashboardSelectedActionProvider) ==
-                  '/admin/settle',
-              onTap: () => _openAdminRoute('/admin/settle'),
-            ),
-            _AdminActionTile(
               route: '/admin/competitions',
               title: context.afriL10n.adminManageCompetitions,
               subtitle: context.afriL10n.adminManageCompetitionsDescription,

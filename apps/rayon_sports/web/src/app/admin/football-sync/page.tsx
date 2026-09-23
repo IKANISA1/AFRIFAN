@@ -492,7 +492,7 @@ export default function AdminFootballSyncPage() {
               className={cn(
                 "flex min-h-12 items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-60",
                 activeTab === tab.key
-                  ? "bg-club-primary text-white"
+                  ? "bg-action-blue text-white"
                   : "border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] text-[var(--admin-text-strong)] hover:bg-[var(--admin-zinc-800)]",
               )}
             >
@@ -803,7 +803,7 @@ export default function AdminFootballSyncPage() {
                   </div>
                   <button
                     type="submit"
-                    className="admin-action-button min-h-12 !bg-club-primary !text-white disabled:opacity-70"
+                    className="admin-action-button min-h-12 !bg-action-blue !text-white disabled:opacity-70"
                   >
                     <Save size={16} aria-hidden="true" />
                     {sourceForm.id ? "Save source" : "Create source"}

@@ -9,13 +9,11 @@ import {
   getAdminContentBlocks,
   getAdminFetWalletSnapshot,
   getAdminContributionSnapshot,
-  getAdminMembershipApplications,
   getAdminSupporterRegistry,
   getAdminProducts,
   getAdminSmsSnapshot,
   getAdminTicketOrders,
   bulkUpdateTicketStatus,
-  reviewMembershipApplication,
   saveAdminFanClub,
   saveAdminClubProfile,
   saveAdminContentBlock,
@@ -306,7 +304,7 @@ describe("admin browser API boundary", () => {
     const payload = {
       name: "Kigali North",
       region: "Kigali",
-      description: "North chapter",
+      description: "North FanClubs",
       memberCount: 42,
       eventCount: 3,
       rating: 5,
@@ -631,69 +629,6 @@ describe("admin browser API boundary", () => {
       fetchMock,
       `${origin}/api/admin/membership-supporters`,
       "GET",
-    );
-  });
-
-  it("loads membership applications through the scoped admin API in the browser", async () => {
-    const origin = window.location.origin;
-    const expected = [
-      {
-        id: "application-1",
-        userId: "user-1",
-        clubId: 24,
-        tier: "gold" as const,
-        status: "pending" as const,
-        paymentStatus: "paid" as const,
-        applicationDate: "2026-07-29T10:00:00.000Z",
-        reviewDate: null,
-        reviewerId: null,
-        notes: null,
-        userName: "Alpha Fan",
-        userPhone: "+250788123456",
-        updatedAt: "2026-07-29T10:00:00.000Z",
-      },
-    ];
-    const fetchMock = vi
-      .spyOn(globalThis, "fetch")
-      .mockResolvedValue(jsonResponse(expected) as Response);
-
-    await expect(
-      getAdminMembershipApplications(client, access),
-    ).resolves.toEqual(expected);
-    expectFetchCall(
-      fetchMock,
-      `${origin}/api/admin/membership-applications`,
-      "GET",
-    );
-  });
-
-  it("rejects membership applications through the scoped admin API in the browser", async () => {
-    const origin = window.location.origin;
-    const payload = {
-      applicationId: "application-1",
-      expectedUpdatedAt: "2026-07-24T20:00:00.000Z",
-      decision: "rejected" as const,
-      notes: "Provider payment was not verified.",
-    };
-    const fetchMock = vi
-      .spyOn(globalThis, "fetch")
-      .mockResolvedValue(jsonResponse({ success: true }) as Response);
-
-    await expect(
-      reviewMembershipApplication(
-        client,
-        access,
-        payload.applicationId,
-        payload.expectedUpdatedAt,
-        payload.decision,
-        payload.notes,
-      ),
-    ).resolves.toBeUndefined();
-    expectFetchCall(
-      fetchMock,
-      `${origin}/api/admin/membership-applications/review`,
-      "POST",
-      JSON.stringify(payload),
     );
   });
 

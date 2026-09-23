@@ -1,11 +1,27 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
-import { prepareStateEvidence, finalizeStateEvidence } from "../e2e/state-evidence-provenance.ts";
+import { prepareStateEvidence, finalizeStateEvidence, trackedSourceHash } from "../e2e/state-evidence-provenance.ts";
+
+test("source hashing includes diffs larger than the former 32 MiB output limit", () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "africlub-large-diff-test-"));
+  try {
+    const git = (args, options = {}) => execFileSync("git", args, { cwd: root, ...options });
+    git(["init", "--quiet"]);
+    fs.writeFileSync(path.join(root, "fixture.txt"), "old\n");
+    git(["add", "fixture.txt"]);
+    git(["-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", "-c", "commit.gpgsign=false", "commit", "--quiet", "-m", "fixture"]);
+    fs.writeFileSync(path.join(root, "fixture.txt"), "large fixture\n".repeat(2_600_000));
+    const bytes = git(["diff", "--binary", "HEAD"], { maxBuffer: 64 * 1024 * 1024 });
+    assert.ok(bytes.length > 32 * 1024 * 1024);
+    assert.equal(trackedSourceHash(root), createHash("sha256").update(bytes).digest("hex"));
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
 
 function fixture(run) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "africlub-evidence-test-"));

@@ -154,7 +154,7 @@ class _ContrastEvidencePage extends StatelessWidget {
                       icon: AfriIcons.contribute,
                       label: 'Verified contributions',
                       value: '68%',
-                      color: ColorTokens.clubAccent,
+                      color: ColorTokens.primary,
                     ),
                     const SizedBox(height: SpacingTokens.spacing2),
                     _SeriesLegend(

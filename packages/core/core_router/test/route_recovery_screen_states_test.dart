@@ -108,7 +108,7 @@ void main() {
             kind: RouteRecoveryKind.featureUnavailable,
             fallbackLocation: '/home',
             visualState: RouteRecoveryVisualState.disabled,
-            requestedPath: '/fanzone/private-member-id',
+            requestedPath: '/predict/private-member-id',
           ),
         ),
       ],
@@ -182,7 +182,7 @@ class _Fixture {
                 fallbackLocation: '/home',
                 visualState: state,
                 requestedPath: kind == RouteRecoveryKind.featureUnavailable
-                    ? '/fanzone/private-member-id'
+                    ? '/predict/private-member-id'
                     : '/unknown/member-secret-42',
               ),
             ),

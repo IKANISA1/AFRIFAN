@@ -8,6 +8,19 @@ import '../country_catalog.dart';
 /// Generic service to format and launch Mobile Money USSD flows
 /// across the entire AfriClub monorepo.
 class MomoDialerService {
+  /// Launch a validated, server-prepared payment without recalculating its route.
+  static Future<bool> launchPreparedUssd(String ussd) async {
+    if (!RegExp(r'^\*[0-9*]+#$').hasMatch(ussd)) return false;
+    try {
+      final uri = Uri.parse('tel:${ussd.replaceAll('#', '%23')}');
+      if (!await canLaunchUrl(uri)) return false;
+      unawaited(HapticFeedback.lightImpact());
+      return await launchUrl(uri);
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// Builds the USSD code and attempts to launch the native device dialer.
   ///
   /// Returns `true` if the dialer was successfully launched, `false` otherwise.

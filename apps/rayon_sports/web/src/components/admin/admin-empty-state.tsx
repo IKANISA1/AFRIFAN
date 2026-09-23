@@ -14,7 +14,7 @@ export function AdminEmptyState({
   return (
     <div
       className={cn(
-        "admin-empty-state rounded-[26px] border border-[var(--admin-border)] bg-white/[0.03]",
+        "admin-empty-state rounded-[26px] border border-[var(--admin-border)] bg-[var(--admin-surface-muted)]",
         className,
       )}
     >

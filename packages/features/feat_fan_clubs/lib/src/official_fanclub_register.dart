@@ -9,7 +9,7 @@ Map<String, dynamic> normalizeFanclubRow(Map<String, dynamic> row) {
       'region': _firstText(<Object?>[row['region']]) ?? 'Unknown',
       'description':
           _firstText(<Object?>[row['description']]) ??
-          'Official supporter chapter.',
+          'Official supporter FanClubs.',
       'member_count': memberCount,
       'member_count_label': memberCount.toString(),
       'status_label': (row['is_active'] as bool? ?? true)
@@ -52,7 +52,7 @@ Map<String, dynamic> normalizeFanclubRow(Map<String, dynamic> row) {
               ? (row['metadata'] as Map)['operationalNote']
               : null,
         ]) ??
-        'Official Rayon Sports supporter chapter.',
+        'Official Rayon Sports supporter FanClubs.',
     'member_count': memberCount,
     'member_count_label': memberCountLabel,
     'status_label': status,
@@ -77,11 +77,6 @@ List<Map<String, dynamic>> officialFanclubRegister() {
 String fanclubMemberLabel(Map<String, dynamic> club) {
   return club['member_count_label']?.toString() ??
       ((club['member_count'] as num?)?.toInt() ?? 0).toString();
-}
-
-String fanclubStatusLabel(Map<String, dynamic> club) {
-  return club['status_label']?.toString() ??
-      ((club['is_active'] as bool? ?? true) ? 'ACTIVE' : 'PENDING REVIEW');
 }
 
 String _statusLabel(String? rawStatus) {

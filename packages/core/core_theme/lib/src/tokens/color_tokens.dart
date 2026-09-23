@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../club_config.dart';
-
 /// Shared color tokens for the AFRICLUB universal mobile system.
 ///
 /// Club palette metadata remains available for identity, but UI styling follows the
@@ -11,15 +9,6 @@ class ColorTokens {
   ColorTokens._();
 
   static bool _initialized = false;
-
-  static Color _primary = const Color(0xFF0D63F3);
-  static Color _secondary = const Color(0xFF0A1326);
-  static Color _accent = const Color(0xFFE2B85F);
-  static List<Color> _gradient = const [Color(0xFF0A1326), Color(0xFF0D63F3)];
-
-  static const Color _defaultPrimary = Color(0xFF0D63F3);
-  static const Color _defaultSecondary = Color(0xFF0A1326);
-  static const Color _defaultAccent = Color(0xFFE2B85F);
 
   static const Color _inkBase = Color(0xFF09090B);
   static const Color referenceChromeBlack = Color(0xFF050510);
@@ -48,8 +37,6 @@ class ColorTokens {
   static const Color shopEditorialText = Color(0xFFF5F5F5);
   static const Color shopEditorialSecondaryText = Color(0xFFE0E0E0);
   static const Color referenceStockTealBlack = Color(0xFF001010);
-
-  static bool _isWhite(Color color) => color.computeLuminance() > 0.9;
 
   static double _contrastRatio(Color first, Color second) {
     final firstLuminance = first.computeLuminance();
@@ -112,16 +99,7 @@ class ColorTokens {
     return whiteRatio >= inkRatio ? Colors.white : _inkBase;
   }
 
-  static void init(ClubColors colors) {
-    _primary = _isWhite(colors.primary) ? _defaultPrimary : colors.primary;
-    _secondary = _isWhite(colors.secondary)
-        ? _defaultSecondary
-        : colors.secondary;
-    _accent = _isWhite(colors.accent) ? _defaultAccent : colors.accent;
-    _gradient = colors.gradient.isNotEmpty
-        ? colors.gradient
-        : [_secondary, _primary];
-
+  static void init() {
     // Provisional visual adapters measured from LIVE-007 and LIVE-020.
     // Club identity never tints a neutral task canvas or an ordinary list group.
     _darkBackground = Colors.black;
@@ -174,11 +152,6 @@ class ColorTokens {
   static void setBrightness(Brightness brightness) {
     _brightness = brightness;
   }
-
-  static Color get clubPrimary => _primary;
-  static Color get clubSecondary => _secondary;
-  static Color get clubAccent => _accent;
-  static List<Color> get clubGradient => _gradient;
 
   static Color _darkBackground = Colors.black;
   static Color _darkSurfaceDim = Colors.black;
@@ -412,7 +385,7 @@ class ColorTokens {
         ],
         const [0.0, 0.13, 0.24, 0.35, 0.56, 0.82],
       ),
-      '/fanzone' || '/predict' => (
+      '/predict' => (
         const [
           0xFFA827F6,
           0xFF9939F6,
@@ -468,7 +441,7 @@ class ColorTokens {
       switch (Uri.tryParse(path)?.path) {
         '/home' => const Color(0xFF181A53),
         '/club' => const Color(0xFF192E35),
-        '/fanzone' || '/predict' => const Color(0xFF463D8A),
+        '/predict' => const Color(0xFF463D8A),
         _ => surfaceContainerHigh,
       };
 }

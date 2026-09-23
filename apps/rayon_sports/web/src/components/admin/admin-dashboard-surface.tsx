@@ -574,9 +574,9 @@ export function AdminDashboardSurface() {
           status === "permission_denied" ||
             status === "error" ||
             status === "security_timeout"
-            ? "border-rose-500/30 bg-rose-500/10"
+            ? "border-error/30 bg-error/10"
             : status === "offline" || status === "conflict"
-              ? "border-amber-400/30 bg-amber-400/10"
+              ? "border-warning/30 bg-warning/10"
               : "border-[var(--admin-border)] bg-[var(--admin-zinc-900)]",
         )}
         role={
@@ -596,7 +596,7 @@ export function AdminDashboardSurface() {
       >
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="min-w-0">
-            <p className="font-bold text-[var(--admin-text-strong)]">
+            <p className="font-medium text-[var(--admin-text-strong)]">
               {copy.label}
             </p>
             <p className="mt-1 text-sm leading-6 text-[var(--admin-zinc-400)]">
@@ -613,7 +613,7 @@ export function AdminDashboardSurface() {
             onPointerUp={finishPointer}
             onPointerCancel={finishPointer}
             onLostPointerCapture={finishPointer}
-            className="admin-dashboard-control inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[var(--admin-border)] px-4 py-3 text-sm font-bold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-zinc-800)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent disabled:cursor-not-allowed disabled:bg-[var(--admin-zinc-800)] disabled:text-[var(--admin-text-strong)] motion-reduce:transition-none"
+            className="admin-dashboard-control inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[var(--admin-border)] px-4 py-3 text-sm font-medium text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-zinc-800)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:bg-[var(--admin-zinc-800)] disabled:text-[var(--admin-text-strong)] motion-reduce:transition-none"
           >
             <RefreshCw
               size={17}
@@ -643,7 +643,7 @@ export function AdminDashboardSurface() {
             value={metrics.activeUsers.toLocaleString()}
           />
           <KPITile
-            label="Pending verifications"
+            label="Pending tickets"
             value={metrics.pendingVerifications.toLocaleString()}
             tone={metrics.pendingVerifications > 0 ? "warning" : "neutral"}
           />
@@ -698,9 +698,9 @@ export function AdminDashboardSurface() {
                       onPointerCancel={finishPointer}
                       onLostPointerCapture={finishPointer}
                       className={cn(
-                        "admin-dashboard-action min-h-12 min-w-0 rounded-xl border p-4 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent motion-reduce:transition-none",
+                        "admin-dashboard-action min-h-12 min-w-0 rounded-xl border p-4 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none",
                         selected
-                          ? "border-club-accent bg-club-accent/10"
+                          ? "border-[var(--admin-accent)] bg-[var(--admin-accent)]/10"
                           : "border-[var(--admin-border)] bg-[var(--admin-zinc-900)] hover:bg-[var(--admin-zinc-800)]",
                       )}
                     >
@@ -708,10 +708,10 @@ export function AdminDashboardSurface() {
                         <Icon
                           size={18}
                           aria-hidden="true"
-                          className="mt-0.5 shrink-0 text-club-accent"
+                          className="mt-0.5 shrink-0 text-[var(--admin-accent)]"
                         />
                         <span className="min-w-0">
-                          <span className="block break-words text-sm font-bold text-[var(--admin-text-strong)]">
+                          <span className="block break-words text-sm font-medium text-[var(--admin-text-strong)]">
                             {item.title}
                           </span>
                           {item.subtitle ? (
@@ -735,7 +735,7 @@ export function AdminDashboardSurface() {
                       selectedAction.route,
                       activeClub?.id ?? access.clubId,
                     )}
-                    className="admin-dashboard-control inline-flex min-h-12 min-w-0 items-center justify-center rounded-xl bg-club-accent px-4 py-3 text-sm font-bold text-slate-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    className="admin-dashboard-control inline-flex min-h-12 min-w-0 items-center justify-center rounded-xl bg-action-neutral px-4 py-3 text-sm font-medium text-inverse-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                     aria-label={`Open selected: ${selectedAction.title}`}
                   >
                     <span className="break-words">
@@ -746,7 +746,7 @@ export function AdminDashboardSurface() {
               ) : (
                 <span
                   aria-disabled="true"
-                  className="admin-dashboard-control inline-flex min-h-12 items-center rounded-xl border border-[var(--admin-border)] px-4 py-3 text-sm font-bold text-[var(--admin-zinc-500)]"
+                  className="admin-dashboard-control inline-flex min-h-12 items-center rounded-xl border border-[var(--admin-border)] px-4 py-3 text-sm font-medium text-[var(--admin-zinc-500)]"
                 >
                   Select an authorized action
                 </span>
@@ -812,10 +812,10 @@ export function AdminDashboardSurface() {
                         <Activity
                           size={17}
                           aria-hidden="true"
-                          className="mt-0.5 shrink-0 text-club-accent"
+                          className="mt-0.5 shrink-0 text-[var(--admin-accent)]"
                         />
                         <div className="min-w-0">
-                          <p className="break-words text-sm font-bold text-[var(--admin-text-strong)]">
+                          <p className="break-words text-sm font-medium text-[var(--admin-text-strong)]">
                             {item.title}
                           </p>
                           <p className="mt-1 break-words text-xs leading-5 text-[var(--admin-zinc-400)]">
@@ -823,7 +823,7 @@ export function AdminDashboardSurface() {
                           </p>
                           <time
                             dateTime={item.createdAt}
-                            className="mt-2 block text-[11px] font-medium text-[var(--admin-zinc-500)]"
+                            className="mt-2 block text-xs font-medium text-[var(--admin-zinc-500)]"
                           >
                             {new Intl.DateTimeFormat("en-RW", {
                               dateStyle: "medium",

@@ -31,7 +31,7 @@ const translations = {
       Groups: "Groups",
       members: "Members",
       raised: "Raised",
-      chapters: "Chapters",
+      chapters: "FanClubs",
       competitions: "Competitions",
       playable: "Playable",
       preview: "Preview",
@@ -78,7 +78,7 @@ const translations = {
       featuredStory: "Featured story",
       openStory: "Open story",
       clubNewsroom: "Club newsroom",
-      supporterChapters: "Supporter chapters",
+      supporterChapters: "Supporter FanClubs",
       playerStories: "Player stories",
       nextFixtures: "Next fixtures",
       fixtureHub: "Fixture hub",
@@ -128,7 +128,7 @@ const translations = {
         whyEyebrow: "Why Groups matter",
         whyTitle: "Back the campaign together",
         bridgeEyebrow: "Community bridge",
-        bridgeTitle: "Chapters that amplify every campaign",
+        bridgeTitle: "FanClubs that amplify every campaign",
         campaignProgress: "Campaign progress",
       },
       contact: {
@@ -149,11 +149,11 @@ const translations = {
       fanClubs: {
         metaTitle: (club: ClubCopyContext) => `${club.shortName} fan clubs`,
         metaDescription: (club: ClubCopyContext) =>
-          `Official ${club.shortName} fan clubs, supporter chapters, and community activity across the local community and diaspora.`,
+          `Official ${club.shortName} fan clubs, supporter FanClubs, and community activity across the local community and diaspora.`,
         eyebrow: "Community",
-        title: "Supporter chapters across the club footprint.",
+        title: "Supporter FanClubs across the club footprint.",
         description: (club: ClubCopyContext) =>
-          `Discover official fan clubs, chapter activity, and the supporter network behind every ${club.shortName} matchday.`,
+          `Discover official fan clubs, FanClubs activity, and the supporter network behind every ${club.shortName} matchday.`,
         activeSupportGroups: "Active support Groups",
         rating: "rating",
         events: "events",
@@ -179,7 +179,7 @@ const translations = {
           `Club identity, supporter culture, and the history that gives ${club.shortName} its voice.`,
         clubIdentity: "Club identity",
         historyAcrossClub: "History across the club",
-        chapter: "Chapter",
+        chapter: "FanClubs",
         surfaceValue: "Club-first",
         seeMembershipIdentity: "See membership identity",
         identityParagraph:

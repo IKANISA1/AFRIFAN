@@ -8,13 +8,13 @@ void main() {
   for (final localeCase in <_LocaleCase>[
     const _LocaleCase(
       locale: Locale('en'),
-      contributors: '12 contributors',
-      progress: '40% of goal',
+      contributors: '12',
+      progress: 'Target RWF 100,000 · 40%',
     ),
     const _LocaleCase(
       locale: Locale('zz'),
-      contributors: '12 contributors',
-      progress: '40% of goal',
+      contributors: '12',
+      progress: 'Target RWF 100,000 · 40%',
     ),
   ]) {
     testWidgets(

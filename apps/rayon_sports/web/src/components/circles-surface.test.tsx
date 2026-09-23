@@ -42,7 +42,7 @@ const chapters: PublicChapter[] = [
     id: "chapter-kigali",
     name: "Kigali Blue Family",
     region: "Kigali",
-    description: "An official public supporter chapter.",
+    description: "An official public supporter FanClubs.",
     memberCount: 900,
     eventCount: 12,
   },
@@ -50,7 +50,7 @@ const chapters: PublicChapter[] = [
     id: "chapter-huye",
     name: "Huye Gikundiro",
     region: "Southern Province",
-    description: "An official public supporter chapter.",
+    description: "An official public supporter FanClubs.",
     memberCount: 320,
     eventCount: 6,
   },
@@ -85,7 +85,7 @@ function renderCircles(locale = "en") {
 }
 
 describe("circles helpers", () => {
-  it("bounds, validates, and deduplicates public campaigns and chapters", () => {
+  it("bounds, validates, and deduplicates public campaigns and FanClubs", () => {
     const normalized = normalizeCirclesSnapshot({
       groups: [
         ...Array.from({ length: 10 }, (_, index) => ({
@@ -123,9 +123,9 @@ describe("circles helpers", () => {
       chapters: [
         ...Array.from({ length: 14 }, (_, index) => ({
           id: `chapter-${index}`,
-          name: `Chapter ${index}`,
+          name: `FanClubs ${index}`,
           region: "Kigali",
-          description: "Official chapter.",
+          description: "Official FanClubs.",
           memberCount: 20,
           eventCount: 2,
           moderatorContact: "private",
@@ -151,12 +151,12 @@ describe("circles helpers", () => {
   it("resolves all supported locales and falls back to English", () => {
     expect(resolveCirclesCopy("en").refresh).toBe("Refresh circles");
     expect(resolveCirclesCopy("en").campaigns).toBe("Campaigns");
-    expect(resolveCirclesCopy("en").chapters).toBe("Chapters");
+    expect(resolveCirclesCopy("en").chapters).toBe("fan clubs");
     expect(resolveCirclesCopy("unknown").refresh).toBe("Refresh circles");
     expect(resolveFanClubsCopy("en").refresh).toBe(
       "Refresh fan clubs",
     );
-    expect(resolveFanClubsCopy("en").chapters).toBe("Chapters");
+    expect(resolveFanClubsCopy("en").chapters).toBe("fan clubs");
     expect(resolveFanClubsCopy("en").title("Rayon")).toContain("fan clubs");
     expect(resolveFanClubsCopy("unknown").refresh).toBe("Refresh fan clubs");
   });
@@ -174,9 +174,10 @@ describe("CirclesSurface", () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    window.history.replaceState(null, "", window.location.pathname);
   });
 
-  it("renders confirmed campaigns, chapters, progress, and real selection", async () => {
+  it("renders each project once with totals, participants, progress, and inline detail", async () => {
     vi.spyOn(globalThis, "fetch").mockImplementation(readyResponse);
     const { container } = renderCircles();
 
@@ -185,8 +186,8 @@ describe("CirclesSurface", () => {
       "data-circles-status",
       "ready",
     );
-    expect(screen.getByText("Kigali Blue Family")).toBeInTheDocument();
-    expect(screen.getByRole("progressbar")).toHaveAttribute(
+    expect(screen.queryByText("Kigali Blue Family")).not.toBeInTheDocument();
+    expect(screen.getByRole("progressbar", { name: "Blue wall tifo Progress" })).toHaveAttribute(
       "aria-valuenow",
       "50",
     );
@@ -200,13 +201,11 @@ describe("CirclesSurface", () => {
       "data-circles-interaction",
       "selected",
     );
-    expect(screen.getByRole("progressbar")).toHaveAttribute(
+    expect(screen.getByRole("progressbar", { name: "Community kit drive Progress" })).toHaveAttribute(
       "aria-valuenow",
       "40",
     );
-    expect(screen.getAllByText("Community kit drive").length).toBeGreaterThan(
-      1,
-    );
+    expect(screen.getAllByText("Community kit drive").length).toBe(1);
   });
 
   it("renders the fan-club variant and requests the dedicated controlled resource", async () => {
@@ -233,6 +232,17 @@ describe("CirclesSurface", () => {
     );
   });
 
+  it("reveals a shared fan club after the directory loads", async () => {
+    const scrollIntoView = vi.fn();
+    Object.defineProperty(Element.prototype, "scrollIntoView", { configurable: true, value: scrollIntoView });
+    window.history.replaceState(null, "", "#fan-club-chapter-huye");
+    vi.spyOn(globalThis, "fetch").mockImplementation(readyResponse);
+    render(<CirclesSurface locale="en" clubShortName="Rayon Sports" fanAppHref="/supporters" hasExternalAppUrl={false} variant="fan-clubs" />);
+    await screen.findByText("Huye Gikundiro");
+    await waitFor(() => expect(scrollIntoView).toHaveBeenCalledWith({ block: "center", behavior: "instant" }));
+    expect(document.getElementById("fan-club-chapter-huye")).toHaveTextContent("Huye Gikundiro");
+  });
+
   it("renders the controlled empty state", async () => {
     vi.spyOn(globalThis, "fetch").mockImplementation(() =>
       response(200, {
@@ -249,8 +259,8 @@ describe("CirclesSurface", () => {
       "empty",
     );
     expect(
-      screen.getByRole("heading", { name: "No public chapters listed" }),
-    ).toBeInTheDocument();
+      screen.queryByRole("heading", { name: "No public FanClubs listed" }),
+    ).not.toBeInTheDocument();
   });
 
   it.each([
@@ -324,7 +334,7 @@ describe("CirclesSurface", () => {
       ),
     );
     expect(screen.getAllByText("Blue wall tifo").length).toBeGreaterThan(0);
-    expect(screen.getByText("Kigali Blue Family")).toBeInTheDocument();
+    expect(screen.queryByText("Kigali Blue Family")).not.toBeInTheDocument();
     releaseRefresh?.(
       new Response(JSON.stringify({ code: "PUBLIC_CIRCLES_CONFLICT" }), {
         status: 409,
@@ -337,7 +347,7 @@ describe("CirclesSurface", () => {
         "conflict",
       ),
     );
-    expect(screen.getByText("Kigali Blue Family")).toBeInTheDocument();
+    expect(screen.queryByText("Kigali Blue Family")).not.toBeInTheDocument();
   });
 
   it("clears previously confirmed public data when access is denied", async () => {

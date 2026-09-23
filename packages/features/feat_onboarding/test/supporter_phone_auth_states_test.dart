@@ -392,7 +392,7 @@ Future<void> _prepareOtpState(
       await tester.pump();
       expect(textField.controller!.selection.extentOffset, selectedText.length);
     case _AuthGoldenState.syncing:
-      await tester.tap(find.text('Resend code'));
+      await tester.tap(find.text('Resend WhatsApp code'));
       await tester.pump(const Duration(milliseconds: 350));
     case _AuthGoldenState.empty:
     case _AuthGoldenState.offline:

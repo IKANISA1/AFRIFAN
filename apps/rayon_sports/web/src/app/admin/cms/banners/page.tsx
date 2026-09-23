@@ -302,7 +302,7 @@ export default function AdminBannersPage() {
           >
             <fieldset disabled={mutationLocked} className="contents">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="font-display text-3xl font-bold uppercase leading-none text-[var(--admin-text-strong)]">
+                <p className="font-display text-3xl font-medium normal-case leading-none text-[var(--admin-text-strong)]">
                   {form.id ? "Edit banner" : "New banner"}
                 </p>
                 {form.id ? (
@@ -312,7 +312,7 @@ export default function AdminBannersPage() {
                       setForm(emptyForm);
                       setInteraction("idle");
                     }}
-                    className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-white/8"
+                    className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)]"
                   >
                     Cancel editing
                   </button>
@@ -434,14 +434,14 @@ export default function AdminBannersPage() {
                     onChange={(event) =>
                       setForm({ ...form, isActive: event.target.checked })
                     }
-                    className="h-5 w-5 rounded accent-club-accent"
+                    className="h-5 w-5 rounded accent-action-neutral"
                   />
                   Active
                 </label>
               </div>
               <button
                 type="submit"
-                className="min-h-12 rounded-full bg-club-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-club-primary-light disabled:cursor-not-allowed disabled:opacity-70"
+                className="min-h-12 rounded-full bg-action-blue px-5 py-3 text-sm font-semibold text-white transition hover:bg-action-blue-hover disabled:cursor-not-allowed disabled:opacity-70"
               >
                 <Plus size={16} className="mr-1 inline" aria-hidden="true" />
                 {form.id ? "Update" : "Add"} banner
@@ -504,7 +504,7 @@ export default function AdminBannersPage() {
                     className={cn(
                       "flex flex-wrap items-center justify-between gap-4 rounded-[20px] border bg-[var(--admin-surface-muted)] p-4",
                       form.id === banner.id
-                        ? "border-club-accent"
+                        ? "border-[var(--admin-accent)]"
                         : "border-border-soft",
                     )}
                   >
@@ -513,7 +513,7 @@ export default function AdminBannersPage() {
                         {banner.isActive ? (
                           <Eye
                             size={14}
-                            className="text-emerald-400"
+                            className="text-success"
                             aria-hidden="true"
                           />
                         ) : (
@@ -526,11 +526,11 @@ export default function AdminBannersPage() {
                         <p className="break-words font-semibold text-[var(--admin-text-strong)]">
                           {banner.title}
                         </p>
-                        <span className="rounded-full border border-border-soft px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--admin-text-strong)]">
+                        <span className="rounded-full border border-border-soft px-2 py-1 text-xs font-medium normal-case tracking-normal text-[var(--admin-text-strong)]">
                           {banner.distribution}
                         </span>
                         {banner.badgeLabel ? (
-                          <span className="rounded-full border border-club-accent/40 bg-club-accent/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--admin-text-strong)]">
+                          <span className="rounded-full border border-[var(--admin-accent)]/40 bg-[var(--admin-accent)]/10 px-2 py-1 text-xs font-medium normal-case tracking-normal text-[var(--admin-text-strong)]">
                             {banner.badgeLabel}
                           </span>
                         ) : null}
@@ -544,7 +544,7 @@ export default function AdminBannersPage() {
                         type="button"
                         onClick={() => beginEdit(banner)}
                         disabled={mutationLocked}
-                        className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border-soft p-3 text-[var(--admin-text-strong)] transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-70"
+                        className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border-soft p-3 text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)] disabled:cursor-not-allowed disabled:opacity-70"
                         aria-label={`Edit ${banner.title}`}
                       >
                         <Edit3 size={16} aria-hidden="true" />
@@ -553,7 +553,7 @@ export default function AdminBannersPage() {
                         type="button"
                         onClick={() => void remove(banner)}
                         disabled={mutationLocked}
-                        className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-red-500/40 p-3 text-red-300 transition hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-70"
+                        className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-error/40 p-3 text-error transition hover:bg-error/10 disabled:cursor-not-allowed disabled:opacity-70"
                         aria-label={`Delete ${banner.title}`}
                       >
                         <Trash2 size={16} aria-hidden="true" />

@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  normalizeAdminMembershipApplications,
   normalizeAdminSupporters,
 } from "./membership-ops";
 
@@ -15,22 +14,6 @@ const supporter = {
   chapter: "Kigali",
   membershipNumber: "RS-0001",
   joinedAt: "2026-07-29T10:00:00.000Z",
-};
-
-const application = {
-  id: "application-1",
-  userId: "user-1",
-  clubId: 24,
-  tier: "gold",
-  status: "pending",
-  paymentStatus: "paid",
-  applicationDate: "2026-07-29T10:00:00.000Z",
-  reviewDate: null,
-  reviewerId: null,
-  notes: null,
-  userName: "Verified supporter",
-  userPhone: "+250788123456",
-  updatedAt: "2026-07-29T10:00:00.000Z",
 };
 
 describe("membership operations normalization", () => {
@@ -54,18 +37,6 @@ describe("membership operations normalization", () => {
     ).toEqual([supporter]);
   });
 
-  it("projects application records and rejects invalid states", () => {
-    const normalized = normalizeAdminMembershipApplications([
-      { ...application, privatePaymentToken: "private" },
-      { ...application, userName: "Duplicate" },
-      { ...application, id: "application-2", status: "unknown" },
-      { ...application, id: "application-3", paymentStatus: "unknown" },
-      { ...application, id: "application-4", updatedAt: "not-a-date" },
-    ]);
-    expect(normalized).toEqual([application]);
-    expect(JSON.stringify(normalized)).not.toContain("privatePaymentToken");
-  });
-
   it("caps each collection at 500 input records", () => {
     expect(
       normalizeAdminSupporters(
@@ -76,14 +47,6 @@ describe("membership operations normalization", () => {
         })),
       ),
     ).toHaveLength(500);
-    expect(
-      normalizeAdminMembershipApplications(
-        Array.from({ length: 510 }, (_, index) => ({
-          ...application,
-          id: `application-${index}`,
-          userId: `user-${index}`,
-        })),
-      ),
-    ).toHaveLength(500);
+
   });
 });

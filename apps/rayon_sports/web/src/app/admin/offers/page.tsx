@@ -426,7 +426,7 @@ function OffersWorkspace({
               <input
                 value={form.deeplinkRoute}
                 maxLength={512}
-                placeholder="/fanzone/offers"
+                placeholder="/predict?section=wallet"
                 disabled={mutationLocked}
                 onChange={(event) =>
                   setForm((current) => ({

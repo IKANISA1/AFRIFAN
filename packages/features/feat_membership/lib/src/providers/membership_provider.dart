@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' show SupabaseClient;
@@ -62,41 +61,25 @@ class MembershipSnapshot {
   const MembershipSnapshot({
     required this.packages,
     required this.membership,
-    required this.applications,
     required this.contributions,
-    this.qualification,
     this.isStale = false,
     this.recoveryMessage,
   });
 
   final List<Map<String, dynamic>> packages;
   final Map<String, dynamic>? membership;
-  final List<Map<String, dynamic>> applications;
   final List<ContributionRecord> contributions;
-  final Map<String, dynamic>? qualification;
   final bool isStale;
   final String? recoveryMessage;
 
   bool get hasPackages => packages.isNotEmpty;
   bool get hasMembership => membership != null;
   bool get hasAnyContent =>
-      packages.isNotEmpty ||
-      membership != null ||
-      applications.isNotEmpty ||
-      contributions.isNotEmpty;
-
-  Map<String, dynamic>? get latestPendingApplication {
-    for (final app in applications) {
-      final status = (app['status'] ?? '').toString().toLowerCase();
-      if (status == 'pending' || status == 'submitted') return app;
-    }
-    return null;
-  }
+      packages.isNotEmpty || membership != null || contributions.isNotEmpty;
 
   MembershipSnapshot copyWith({
     List<Map<String, dynamic>>? packages,
     Map<String, dynamic>? membership,
-    List<Map<String, dynamic>>? applications,
     List<ContributionRecord>? contributions,
     bool? isStale,
     String? recoveryMessage,
@@ -104,9 +87,7 @@ class MembershipSnapshot {
     return MembershipSnapshot(
       packages: packages ?? this.packages,
       membership: membership ?? this.membership,
-      applications: applications ?? this.applications,
       contributions: contributions ?? this.contributions,
-      qualification: qualification,
       isStale: isStale ?? this.isStale,
       recoveryMessage: recoveryMessage ?? this.recoveryMessage,
     );
@@ -162,8 +143,6 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
 
     // Load user-specific data
     Map<String, dynamic>? membership;
-    Map<String, dynamic>? qualification;
-    List<Map<String, dynamic>> applications = const <Map<String, dynamic>>[];
     List<ContributionRecord> contributions = const <ContributionRecord>[];
 
     if (userId != null) {
@@ -172,31 +151,13 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
           .select(MembershipReadProjection.fanMembership)
           .eq('user_id', userId)
           .eq('club_id', clubId)
+          .eq('status', 'active')
+          .eq('payment_status', 'verified')
+          .neq('tier', 'fan')
+          .gt('expires_at', DateTime.now().toUtc().toIso8601String())
           .order('joined_at', ascending: false)
           .limit(1)
           .maybeSingle();
-
-      final programme = await client.rpc(
-        'membership_qualification_v1',
-        params: {'p_club_id': clubId},
-      );
-      qualification = programme is Map
-          ? Map<String, dynamic>.from(programme)
-          : null;
-      if (membership != null) {
-        // Legacy points tiers never establish a contribution qualification.
-        membership = {...membership, 'tier': qualification?['tier']};
-      }
-
-      applications = List<Map<String, dynamic>>.from(
-        await client
-            .from('membership_applications')
-            .select(MembershipReadProjection.application)
-            .eq('user_id', userId)
-            .eq('club_id', clubId)
-            .order('application_date', ascending: false)
-            .limit(12),
-      );
 
       contributions = await _loadContributionHistory(
         client: client,
@@ -208,11 +169,10 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
 
     return MembershipSnapshot(
       packages: packages,
-      qualification: qualification,
       membership: membership == null
           ? null
           : Map<String, dynamic>.from(membership),
-      applications: applications,
+
       contributions: contributions,
     );
   }
@@ -233,12 +193,7 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
         // AsyncNotifier carries previous data into errors. Replace the private
         // payload first so permission revocation cannot retain personal details.
         state = const AsyncData(
-          MembershipSnapshot(
-            packages: [],
-            membership: null,
-            applications: [],
-            contributions: [],
-          ),
+          MembershipSnapshot(packages: [], membership: null, contributions: []),
         );
       }
       state = !denied && previous != null && previous.hasAnyContent
@@ -259,17 +214,13 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
     required SupabaseClient client,
     required int clubId,
   }) async {
-    final policy = ref.read(storeReleasePolicyProvider);
     final rows = await client
         .from('membership_tiers')
         .select(MembershipReadProjection.tier)
         .eq('club_id', clubId)
         .eq('active', true)
         .order('sort_order', ascending: true);
-    return publishedMembershipPackages(
-      rows,
-      allowsPaidDigital: policy.allowsPaidDigitalMembership,
-    );
+    return publishedMembershipPackages(rows);
   }
 
   Future<List<ContributionRecord>> _loadContributionHistory({
@@ -284,6 +235,7 @@ class MembershipNotifier extends AsyncNotifier<MembershipSnapshot> {
           .select('initiative_id, amount, status, created_at')
           .eq('user_id', userId)
           .eq('club_id', clubId)
+          .eq('status', 'confirmed')
           .order('created_at', ascending: false)
           .limit(8),
     );
@@ -389,20 +341,25 @@ final membershipProvider =
 /// never manufacture an offer after an empty or failed catalog read.
 List<Map<String, dynamic>> publishedMembershipPackages(
   List<Map<String, dynamic>> rows, {
-  required bool allowsPaidDigital,
+  bool allowsPaidDigital = true,
 }) {
   return rows
       .where((row) {
-        final price = row['annual_price'] ?? row['price'];
-        if (row['id'] == null || price is! num || price < 0) return false;
-        final free = price == 0 && row['tier'] == 'fan';
-        final physical =
-            row['benefit_scope'] == 'physical_membership' &&
-            row['store_billing_required'] != true;
-        return allowsPaidDigital || free || physical;
+        final price = row['annual_price'] == null || row['annual_price'] == 0
+            ? row['price']
+            : row['annual_price'];
+        return row['id'] != null &&
+            price is num &&
+            price.isFinite &&
+            price > 0 &&
+            price == price.truncateToDouble();
       })
       .map((row) {
-        final price = (row['annual_price'] ?? row['price']) as num;
+        final price =
+            (row['annual_price'] == null || row['annual_price'] == 0
+                    ? row['price']
+                    : row['annual_price'])
+                as num;
         return <String, dynamic>{
           ...normalizeMembershipTierRow(row),
           'id': row['id'],

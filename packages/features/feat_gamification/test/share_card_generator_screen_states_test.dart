@@ -2,8 +2,8 @@ import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_gamification/src/controllers/share_card_controller.dart';
 import 'package:feat_gamification/src/models/prediction_models.dart';
+import 'package:feat_gamification/src/predict/predict_share_screen.dart';
 import 'package:feat_gamification/src/prediction_providers.dart';
-import 'package:feat_gamification/src/screens/share_card_generator_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -208,7 +208,8 @@ void main() {
           ),
           findsOneWidget,
         );
-        expect(find.text('POL vs RAY'), findsWidgets);
+        expect(find.text('POL'), findsWidgets);
+        expect(find.text('RAY'), findsWidgets);
       },
     );
   });
@@ -252,7 +253,7 @@ void main() {
       value: const AsyncData<ShareCardRouteState>(_readyState),
       check: (tester) async => expect(
         MediaQuery.disableAnimationsOf(
-          tester.element(find.byType(ShareCardGeneratorScreen)),
+          tester.element(find.byType(PredictShareScreen)),
         ),
         isTrue,
       ),
@@ -392,16 +393,16 @@ Future<void> _pumpRoute(
   addTearDown(() => ConnectivityService.setOnlineForTest(true));
 
   final router = GoRouter(
-    initialLocation: '/fanzone/share',
+    initialLocation: '/predict/share',
     routes: [
       GoRoute(
-        path: '/fanzone/share',
+        path: '/predict/share',
         builder: (_, _) => RepaintBoundary(
           key: const ValueKey<String>('share-card-state-golden'),
-          child: ShareCardGeneratorScreen(shareFocusNode: shareFocusNode),
+          child: PredictShareScreen(shareFocusNode: shareFocusNode),
         ),
       ),
-      GoRoute(path: '/fanzone', builder: (_, _) => const SizedBox.shrink()),
+      GoRoute(path: '/predict', builder: (_, _) => const SizedBox.shrink()),
     ],
   );
   addTearDown(router.dispose);
@@ -434,7 +435,7 @@ Future<void> _pumpRoute(
     await tester.pump();
   }
   if (capture) {
-    expect(find.byType(ShareCardGeneratorScreen), findsOneWidget);
+    expect(find.byType(PredictShareScreen), findsOneWidget);
   }
 }
 

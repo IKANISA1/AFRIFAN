@@ -108,7 +108,7 @@ class AfriOutlinedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton(
       onPressed: onPressed,
-      style: _outlineStyle().merge(style),
+      style: style?.merge(_outlineStyle()) ?? _outlineStyle(),
       child: child,
     );
   }

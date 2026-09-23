@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
+import 'package:test_support/predict_fixture_images.dart';
 
 const _groupId = 'initiative-1';
 
@@ -63,6 +64,7 @@ ContributionGroup _initiative() {
     groupType: ContributionGroupType.project,
     targetAmount: 1000000,
     currentTotal: 640000,
+    imageUrl: 'https://cms.example.com/project.jpg',
     paymentRecipient: '123456',
     memberCount: 86,
     createdAt: DateTime.utc(2026, 7, 1),
@@ -481,6 +483,7 @@ Future<void> _pumpState(
   Future<void> Function(WidgetTester tester)? beforeCapture,
   Future<void> Function(WidgetTester tester)? afterCapture,
 }) async {
+  await installPredictFixtureImages();
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.resetPhysicalSize);
@@ -526,6 +529,13 @@ Future<void> _pumpState(
       ),
     ),
   );
+  await tester.runAsync(
+    () => precacheImage(
+      const NetworkImage('https://cms.example.com/project.jpg'),
+      tester.element(find.byType(GroupDetailScreen)),
+    ),
+  );
+  debugNetworkImageHttpClientProvider = null;
   if (settle) {
     await tester.pumpAndSettle();
   } else {

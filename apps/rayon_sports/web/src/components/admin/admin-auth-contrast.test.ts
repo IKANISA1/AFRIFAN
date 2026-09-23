@@ -1,10 +1,12 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import postcss from "postcss";
 
 function luminance(hex: string) {
   const channels =
     hex
+      .replace(/^#([a-f0-9])([a-f0-9])([a-f0-9])$/i, "#$1$1$2$2$3$3")
       .replace("#", "")
       .match(/.{2}/g)
       ?.map((value) => Number.parseInt(value, 16) / 255) ?? [];
@@ -27,19 +29,26 @@ function contrast(foreground: string, background: string) {
 
 describe("Admin authentication contrast contract", () => {
   it("keeps every sign-in text role at WCAG AA or better in light and dark", () => {
-    const pairs = [
-      ["#f6f8fc", "#0e172a"],
-      ["#9eabc2", "#0e172a"],
-      ["#25d366", "#0e172a"],
-      ["#0d1627", "#ffffff"],
-      ["#526277", "#ffffff"],
-      ["#087a42", "#ffffff"],
-      ["#ffffff", "#0f766e"],
-      ["#ffffff", "#075e54"],
-    ] as const;
-
-    for (const [foreground, background] of pairs) {
-      expect(contrast(foreground, background)).toBeGreaterThanOrEqual(4.5);
+    for (const light of [false, true]) {
+      const values = new Map<string, string>();
+      for (const file of ["tokens.css", "admin.css"]) {
+        const css = postcss.parse(readFileSync(join(process.cwd(), "src/ui-kit", file), "utf8"));
+        css.walkRules((rule) => {
+          if (![":root", ".admin-workspace"].includes(rule.selector)) return;
+          const media = rule.parent;
+          if (media?.type === "atrule" && media.name === "media" &&
+              (!light || !media.params.includes("prefers-color-scheme: light"))) return;
+          rule.walkDecls((declaration) => { values.set(declaration.prop, declaration.value); });
+        });
+      }
+      const resolve = (role: string): string => {
+        const value = values.get(role)!;
+        return value.startsWith("var(") ? resolve(value.slice(4, -1)) : value;
+      };
+      for (const role of ["--admin-text-strong", "--admin-text-muted", "--admin-auth-accent", "--admin-danger-text"]) {
+        expect(contrast(resolve(role), resolve("--admin-surface")), `${light ? "light" : "dark"} ${role}`).toBeGreaterThanOrEqual(4.5);
+      }
+      expect(contrast(resolve("--admin-zinc-950"), resolve("--admin-zinc-100"))).toBeGreaterThanOrEqual(4.5);
     }
   });
 
@@ -71,9 +80,8 @@ describe("Admin authentication contrast contract", () => {
     expect(authCard).not.toContain("🇷🇼");
     expect(authCard).toContain("text-[1.75rem]");
     expect(authCard).toContain("sm:text-[2.6rem]");
-    expect(authCard).toContain("tracking-[0.14em]");
-    expect(authCard).toContain("sm:tracking-[0.2em]");
-    expect(theme).toContain("--admin-auth-accent: #25d366");
-    expect(theme).toContain("--admin-auth-accent: #087a42");
+    expect(authCard).toContain("<OtpDigitInput value={code} length={6}");
+    expect(theme).toContain("--admin-auth-accent: var(--accent)");
+    expect(theme).toContain("--admin-auth-accent: var(--inverse-accent)");
   });
 });

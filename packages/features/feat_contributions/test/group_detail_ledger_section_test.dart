@@ -35,6 +35,12 @@ void main() {
     await tester.pumpWidget(
       buildSubject(<GroupLedgerEntry>[
         GroupLedgerEntry(
+          publicAlias: '#PENDING',
+          amount: 9000,
+          status: GroupLedgerStatus.processing,
+          createdAt: DateTime.utc(2026, 7, 1),
+        ),
+        GroupLedgerEntry(
           publicAlias: '#123456',
           amount: 1500,
           status: GroupLedgerStatus.confirmed,
@@ -49,6 +55,8 @@ void main() {
     );
     expect(find.text('Public ledger'), findsOneWidget);
     expect(find.text('#123456'), findsOneWidget);
-    expect(find.textContaining('Confirmed'), findsOneWidget);
+    expect(find.text('#PENDING'), findsNothing);
+    expect(find.textContaining('Confirmed'), findsNothing);
+    expect(find.textContaining('Processing'), findsNothing);
   });
 }

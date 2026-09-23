@@ -80,18 +80,18 @@ export function IosSafariInstallGuide({
       className="pointer-events-none fixed inset-x-4 bottom-24 z-50 sm:bottom-6 sm:left-auto sm:max-w-md"
     >
       <div className="pointer-events-auto glass-panel rounded-[28px] px-5 py-5 shadow-2xl">
-        <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-club-accent">
+        <p className="font-mono text-[11px] normal-case tracking-normal text-action-neutral">
           Install the club site
         </p>
 
-        <p className="mt-3 text-sm leading-6 text-slate-100">
+        <p className="mt-3 text-sm leading-6 text-foreground">
           For the best app-like experience, add this club site to your Home Screen:
         </p>
 
-        <ol className="mt-4 space-y-3 text-sm text-slate-200">
+        <ol className="mt-4 space-y-3 text-sm text-foreground">
           <li className="flex items-start gap-3">
             <span
-              className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-club-primary text-xs font-bold text-white"
+              className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-action-blue text-xs font-medium text-white"
               aria-hidden="true"
             >
               1
@@ -120,7 +120,7 @@ export function IosSafariInstallGuide({
           </li>
           <li className="flex items-start gap-3">
             <span
-              className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-club-primary text-xs font-bold text-white"
+              className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-action-blue text-xs font-medium text-white"
               aria-hidden="true"
             >
               2
@@ -134,7 +134,7 @@ export function IosSafariInstallGuide({
           </li>
           <li className="flex items-start gap-3">
             <span
-              className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-club-primary text-xs font-bold text-white"
+              className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-action-blue text-xs font-medium text-white"
               aria-hidden="true"
             >
               3
@@ -151,7 +151,7 @@ export function IosSafariInstallGuide({
           <button
             type="button"
             onClick={dismiss}
-            className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/6"
+            className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-foreground transition hover:bg-white/6"
           >
             Got it
           </button>

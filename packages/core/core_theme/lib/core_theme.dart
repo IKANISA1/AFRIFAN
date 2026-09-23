@@ -1,17 +1,15 @@
 /// AFRICLUB Core Theme — Universal App Design Standard implementation
 ///
-/// Shared Flutter surfaces, tokens, and primitives governed by root DESIGN.md.
+/// Shared Flutter surfaces, tokens, and primitives adapted from revolut-design.
 library;
 
-// ── Configuration ──
 export 'src/club_config.dart';
 export 'src/club_config_scope.dart';
 export 'src/club_theme.dart';
 export 'src/extensions.dart';
 export 'src/runtime_branding.dart';
+export 'src/team_identity.dart';
 export 'src/theme_mode_notifier.dart';
-
-// ── Tokens ──
 export 'src/tokens/afri_design_tokens.dart';
 export 'src/tokens/afri_semantic_colors.dart';
 export 'src/tokens/blur_tokens.dart';
@@ -28,7 +26,6 @@ export 'src/tokens/size_tokens.dart';
 export 'src/tokens/spacing_tokens.dart';
 export 'src/tokens/tap_tokens.dart';
 export 'src/tokens/typography_tokens.dart';
-// ── Widgets ──
 export 'src/widgets/afri_action_row.dart';
 export 'src/widgets/afri_action_sheet.dart';
 export 'src/widgets/afri_app_bar.dart';
@@ -85,6 +82,8 @@ export 'src/widgets/afri_status_chip.dart';
 export 'src/widgets/afri_surface_card.dart';
 export 'src/widgets/afri_switch.dart';
 export 'src/widgets/afri_tab_bar.dart';
+export 'src/widgets/afri_team_card.dart';
+export 'src/widgets/afri_team_field.dart';
 export 'src/widgets/afri_toast.dart';
 export 'src/widgets/afri_top_command_bar.dart';
 export 'src/widgets/africlub_bottom_nav.dart';

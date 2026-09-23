@@ -1,6 +1,68 @@
+# Consolidated frontend review — 20 September 2026
+
+Local verification of the consolidated frontend candidate is complete. The owner approved all presented frontend screens on 20 September 2026 and explicitly instructed further implementation. The approval binds the reviewed gallery and image hashes in `output/qa/full-stack-20260914/frontend-owner-approval-20260920.json`. Authorized full-stack engineering resumes; release readiness and independent technical, device and provider acceptance remain separate.
+
+The former gallery's **812 mobile records represent 55 rendered route entries**, not 812 independent screens. Each record has a relevance decision in `output/qa/full-stack-20260914/frontend-screen-relevance-812.json`; the readable route-by-route critique is `output/qa/full-stack-20260914/frontend-screen-relevance.md`.
+
+The final native graph has **39 supporter destinations, 10 internal admin destinations and two recovery screens**: **51 rendered entries and 12 compatibility redirects**. Redirects have no separate screen implementation. There are currently **774 mapped native images** and **296 shared/component variants**. Themes, loading, errors, access denial and accessibility states remain tests of one journey; the gallery opens one overview per route.
+
+## Implemented consolidation
+
+- Predict owns the former match, pick and share flows. Fan Zone/Challenge routes, screen implementations and their unused presentation dependencies are deleted.
+- Club projects use Contribute. Fixtures and results use one filtered browser. Legacy project/article links preserve record IDs while opening the canonical screen.
+- Contribute uses one image-led project card and discovery list, with totals, participants and progress. The duplicate project model/list/detail and supporter SMS controls are deleted. Public ledgers include received contributions without backend processing labels.
+- Fan Clubs uses one searchable directory and one concise detail view. Repeated featured cards, descriptions, status badges and self-linking joining controls are removed.
+- Predict admin displays automatic LiveScore results; the manual confirmation dialog and separate settlement screen/captures are removed. Actual external integration validation remains a later gate.
+- Ticket discovery and owned tickets share one destination. Checkout displays the match's actual prices; the conflicting hard-coded category catalog is deleted. Issued QR tickets remain a separate artifact.
+- Unused Live reader/match, Splash and Membership profile/registry implementations, alternate web Home compositions and disconnected presentation widgets are deleted.
+- Shared football presentation uses registered initials and official crest bytes. WhatsApp number/code entry is explicit. Missing product media no longer occupies a large invented image area. Notification settings use one grouped preference card.
+
+## Website and admin consolidation
+
+The companion website/admin inventory contains **26 public destinations, 25 internal admin destinations and one compatibility redirect**. Every route has a source/journey decision in `output/qa/full-stack-20260914/frontend-web-screen-relevance.json` and in the readable screen review. The old Contributions admin page now preserves club scope while opening the existing Community groups workspace; its duplicate list and editor composition are deleted. The shared project form lives with Community. The unused alternate community, squad and standings lists, unmounted notification card and unused heading/animation wrappers are also deleted.
+
+The browser review reproduced low-contrast fixture initials and a Fixtures heading covered by the fixed navigation. Shared identity text now uses the foreground token; Fixtures reserves the measured header height at ordinary and enlarged text sizes. The existing browser suite checks the actual heading-to-navigation gap. Public URLs with different feature gates or content remain explicit projections of shared components rather than duplicate implementations.
+
+## Latest annotated defects
+
+Home now renders the registered RAY/APR identities and decoded official crests in its populated review fixture. Team cards no longer reserve an empty crest area for an identity without an asset. The empty Home view also respects Predict availability before offering its action.
+
+Predict presents one set of equally sized result choices, with consistent rounded corners and insets. The repeated team cards above those choices are removed. At narrow widths with 200% text, choices stack at full width instead of squeezing labels or changing into uneven pills. The shared outlined-button style now preserves the caller's card shape and padding. Dark, light, selected and enlarged-text images were inspected after regeneration.
+
+## Current local verification
+
+| Scope | Current result | Evidence |
+| --- | --- | --- |
+| Shared Flutter packages | 2,347 tests passed; analysis reported no issues | `frontend-consolidation-native-verification-20260920.json` |
+| Four retained club shells | 26 navigation and identity tests passed | Same native verification record |
+| Native image register | 1,070 current baselines validated: 774 route images and 296 component variants | Same native verification record |
+| Website/admin source | 953 unit tests passed; types, lint and local production-format build passed | `frontend-consolidation-web-verification-20260920.json` |
+| Chromium, Firefox and mobile WebKit | 288 distinct cases passed; three live administrator cases skipped | `frontend-consolidation-browser-case-coverage-20260920.json` |
+| Browser capture integrity | 189 complete capture groups, 2,517 state captures and 2,558 PNG files validated against the same sealed build | Web verification record and its three source-bound browser packets |
+
+These evidence files are under `output/qa/full-stack-20260914/`. The browser run was interrupted by local disk exhaustion; its completed cases were preserved, unfinished WebKit cases were rerun, and the final coverage record selects each case's latest result. The interrupted run itself is not recorded as passing. The three skipped cases require a real assignment-backed administrator session and remain unverified. Capture validity does not grant visual approval.
+
+## Review and evidence boundaries
+
+Revolut design remains the visual authority, with Product Design used for relevance, duplication, task depth, hierarchy and recovery. Club identity, football rules, record IDs, payment authorization and account boundaries remain product-owned. The implementer inspected route representatives and affected 200% text states; the 812-record assessment does not claim a manual pixel comparison of every former image.
+
+Current command logs and source/artifact hashes are in `output/qa/full-stack-20260914/`. Capture generation is separate from tests comparing against those baselines. The live review artifact is `output/qa/full-stack-20260914/frontend-review/`. It uses synthetic Flutter and controlled browser fixtures. Exact source-font/pixel fidelity, independent technical review, installed physical devices, provider validation, hosted CI, deployment, signing and store/public availability remain distinct and unverified by these screenshots.
+
+## Historical implementation evidence
+
+The following earlier report is preserved as history. Its route, app, package, baseline and test counts do not describe the consolidated candidate above.
+
 # Native mobile implementation review
 
 Scope updated on 19 September 2026: four retained club products, eight platform targets. Earlier test totals below describe the former scope and are historical evidence, not current acceptance.
+
+20 September follow-up: theme initialization no longer accepts club colours,
+and unused club-colour token getters are deleted. Shared controls retain the
+selected reference palette across all four identities. Celebration colours use
+the selected violet and blue roles. The two contrast-fixture baselines replace
+the former identity-derived series accent with the semantic action accent;
+implementer inspection confirms the intended colour change only. Their current
+hashes are in the existing golden register; owner review remains pending.
 
 The shared mobile presentation is reimplemented for the four retained club shells. The
 selected reference is Revolut native iOS **Dark · Glow**, captured 5 September
@@ -8,16 +70,41 @@ selected reference is Revolut native iOS **Dark · Glow**, captured 5 September
 This report describes local implementation and inspection, not a release or
 certification of exact pixel equivalence.
 
+## 20 September frontend approval candidate
+
+The active phase is frontend redesign, refactoring and cleanup only. Owner
+approval is pending before other goal work resumes. The current reference map
+contains **55 rendered entries and 33 redirects**, with **816 unique mapped
+route-state images**. The earlier platform runs and counts below are historical.
+Four fresh Home identity captures show Vital’O, Gikundiro, Nkana FC and AS Vita Club using the same selected blue Home treatment. The current four products share these implementations; widget fixtures do not
+establish four installed Android/iOS binaries or physical-device acceptance.
+
+The unused legacy Live news screen, its private provider and duplicate fixture
+images are removed. Existing links still redirect to the canonical Club reader;
+a route test preserves an encoded article identifier.
+
+The review corrects four representative-image links (player, partners, partner
+detail and club website) so each route shows its own existing fixture. Contribution
+hub groups now use a single neutral surface with wrapping headings. The public
+statement keeps its CSV action and removes the disabled PDF teaser. Ticket wallet
+actions stack on phones and enlarged text; rendered-label checks cover three
+phone widths at normal and 200% text. Seat-map zones use distinct accessible blue,
+violet and neutral markers in both themes, with labels retained. Notifications,
+privacy and internal admin copy explains user choices without build or delivery
+implementation jargon. Updated regression images retain their exact paths in the
+existing golden register. Baseline generation is recorded separately from tests
+that compare against those images; neither operation grants owner acceptance.
+
 ## Scope and implementation
 
-- 54 rendered route entries, including five tab entries and the router error and
-  unavailable states; 28 existing redirects keep their registered targets.
+- 55 rendered route entries, including five tab entries and the router error and
+  unavailable states; 33 existing redirects keep their registered targets.
 - Shared typography, neutral surfaces, rounded groups, inverse primary buttons,
   circular quick actions, compact search and navigation, sheets, selection,
   native switches, and six-cell code entry replace the former visual rules.
 - Home uses blue, Club petrol, Fan Zone violet, Membership card-wallet violet,
   and authentication blue-indigo. These are independently selected UI colour
-  roles. The 20 club identities and their approved artwork remain their own.
+  roles. The four retained club identities and their artwork remain their own.
 - Home fixture hero, Club directory, Fan Zone overview, membership card, Settings
   profile and Appearance preview have new compositions. Remaining football,
   contribution, ticket and commerce forms use the shared controls and
@@ -49,7 +136,7 @@ The fixture is synthetic and backend startup is disabled. Unavailable live-data
 states in that journey are expected, not evidence of production availability.
 Populated states are additionally rendered by the governed route tests.
 
-There are 819 associated route-state regression images (including the populated
+There are 816 associated route-state regression images (including the populated
 Home fixture). They cover applicable loading, empty, error, offline, permission,
 disabled, focus, held press, selection, 200% text, reduced motion, light, dark,
 sync, conflict and timeout variants. Passing them means the implementation
@@ -75,7 +162,7 @@ passes.
 
 **100% pixel-equivalence claim: unverified.** No checklist score or passing test
 count is converted to an equivalence percentage. The implementation scope is
-54 rendered entries plus 28 redirects, including 11 role-gated internal admin
+55 rendered entries plus 33 redirects, including 11 role-gated internal admin
 routes. Web/PWA surfaces are outside this native scope.
 
 ## Verification
@@ -248,7 +335,7 @@ native visual refinement has a fresh full-workspace run recorded below.
 | `/fanzone/wallet` | Shared destination | redirect | `/predict?section=wallet` |
 | `/feature-unavailable` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [feature_unavailable_state_dark_dark_390x844.png](../../packages/core/core_router/test/goldens/feature_unavailable_state_dark_dark_390x844.png) |
 | `/home` | LIVE-020 | component pattern | [home_state_populated_dark_390x844.png](../../packages/features/feat_home/test/goldens/home_state_populated_dark_390x844.png) |
-| `/live/news/:articleId` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [news_article_state_dark_dark_390x844.png](../../packages/features/feat_live/test/goldens/news_article_state_dark_dark_390x844.png) |
+| `/live/news/:articleId` | Canonical Club reader | compatibility redirect | `/club/news/:articleId`; no independent screen |
 | `/membership` | LIVE-048, LIVE-047 | component pattern | [membership_standard_dark_390x844.png](../../packages/features/feat_membership/test/goldens/membership_standard_dark_390x844.png) |
 | `/membership/tier/:tierId` | LIVE-053, LIVE-060 | component pattern | [tier_detail_state_dark_dark_390x844.png](../../packages/features/feat_membership/test/goldens/tier_detail_state_dark_dark_390x844.png) |
 | `/onboarding` |  | unevidenced adaptation | [onboarding_state_selected_dark_390x844.png](../../packages/features/feat_onboarding/test/goldens/onboarding_state_selected_dark_390x844.png) |

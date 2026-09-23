@@ -289,7 +289,7 @@ test("news article proves all sixteen applicable rendered states", async ({
     await page
       .locator(".news-article-surface")
       .evaluate((element) => getComputedStyle(element).color),
-  ).toBe("rgb(248, 250, 252)");
+  ).toBe("rgb(244, 244, 244)");
   await expectNoSeriousAxeViolations(page);
   await capture(page, "dark_dark");
 
@@ -303,7 +303,7 @@ test("news article proves all sixteen applicable rendered states", async ({
     await page
       .locator(".news-article-surface")
       .evaluate((element) => getComputedStyle(element).color),
-  ).toBe("rgb(15, 23, 42)");
+  ).toBe("rgb(25, 28, 31)");
   await expectNoSeriousAxeViolations(page);
   await capture(page, "light_light");
 

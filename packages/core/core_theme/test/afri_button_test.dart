@@ -4,6 +4,39 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets('outlined choices honor their card shape and custom insets', (
+    tester,
+  ) async {
+    const padding = EdgeInsets.symmetric(horizontal: 4, vertical: 12);
+    final shape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(16),
+    );
+    var taps = 0;
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: AfriOutlinedButton(
+              style: AfriOutlinedButton.styleFrom(
+                padding: padding,
+                shape: shape,
+              ),
+              onPressed: () => taps++,
+              child: const Text('Draw'),
+            ),
+          ),
+        ),
+      ),
+    );
+    final finder = find.byType(OutlinedButton);
+    final button = tester.widget<OutlinedButton>(finder);
+    expect(button.style?.padding?.resolve({}), padding);
+    expect(button.style?.shape?.resolve({}), shape);
+    expect(tester.getSize(finder).height, greaterThanOrEqualTo(48));
+    await tester.tap(finder);
+    expect(taps, 1);
+  });
+
   testWidgets(
     'text actions honor custom insets while keeping the touch target',
     (tester) async {
@@ -75,7 +108,7 @@ void main() {
     tester,
   ) async {
     final config = ClubConfig.fallback();
-    ColorTokens.init(config.colors);
+    ColorTokens.init();
     await tester.pumpWidget(
       MaterialApp(
         theme: ClubTheme.from(config),

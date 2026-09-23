@@ -77,7 +77,7 @@ void main() {
     expect(find.byType(MembershipScreen), findsOneWidget);
   });
 
-  testWidgets('uses shared async state and pending review banner', (
+  testWidgets('keeps historical payment records out of membership selection', (
     tester,
   ) async {
     _setMobileSurface(tester);
@@ -85,12 +85,8 @@ void main() {
     await tester.pumpWidget(_buildMembershipApp(_pendingSnapshot()));
     await tester.pumpAndSettle();
 
-    expect(find.byType(AfriStateBanner), findsOneWidget);
-    expect(find.text('Membership review'), findsOneWidget);
-    expect(
-      find.text('Gold request is awaiting payment verification.'),
-      findsOneWidget,
-    );
+    expect(find.text('Payment processing'), findsNothing);
+    expect(find.text('Pending verification'), findsNothing);
 
     await tester.scrollUntilVisible(
       find.text('Packages'),
@@ -297,6 +293,7 @@ void main() {
       tester,
       id: 'disabled',
       snapshot: _pendingSnapshot(),
+      online: false,
       scrollToKey: const ValueKey<String>('membership-action-gold'),
       beforeCapture: (tester) async {
         await tester.drag(find.byType(Scrollable).first, const Offset(0, 120));
@@ -400,7 +397,7 @@ void main() {
         await tester.pump();
         await tester.drag(find.byType(Scrollable).first, const Offset(0, 600));
         await tester.pump();
-        expect(find.text('Submitting membership request'), findsOneWidget);
+        expect(find.text('Opening MoMo'), findsOneWidget);
       },
       afterCapture: () async {
         if (!pendingActivation.isCompleted) {
@@ -682,7 +679,7 @@ MembershipSnapshot _successSnapshot() {
       'joined_at': '2026-01-12T08:00:00Z',
       'expires_at': '2027-01-12T08:00:00Z',
     },
-    applications: const <Map<String, dynamic>>[],
+
     contributions: const [],
   );
 }
@@ -691,7 +688,7 @@ MembershipSnapshot _emptySnapshot() {
   return const MembershipSnapshot(
     packages: <Map<String, dynamic>>[],
     membership: null,
-    applications: <Map<String, dynamic>>[],
+
     contributions: [],
   );
 }
@@ -700,15 +697,7 @@ MembershipSnapshot _pendingSnapshot() {
   return MembershipSnapshot(
     packages: officialMembershipPackages(),
     membership: null,
-    applications: const <Map<String, dynamic>>[
-      <String, dynamic>{
-        'tier': 'gold',
-        'status': 'pending',
-        'payment_status': 'unpaid',
-        'application_date': '2026-07-01T08:00:00Z',
-        'metadata': <String, dynamic>{'amount': 5000, 'currency_symbol': 'RWF'},
-      },
-    ],
+
     contributions: const [],
   );
 }

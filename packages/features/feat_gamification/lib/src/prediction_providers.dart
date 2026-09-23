@@ -3,9 +3,10 @@ import 'package:core_network/core_network.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'controllers/share_card_controller.dart';
-import 'models/fanzone_models.dart';
+import 'models/football_models.dart';
 import 'repositories/partner_pool_repository.dart';
 import 'repositories/prediction_repository.dart';
+
 export 'repositories/partner_pool_repository.dart';
 export 'repositories/prediction_repository.dart';
 

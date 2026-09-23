@@ -5,7 +5,6 @@ import { AppBottomNav } from "@/components/app-bottom-nav";
 import { FocusOnRouteChange } from "@/components/focus-on-route-change";
 import { SiteFooter } from "@/components/site-footer";
 import { getClubProfile, getMatches } from "@/lib/data/public";
-import { buildClubThemeStyle } from "@/lib/club-theme";
 import { getSiteChromeCopy } from "@/lib/site-copy";
 import {
   getNavFeatures,
@@ -25,7 +24,6 @@ export default async function SiteLayout({
     getPlatformConfig(),
   ]);
   const copy = getSiteChromeCopy(club.defaultLanguage);
-  const themeStyle = buildClubThemeStyle(club);
   const navFeatures = getNavFeatures(platformConfig);
   const primaryNavigation = getSiteNavigationItems(platformConfig, "primary");
   const footerNavigation = [
@@ -62,13 +60,10 @@ export default async function SiteLayout({
   return (
     <div
       className="club-site relative isolate flex min-h-screen flex-col overflow-hidden"
-      style={themeStyle}
       lang={club.defaultLanguage}
       data-club-locale={club.defaultLanguage}
       data-match-ribbon={nextMatch ? "present" : "absent"}
     >
-      <div className="club-site-atmosphere" aria-hidden="true" />
-      <div className="club-site-grid" aria-hidden="true" />
       <a
         href="#main-content"
         className={`sr-only fixed left-4 top-4 z-[120] ${ui.buttonPrimary} px-4 py-2 text-sm focus:not-sr-only`}

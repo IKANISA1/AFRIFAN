@@ -12,7 +12,7 @@ const copy = {
   title: "The story of Rayon.",
   description: "Club identity, supporter culture, and history.",
   newsroom: "Club newsroom",
-  supporterChapters: "Supporter chapters",
+  supporterChapters: "Supporter FanClubs",
   moments: "Moments",
   identity: "Identity",
   surface: "Surface",
@@ -26,7 +26,7 @@ const copy = {
 const moments: HistoryMoment[] = [
   {
     id: "founding",
-    title: "The founding chapter",
+    title: "The founding moment",
     body: "Supporters established the club.",
   },
   {
@@ -59,7 +59,7 @@ describe("history surface state helpers", () => {
   it("accepts only bounded, unique, complete public history records", () => {
     const oversized = Array.from({ length: 30 }, (_, index) => ({
       id: `chapter-${index}`,
-      title: `Chapter ${index}`,
+      title: `Moment ${index}`,
       body: `Body ${index}`,
     }));
 
@@ -117,7 +117,7 @@ describe("HistorySurface", () => {
     vi.useRealTimers();
   });
 
-  it("moves from loading to confirmed chapters and exposes selection", async () => {
+  it("moves from loading to published moments and exposes selection", async () => {
     vi.spyOn(globalThis, "fetch").mockImplementation(() =>
       response(200, { code: "PUBLIC_HISTORY_READY", items: moments }),
     );
@@ -132,18 +132,18 @@ describe("HistorySurface", () => {
       screen.getByRole("button", { name: /refresh history/i }),
     ).toBeDisabled();
 
-    await screen.findByRole("heading", { name: "The founding chapter" });
+    await screen.findByRole("heading", { name: "The founding moment" });
     expect(container.querySelector("[data-history-status]")).toHaveAttribute(
       "data-history-status",
       "ready",
     );
     expect(
-      screen.getByRole("button", { name: /chapter\s*2\s*the first title/i }),
+      screen.getByRole("button", { name: /moment\s*2\s*the first title/i }),
     ).toHaveAttribute("aria-pressed", "false");
 
     fireEvent.click(
       screen.getByRole("button", {
-        name: /chapter\s*2\s*the first title/i,
+        name: /moment\s*2\s*the first title/i,
       }),
     );
     expect(
@@ -220,10 +220,10 @@ describe("HistorySurface", () => {
       value: true,
     });
     fireEvent(window, new Event("online"));
-    await screen.findByRole("heading", { name: "The founding chapter" });
+    await screen.findByRole("heading", { name: "The founding moment" });
   });
 
-  it("retains confirmed chapters while a refresh is syncing", async () => {
+  it("retains published moments while a refresh is syncing", async () => {
     let releaseRefresh:
       | ((value: Response | PromiseLike<Response>) => void)
       | undefined;
@@ -240,7 +240,7 @@ describe("HistorySurface", () => {
       );
 
     const { container } = renderHistory();
-    await screen.findByRole("heading", { name: "The founding chapter" });
+    await screen.findByRole("heading", { name: "The founding moment" });
 
     fireEvent.click(screen.getByRole("button", { name: /refresh history/i }));
     await waitFor(() =>
@@ -250,7 +250,7 @@ describe("HistorySurface", () => {
       ),
     );
     expect(
-      screen.getByRole("heading", { name: "The founding chapter" }),
+      screen.getByRole("heading", { name: "The founding moment" }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /refresh history/i }),
@@ -271,7 +271,7 @@ describe("HistorySurface", () => {
     );
   });
 
-  it("retains confirmed chapters during recoverable refresh failures", async () => {
+  it("retains published moments during recoverable refresh failures", async () => {
     vi.spyOn(globalThis, "fetch")
       .mockImplementationOnce(() =>
         response(200, { code: "PUBLIC_HISTORY_READY", items: moments }),
@@ -281,7 +281,7 @@ describe("HistorySurface", () => {
       );
 
     const { container } = renderHistory();
-    await screen.findByRole("heading", { name: "The founding chapter" });
+    await screen.findByRole("heading", { name: "The founding moment" });
     fireEvent.click(screen.getByRole("button", { name: /refresh history/i }));
 
     await waitFor(() =>
@@ -291,7 +291,7 @@ describe("HistorySurface", () => {
       ),
     );
     expect(
-      screen.getByRole("heading", { name: "The founding chapter" }),
+      screen.getByRole("heading", { name: "The founding moment" }),
     ).toBeInTheDocument();
   });
 
@@ -300,7 +300,7 @@ describe("HistorySurface", () => {
       response(200, { code: "PUBLIC_HISTORY_READY", items: moments }),
     );
     const { container } = renderHistory();
-    await screen.findByRole("heading", { name: "The founding chapter" });
+    await screen.findByRole("heading", { name: "The founding moment" });
     const newsroom = screen.getByRole("link", { name: "Club newsroom" });
 
     fireEvent.focus(newsroom);

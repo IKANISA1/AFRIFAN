@@ -304,7 +304,7 @@ export default function AdminSquadPage() {
             disabled={mutationLocked}
             onClick={() => setFilter(tab)}
             className={cn(
-              "relative min-h-12 px-6 py-3 text-xs font-bold uppercase tracking-widest transition-colors motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-70",
+              "relative min-h-12 px-6 py-3 text-xs font-medium normal-case tracking-normal transition-colors motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-70",
               filter === tab
                 ? "text-[var(--admin-text-strong)]"
                 : "text-[var(--admin-zinc-500)] hover:text-[var(--admin-zinc-300)]",
@@ -314,7 +314,7 @@ export default function AdminSquadPage() {
             {filter === tab ? (
               <span
                 aria-hidden="true"
-                className="absolute inset-x-0 bottom-0 h-0.5 bg-club-accent"
+                className="absolute inset-x-0 bottom-0 h-0.5 bg-[var(--admin-accent)]"
               />
             ) : null}
           </button>
@@ -439,7 +439,7 @@ export default function AdminSquadPage() {
                             className="h-full w-full object-cover"
                           />
                         ) : (
-                          <div className="flex h-full w-full items-center justify-center text-[10px] font-bold text-[var(--admin-zinc-500)]">
+                          <div className="flex h-full w-full items-center justify-center text-xs font-medium text-[var(--admin-zinc-500)]">
                             {player.number}
                           </div>
                         )}
@@ -447,13 +447,13 @@ export default function AdminSquadPage() {
                       <p className="admin-row-title">{player.name}</p>
                     </div>
                   </td>
-                  <td className="text-center font-bold text-club-accent">
+                  <td className="text-center font-medium text-[var(--admin-accent)]">
                     {player.number}
                   </td>
                   <td>
                     <span
                       className={cn(
-                        "inline-flex rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider",
+                        "inline-flex rounded-full px-2 py-0.5 text-xs font-medium normal-case tracking-normal",
                         positionColor(player.role),
                       )}
                     >

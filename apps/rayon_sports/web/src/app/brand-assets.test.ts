@@ -9,8 +9,13 @@ vi.mock("@/lib/data/public/club", async () => {
 });
 
 describe("deterministic local brand assets", () => {
+  it("resolves the legacy logo URL to the published club crest", async () => {
+    const response = await getBrandMark();
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe("/crests/rayon-sports.png");
+    expect(await response.text()).toBe("");
+  });
   it.each([
-    ["brand mark", getBrandMark, 'role="img"', "512"],
     ["brand surface", getBrandSurface, 'role="img"', "1600"],
   ])(
     "returns the %s as a cacheable local SVG without remote image references",

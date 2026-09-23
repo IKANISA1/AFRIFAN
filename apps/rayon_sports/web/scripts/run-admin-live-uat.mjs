@@ -1143,7 +1143,7 @@ try {
   await page.close();
 
   currentStep = "wallet-success";
-  await setFeatureState("fanzone", {
+  await setFeatureState("predict", {
     featureEnabled: true,
     channelEnabled: true,
     channelVisible: true,
@@ -1192,8 +1192,8 @@ try {
   );
 
   currentStep = "wallet-blocked";
-  await setFeatureState("fanzone", { featureEnabled: false });
-  await waitForFeatureAccessState("fanzone", "global_disabled");
+  await setFeatureState("predict", { featureEnabled: false });
+  await waitForFeatureAccessState("predict", "global_disabled");
   await page.getByLabel(/adjustment amount/i).fill("5");
   await page.getByLabel(/audit reason/i).fill(blockedWalletReason);
   const blockedWalletResponsePromise = page.waitForResponse(
@@ -1231,7 +1231,7 @@ try {
     true,
     "Wallet adjustment was rejected when the feature was disabled.",
   );
-  await setFeatureState("fanzone", { featureEnabled: true });
+  await setFeatureState("predict", { featureEnabled: true });
   await page.close();
 
   const productTable = await resolveAccessibleTable([

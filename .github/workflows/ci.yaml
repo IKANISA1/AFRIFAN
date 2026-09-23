@@ -12,6 +12,39 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  paid-membership-ci:
+    name: Automatic paid membership contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:17.6
+        env:
+          POSTGRES_PASSWORD: isolated-membership-contract
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGHOST: 127.0.0.1
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: isolated-membership-contract
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare isolated API roles
+        run: |
+          psql -v ON_ERROR_STOP=1 -d postgres <<'SQL'
+          create role anon nologin;
+          create role authenticated nologin;
+          create role service_role nologin bypassrls;
+          SQL
+      - name: Test authoritative payment, activation and tier preservation
+        run: python3 tools/tests/automatic_paid_membership_contract.py
+
   database-ci:
     name: Isolated database replay and race checks
     runs-on: ubuntu-latest
@@ -87,6 +120,9 @@ jobs:
 
       - name: Enforce football-only repository boundary
         run: node tools/scripts/validate_repository_boundary.mjs
+
+      - name: Enforce revised product routes and membership boundaries
+        run: python3 tools/scripts/validate_revised_product_contract.py
 
       - name: Validate local-only Supabase migration security controls
         run: node tools/scripts/validate_supabase_local_only_migrations.mjs

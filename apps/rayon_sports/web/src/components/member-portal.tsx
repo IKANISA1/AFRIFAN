@@ -63,6 +63,7 @@ type ContributionIntent = {
 };
 
 type MemberPortalProps = {
+  refreshKey?: number;
   clubShortName: string;
   clubId?: number;
   countryCode?: string;
@@ -167,7 +168,7 @@ function cleanError(message: string | undefined) {
   return "We could not complete that request. Please try again.";
 }
 
-export function MemberPortal({ clubShortName, clubId = 24, countryCode = "RW", currencyCode = "RWF" }: MemberPortalProps) {
+export function MemberPortal({ refreshKey = 0, clubShortName, clubId = 24, countryCode = "RW", currencyCode = "RWF" }: MemberPortalProps) {
   const initialPhone = countryCode === "RW" ? "+250 " : "";
   const [step, setStep] = useState<AuthStep>("loading");
   const [phone, setPhone] = useState(initialPhone);
@@ -210,7 +211,7 @@ export function MemberPortal({ clubShortName, clubId = 24, countryCode = "RW", c
     setMessage(null);
   }, []);
 
-  const loadMemberArea = useCallback(async (activateMembership = false) => {
+  const loadMemberArea = useCallback(async () => {
     if (isMemberSignOutPending()) {
       setStep("signout");
       setMessage("Sign-out is not confirmed. Retry when connected to finish signing out.");
@@ -242,17 +243,15 @@ export function MemberPortal({ clubShortName, clubId = 24, countryCode = "RW", c
       }
       identity.current = userResult.user.id;
 
-      if (activateMembership) {
-        const activation = await boundedMemberRequest(supabase.rpc("activate_free_fan_membership_for_club", { p_expected_club_id: clubId }));
-        if (!isCurrent()) return;
-        if (activation.error) throw activation.error;
-      }
-
       const membershipResult = await boundedMemberRequest(supabase
         .from("fan_memberships")
         .select("club_id,member_code,membership_number,tier,status,joined_at,updated_at")
         .eq("user_id", userResult.user.id)
+        .eq("club_id", clubId)
         .eq("status", "active")
+        .eq("payment_status", "verified")
+        .neq("tier", "fan")
+        .gt("expires_at", new Date().toISOString())
         .order("updated_at", { ascending: false })
         .limit(1)
         .maybeSingle());
@@ -314,6 +313,10 @@ export function MemberPortal({ clubShortName, clubId = 24, countryCode = "RW", c
   }, [clearPrivateState, clubId]);
 
   useEffect(() => {
+    if (refreshKey > 0) void loadMemberArea();
+  }, [refreshKey, loadMemberArea]);
+
+  useEffect(() => {
     const supabase = getBrowserSupabase();
     let reload: ReturnType<typeof setTimeout> | undefined;
     const subscription = supabase?.auth.onAuthStateChange((event: AuthChangeEvent, session: Session | null) => {
@@ -327,7 +330,7 @@ export function MemberPortal({ clubShortName, clubId = 24, countryCode = "RW", c
       clearTimeout(reload);
       setStep(nextIdentity ? "loading" : "phone");
       // Auth callbacks run under the client's session lock. Load after it releases.
-      if (nextIdentity) reload = setTimeout(() => void loadMemberArea(false), 0);
+      if (nextIdentity) reload = setTimeout(() => void loadMemberArea(), 0);
     }).data.subscription;
     const onStorage = (event: StorageEvent) => {
       if (event.key !== memberSignOutStorageKey) return;
@@ -336,7 +339,7 @@ export function MemberPortal({ clubShortName, clubId = 24, countryCode = "RW", c
       setStep(isMemberSignOutPending() ? "signout" : "phone");
     };
     window.addEventListener("storage", onStorage);
-    void loadMemberArea(false);
+    void loadMemberArea();
     return () => {
       window.removeEventListener("storage", onStorage);
       clearTimeout(reload);
@@ -438,7 +441,7 @@ export function MemberPortal({ clubShortName, clubId = 24, countryCode = "RW", c
         setMessage(cleanError(error.message));
         return;
       }
-      await loadMemberArea(false);
+      await loadMemberArea();
     } catch {
       if (version === identityVersion.current) {
         setMessage("Verification could not be confirmed. Please retry when connected.");
@@ -558,7 +561,7 @@ export function MemberPortal({ clubShortName, clubId = 24, countryCode = "RW", c
         {step === "unavailable" ? (
           <div className="member-auth-form">
             <h3>Member area unavailable</h3>
-            <button className="member-primary-action" type="button" disabled={busy} onClick={() => void loadMemberArea(false)}>
+            <button className="member-primary-action" type="button" disabled={busy} onClick={() => void loadMemberArea()}>
               Retry member area
             </button>
             <button className="member-text-action" type="button" onClick={() => void signOut()}>
@@ -575,8 +578,8 @@ export function MemberPortal({ clubShortName, clubId = 24, countryCode = "RW", c
             }}
           >
             <span className="member-step">01 / Secure access</span>
-            <h3>Continue with WhatsApp</h3>
-            <p>No password, email, or public profile required.</p>
+            <h3>Enter your WhatsApp number</h3>
+            <p>We’ll send a one-time code via WhatsApp.</p>
             <label htmlFor="member-phone">WhatsApp number</label>
             <div className="member-input-shell">
               <Phone aria-hidden="true" />
@@ -608,8 +611,8 @@ export function MemberPortal({ clubShortName, clubId = 24, countryCode = "RW", c
             }}
           >
             <span className="member-step">02 / Verification</span>
-            <h3>Enter your six-digit code</h3>
-            <p>Sent privately to {verifiedPhone}.</p>
+            <h3>Enter your WhatsApp code</h3>
+            <p>We sent a six-digit code via WhatsApp to {verifiedPhone}.</p>
             <label htmlFor="member-otp">WhatsApp verification code</label>
             <input
               id="member-otp"
@@ -639,19 +642,13 @@ export function MemberPortal({ clubShortName, clubId = 24, countryCode = "RW", c
             <span className="member-step">02 / Membership activation</span>
             <h3>{clubId === 24 ? "Join the Blue Wall" : `Join ${clubShortName}`}</h3>
             <p>
-              Create or reactivate your free {clubShortName} fan membership.
-              This action is separate from signing in.
+              Choose a paid {clubShortName} membership tier. Your membership
+              activates automatically when your payment is matched.
             </p>
-            <button
-              className="member-primary-action"
-              type="button"
-              disabled={busy}
-              onClick={() => void loadMemberArea(true)}
-            >
-              {busy ? <LoaderCircle className="member-spinner" aria-hidden="true" /> : <BadgeCheck aria-hidden="true" />}
-              Activate my membership
+            <a className="member-primary-action" href="/membership">
+              Choose a membership tier
               <ArrowRight aria-hidden="true" />
-            </button>
+            </a>
             <button className="member-text-action" type="button" onClick={() => void signOut()}>
               Sign out instead
             </button>
@@ -749,7 +746,7 @@ export function MemberPortal({ clubShortName, clubId = 24, countryCode = "RW", c
                   <strong>Waiting for external confirmation</strong>
                   <span>Reference {intent.momo_reference}</span>
                 </div>
-                <button type="button" onClick={() => void loadMemberArea(false)}>
+                <button type="button" onClick={() => void loadMemberArea()}>
                   <RefreshCw aria-hidden="true" /> Refresh
                 </button>
               </aside>
@@ -761,7 +758,7 @@ export function MemberPortal({ clubShortName, clubId = 24, countryCode = "RW", c
                   <span className="member-step">Your record</span>
                   <h4 id="member-history-title">Contribution history</h4>
                 </div>
-                <button type="button" className="member-icon-action" onClick={() => void loadMemberArea(false)} aria-label="Refresh contribution history">
+                <button type="button" className="member-icon-action" onClick={() => void loadMemberArea()} aria-label="Refresh contribution history">
                   <RefreshCw aria-hidden="true" />
                 </button>
               </div>

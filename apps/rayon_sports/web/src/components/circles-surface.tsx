@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import {
   type PointerEvent,
   useCallback,
@@ -14,10 +15,7 @@ import {
   CircleDollarSign,
   MapPinned,
   RefreshCw,
-  ShieldCheck,
   Smartphone,
-  Users,
-  WifiOff,
 } from "lucide-react";
 import {
   resolveFixturesFailureStatus,
@@ -29,6 +27,7 @@ const CIRCLES_TIMEOUT_MS = 8_000;
 export type PublicCircle = {
   id: string;
   name: string;
+  imageUrl?: string;
   description: string;
   groupType: "project" | "community";
   targetAmount: number;
@@ -104,11 +103,11 @@ const circlesCopy: Record<"en", CirclesCopy> = {
       ready: {
         label: "Support circles confirmed",
         detail:
-          "Campaign totals and chapters come from the latest public snapshot.",
+          "Campaign totals and fan clubs come from the latest public snapshot.",
       },
       empty: {
         label: "No public circles listed",
-        detail: "No campaign or supporter chapter is currently confirmed.",
+        detail: "No campaign or supporter fan clubs is currently confirmed.",
       },
       error: {
         label: "Support circles unavailable",
@@ -128,7 +127,7 @@ const circlesCopy: Record<"en", CirclesCopy> = {
       syncing: {
         label: "Refreshing support circles",
         detail:
-          "Confirmed campaigns and chapters remain visible during refresh.",
+          "Confirmed campaigns and fan clubs remain visible during refresh.",
       },
       conflict: {
         label: "Support circles changed",
@@ -142,7 +141,7 @@ const circlesCopy: Record<"en", CirclesCopy> = {
     eyebrow: "Collective support",
     title: (club) => `${club} support circles`,
     description:
-      "Discover confirmed club campaigns and official supporter chapters. Secure contribution and membership actions stay in the supporter app.",
+      "Explore club projects and community initiatives. Open the supporter app to contribute.",
     openApp: "Open supporter app",
     appPending: "App links coming soon",
     exploreChapters: "Explore fan clubs",
@@ -150,15 +149,15 @@ const circlesCopy: Record<"en", CirclesCopy> = {
     retry: "Try again",
     refreshDisabled: "Refresh is unavailable while circles are loading.",
     campaigns: "Campaigns",
-    chapters: "Chapters",
+    chapters: "fan clubs",
     selected: "Selected",
     selectedCampaign: "Selected campaign",
     publicCampaigns: "Confirmed public campaigns",
     campaignsDetail:
       "Choose a campaign to inspect its confirmed public totals.",
-    chapterNetwork: "Official chapter network",
+    chapterNetwork: "Official fan clubs network",
     chaptersDetail:
-      "Only public chapter identity and activity totals appear here.",
+      "Only public fan clubs identity and activity totals appear here.",
     raised: "Raised",
     goal: "Campaign goal",
     backers: "Backers",
@@ -166,8 +165,8 @@ const circlesCopy: Record<"en", CirclesCopy> = {
     events: "Events",
     noCampaigns: "No public campaigns listed",
     noCampaignsDetail: "Campaigns appear only after club confirmation.",
-    noChapters: "No public chapters listed",
-    noChaptersDetail: "Chapters appear only after club confirmation.",
+    noChapters: "No public fan clubs listed",
+    noChaptersDetail: "fan clubs appear only after club confirmation.",
     boundaryEyebrow: "Trust boundary",
     boundaryTitle: "Discovery here. Secure support in the app.",
     boundaryDetail:
@@ -226,6 +225,7 @@ export function normalizeCirclesSnapshot(value: unknown): CirclesSnapshot {
         currentTotal,
         currency,
         memberCount,
+        ...(safeProjectImage(row.imageUrl) ? { imageUrl: safeProjectImage(row.imageUrl) } : {}),
       });
       if (groups.length === 8) break;
     }
@@ -285,11 +285,11 @@ export function resolveFanClubsCopy(_locale: string): CirclesCopy {
       },
       ready: {
         label: "Official fan clubs confirmed",
-        detail: "Chapters and campaigns come from the latest public directory.",
+        detail: "Discover the club’s published supporter communities.",
       },
       empty: {
         label: "No public fan clubs listed",
-        detail: "No chapter or campaign is currently confirmed.",
+        detail: "There are no published fan clubs yet.",
       },
       error: {
         label: "Fan clubs unavailable",
@@ -304,7 +304,7 @@ export function resolveFanClubsCopy(_locale: string): CirclesCopy {
       syncing: {
         label: "Refreshing fan clubs",
         detail:
-          "Confirmed chapters and campaigns remain visible during refresh.",
+          "Saved fan clubs remain visible during refresh.",
       },
       conflict: {
         label: "Fan-club directory changed",
@@ -315,10 +315,10 @@ export function resolveFanClubsCopy(_locale: string): CirclesCopy {
         detail: "No change is assumed. Confirmed public data remains visible.",
       },
     },
-    eyebrow: "Official supporter chapters",
+    eyebrow: "Official supporter fan clubs",
     title: (club) => `${club} official fan clubs`,
     description:
-      "Discover confirmed supporter chapters and their public campaigns. Secure membership and payment actions stay in the supporter app.",
+      "Find a supporter community near you and discover its matchday activities.",
     exploreChapters: "Explore support circles",
     refresh: "Refresh fan clubs",
     refreshDisabled: "Refresh is unavailable while fan clubs are loading.",
@@ -327,7 +327,7 @@ export function resolveFanClubsCopy(_locale: string): CirclesCopy {
       "Choose a confirmed public campaign to inspect its totals.",
     chapterNetwork: "Official fan-club directory",
     chaptersDetail:
-      "Only approved public chapter identity and activity totals appear.",
+      "Find your local supporter community.",
     boundaryTitle: "Directory here. Secure membership in the app.",
   };
 }
@@ -421,7 +421,7 @@ export function CirclesSurface({
           : (nextSnapshot.groups[0]?.id ?? null),
       );
       const hasData =
-        nextSnapshot.groups.length > 0 || nextSnapshot.chapters.length > 0;
+        variant === "fan-clubs" ? nextSnapshot.chapters.length > 0 : nextSnapshot.groups.length > 0;
       hasConfirmedSnapshot.current = hasData;
       setStatus(hasData ? "ready" : "empty");
     } catch {
@@ -455,6 +455,20 @@ export function CirclesSurface({
     };
   }, [loadSnapshot]);
 
+  useEffect(() => {
+    if (variant !== "fan-clubs") return;
+    const revealChapter = () => {
+      let id: string;
+      try { id = decodeURIComponent(window.location.hash.slice(1)); }
+      catch { return; }
+      if (!snapshot.chapters.some((chapter) => id === `fan-club-${chapter.id}`)) return;
+      document.getElementById(id)?.scrollIntoView({ block: "center", behavior: "instant" });
+    };
+    revealChapter();
+    window.addEventListener("hashchange", revealChapter);
+    return () => window.removeEventListener("hashchange", revealChapter);
+  }, [snapshot.chapters, variant]);
+
   const selected =
     snapshot.groups.find(({ id }) => id === selectedId) ??
     snapshot.groups[0] ??
@@ -468,12 +482,6 @@ export function CirclesSurface({
     "security_timeout",
   ].includes(status);
   const message = copy.status[status];
-  const progress = selected
-    ? Math.min(
-        100,
-        Math.max(0, (selected.currentTotal / selected.targetAmount) * 100),
-      )
-    : 0;
   const pressControl = (event: PointerEvent<HTMLElement>) => {
     if ("disabled" in event.currentTarget && event.currentTarget.disabled)
       return;
@@ -495,22 +503,6 @@ export function CirclesSurface({
             <h1>{copy.title(clubShortName)}</h1>
             <p className="circles-description">{copy.description}</p>
           </div>
-          <aside
-            className="circles-status"
-            data-circles-status={status}
-            role={status === "permission_denied" ? "alert" : "status"}
-            aria-live="polite"
-          >
-            {status === "offline" ? (
-              <WifiOff aria-hidden="true" />
-            ) : (
-              <Users aria-hidden="true" />
-            )}
-            <div>
-              <p>{message.label}</p>
-              <span>{message.detail}</span>
-            </div>
-          </aside>
           <div className="circles-actions">
             <Link
               href={fanAppHref}
@@ -554,160 +546,70 @@ export function CirclesSurface({
               {copy.refreshDisabled}
             </span>
           </div>
-          <dl className="circles-stats">
-            <div>
-              <dt>{copy.campaigns}</dt>
-              <dd>{snapshot.groups.length}</dd>
-            </div>
-            <div>
-              <dt>{copy.chapters}</dt>
-              <dd>{snapshot.chapters.length}</dd>
-            </div>
-            <div>
-              <dt>{copy.selected}</dt>
-              <dd>{selected?.name ?? "—"}</dd>
-            </div>
-          </dl>
         </header>
 
-        {isRecovery ? (
-          <aside className="circles-recovery" role="status">
-            <strong>{message.label}</strong>
-            <span>{message.detail}</span>
-          </aside>
-        ) : null}
+        <aside className={isRecovery ? "circles-status circles-recovery" : "circles-status sr-only"}
+          role={status === "permission_denied" ? "alert" : "status"} aria-live="polite">
+          <strong>{message.label}</strong><span>{message.detail}</span>
+        </aside>
 
         <section className="circles-content" aria-busy={isBusy}>
-          {selected ? (
-            <article className="circles-featured">
-              <span className="circles-featured-mark" aria-hidden="true">
-                <CircleDollarSign />
-              </span>
-              <div>
-                <p className="circles-eyebrow">{copy.selectedCampaign}</p>
-                <h2>{selected.name}</h2>
-                <p>{selected.description}</p>
-                <dl className="circles-featured-stats">
-                  <div>
-                    <dt>{copy.raised}</dt>
-                    <dd>
-                      {formatAmount(
-                        selected.currentTotal,
-                        selected.currency,
-                        locale,
-                      )}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>{copy.goal}</dt>
-                    <dd>
-                      {formatAmount(
-                        selected.targetAmount,
-                        selected.currency,
-                        locale,
-                      )}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>{copy.backers}</dt>
-                    <dd>{selected.memberCount.toLocaleString()}</dd>
-                  </div>
-                </dl>
-                <div className="circles-progress">
-                  <span>
-                    <b>{copy.progress}</b>
-                    <strong>{Math.round(progress)}%</strong>
-                  </span>
-                  <div
-                    role="progressbar"
-                    aria-label={`${selected.name} ${copy.progress}`}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-valuenow={Math.round(progress)}
-                  >
-                    <i style={{ width: `${progress}%` }} />
-                  </div>
-                </div>
-                <Link
-                  href={fanAppHref}
-                  className="circles-action circles-action-primary"
-                >
-                  {hasExternalAppUrl ? copy.openApp : copy.appPending}
-                  <ArrowRight aria-hidden="true" />
-                </Link>
+          {variant === "circles" && (snapshot.groups.length ? (
+            <section className="circles-campaigns" aria-label={copy.campaigns}>
+              <div className="project-grid">
+                {snapshot.groups.map((group) => {
+                  const expanded = group.id === selected?.id;
+                  const percentage = Math.min(100, Math.max(0,
+                    Math.round(group.currentTotal / group.targetAmount * 100)));
+                  return <article className="project-card" key={group.id}>
+                    {group.imageUrl && <Image src={group.imageUrl} alt="" width={800} height={520}
+                      unoptimized className="project-card-image"
+                      onError={(event) => { event.currentTarget.style.display = "none"; }} />}
+                    <div className="project-card-body">
+                      <h2><button type="button" aria-expanded={expanded}
+                        aria-controls={`project-${group.id}`} aria-pressed={expanded}
+                        onClick={() => { setSelectedId(group.id); setInteraction("selected"); }}
+                        onFocus={() => setInteraction("focused")}
+                        onBlur={() => setInteraction("idle")}
+                        onPointerDown={pressControl} onPointerUp={() => setInteraction("selected")}
+                        onPointerCancel={() => setInteraction("idle")}>
+                        {group.name}<ArrowRight aria-hidden="true" />
+                      </button></h2>
+                      <dl className="project-card-metrics">
+                        <div><dt>Total raised</dt><dd>{formatAmount(group.currentTotal, group.currency, locale)}</dd></div>
+                        <div><dt>Participants</dt><dd>{group.memberCount.toLocaleString()}</dd></div>
+                      </dl>
+                      <div className="circles-progress">
+                        <div role="progressbar" aria-label={`${group.name} ${copy.progress}`}
+                          aria-valuemin={0} aria-valuemax={100} aria-valuenow={percentage}>
+                          <i style={{ width: `${percentage}%` }} />
+                        </div>
+                        <span>Target {formatAmount(group.targetAmount, group.currency, locale)} · {percentage}%</span>
+                      </div>
+                      <div id={`project-${group.id}`} hidden={!expanded}>
+                        <p>{group.description}</p>
+                        <Link href={fanAppHref} className="circles-action circles-action-primary">
+                          {hasExternalAppUrl ? copy.openApp : copy.appPending}
+                          <ArrowRight aria-hidden="true" />
+                        </Link>
+                      </div>
+                    </div>
+                  </article>;
+                })}
               </div>
-            </article>
+            </section>
           ) : status === "loading" ? (
-            <div
-              className="circles-skeleton"
-              role="status"
-              aria-label={message.label}
-            >
-              <span />
-              <span />
-              <span />
+            <div className="circles-skeleton" role="status" aria-label={message.label}>
+              <span /><span /><span />
             </div>
           ) : (
             <div className="circles-empty">
               <CircleDollarSign aria-hidden="true" />
-              <h2>{copy.noCampaigns}</h2>
-              <p>{copy.noCampaignsDetail}</p>
+              <h2>{copy.noCampaigns}</h2><p>{copy.noCampaignsDetail}</p>
             </div>
-          )}
+          ))}
 
-          {snapshot.groups.length > 0 ? (
-            <section className="circles-campaigns">
-              <header>
-                <div>
-                  <p className="circles-eyebrow">{copy.campaigns}</p>
-                  <h2>{copy.publicCampaigns}</h2>
-                </div>
-                <p>{copy.campaignsDetail}</p>
-              </header>
-              <div className="circles-grid">
-                {snapshot.groups.map((group) => (
-                  <button
-                    type="button"
-                    key={group.id}
-                    className="circles-card"
-                    aria-pressed={group.id === selected?.id}
-                    onClick={() => {
-                      setSelectedId(group.id);
-                      setInteraction("selected");
-                    }}
-                    onFocus={() => setInteraction("focused")}
-                    onBlur={() =>
-                      setInteraction((current) =>
-                        current === "focused" ? "idle" : current,
-                      )
-                    }
-                    onPointerDown={pressControl}
-                    onPointerUp={() => setInteraction("selected")}
-                    onPointerCancel={() => setInteraction("idle")}
-                  >
-                    <span className="circles-card-icon" aria-hidden="true">
-                      <CircleDollarSign />
-                    </span>
-                    <span>
-                      <strong>{group.name}</strong>
-                      <small>
-                        {formatAmount(
-                          group.currentTotal,
-                          group.currency,
-                          locale,
-                        )}
-                        {" · "}
-                        {group.memberCount.toLocaleString()} {copy.backers}
-                      </small>
-                    </span>
-                    <ArrowRight aria-hidden="true" />
-                  </button>
-                ))}
-              </div>
-            </section>
-          ) : null}
-
-          <section className="circles-chapters">
+          {variant === "fan-clubs" && <section className="circles-chapters">
             <header>
               <div>
                 <p className="circles-eyebrow">{copy.chapters}</p>
@@ -718,7 +620,7 @@ export function CirclesSurface({
             {snapshot.chapters.length > 0 ? (
               <ul>
                 {snapshot.chapters.map((chapter) => (
-                  <li key={chapter.id}>
+                  <li key={chapter.id} id={`fan-club-${chapter.id}`}>
                     <MapPinned aria-hidden="true" />
                     <div>
                       <strong>{chapter.name}</strong>
@@ -745,18 +647,21 @@ export function CirclesSurface({
                 <p>{copy.noChaptersDetail}</p>
               </div>
             )}
-          </section>
+          </section>}
         </section>
 
-        <aside className="circles-boundary">
-          <ShieldCheck aria-hidden="true" />
-          <div>
-            <p className="circles-eyebrow">{copy.boundaryEyebrow}</p>
-            <h2>{copy.boundaryTitle}</h2>
-            <p>{copy.boundaryDetail}</p>
-          </div>
-        </aside>
+
       </div>
     </section>
   );
+}
+
+// CMS-published media only. Reject embedded credentials and executable schemes.
+function safeProjectImage(value: unknown): string | undefined {
+  if (typeof value !== "string") return undefined;
+  if (value.startsWith("/") && !value.startsWith("//") && !value.includes("\\")) return value;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" && !url.username && !url.password ? url.toString() : undefined;
+  } catch { return undefined; }
 }

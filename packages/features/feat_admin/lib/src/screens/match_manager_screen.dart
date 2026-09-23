@@ -390,26 +390,14 @@ class _MatchCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Text(
-                      context.afriL10n.adminVersus(
-                        match.homeTeam,
-                        match.awayTeam,
-                      ),
-                      style: TypographyTokens.titleLarge().copyWith(
-                        color: ColorTokens.onSurface,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: SpacingTokens.spacing2),
-                  _MatchChip(
-                    label: _statusLabel(context, match.status),
-                    color: statusColor,
-                  ),
-                ],
+              AfriFixtureTeams(
+                homeTeam: match.homeTeam,
+                awayTeam: match.awayTeam,
+              ),
+              const SizedBox(height: SpacingTokens.spacing3),
+              _MatchChip(
+                label: _statusLabel(context, match.status),
+                color: statusColor,
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               Text(

@@ -89,7 +89,7 @@ void main() {
           'search_success',
           'ticket_completion',
           'contribution_completion',
-          'fanzone_engagement',
+          'predict_engagement',
           'support_access',
           'error_recovery',
           'task_abandonment',

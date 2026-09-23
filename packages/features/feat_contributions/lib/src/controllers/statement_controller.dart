@@ -111,7 +111,9 @@ class StatementState {
   bool get actionsBlocked => phase != StatementPhase.ready || failure != null;
 
   List<StatementEntry> get sortedEntries {
-    final sorted = List<StatementEntry>.from(snapshot.entries);
+    final sorted = snapshot.entries
+        .where((entry) => entry.status == StatementEntryStatus.confirmed)
+        .toList();
     switch (sort) {
       case StatementSort.date:
         sorted.sort((a, b) => b.createdAt.compareTo(a.createdAt));
@@ -263,13 +265,12 @@ StatementEntryStatus statementStatusFrom(Object? raw) {
 }
 
 String buildStatementCsv(StatementState state) {
-  final buffer = StringBuffer()..writeln('Alias,Amount,Status,Date');
+  final buffer = StringBuffer()..writeln('Alias,Amount,Date');
   for (final entry in state.sortedEntries) {
     buffer.writeln(
       <Object>[
         entry.publicAlias,
         entry.amount,
-        entry.status.label,
         entry.createdAt.toIso8601String(),
       ].map(_escapeCsv).join(','),
     );

@@ -118,25 +118,25 @@ const pipelineSteps = [
     step: "1",
     title: "Capture",
     body: "SMS listener receives an approved sender event.",
-    color: "border-emerald-500/30 bg-emerald-500/5",
+    color: "border-success/30 bg-success/5",
   },
   {
     step: "2",
     title: "Ingest",
     body: "Edge Function deduplicates and writes to raw table.",
-    color: "border-club-accent/30 bg-club-accent/5",
+    color: "border-[var(--admin-accent)]/30 bg-[var(--admin-accent)]/5",
   },
   {
     step: "3",
     title: "Parse",
     body: "Structured values land in parsed table.",
-    color: "border-amber-500/30 bg-amber-500/5",
+    color: "border-warning/30 bg-warning/5",
   },
   {
     step: "4",
     title: "Ledger",
     body: "Wallet and contribution records reconcile.",
-    color: "border-violet-500/30 bg-violet-500/5",
+    color: "border-accent/30 bg-accent/5",
   },
 ];
 
@@ -431,7 +431,7 @@ export default function AdminSmsMonitorPage() {
           data-admin-sms-state-surface
         >
           <article className="glass-panel rounded-[32px] p-6">
-            <p className="font-display text-3xl font-bold uppercase leading-none">
+            <p className="font-display text-3xl font-medium normal-case leading-none">
               Pipeline flow
             </p>
             <div className="mt-5 space-y-1">
@@ -444,16 +444,16 @@ export default function AdminSmsMonitorPage() {
                     )}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full border border-border-soft bg-white/10 font-display text-sm font-bold">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full border border-border-soft bg-[var(--admin-surface-muted)] font-display text-sm font-medium">
                         {item.step}
                       </div>
                       <div>
-                        <p className="font-display text-2xl font-bold uppercase leading-none">
+                        <p className="font-display text-2xl font-medium normal-case leading-none">
                           {item.title}
                         </p>
                       </div>
                     </div>
-                    <p className="mt-2 pl-11 text-sm leading-6 text-slate-300">
+                    <p className="mt-2 pl-11 text-sm leading-6 text-[var(--admin-text-muted)]">
                       {item.body}
                     </p>
                   </div>
@@ -469,14 +469,14 @@ export default function AdminSmsMonitorPage() {
 
           <article className="glass-panel rounded-[32px] p-6">
             <div className="flex items-center justify-between gap-3">
-              <p className="font-display text-3xl font-bold uppercase leading-none">
+              <p className="font-display text-3xl font-medium normal-case leading-none">
                 Recent sync runs
               </p>
               <button
                 type="button"
                 disabled={busy}
                 onClick={() => void refresh()}
-                className="inline-flex min-h-12 items-center justify-center rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex min-h-12 items-center justify-center rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Refresh
               </button>
@@ -548,7 +548,7 @@ export default function AdminSmsMonitorPage() {
                   <tr>
                     <td
                       colSpan={5}
-                      className="py-8 text-center text-sm text-slate-400"
+                      className="py-8 text-center text-sm text-[var(--admin-text-muted)]"
                     >
                       {runCollection.query
                         ? "No sync runs match the current search."
@@ -599,18 +599,18 @@ export default function AdminSmsMonitorPage() {
         >
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.3em] text-club-accent">
+              <p className="font-mono text-xs normal-case tracking-normal text-[var(--admin-accent)]">
                 Manual review
               </p>
-              <h2 className="mt-2 font-display text-3xl font-bold uppercase leading-none text-white">
+              <h2 className="mt-2 font-display text-3xl font-medium normal-case leading-none text-[var(--admin-text-strong)]">
                 Pending allocation queue
               </h2>
-              <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">
+              <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--admin-text-muted)]">
                 Review unmatched MoMo SMS records, route them to the correct
                 payment intent, or explicitly reject them as not app-linked.
               </p>
             </div>
-            <div className="rounded-full border border-border-soft bg-white/5 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-300">
+            <div className="rounded-full border border-border-soft bg-[var(--admin-surface-muted)] px-4 py-2 text-xs font-semibold normal-case tracking-normal text-[var(--admin-text-muted)]">
               {manualReviews.length} open review
               {manualReviews.length === 1 ? "" : "s"}
             </div>
@@ -684,7 +684,7 @@ export default function AdminSmsMonitorPage() {
                 <tr>
                   <td
                     colSpan={5}
-                    className="py-8 text-center text-sm text-slate-400"
+                    className="py-8 text-center text-sm text-[var(--admin-text-muted)]"
                   >
                     {reviewCollection.query
                       ? "No manual reviews match the current search."
@@ -696,7 +696,7 @@ export default function AdminSmsMonitorPage() {
                   <tr key={review.reviewId} data-row-id={review.reviewId}>
                     <td>
                       {review.reviewKind.replaceAll("_", " ")}
-                      <span className="block max-w-48 truncate text-xs text-slate-500">
+                      <span className="block max-w-48 truncate text-xs text-[var(--admin-text-muted)]">
                         {review.momoTxId ?? review.reviewId}
                       </span>
                     </td>
@@ -736,31 +736,31 @@ export default function AdminSmsMonitorPage() {
           <div className="grid gap-5 text-sm">
             <dl className="grid gap-3">
               <div>
-                <dt className="text-slate-500">Review type</dt>
-                <dd className="mt-1 text-slate-100">
+                <dt className="text-[var(--admin-text-muted)]">Review type</dt>
+                <dd className="mt-1 text-[var(--admin-text-strong)]">
                   {detailReview.reviewKind.replaceAll("_", " ")}
                 </dd>
               </div>
               <div>
-                <dt className="text-slate-500">Amount</dt>
-                <dd className="mt-1 text-slate-100">
+                <dt className="text-[var(--admin-text-muted)]">Amount</dt>
+                <dd className="mt-1 text-[var(--admin-text-strong)]">
                   {detailReview.amount.toLocaleString()} {detailReview.currency}
                 </dd>
               </div>
               <div>
-                <dt className="text-slate-500">Message preview</dt>
-                <dd className="mt-1 break-words text-slate-100">
+                <dt className="text-[var(--admin-text-muted)]">Message preview</dt>
+                <dd className="mt-1 break-words text-[var(--admin-text-strong)]">
                   {detailReview.smsPreview}
                 </dd>
               </div>
               <div>
-                <dt className="text-slate-500">Reason</dt>
-                <dd className="mt-1 text-slate-100">
+                <dt className="text-[var(--admin-text-muted)]">Reason</dt>
+                <dd className="mt-1 text-[var(--admin-text-strong)]">
                   {detailReview.reason.replaceAll("_", " ")}
                 </dd>
               </div>
             </dl>
-            <label className="grid gap-2 text-slate-300">
+            <label className="grid gap-2 text-[var(--admin-text-muted)]">
               Matching pending intent
               <select
                 value={intentSelections[detailReview.reviewId] ?? ""}

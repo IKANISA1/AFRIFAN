@@ -67,7 +67,7 @@ export function SquadEditorForm({
   return (
     <form action={submitForm} className="glass-panel grid gap-4 rounded-[32px] p-6">
       <div className="flex items-center justify-between gap-3">
-        <p className="font-display text-3xl font-bold uppercase leading-none">
+        <p className="font-display text-3xl font-medium normal-case leading-none">
           {form.id ? "Edit player" : "New player"}
         </p>
         <div className="flex items-center gap-2">
@@ -75,7 +75,7 @@ export function SquadEditorForm({
             <button
               type="button"
               onClick={onCancel}
-              className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+              className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)]"
             >
               Close
             </button>
@@ -87,7 +87,7 @@ export function SquadEditorForm({
                 setForm(emptySquadForm);
                 showAdminToast("Form cleared.", "info");
               }}
-              className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+              className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)]"
             >
               Clear
             </button>
@@ -161,7 +161,7 @@ export function SquadEditorForm({
       <label className="grid gap-2 text-sm">
         <div className="flex items-center justify-between">
           <span>Bio</span>
-          <span className="font-mono text-[10px] text-slate-400">{form.bio.length} chars</span>
+          <span className="font-mono text-xs text-[var(--admin-text-muted)]">{form.bio.length} chars</span>
         </div>
         <textarea
           name="bio"
@@ -172,7 +172,7 @@ export function SquadEditorForm({
         />
       </label>
 
-      <label className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-white/5 px-4 py-3 text-sm">
+      <label className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-[var(--admin-surface-muted)] px-4 py-3 text-sm">
         <input
           type="checkbox"
           name="isActive"
@@ -184,7 +184,7 @@ export function SquadEditorForm({
 
       <button
         type="submit"
-        className="min-h-12 rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
+        className="min-h-12 rounded-full bg-action-blue px-5 py-3 font-semibold text-white transition hover:bg-action-blue-hover"
       >
         {form.id ? "Save player" : "Add player"}
       </button>

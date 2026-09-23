@@ -292,7 +292,7 @@ describe("GET /api/public-content", () => {
     mocks.getCmsContentStrict.mockResolvedValue(
       Array.from({ length: 26 }, (_, index) => ({
         id: `history-${index}`,
-        title: `Chapter ${index}`,
+        title: `FanClubs ${index}`,
         body: `Body ${index}`,
         rationale: "server-only editorial rationale",
         ctaAction: "private-action",
@@ -307,7 +307,7 @@ describe("GET /api/public-content", () => {
     expect(body.items).toHaveLength(24);
     expect(body.items[0]).toEqual({
       id: "history-0",
-      title: "Chapter 0",
+      title: "FanClubs 0",
       body: "Body 0",
     });
     expect(JSON.stringify(body)).not.toContain("rationale");
@@ -609,9 +609,9 @@ describe("GET /api/public-content", () => {
     mocks.getFanClubsStrict.mockResolvedValue(
       Array.from({ length: 14 }, (_, index) => ({
         id: `chapter-${index}`,
-        name: `Chapter ${index}`,
+        name: `FanClubs ${index}`,
         region: "Kigali",
-        description: `Official chapter ${index}.`,
+        description: `Official FanClubs ${index}.`,
         memberCount: 50 + index,
         eventCount: 5 + index,
         bannerImageUrl: "https://private.invalid/image.jpg",
@@ -639,9 +639,9 @@ describe("GET /api/public-content", () => {
     });
     expect(body.chapters[0]).toEqual({
       id: "chapter-0",
-      name: "Chapter 0",
+      name: "FanClubs 0",
       region: "Kigali",
-      description: "Official chapter 0.",
+      description: "Official FanClubs 0.",
       memberCount: 50,
       eventCount: 5,
     });

@@ -196,65 +196,17 @@ abstract class AfriLocalizations {
   /// **'Support is unavailable in this build.'**
   String get supportUnavailable;
 
-  /// No description provided for @fanZoneLoading.
-  ///
-  /// In en, this message translates to:
-  /// **'Picks, league, points, fans, and rewards are loading.'**
-  String get fanZoneLoading;
-
-  /// No description provided for @fanZoneJoinSession.
-  ///
-  /// In en, this message translates to:
-  /// **'Join a live session and use this phone to play.'**
-  String get fanZoneJoinSession;
-
-  /// No description provided for @fanZoneRoundsEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'Matchday rounds will appear when they open.'**
-  String get fanZoneRoundsEmpty;
-
-  /// No description provided for @fanZoneRankingsEmpty.
-  ///
-  /// In en, this message translates to:
-  /// **'Rankings will appear after updates resume.'**
-  String get fanZoneRankingsEmpty;
-
-  /// No description provided for @fanZoneClubsMoved.
-  ///
-  /// In en, this message translates to:
-  /// **'Fan clubs and chapters are under Supporters.'**
-  String get fanZoneClubsMoved;
-
-  /// No description provided for @fanZoneRegistryMoved.
-  ///
-  /// In en, this message translates to:
-  /// **'The supporter list is under Fan Zone Supporters.'**
-  String get fanZoneRegistryMoved;
-
-  /// No description provided for @fanZoneContributionMode.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose how to contribute.'**
-  String get fanZoneContributionMode;
-
-  /// No description provided for @fanZoneRewardsSummary.
-  ///
-  /// In en, this message translates to:
-  /// **'Badges, streaks, and rewards.'**
-  String get fanZoneRewardsSummary;
-
-  /// No description provided for @fanZoneLineupsEmpty.
+  /// No description provided for @predictLineupsEmpty.
   ///
   /// In en, this message translates to:
   /// **'Lineups will appear before kickoff.'**
-  String get fanZoneLineupsEmpty;
+  String get predictLineupsEmpty;
 
-  /// No description provided for @fanZoneStatsEmpty.
+  /// No description provided for @predictStatsEmpty.
   ///
   /// In en, this message translates to:
   /// **'Stats will appear when the match starts.'**
-  String get fanZoneStatsEmpty;
+  String get predictStatsEmpty;
 
   /// No description provided for @fanIdVerifyPrompt.
   ///
@@ -478,22 +430,10 @@ abstract class AfriLocalizations {
   /// **'Search public supporter aliases and manage friends.'**
   String get searchSupporterDirectoryDescription;
 
-  /// No description provided for @searchFanZoneTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Predict'**
-  String get searchFanZoneTitle;
-
-  /// No description provided for @searchFanZoneDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Match picks, prediction history and FET activity.'**
-  String get searchFanZoneDescription;
-
   /// No description provided for @searchFanRegistryTitle.
   ///
   /// In en, this message translates to:
-  /// **'Fan registry'**
+  /// **'Fan clubs'**
   String get searchFanRegistryTitle;
 
   /// No description provided for @searchFanRegistryDescription.
@@ -718,12 +658,6 @@ abstract class AfriLocalizations {
   /// **'Merchandise'**
   String get searchMerchandiseFallback;
 
-  /// No description provided for @membershipTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Membership'**
-  String get membershipTitle;
-
   /// No description provided for @membershipSavedDetails.
   ///
   /// In en, this message translates to:
@@ -742,18 +676,6 @@ abstract class AfriLocalizations {
   /// **'Share'**
   String get share;
 
-  /// No description provided for @membershipReviewTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Membership review'**
-  String get membershipReviewTitle;
-
-  /// No description provided for @membershipReviewSubtitle.
-  ///
-  /// In en, this message translates to:
-  /// **'{tier} request is awaiting payment verification.'**
-  String membershipReviewSubtitle(String tier);
-
   /// No description provided for @membershipRenewsOn.
   ///
   /// In en, this message translates to:
@@ -769,7 +691,7 @@ abstract class AfriLocalizations {
   /// No description provided for @fanRegistryBrowseAll.
   ///
   /// In en, this message translates to:
-  /// **'Browse all supporters'**
+  /// **'Find supporter communities'**
   String get fanRegistryBrowseAll;
 
   /// No description provided for @membershipPackagesTitle.
@@ -837,48 +759,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Membership details are temporarily unavailable.'**
   String get membershipUnavailableMessage;
-
-  /// No description provided for @membershipPaymentSent.
-  ///
-  /// In en, this message translates to:
-  /// **'Payment sent'**
-  String get membershipPaymentSent;
-
-  /// No description provided for @membershipPaymentVerifying.
-  ///
-  /// In en, this message translates to:
-  /// **'Verifying payment'**
-  String get membershipPaymentVerifying;
-
-  /// No description provided for @membershipConfirmed.
-  ///
-  /// In en, this message translates to:
-  /// **'Membership confirmed'**
-  String get membershipConfirmed;
-
-  /// No description provided for @membershipRequestTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'{tier} membership request'**
-  String membershipRequestTitle(String tier);
-
-  /// No description provided for @membershipAmount.
-  ///
-  /// In en, this message translates to:
-  /// **'Amount: {currency} {amount}'**
-  String membershipAmount(String currency, String amount);
-
-  /// No description provided for @membershipVerificationTime.
-  ///
-  /// In en, this message translates to:
-  /// **'Verification typically takes 1–24 hours. You will be notified once confirmed.'**
-  String get membershipVerificationTime;
-
-  /// No description provided for @membershipRequestedOn.
-  ///
-  /// In en, this message translates to:
-  /// **'Requested: {date}'**
-  String membershipRequestedOn(String date);
 
   /// No description provided for @contactSupport.
   ///
@@ -969,12 +849,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Loading membership…'**
   String get profileLoadingMembership;
-
-  /// No description provided for @profileMembershipReviewPending.
-  ///
-  /// In en, this message translates to:
-  /// **'Membership review pending'**
-  String get profileMembershipReviewPending;
 
   /// No description provided for @profileMyClub.
   ///
@@ -1222,54 +1096,6 @@ abstract class AfriLocalizations {
   /// **'The last available category details remain visible until refresh succeeds.'**
   String get tierDegradedMessage;
 
-  /// No description provided for @contributionConfirmTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirm contribution'**
-  String get contributionConfirmTitle;
-
-  /// No description provided for @contributionConfirmQuestion.
-  ///
-  /// In en, this message translates to:
-  /// **'Did you complete the MoMo USSD payment for the {tier} tier?'**
-  String contributionConfirmQuestion(String tier);
-
-  /// No description provided for @contributionSelectedTier.
-  ///
-  /// In en, this message translates to:
-  /// **'Selected tier'**
-  String get contributionSelectedTier;
-
-  /// No description provided for @contributionPendingVerification.
-  ///
-  /// In en, this message translates to:
-  /// **'Pending verification'**
-  String get contributionPendingVerification;
-
-  /// No description provided for @contributionNotYet.
-  ///
-  /// In en, this message translates to:
-  /// **'Not yet'**
-  String get contributionNotYet;
-
-  /// No description provided for @contributionConfirming.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirming…'**
-  String get contributionConfirming;
-
-  /// No description provided for @contributionYesPaid.
-  ///
-  /// In en, this message translates to:
-  /// **'Yes, I paid'**
-  String get contributionYesPaid;
-
-  /// No description provided for @contributionPrivacy.
-  ///
-  /// In en, this message translates to:
-  /// **'Contributions are verified anonymously via Fan ID.'**
-  String get contributionPrivacy;
-
   /// No description provided for @contributionHistory.
   ///
   /// In en, this message translates to:
@@ -1294,18 +1120,6 @@ abstract class AfriLocalizations {
   /// **'Since {date}'**
   String membershipSince(String date);
 
-  /// No description provided for @membershipFanCard.
-  ///
-  /// In en, this message translates to:
-  /// **'Fan card'**
-  String get membershipFanCard;
-
-  /// No description provided for @membershipReviewPendingUpper.
-  ///
-  /// In en, this message translates to:
-  /// **'Review pending'**
-  String get membershipReviewPendingUpper;
-
   /// No description provided for @navHome.
   ///
   /// In en, this message translates to:
@@ -1317,12 +1131,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Club'**
   String get navClub;
-
-  /// No description provided for @navFanZone.
-  ///
-  /// In en, this message translates to:
-  /// **'Predict'**
-  String get navFanZone;
 
   /// No description provided for @navMembership.
   ///
@@ -1345,61 +1153,37 @@ abstract class AfriLocalizations {
   /// No description provided for @membershipRequestSubmitted.
   ///
   /// In en, this message translates to:
-  /// **'{tier} membership request submitted.'**
+  /// **'Complete payment for {tier}. Your membership updates automatically.'**
   String membershipRequestSubmitted(String tier);
-
-  /// No description provided for @membershipAlreadyPending.
-  ///
-  /// In en, this message translates to:
-  /// **'{tier} membership is already pending payment verification.'**
-  String membershipAlreadyPending(String tier);
-
-  /// No description provided for @membershipStarted.
-  ///
-  /// In en, this message translates to:
-  /// **'{tier} membership started.'**
-  String membershipStarted(String tier);
-
-  /// No description provided for @membershipPaymentSetupPending.
-  ///
-  /// In en, this message translates to:
-  /// **'Membership payment setup is pending club activation.'**
-  String get membershipPaymentSetupPending;
 
   /// No description provided for @membershipDialerFailed.
   ///
   /// In en, this message translates to:
-  /// **'{tier} request was saved, but the MoMo dialer could not open.'**
+  /// **'MoMo could not open for {tier}. Tap the tier to try again.'**
   String membershipDialerFailed(String tier);
 
   /// No description provided for @membershipSubmittedBackground.
   ///
   /// In en, this message translates to:
-  /// **'{tier} request submitted. Payment verification happens in the background.'**
+  /// **'Complete your MoMo payment. Your {tier} membership will update automatically.'**
   String membershipSubmittedBackground(String tier);
-
-  /// No description provided for @membershipPendingReviewAction.
-  ///
-  /// In en, this message translates to:
-  /// **'Pending review'**
-  String get membershipPendingReviewAction;
 
   /// No description provided for @membershipActivateAction.
   ///
   /// In en, this message translates to:
-  /// **'Activate'**
+  /// **'Pay membership'**
   String get membershipActivateAction;
 
   /// No description provided for @membershipRenewAction.
   ///
   /// In en, this message translates to:
-  /// **'Renew'**
+  /// **'Renew membership'**
   String get membershipRenewAction;
 
   /// No description provided for @membershipSwitchAction.
   ///
   /// In en, this message translates to:
-  /// **'Switch'**
+  /// **'Choose tier'**
   String get membershipSwitchAction;
 
   /// No description provided for @membershipCopied.
@@ -1417,7 +1201,7 @@ abstract class AfriLocalizations {
   /// No description provided for @membershipActivityPending.
   ///
   /// In en, this message translates to:
-  /// **'Membership activity appears after ticket, fanclub, and contribution reviews.'**
+  /// **'Your membership activity appears here.'**
   String get membershipActivityPending;
 
   /// No description provided for @membershipActivityRecorded.
@@ -1426,28 +1210,10 @@ abstract class AfriLocalizations {
   /// **'{count, plural, =0{No activity points recorded.} =1{1 activity point recorded.} other{{count} activity points recorded.}}'**
   String membershipActivityRecorded(int count);
 
-  /// No description provided for @membershipSupportMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Hi, I need help with my membership payment verification.'**
-  String get membershipSupportMessage;
-
-  /// No description provided for @membershipWhatsAppUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not open WhatsApp. Please contact support.'**
-  String get membershipWhatsAppUnavailable;
-
-  /// No description provided for @membershipSupportNotConfigured.
-  ///
-  /// In en, this message translates to:
-  /// **'Support contact is not configured yet.'**
-  String get membershipSupportNotConfigured;
-
   /// No description provided for @membershipSubmittingTitle.
   ///
   /// In en, this message translates to:
-  /// **'Submitting membership request'**
+  /// **'Opening MoMo'**
   String get membershipSubmittingTitle;
 
   /// No description provided for @membershipUpdatingTitle.
@@ -1459,7 +1225,7 @@ abstract class AfriLocalizations {
   /// No description provided for @membershipSubmittingMessage.
   ///
   /// In en, this message translates to:
-  /// **'Keep this screen open while the club receives your request.'**
+  /// **'Your payment dialer will open automatically.'**
   String get membershipSubmittingMessage;
 
   /// No description provided for @membershipUpdatingMessage.
@@ -1489,7 +1255,7 @@ abstract class AfriLocalizations {
   /// No description provided for @membershipSubmittingAction.
   ///
   /// In en, this message translates to:
-  /// **'Submitting'**
+  /// **'Opening payment…'**
   String get membershipSubmittingAction;
 
   /// No description provided for @membershipPackageCurrentSemantic.
@@ -1503,18 +1269,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Package'**
   String get membershipPackageFallback;
-
-  /// No description provided for @membershipFanFallback.
-  ///
-  /// In en, this message translates to:
-  /// **'Fan'**
-  String get membershipFanFallback;
-
-  /// No description provided for @membershipDateNextYear.
-  ///
-  /// In en, this message translates to:
-  /// **'next year'**
-  String get membershipDateNextYear;
 
   /// No description provided for @membershipDate.
   ///
@@ -2280,19 +2034,19 @@ abstract class AfriLocalizations {
   /// No description provided for @authEnterNumberTitle.
   ///
   /// In en, this message translates to:
-  /// **'Enter number'**
+  /// **'Enter your WhatsApp number'**
   String get authEnterNumberTitle;
 
   /// No description provided for @authEnterNumberBody.
   ///
   /// In en, this message translates to:
-  /// **'We will send a private sign-in code.'**
+  /// **'We’ll send a one-time code via WhatsApp.'**
   String get authEnterNumberBody;
 
   /// No description provided for @authPhoneLabel.
   ///
   /// In en, this message translates to:
-  /// **'Phone'**
+  /// **'WhatsApp number'**
   String get authPhoneLabel;
 
   /// No description provided for @authWhatsAppNumberLabel.
@@ -2304,7 +2058,7 @@ abstract class AfriLocalizations {
   /// No description provided for @authPhoneHint.
   ///
   /// In en, this message translates to:
-  /// **'Phone number'**
+  /// **'WhatsApp number'**
   String get authPhoneHint;
 
   /// No description provided for @authPhonePrivacy.
@@ -2316,7 +2070,7 @@ abstract class AfriLocalizations {
   /// No description provided for @authSendCode.
   ///
   /// In en, this message translates to:
-  /// **'Send code'**
+  /// **'Send WhatsApp code'**
   String get authSendCode;
 
   /// No description provided for @authGuestSessionUnavailable.
@@ -2424,7 +2178,7 @@ abstract class AfriLocalizations {
   /// No description provided for @authPhoneMissingTitle.
   ///
   /// In en, this message translates to:
-  /// **'Phone number missing'**
+  /// **'WhatsApp number missing'**
   String get authPhoneMissingTitle;
 
   /// No description provided for @authPhoneMissingMessage.
@@ -2448,7 +2202,7 @@ abstract class AfriLocalizations {
   /// No description provided for @authResendCode.
   ///
   /// In en, this message translates to:
-  /// **'Resend code'**
+  /// **'Resend WhatsApp code'**
   String get authResendCode;
 
   /// No description provided for @authCheckWhatsAppEyebrow.
@@ -2460,7 +2214,7 @@ abstract class AfriLocalizations {
   /// No description provided for @authEnterCodeTitle.
   ///
   /// In en, this message translates to:
-  /// **'Enter code'**
+  /// **'Enter your WhatsApp code'**
   String get authEnterCodeTitle;
 
   /// No description provided for @authEnterCodeBody.
@@ -2472,7 +2226,7 @@ abstract class AfriLocalizations {
   /// No description provided for @authCodeLabel.
   ///
   /// In en, this message translates to:
-  /// **'Code'**
+  /// **'WhatsApp code'**
   String get authCodeLabel;
 
   /// No description provided for @authWhatsAppCodeLabel.
@@ -2496,7 +2250,7 @@ abstract class AfriLocalizations {
   /// No description provided for @authVerifyCode.
   ///
   /// In en, this message translates to:
-  /// **'Verify code'**
+  /// **'Verify WhatsApp code'**
   String get authVerifyCode;
 
   /// No description provided for @authVerifyAndContinue.
@@ -2574,13 +2328,13 @@ abstract class AfriLocalizations {
   /// No description provided for @homeOpenMatchdaySemantic.
   ///
   /// In en, this message translates to:
-  /// **'Open matchday in Fan Zone'**
+  /// **'Open matchday in Predict'**
   String get homeOpenMatchdaySemantic;
 
   /// No description provided for @homeMatchdayUnavailableSemantic.
   ///
   /// In en, this message translates to:
-  /// **'Matchday in Fan Zone is unavailable'**
+  /// **'Matchday in Predict is unavailable'**
   String get homeMatchdayUnavailableSemantic;
 
   /// No description provided for @homeMatchdayTitle.
@@ -2601,11 +2355,11 @@ abstract class AfriLocalizations {
   /// **'Club fixtures are not available yet.'**
   String get homeFixturesUnavailable;
 
-  /// No description provided for @homeOpenFanZone.
+  /// No description provided for @homeOpenPredict.
   ///
   /// In en, this message translates to:
   /// **'Open Predict'**
-  String get homeOpenFanZone;
+  String get homeOpenPredict;
 
   /// No description provided for @homeSearchHint.
   ///
@@ -2799,11 +2553,11 @@ abstract class AfriLocalizations {
   /// **'Join {appName}'**
   String homeMembershipAction(String appName);
 
-  /// No description provided for @homeFanZoneAction.
+  /// No description provided for @homePredictAction.
   ///
   /// In en, this message translates to:
   /// **'Predict'**
-  String get homeFanZoneAction;
+  String get homePredictAction;
 
   /// No description provided for @homeShopAction.
   ///
@@ -3081,12 +2835,6 @@ abstract class AfriLocalizations {
   /// **'Members'**
   String get fanClubMembersLabel;
 
-  /// No description provided for @fanClubStatusLabel.
-  ///
-  /// In en, this message translates to:
-  /// **'Status'**
-  String get fanClubStatusLabel;
-
   /// No description provided for @fanClubRegionLabel.
   ///
   /// In en, this message translates to:
@@ -3180,13 +2928,13 @@ abstract class AfriLocalizations {
   /// No description provided for @fanClubsFeaturedChapter.
   ///
   /// In en, this message translates to:
-  /// **'Featured chapter'**
+  /// **'Featured FanClubs'**
   String get fanClubsFeaturedChapter;
 
   /// No description provided for @fanClubOfficialChapterFallback.
   ///
   /// In en, this message translates to:
-  /// **'Official supporter chapter.'**
+  /// **'Official supporter FanClubs.'**
   String get fanClubOfficialChapterFallback;
 
   /// No description provided for @fanClubMembersValue.
@@ -5965,7 +5713,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsFanClubsChapters.
   ///
   /// In en, this message translates to:
-  /// **'Fan clubs & local chapters.'**
+  /// **'Local FanClubs.'**
   String get contributionsFanClubsChapters;
 
   /// No description provided for @contributionsLive.
@@ -6205,7 +5953,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsConfirmedTotal.
   ///
   /// In en, this message translates to:
-  /// **'Confirmed total'**
+  /// **'Total raised'**
   String get contributionsConfirmedTotal;
 
   /// No description provided for @contributionsTargetProgress.
@@ -6229,7 +5977,7 @@ abstract class AfriLocalizations {
   /// No description provided for @contributionsContributorsUpper.
   ///
   /// In en, this message translates to:
-  /// **'Contributors'**
+  /// **'Participants'**
   String get contributionsContributorsUpper;
 
   /// No description provided for @contributionsContributeToSemantic.
@@ -7885,23 +7633,11 @@ abstract class AfriLocalizations {
   /// **'Enable alerts'**
   String get notificationPreferencesEnableAlerts;
 
-  /// No description provided for @notificationPreferencesDeliveryModel.
-  ///
-  /// In en, this message translates to:
-  /// **'Delivery model'**
-  String get notificationPreferencesDeliveryModel;
-
   /// No description provided for @notificationPreferencesFullStream.
   ///
   /// In en, this message translates to:
-  /// **'When alerts are enabled, this release delivers the full {app} notification stream available for your account.'**
+  /// **'When notifications are on, you receive all {app} alerts available to your account.'**
   String notificationPreferencesFullStream(String app);
-
-  /// No description provided for @notificationPreferencesPerCategory.
-  ///
-  /// In en, this message translates to:
-  /// **'Per-category tuning is not configurable on this build yet, so this switch controls the entire device delivery state.'**
-  String get notificationPreferencesPerCategory;
 
   /// No description provided for @notificationPreferencesSave.
   ///
@@ -8242,13 +7978,13 @@ abstract class AfriLocalizations {
   /// No description provided for @privacySettingsShareAnalyticsDescription.
   ///
   /// In en, this message translates to:
-  /// **'Help improve search, tickets, contributions, Fan Zone, and recovery flows.'**
+  /// **'Help improve search, tickets, contributions, Predict, and recovery flows.'**
   String get privacySettingsShareAnalyticsDescription;
 
   /// No description provided for @privacySettingsAnalyticsFailClosed.
   ///
   /// In en, this message translates to:
-  /// **'Analytics stays off unless you opt in and the signed release has an approved analytics configuration.'**
+  /// **'Usage sharing is optional and stays off until you enable it.'**
   String get privacySettingsAnalyticsFailClosed;
 
   /// No description provided for @privacySettingsNoChanges.
@@ -8272,7 +8008,7 @@ abstract class AfriLocalizations {
   /// No description provided for @privacySettingsExportDescription.
   ///
   /// In en, this message translates to:
-  /// **'Request an account export through a configured support channel.'**
+  /// **'Contact support to request a copy of your account data.'**
   String get privacySettingsExportDescription;
 
   /// No description provided for @privacySettingsExportAction.
@@ -8386,7 +8122,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminTransactionsToday.
   ///
   /// In en, this message translates to:
-  /// **'Tx today'**
+  /// **'Transactions today'**
   String get adminTransactionsToday;
 
   /// No description provided for @adminTicketsSold.
@@ -9369,7 +9105,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminMatchesStatus.
   ///
   /// In en, this message translates to:
-  /// **'Status'**
+  /// **'Fixtures'**
   String get adminMatchesStatus;
 
   /// No description provided for @adminMatchesFilterAll.
@@ -9801,7 +9537,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminFeatureManagerDescription.
   ///
   /// In en, this message translates to:
-  /// **'Control club-scoped feature availability with confirmed, bounded configuration.'**
+  /// **'Choose which features are visible and available for this club.'**
   String get adminFeatureManagerDescription;
 
   /// No description provided for @adminFeatureRegistered.
@@ -9825,7 +9561,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminFeatureStatus.
   ///
   /// In en, this message translates to:
-  /// **'Status'**
+  /// **'Availability'**
   String get adminFeatureStatus;
 
   /// No description provided for @adminFeatureFilterAll.
@@ -10563,13 +10299,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminNotificationDeliveryStatus.
   ///
   /// In en, this message translates to:
-  /// **'Delivery status'**
+  /// **'Send or schedule'**
   String get adminNotificationDeliveryStatus;
 
   /// No description provided for @adminNotificationDeliveryStatusMessage.
   ///
   /// In en, this message translates to:
-  /// **'Delivery via Edge Functions. Scheduled sends dispatch on cron.'**
+  /// **'Send to your selected audience now, or choose a delivery time.'**
   String get adminNotificationDeliveryStatusMessage;
 
   /// No description provided for @adminNotificationAudience.
@@ -10977,7 +10713,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminContributionsSummary.
   ///
   /// In en, this message translates to:
-  /// **'{groups} groups • {records} bounded records'**
+  /// **'Groups: {groups} • Records shown: {records}'**
   String adminContributionsSummary(int groups, int records);
 
   /// No description provided for @adminContributionsNoGroups.
@@ -11157,7 +10893,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminContributionsRecordMembers.
   ///
   /// In en, this message translates to:
-  /// **'{records} bounded records • {members} registered members'**
+  /// **'Records shown: {records} • Members: {members}'**
   String adminContributionsRecordMembers(int records, int members);
 
   /// No description provided for @adminContributionsActivityPending.
@@ -12965,12 +12701,6 @@ abstract class AfriLocalizations {
   /// **'Your friends'**
   String get gameYourFriends;
 
-  /// No description provided for @gameChallenge.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge'**
-  String get gameChallenge;
-
   /// No description provided for @gameAccept.
   ///
   /// In en, this message translates to:
@@ -13180,12 +12910,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Round Results'**
   String get gameRoundResults;
-
-  /// No description provided for @gameFriendChallenges.
-  ///
-  /// In en, this message translates to:
-  /// **'Friend Challenges'**
-  String get gameFriendChallenges;
 
   /// No description provided for @gameLineupsUpper.
   ///
@@ -13937,24 +13661,6 @@ abstract class AfriLocalizations {
   /// **'Unknown time'**
   String get gameUnknownTime;
 
-  /// No description provided for @gameClubFanZoneTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Club fan zone'**
-  String get gameClubFanZoneTitle;
-
-  /// No description provided for @gameClubFanZoneTemporarilyUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Club fan zone is temporarily unavailable.'**
-  String get gameClubFanZoneTemporarilyUnavailable;
-
-  /// No description provided for @gameFanZoneUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Fan zone unavailable'**
-  String get gameFanZoneUnavailable;
-
   /// No description provided for @gameSupporterPulse.
   ///
   /// In en, this message translates to:
@@ -14243,35 +13949,11 @@ abstract class AfriLocalizations {
   /// **'{name} (You)'**
   String gameNameYou(String name);
 
-  /// No description provided for @gameChallengeFlowTemporarilyUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge flow is temporarily unavailable.'**
-  String get gameChallengeFlowTemporarilyUnavailable;
-
   /// No description provided for @gameHeadToHeadMessage.
   ///
   /// In en, this message translates to:
   /// **'{appName} head-to-head on {home} vs {away}'**
   String gameHeadToHeadMessage(String appName, String home, String away);
-
-  /// No description provided for @gameChallengeSent.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge sent'**
-  String get gameChallengeSent;
-
-  /// No description provided for @gameChallengeWaiting.
-  ///
-  /// In en, this message translates to:
-  /// **'Your challenge is waiting for a response.'**
-  String get gameChallengeWaiting;
-
-  /// No description provided for @gameCouldNotSendChallenge.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not send the challenge right now.'**
-  String get gameCouldNotSendChallenge;
 
   /// No description provided for @gameSending.
   ///
@@ -14279,29 +13961,11 @@ abstract class AfriLocalizations {
   /// **'Sending…'**
   String get gameSending;
 
-  /// No description provided for @gameSendChallenge.
-  ///
-  /// In en, this message translates to:
-  /// **'Send challenge'**
-  String get gameSendChallenge;
-
-  /// No description provided for @gameChallengeUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenge unavailable'**
-  String get gameChallengeUnavailable;
-
   /// No description provided for @gameSupporter.
   ///
   /// In en, this message translates to:
   /// **'Supporter'**
   String get gameSupporter;
-
-  /// No description provided for @gameAddFriendsBeforeChallenge.
-  ///
-  /// In en, this message translates to:
-  /// **'Add friends before sending a challenge.'**
-  String get gameAddFriendsBeforeChallenge;
 
   /// No description provided for @gameFindFriends.
   ///
@@ -14945,24 +14609,6 @@ abstract class AfriLocalizations {
   /// **'Selected {outcome}'**
   String gameSelectedOutcome(String outcome);
 
-  /// No description provided for @gameChallengesTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenges'**
-  String get gameChallengesTitle;
-
-  /// No description provided for @gameChallengesTemporarilyUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenges are temporarily unavailable.'**
-  String get gameChallengesTemporarilyUnavailable;
-
-  /// No description provided for @gameChallengesUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenges unavailable'**
-  String get gameChallengesUnavailable;
-
   /// No description provided for @gameDaily.
   ///
   /// In en, this message translates to:
@@ -14986,12 +14632,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Completed'**
   String get gameCompleted;
-
-  /// No description provided for @gameChallengesRequireProfile.
-  ///
-  /// In en, this message translates to:
-  /// **'Challenges appear once your supporter profile is active.'**
-  String get gameChallengesRequireProfile;
 
   /// No description provided for @gameWhatIsFet.
   ///
@@ -15065,30 +14705,6 @@ abstract class AfriLocalizations {
   /// **'More options'**
   String get gameMoreOptions;
 
-  /// No description provided for @gameConnectToFanZone.
-  ///
-  /// In en, this message translates to:
-  /// **'Connect to load Fan Zone.'**
-  String get gameConnectToFanZone;
-
-  /// No description provided for @gameOpeningFanZone.
-  ///
-  /// In en, this message translates to:
-  /// **'Opening Fan Zone'**
-  String get gameOpeningFanZone;
-
-  /// No description provided for @gameRefreshingFanZone.
-  ///
-  /// In en, this message translates to:
-  /// **'Refreshing Fan Zone'**
-  String get gameRefreshingFanZone;
-
-  /// No description provided for @gameRefreshingFanZoneDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Keeping your current points, rounds, and picks visible while updates load.'**
-  String get gameRefreshingFanZoneDescription;
-
   /// No description provided for @gameMatchdayRounds.
   ///
   /// In en, this message translates to:
@@ -15152,7 +14768,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameSupporterClubsDescription.
   ///
   /// In en, this message translates to:
-  /// **'Fan clubs, chapters, and community groups'**
+  /// **'FanClubs and community groups'**
   String get gameSupporterClubsDescription;
 
   /// No description provided for @gameMemberFans.
@@ -15299,54 +14915,6 @@ abstract class AfriLocalizations {
   /// **'{description}. Unavailable.'**
   String gameActionUnavailable(String description);
 
-  /// No description provided for @gameFanZoneAccessUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Fan Zone access not available'**
-  String get gameFanZoneAccessUnavailable;
-
-  /// No description provided for @gameFanZoneAccessUnavailableDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Your account cannot open Fan Zone right now. Contact support if this should be available.'**
-  String get gameFanZoneAccessUnavailableDescription;
-
-  /// No description provided for @gameFanZoneChanged.
-  ///
-  /// In en, this message translates to:
-  /// **'Fan Zone changed'**
-  String get gameFanZoneChanged;
-
-  /// No description provided for @gameFanZoneChangedDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Fan Zone data changed while you were viewing it. Refresh to load the current version.'**
-  String get gameFanZoneChangedDescription;
-
-  /// No description provided for @gameFanZoneSecurityTimedOut.
-  ///
-  /// In en, this message translates to:
-  /// **'Fan Zone security check timed out'**
-  String get gameFanZoneSecurityTimedOut;
-
-  /// No description provided for @gameFanZoneSecurityTimedOutDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'We could not confirm current Fan Zone access. Refresh before continuing.'**
-  String get gameFanZoneSecurityTimedOutDescription;
-
-  /// No description provided for @gameFanZoneTemporarilyUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Fan Zone is temporarily unavailable.'**
-  String get gameFanZoneTemporarilyUnavailable;
-
-  /// No description provided for @gameSavedFanZoneContent.
-  ///
-  /// In en, this message translates to:
-  /// **'Showing saved Fan Zone content. Reconnect and refresh for current fixtures and balances.'**
-  String get gameSavedFanZoneContent;
-
   /// No description provided for @gamePickSectionLabel.
   ///
   /// In en, this message translates to:
@@ -15388,12 +14956,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Accuracy'**
   String get gameAccuracyLabel;
-
-  /// No description provided for @gameFanZoneUnavailableTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Fan Zone unavailable'**
-  String get gameFanZoneUnavailableTitle;
 
   /// No description provided for @walletRewardsUnavailable.
   ///
@@ -15494,7 +15056,7 @@ abstract class AfriLocalizations {
   /// No description provided for @walletUseBody.
   ///
   /// In en, this message translates to:
-  /// **'Use points in rewards, matchday activities, and fan-zone challenges.'**
+  /// **'Use points in rewards and Predict.'**
   String get walletUseBody;
 
   /// No description provided for @walletRewardsBody.
@@ -15596,14 +15158,14 @@ abstract class AfriLocalizations {
   /// No description provided for @gameShareActionsUnavailableDescription.
   ///
   /// In en, this message translates to:
-  /// **'You can return to Fan Zone, but sharing is disabled for this build.'**
+  /// **'You can return to Predict, but sharing is disabled for this build.'**
   String get gameShareActionsUnavailableDescription;
 
-  /// No description provided for @gameBackToFanZoneUpper.
+  /// No description provided for @gameBackToPredict.
   ///
   /// In en, this message translates to:
-  /// **'Back to fan zone'**
-  String get gameBackToFanZoneUpper;
+  /// **'Back to Predict'**
+  String get gameBackToPredict;
 
   /// No description provided for @gamePredictionAccessDenied.
   ///
@@ -16168,12 +15730,6 @@ abstract class AfriLocalizations {
   /// **'Match'**
   String get gameMatchTitle;
 
-  /// No description provided for @gameBackToFanZoneTitleCase.
-  ///
-  /// In en, this message translates to:
-  /// **'Back to Fan Zone'**
-  String get gameBackToFanZoneTitleCase;
-
   /// No description provided for @gameMatchNotFound.
   ///
   /// In en, this message translates to:
@@ -16563,12 +16119,6 @@ abstract class AfriLocalizations {
   /// **'Football predictions open only when a partner creates a fixed-entry WDW pool for this fixture.'**
   String get gameNoPartnerPoolDescription;
 
-  /// No description provided for @gameViewFanZone.
-  ///
-  /// In en, this message translates to:
-  /// **'View Fan Zone'**
-  String get gameViewFanZone;
-
   /// No description provided for @gamePartnerPoolsOnly.
   ///
   /// In en, this message translates to:
@@ -16794,7 +16344,7 @@ abstract class AfriLocalizations {
   /// No description provided for @predictAdminIntro.
   ///
   /// In en, this message translates to:
-  /// **'Prepare fixtures. Confirm official results. Settle or refund entries.'**
+  /// **'Prepare fixtures and manage entries. Match results come from the LiveScore integration.'**
   String get predictAdminIntro;
 
   /// No description provided for @predictAdminSettings.
@@ -16863,12 +16413,6 @@ abstract class AfriLocalizations {
   /// **'Prepare fixture'**
   String get predictAdminPrepare;
 
-  /// No description provided for @predictAdminConfirm.
-  ///
-  /// In en, this message translates to:
-  /// **'Confirm result'**
-  String get predictAdminConfirm;
-
   /// No description provided for @predictAdminSettle.
   ///
   /// In en, this message translates to:
@@ -16929,11 +16473,29 @@ abstract class AfriLocalizations {
   /// **'Entries / Staked / Paid'**
   String get predictAdminTotals;
 
-  /// No description provided for @predictAdminConfirmBody.
+  /// No description provided for @predictAdminAutomaticResults.
   ///
   /// In en, this message translates to:
-  /// **'Review the official final score before confirming.'**
-  String get predictAdminConfirmBody;
+  /// **'LiveScore validates and confirms results automatically. No manual confirmation is needed.'**
+  String get predictAdminAutomaticResults;
+
+  /// No description provided for @predictAdminFinalScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Final score'**
+  String get predictAdminFinalScore;
+
+  /// No description provided for @predictAdminAwaitingResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for the final result'**
+  String get predictAdminAwaitingResult;
+
+  /// No description provided for @adminMatchAutomaticResults.
+  ///
+  /// In en, this message translates to:
+  /// **'Scores, match status and live minutes are managed by the LiveScore integration.'**
+  String get adminMatchAutomaticResults;
 
   /// No description provided for @predictAdminSettleBody.
   ///
@@ -16994,18 +16556,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Not provided'**
   String get membershipDateUnconfirmed;
-
-  /// No description provided for @membershipProgrammeTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Your membership'**
-  String get membershipProgrammeTitle;
-
-  /// No description provided for @membershipProgrammeBody.
-  ///
-  /// In en, this message translates to:
-  /// **'Your category is based on confirmed club contributions. FET activity is separate and does not determine your membership tier.'**
-  String get membershipProgrammeBody;
 
   /// No description provided for @predictReviewTitle.
   ///
@@ -17217,18 +16767,6 @@ abstract class AfriLocalizations {
   /// **'Latest result'**
   String get clubFootballRecent;
 
-  /// No description provided for @membershipQualificationUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Contribution qualification is not yet available for this club.'**
-  String get membershipQualificationUnavailable;
-
-  /// No description provided for @membershipQualificationWindow.
-  ///
-  /// In en, this message translates to:
-  /// **'Rolling 12 months · membership contributions only'**
-  String get membershipQualificationWindow;
-
   /// No description provided for @predictInsufficientReview.
   ///
   /// In en, this message translates to:
@@ -17258,18 +16796,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'{amount} FET'**
   String predictFetAmount(int amount);
-
-  /// No description provided for @membershipConfirmedTotal.
-  ///
-  /// In en, this message translates to:
-  /// **'{amount} RWF confirmed'**
-  String membershipConfirmedTotal(int amount);
-
-  /// No description provided for @membershipRemainingTotal.
-  ///
-  /// In en, this message translates to:
-  /// **'{amount} RWF to {tier}'**
-  String membershipRemainingTotal(int amount, String tier);
 
   /// No description provided for @shopEnquiryMessage.
   ///
@@ -17330,17 +16856,23 @@ abstract class AfriLocalizations {
   /// **'View enquiry options'**
   String get shopEnquiryOptions;
 
-  /// No description provided for @fanZoneBackToFanZone.
-  ///
-  /// In en, this message translates to:
-  /// **'Back to fan zone'**
-  String get fanZoneBackToFanZone;
-
   /// No description provided for @commonTryAgain.
   ///
   /// In en, this message translates to:
   /// **'Try again'**
   String get commonTryAgain;
+
+  /// No description provided for @fanClubsEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No fan clubs found'**
+  String get fanClubsEmptyTitle;
+
+  /// No description provided for @fanClubsEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Try another name or location.'**
+  String get fanClubsEmptyMessage;
 }
 
 class _AfriLocalizationsDelegate

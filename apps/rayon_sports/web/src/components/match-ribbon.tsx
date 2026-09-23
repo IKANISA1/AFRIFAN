@@ -1,3 +1,5 @@
+
+import { FixtureTeams, TeamCard } from "@/components/team-card";
 import Link from "next/link";
 import { Calendar } from "lucide-react";
 import { ui } from "@/ui-kit";
@@ -27,17 +29,17 @@ export function MatchRibbon({ match, copy }: MatchRibbonProps) {
             <span className="badge-live border-none bg-black/20 px-2.5 py-1 text-[10px] text-white">
               Live
             </span>
-            <span className="text-xs font-semibold uppercase tracking-[0.22em] sm:text-sm">
-              {match.homeTeam}
+            <span className="text-xs font-semibold normal-case tracking-normal sm:text-sm">
+              <TeamCard name={match.homeTeam} />
             </span>
-            <span className="font-score text-2xl font-bold uppercase sm:text-3xl">
+            <span className="font-score text-2xl font-medium normal-case sm:text-3xl">
               {match.homeScore} - {match.awayScore}
             </span>
-            <span className="text-xs font-semibold uppercase tracking-[0.22em] sm:text-sm">
-              {match.awayTeam}
+            <span className="text-xs font-semibold normal-case tracking-normal sm:text-sm">
+              <TeamCard name={match.awayTeam} />
             </span>
             {match.liveMinute != null ? (
-              <span className={`${ui.ribbonPill} rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.22em] text-white/85`}>
+              <span className={`${ui.ribbonPill} rounded-full px-2.5 py-1 text-[10px] normal-case tracking-normal text-white/85`}>
                 {match.liveMinute}&rsquo;
               </span>
             ) : null}
@@ -62,21 +64,21 @@ export function MatchRibbon({ match, copy }: MatchRibbonProps) {
     >
       <div className="page-shell flex min-h-[var(--ribbon-height)] flex-wrap items-center justify-center gap-x-3 gap-y-1 py-1.5 text-center sm:justify-between">
         <div className="flex flex-wrap items-center justify-center gap-2 sm:justify-start">
-          <Calendar size={14} className="text-club-secondary" />
-          <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-300">
+          <Calendar size={14} className="text-muted" />
+          <span className="text-[11px] font-semibold normal-case tracking-normal text-muted">
             {copy.next}
           </span>
-          <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-white">
-            {match.homeTeam} vs {match.awayTeam}
+          <span className="text-[11px] font-semibold normal-case tracking-normal text-white">
+            <FixtureTeams homeTeam={match.homeTeam} awayTeam={match.awayTeam} />
           </span>
-          <span className="text-[11px] uppercase tracking-[0.18em] text-slate-300">
+          <span className="text-[11px] normal-case tracking-normal text-muted">
             {formatDateTime(match.matchDate)}
           </span>
         </div>
         <Link
           href={`/fixtures/${match.id}`}
           prefetch={false}
-          className={`${ui.ribbonAction} px-3 py-1 text-[10px] text-slate-200`}
+          className={`${ui.ribbonAction} px-3 py-1 text-[10px] text-foreground`}
         >
           {copy.details}
         </Link>

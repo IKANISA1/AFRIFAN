@@ -45,41 +45,12 @@ class StatsPanel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (homeLabel != null && awayLabel != null) ...[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  homeLabel!,
-                  style:
-                      TypographyTokens.metricLabel(
-                        ColorTokens.primaryContainer,
-                      ).copyWith(
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: TypographyTokens.trackingNone,
-                      ),
-                ),
-                Text(
-                  title,
-                  style:
-                      TypographyTokens.titleSmall(
-                        ColorTokens.onSurfaceVariant,
-                      ).copyWith(
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: TypographyTokens.trackingNone,
-                      ),
-                ),
-                Text(
-                  awayLabel!,
-                  style:
-                      TypographyTokens.metricLabel(
-                        ColorTokens.onSurfaceVariant,
-                      ).copyWith(
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: TypographyTokens.trackingNone,
-                      ),
-                ),
-              ],
+            Text(
+              title,
+              style: TypographyTokens.titleSmall(ColorTokens.onSurfaceVariant),
             ),
+            const SizedBox(height: SpacingTokens.spacing3),
+            AfriFixtureTeams(homeTeam: homeLabel!, awayTeam: awayLabel!),
             const SizedBox(height: SpacingTokens.spacing4),
           ] else ...[
             Text(

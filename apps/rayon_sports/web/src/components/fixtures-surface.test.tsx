@@ -146,13 +146,13 @@ describe("FixturesSurface", () => {
       screen.getByRole("button", { name: /refresh fixtures/i }),
     ).toBeDisabled();
 
-    await screen.findByText("Rayon Sports vs APR FC");
+    await screen.findByRole("group", { name: "Rayon Sports versus APR FC" });
     expect(container.querySelector(".fixtures-surface")).toHaveAttribute(
       "data-fixtures-status",
       "ready",
     );
     const liveFixture = screen.getByRole("button", {
-      name: /premier league\s*rayon sports vs police fc/i,
+      name: /premier league\s*rayon sports versus police fc/i,
     });
     fireEvent.click(liveFixture);
     expect(liveFixture).toHaveAttribute("aria-pressed", "true");
@@ -225,7 +225,7 @@ describe("FixturesSurface", () => {
       value: true,
     });
     fireEvent(window, new Event("online"));
-    await screen.findByText("Rayon Sports vs APR FC");
+    await screen.findByRole("group", { name: "Rayon Sports versus APR FC" });
   });
 
   it("retains confirmed fixtures while a refresh is syncing", async () => {
@@ -244,7 +244,7 @@ describe("FixturesSurface", () => {
       );
 
     const { container } = renderFixtures();
-    await screen.findByText("Rayon Sports vs APR FC");
+    await screen.findByRole("group", { name: "Rayon Sports versus APR FC" });
     fireEvent.click(
       screen.getByRole("button", { name: /refresh fixtures/i }),
     );
@@ -255,7 +255,7 @@ describe("FixturesSurface", () => {
         "syncing",
       ),
     );
-    expect(screen.getByText("Rayon Sports vs APR FC")).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Rayon Sports versus APR FC" })).toBeInTheDocument();
     releaseRefresh?.(
       new Response(
         JSON.stringify({ code: "PUBLIC_FIXTURES_READY", items: fixtures }),
@@ -280,7 +280,7 @@ describe("FixturesSurface", () => {
       );
 
     const { container } = renderFixtures();
-    await screen.findByText("Rayon Sports vs APR FC");
+    await screen.findByRole("group", { name: "Rayon Sports versus APR FC" });
     fireEvent.click(
       screen.getByRole("button", { name: /refresh fixtures/i }),
     );
@@ -291,7 +291,7 @@ describe("FixturesSurface", () => {
         "conflict",
       ),
     );
-    expect(screen.getByText("Rayon Sports vs APR FC")).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Rayon Sports versus APR FC" })).toBeInTheDocument();
   });
 
   it("records real focus and held-pointer interaction states", async () => {
@@ -300,7 +300,7 @@ describe("FixturesSurface", () => {
     );
 
     const { container } = renderFixtures();
-    await screen.findByText("Rayon Sports vs APR FC");
+    await screen.findByRole("group", { name: "Rayon Sports versus APR FC" });
     const tickets = screen.getByRole("link", { name: /buy tickets/i });
     fireEvent.focus(tickets);
     expect(container.querySelector(".fixtures-surface")).toHaveAttribute(
@@ -333,6 +333,6 @@ describe("FixturesSurface", () => {
       "data-fixtures-status",
       "security_timeout",
     );
-    expect(screen.queryByText("Rayon Sports vs APR FC")).toBeNull();
+    expect(screen.queryByRole("group", { name: "Rayon Sports versus APR FC" })).toBeNull();
   });
 });

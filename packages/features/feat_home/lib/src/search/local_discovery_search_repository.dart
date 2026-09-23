@@ -95,12 +95,12 @@ class LocalDiscoverySearchRepository implements DiscoverySearchRepository {
               ],
             ),
             DiscoveryResult(
-              id: 'fan-zone',
+              id: 'predict',
               title: l10n.predictTitle,
               description: l10n.predictIntro,
               category: DiscoveryCategory.supporters,
               destination: '/predict',
-              icon: AfriIcons.fanzone,
+              icon: AfriIcons.predict,
               keywords: <String>['fans', 'community', 'prediction', 'reward'],
             ),
             DiscoveryResult(
@@ -128,7 +128,7 @@ class LocalDiscoverySearchRepository implements DiscoverySearchRepository {
               title: l10n.searchLiveMatchTitle,
               description: l10n.searchLiveMatchDescription,
               category: DiscoveryCategory.fixtures,
-              destination: '/fanzone/match/live',
+              destination: '/predict/match/live',
               icon: AfriIcons.live,
               keywords: <String>['score', 'live', 'match', 'commentary'],
             ),

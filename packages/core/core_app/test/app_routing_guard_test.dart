@@ -8,7 +8,6 @@ import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
@@ -32,8 +31,35 @@ void main() {
 
     setUp(() {
       config = const _FakeClubConfig();
-      ColorTokens.init(config.colors);
+      ColorTokens.init();
     });
+
+    for (final hasMomo in [true, false]) {
+      testWidgets(
+        'startup restores a user from the retired splash alias (MOMO: $hasMomo)',
+        (tester) async {
+          await tester.pumpWidget(
+            AfriClubApp(
+              config: config,
+              modules: [_HomeModule(), _OnboardingModule(), _SettingsModule()],
+              authRepository: FakeAuthRepository(
+                restoreResult: UserProfile(
+                  id: 'user-1',
+                  clubId: '1',
+                  publicUserId: '483912',
+                  momoNumber: hasMomo ? '0781234567' : null,
+                  momoProvider: hasMomo ? 'MoMo' : null,
+                ),
+              ),
+              initialLocation: '/splash',
+            ),
+          );
+          await tester.pumpAndSettle();
+          expect(find.byType(_FakeHomeScreen), findsOneWidget);
+          expect(find.byType(_FakeOnboardingScreen), findsNothing);
+        },
+      );
+    }
 
     testWidgets('applies the OS high-contrast variant to routed content', (
       tester,
@@ -325,7 +351,7 @@ void main() {
             modules: <FeatureModule>[
               _HomeModule(),
               _ClubModule(),
-              _FanZoneModule(),
+              _PredictModule(),
               _MembershipModule(),
               _OnboardingModule(),
               _SettingsModule(),
@@ -433,7 +459,7 @@ void main() {
             modules: <FeatureModule>[
               _HomeModule(),
               _ClubModule(),
-              _FanZoneModule(),
+              _PredictModule(),
               _MembershipModule(),
               _OnboardingModule(),
               _SettingsModule(),
@@ -473,7 +499,7 @@ void main() {
           modules: <FeatureModule>[
             _HomeModule(),
             _ClubModule(),
-            _FanZoneModule(),
+            _PredictModule(),
             _MembershipModule(),
             _OnboardingModule(),
             _SettingsModule(),
@@ -526,7 +552,7 @@ void main() {
             modules: <FeatureModule>[
               _HomeModule(),
               _ClubModule(),
-              _FanZoneModule(),
+              _PredictModule(),
               _MembershipModule(),
               _OnboardingModule(),
               _SettingsModule(),
@@ -566,84 +592,6 @@ Future<ByteData> _loadFlutterArtifactFont(String fileName) async {
     ).readAsBytes();
     return ByteData.sublistView(bytes);
   }
-}
-
-class _FakeSplashScreen extends ConsumerStatefulWidget {
-  const _FakeSplashScreen();
-
-  @override
-  ConsumerState<_FakeSplashScreen> createState() => _FakeSplashScreenState();
-}
-
-class _FakeSplashScreenState extends ConsumerState<_FakeSplashScreen> {
-  bool _hasNavigated = false;
-
-  @override
-  void initState() {
-    super.initState();
-    unawaited(_navigateToNext());
-  }
-
-  Future<void> _navigateToNext() async {
-    await Future<void>.delayed(Duration.zero);
-    if (!mounted || _hasNavigated) return;
-
-    final authNotifier = ref.read(authStateProvider.notifier);
-    final currentState = ref.read(authStateProvider);
-
-    if (currentState is AuthInitial) {
-      await authNotifier.restore();
-    }
-
-    if (!mounted || _hasNavigated) return;
-
-    final resolvedState = ref.read(authStateProvider);
-    final deferredLocation = _deferredLocation();
-
-    _hasNavigated = true;
-    if (resolvedState is AuthAuthenticated) {
-      context.go(deferredLocation ?? '/home');
-      return;
-    }
-
-    if (deferredLocation == null) {
-      context.go('/onboarding');
-      return;
-    }
-
-    context.go(
-      Uri(
-        path: '/onboarding',
-        queryParameters: <String, String>{'from': deferredLocation},
-      ).toString(),
-    );
-  }
-
-  String? _deferredLocation() {
-    final raw = GoRouterState.of(context).uri.queryParameters['from']?.trim();
-    if (raw == null || raw.isEmpty) {
-      return null;
-    }
-
-    final uri = Uri.tryParse(raw);
-    final path = uri?.path;
-    if (path == null ||
-        path.isEmpty ||
-        !path.startsWith('/') ||
-        path == '/splash' ||
-        path == '/onboarding') {
-      return null;
-    }
-
-    if (GoRouter.of(context).configuration.findMatch(uri!).isError) {
-      return null;
-    }
-
-    return uri.toString();
-  }
-
-  @override
-  Widget build(BuildContext context) => const Scaffold(body: Text('Splash'));
 }
 
 class _FakeOnboardingScreen extends StatelessWidget {
@@ -847,7 +795,12 @@ class _OnboardingModule extends FeatureModule {
   List<RouteBase> get routes => <RouteBase>[
     GoRoute(
       path: '/splash',
-      builder: (context, state) => const _FakeSplashScreen(),
+      redirect: (context, state) => Uri(
+        path: '/onboarding',
+        queryParameters: state.uri.queryParameters.isEmpty
+            ? null
+            : state.uri.queryParameters,
+      ).toString(),
     ),
     GoRoute(
       path: '/onboarding',
@@ -916,17 +869,17 @@ class _ClubModule extends FeatureModule {
   );
 }
 
-class _FanZoneModule extends FeatureModule {
+class _PredictModule extends FeatureModule {
   @override
-  String get featureKey => 'fanzone';
+  String get featureKey => 'predict';
 
   @override
   TabRoute get tabRoute => TabRoute(
-    path: '/fanzone',
-    label: 'Fan Zone',
+    path: '/predict',
+    label: 'Predict',
     icon: AfriIcons.bolt,
     activeIcon: AfriIcons.bolt,
-    builder: (context, state) => const Scaffold(body: Text('Fan Zone')),
+    builder: (context, state) => const Scaffold(body: Text('Predict')),
   );
 }
 

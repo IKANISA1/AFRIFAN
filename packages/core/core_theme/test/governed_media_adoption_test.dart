@@ -10,11 +10,9 @@ void main() {
 
   test('representative product media uses governed shared surfaces', () {
     const governedCachedImageFiles = <String>[
-      'packages/features/feat_live/lib/src/screens/news_article_screen.dart',
       'packages/features/feat_home/lib/src/widgets/latest_intel_section.dart',
       'packages/features/feat_shop/lib/src/widgets/product_card.dart',
       'packages/features/feat_shop/lib/src/screens/product_detail_screen.dart',
-      'packages/features/feat_live/lib/src/widgets/live_match_widgets.dart',
     ];
     for (final path in governedCachedImageFiles) {
       final value = source(path);
@@ -34,6 +32,11 @@ void main() {
         reason: '$path must not construct an ungoverned cache widget.',
       );
     }
+
+    expect(
+      source('packages/core/core_theme/lib/src/widgets/afri_team_card.dart'),
+      contains('AfriTeamCrest'),
+    );
 
     final onboarding = source(
       'packages/features/feat_onboarding/lib/src/screens/'

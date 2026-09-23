@@ -15,7 +15,7 @@ are:
 - club identity, history, squads, news, fixtures, results, standings, and live
   match information;
 - free selected-match predictions, competitions, leaderboards, points, and
-  supporter challenges;
+  Predict entries;
 - memberships, supporter groups, projects, contributions, tickets, shop, and
   governed rewards;
 - club-scoped public sites and centralized club administration.
@@ -89,13 +89,12 @@ package is not required to isolate the two runtimes.
 The native Flutter app owns the full supporter experience. The primary
 navigation is:
 
-`Home · Club · Fan Zone · Membership`
+`Home · Club · Predict · Membership`
 
 - Home prioritizes the next useful club action and current football context.
 - Club owns team, news, fixtures, results, standings, history, projects,
   tickets, and shop discovery.
-- Fan Zone owns free predictions, supporter competitions, leaderboards, and
-  points.
+- Predict owns fixtures, Home/Draw/Away picks, personal pick history and FET activity.
 - Membership owns status, member card, benefits, contributions, supporter
   groups, renewal, and statements.
 - Profile owns settings, privacy, notifications, support, language, export,

@@ -335,14 +335,14 @@ export default function AdminShopPage() {
           >
             <fieldset disabled={mutationLocked} className="contents">
               <div className="flex items-center justify-between gap-3">
-                <p className="font-display text-3xl font-bold uppercase leading-none">
+                <p className="font-display text-3xl font-medium normal-case leading-none">
                   {form.id ? "Edit product" : "New product"}
                 </p>
                 {form.id ? (
                   <button
                     type="button"
                     onClick={() => setForm(emptyForm)}
-                    className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+                    className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)]"
                   >
                     Clear
                   </button>
@@ -456,7 +456,7 @@ export default function AdminShopPage() {
                 previewAlt="Product preview"
                 promptPlaceholder="Example: Premium studio product shot of the new home jersey on a clean dark background, bold blue and white club colors, catalogue lighting."
               />
-              <label className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-white/5 px-4 py-3 text-sm">
+              <label className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-[var(--admin-surface-muted)] px-4 py-3 text-sm">
                 <input
                   type="checkbox"
                   name="isActive"
@@ -470,7 +470,7 @@ export default function AdminShopPage() {
               <button
                 type="submit"
                 disabled={mutationLocked}
-                className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary disabled:opacity-60"
+                className="rounded-full bg-action-blue px-5 py-3 font-semibold text-white transition hover:bg-action-blue-hover disabled:opacity-60"
               >
                 {saving ? "Saving…" : form.id ? "Save product" : "Add product"}
               </button>
@@ -478,7 +478,7 @@ export default function AdminShopPage() {
           </form>
           <section className="glass-panel rounded-[32px] p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <p className="font-display text-3xl font-bold uppercase leading-none">
+              <p className="font-display text-3xl font-medium normal-case leading-none">
                 Catalogue
               </p>
               <div className="flex flex-wrap gap-2">
@@ -530,7 +530,7 @@ export default function AdminShopPage() {
             </AdminFilterBar>
             <div className="mt-5 space-y-3">
               {productCollection.pageResult.items.length === 0 ? (
-                <p className="rounded-[24px] border border-border-soft bg-white/5 px-4 py-4 text-sm text-slate-300">
+                <p className="rounded-[24px] border border-border-soft bg-[var(--admin-surface-muted)] px-4 py-4 text-sm text-[var(--admin-text-muted)]">
                   {productCollection.query
                     ? "No products match the current search and category."
                     : "No products found."}
@@ -541,7 +541,7 @@ export default function AdminShopPage() {
                   key={product.id}
                   className={cn(
                     "card-interactive flex items-start gap-4 rounded-[26px] border border-border-soft p-5 transition",
-                    product.isActive ? "bg-white/5" : "bg-white/[0.02]",
+                    product.isActive ? "bg-[var(--admin-surface-muted)]" : "bg-[var(--admin-surface-muted)]",
                   )}
                 >
                   {product.imageUrl ? (
@@ -555,10 +555,10 @@ export default function AdminShopPage() {
                     </div>
                   ) : null}
                   <div className="flex-1 min-w-0">
-                    <p className="font-display text-2xl font-bold uppercase leading-none">
+                    <p className="font-display text-2xl font-medium normal-case leading-none">
                       {product.name}
                     </p>
-                    <p className="mt-1 truncate text-sm text-slate-300">
+                    <p className="mt-1 truncate text-sm text-[var(--admin-text-muted)]">
                       {product.subtitle}
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2">
@@ -566,19 +566,19 @@ export default function AdminShopPage() {
                         label={product.isActive ? "Active" : "Inactive"}
                         tone={product.isActive ? "success" : "neutral"}
                       />
-                      <span className="rounded-full bg-club-primary px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-white">
+                      <span className="rounded-full bg-action-blue px-3 py-1.5 text-xs font-semibold normal-case tracking-normal text-white">
                         {formatCurrency(
                           product.price,
                           activeClub?.currencyCode,
                         )}
                       </span>
-                      <span className="rounded-full border border-border-soft px-3 py-1.5 text-xs uppercase tracking-[0.18em] text-slate-300">
+                      <span className="rounded-full border border-border-soft px-3 py-1.5 text-xs normal-case tracking-normal text-[var(--admin-text-muted)]">
                         {product.category}
                       </span>
                       {product.sizes.map((s) => (
                         <span
                           key={s}
-                          className="rounded-full border border-border-soft px-2 py-1 text-[10px] uppercase tracking-[0.16em] text-slate-400"
+                          className="rounded-full border border-border-soft px-2 py-1 text-xs normal-case tracking-normal text-[var(--admin-text-muted)]"
                         >
                           {s}
                         </span>
@@ -590,7 +590,7 @@ export default function AdminShopPage() {
                       type="button"
                       disabled={mutationLocked}
                       onClick={() => beginEdit(product)}
-                      className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border-soft text-slate-100 transition hover:bg-white/8 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border-soft text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)] disabled:cursor-not-allowed disabled:opacity-60"
                       aria-label={`Edit ${product.name}`}
                     >
                       <Pencil size={16} aria-hidden="true" />
@@ -601,7 +601,7 @@ export default function AdminShopPage() {
                       onClick={() => {
                         removeProduct(product).catch(() => {});
                       }}
-                      className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border-soft text-slate-100 transition hover:bg-rose-500/15 hover:border-rose-400/30 hover:text-rose-300 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full border border-border-soft text-[var(--admin-text-strong)] transition hover:bg-error/15 hover:border-error/30 hover:text-error disabled:cursor-not-allowed disabled:opacity-60"
                       aria-label={`Remove ${product.name}`}
                     >
                       <Trash2 size={16} aria-hidden="true" />

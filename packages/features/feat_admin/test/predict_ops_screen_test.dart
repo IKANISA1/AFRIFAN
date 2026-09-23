@@ -24,24 +24,24 @@ class Controller extends AdminPredictController {
   }
 }
 
-AdminPredictData data() => AdminPredictData(
+AdminPredictData data({bool finalScore = true}) => AdminPredictData(
   enabled: true,
   fixtures: [
     AdminPredictFixture({
       'id': 'fixture',
       'pool_id': 'pool',
-      'home_team': 'Home FC',
-      'away_team': 'Away FC',
+      'home_team': 'Rayon Sports FC',
+      'away_team': 'APR FC',
       'competition': 'Rwanda Premier League',
       'status': 'locked',
-      'fixture_status': 'finished',
+      'fixture_status': finalScore ? 'finished' : 'scheduled',
       'kickoff_at': '2026-09-05T16:00:00Z',
       'entry_count': 3,
       'staked_fet': 300,
       'paid_fet': 0,
       'stake_fet': 100,
-      'home_score': 2,
-      'away_score': 1,
+      'home_score': finalScore ? 2 : null,
+      'away_score': finalScore ? 1 : null,
       'result_confirmed': false,
     }),
   ],
@@ -59,7 +59,8 @@ void main() {
     'error',
     'permission_denied',
     'syncing',
-    'confirm_result',
+    'automatic_result',
+    'awaiting_result',
     'settings',
     'refund',
   ]) {
@@ -87,6 +88,7 @@ void main() {
           denied: true,
           failed: true,
         ),
+        'awaiting_result' => AdminPredictState(data: data(finalScore: false)),
         'syncing' => AdminPredictState(data: data(), busy: true),
         _ => AdminPredictState(data: data()),
       });
@@ -113,19 +115,45 @@ void main() {
       );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
-      if (name == 'confirm_result') {
-        await tester.ensureVisible(find.text('Confirm result · 2–1'));
-        await tester.tap(find.text('Confirm result · 2–1'));
-        await tester.pumpAndSettle();
+      if (c.state.data?.fixtures.isNotEmpty ?? false) {
+        if (name == 'large_text') {
+          await tester.scrollUntilVisible(find.byType(AfriFixtureTeams), 200);
+        }
+        final context = tester.element(find.byType(AfriFixtureTeams).first);
+        await tester.runAsync(() async {
+          for (final name in ['Rayon Sports FC', 'APR FC']) {
+            await precacheImage(
+              AssetImage(teamAssetFor(name)!.asset!),
+              context,
+            );
+          }
+        });
+        await tester.pump();
         expect(
-          find.text('Review the official final score before confirming.\n2–1'),
+          tester
+              .widgetList<RawImage>(find.byType(RawImage))
+              .where((image) => image.image != null),
+          hasLength(2),
+        );
+      }
+      if (name != 'loading' && name != 'syncing') {
+        await tester.pumpAndSettle();
+      }
+      expect(find.textContaining('Confirm result'), findsNothing);
+      if (name == 'automatic_result' || name == 'awaiting_result') {
+        final resultLabel = name == 'automatic_result'
+            ? 'Final score · 2–1'
+            : 'Waiting for the final result';
+        await tester.ensureVisible(find.text(resultLabel));
+        expect(find.text(resultLabel), findsOneWidget);
+        expect(
+          find.text(
+            'LiveScore validates and confirms results automatically. No manual confirmation is needed.',
+          ),
           findsOneWidget,
         );
-        await tester.enterText(
-          find.byType(TextField),
-          'https://example.com/result',
-        );
-        await tester.pumpAndSettle();
+        expect(find.byType(TextField), findsNothing);
+        expect(c.submitted, isNull);
       }
       if (name == 'settings') {
         await tester.tap(find.text('Settings'));
@@ -133,6 +161,7 @@ void main() {
       }
       if (name == 'refund') {
         await tester.ensureVisible(find.text('Void and refund'));
+        await tester.pumpAndSettle();
         await tester.tap(find.text('Void and refund'));
         await tester.pumpAndSettle();
         await tester.enterText(find.byType(TextField), 'Fixture cancelled');
@@ -146,17 +175,6 @@ void main() {
           'goldens/admin_predict_state_${name}_${name == 'light' ? 'light' : 'dark'}_${name == 'large_text' ? '320x720' : '390x844'}.png',
         ),
       );
-      if (name == 'confirm_result') {
-        await tester.tap(find.widgetWithText(TextButton, 'Confirm result'));
-        await tester.pumpAndSettle();
-        expect(c.submitted, PredictAdminAction.confirmResult);
-        expect(c.parameters, {
-          'p_pool_id': 'pool',
-          'p_home_score': 2,
-          'p_away_score': 1,
-          'p_source_url': 'https://example.com/result',
-        });
-      }
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();
     });

@@ -74,7 +74,7 @@ export function MembershipList({
       {loading ? (
         <div className="space-y-3 p-5 sm:p-6">
           {Array.from({ length: 4 }).map((_, index) => (
-            <div key={index} className="rounded-[20px] border border-border-soft bg-white/5 p-4">
+            <div key={index} className="rounded-[20px] border border-border-soft bg-[var(--admin-surface-muted)] p-4">
               <Skeleton className="skeleton-text h-5 w-2/5" />
               <Skeleton className="skeleton-text mt-2 h-3 w-full" />
             </div>
@@ -115,21 +115,21 @@ export function MembershipList({
                     />
                   </td>
                   <td>
-                    <p className="text-sm font-medium text-white">
+                    <p className="text-sm font-medium text-[var(--admin-text-strong)]">
                       {formatCurrency(pkg.annualPrice, currencyCode)}
                     </p>
                     <p className="admin-row-meta">
-                      {pkg.annualPrice > 0 ? "annual plan" : "free tier"}
+                      {pkg.annualPrice > 0 ? "annual plan" : "price required"}
                     </p>
                   </td>
                   <td>
-                    <p className="text-sm font-medium text-white">{pkg.perks.length}</p>
+                    <p className="text-sm font-medium text-[var(--admin-text-strong)]">{pkg.perks.length}</p>
                     <p className="admin-row-meta">
                       {pkg.perks.slice(0, 2).join(" · ") || "No perks listed"}
                     </p>
                   </td>
                   <td>
-                    <p className="text-sm font-medium text-white">{pkg.sortOrder}</p>
+                    <p className="text-sm font-medium text-[var(--admin-text-strong)]">{pkg.sortOrder}</p>
                     <p className="admin-row-meta">display order</p>
                   </td>
                   <td>

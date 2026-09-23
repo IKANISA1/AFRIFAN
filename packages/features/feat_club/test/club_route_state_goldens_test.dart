@@ -7,6 +7,7 @@ import 'package:feat_club/feat_club.dart';
 import 'package:feat_club/src/screens/club_partners_screen.dart';
 import 'package:feat_club/src/screens/club_public_link_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -82,15 +83,13 @@ const _clubRoutes = <_ClubRouteSpec>[
     '/club/fixtures/fixture-1',
     'fixture_detail',
   ),
-  _ClubRouteSpec('/club/results', '/club/results', 'results'),
+  _ClubRouteSpec(
+    '/club/fixtures?tab=results',
+    '/club/fixtures?tab=results',
+    'results',
+  ),
   _ClubRouteSpec('/club/standings', '/club/standings', 'standings'),
   _ClubRouteSpec('/club/history', '/club/history', 'history'),
-  _ClubRouteSpec('/club/projects', '/club/projects', 'projects'),
-  _ClubRouteSpec(
-    '/club/projects/:projectId',
-    '/club/projects/project-1',
-    'project_detail',
-  ),
 ];
 
 Future<void> _pumpClubRouteState(
@@ -189,6 +188,36 @@ Future<void> _pumpClubRouteState(
   if (state == 'reduced_motion') {
     final context = tester.element(find.byKey(_goldenKey));
     expect(AfriMotion.reduceMotion(context), isTrue);
+  }
+  if (state == 'large_text' &&
+      (route.slug == 'fixtures' || route.slug == 'fixture_detail')) {
+    expect(find.text('Rayon Sports FC'), findsNothing);
+    expect(find.text('APR FC'), findsNothing);
+    final first = find.text('RAY').last;
+    final second = find.text('APR').last;
+    expect(tester.getCenter(first).dx, lessThan(tester.getCenter(second).dx));
+    final teams = find.byType(AfriFixtureTeams).last;
+    final box = tester.getRect(teams);
+    expect(box.left, greaterThanOrEqualTo(0));
+    expect(box.right, lessThanOrEqualTo(320));
+    expect(box.height, lessThan(180));
+    expect(
+      find
+          .text(
+            'Rwanda Premier League\nAug 8, 2026 · 17:00\nKigali Pele Stadium',
+          )
+          .last,
+      findsOneWidget,
+    );
+    if (route.slug == 'fixture_detail') {
+      final tickets = find.text('View available tickets');
+      expect(tickets.hitTestable(), findsOneWidget);
+      expect(tester.getRect(tickets).bottom, lessThan(720));
+      expect(
+        tester.renderObject<RenderParagraph>(tickets).didExceedMaxLines,
+        isFalse,
+      );
+    }
   }
   expect(tester.takeException(), isNull);
 
@@ -409,10 +438,6 @@ class _ClubStateGateway implements ClubContentGateway {
       _load(key: 'news', data: _news, empty: const <ClubNewsItem>[]);
 
   @override
-  Future<List<ClubProjectItem>> loadProjects() =>
-      _load(key: 'projects', data: _projects, empty: const <ClubProjectItem>[]);
-
-  @override
   Future<List<ClubSquadMember>> loadSquad() =>
       _load(key: 'squad', data: _squad, empty: const <ClubSquadMember>[]);
 
@@ -545,17 +570,5 @@ const _history = <ClubHistoryItem>[
     body:
         'Gikundiro is the supporter identity carried by Rayon Sports FC across its official social presence.',
     sortOrder: 30,
-  ),
-];
-
-const _projects = <ClubProjectItem>[
-  ClubProjectItem(
-    id: 'project-1',
-    name: 'Gikundiro youth training ground',
-    description:
-        'A governed club project to improve safe training facilities for the next generation.',
-    currentTotal: 6400000,
-    targetAmount: 10000000,
-    memberCount: 486,
   ),
 ];

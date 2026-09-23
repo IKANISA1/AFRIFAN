@@ -170,7 +170,7 @@ for (const relativePath of new Set(sourcePaths)) {
 }
 
 const requiredPaths = [
-  'packages/features/feat_gamification/lib/src/fanzone_module.dart',
+  'packages/features/feat_gamification/lib/src/predict/predict_module.dart',
   'packages/features/feat_gamification/lib/src/repositories/prediction_repository.dart',
   'supabase/migrations/20260820080202_football_only_baseline.sql',
   'supabase/tests/repository_boundary_contract.sql',
@@ -189,7 +189,7 @@ const registryPath = join(
 const registry = readFileSync(registryPath, 'utf8');
 for (const requiredModule of [
   'ClubModule()',
-  'FanzoneModule()',
+  'PredictModule()',
   'LiveModule()',
   'MembershipModule()',
   'TicketingModule()',

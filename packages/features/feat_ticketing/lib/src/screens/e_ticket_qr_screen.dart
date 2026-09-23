@@ -182,10 +182,13 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                 final reduceMotion =
                     !widget.scannerAnimationEnabled ||
                     _shouldReduceMotion(context);
-                final stackWalletActions =
-                    MediaQuery.textScalerOf(context).scale(1) >= 1.5 ||
-                    MediaQuery.sizeOf(context).width < 360;
-                final qrSize = stackWalletActions ? 160.0 : 220.0;
+                final enlargedText =
+                    MediaQuery.textScalerOf(context).scale(1) >= 1.5;
+                final compactWidth = MediaQuery.sizeOf(context).width;
+                final stackWalletActions = enlargedText || compactWidth < 480;
+                final qrSize = enlargedText || compactWidth < 360
+                    ? 160.0
+                    : 220.0;
                 final googleWalletAvailable =
                     googleWalletAvailability.valueOrNull == true;
                 final googleWalletBusy =
@@ -208,6 +211,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                         .add(),
                   ),
                   variant: AfriButtonVariant.outline,
+                  labelMaxLines: 2,
                   icon: AfriIcons.wallet,
                   enabled:
                       isOnline &&
@@ -296,17 +300,9 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                         padding: const EdgeInsets.all(SpacingTokens.spacing8),
                         child: Column(
                           children: [
-                            Text(
-                              ticket.matchTitle,
-                              style:
-                                  TypographyTokens.headlineMedium(
-                                    ColorTokens.inkBase,
-                                  ).copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    fontStyle: FontStyle.normal,
-                                    height: 1,
-                                  ),
-                              textAlign: TextAlign.center,
+                            AfriFixtureTeams(
+                              homeTeam: ticket.match.homeTeam,
+                              awayTeam: ticket.match.awayTeam,
                             ),
                             const SizedBox(height: SpacingTokens.spacing3),
                             Container(
@@ -404,6 +400,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                     width: double.infinity,
                                     child: AfriButton(
                                       label: l10n.ticketAppleWallet,
+                                      labelMaxLines: 2,
                                       onTap: () {},
                                       variant: AfriButtonVariant.outline,
                                       icon: AfriIcons.addCard,
@@ -426,6 +423,7 @@ class _ETicketQrScreenState extends ConsumerState<ETicketQrScreen>
                                       Expanded(
                                         child: AfriButton(
                                           label: l10n.ticketAppleWallet,
+                                          labelMaxLines: 2,
                                           onTap: () {},
                                           variant: AfriButtonVariant.outline,
                                           icon: AfriIcons.addCard,

@@ -64,7 +64,7 @@ export function FetList({
 
   return (
     <section className="glass-panel rounded-[32px] p-6">
-      <p className="font-display text-3xl font-bold uppercase leading-none">
+      <p className="font-display text-3xl font-medium normal-case leading-none">
         FET catalog
       </p>
       <AdminFilterBar
@@ -103,7 +103,7 @@ export function FetList({
           ? Array.from({ length: 4 }).map((_, index) => (
               <div
                 key={index}
-                className="rounded-[26px] border border-border-soft bg-white/5 p-5"
+                className="rounded-[26px] border border-border-soft bg-[var(--admin-surface-muted)] p-5"
               >
                 <Skeleton className="skeleton-text h-6 w-1/3" />
                 <Skeleton className="skeleton-text mt-2 h-3 w-full" />
@@ -132,12 +132,12 @@ export function FetList({
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] px-2.5 py-1 font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--admin-text)]">
+                    <span className="rounded-full border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] px-2.5 py-1 font-mono text-xs normal-case tracking-normal text-[var(--admin-text)]">
                       {token.code}
                     </span>
                     <span
                       className={cn(
-                        "rounded-full border px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em]",
+                        "rounded-full border px-3 py-1.5 text-xs font-semibold normal-case tracking-normal",
                         scopeColors[token.templateScope],
                       )}
                     >
@@ -145,11 +145,11 @@ export function FetList({
                         ? "Generic"
                         : "Club specific"}
                     </span>
-                    <span className="rounded-full border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--admin-text)]">
+                    <span className="rounded-full border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] px-3 py-1.5 text-xs font-semibold normal-case tracking-normal text-[var(--admin-text)]">
                       {token.category}
                     </span>
                   </div>
-                  <p className="font-display text-2xl font-bold uppercase leading-none">
+                  <p className="font-display text-2xl font-medium normal-case leading-none">
                     {token.itemName}
                   </p>
                   <p className="text-sm text-[var(--admin-text)]">
@@ -157,10 +157,10 @@ export function FetList({
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-display text-3xl font-bold text-club-accent">
+                  <p className="font-display text-3xl font-medium text-[var(--admin-accent)]">
                     {token.fetValue}
                   </p>
-                  <p className="text-xs uppercase tracking-[0.16em] text-[var(--admin-text-muted)]">
+                  <p className="text-xs normal-case tracking-normal text-[var(--admin-text-muted)]">
                     FET
                   </p>
                   {token.badgeName ? (
@@ -173,7 +173,7 @@ export function FetList({
 
               <div className="mt-4 grid gap-3 lg:grid-cols-2">
                 <div className="rounded-[20px] border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] px-4 py-3">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--admin-text-muted)]">
+                  <p className="font-mono text-xs normal-case tracking-normal text-[var(--admin-text-muted)]">
                     Trigger
                   </p>
                   <p className="mt-1 text-sm text-[var(--admin-text)]">
@@ -181,7 +181,7 @@ export function FetList({
                   </p>
                 </div>
                 <div className="rounded-[20px] border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] px-4 py-3">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--admin-text-muted)]">
+                  <p className="font-mono text-xs normal-case tracking-normal text-[var(--admin-text-muted)]">
                     Activation timing
                   </p>
                   <p className="mt-1 text-sm text-[var(--admin-text)]">
@@ -192,7 +192,7 @@ export function FetList({
 
               {token.implementationNotes ? (
                 <div className="mt-3 rounded-[20px] border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] px-4 py-3">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[var(--admin-text-muted)]">
+                  <p className="font-mono text-xs normal-case tracking-normal text-[var(--admin-text-muted)]">
                     Implementation notes
                   </p>
                   <p className="mt-1 text-sm text-[var(--admin-text)]">

@@ -341,7 +341,7 @@ class _SupporterPhoneAuthScreenState
             isLoading: _isLoading,
             enabled: _isOnline && !_isLoading && _canSubmitPhone,
             mutedPrimaryWhenDisabled: true,
-            labelMaxLines: 2,
+            labelMaxLines: 3,
           ),
           children: [
             _AuthStepHeader(
@@ -410,7 +410,7 @@ class _SupporterPhoneAuthScreenState
       controller: _phoneController,
       focusNode: _phoneFocusNode,
       label: largeText ? l10n.authPhoneLabel : l10n.authWhatsAppNumberLabel,
-      hint: l10n.authPhoneHint,
+      hint: largeText ? null : l10n.authPhoneHint,
       tonal: true,
       contentPadding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing4,
@@ -469,6 +469,8 @@ class _SupporterPhoneAuthScreenState
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Align(alignment: Alignment.centerLeft, child: countryControl),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Text(l10n.authPhoneLabel, style: TypographyTokens.bodyMedium()),
           const SizedBox(height: SpacingTokens.spacing2),
           input,
         ],
@@ -833,7 +835,7 @@ class _SupporterOtpVerificationScreenState
             enabled:
                 _isOnline && !_isVerifying && !_isResending && _canSubmitOtp,
             mutedPrimaryWhenDisabled: true,
-            labelMaxLines: 2,
+            labelMaxLines: 3,
           ),
           children: [
             _AuthStepHeader(
@@ -963,7 +965,9 @@ class _AuthStepHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: TypographyTokens.headlineLarge()),
+        Text(title, style: MediaQuery.sizeOf(context).width < 360 && MediaQuery.textScalerOf(context).scale(1) >= 1.5
+            ? TypographyTokens.headlineMedium()
+            : TypographyTokens.headlineLarge()),
         const SizedBox(height: SpacingTokens.spacing3),
         Text(
           body,

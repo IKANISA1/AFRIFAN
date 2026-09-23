@@ -86,10 +86,7 @@ export {
 
 export {
   getAdminSupporterRegistry,
-  getAdminMembershipApplications,
   normalizeAdminSupporters,
-  normalizeAdminMembershipApplications,
-  reviewMembershipApplication,
 } from "./membership-ops";
 
 // Shop

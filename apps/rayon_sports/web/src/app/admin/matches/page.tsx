@@ -1,5 +1,7 @@
 "use client";
 
+import { fixtureInitials } from "@/lib/team-identity";
+
 import { useCallback, useState } from "react";
 import { Plus } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
@@ -125,7 +127,7 @@ export default function AdminMatchesPage() {
     if (client == null) return;
     if (!confirmAdminDestructiveAction({
       action: "Delete",
-      subject: `${match.homeTeam} vs ${match.awayTeam}`,
+      subject: fixtureInitials(match.homeTeam, match.awayTeam),
       scope: access.clubId == null
         ? "Platform fixture catalogue"
         : `Active club ${access.clubId}`,
@@ -141,7 +143,7 @@ export default function AdminMatchesPage() {
         match.updatedAt,
       );
       await refresh();
-      showAdminToast(`${match.homeTeam} vs ${match.awayTeam} removed.`, "success");
+      showAdminToast(`${fixtureInitials(match.homeTeam, match.awayTeam)} removed.`, "success");
     } catch (caught) {
       const nextStatus = applyFailure(caught);
       if (isAdminMutationConflict(caught)) {

@@ -8,7 +8,6 @@ import 'screens/competition_manager_screen.dart';
 import 'screens/contributions_monitor_screen.dart';
 import 'screens/feature_detail_screen.dart';
 import 'screens/feature_manager_screen.dart';
-import 'screens/fixture_settlement_screen.dart';
 import 'screens/match_manager_screen.dart';
 import 'screens/predict_ops_screen.dart';
 import 'screens/push_notifications_screen.dart';
@@ -63,11 +62,7 @@ class AdminModule extends FeatureModule {
           builder: (context, state) =>
               const AdminRouteGuard(child: SmsSyncMonitorScreen()),
         ),
-        GoRoute(
-          path: 'settle',
-          builder: (context, state) =>
-              const AdminRouteGuard(child: FixtureSettlementScreen()),
-        ),
+        GoRoute(path: 'settle', redirect: (_, __) => '/admin/predict'),
         GoRoute(
           path: 'predict',
           builder: (context, state) =>
@@ -137,9 +132,11 @@ class AdminModule extends FeatureModule {
     ),
     RoutePresentationDecision(
       path: '/admin/settle',
-      presentation: RoutePresentation.internalOnly,
-      recommendation: 'hide from supporter app',
-      rationale: 'Fixture settlement is internal tooling.',
+      presentation: RoutePresentation.redirect,
+      targetPath: '/admin/predict',
+      recommendation: 'delete duplicate',
+      rationale:
+          'Predict owns result and refund operations; scores arrive automatically.',
     ),
     RoutePresentationDecision(
       path: '/admin/predict',

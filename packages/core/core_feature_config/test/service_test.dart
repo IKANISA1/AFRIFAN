@@ -504,8 +504,8 @@ void main() {
       expect(service.getFeatureKeyForPath('/tickets'), 'ticketing');
       expect(service.getFeatureKeyForPath('/tickets/checkout'), 'ticketing');
       expect(
-        service.getFeatureKeyForPath('/fanzone?section=supporters'),
-        'fanzone',
+        service.getFeatureKeyForPath('/predict?section=supporters'),
+        'predict',
       );
       expect(service.getFeatureKeyForPath('/unknown'), isNull);
     });
@@ -517,15 +517,11 @@ void main() {
       expect(service.isRouteAvailable('/somewhere-else'), isTrue);
     });
 
-    test('isRouteAvailable fail-closes challenge routes', () {
-      expect(service.isRouteAvailable('/fanzone/jackpot'), isFalse);
-      expect(service.isRouteAvailable('/fanzone/challenges'), isFalse);
-      expect(service.isRouteAvailable('/fanzone/challenge'), isFalse);
-      expect(service.isRouteAvailable('/fanzone/friends'), isFalse);
+    test('isRouteAvailable fail-closes Predict routes', () {
       expect(service.isRouteAvailable('/predict'), isFalse);
     });
 
-    test('challenge routes require both feature and store-policy approval', () {
+    test('Predict routes require both feature and store-policy approval', () {
       final unapprovedService = FeatureConfigService(
         buildSnapshot(features: [predictFeature]),
       );
@@ -544,14 +540,9 @@ void main() {
         ),
       );
 
-      expect(unapprovedService.isRouteAvailable('/fanzone/jackpot'), isFalse);
       expect(unapprovedService.isRouteAvailable('/predict'), isFalse);
-      expect(enabledService.isRouteAvailable('/fanzone/jackpot'), isFalse);
       expect(enabledService.isRouteAvailable('/predict'), isTrue);
-      expect(enabledService.isRouteAvailable('/challenge'), isTrue);
-      expect(disabledService.isRouteAvailable('/fanzone/jackpot'), isFalse);
       expect(disabledService.isRouteAvailable('/predict'), isFalse);
-      expect(disabledService.isRouteAvailable('/challenge'), isFalse);
     });
   });
 

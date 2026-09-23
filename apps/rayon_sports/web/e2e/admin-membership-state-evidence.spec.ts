@@ -54,28 +54,6 @@ const supporters = Array.from({ length: 30 }, (_, index) => {
   };
 });
 
-const applications = Array.from({ length: 30 }, (_, index) => {
-  const number = index + 1;
-  return {
-    id: `application-${number}`,
-    userId: `applicant-${number}`,
-    clubId: 24,
-    tier: number % 2 === 0 ? "gold" : "imena",
-    status: number % 4 === 0 ? "approved" : "pending",
-    paymentStatus: number % 5 === 0 ? "unpaid" : "paid",
-    applicationDate: new Date(
-      Date.UTC(2026, 6, 28, 11, number),
-    ).toISOString(),
-    reviewDate: null,
-    reviewerId: null,
-    notes: null,
-    userName: `Verified applicant ${number}`,
-    userPhone: `+25078813${String(number).padStart(4, "0")}`,
-    updatedAt: new Date(Date.UTC(2026, 6, 29, 11, number)).toISOString(),
-    privatePaymentToken: `private-application-${number}`,
-  };
-});
-
 async function settleVisuals(page: Page) {
   await page.evaluate(async () => {
     await document.fonts.ready;
@@ -180,19 +158,11 @@ async function runMatrix(browser: Browser) {
   await page.route("**/api/admin/membership-supporters", async (route) => {
     await fulfillMembership(route, supporters);
   });
-  await page.route("**/api/admin/membership-applications", async (route) => {
-    await fulfillMembership(route, applications);
+  let manualReviewRequests = 0;
+  await page.route("**/api/admin/membership-applications**", async (route) => {
+    manualReviewRequests += 1;
+    await route.fulfill({ status: 410, contentType: "application/json", body: "{}" });
   });
-  await page.route(
-    "**/api/admin/membership-applications/review",
-    async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({ data: { success: true } }),
-      });
-    },
-  );
 
   const surface = () => page.locator(".admin-membership-state-surface").first();
   const open = (nonce: string) =>
@@ -369,17 +339,9 @@ async function runMatrix(browser: Browser) {
   expect(confirmation).toContain("Scope: Active club 24");
   expect(confirmation).toContain("This action cannot be undone.");
 
-  await page.getByRole("tab", { name: "applications" }).click();
-  let reviewConfirmation = "";
-  page.once("dialog", async (dialog) => {
-    reviewConfirmation = dialog.message();
-    await dialog.dismiss();
-  });
-  await page.getByRole("button", { name: "Approve" }).nth(1).click();
-  expect(reviewConfirmation).toContain("Application application-29");
-  expect(reviewConfirmation).toContain(
-    "Recovery requires a separate manual admin action.",
-  );
+  await expect(page.getByRole("tab", { name: "applications", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /^(Approve|Reject)$/ })).toHaveCount(0);
+  expect(manualReviewRequests).toBe(0);
 
   await page.emulateMedia({ colorScheme: "light" });
   await open("light");
@@ -504,6 +466,7 @@ async function runMatrix(browser: Browser) {
     )}\n`,
   );
 
+  expect(manualReviewRequests).toBe(0);
   finalizeStateEvidence(evidenceDirectory);
   await context.close();
 }

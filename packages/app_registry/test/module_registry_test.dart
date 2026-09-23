@@ -22,7 +22,7 @@ void main() {
           'home',
           'club',
           'live',
-          'fanzone',
+          'predict',
           'settings',
           'onboarding',
           'membership',
@@ -40,7 +40,7 @@ void main() {
           'home',
           'club',
           'live',
-          'fanzone',
+          'predict',
           'settings',
           'onboarding',
           'membership',
@@ -58,16 +58,16 @@ void main() {
       expect(keys.toSet().length, keys.length);
     });
 
-    test('Predict module is not registered from club feature flags', () {
+    test('Predict is the single shell module', () {
       final defaultModules = AppModuleRegistry.build(const _FakeClubConfig());
 
       expect(
         defaultModules.map((module) => module.featureKey),
-        isNot(contains('predict')),
+        contains('predict'),
       );
     });
 
-    test('production remote Predict enablement is policy fail-closed', () {
+    test('Predict shell registration is separate from server action authorization', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(environment: 'production'),
         configSnapshot: <String, dynamic>{
@@ -89,11 +89,11 @@ void main() {
 
       expect(
         modules.map((module) => module.featureKey),
-        isNot(contains('predict')),
+        contains('predict'),
       );
     });
 
-    test('production Predict needs every explicit policy authorization', () {
+    test('Predict has one shell destination with server-authorized actions', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(environment: 'production'),
         configSnapshot: <String, dynamic>{
@@ -121,7 +121,7 @@ void main() {
       );
       expect(
         modules.map((module) => module.featureKey),
-        isNot(contains('predict')),
+        contains('predict'),
       );
     });
   });
@@ -236,13 +236,10 @@ void main() {
           '/club/news/:articleId',
           '/club/fixtures',
           '/club/fixtures/:matchId',
-          '/club/results',
           '/club/standings',
           '/club/history',
-          '/club/projects',
-          '/club/projects/:projectId',
           '/predict',
-          '/fanzone/match/:fixtureId',
+          '/predict/match/:fixtureId',
           '/settings',
           '/tickets',
           '/e-ticket/:id',

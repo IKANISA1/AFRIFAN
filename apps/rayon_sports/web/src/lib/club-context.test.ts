@@ -1,3 +1,4 @@
+import { teamCrestUrl } from "./team-identity";
 import { getActiveClubReference } from "./club-context";
 import { getClubProfile } from "./data/public/club";
 import { GET as getBrandMark } from "@/app/brand-mark.svg/route";
@@ -20,7 +21,10 @@ describe("retained club website identity", () => {
     expect(await getActiveClubReference()).toMatchObject({ numericId: id, name });
     expect(await getClubProfile()).toMatchObject({ id, clubName: name, countryCode: country, currencyCode: currency });
     if (id !== 24) expect((await getClubProfile()).xUrl ?? "").not.toContain("rayon");
-    for (const handler of [getBrandMark, getBrandSurface]) {
+    const crestResponse = await getBrandMark();
+    expect(crestResponse.status).toBe(307);
+    expect(crestResponse.headers.get("location")).toBe(teamCrestUrl(String(name)));
+    for (const handler of [getBrandSurface]) {
       const response = await handler();
       const svg = new DOMParser().parseFromString(await response.text(), "image/svg+xml");
       expect(svg.querySelector("parsererror")).toBeNull();

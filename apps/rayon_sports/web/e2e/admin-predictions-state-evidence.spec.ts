@@ -454,15 +454,9 @@ async function runMatrix(browser: Browser) {
     );
   expect(undersized).toEqual([]);
   await page.getByRole("button", { name: "Fixtures" }).click();
-  const firstFixtureStatus = page
-    .getByLabel(/change status for Home 1 versus Away 1/i)
-    .first();
-  await expect(
-    firstFixtureStatus.locator('option[value="finished"]'),
-  ).toHaveCount(1);
-  await expect(
-    firstFixtureStatus.locator('option[value="completed"]'),
-  ).toHaveCount(0);
+  await expect(page.getByLabel(/change status for/i)).toHaveCount(0);
+  await expect(page.getByText("Match status and results are read-only. LiveScore validates and confirms results automatically.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "View fixture Home 1 versus Away 1", exact: true })).toBeVisible();
   await capture("dark");
 
   await page.getByRole("button", { name: "Partner Pools" }).click();
@@ -576,7 +570,7 @@ async function runMatrix(browser: Browser) {
           private_metadata_rendered: false,
           raw_provider_diagnostics_rendered: false,
           destructive_settlement_confirmation_required: true,
-          fixture_finished_status_matches_schema: true,
+          fixture_status_read_only: true,
           global_catalog_mutations_require_platform_admin: true,
           minimum_target_css_pixels: 48,
           large_text_percent: 200,

@@ -114,6 +114,17 @@ async function settleVisuals(page: Page) {
 
 async function expectNoSeriousAxeViolations(page: Page) {
   await settleVisuals(page);
+  const fields = await page.locator(".admin-input").evaluateAll((elements) =>
+    elements.filter((element) => element.getBoundingClientRect().width > 0).map((element) => ({
+      tag: element.tagName, height: element.getBoundingClientRect().height,
+      border: getComputedStyle(element).borderTopStyle,
+    })),
+  );
+  expect(fields.length).toBeGreaterThan(0);
+  for (const field of fields) {
+    expect(field.height, `${field.tag} field target`).toBeGreaterThanOrEqual(48);
+    expect(field.border, `${field.tag} visible field boundary`).toBe("solid");
+  }
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag22aa"])
     .analyze();

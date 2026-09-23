@@ -411,7 +411,7 @@ function AuditRecordDetails({ record }: { record: AdminAuditRecord }) {
 function AuditDetail({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--admin-text-muted)]">
+      <dt className="text-xs font-semibold normal-case tracking-normal text-[var(--admin-text-muted)]">
         {label}
       </dt>
       <dd className="mt-1 break-words text-[var(--admin-text-strong)]">
@@ -430,7 +430,7 @@ function AuditJsonDetail({
 }) {
   return (
     <div>
-      <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--admin-text-muted)]">
+      <dt className="text-xs font-semibold normal-case tracking-normal text-[var(--admin-text-muted)]">
         {label}
       </dt>
       <dd className="mt-2 overflow-x-auto rounded-xl border border-[var(--admin-border)] bg-[var(--admin-zinc-950)] p-3 font-mono text-xs text-[var(--admin-text)]">

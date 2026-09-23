@@ -485,7 +485,7 @@ export default function AdminGamificationWalletPage() {
             <div className="space-y-5">
               <div>
                 <p className="admin-page-eyebrow">Adjust balance</p>
-                <h2 className="font-display text-3xl font-bold uppercase">
+                <h2 className="font-display text-3xl font-medium normal-case">
                   Admin points controls
                 </h2>
                 <p className="mt-2 text-sm text-[var(--admin-text-muted)]">
@@ -496,10 +496,10 @@ export default function AdminGamificationWalletPage() {
 
               <div className="grid gap-4 rounded-[28px] border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] p-5">
                 <div className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-surface)] p-4">
-                  <p className="text-xs uppercase tracking-[0.32em] text-[var(--admin-text-muted)]">
+                  <p className="text-xs normal-case tracking-normal text-[var(--admin-text-muted)]">
                     Selected account
                   </p>
-                  <p className="mt-2 font-display text-2xl font-bold uppercase">
+                  <p className="mt-2 font-display text-2xl font-medium normal-case">
                     {selectedSupporter?.displayName ?? "Choose a supporter"}
                   </p>
                   <p className="mt-1 text-sm text-[var(--admin-text-muted)]">
@@ -553,7 +553,7 @@ export default function AdminGamificationWalletPage() {
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-display text-2xl font-bold uppercase">
+                  <h3 className="font-display text-2xl font-medium normal-case">
                     Supporter balances
                   </h3>
                   {selectedSupporter ? (
@@ -653,7 +653,7 @@ export default function AdminGamificationWalletPage() {
                           </span>
                         </td>
                         <td>{row.tier.toUpperCase()}</td>
-                        <td className="font-semibold text-club-accent">
+                        <td className="font-semibold text-[var(--admin-accent)]">
                           {formatFet(row.balance)}
                         </td>
                         <td>
@@ -691,7 +691,7 @@ export default function AdminGamificationWalletPage() {
             <div className="space-y-5">
               <div>
                 <p className="admin-page-eyebrow">Ledger</p>
-                <h2 className="font-display text-3xl font-bold uppercase">
+                <h2 className="font-display text-3xl font-medium normal-case">
                   Wallet activity trail
                 </h2>
                 <p className="mt-2 text-sm text-[var(--admin-text-muted)]">
@@ -784,7 +784,7 @@ export default function AdminGamificationWalletPage() {
                       </td>
                       <td>
                         <span
-                          className={`inline-flex rounded-full border px-2 py-1 text-[11px] uppercase tracking-[0.24em] ${ledgerTone(row)}`}
+                          className={`inline-flex rounded-full border px-2 py-1 text-xs normal-case tracking-normal ${ledgerTone(row)}`}
                         >
                           {row.direction === "credit" ? "+" : "-"}
                           {formatFet(row.amount)}

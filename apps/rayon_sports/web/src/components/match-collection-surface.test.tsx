@@ -178,13 +178,13 @@ describe("MatchCollectionSurface", () => {
       "data-collection-status",
       "loading",
     );
-    await screen.findAllByText("Rayon Sports vs APR FC");
+    await screen.findAllByRole("group", { name: "Rayon Sports versus APR FC" });
     expect(container.querySelector(".match-collection-surface")).toHaveAttribute(
       "data-collection-status",
       "ready",
     );
     expect(screen.getAllByText(/RWF\s*5,000/)).toHaveLength(2);
-    expect(screen.queryByText("Rayon Sports vs Police FC")).toBeNull();
+    expect(screen.queryByRole("group", { name: "Rayon Sports versus Police FC" })).toBeNull();
     expect(screen.getByRole("link", { name: /view details/i })).toHaveAttribute(
       "href",
       "/tickets/ticket-on-sale",
@@ -197,11 +197,11 @@ describe("MatchCollectionSurface", () => {
     );
 
     const { container } = renderCollection("results");
-    await screen.findAllByText("Rayon Sports vs Police FC");
+    await screen.findAllByRole("group", { name: "Rayon Sports versus Police FC" });
     expect(screen.getAllByText("3–1")).toHaveLength(2);
     expect(screen.getByText("4")).toBeInTheDocument();
     const loss = screen.getByRole("button", {
-      name: /peace cup\s*apr fc vs rayon sports/i,
+      name: /peace cup\s*apr fc versus rayon sports/i,
     });
     fireEvent.click(loss);
     expect(loss).toHaveAttribute("aria-pressed", "true");
@@ -279,7 +279,7 @@ describe("MatchCollectionSurface", () => {
       value: true,
     });
     fireEvent(window, new Event("online"));
-    await screen.findAllByText("Rayon Sports vs APR FC");
+    await screen.findAllByRole("group", { name: "Rayon Sports versus APR FC" });
   });
 
   it("retains confirmed data during syncing and a recoverable conflict", async () => {
@@ -298,7 +298,7 @@ describe("MatchCollectionSurface", () => {
       );
 
     const { container } = renderCollection("tickets");
-    await screen.findAllByText("Rayon Sports vs APR FC");
+    await screen.findAllByRole("group", { name: "Rayon Sports versus APR FC" });
     fireEvent.click(screen.getByRole("button", { name: /refresh matches/i }));
     await waitFor(() =>
       expect(container.querySelector(".match-collection-surface")).toHaveAttribute(
@@ -306,7 +306,7 @@ describe("MatchCollectionSurface", () => {
         "syncing",
       ),
     );
-    expect(screen.getAllByText("Rayon Sports vs APR FC").length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("group", { name: "Rayon Sports versus APR FC" }).length).toBeGreaterThan(0);
     releaseRefresh?.(
       new Response(JSON.stringify({ code: "PUBLIC_FIXTURES_CONFLICT" }), {
         status: 409,
@@ -319,7 +319,7 @@ describe("MatchCollectionSurface", () => {
         "conflict",
       ),
     );
-    expect(screen.getAllByText("Rayon Sports vs APR FC").length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("group", { name: "Rayon Sports versus APR FC" }).length).toBeGreaterThan(0);
   });
 
   it("records real focus and held-pointer interaction states", async () => {
@@ -328,7 +328,7 @@ describe("MatchCollectionSurface", () => {
     );
 
     const { container } = renderCollection("tickets");
-    await screen.findAllByText("Rayon Sports vs APR FC");
+    await screen.findAllByRole("group", { name: "Rayon Sports versus APR FC" });
     const primary = screen.getByRole("link", { name: /continue in fan app/i });
     fireEvent.focus(primary);
     expect(container.querySelector(".match-collection-surface")).toHaveAttribute(
@@ -361,6 +361,6 @@ describe("MatchCollectionSurface", () => {
       "data-collection-status",
       "security_timeout",
     );
-    expect(screen.queryByText("Rayon Sports vs Police FC")).toBeNull();
+    expect(screen.queryByRole("group", { name: "Rayon Sports versus Police FC" })).toBeNull();
   });
 });

@@ -84,7 +84,7 @@ export function CMSContentList({
       {loading ? (
         <div className="space-y-3 p-5 sm:p-6">
           {Array.from({ length: 4 }).map((_, index) => (
-            <div key={index} className="rounded-[20px] border border-border-soft bg-white/5 p-4">
+            <div key={index} className="rounded-[20px] border border-border-soft bg-[var(--admin-surface-muted)] p-4">
               <Skeleton className="skeleton-text h-5 w-3/5" />
               <Skeleton className="skeleton-text mt-2 h-3 w-full" />
               <div className="mt-4 grid gap-3 sm:grid-cols-4">

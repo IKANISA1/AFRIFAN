@@ -37,7 +37,12 @@ test("empty-schedule detail spacing stays stable across header hydration", async
       if (before !== header + 32) console.log(JSON.stringify({ width, before, header, geometry }));
       expect(before).toBe(header + 32);
     } finally { releaseChunks(); await page.unrouteAll({ behavior: "wait" }); }
-    await expect(page.getByRole("button", { name: "Open menu" })).toBeEnabled();
+    // Typography can make the full row fit. Hydration is complete when either
+    // the intrinsic desktop row fits or the compact trigger is enabled.
+    await expect.poll(() => page.locator(".site-primary-navigation").evaluate((nav) =>
+      nav.getAttribute("data-desktop-fits") === "true" ||
+      !(nav.querySelector<HTMLButtonElement>('[aria-label="Open menu"]')?.disabled ?? true),
+    )).toBe(true);
     expect(await page.locator(".news-surface > .page-shell").evaluate((element) => parseFloat(getComputedStyle(element).paddingTop))).toBe(before);
   }
 });
@@ -137,6 +142,23 @@ for (const colorScheme of ["light", "dark"] as const) {
   });
 }
 
+for (const colorScheme of ["light", "dark"] as const) {
+  test(`primary navigation stays readable above content pages in ${colorScheme} mode`, async ({ page }) => {
+    for (const width of [390, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      for (const route of ["/fixtures", "/standings", "/squad", "/supporters", "/results", "/tickets"]) {
+        await page.emulateMedia({ colorScheme, reducedMotion: "reduce" });
+        await page.goto(route, { waitUntil: "domcontentloaded" });
+        await page.emulateMedia({ colorScheme, reducedMotion: "reduce" });
+        await expect(page.locator("nav.site-primary-navigation")).toBeVisible();
+        const result = await new AxeBuilder({ page }).include("[data-site-header]")
+          .withRules(["color-contrast"]).analyze();
+        expect(result.violations, `${route} at ${width}px`).toEqual([]);
+      }
+    }
+  });
+}
+
 for (const width of [320, 768, 1440]) {
   for (const textPercent of [100, 200]) {
     test(`primary navigation remains usable at ${width}px and ${textPercent}% text`, async ({ page }) => {
@@ -161,7 +183,8 @@ for (const width of [320, 768, 1440]) {
         expect(target.height, target.label).toBeGreaterThanOrEqual(48);
       }
       const menu = page.getByRole("button", { name: "Open menu" });
-      expect(await menu.isVisible() || await navigation.getByRole("link", { name: "Membership", exact: true }).isVisible()).toBe(true);
+      await expect.poll(async () => await menu.isVisible() ||
+        await navigation.getByRole("link", { name: "Membership", exact: true }).isVisible()).toBe(true);
       if (await menu.isVisible()) {
         await expect(menu).toBeEnabled();
         await menu.focus();
@@ -185,7 +208,7 @@ test("primary navigation stays onscreen after scrolling on a compact page", asyn
   await expect(page.locator('[data-legal-document="privacy"]')).toBeVisible();
   await page.evaluate(() => window.scrollTo(0, 600));
   const header = page.locator("nav.page-shell");
-  await expect.poll(() => header.evaluate((element) => element.parentElement!.className)).toContain("shadow-xl");
+  await expect.poll(() => header.evaluate((element) => getComputedStyle(element.parentElement!).backgroundColor)).not.toBe("rgba(0, 0, 0, 0)");
   await expect.poll(() => header.evaluate((element) => element.getBoundingClientRect().top)).toBeGreaterThanOrEqual(0);
   const trigger = page.getByRole("button", { name: "Open menu" });
   await trigger.click();

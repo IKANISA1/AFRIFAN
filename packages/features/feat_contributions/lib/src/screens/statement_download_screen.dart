@@ -78,7 +78,7 @@ class _StatementDownloadScreenState
     setState(() => _isExporting = false);
     AfriToast.success(
       context,
-      state.snapshot.entries.isEmpty
+      state.sortedEntries.isEmpty
           ? context.afriL10n.contributionsEmptyCsvCopied
           : context.afriL10n.contributionsCsvCopied,
     );
@@ -352,32 +352,6 @@ class _StatementDownloadScreenState
     );
     children.add(const SizedBox(height: SpacingTokens.spacing4));
     children.add(
-      Row(
-        children: [
-          Expanded(
-            child: _FormatCard(
-              label: l10n.contributionsPdf,
-              icon: AfriIcons.pdf,
-              selected: false,
-              enabled: false,
-              helper: l10n.contributionsComingSoon,
-            ),
-          ),
-          const SizedBox(width: SpacingTokens.spacing3),
-          Expanded(
-            child: _FormatCard(
-              label: l10n.contributionsCsv,
-              icon: AfriIcons.excel,
-              selected: true,
-              enabled: true,
-              helper: l10n.contributionsClipboard,
-            ),
-          ),
-        ],
-      ),
-    );
-    children.add(const SizedBox(height: SpacingTokens.spacing4));
-    children.add(
       _StatementPreview(
         entries: preview,
         totalEntryCount: entries.length,
@@ -537,60 +511,6 @@ class _DateInputCard extends StatelessWidget {
   }
 }
 
-class _FormatCard extends StatelessWidget {
-  const _FormatCard({
-    required this.label,
-    required this.icon,
-    required this.selected,
-    required this.enabled,
-    required this.helper,
-  });
-
-  final String label;
-  final IconData icon;
-  final bool selected;
-  final bool enabled;
-  final String helper;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      selected: selected,
-      enabled: enabled,
-      label: context.afriL10n.contributionsFormatSemantic(label, helper),
-      child: GlassCard(
-        animate: false,
-        borderColor: selected
-            ? ColorTokens.primary.withValues(alpha: 0.8)
-            : ColorTokens.ghostBorder,
-        child: Column(
-          children: [
-            Icon(
-              icon,
-              color: selected
-                  ? ColorTokens.accessibleChartColor(ColorTokens.primary)
-                  : ColorTokens.onSurfaceVariant,
-            ),
-            const SizedBox(height: SpacingTokens.spacing2),
-            Text(
-              label,
-              style: TypographyTokens.headlineSmall().copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: SpacingTokens.spacing1),
-            Text(
-              helper,
-              textAlign: TextAlign.center,
-              style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _StatementPreview extends StatelessWidget {
   const _StatementPreview({
     required this.entries,
@@ -652,30 +572,15 @@ class _StatementEntryRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.afriL10n;
     final amount = currency.format(entry.amount);
     final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
-    final tone = switch (entry.status) {
-      StatementEntryStatus.confirmed => AfriStatusTone.success,
-      StatementEntryStatus.processing => AfriStatusTone.warning,
-      StatementEntryStatus.failed => AfriStatusTone.error,
-    };
-    final statusLabel = switch (entry.status) {
-      StatementEntryStatus.confirmed => l10n.contributionsStatusConfirmed,
-      StatementEntryStatus.processing => l10n.contributionsStatusProcessing,
-      StatementEntryStatus.failed => l10n.contributionsStatusFailed,
-    };
     final date = AfriDateFormatter.formatDate(entry.createdAt);
     return GlassCard(
       animate: false,
       child: Semantics(
         container: true,
-        label: l10n.contributionsLedgerEntrySemantic(
-          entry.publicAlias,
-          amount,
-          statusLabel,
-          date,
-        ),
+        label: '${entry.publicAlias}, $amount, $date',
+        excludeSemantics: true,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -720,7 +625,6 @@ class _StatementEntryRow extends StatelessWidget {
               spacing: SpacingTokens.spacing3,
               runSpacing: SpacingTokens.spacing2,
               children: [
-                AfriStatusChip(label: statusLabel, tone: tone),
                 Text(
                   date,
                   style: TypographyTokens.bodySmall(

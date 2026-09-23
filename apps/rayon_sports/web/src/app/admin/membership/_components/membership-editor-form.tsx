@@ -61,8 +61,8 @@ export function MembershipEditorForm({
         title.length > 160 ||
         description.length === 0 ||
         description.length > 2_000 ||
-        !Number.isFinite(annualPrice) ||
-        annualPrice < 0 ||
+        !Number.isInteger(annualPrice) ||
+        annualPrice <= 0 ||
         annualPrice > 1_000_000_000 ||
         !Number.isInteger(sortOrder) ||
         sortOrder < 0 ||
@@ -121,7 +121,7 @@ export function MembershipEditorForm({
       <div className="flex items-center gap-3">
         <p
           id="membership-form-title"
-          className="font-display text-3xl font-bold uppercase leading-none"
+          className="font-display text-3xl font-medium normal-case leading-none"
         >
           {form.id ? "Edit tier" : "New tier"}
         </p>
@@ -133,7 +133,7 @@ export function MembershipEditorForm({
           id="membership-form-error"
           role="alert"
           tabIndex={-1}
-          className="rounded-2xl border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm text-[var(--admin-danger-text)] outline-none focus-visible:ring-2 focus-visible:ring-rose-300"
+          className="rounded-2xl border border-error/30 bg-error/10 px-4 py-3 text-sm text-[var(--admin-danger-text)] outline-none focus-visible:ring-2 focus-visible:ring-error"
         >
           {errorMessage}
         </div>
@@ -206,7 +206,7 @@ export function MembershipEditorForm({
           <input
             type="number"
             name="annualPrice"
-            min={0}
+            min={1}
             max={1_000_000_000}
             step="any"
             required
@@ -246,7 +246,7 @@ export function MembershipEditorForm({
       <label className="grid gap-2 text-sm">
         <div className="flex items-center justify-between">
           <span>Perks (one per line)</span>
-          <span className="font-mono text-[10px] text-slate-400">
+          <span className="font-mono text-xs text-[var(--admin-text-muted)]">
             {form.perks.split("\n").filter(Boolean).length} perks
           </span>
         </div>
@@ -266,7 +266,7 @@ export function MembershipEditorForm({
         />
       </label>
 
-      <label className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-white/5 px-4 py-3 text-sm">
+      <label className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-[var(--admin-surface-muted)] px-4 py-3 text-sm">
         <input
           type="checkbox"
           name="isActive"
@@ -284,14 +284,14 @@ export function MembershipEditorForm({
 
       <div
         data-keyboard-safe-actions="true"
-        className="grid gap-3 max-sm:sticky max-sm:bottom-0 max-sm:z-10 max-sm:-mx-2 max-sm:grid-cols-2 max-sm:rounded-2xl max-sm:border max-sm:border-border-soft max-sm:bg-slate-950/95 max-sm:p-2 max-sm:backdrop-blur"
+        className="grid gap-3 max-sm:sticky max-sm:bottom-0 max-sm:z-10 max-sm:-mx-2 max-sm:grid-cols-2 max-sm:rounded-2xl max-sm:border max-sm:border-border-soft max-sm:bg-background/95 max-sm:p-2 max-sm:backdrop-blur"
       >
         {form.id ? (
           <button
             type="button"
             disabled={disabled || submitting}
             onClick={() => setForm(emptyForm)}
-            className="rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/8 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)] disabled:cursor-not-allowed disabled:opacity-60"
           >
             Clear
           </button>
@@ -300,7 +300,7 @@ export function MembershipEditorForm({
           type="submit"
           disabled={disabled || submitting || client == null}
           aria-busy={submitting}
-          className="rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary disabled:cursor-not-allowed disabled:opacity-60"
+          className="rounded-full bg-action-blue px-5 py-3 font-semibold text-white transition hover:bg-action-blue-hover disabled:cursor-not-allowed disabled:opacity-60"
         >
           {submitting
             ? form.id

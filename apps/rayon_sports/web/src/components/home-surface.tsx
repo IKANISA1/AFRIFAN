@@ -1,5 +1,7 @@
 "use client";
 
+import { FixtureTeams } from "@/components/team-card";
+
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -477,6 +479,7 @@ export function HomeSurface({
     "security_timeout",
   ].includes(status);
   const message = copy.status[status];
+  const hasConfirmedSummary = snapshotHasContent(snapshot) || status === "empty";
   const actions = [
     {
       id: "fixtures",
@@ -579,11 +582,11 @@ export function HomeSurface({
           <dl className="circles-stats">
             <div>
               <dt>{copy.fixtures}</dt>
-              <dd>{snapshot.matches.length}</dd>
+              <dd>{hasConfirmedSummary ? snapshot.matches.length : "—"}</dd>
             </div>
             <div>
               <dt>{copy.latestNews}</dt>
-              <dd>{snapshot.news.length}</dd>
+              <dd>{hasConfirmedSummary ? snapshot.news.length : "—"}</dd>
             </div>
             <div>
               <dt>{copy.selected}</dt>
@@ -623,13 +626,6 @@ export function HomeSurface({
           </article>
         </section>
 
-        {isRecovery ? (
-          <aside className="circles-recovery" role="status">
-            <strong>{message.label}</strong>
-            <span>{message.detail}</span>
-          </aside>
-        ) : null}
-
         <section className="circles-content" aria-busy={isBusy}>
           {snapshotHasContent(snapshot) ? (
             <>
@@ -639,7 +635,7 @@ export function HomeSurface({
                   {match ? (
                     <>
                       <h2>
-                        {match.homeTeam} <span>vs</span> {match.awayTeam}
+                        <FixtureTeams homeTeam={match.homeTeam} awayTeam={match.awayTeam} />
                       </h2>
                       <p>
                         {match.competition} · {match.venue}
@@ -780,13 +776,13 @@ export function HomeSurface({
               <span />
               <span />
             </div>
-          ) : (
+          ) : status === "empty" ? (
             <div className="circles-empty">
               <Newspaper aria-hidden="true" />
               <h2>{copy.noContent}</h2>
               <p>{copy.noContentDetail}</p>
             </div>
-          )}
+          ) : null}
         </section>
 
         <aside className="circles-boundary">

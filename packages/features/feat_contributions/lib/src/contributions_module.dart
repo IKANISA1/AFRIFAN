@@ -24,8 +24,14 @@ class ContributionsModule extends FeatureModule {
         fullHeight: true,
       ),
       routes: [
-        GoRoute(path: 'projects', redirect: (_, __) => '/contribute'),
-        GoRoute(path: 'groups', redirect: (_, __) => '/contribute'),
+        GoRoute(
+          path: 'projects',
+          redirect: (_, __) => '/contribute?type=project',
+        ),
+        GoRoute(
+          path: 'groups',
+          redirect: (_, __) => '/contribute?type=community',
+        ),
         GoRoute(
           path: 'group/:groupId',
           name: 'group-detail',
@@ -64,14 +70,14 @@ class ContributionsModule extends FeatureModule {
       path: '/contribute/projects',
       presentation: RoutePresentation.redirect,
       recommendation: 'consolidate',
-      targetPath: '/contribute',
+      targetPath: '/contribute?type=project',
       rationale: 'Projects are a section inside contribution.',
     ),
     RoutePresentationDecision(
       path: '/contribute/groups',
       presentation: RoutePresentation.redirect,
       recommendation: 'consolidate',
-      targetPath: '/contribute',
+      targetPath: '/contribute?type=community',
       rationale: 'Groups are a contribution submode.',
     ),
     RoutePresentationDecision(

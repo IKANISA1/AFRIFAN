@@ -402,12 +402,11 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
                     ? ColorTokens.success.withValues(alpha: 0.2)
                     : ColorTokens.info.withValues(alpha: 0.16),
                 usesLargeTextLayout: usesLargeTextLayout,
-                brandMarkBuilder: _buildBrandMark,
               ),
               const SizedBox(height: SpacingTokens.spacing4),
-              Text(
-                l10n.ticketMatchVersus(match.homeTeam, match.awayTeam),
-                style: TypographyTokens.titleLarge(ColorTokens.onSurface),
+              AfriFixtureTeams(
+                homeTeam: match.homeTeam,
+                awayTeam: match.awayTeam,
               ),
               const SizedBox(height: SpacingTokens.spacing1),
               Text(
@@ -484,22 +483,6 @@ class _MatchListScreenState extends ConsumerState<MatchListScreen>
       },
     );
   }
-
-  Widget _buildBrandMark() {
-    return Container(
-      width: 36,
-      height: 36,
-      decoration: BoxDecoration(
-        color: ColorTokens.surfaceContainerHigh,
-        shape: BoxShape.circle,
-      ),
-      child: Icon(
-        AfriIcons.shield,
-        color: ColorTokens.onSurfaceVariant,
-        size: 20,
-      ),
-    );
-  }
 }
 
 class _MatchAvailabilityHeader extends StatelessWidget {
@@ -508,28 +491,15 @@ class _MatchAvailabilityHeader extends StatelessWidget {
     required this.statusColor,
     required this.statusBackground,
     required this.usesLargeTextLayout,
-    required this.brandMarkBuilder,
   });
 
   final String status;
   final Color statusColor;
   final Color statusBackground;
   final bool usesLargeTextLayout;
-  final Widget Function() brandMarkBuilder;
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.afriL10n;
-    final teams = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        brandMarkBuilder(),
-        const SizedBox(width: SpacingTokens.spacing2),
-        Text(l10n.ticketVersusUpper, style: TypographyTokens.labelMedium()),
-        const SizedBox(width: SpacingTokens.spacing2),
-        brandMarkBuilder(),
-      ],
-    );
     final statusChip = Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
@@ -546,27 +516,7 @@ class _MatchAvailabilityHeader extends StatelessWidget {
       ),
     );
 
-    if (usesLargeTextLayout) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          teams,
-          const SizedBox(height: SpacingTokens.spacing3),
-          statusChip,
-        ],
-      );
-    }
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        teams,
-        const SizedBox(width: SpacingTokens.spacing2),
-        Flexible(
-          child: Align(alignment: Alignment.centerRight, child: statusChip),
-        ),
-      ],
-    );
+    return statusChip;
   }
 }
 

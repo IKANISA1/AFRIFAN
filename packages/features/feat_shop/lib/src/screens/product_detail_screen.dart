@@ -491,7 +491,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               AfriSliverAppBar(
                 expandedHeight: hasApprovedImage
                     ? (usesLargeTextLayout ? 220 : 320)
-                    : (usesLargeTextLayout ? 240 : 172),
+                    : SizeTokens.buttonMinHeight,
                 pinned: true,
                 backgroundColor: ColorTokens.background,
                 leading: Padding(
@@ -523,53 +523,57 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                     ),
                   ),
                 ),
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      if (hasApprovedImage && imageUrl != null)
-                        AfriGovernedCachedImage(
-                          imageUrl: imageUrl,
-                          semanticLabel: l10n.shopProductImageSemantic(name),
-                          provenanceId: imageProvenanceId.isEmpty
-                              ? 'shop:${widget.productId}:unapproved'
-                              : imageProvenanceId,
-                          rightsApproved: imageRightsApproved,
-                          fit: BoxFit.cover,
-                          borderRadius: ShapeTokens.radiusNone,
-                          placeholder: Container(
-                            color: ColorTokens.surfaceContainerLow,
-                          ),
-                          errorFallback: const _ImageFallback(),
-                        )
-                      else
-                        const _ImageFallback(),
-                      if (hasApprovedImage)
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          height: 120,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: ColorTokens.imageScrimGradient(
-                                color: ColorTokens.background,
+                flexibleSpace: hasApprovedImage
+                    ? FlexibleSpaceBar(
+                        background: Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            if (hasApprovedImage && imageUrl != null)
+                              AfriGovernedCachedImage(
+                                imageUrl: imageUrl,
+                                semanticLabel: l10n.shopProductImageSemantic(
+                                  name,
+                                ),
+                                provenanceId: imageProvenanceId.isEmpty
+                                    ? 'shop:${widget.productId}:unapproved'
+                                    : imageProvenanceId,
+                                rightsApproved: imageRightsApproved,
+                                fit: BoxFit.cover,
+                                borderRadius: ShapeTokens.radiusNone,
+                                placeholder: Container(
+                                  color: ColorTokens.surfaceContainerLow,
+                                ),
+                                errorFallback: const _ImageFallback(),
+                              )
+                            else
+                              const _ImageFallback(),
+                            if (hasApprovedImage)
+                              Positioned(
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                height: 120,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    gradient: ColorTokens.imageScrimGradient(
+                                      color: ColorTokens.background,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
+                            if (badge != null && badge.isNotEmpty)
+                              Positioned(
+                                left: SpacingTokens.spacing6,
+                                bottom: SpacingTokens.spacing4,
+                                child: AfriStatusChip(
+                                  label: badge,
+                                  tone: AfriStatusTone.live,
+                                ),
+                              ).afriAnimate(context).fadeIn(duration: 400.ms),
+                          ],
                         ),
-                      if (badge != null && badge.isNotEmpty)
-                        Positioned(
-                          left: SpacingTokens.spacing6,
-                          bottom: SpacingTokens.spacing4,
-                          child: AfriStatusChip(
-                            label: badge,
-                            tone: AfriStatusTone.live,
-                          ),
-                        ).afriAnimate(context).fadeIn(duration: 400.ms),
-                    ],
-                  ),
-                ),
+                      )
+                    : null,
               ),
               SliverToBoxAdapter(
                 child: Padding(

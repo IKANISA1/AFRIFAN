@@ -16,7 +16,6 @@ import {
   FileImage,
   FileText,
   Gift,
-  HandHeart,
   Handshake,
   LayoutDashboard,
   ListOrdered,
@@ -67,7 +66,6 @@ const navIcons: Record<string, LucideIcon> = {
   "/admin/predictions": Target,
   "/admin/community": Handshake,
   "/admin/standings": ListOrdered,
-  "/admin/contributions": HandHeart,
   "/admin/notifications": Bell,
   "/admin/sms-monitor": Smartphone,
   "/admin/football-sync": Database,
@@ -251,7 +249,7 @@ function OtpDigitInput({
           onKeyDown={(e) => handleKeyDown(e, i)}
           onFocus={(e) => e.target.select()}
           className={cn(
-            "h-14 w-11 rounded-xl border-[1.2px] bg-transparent text-center font-display text-2xl font-bold text-[var(--admin-text-strong)] transition-all duration-200 outline-none sm:h-16 sm:w-13",
+            "h-14 w-11 rounded-xl border-[1.2px] bg-transparent text-center font-display text-2xl font-medium text-[var(--admin-text-strong)] transition-all duration-200 outline-none sm:h-16 sm:w-13",
             digit
               ? "border-[var(--admin-auth-accent)] shadow-[0_0_20px_rgba(15,118,110,0.15)]"
               : "border-[var(--admin-border)] hover:border-[var(--admin-border-strong)]",
@@ -333,7 +331,7 @@ function AdminAuthCard() {
             href="https://wa.me/250788767816"
             target="_blank"
             rel="noopener"
-            className="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#0F766E] to-[#075E54] px-5 py-4 text-sm font-extrabold uppercase tracking-wider text-white transition-all hover:shadow-[0_8px_32px_rgba(15,118,110,0.3)] active:scale-[0.98]"
+            className="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-[var(--admin-zinc-100)] px-5 py-4 text-sm font-medium normal-case tracking-normal text-[var(--admin-zinc-950)] transition-opacity hover:opacity-90 active:scale-[0.98]"
           >
             <MessageCircle className="h-[18px] w-[18px]" aria-hidden="true" />
             Message +250 788 767 816
@@ -358,10 +356,10 @@ function AdminAuthCard() {
                 />
               </div>
               <div className="space-y-1.5">
-                <p className="text-[10px] font-extrabold uppercase tracking-[0.3em] text-[var(--admin-auth-accent)]">
+                <p className="text-xs font-medium normal-case tracking-normal text-[var(--admin-auth-accent)]">
                   Central admin
                 </p>
-                <h1 className="font-display text-[1.75rem] font-extrabold leading-[1.05] text-[var(--admin-text-strong)] sm:text-[2.6rem]">
+                <h1 className="font-display text-[1.75rem] font-medium leading-[1.05] text-[var(--admin-text-strong)] sm:text-[2.6rem]">
                   Secure sign in
                 </h1>
               </div>
@@ -397,7 +395,7 @@ function AdminAuthCard() {
                   )}
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-[var(--admin-text-strong)]">
+                  <p className="text-sm font-medium text-[var(--admin-text-strong)]">
                     {activePhone
                       ? "Enter verification code"
                       : "WhatsApp authentication"}
@@ -418,12 +416,12 @@ function AdminAuthCard() {
                   aria-busy={authBusy}
                 >
                   <label className="grid gap-2.5">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[var(--admin-text-muted)]">
+                    <span className="text-xs font-medium normal-case tracking-normal text-[var(--admin-text-muted)]">
                       Admin phone number
                     </span>
                     <div className="relative">
                       <div className="pointer-events-none absolute left-0 top-0 flex h-full items-center pl-4">
-                        <span className="flex items-center gap-1.5 rounded-lg bg-[var(--admin-surface-muted)] px-2.5 py-1 text-xs font-bold text-[var(--admin-text-strong)]">
+                        <span className="flex items-center gap-1.5 rounded-lg bg-[var(--admin-surface-muted)] px-2.5 py-1 text-xs font-medium text-[var(--admin-text-strong)]">
                           RW +250
                         </span>
                       </div>
@@ -444,7 +442,7 @@ function AdminAuthCard() {
                     type="submit"
                     disabled={authBusy}
                     aria-label="Send code via WhatsApp"
-                    className="flex h-14 w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#0F766E] to-[#075E54] text-sm font-extrabold uppercase tracking-wider text-white transition-all hover:shadow-[0_8px_32px_rgba(15,118,110,0.3)] active:scale-[0.98] disabled:opacity-50 disabled:hover:shadow-none"
+                    className="flex h-14 w-full items-center justify-center gap-2.5 rounded-2xl bg-[var(--admin-zinc-100)] text-sm font-medium normal-case tracking-normal text-[var(--admin-zinc-950)] transition-opacity hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:hover:shadow-none"
                   >
                     {authBusy ? (
                       <>
@@ -472,7 +470,7 @@ function AdminAuthCard() {
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-[var(--admin-text-muted)]">
                       Code sent to{" "}
-                      <span className="font-bold text-[var(--admin-text-strong)]">
+                      <span className="font-medium text-[var(--admin-text-strong)]">
                         {formatAdminPhoneForDisplay(activePhone)}
                       </span>
                     </p>
@@ -486,7 +484,7 @@ function AdminAuthCard() {
                   <button
                     type="submit"
                     disabled={authBusy || code.length < 6}
-                    className="flex h-14 w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-[#0F766E] to-[#075E54] text-sm font-extrabold uppercase tracking-wider text-white transition-all hover:shadow-[0_8px_32px_rgba(15,118,110,0.3)] active:scale-[0.98] disabled:opacity-50 disabled:hover:shadow-none"
+                    className="flex h-14 w-full items-center justify-center gap-2.5 rounded-2xl bg-[var(--admin-zinc-100)] text-sm font-medium normal-case tracking-normal text-[var(--admin-zinc-950)] transition-opacity hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:hover:shadow-none"
                   >
                     {authBusy ? (
                       <>
@@ -506,7 +504,7 @@ function AdminAuthCard() {
                       resetPendingPhone();
                     }}
                     disabled={authBusy}
-                    className="py-1 text-sm font-bold text-[var(--admin-text-muted)] transition-colors hover:text-[var(--admin-text-strong)]"
+                    className="py-1 text-sm font-medium text-[var(--admin-text-muted)] transition-colors hover:text-[var(--admin-text-strong)]"
                   >
                     ← Use a different number
                   </button>
@@ -522,7 +520,7 @@ function AdminAuthCard() {
                 className={cn(
                   "flex items-center gap-3 rounded-2xl border px-5 py-3.5 text-sm leading-6",
                   error && !status
-                    ? "border-rose-400/30 bg-rose-500/10 text-[var(--admin-danger-text)]"
+                    ? "border-error/30 bg-error/10 text-[var(--admin-danger-text)]"
                     : status?.toLowerCase().includes("sent")
                       ? "border-[var(--admin-auth-accent)] bg-[var(--admin-auth-accent-soft)] text-[var(--admin-auth-accent)]"
                       : "border-[var(--admin-border)] bg-[var(--admin-surface-muted)] text-[var(--admin-text)]",
@@ -538,7 +536,7 @@ function AdminAuthCard() {
             ) : null}
 
             {/* Footer */}
-            <p className="text-center text-[9px] font-semibold uppercase tracking-[0.14em] text-[var(--admin-text-muted)] sm:text-[10px] sm:tracking-[0.2em]">
+            <p className="text-center text-xs font-semibold normal-case tracking-normal text-[var(--admin-text-muted)] sm:text-xs sm:tracking-normal">
               Secured by WhatsApp OTP · {siteConfig.shortTitle} admin
             </p>
           </div>
@@ -557,7 +555,7 @@ function AdminUnauthorizedCard() {
         className={`${ui.panelElevated} w-full max-w-3xl rounded-[34px] border-[1.2px] p-6 sm:p-8`}
       >
         <div className="grid gap-5">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-white/6 text-club-accent">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/10 bg-[var(--admin-surface-muted)] text-[var(--admin-accent)]">
             <ShieldCheck className="h-6 w-6" />
           </div>
           <div className="space-y-3">
@@ -610,7 +608,7 @@ function AdminWorkspaceSignal({
       className={cn(
         "mt-4 flex items-start gap-3 rounded-2xl border px-4 py-3 text-sm",
         isError
-          ? "border-rose-500/25 bg-rose-500/10 text-rose-100"
+          ? "border-error/25 bg-error/10 text-error"
           : "border-[var(--admin-border)] bg-[var(--admin-zinc-900)] text-[var(--admin-text)]",
       )}
     >
@@ -656,7 +654,7 @@ function SidebarNavigation({
                 active && "admin-nav-link-active",
               )}
             >
-              <Icon size={18} className="shrink-0 text-club-accent" />
+              <Icon size={18} className="shrink-0 text-[var(--admin-accent)]" />
               {!collapsed ? (
                 <span className="text-sm font-semibold">{item.label}</span>
               ) : null}
@@ -717,14 +715,14 @@ export function AdminShell({ children }: { children: ReactNode }) {
               className="animate-pulse"
               priority
             />
-            <p className="text-[11px] font-bold uppercase tracking-[0.26em] text-[var(--admin-text)]">
+            <p className="text-xs font-medium normal-case tracking-normal text-[var(--admin-text)]">
               Central admin
             </p>
             <p className="text-lg text-[var(--admin-text-strong)]">
               Loading workspace
             </p>
             <div className="mt-2 h-1 w-32 overflow-hidden rounded-full bg-[var(--admin-border)]">
-              <div className="h-full w-1/2 animate-pulse rounded-full bg-club-accent" />
+              <div className="h-full w-1/2 animate-pulse rounded-full bg-[var(--admin-accent)]" />
             </div>
           </div>
         </div>
@@ -777,15 +775,15 @@ export function AdminShell({ children }: { children: ReactNode }) {
             <div className="flex items-center justify-between gap-3 border-b border-[var(--admin-border)] pb-4 mb-4">
               {!sidebarCollapsed ? (
                 <div className="flex items-center gap-2 px-1">
-                  <div className="flex h-8 w-8 items-center justify-center rounded bg-[var(--admin-zinc-100)] text-xs font-bold text-[var(--admin-zinc-950)]">
+                  <div className="flex h-8 w-8 items-center justify-center rounded bg-[var(--admin-zinc-100)] text-xs font-medium text-[var(--admin-zinc-950)]">
                     AC
                   </div>
-                  <p className="font-bold text-sm tracking-tight text-[var(--admin-zinc-100)]">
+                  <p className="font-medium text-sm tracking-tight text-[var(--admin-zinc-100)]">
                     AFRICLUB
                   </p>
                 </div>
               ) : (
-                <div className="flex h-8 w-8 mx-auto items-center justify-center rounded bg-[var(--admin-zinc-100)] text-[10px] font-bold text-[var(--admin-zinc-950)]">
+                <div className="flex h-8 w-8 mx-auto items-center justify-center rounded bg-[var(--admin-zinc-100)] text-xs font-medium text-[var(--admin-zinc-950)]">
                   AC
                 </div>
               )}
@@ -803,17 +801,17 @@ export function AdminShell({ children }: { children: ReactNode }) {
               {!sidebarCollapsed ? (
                 <div className="space-y-3">
                   <div className="px-2">
-                    <p className="text-[11px] font-medium text-[var(--admin-zinc-100)] truncate">
+                    <p className="text-xs font-medium text-[var(--admin-zinc-100)] truncate">
                       {sessionIdentity}
                     </p>
-                    <p className="text-[10px] text-[var(--admin-zinc-500)] mt-0.5">
+                    <p className="text-xs text-[var(--admin-zinc-500)] mt-0.5">
                       {formatAdminRoleLabel(access.role)}
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => signOut().catch(() => {})}
-                    className="admin-sign-out w-full text-left px-2 py-1.5 text-[10px] font-bold uppercase tracking-wider text-rose-500 hover:text-rose-400 transition-colors"
+                    className="admin-sign-out w-full text-left px-2 py-1.5 text-xs font-medium normal-case tracking-normal text-error hover:text-error transition-colors"
                   >
                     Sign out
                   </button>
@@ -822,7 +820,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                 <button
                   type="button"
                   onClick={() => signOut().catch(() => {})}
-                  className="admin-sign-out w-full flex justify-center text-rose-500 hover:text-rose-400"
+                  className="admin-sign-out w-full flex justify-center text-error hover:text-error"
                   aria-label="Sign out"
                 >
                   <X size={18} />
@@ -851,10 +849,10 @@ export function AdminShell({ children }: { children: ReactNode }) {
                   )}
                 </button>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-sm font-bold text-[var(--admin-zinc-100)] uppercase tracking-wider">
+                  <h1 className="text-sm font-medium text-[var(--admin-zinc-100)] normal-case tracking-normal">
                     {activeItem?.label ?? "Workspace"}
                   </h1>
-                  <span className="text-[10px] text-[var(--admin-zinc-500)] font-medium">
+                  <span className="text-xs text-[var(--admin-zinc-500)] font-medium">
                     {formattedDate ? `/ ${formattedDate}` : null}
                   </span>
                 </div>
@@ -966,7 +964,7 @@ function AdminMobileNav({
                 )}
               >
                 <Icon size={20} />
-                <span className="text-[9px] font-bold uppercase tracking-wider">
+                <span className="text-xs font-medium normal-case tracking-normal">
                   {item.label}
                 </span>
               </Link>
@@ -985,7 +983,7 @@ function AdminMobileNav({
             aria-label="Show more admin options"
           >
             <MoreHorizontal size={20} />
-            <span className="text-[9px] font-bold uppercase tracking-wider">
+            <span className="text-xs font-medium normal-case tracking-normal">
               More
             </span>
           </button>
@@ -1003,7 +1001,7 @@ function AdminMobileNav({
       >
         {overflowSections.map((section) => (
           <div key={section.title}>
-            <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--admin-zinc-600)]">
+            <p className="mb-3 text-xs font-medium normal-case tracking-normal text-[var(--admin-zinc-600)]">
               {section.title}
             </p>
             <div className="grid gap-1">
@@ -1039,7 +1037,7 @@ function AdminMobileNav({
             setSheetOpen(false);
             onSignOut();
           }}
-          className="admin-sign-out mt-2 w-full rounded-lg border border-rose-500/20 bg-rose-500/5 py-3 text-sm font-bold uppercase tracking-wider text-rose-500"
+          className="admin-sign-out mt-2 w-full rounded-lg border border-error/20 bg-error/5 py-3 text-sm font-medium normal-case tracking-normal text-error"
         >
           Sign out
         </button>

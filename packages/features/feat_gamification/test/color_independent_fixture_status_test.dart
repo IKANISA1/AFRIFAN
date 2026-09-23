@@ -1,43 +1,51 @@
-import 'package:feat_gamification/src/models/prediction_models.dart';
-import 'package:feat_gamification/src/widgets/fixtures_browser_widgets.dart';
+import 'package:feat_gamification/src/predict/predict_fixture_card.dart';
+import 'package:feat_gamification/src/predict/predict_models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('live fixture meaning survives without the green indicator', (
+  testWidgets('Predict selection is announced without relying on color', (
     tester,
   ) async {
     final semantics = tester.ensureSemantics();
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: FixtureBrowserCard(
-            fixture: FixtureSummary(
-              id: 'fixture-live',
-              competitionSlug: 'rpl',
-              competitionName: 'Rwanda Premier League',
-              seasonLabel: '2026',
-              matchday: 1,
-              homeTeamName: 'Rayon Sports',
-              homeTeamShort: 'RAY',
-              awayTeamName: 'Police FC',
-              awayTeamShort: 'POL',
-              kickoffAt: DateTime.utc(2026, 7, 24, 18),
-              venueName: 'Kigali Pele Stadium',
-              status: 'live',
-              homeScore: 1,
-              awayScore: 0,
+          body: PredictFixtureCard(
+            fixture: PredictFixture(
+              id: 'fixture',
+              poolId: 'pool',
+              competitionId: 'rpl',
+              competition: 'Rwanda Premier League',
+              homeTeam: 'Rayon Sports',
+              awayTeam: 'Police FC',
+              homeCrest: '',
+              awayCrest: '',
+              kickoffAt: DateTime(2030),
+              locksAt: DateTime(2030),
+              stakeFet: 100,
+              selection: PredictSelection.home,
             ),
-            onOpen: () {},
+            enabled: true,
+            pending: false,
+            onPick: (_) {},
           ),
         ),
       ),
     );
-
-    expect(find.text('LIVE'), findsOneWidget);
+    final home = find.bySemanticsLabel('Rayon Sports, 100 FET');
+    expect(home, findsOneWidget);
     expect(
-      find.bySemanticsLabel('Rayon Sports vs Police FC. Live match'),
-      findsOneWidget,
+      tester.getSemantics(home),
+      matchesSemantics(
+        label: 'Rayon Sports, 100 FET',
+        isButton: true,
+        hasEnabledState: true,
+        isEnabled: true,
+        hasSelectedState: true,
+        isSelected: true,
+        hasTapAction: true,
+      ),
     );
     semantics.dispose();
   });

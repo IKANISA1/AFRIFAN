@@ -80,7 +80,6 @@ void main() {
       expect(policy.allowsRewardRedemption, isTrue);
       expect(policy.allowsPointsTransfer, isFalse);
       expect(policy.allowsManualPointsRedemption, isFalse);
-      expect(policy.isRouteAllowed('/fanzone/rewards'), isTrue);
     });
 
     test('paid digital benefits need server approval and compiled billing', () {
@@ -162,9 +161,6 @@ void main() {
       const policy = StoreReleasePolicy(isEnforced: true);
 
       expect(policy.isRouteAllowed('/predict'), isFalse);
-      expect(policy.isRouteAllowed('/fanzone/jackpot'), isFalse);
-      expect(policy.isRouteAllowed('/fanzone/friends/create'), isFalse);
-      expect(policy.isRouteAllowed('/fanzone/rewards'), isFalse);
       expect(policy.isRouteAllowed('/tickets'), isTrue);
       expect(policy.isRouteAllowed('/shop'), isTrue);
     });

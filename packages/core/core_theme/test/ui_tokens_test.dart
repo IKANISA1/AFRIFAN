@@ -117,10 +117,6 @@ void main() {
   });
 
   group('Color Tokens — Dark Mode Enforced', () {
-    test('clubPrimary is defined and not transparent', () {
-      expect(ColorTokens.clubPrimary.a, greaterThan(0));
-    });
-
     test('system primary is defined and not transparent', () {
       expect(ColorTokens.primary.a, greaterThan(0));
     });
@@ -238,7 +234,7 @@ void main() {
         '/home',
         '/settings',
         '/membership',
-        '/fanzone',
+        '/predict',
         '/shop',
       ];
 

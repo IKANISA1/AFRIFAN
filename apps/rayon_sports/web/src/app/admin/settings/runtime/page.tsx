@@ -578,8 +578,8 @@ export default function AdminRuntimeSettingsPage() {
               className={cn(
                 "flex min-h-12 items-center gap-2 rounded-full px-4 py-3 text-sm font-semibold transition motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-60",
                 activeKey === resource.key
-                  ? "bg-club-primary text-white"
-                  : "border border-border-soft bg-white/5 text-slate-300 hover:bg-white/8",
+                  ? "bg-action-blue text-white"
+                  : "border border-border-soft bg-[var(--admin-surface-muted)] text-[var(--admin-text-muted)] hover:bg-[var(--admin-surface-hover)]",
               )}
             >
               <Icon size={16} aria-hidden="true" />
@@ -662,7 +662,7 @@ export default function AdminRuntimeSettingsPage() {
                 {Array.from({ length: 5 }).map((_, index) => (
                   <div
                     key={index}
-                    className="rounded-[22px] border border-border-soft bg-white/5 p-4"
+                    className="rounded-[22px] border border-border-soft bg-[var(--admin-surface-muted)] p-4"
                   >
                     <Skeleton className="skeleton-text h-5 w-1/3" />
                   </div>
@@ -671,7 +671,7 @@ export default function AdminRuntimeSettingsPage() {
             ) : (
               <div className="divide-y divide-border-soft overflow-hidden rounded-[22px] border border-border-soft">
                 {rowCollection.pageResult.items.length === 0 ? (
-                  <div className="p-5 text-sm text-slate-300">
+                  <div className="p-5 text-sm text-[var(--admin-text-muted)]">
                     {rowCollection.query
                       ? "No records match the current search."
                       : "No records are available in this collection."}
@@ -690,7 +690,7 @@ export default function AdminRuntimeSettingsPage() {
                         setEditorError(null);
                         setInteraction("selected");
                       }}
-                      className="grid min-h-12 w-full gap-3 bg-white/[0.03] p-4 text-left transition hover:bg-white/[0.07] motion-reduce:transition-none md:grid-cols-[minmax(0,1fr)_auto_auto]"
+                      className="grid min-h-12 w-full gap-3 bg-[var(--admin-surface-muted)] p-4 text-left transition hover:bg-[var(--admin-surface-hover)] motion-reduce:transition-none md:grid-cols-[minmax(0,1fr)_auto_auto]"
                     >
                       <div className="min-w-0">
                         <p className="admin-row-title">{recordTitle(record)}</p>
@@ -740,7 +740,7 @@ export default function AdminRuntimeSettingsPage() {
                       void deleteEditorRecord();
                     }}
                     disabled={mutationLocked}
-                    className="admin-icon-button min-h-12 min-w-12 text-red-300 hover:text-red-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="admin-icon-button min-h-12 min-w-12 text-error hover:text-error disabled:cursor-not-allowed disabled:opacity-60"
                     aria-label="Delete selected runtime record"
                   >
                     <Trash2 size={16} aria-hidden="true" />
@@ -778,13 +778,13 @@ export default function AdminRuntimeSettingsPage() {
                 setEditorError(null);
               }}
               spellCheck={false}
-              className="min-h-[520px] w-full resize-y rounded-[22px] border border-border-soft bg-slate-950/80 p-4 font-mono text-sm leading-6 text-slate-100 outline-none transition focus:border-club-accent disabled:cursor-not-allowed disabled:opacity-70 motion-reduce:transition-none"
+              className="min-h-[520px] w-full resize-y rounded-[22px] border border-border-soft bg-background/80 p-4 font-mono text-sm leading-6 text-[var(--admin-text-strong)] outline-none transition focus:border-[var(--admin-accent)] disabled:cursor-not-allowed disabled:opacity-70 motion-reduce:transition-none"
             />
             {editorError ? (
               <p
                 id="runtime-editor-error"
                 role="alert"
-                className="mt-3 text-sm font-semibold text-rose-400"
+                className="mt-3 text-sm font-semibold text-error"
               >
                 {editorError}
               </p>

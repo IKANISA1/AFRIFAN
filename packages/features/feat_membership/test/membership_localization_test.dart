@@ -1,5 +1,4 @@
 import 'package:core_l10n/core_l10n.dart';
-import 'package:feat_membership/src/widgets/contribution_confirm_sheet.dart';
 import 'package:feat_membership/src/widgets/digital_membership_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,34 +7,6 @@ void main() {
   const locales = <Locale>[Locale('en')];
 
   for (final locale in locales) {
-    testWidgets(
-      'contribution confirmation consumes ${locale.languageCode} membership copy',
-      (tester) async {
-        final l10n = lookupAfriLocalizations(locale);
-
-        await tester.pumpWidget(
-          _LocalizedHarness(
-            locale: locale,
-            child: ContributionConfirmSheet(
-              tierLabel: 'Gold',
-              onConfirm: () {},
-            ),
-          ),
-        );
-        await tester.pumpAndSettle();
-
-        expect(find.text(l10n.contributionConfirmTitle), findsOneWidget);
-        expect(
-          find.text(l10n.contributionConfirmQuestion('Gold')),
-          findsOneWidget,
-        );
-        expect(find.text(l10n.contributionNotYet), findsOneWidget);
-        expect(find.text(l10n.contributionYesPaid), findsOneWidget);
-        expect(find.text(l10n.contributionPrivacy), findsOneWidget);
-        expect(tester.takeException(), isNull);
-      },
-    );
-
     testWidgets(
       'digital card consumes ${locale.languageCode} membership copy',
       (tester) async {

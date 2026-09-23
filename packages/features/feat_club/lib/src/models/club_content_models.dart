@@ -333,50 +333,6 @@ class ClubHistoryItem extends Equatable {
   List<Object?> get props => <Object?>[id, title, subtitle, body, sortOrder];
 }
 
-class ClubProjectItem extends Equatable {
-  const ClubProjectItem({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.currentTotal,
-    required this.targetAmount,
-    required this.memberCount,
-  });
-
-  final String id;
-  final String name;
-  final String description;
-  final int currentTotal;
-  final int targetAmount;
-  final int memberCount;
-
-  double get progress {
-    if (targetAmount <= 0) return 0;
-    return (currentTotal / targetAmount).clamp(0, 1).toDouble();
-  }
-
-  factory ClubProjectItem.fromJson(Map<String, dynamic> json) {
-    return ClubProjectItem(
-      id: _stringValue(json['id']),
-      name: _stringValue(json['name']),
-      description: _stringValue(json['description']),
-      currentTotal: _intValue(json['current_total']),
-      targetAmount: _intValue(json['target_amount']),
-      memberCount: _intValue(json['member_count']),
-    );
-  }
-
-  @override
-  List<Object?> get props => <Object?>[
-    id,
-    name,
-    description,
-    currentTotal,
-    targetAmount,
-    memberCount,
-  ];
-}
-
 /// A publisher article URL is optional. Profile pages and unsafe schemes are not
 /// substitutes for an original article. Tracking fields never define identity.
 String? _publicArticleUrl(Object? value) {

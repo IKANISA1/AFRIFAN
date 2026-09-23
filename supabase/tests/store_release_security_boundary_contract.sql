@@ -13,7 +13,6 @@ create temporary table expected_internal_service_function (
 insert into expected_internal_service_function values
   ('public.apply_membership_points(uuid,uuid,integer,text)'),
   ('public.rs_apply_membership_points(uuid,uuid,integer,text)'),
-  ('public.prediction_settle_jackpot_entries(uuid)'),
   ('public.partner_prediction_pool_summary_json(uuid,uuid)'),
   ('public.partner_prediction_pool_user_eligible(uuid,uuid)'),
   ('public.fet_get_friendship_row(uuid,uuid,bigint)'),
@@ -105,9 +104,7 @@ insert into expected_store_disabled_function values
   ('public.fet_search_supporters(text,bigint,integer)'),
   ('public.fet_get_leaderboard(bigint,integer)'),
   ('public.fet_get_partner_offers(bigint,boolean,integer)'),
-  ('public.prediction_create_friend_challenge(uuid,uuid,text,text)'),
   ('public.partner_prediction_pool_join(uuid,text,text)'),
-  ('public.prediction_place_jackpot_entry(uuid,jsonb,text)'),
   ('public.partner_prediction_pool_feed(bigint,text[],integer,integer)');
 
 select is(
@@ -324,9 +321,6 @@ insert into expected_release_service_function values
   ('football.update_fixture_odds_batch(uuid,jsonb)'),
   ('football.seed_fixture_prediction_markets_trigger()'),
   ('football.trg_auto_generate_fixture_markets()'),
-  ('public.prediction_get_friend_challenges(text,integer,integer)'),
-  ('public.prediction_respond_friend_challenge(uuid,text,text)'),
-  ('public.prediction_get_active_jackpot_round(bigint)'),
   ('public.partner_prediction_pool_create(uuid,uuid,text,integer,integer,uuid,text,integer,text,jsonb,bigint)'),
   ('public.partner_prediction_pool_settle(uuid)'),
   ('public.refresh_admin_phone_access_for_user(uuid)'),
@@ -468,7 +462,7 @@ declare
   denied boolean := false;
 begin
   begin
-    perform public.prediction_get_active_jackpot_round(null::bigint);
+    perform public.predict_lock_due();
   exception
     when insufficient_privilege then denied := true;
   end;

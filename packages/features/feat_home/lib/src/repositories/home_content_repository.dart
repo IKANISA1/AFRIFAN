@@ -39,7 +39,7 @@ const List<HomeQuickAction> homeFeedLocalFallbackActions = <HomeQuickAction>[
     sortOrder: 20,
   ),
   HomeQuickAction(
-    actionKey: 'fan_zone',
+    actionKey: 'predict',
     title: '',
     route: '/predict',
     iconKey: 'predict',
@@ -180,6 +180,21 @@ class HomeMembershipProjection {
   final String? membershipPaymentStatus;
 }
 
+/// Activity balances do not confer a paid membership or replace its selected tier.
+@visibleForTesting
+String? paidHomeMembershipTier(Map<String, dynamic> row) {
+  final expiry = DateTime.tryParse(row['expires_at']?.toString() ?? '');
+  if (row['payment_status'] != 'verified' ||
+      row['status'] != 'active' ||
+      expiry == null ||
+      !expiry.isAfter(DateTime.now().toUtc())) {
+    return null;
+  }
+  final tier = row['tier']?.toString();
+  if (tier == null || tier == 'fan') return null;
+  return tier;
+}
+
 /// Projects membership rows without mistaking an owner-only RLS result for a
 /// public leaderboard. Personal balance and membership state remain available
 /// even when cross-user ranking is suppressed.
@@ -238,7 +253,7 @@ HomeMembershipProjection projectHomeMembershipRows({
     hasCurrentMembership: true,
     userFet: (currentMembership['points'] as num?)?.toInt() ?? 0,
     fanRank: allowsCrossUserLeaderboard ? currentIndex + 1 : 0,
-    membershipTier: currentMembership['tier']?.toString(),
+    membershipTier: paidHomeMembershipTier(currentMembership),
     membershipPaymentStatus: currentMembership['payment_status']?.toString(),
   );
 }
@@ -257,7 +272,7 @@ enum LatestIntelStatus { ready, empty, error }
 @visibleForTesting
 String homeHeroRouteForStatus(String status) {
   return switch (status.trim().toUpperCase()) {
-    'LIVE' || 'HALF-TIME' || 'FULL-TIME' => '/fanzone/match/live',
+    'LIVE' || 'HALF-TIME' || 'FULL-TIME' => '/predict/match/live',
     _ => '/club/fixtures',
   };
 }
@@ -339,22 +354,6 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
     Object? quickActionsError;
     final allowsCrossUserLeaderboard = storeReleasePolicy.allowsCrossUserText;
 
-    String? confirmedTier;
-    Future<void> loadQualification() async {
-      if (currentUserId == null) return;
-      try {
-        final result = await client.rpc(
-          'membership_qualification_v1',
-          params: {'p_club_id': scope.requiredClubId},
-        );
-        if (result is Map && result['available'] == true) {
-          confirmedTier = result['tier']?.toString();
-        }
-      } catch (error) {
-        membershipsError = error;
-      }
-    }
-
     Future<void> loadActions() async {
       try {
         final activeCountryCode = RuntimeBranding.displayCountryCode
@@ -430,12 +429,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
       }
     }
 
-    await Future.wait([
-      loadActions(),
-      loadMemberships(),
-      loadMatches(),
-      loadQualification(),
-    ]);
+    await Future.wait([loadActions(), loadMemberships(), loadMatches()]);
 
     if (membershipsError != null && matchesError != null) {
       return HomeFeedSnapshot(
@@ -482,8 +476,6 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
         },
       );
     }
-
-    membershipTier = confirmedTier;
 
     final heroSlides = matchesError == null
         ? _mapMatchSlides(matches)
@@ -552,7 +544,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
     try {
       var query = client
           .from('fan_memberships')
-          .select('points, tier, payment_status')
+          .select('points, tier, payment_status, status, expires_at')
           .eq('user_id', currentUserId);
       query = ClubScopeResolver(client: client).apply(query, scope);
       final row = await query.maybeSingle();
@@ -576,7 +568,7 @@ class SupabaseHomeFeedRepository implements HomeFeedRepository {
       result(
         userPoints,
         rank,
-        row['tier']?.toString(),
+        paidHomeMembershipTier(row),
         row['payment_status']?.toString(),
       );
     } catch (error, stackTrace) {

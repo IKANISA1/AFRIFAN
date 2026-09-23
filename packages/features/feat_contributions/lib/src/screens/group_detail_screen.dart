@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 
 import '../controllers/group_detail_controller.dart';
 import '../widgets/contribution_overlays.dart';
+import '../widgets/group_card.dart';
 
 class GroupDetailScreen extends ConsumerStatefulWidget {
   const GroupDetailScreen({
@@ -312,97 +313,36 @@ class _GroupSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.afriL10n;
-    final currency = CurrencyFormatter(
-      currencyCode: context.afriCurrencyCode,
-      currencySymbol: context.afriCurrencySymbol,
-    );
-    final description = group.description?.trim();
-    final progress = group.progress;
-
-    return GlassCard(
-      key: const ValueKey<String>('group-detail-summary-card'),
-      animate: false,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            group.name,
-            style: TypographyTokens.headlineMedium().copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          if (description != null && description.isNotEmpty) ...[
-            const SizedBox(height: SpacingTokens.spacing2),
-            Text(description, style: TypographyTokens.bodyMedium()),
-          ],
-          const SizedBox(height: SpacingTokens.spacing5),
-          Text(
-            l10n.contributionsConfirmedTotal,
-            style: TypographyTokens.labelMedium(ColorTokens.onSurfaceVariant),
-          ),
-          const SizedBox(height: SpacingTokens.spacing1),
-          Text(
-            currency.format(group.currentTotal),
-            style: TypographyTokens.displayLarge(
-              context.afriSemanticColors.primaryText,
-            ).copyWith(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: SpacingTokens.spacing2),
-          Text(
-            l10n.contributionsTargetProgress(
-              currency.format(group.targetAmount),
-              (progress * 100).round(),
-            ),
-            style: TypographyTokens.bodyMedium(),
-          ),
-          const SizedBox(height: SpacingTokens.spacing3),
-          Semantics(
-            label: l10n.contributionsProgressSemantic((progress * 100).round()),
-            child: AfriLinearProgressIndicator(
-              value: progress,
-              minHeight: 10,
-              borderRadius: ShapeTokens.buttonRadius,
-              color: ColorTokens.accessibleChartColor(
-                ColorTokens.primaryContainer,
-              ),
-              backgroundColor: ColorTokens.surfaceContainerHighest,
-            ),
-          ),
-          const SizedBox(height: SpacingTokens.spacing4),
-          Wrap(
-            spacing: SpacingTokens.spacing4,
-            runSpacing: SpacingTokens.spacing3,
-            children: [
-              _GroupMetaStat(
-                label: l10n.contributionsTypeUpper,
-                value: switch (group.groupType) {
-                  ContributionGroupType.project =>
-                    l10n.contributionsTypeProject,
-                  ContributionGroupType.community =>
-                    l10n.contributionsTypeCommunity,
-                },
-              ),
-              _GroupMetaStat(
-                label: l10n.contributionsContributorsUpper,
-                value: '${group.memberCount}',
-              ),
-            ],
-          ),
-          const SizedBox(height: SpacingTokens.spacing5),
-          AfriButton(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        GroupCard(
+          key: const ValueKey<String>('group-detail-summary-card'),
+          group: {
+            'name': group.name,
+            'image_url': group.imageUrl,
+            'current_total': group.currentTotal,
+            'target_amount': group.targetAmount,
+            'member_count': group.memberCount,
+          },
+          action: AfriButton(
             key: const ValueKey<String>('group-detail-contribute-action'),
             label: actionLabel,
             semanticsLabel: actionEnabled
                 ? l10n.contributionsContributeToSemantic(group.name)
                 : l10n.contributionsPaymentUnavailableSemantic(actionLabel),
             fullWidth: true,
-            labelMaxLines: 2,
+            labelMaxLines: 3,
             focusNode: actionFocusNode,
             onTap: onContribute,
             enabled: actionEnabled,
           ),
+        ),
+        if (group.description?.trim().isNotEmpty ?? false) ...[
+          const SizedBox(height: SpacingTokens.spacing4),
+          Text(group.description!, style: TypographyTokens.bodyMedium()),
         ],
-      ),
+      ],
     );
   }
 }
@@ -420,6 +360,9 @@ class GroupLedgerSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.afriL10n;
+    final contributions = ledger
+        .where((entry) => entry.status == GroupLedgerStatus.confirmed)
+        .toList();
     return Column(
       key: const ValueKey<String>('group-detail-ledger'),
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -437,7 +380,7 @@ class GroupLedgerSection extends StatelessWidget {
           style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
         ),
         const SizedBox(height: SpacingTokens.spacing3),
-        if (ledger.isEmpty)
+        if (contributions.isEmpty)
           GlassCard(
             key: const ValueKey<String>('group-ledger-empty'),
             animate: false,
@@ -451,7 +394,7 @@ class GroupLedgerSection extends StatelessWidget {
             ),
           )
         else
-          ...ledger.map(
+          ...contributions.map(
             (entry) => Padding(
               padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
               child: _LedgerRow(
@@ -465,31 +408,6 @@ class GroupLedgerSection extends StatelessWidget {
   }
 }
 
-class _GroupMetaStat extends StatelessWidget {
-  const _GroupMetaStat({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Semantics(
-      label: context.afriL10n.contributionsMetaSemantic(label, value),
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(minWidth: 112),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(label, style: TypographyTokens.labelSmall()),
-            const SizedBox(height: SpacingTokens.spacing1),
-            Text(value, style: TypographyTokens.labelLarge()),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _LedgerRow extends StatelessWidget {
   const _LedgerRow({required this.entry, required this.amount});
 
@@ -498,32 +416,17 @@ class _LedgerRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = context.afriL10n;
     final metricAccent = ColorTokens.accessibleMetricColor(
       ColorTokens.primaryContainer,
     );
     final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
-    final tone = switch (entry.status) {
-      GroupLedgerStatus.confirmed => AfriStatusTone.success,
-      GroupLedgerStatus.processing => AfriStatusTone.warning,
-      GroupLedgerStatus.failed => AfriStatusTone.error,
-    };
-    final statusLabel = switch (entry.status) {
-      GroupLedgerStatus.confirmed => l10n.contributionsStatusConfirmed,
-      GroupLedgerStatus.processing => l10n.contributionsStatusProcessing,
-      GroupLedgerStatus.failed => l10n.contributionsStatusFailed,
-    };
     final date = AfriDateFormatter.formatDate(entry.createdAt);
     return GlassCard(
       animate: false,
       child: Semantics(
         container: true,
-        label: l10n.contributionsLedgerEntrySemantic(
-          entry.publicAlias,
-          amount,
-          statusLabel,
-          date,
-        ),
+        label: '${entry.publicAlias}, $amount, $date',
+        excludeSemantics: true,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -564,7 +467,6 @@ class _LedgerRow extends StatelessWidget {
               spacing: SpacingTokens.spacing3,
               runSpacing: SpacingTokens.spacing2,
               children: [
-                AfriStatusChip(label: statusLabel, tone: tone),
                 Text(
                   date,
                   style: TypographyTokens.bodySmall(

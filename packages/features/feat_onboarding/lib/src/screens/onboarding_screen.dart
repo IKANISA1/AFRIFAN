@@ -253,9 +253,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                                   AfriBrandMark(
                                     label: clubName,
                                     size: isCompact ? 46 : 56,
-                                    borderRadius: BorderRadius.circular(
-                                      ShapeTokens.radiusMd,
-                                    ),
                                     semanticLabel: l10n
                                         .onboardingIdentitySemantic(clubName),
                                   ),
@@ -585,9 +582,6 @@ class _OnboardingContentState extends StatelessWidget {
                         child: AfriBrandMark(
                           label: clubName,
                           size: 56,
-                          borderRadius: BorderRadius.circular(
-                            ShapeTokens.radiusMd,
-                          ),
                           semanticLabel: l10n.onboardingIdentitySemantic(
                             clubName,
                           ),

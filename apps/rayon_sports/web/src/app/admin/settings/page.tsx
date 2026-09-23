@@ -286,7 +286,7 @@ export default function AdminSettingsPage() {
             setInteraction("selected");
           }}
           className={cn(
-            "relative flex min-h-12 items-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent motion-reduce:transition-none",
+            "relative flex min-h-12 items-center gap-2 px-5 py-3 text-xs font-medium normal-case tracking-normal transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none",
             activeTab === "organization"
               ? "text-[var(--admin-text-strong)]"
               : "text-[var(--admin-text-muted)] hover:text-[var(--admin-text-strong)]",
@@ -296,7 +296,7 @@ export default function AdminSettingsPage() {
           Organization
           {activeTab === "organization" ? (
             <span
-              className="absolute inset-x-0 bottom-0 h-0.5 bg-club-accent"
+              className="absolute inset-x-0 bottom-0 h-0.5 bg-[var(--admin-accent)]"
               aria-hidden="true"
             />
           ) : null}
@@ -310,7 +310,7 @@ export default function AdminSettingsPage() {
             setInteraction("selected");
           }}
           className={cn(
-            "relative flex min-h-12 items-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent motion-reduce:transition-none",
+            "relative flex min-h-12 items-center gap-2 px-5 py-3 text-xs font-medium normal-case tracking-normal transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none",
             activeTab === "infrastructure"
               ? "text-[var(--admin-text-strong)]"
               : "text-[var(--admin-text-muted)] hover:text-[var(--admin-text-strong)]",
@@ -320,7 +320,7 @@ export default function AdminSettingsPage() {
           Related controls
           {activeTab === "infrastructure" ? (
             <span
-              className="absolute inset-x-0 bottom-0 h-0.5 bg-club-accent"
+              className="absolute inset-x-0 bottom-0 h-0.5 bg-[var(--admin-accent)]"
               aria-hidden="true"
             />
           ) : null}
@@ -381,18 +381,18 @@ export default function AdminSettingsPage() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="glass-panel group min-h-48 min-w-0 overflow-hidden rounded-[28px] p-6 transition hover:-translate-y-0.5 hover:border-club-accent/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent motion-reduce:transform-none motion-reduce:transition-none"
+                className="glass-panel group min-h-48 min-w-0 overflow-hidden rounded-[28px] p-6 transition hover:-translate-y-0.5 hover:border-[var(--admin-accent)]/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transform-none motion-reduce:transition-none"
               >
                 <div className="flex min-w-0 flex-wrap items-start justify-between gap-4">
-                  <span className="rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-zinc-950)] p-3 text-club-accent">
+                  <span className="rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-zinc-950)] p-3 text-[var(--admin-accent)]">
                     <Icon size={20} aria-hidden="true" />
                   </span>
                   <AdminStatusBadge label="Separate route" tone="neutral" />
                 </div>
-                <h2 className="mt-6 font-display text-2xl font-bold uppercase">
+                <h2 className="mt-6 font-display text-2xl font-medium normal-case">
                   {item.title}
                 </h2>
-                <p className="mt-3 text-sm leading-6 text-slate-300">
+                <p className="mt-3 text-sm leading-6 text-[var(--admin-text-muted)]">
                   {item.detail}
                 </p>
               </Link>

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// Semantic icon runtime implementation governed by root DESIGN.md.
+/// Semantic icon runtime implementation adapted from revolut-design.
 ///
 /// Every feature screen references these instead of choosing ad-hoc
 /// Material icons. This guarantees visual consistency and makes icon
@@ -15,7 +15,6 @@ class AfriIcons {
 
   // ── Navigation ──
   static const IconData home = Icons.home_rounded;
-  static const IconData fanzone = Icons.sports_soccer_rounded;
   static const IconData settings = Icons.settings_outlined;
   static const IconData appearance = Icons.contrast_rounded;
   static const IconData wallet = Icons.account_balance_wallet_outlined;

@@ -142,15 +142,15 @@ export function GlobalNav({
       data-site-header
       className={cn(
         "fixed inset-x-0 top-0 z-[100] transition-all duration-500",
-        scrolled
-          ? "bg-[var(--club-primary)]/95 shadow-xl"
+        scrolled || pathname !== "/"
+          ? "bg-[var(--glass-fill)]"
           : "bg-transparent",
       )}
       onMouseLeave={() => setActiveMenu(null)}
     >
       {!scrolled && ribbon}
       <div className={cn("hidden border-b border-white/10 bg-black/20", !scrolled && "xl:block")}>
-        <div className="page-shell flex h-9 items-center justify-between px-4 text-[10px] font-bold uppercase tracking-[0.2em] text-white/70">
+        <div className="page-shell flex h-9 items-center justify-between px-4 text-[10px] font-medium normal-case tracking-normal text-white/70">
           <div className="flex items-center gap-6">
             <span>{club.league}</span>
 
@@ -188,10 +188,10 @@ export function GlobalNav({
             />
           </div>
           <div className="site-brand-copy hidden lg:block">
-            <p className="font-display text-xl font-bold uppercase leading-none tracking-tight text-white">
+            <p className="font-display text-xl font-medium normal-case leading-none tracking-tight text-white">
               {club.shortName}
             </p>
-            <p className="mt-1 text-[9px] font-bold uppercase tracking-[0.2em] text-white/50">
+            <p className="mt-1 text-[9px] font-medium normal-case tracking-normal text-white/50">
               {club.nickname || club.clubName}
             </p>
           </div>
@@ -212,7 +212,7 @@ export function GlobalNav({
               <Link
                 href={item.href}
                 className={cn(
-                  "flex min-h-[48px] items-center gap-1.5 px-4 py-2 text-sm font-bold uppercase tracking-widest text-white/80 transition-all hover:text-white",
+                  "flex min-h-[48px] items-center gap-1.5 px-4 py-2 text-sm font-medium normal-case tracking-normal text-white/80 transition-all hover:text-white",
                   pathname.startsWith(item.href) && "text-white",
                 )}
               >
@@ -228,7 +228,7 @@ export function GlobalNav({
                 )}
               </Link>
               {pathname.startsWith(item.href) && (
-                <div className="absolute inset-x-4 bottom-0 h-0.5 bg-[var(--club-accent)]" />
+                <div className="absolute inset-x-4 bottom-0 h-0.5 bg-[var(--action-neutral)]" />
               )}
             </div>
           ))}
@@ -248,7 +248,7 @@ export function GlobalNav({
             ref={portalRef}
             href={resolveFanAppHref()}
             aria-label="Fan Portal"
-            className="site-portal-link flex min-h-[48px] min-w-[48px] items-center gap-[8px] rounded-full bg-[var(--club-accent)] px-[20px] py-[10px] text-xs font-bold uppercase tracking-wider text-[var(--club-ink)] shadow-lg transition-transform hover:scale-105 active:scale-95"
+            className="site-portal-link flex min-h-[48px] min-w-[48px] items-center gap-[8px] rounded-full bg-[var(--action-neutral)] px-[20px] py-[10px] text-xs font-medium normal-case tracking-normal text-[var(--on-action-neutral)] shadow-lg transition-transform hover:scale-105 active:scale-95"
           >
             <User size={16} />
             <span className="site-portal-label hidden sm:inline">Fan Portal</span>
@@ -271,7 +271,7 @@ export function GlobalNav({
       {/* Mega Menu Overlay */}
       <div
         className={cn(
-          "absolute inset-x-0 top-full border-t border-white/10 bg-[var(--club-primary)] shadow-2xl transition-all duration-500 ease-in-out",
+          "absolute inset-x-0 top-full border-t border-white/10 bg-[var(--surface)] shadow-2xl transition-all duration-500 ease-in-out",
           activeMenu
             ? "max-h-[600px] opacity-100 visible"
             : "max-h-0 opacity-0 invisible overflow-hidden",
@@ -281,25 +281,25 @@ export function GlobalNav({
           {activeMenu === "live" && (
             <div className="grid grid-cols-4 gap-12">
               <div className="col-span-2">
-                <p className="mb-6 text-xs font-bold uppercase tracking-widest text-white/40">
+                <p className="mb-6 text-xs font-medium normal-case tracking-normal text-white/40">
                   Match centre
                 </p>
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-8">
-                  <p className="font-bold text-white">{club.shortName}</p>
+                  <p className="font-medium text-white">{club.shortName}</p>
                   <Link href="/fixtures" className="mt-4 inline-flex min-h-[48px] items-center text-white underline">
                     View confirmed fixtures
                   </Link>
                 </div>
               </div>
               <div>
-                <p className="mb-6 text-xs font-bold uppercase tracking-widest text-white/40">
+                <p className="mb-6 text-xs font-medium normal-case tracking-normal text-white/40">
                   Information
                 </p>
-                <ul className="space-y-4 text-sm font-bold uppercase tracking-wider text-white">
+                <ul className="space-y-4 text-sm font-medium normal-case tracking-normal text-white">
                   <li>
                     <Link
                       href="/fixtures"
-                      className="hover:text-[var(--club-accent)] transition-colors"
+                      className="hover:text-[var(--action-neutral)] transition-colors"
                     >
                       Full Fixtures
                     </Link>
@@ -307,7 +307,7 @@ export function GlobalNav({
                   <li>
                     <Link
                       href="/results"
-                      className="hover:text-[var(--club-accent)] transition-colors"
+                      className="hover:text-[var(--action-neutral)] transition-colors"
                     >
                       Results
                     </Link>
@@ -315,7 +315,7 @@ export function GlobalNav({
                   <li>
                     <Link
                       href="/standings"
-                      className="hover:text-[var(--club-accent)] transition-colors"
+                      className="hover:text-[var(--action-neutral)] transition-colors"
                     >
                       League Table
                     </Link>
@@ -323,7 +323,7 @@ export function GlobalNav({
                   <li>
                     <Link
                       href="/tickets"
-                      className="hover:text-[var(--club-accent)] transition-colors"
+                      className="hover:text-[var(--action-neutral)] transition-colors"
                     >
                       Ticket Info
                     </Link>
@@ -333,15 +333,15 @@ export function GlobalNav({
               <div className="relative overflow-hidden rounded-2xl bg-black/40 p-6">
                 <div className="absolute inset-0 opacity-20 bg-[url('/brand-surface.svg')] bg-cover bg-center" />
                 <div className="relative z-10">
-                  <p className="text-xs font-bold uppercase tracking-widest text-[var(--club-accent)]">
+                  <p className="text-xs font-medium normal-case tracking-normal text-[var(--action-neutral)]">
                     Club history
                   </p>
-                  <p className="mt-2 text-2xl font-black text-white uppercase leading-none">
+                  <p className="mt-2 text-2xl font-medium text-white normal-case leading-none">
                     {club.shortName}
                   </p>
                   <Link
                     href="/history"
-                    className="mt-4 inline-block text-[10px] font-bold uppercase tracking-[0.2em] text-white/60 hover:text-white transition-colors underline underline-offset-4"
+                    className="mt-4 inline-block text-[10px] font-medium normal-case tracking-normal text-white/60 hover:text-white transition-colors underline underline-offset-4"
                   >
                     Learn More
                   </Link>
@@ -354,7 +354,7 @@ export function GlobalNav({
               <div className="col-span-4 mt-8 flex justify-center">
                 <Link
                   href="/squad"
-                  className="text-xs font-bold uppercase tracking-[0.3em] text-white/60 hover:text-white transition-colors"
+                  className="text-xs font-medium normal-case tracking-normal text-white/60 hover:text-white transition-colors"
                 >
                   View Full First Team Roster →
                 </Link>

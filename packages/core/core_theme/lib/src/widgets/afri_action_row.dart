@@ -19,7 +19,7 @@ import 'afri_surface_card.dart';
 /// AfriActionRow(
 ///   icon: AfriIcons.predict,
 ///   label: 'Predict',
-///   onTap: () => context.push('/fanzone/fixtures'),
+///   onTap: () => context.push('/predict'),
 /// )
 /// ```
 class AfriActionRow extends StatelessWidget {

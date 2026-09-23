@@ -64,7 +64,7 @@ void main() {
                     ? []
                     : [
                         {
-                          'id': 'sample-chapter',
+                          'id': 'sample-FanClubs',
                           'name': 'Kigali supporters',
                           'region': 'Kigali',
                           'description':

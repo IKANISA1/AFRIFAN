@@ -2,8 +2,8 @@ import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_gamification/src/models/prediction_models.dart';
+import 'package:feat_gamification/src/predict/predict_pick_screen.dart';
 import 'package:feat_gamification/src/providers/prediction_detail_provider.dart';
-import 'package:feat_gamification/src/screens/prediction_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -276,7 +276,7 @@ void main() {
           (widget) =>
               widget is Semantics &&
               widget.properties.selected == true &&
-              widget.properties.label == 'Selected Selection DRAW',
+              widget.properties.label == 'Selected Selection Draw',
           description: 'selected prediction detail metric semantics',
         );
         expect(selectedMetric, findsOneWidget);
@@ -503,22 +503,22 @@ Future<void> _pumpRoute(
   addTearDown(() => ColorTokens.setBrightness(Brightness.dark));
 
   final router = GoRouter(
-    initialLocation: '/fanzone/my/prediction-1',
+    initialLocation: '/predict/picks/prediction-1',
     routes: <RouteBase>[
       GoRoute(
-        path: '/fanzone/my/:predictionId',
-        builder: (context, state) => PredictionDetailScreen(
+        path: '/predict/picks/:predictionId',
+        builder: (context, state) => PredictPickScreen(
           predictionId: state.pathParameters['predictionId']!,
           browseFocusNode: browseFocusNode,
         ),
       ),
       GoRoute(
-        path: '/fanzone',
-        builder: (context, state) => const Scaffold(body: Text('Fan Zone')),
+        path: '/predict',
+        builder: (context, state) => const Scaffold(body: Text('Predict')),
         routes: <RouteBase>[
           GoRoute(
             path: 'fixtures',
-            redirect: (context, state) => '/fanzone?section=league',
+            redirect: (context, state) => '/predict?section=league',
           ),
         ],
       ),

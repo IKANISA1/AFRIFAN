@@ -1,3 +1,4 @@
+import { TeamSelect } from "@/components/team-select";
 import type { Dispatch, SetStateAction } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { showAdminToast } from "@/components/admin/admin-toast";
@@ -66,7 +67,7 @@ export function StandingEditorForm({
   return (
     <form action={submitForm} className="glass-panel grid gap-4 rounded-[32px] p-6">
       <div className="flex items-center justify-between gap-3">
-        <p className="font-display text-3xl font-bold uppercase leading-none">
+        <p className="font-display text-3xl font-medium normal-case leading-none">
           {form.id ? "Edit row" : "New row"}
         </p>
         <div className="flex items-center gap-2">
@@ -74,7 +75,7 @@ export function StandingEditorForm({
             <button
               type="button"
               onClick={onCancel}
-              className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+              className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)]"
             >
               Close
             </button>
@@ -86,7 +87,7 @@ export function StandingEditorForm({
                 setForm(emptyForm);
                 showAdminToast("Form cleared.", "info");
               }}
-              className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+              className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)]"
             >
               Clear
             </button>
@@ -112,18 +113,7 @@ export function StandingEditorForm({
             className="dashboard-input"
           />
         </label>
-        <label className="grid gap-2 text-sm">
-          Club name
-          <input
-            name="club"
-            required
-            value={form.club}
-            onChange={(event) =>
-              setForm((current) => ({ ...current, club: event.target.value }))
-            }
-            className="dashboard-input"
-          />
-        </label>
+        <TeamSelect name="club" value={form.club} onChange={value => setForm(current => ({...current, club: value}))} />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
@@ -196,7 +186,7 @@ export function StandingEditorForm({
 
       <button
         type="submit"
-        className="min-h-12 rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
+        className="min-h-12 rounded-full bg-action-blue px-5 py-3 font-semibold text-white transition hover:bg-action-blue-hover"
       >
         {form.id ? "Save row" : "Add row"}
       </button>

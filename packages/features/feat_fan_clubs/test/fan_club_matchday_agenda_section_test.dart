@@ -1,4 +1,5 @@
 import 'package:core_l10n/core_l10n.dart';
+import 'package:core_theme/core_theme.dart';
 import 'package:feat_fan_clubs/src/screens/fan_club_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -51,7 +52,9 @@ void main() {
       findsNothing,
     );
     expect(find.text('Matchday agenda'), findsOneWidget);
-    expect(find.text('Rayon Sports vs APR'), findsOneWidget);
+    expect(find.text('RAY'), findsOneWidget);
+    expect(find.text('APR'), findsOneWidget);
+    expect(find.byType(AfriTeamCrest), findsNWidgets(2));
     expect(find.text('Primus League  •  Amahoro Stadium'), findsOneWidget);
     expect(find.text('2026-07-01  •  18:00'), findsOneWidget);
   });
@@ -61,14 +64,18 @@ void main() {
       buildSubject(isActive: true, match: _match, locale: const Locale('en')),
     );
     expect(find.text('Matchday agenda'), findsOneWidget);
-    expect(find.text('Rayon Sports vs APR'), findsOneWidget);
+    expect(find.text('RAY'), findsOneWidget);
+    expect(find.text('APR'), findsOneWidget);
+    expect(find.byType(AfriTeamCrest), findsNWidgets(2));
 
     await tester.pumpWidget(
       buildSubject(isActive: true, match: _match, locale: const Locale('en')),
     );
     await tester.pump();
     expect(find.text('Matchday agenda'), findsOneWidget);
-    expect(find.text('Rayon Sports vs APR'), findsOneWidget);
+    expect(find.text('RAY'), findsOneWidget);
+    expect(find.text('APR'), findsOneWidget);
+    expect(find.byType(AfriTeamCrest), findsNWidgets(2));
   });
 }
 

@@ -14,7 +14,6 @@ const mocks = vi.hoisted(() => {
     saveAdminContentBlock: vi.fn(),
     getAdminFeatures: vi.fn(),
     updateAdminFeature: vi.fn(),
-    reviewMembershipApplication: vi.fn(),
     bulkUpdateTicketStatus: vi.fn(),
     updateTicketStatus: vi.fn(),
     adminClient: { kind: "admin-client" },
@@ -52,9 +51,6 @@ vi.mock("@/lib/data/admin/features", () => ({
   normalizeAdminFeatureUpdate: (value: unknown) => value,
   updateAdminFeature: mocks.updateAdminFeature,
 }));
-vi.mock("@/lib/data/admin/membership-ops", () => ({
-  reviewMembershipApplication: mocks.reviewMembershipApplication,
-}));
 vi.mock("@/lib/data/admin/tickets", () => ({
   bulkUpdateTicketStatus: mocks.bulkUpdateTicketStatus,
   updateTicketStatus: mocks.updateTicketStatus,
@@ -67,7 +63,6 @@ import { POST as deleteContentBlock } from "./content-blocks/delete/route";
 import { POST as saveContentBlock } from "./content-blocks/save/route";
 import { GET as getFeatures } from "./features/route";
 import { POST as updateFeature } from "./features/update/route";
-import { POST as reviewMembership } from "./membership-applications/review/route";
 import { POST as updateTicketBulk } from "./tickets/bulk-status/route";
 import { POST as updateTicket } from "./tickets/status/route";
 
@@ -156,15 +151,6 @@ describe("specialized admin route controlled states", () => {
       code: "ADMIN_FEATURE_EMPTY",
       invoke: () => updateFeature(request("/api/admin/features/update", {})),
       operation: mocks.updateAdminFeature,
-    },
-    {
-      name: "membership review",
-      code: "ADMIN_MEMBERSHIP_REVIEW_EMPTY",
-      invoke: () =>
-        reviewMembership(
-          request("/api/admin/membership-applications/review", {}),
-        ),
-      operation: mocks.reviewMembershipApplication,
     },
     {
       name: "bulk ticket status",
@@ -338,19 +324,6 @@ describe("specialized admin route controlled states", () => {
           }),
         ),
       operation: mocks.updateAdminFeature,
-      resolved: undefined,
-    },
-    {
-      name: "membership review",
-      invoke: () =>
-        reviewMembership(
-          request("/api/admin/membership-applications/review", {
-            applicationId: "application-1",
-            expectedUpdatedAt: "2026-07-29T08:00:00Z",
-            decision: "approved",
-          }),
-        ),
-      operation: mocks.reviewMembershipApplication,
       resolved: undefined,
     },
     {

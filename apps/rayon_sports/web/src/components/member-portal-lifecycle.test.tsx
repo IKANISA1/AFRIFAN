@@ -27,7 +27,7 @@ beforeEach(()=>{
    return historyOverride??Promise.resolve(rows.initiative_contributions).then(r=>r.error?r:{data:{confirmed_total:confirmedTotal,entries:r.data,next_cursor:nextCursor},error:null});
  });
  mocks.onAuthStateChange.mockImplementation((callback)=>{authChanged=callback;return {data:{subscription:{unsubscribe:mocks.unsubscribe}}};});
- mocks.from.mockImplementation((table:string)=>{const entry={table,filters:[] as unknown[][]};queryCalls.push(entry);const q={select:()=>q,eq:(...args:unknown[])=>{entry.filters.push(args);return q;},order:()=>q,limit:()=>q,maybeSingle:()=>Promise.resolve(rows[table]),then:(resolve:(v:Result)=>unknown,reject:(e:unknown)=>unknown)=>Promise.resolve(rows[table]).then(resolve,reject)};return q;});
+ mocks.from.mockImplementation((table:string)=>{const entry={table,filters:[] as unknown[][]};queryCalls.push(entry);const q={select:()=>q,eq:(...args:unknown[])=>{entry.filters.push(args);return q;},neq:(...args:unknown[])=>{entry.filters.push(args);return q;},gt:(...args:unknown[])=>{entry.filters.push(args);return q;},order:()=>q,limit:()=>q,maybeSingle:()=>Promise.resolve(rows[table]),then:(resolve:(v:Result)=>unknown,reject:(e:unknown)=>unknown)=>Promise.resolve(rows[table]).then(resolve,reject)};return q;});
 });
 afterEach(()=>{cleanup();setMemberSignOutPending(false);vi.useRealTimers();});
 describe('member portal authenticated data lifecycle',()=>{
@@ -37,10 +37,10 @@ describe('member portal authenticated data lifecycle',()=>{
  it('scopes campaign and history queries to the verified membership club',async()=>{await mount();expect(queryCalls.find(x=>x.table==='initiatives')?.filters).toContainEqual(['club_id',24]);expect(mocks.rpc).toHaveBeenCalledWith('member_contribution_history');});
  it('ignores a late history response after explicit sign-out',async()=>{await mount();const held=deferred();rows.initiative_contributions=held.promise;refresh();await waitFor(()=>expect(queryCalls.filter(x=>x.table==='initiative_contributions')).toHaveLength(2));fireEvent.click(screen.getByRole('button',{name:'Sign out of member area'}));await screen.findByLabelText('WhatsApp number');await act(async()=>held.resolve({data:[contribution],error:null}));expect(screen.queryByText('123456')).not.toBeInTheDocument();expect(screen.queryByText('QA-confirmed')).not.toBeInTheDocument();});
  it('clears private data when another tab signs out',async()=>{await mount();act(()=>authChanged('SIGNED_OUT',null));expect(screen.queryByText('123456')).not.toBeInTheDocument();expect(screen.getByLabelText('WhatsApp number')).toBeVisible();});
- it('clears old data while a different account loads and rejects the old response',async()=>{await mount();const held=deferred();rows.initiative_contributions=held.promise;refresh();await waitFor(()=>expect(queryCalls.filter(x=>x.table==='initiative_contributions')).toHaveLength(2));mocks.getUser.mockResolvedValue({data:{user:{id:'other'}},error:null});rows.fan_memberships={data:null,error:null};act(()=>authChanged('SIGNED_IN',{user:{id:'other'}}));expect(screen.queryByText('123456')).not.toBeInTheDocument();await screen.findByRole('button',{name:'Activate my membership'});await act(async()=>held.resolve({data:[contribution],error:null}));expect(screen.queryByText('QA-confirmed')).not.toBeInTheDocument();expect(mocks.rpc.mock.calls.some(([name])=>name==='activate_free_fan_membership_for_club')).toBe(false);});
+ it('clears old data while a different account loads and rejects the old response',async()=>{await mount();const held=deferred();rows.initiative_contributions=held.promise;refresh();await waitFor(()=>expect(queryCalls.filter(x=>x.table==='initiative_contributions')).toHaveLength(2));mocks.getUser.mockResolvedValue({data:{user:{id:'other'}},error:null});rows.fan_memberships={data:null,error:null};act(()=>authChanged('SIGNED_IN',{user:{id:'other'}}));expect(screen.queryByText('123456')).not.toBeInTheDocument();await screen.findByRole('link',{name:'Choose a membership tier'});await act(async()=>held.resolve({data:[contribution],error:null}));expect(screen.queryByText('QA-confirmed')).not.toBeInTheDocument();expect(mocks.rpc.mock.calls.some(([name])=>name==='activate_free_fan_membership_for_club')).toBe(false);});
  it('shows only the newest refresh result when older work completes later',async()=>{await mount();const held=deferred();rows.initiative_contributions=held.promise;refresh();await waitFor(()=>expect(queryCalls.filter(x=>x.table==='initiative_contributions')).toHaveLength(2));rows.initiative_contributions={data:[{...contribution,momo_reference:'QA-newest'}],error:null};refresh();await screen.findByText('QA-newest');await act(async()=>held.resolve({data:[contribution],error:null}));expect(screen.queryByText('QA-confirmed')).not.toBeInTheDocument();});
  it('unsubscribes from auth events when leaving the portal',async()=>{await mount();cleanup();expect(mocks.unsubscribe).toHaveBeenCalledTimes(1);});
- it('requires explicit activation after successful OTP verification',async()=>{
+ it('requires a paid tier choice after successful OTP verification',async()=>{
    mocks.getUser.mockResolvedValue({data:{user:null},error:null});
    render(<MemberPortal clubShortName="Rayon"/>);
    const phone=await screen.findByLabelText('WhatsApp number');
@@ -51,7 +51,7 @@ describe('member portal authenticated data lifecycle',()=>{
    rows.fan_memberships={data:null,error:null};
    fireEvent.change(screen.getByLabelText('WhatsApp verification code'),{target:{value:'123456'}});
    fireEvent.click(screen.getByRole('button',{name:'Verify code'}));
-   await screen.findByRole('button',{name:'Activate my membership'});
+   await screen.findByRole('link',{name:'Choose a membership tier'});
    expect(mocks.rpc.mock.calls.some(([name])=>name==='activate_free_fan_membership_for_club')).toBe(false);
  });
  it('discards a contribution response from a signed-out account',async()=>{
@@ -182,7 +182,7 @@ describe('member portal authenticated data lifecycle',()=>{
    expect(screen.getByLabelText('WhatsApp verification code')).toHaveValue('123456');
    mocks.getUser.mockResolvedValue({data:{user:{id:'supporter'}},error:null});rows.fan_memberships={data:null,error:null};
    await act(async()=>fireEvent.click(screen.getByRole('button',{name:'Verify code'})));
-   expect(screen.getByRole('button',{name:'Activate my membership'})).toBeVisible();
+   expect(screen.getByRole('link',{name:'Choose a membership tier'})).toBeVisible();
    expect(mocks.verifyOtp.mock.calls[1]).toEqual(mocks.verifyOtp.mock.calls[0]);
    expect(mocks.rpc.mock.calls.some(([name])=>name==='activate_free_fan_membership_for_club')).toBe(false);
  });
@@ -223,10 +223,10 @@ describe('member portal authenticated data lifecycle',()=>{
    expect(screen.queryByText('123456')).not.toBeInTheDocument();expect(screen.queryByText('QA-confirmed')).not.toBeInTheDocument();
    expect(mocks.rpc.mock.calls.some(([name])=>name==='member_contribution_history')).toBe(false);
  });
- it('binds explicit activation to the displayed club',async()=>{
+ it('opens paid tier selection without free activation',async()=>{
    rows.fan_memberships={data:null,error:null};render(<MemberPortal clubId={26} clubShortName="Nkana FC" countryCode="ZM" currencyCode="ZMW"/>);
-   fireEvent.click(await screen.findByRole('button',{name:'Activate my membership'}));
-   await waitFor(()=>expect(mocks.rpc).toHaveBeenCalledWith('activate_free_fan_membership_for_club',{p_expected_club_id:26}));
+   expect(await screen.findByRole('link',{name:'Choose a membership tier'})).toHaveAttribute('href','/membership');
+   expect(mocks.rpc.mock.calls.some(([name])=>name==='activate_free_fan_membership_for_club')).toBe(false);
  });
 
 });

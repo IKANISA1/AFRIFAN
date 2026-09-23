@@ -98,7 +98,9 @@ class ClubHubScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: SpacingTokens.spacing3),
                       Text(
-                        clubName,
+                        clubName == 'AFRICLUB'
+                            ? clubName
+                            : teamInitials(clubName),
                         textAlign: TextAlign.center,
                         style: TypographyTokens.headlineLarge().copyWith(
                           fontWeight: FontWeight.w600,
@@ -152,12 +154,12 @@ class ClubHubScreen extends ConsumerWidget {
               if (currentMatch != null) ...[
                 AfriListGroup(
                   children: [
-                    AfriListRow(
-                      icon: AfriIcons.fixture,
-                      title: l10n.clubFixtureTeams(
-                        currentMatch.homeTeam,
-                        currentMatch.awayTeam,
-                      ),
+                    AfriFixtureCard(
+                      homeTeam: currentMatch.homeTeam,
+                      awayTeam: currentMatch.awayTeam,
+                      score: currentMatch.isCompleted
+                          ? '${currentMatch.homeScore}–${currentMatch.awayScore}'
+                          : null,
                       subtitle: currentMatch.isCompleted
                           ? '${l10n.clubFootballRecent} · ${currentMatch.homeScore}–${currentMatch.awayScore}'
                           : '${l10n.clubFootballUpcoming} · ${currentMatch.matchDate?.toIso8601String().split('T').first ?? ''} ${currentMatch.kickoffTime}',

@@ -4,9 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('homeHeroRouteForStatus', () {
     test('routes live statuses to Match Center inside Fan Zone', () {
-      expect(homeHeroRouteForStatus('LIVE'), '/fanzone/match/live');
-      expect(homeHeroRouteForStatus('HALF-TIME'), '/fanzone/match/live');
-      expect(homeHeroRouteForStatus('FULL-TIME'), '/fanzone/match/live');
+      expect(homeHeroRouteForStatus('LIVE'), '/predict/match/live');
+      expect(homeHeroRouteForStatus('HALF-TIME'), '/predict/match/live');
+      expect(homeHeroRouteForStatus('FULL-TIME'), '/predict/match/live');
     });
 
     test('routes non-live statuses to predictions', () {
@@ -25,15 +25,35 @@ void main() {
       expect(snapshot.showFixturePlaceholder, isTrue);
       expect(
         snapshot.quickActions.map((action) => action.actionKey),
-        orderedEquals(<String>['tickets', 'membership', 'fan_zone', 'shop']),
+        orderedEquals(<String>['tickets', 'membership', 'predict', 'shop']),
       );
       expect(
         snapshot.quickActions
-            .firstWhere((action) => action.actionKey == 'fan_zone')
+            .firstWhere((action) => action.actionKey == 'predict')
             .route,
         '/predict',
       );
     });
+  });
+
+  test('only a paid current membership displays its selected tier', () {
+    final row = <String, dynamic>{
+      'tier': 'silver',
+      'payment_status': 'verified',
+      'status': 'active',
+      'expires_at': '2099-01-01T00:00:00Z',
+      'points': 999999,
+    };
+    expect(paidHomeMembershipTier(row), 'silver');
+    expect(
+      paidHomeMembershipTier({...row, 'expires_at': '2000-01-01T00:00:00Z'}),
+      isNull,
+    );
+    expect(
+      paidHomeMembershipTier({...row, 'payment_status': 'pending'}),
+      isNull,
+    );
+    expect(paidHomeMembershipTier({...row, 'tier': 'fan'}), isNull);
   });
 
   group('projectHomeMembershipRows', () {
@@ -47,6 +67,8 @@ void main() {
               'points': 2140,
               'tier': 'gold',
               'payment_status': 'verified',
+              'status': 'active',
+              'expires_at': '2099-01-01T00:00:00Z',
             },
           ],
           currentUserId: 'current-user',
@@ -79,7 +101,7 @@ void main() {
       expect(projection.leaderboard, isEmpty);
       expect(projection.fanRank, 0);
       expect(projection.userFet, 2140);
-      expect(projection.membershipTier, 'silver');
+      expect(projection.membershipTier, isNull);
     });
 
     test('authorized development mode preserves ranked projection', () {

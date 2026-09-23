@@ -314,7 +314,7 @@ export function PwaShell() {
       ].join(" ")}
     >
       <div className="pointer-events-auto glass-panel rounded-[28px] px-4 py-4 shadow-2xl">
-        <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-club-accent">
+        <p className="font-mono text-[11px] normal-case tracking-normal text-action-neutral">
           {surface}
         </p>
         {isOffline ? (
@@ -346,7 +346,7 @@ export function PwaShell() {
                 onClick={() => {
                   handleInstall().catch(() => {});
                 }}
-                className="min-h-12 rounded-full bg-club-primary px-4 py-2 text-sm font-semibold text-white"
+                className="min-h-12 rounded-full bg-action-blue px-4 py-2 text-sm font-semibold text-white"
               >
                 Install app
               </button>
@@ -365,7 +365,7 @@ export function PwaShell() {
               type="button"
               disabled={isOffline}
               onClick={() => setConfirmRefresh(true)}
-              className="min-h-12 rounded-full bg-club-primary px-4 py-2 text-sm font-semibold text-white"
+              className="min-h-12 rounded-full bg-action-blue px-4 py-2 text-sm font-semibold text-white"
             >
               Refresh app
             </button>
@@ -394,7 +394,7 @@ export function PwaShell() {
                   type="button"
                   disabled={isOffline || applyingUpdate}
                   onClick={() => { void applyUpdate(); }}
-                  className="min-h-12 rounded-full bg-club-primary px-4 py-2 text-sm font-semibold text-white"
+                  className="min-h-12 rounded-full bg-action-blue px-4 py-2 text-sm font-semibold text-white"
                 >{applyingUpdate ? "Preparing update…" : "Refresh now"}</button>
               </div>
             </div>

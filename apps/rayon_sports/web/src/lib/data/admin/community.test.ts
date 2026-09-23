@@ -6,9 +6,9 @@ import { normalizeAdminFanClubs } from "./fan-clubs";
 const validChapter = {
   id: "chapter-1",
   clubId: 1,
-  name: "Kigali Chapter",
+  name: "Kigali FanClubs",
   region: "Kigali",
-  description: "Official supporter chapter.",
+  description: "Official supporter FanClubs.",
   memberCount: 240,
   eventCount: 12,
   rating: 4.8,
@@ -48,15 +48,15 @@ const validContribution = {
 };
 
 describe("admin community response normalization", () => {
-  it("projects bounded chapter fields and removes private extras", () => {
+  it("projects bounded FanClubs fields and removes private extras", () => {
     const [chapter] = normalizeAdminFanClubs([validChapter]);
 
     expect(chapter).toEqual({
       id: "chapter-1",
       clubId: 1,
-      name: "Kigali Chapter",
+      name: "Kigali FanClubs",
       region: "Kigali",
-      description: "Official supporter chapter.",
+      description: "Official supporter FanClubs.",
       memberCount: 240,
       eventCount: 12,
       rating: 4.8,
@@ -68,7 +68,7 @@ describe("admin community response normalization", () => {
     expect(JSON.stringify(chapter)).not.toContain("private");
   });
 
-  it("rejects malformed chapters, unsafe media, and caps the collection", () => {
+  it("rejects malformed FanClubs, unsafe media, and caps the collection", () => {
     const result = normalizeAdminFanClubs(
       Array.from({ length: 510 }, (_, index) => ({
         ...validChapter,

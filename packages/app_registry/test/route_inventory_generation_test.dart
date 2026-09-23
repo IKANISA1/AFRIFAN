@@ -363,11 +363,8 @@ void main() {
         '/club/news/:articleId',
         '/club/fixtures',
         '/club/fixtures/:matchId',
-        '/club/results',
         '/club/standings',
         '/club/history',
-        '/club/projects',
-        '/club/projects/:projectId',
       },
     );
     const expectedControlledClubHubStates = <String>{

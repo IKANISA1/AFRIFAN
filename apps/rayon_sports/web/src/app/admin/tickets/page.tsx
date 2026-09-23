@@ -377,7 +377,7 @@ export default function AdminTicketsPage() {
           className="admin-surface p-6"
           aria-label="Loading ticket operations"
         >
-          <div className="h-64 animate-pulse rounded-2xl bg-white/5 motion-reduce:animate-none" />
+          <div className="h-64 animate-pulse rounded-2xl bg-[var(--admin-surface-muted)] motion-reduce:animate-none" />
         </div>
       ) : null}
 
@@ -510,7 +510,7 @@ export default function AdminTicketsPage() {
                       <td>
                         <input
                           type="checkbox"
-                          className="h-5 w-5 accent-[var(--club-accent)]"
+                          className="h-5 w-5 accent-[var(--action-neutral)]"
                           checked={selected}
                           disabled={mutationLocked}
                           onChange={(event) =>
@@ -530,7 +530,7 @@ export default function AdminTicketsPage() {
                         <p className="admin-row-meta">{order.userPhone}</p>
                       </td>
                       <td>
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-[var(--admin-text-strong)]">
                           {order.matchTitle}
                         </p>
                         <p className="admin-row-meta">Fixture venue</p>
@@ -546,7 +546,7 @@ export default function AdminTicketsPage() {
                         />
                       </td>
                       <td>
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-[var(--admin-text-strong)]">
                           {formatCurrency(
                             order.amountPaid,
                             activeClub?.currencyCode ?? "USD",
@@ -593,7 +593,7 @@ export default function AdminTicketsPage() {
                               onClick={() =>
                                 queueStatusAction([order], "valid")
                               }
-                              className="admin-action-button !bg-emerald-500/10 !text-emerald-400"
+                              className="admin-action-button !bg-success/10 !text-success"
                             >
                               Validate
                             </button>
@@ -603,7 +603,7 @@ export default function AdminTicketsPage() {
                               type="button"
                               disabled={mutationLocked}
                               onClick={() => queueStatusAction([order], "used")}
-                              className="admin-action-button !bg-blue-500/10 !text-blue-400"
+                              className="admin-action-button !bg-accent/10 !text-accent"
                             >
                               Mark used
                             </button>
@@ -615,7 +615,7 @@ export default function AdminTicketsPage() {
                               onClick={() =>
                                 queueStatusAction([order], "cancelled")
                               }
-                              className="admin-action-button !bg-rose-500/10 !text-rose-400"
+                              className="admin-action-button !bg-error/10 !text-error"
                             >
                               Cancel
                             </button>
@@ -632,7 +632,7 @@ export default function AdminTicketsPage() {
                 <input
                   ref={selectPageRef}
                   type="checkbox"
-                  className="h-5 w-5 accent-[var(--club-accent)]"
+                  className="h-5 w-5 accent-[var(--action-neutral)]"
                   checked={allPageSelected}
                   aria-checked={
                     selectedOnPage > 0 && !allPageSelected
@@ -781,8 +781,8 @@ export default function AdminTicketsPage() {
                 type="button"
                 className={`admin-action-button flex-1 ${
                   pendingAction.status === "cancelled"
-                    ? "admin-action-button-danger !bg-rose-500/15 !text-rose-300"
-                    : "!bg-club-accent !text-white"
+                    ? "admin-action-button-danger !bg-error/15 !text-error"
+                    : "!bg-action-neutral !text-inverse-foreground"
                 }`}
                 onClick={() => {
                   confirmStatusUpdate().catch(() => {});
@@ -816,7 +816,7 @@ export default function AdminTicketsPage() {
               </p>
             </div>
             {pendingAction.status === "cancelled" ? (
-              <p className="rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm text-[var(--admin-danger-text)]">
+              <p className="rounded-xl border border-error/30 bg-error/10 p-4 text-sm text-[var(--admin-danger-text)]">
                 Cancellation is destructive and cannot be undone from this
                 queue. Confirm only after checking the supporter and payment
                 details.
@@ -832,7 +832,7 @@ export default function AdminTicketsPage() {
 function TicketDetail({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--admin-text-muted)]">
+      <dt className="text-xs font-semibold normal-case tracking-normal text-[var(--admin-text-muted)]">
         {label}
       </dt>
       <dd className="mt-1 break-words text-[var(--admin-text-strong)]">

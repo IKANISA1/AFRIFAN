@@ -18,7 +18,7 @@ import 'afri_button.dart';
 /// AfriEmptyView(
 ///   title: 'Matches pending',
 ///   message: 'Upcoming fixtures appear after publication.',
-///   icon: AfriIcons.fanzone,
+///   icon: AfriIcons.predict,
 ///   actionLabel: 'Browse Clubs',
 ///   onAction: () => navigateToClubs(),
 /// )

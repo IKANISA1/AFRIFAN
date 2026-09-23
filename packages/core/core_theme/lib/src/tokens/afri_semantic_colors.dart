@@ -5,9 +5,9 @@ import 'color_tokens.dart';
 /// Semantic color token system for the AFRICLUB platform.
 ///
 /// Provides a theme-aware, composable color API via [ThemeExtension].
-/// Clubs override only their accent/primary/secondary while inheriting
-/// the full semantic vocabulary. Supports `lerp()` for animated theme
-/// transitions and `copyWith()` for per-club overrides.
+/// UI roles follow revolut-design independently of club identity artwork.
+/// Supports `lerp()` for brightness transitions and `copyWith()` for semantic
+/// surface contexts.
 ///
 /// Access via `context.afriSemanticColors` extension.
 /// External brand colors referenced across features.
@@ -24,8 +24,8 @@ abstract final class ExternalBrandColors {
 
   /// Confetti / celebration palette — non-club-specific accent colors.
   static const List<Color> confettiPalette = <Color>[
-    Color(0xFFFFD32A), // gold
-    Color(0xFF5352ED), // indigo
+    ColorTokens.membershipCardVioletLight,
+    ColorTokens.referenceAccountBlue,
     Color(0xFFFF6B6B), // coral
     Color(0xFF1DD1A1), // mint
     Color(0xFF54A0FF), // sky blue
@@ -215,7 +215,7 @@ class AfriSemanticColors extends ThemeExtension<AfriSemanticColors> {
   );
 
   // ─────────────────────────────────────────────────────────────────
-  // copyWith — enables per-club color overrides
+  // copyWith — semantic surface contexts
   // ─────────────────────────────────────────────────────────────────
   @override
   AfriSemanticColors copyWith({

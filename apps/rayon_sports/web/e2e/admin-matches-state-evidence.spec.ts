@@ -19,9 +19,9 @@ const matches = Array.from({ length: 30 }, (_, index) => {
     id: `match-${number}`,
     clubId: 24,
     partnerId: `partner-${number}`,
-    homeTeam: `Rayon Sports ${String(number).padStart(2, "0")}`,
-    awayTeam: `Opponent ${String(number).padStart(2, "0")}`,
-    competition: "Rwanda Premier League",
+    homeTeam: "Rayon Sports FC",
+    awayTeam: "APR FC",
+    competition: `Rwanda Premier League · Round ${String(number).padStart(2, "0")}`,
     venue: "Kigali Pelé Stadium",
     matchDate: new Date(Date.UTC(2026, 7, number, 15, 0, 0)).toISOString(),
     kickoffTime: "15:00:00",
@@ -134,8 +134,14 @@ async function runAdminMatchesMatrix(browser: Browser) {
   // Apply the initial document theme explicitly; verify it at capture.
   await page.emulateMedia({ colorScheme: "dark" });
   let responseMode: ResponseMode = "ready";
+  let savedFixture: Record<string, unknown> | undefined;
 
   await page.route("**/api/admin/matches*", async (route) => {
+    if (route.request().method() === "POST") {
+      savedFixture = route.request().postDataJSON();
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ data: "match-30" }) });
+      return;
+    }
     if (responseMode === "loading") {
       await new Promise<void>(() => {});
       return;
@@ -202,17 +208,23 @@ async function runAdminMatchesMatrix(browser: Browser) {
   responseMode = "ready";
   await open("offline");
   await expectStatus("ready", /match operations confirmed/i);
+  const fixtureCard = page.locator("tr[data-row-id='match-30']").getByRole("group", {
+    name: "Rayon Sports FC versus APR FC", exact: true,
+  });
+  await expect(fixtureCard).toBeVisible();
+  await expect(fixtureCard.locator(".team-card__initials")).toHaveText(["RAY", "APR"]);
+  await expect(fixtureCard.locator("img")).toHaveCount(2);
   await context.setOffline(true);
   await page.evaluate(() => window.dispatchEvent(new Event("offline")));
   await expectStatus("offline", /match workspace is offline/i);
-  await expect(page.getByText(/Rayon Sports 30 vs Opponent 30/i)).toBeVisible();
+  await expect(page.locator("tr[data-row-id='match-30']")).toBeVisible();
   await capture("offline");
   await context.setOffline(false);
 
   responseMode = "permission_denied";
   await open("permission");
   await expectStatus("permission_denied", /match access denied/i);
-  await expect(page.getByText(/Rayon Sports 30 vs Opponent 30/i)).toHaveCount(0);
+  await expect(page.locator("tr[data-row-id='match-30']")).toHaveCount(0);
   await capture("permission_denied");
 
   responseMode = "ready";
@@ -246,7 +258,15 @@ async function runAdminMatchesMatrix(browser: Browser) {
     page.getByRole("heading", { name: /edit fixture/i }),
   ).toBeVisible();
   await expectNoSeriousAxeViolations(page);
+  await expect(page.getByText("Scores, match status and live minutes are managed by the LiveScore integration.")).toBeVisible();
+  await expect(page.locator('input[name="homeScore"], input[name="awayScore"], input[name="liveMinute"], select[name="matchStatus"]')).toHaveCount(0);
   await capture("selected");
+  await page.getByLabel("Competition", { exact: true }).fill("Updated competition");
+  await page.getByRole("button", { name: "Save fixture", exact: true }).click();
+  await expect.poll(() => savedFixture).toMatchObject({
+    id: "match-30", competition: "Updated competition",
+    matchStatus: "live", homeScore: 1, awayScore: 0, liveMinute: 64,
+  });
 
   await open("large-text");
   await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
@@ -304,9 +324,9 @@ async function runAdminMatchesMatrix(browser: Browser) {
   await capture("dark");
 
   const search = page.getByRole("searchbox", { name: /search fixtures/i });
-  await search.fill("Rayon Sports 01");
-  await expect(page.getByText(/Rayon Sports 01 vs Opponent 01/i)).toBeVisible();
-  await expect(page.getByText(/Rayon Sports 30 vs Opponent 30/i)).toHaveCount(0);
+  await search.fill("Round 01");
+  await expect(page.locator("tr[data-row-id='match-1']")).toBeVisible();
+  await expect(page.locator("tr[data-row-id='match-30']")).toHaveCount(0);
   await search.fill("");
   await page.getByRole("button", { name: /sort by fixture/i }).click();
   await page.getByRole("button", { name: /go to next page/i }).click();
@@ -331,7 +351,7 @@ async function runAdminMatchesMatrix(browser: Browser) {
   responseMode = "loading";
   await page.getByRole("button", { name: /refresh fixtures/i }).click();
   await expectStatus("syncing", /refreshing match operations/i);
-  await expect(page.getByText(/Rayon Sports 30 vs Opponent 30/i)).toBeVisible();
+  await expect(page.locator("tr[data-row-id='match-30']")).toBeVisible();
   await capture("syncing");
 
   responseMode = "ready";
@@ -340,13 +360,13 @@ async function runAdminMatchesMatrix(browser: Browser) {
   responseMode = "conflict";
   await page.getByRole("button", { name: /refresh fixtures/i }).click();
   await expectStatus("conflict", /fixture records changed/i);
-  await expect(page.getByText(/Rayon Sports 30 vs Opponent 30/i)).toBeVisible();
+  await expect(page.locator("tr[data-row-id='match-30']")).toBeVisible();
   await capture("conflict");
 
   responseMode = "security_timeout";
   await open("security-timeout");
   await expectStatus("security_timeout", /match request timed out/i);
-  await expect(page.getByText(/Rayon Sports 30 vs Opponent 30/i)).toHaveCount(0);
+  await expect(page.locator("tr[data-row-id='match-30']")).toHaveCount(0);
   await capture("security_timeout");
 
   responseMode = "ready";

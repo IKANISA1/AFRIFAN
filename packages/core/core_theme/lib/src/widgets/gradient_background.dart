@@ -31,7 +31,7 @@ class GradientBackground extends StatelessWidget {
           );
 
     final route = Uri.tryParse(routePath ?? '')?.path;
-    final overview = const ['/home', '/club', '/fanzone'].contains(route);
+    final overview = const ['/home', '/club', '/predict'].contains(route);
     final auth = const ['/auth/phone', '/auth/otp'].contains(route);
     final theme = Theme.of(context);
     final semantic = context.afriSemanticColors;

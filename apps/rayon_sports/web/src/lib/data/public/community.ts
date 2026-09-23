@@ -52,7 +52,8 @@ function mapMembershipRow(row: Record<string, unknown>): MembershipPackage {
         .filter(Boolean)
         .slice(0, 4)
     : [];
-  const annualPrice = safeNumber(row.annual_price, safeNumber(row.price, 0));
+  const publishedAnnualPrice = safeNumber(row.annual_price, 0);
+  const annualPrice = publishedAnnualPrice === 0 ? safeNumber(row.price, 0) : publishedAnnualPrice;
 
   return {
     id: toIdString(row.id, crypto.randomUUID()),
@@ -78,9 +79,9 @@ function mapMembershipRow(row: Record<string, unknown>): MembershipPackage {
 function mapFanClubRow(row: Record<string, unknown>): FanClubItem {
   return {
     id: toIdString(row.id, crypto.randomUUID()),
-    name: safeString(row.name, "Supporter chapter"),
+    name: safeString(row.name, "Supporter FanClubs"),
     region: safeString(row.region, "Official"),
-    description: safeString(row.description, "An official supporter chapter."),
+    description: safeString(row.description, "An official supporter FanClubs."),
     memberCount: safeNumber(row.member_count, 0),
     eventCount: safeNumber(row.event_count, 0),
     rating: safeNumber(row.rating, 0),
@@ -178,8 +179,6 @@ async function loadMembershipPackages(): Promise<MembershipPackage[]> {
     )
     .eq("club_id", activeClub.numericId)
     .eq("is_active", true)
-    .eq("benefit_scope", "physical_membership")
-    .eq("store_billing_required", false)
     .order("sort_order", { ascending: true })
     .limit(6);
 
@@ -260,7 +259,31 @@ async function loadContributionGroups(): Promise<ContributionGroup[]> {
     return [];
   }
 
-  return data.map((row) => mapContributionGroupRow(row));
+  // Reuse existing published project imagery without adding a second CMS.
+  const routes = new Map<string, string>();
+  for (const row of data as Record<string, unknown>[]) {
+    const id = String(row.id);
+    routes.set(`/contribute/group/${encodeURIComponent(id)}`, id);
+    routes.set(`/club/projects/${encodeURIComponent(id)}`, id);
+  }
+  const images = new Map<string, string>();
+  try {
+    const { data: banners } = await client.from("home_banners")
+      .select("route,image_url")
+      .eq("club_id", activeClub.numericId)
+      .eq("is_active", true)
+      .in("distribution", ["web", "both"])
+      .in("route", [...routes.keys()])
+      .order("sort_order");
+    for (const banner of (banners ?? []) as Record<string, unknown>[]) {
+      const id = routes.get(String(banner.route));
+      const image = sanitizeMediaUrl(banner.image_url, "");
+      if (id && image && !images.has(id)) images.set(id, image);
+    }
+  } catch { /* Optional artwork must not hide published financial totals. */ }
+  return (data as Record<string, unknown>[]).map((row) => ({ ...mapContributionGroupRow(row),
+    ...(images.has(String(row.id)) ? { imageUrl: images.get(String(row.id)) } : {}),
+  }));
 }
 
 export const getContributionGroupsStrict = cache(

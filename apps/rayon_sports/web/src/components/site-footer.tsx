@@ -76,15 +76,15 @@ export function SiteFooter({
                 />
               </div>
               <div className="min-w-0 max-w-full">
-                <p className="break-words font-display text-2xl font-black uppercase italic leading-none tracking-tighter text-white">
+                <p className="break-words font-display text-2xl font-medium normal-case italic leading-none tracking-tighter text-white">
                   {club.shortName}
                 </p>
-                <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.3em] text-white/80">
+                <p className="mt-1 text-[10px] font-medium normal-case tracking-normal text-white/80">
                   {club.nickname || club.shortName}
                 </p>
               </div>
             </Link>
-            <p className="mb-10 max-w-full break-words text-sm font-bold leading-relaxed text-white/70">
+            <p className="mb-10 max-w-full break-words text-sm font-medium leading-relaxed text-white/70">
               Follow {club.clubName} through fixtures, club news and supporter activities.
             </p>
             <div className="flex flex-wrap gap-[16px]">
@@ -96,7 +96,7 @@ export function SiteFooter({
                     href={entry.href ?? "#"}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex h-[40px] w-[40px] items-center justify-center rounded-full border border-white/10 text-white transition-all hover:bg-[var(--club-accent)] hover:text-black"
+                    className="flex h-[40px] w-[40px] items-center justify-center rounded-full border border-white/10 text-white transition-all hover:bg-[var(--action-neutral)] hover:text-black"
                     aria-label={entry.key}
                   >
                     <Icon size={18} />
@@ -111,7 +111,7 @@ export function SiteFooter({
             <div className="site-footer-navigation grid grid-cols-2 gap-12 sm:grid-cols-4">
               {footerNavigationGroups.map((group) => (
                 <div key={group.title} className="min-w-0 [overflow-wrap:anywhere]">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-white mb-8">
+                  <p className="text-[10px] font-medium normal-case tracking-normal text-white mb-8">
                     {group.title}
                   </p>
                   <ul className="space-y-4">
@@ -119,7 +119,7 @@ export function SiteFooter({
                       <li key={link.href}>
                         <Link
                           href={link.href}
-                          className="text-sm font-bold text-white/70 hover:text-white transition-colors uppercase tracking-widest"
+                          className="text-sm font-medium text-white/70 hover:text-white transition-colors normal-case tracking-normal"
                         >
                           {link.label}
                         </Link>
@@ -134,7 +134,7 @@ export function SiteFooter({
 
         {/* Bottom Bar */}
         <div className="mt-20 border-t border-white/5 pt-12 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-wrap gap-8 text-[10px] font-bold uppercase tracking-[0.2em] text-white/70">
+          <div className="flex flex-wrap gap-8 text-[10px] font-medium normal-case tracking-normal text-white/70">
             <span>
               © {new Date().getFullYear()} {club.clubName}
             </span>
@@ -160,7 +160,7 @@ export function SiteFooter({
               Account deletion
             </Link>
           </div>
-          <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.3em] text-white/70">
+          <div className="flex items-center gap-4 text-[10px] font-medium normal-case tracking-normal text-white/70">
             <span>Powered by</span>
             <span className="text-white">AFRICLUB</span>
           </div>

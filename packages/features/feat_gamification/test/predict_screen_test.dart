@@ -5,7 +5,7 @@ import 'package:feat_gamification/src/predict/predict_models.dart';
 import 'package:feat_gamification/src/predict/predict_repository.dart';
 import 'package:feat_gamification/src/predict/predict_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/semantics.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -284,6 +284,59 @@ void main() {
       await tester.pump();
       expect(tester.takeException(), isNull);
       expect(find.textContaining('Create a new'), findsNothing);
+      if (pick.evaluate().isNotEmpty) {
+        final choices = [
+          for (final selection in PredictSelection.values)
+            tester.getRect(
+              find.byKey(ValueKey('predict-fixture-${selection.name}')),
+            ),
+        ];
+        for (final rect in choices) {
+          expect(rect.height, greaterThanOrEqualTo(48));
+          expect(rect.height, closeTo(choices.first.height, .01));
+          expect(rect.width, closeTo(choices.first.width, .01));
+          if (large) {
+            expect(rect.left, closeTo(choices.first.left, .01));
+          } else {
+            expect(rect.top, closeTo(choices.first.top, .01));
+          }
+        }
+        if (large) {
+          for (var i = 1; i < choices.length; i++) {
+            expect(choices[i].top, greaterThanOrEqualTo(choices[i - 1].bottom));
+          }
+        }
+        expect(find.text('RAY'), findsOneWidget);
+        expect(find.text('APR'), findsOneWidget);
+        for (final label in ['RAY', 'Draw', 'APR']) {
+          final paragraph = tester.renderObject<RenderParagraph>(
+            find.text(label),
+          );
+          expect(
+            paragraph.getBoxesForSelection(
+              TextSelection(baseOffset: 0, extentOffset: label.length),
+            ),
+            hasLength(1),
+            reason: '$label must stay on one line',
+          );
+        }
+      }
+      if (large) {
+        // Review the reflowed choices after a real scroll, so all three
+        // enlarged targets are visible in the narrow-phone capture.
+        await tester.ensureVisible(
+          find.byKey(const ValueKey('predict-fixture-away')),
+        );
+        await tester.pumpAndSettle();
+        expect(
+          tester
+              .getBottomRight(
+                find.byKey(const ValueKey('predict-fixture-away')),
+              )
+              .dy,
+          lessThanOrEqualTo(size.height),
+        );
+      }
       await expectLater(
         find.byKey(const ValueKey('predict-golden')),
         matchesGoldenFile(

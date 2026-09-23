@@ -150,7 +150,7 @@ function ChannelState({
     <span
       className={
         enabled
-          ? "inline-flex min-h-12 min-w-12 items-center justify-center text-emerald-400"
+          ? "inline-flex min-h-12 min-w-12 items-center justify-center text-success"
           : "inline-flex min-h-12 min-w-12 items-center justify-center text-[var(--admin-zinc-500)]"
       }
       title={`${channel} ${enabled ? "enabled" : "disabled"}`}
@@ -627,8 +627,8 @@ export default function AdminFeaturesPage() {
                               }}
                               className={`admin-action-button min-h-12 disabled:cursor-not-allowed disabled:opacity-60 ${
                                 feature.isEnabled
-                                  ? "!bg-rose-500/10 !text-rose-400"
-                                  : "!bg-emerald-500/10 !text-emerald-400"
+                                  ? "!bg-error/10 !text-error"
+                                  : "!bg-success/10 !text-success"
                               }`}
                               aria-label={`${feature.isEnabled ? "Disable" : "Enable"} ${feature.displayName}`}
                             >
@@ -667,7 +667,7 @@ export default function AdminFeaturesPage() {
         >
           <div className="space-y-6 p-4">
             {!canEdit ? (
-              <p className="rounded-2xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm leading-6 text-[var(--admin-text-strong)]">
+              <p className="rounded-2xl border border-warning/30 bg-warning/10 p-4 text-sm leading-6 text-[var(--admin-text-strong)]">
                 This role has read-only access to feature configuration.
               </p>
             ) : null}
@@ -676,7 +676,7 @@ export default function AdminFeaturesPage() {
               className="space-y-6 disabled:opacity-70"
             >
               <div className="grid gap-4">
-                <label className="grid gap-2 text-sm font-semibold text-white">
+                <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
                   Display name
                   <input
                     value={draftFeature.displayName}
@@ -690,7 +690,7 @@ export default function AdminFeaturesPage() {
                     className="admin-input min-h-12"
                   />
                 </label>
-                <label className="grid gap-2 text-sm font-semibold text-white">
+                <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
                   Description
                   <textarea
                     value={draftFeature.description ?? ""}
@@ -705,7 +705,7 @@ export default function AdminFeaturesPage() {
                   />
                 </label>
                 <div className="grid gap-4 md:grid-cols-2">
-                  <label className="grid gap-2 text-sm font-semibold text-white">
+                  <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
                     Category
                     <input
                       value={draftFeature.category ?? ""}
@@ -719,7 +719,7 @@ export default function AdminFeaturesPage() {
                       className="admin-input min-h-12"
                     />
                   </label>
-                  <label className="grid gap-2 text-sm font-semibold text-white">
+                  <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
                     Visibility state
                     <select
                       value={draftFeature.visibilityState}
@@ -738,7 +738,7 @@ export default function AdminFeaturesPage() {
                     </select>
                   </label>
                 </div>
-                <label className="flex min-h-12 items-center gap-3 rounded-[20px] border border-[var(--admin-border)] bg-white/5 px-4 py-3">
+                <label className="flex min-h-12 items-center gap-3 rounded-[20px] border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] px-4 py-3">
                   <input
                     type="checkbox"
                     checked={draftFeature.isEnabled}
@@ -748,26 +748,26 @@ export default function AdminFeaturesPage() {
                         isEnabled: event.target.checked,
                       })
                     }
-                    className="h-5 w-5 accent-club-accent"
+                    className="h-5 w-5 accent-action-neutral"
                   />
-                  <span className="text-sm font-semibold text-white">
+                  <span className="text-sm font-semibold text-[var(--admin-text-strong)]">
                     Feature enabled in this resolved scope
                   </span>
                 </label>
               </div>
 
               <section className="glass-panel rounded-[24px] border border-[var(--admin-border)] p-4">
-                <h3 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-[var(--admin-zinc-500)]">
+                <h3 className="mb-4 text-xs font-medium normal-case tracking-normal text-[var(--admin-zinc-500)]">
                   Channel settings
                 </h3>
                 <div className="space-y-4">
                   {draftFeature.channels.map((channel, index) => (
                     <div
                       key={channel.channel}
-                      className="grid gap-4 rounded-[20px] border border-[var(--admin-border)] bg-white/5 p-4"
+                      className="grid gap-4 rounded-[20px] border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] p-4"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-4">
-                        <p className="text-sm font-semibold uppercase text-white">
+                        <p className="text-sm font-semibold normal-case text-[var(--admin-text-strong)]">
                           {channel.channel}
                         </p>
                         <div className="flex flex-wrap gap-4 text-xs text-[var(--admin-zinc-400)]">
@@ -806,7 +806,7 @@ export default function AdminFeaturesPage() {
                                     ),
                                   })
                                 }
-                                className="h-5 w-5 accent-club-accent"
+                                className="h-5 w-5 accent-action-neutral"
                               />
                               {label}
                             </label>
@@ -814,7 +814,7 @@ export default function AdminFeaturesPage() {
                         </div>
                       </div>
                       <div className="grid gap-4 md:grid-cols-3">
-                        <label className="grid gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--admin-zinc-400)]">
+                        <label className="grid gap-2 text-xs font-semibold normal-case tracking-normal text-[var(--admin-zinc-400)]">
                           Sort order
                           <input
                             type="number"
@@ -841,7 +841,7 @@ export default function AdminFeaturesPage() {
                             className="admin-input min-h-12"
                           />
                         </label>
-                        <label className="grid gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--admin-zinc-400)]">
+                        <label className="grid gap-2 text-xs font-semibold normal-case tracking-normal text-[var(--admin-zinc-400)]">
                           Route key
                           <input
                             value={channel.routeKey ?? ""}
@@ -863,7 +863,7 @@ export default function AdminFeaturesPage() {
                             className="admin-input min-h-12"
                           />
                         </label>
-                        <label className="grid gap-2 text-xs font-semibold uppercase tracking-wider text-[var(--admin-zinc-400)]">
+                        <label className="grid gap-2 text-xs font-semibold normal-case tracking-normal text-[var(--admin-zinc-400)]">
                           Placement key
                           <input
                             value={channel.placementKey ?? ""}
@@ -893,11 +893,11 @@ export default function AdminFeaturesPage() {
               </section>
 
               <section className="glass-panel rounded-[24px] border border-[var(--admin-border)] p-4">
-                <h3 className="mb-4 text-[10px] font-bold uppercase tracking-widest text-[var(--admin-zinc-500)]">
+                <h3 className="mb-4 text-xs font-medium normal-case tracking-normal text-[var(--admin-zinc-500)]">
                   Access rules
                 </h3>
                 <div className="grid gap-4">
-                  <label className="flex min-h-12 items-center gap-3 rounded-[20px] border border-[var(--admin-border)] bg-white/5 px-4 py-3">
+                  <label className="flex min-h-12 items-center gap-3 rounded-[20px] border border-[var(--admin-border)] bg-[var(--admin-surface-muted)] px-4 py-3">
                     <input
                       type="checkbox"
                       checked={draftFeature.rules?.authRequired ?? false}
@@ -910,13 +910,13 @@ export default function AdminFeaturesPage() {
                           },
                         })
                       }
-                      className="h-5 w-5 accent-club-accent"
+                      className="h-5 w-5 accent-action-neutral"
                     />
-                    <span className="text-sm font-semibold text-white">
+                    <span className="text-sm font-semibold text-[var(--admin-text-strong)]">
                       Authentication required
                     </span>
                   </label>
-                  <label className="grid gap-2 text-sm font-semibold text-white">
+                  <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
                     Role restrictions
                     <input
                       value={(draftFeature.rules?.roleRestrictions ?? []).join(
@@ -938,7 +938,7 @@ export default function AdminFeaturesPage() {
                       placeholder="member, vip"
                     />
                   </label>
-                  <label className="grid gap-2 text-sm font-semibold text-white">
+                  <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
                     Dependency rules JSON
                     <textarea
                       value={dependencyRulesText}
@@ -958,13 +958,13 @@ export default function AdminFeaturesPage() {
                     <p
                       id="feature-json-error"
                       role="alert"
-                      className="text-sm font-semibold text-rose-400"
+                      className="text-sm font-semibold text-error"
                     >
                       {jsonError}
                     </p>
                   ) : null}
                   <div className="grid gap-4 md:grid-cols-2">
-                    <label className="grid gap-2 text-sm font-semibold text-white">
+                    <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
                       Schedule start
                       <input
                         type="datetime-local"
@@ -985,7 +985,7 @@ export default function AdminFeaturesPage() {
                         className="admin-input min-h-12"
                       />
                     </label>
-                    <label className="grid gap-2 text-sm font-semibold text-white">
+                    <label className="grid gap-2 text-sm font-semibold text-[var(--admin-text-strong)]">
                       Schedule end
                       <input
                         type="datetime-local"
@@ -1019,7 +1019,7 @@ export default function AdminFeaturesPage() {
                     void saveDraftFeature();
                   }}
                   disabled={mutationLocked}
-                  className="admin-action-button min-h-12 flex-1 !bg-club-primary !text-white hover:!bg-club-primary-light disabled:cursor-not-allowed disabled:opacity-60"
+                  className="admin-action-button min-h-12 flex-1 !bg-action-blue !text-white hover:!bg-action-blue-hover disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {saving ? "Saving…" : "Save feature"}
                 </button>

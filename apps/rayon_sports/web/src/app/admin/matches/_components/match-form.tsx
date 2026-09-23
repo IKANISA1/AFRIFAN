@@ -1,4 +1,6 @@
 "use client";
+import { TeamSelect } from "@/components/team-select";
+import { fixtureInitials } from "@/lib/team-identity";
 
 import type { Dispatch, SetStateAction } from "react";
 import type { MatchFormState } from "./match-form-state";
@@ -55,12 +57,10 @@ export function MatchForm({
         vipPrice: Number(formData.get("vipPrice") ?? 0),
         capacity: Number(formData.get("capacity") ?? 0),
         imageUrl: String(formData.get("imageUrl") ?? ""),
-        matchStatus: String(formData.get("matchStatus") ?? "scheduled"),
-        homeScore: Number(formData.get("homeScore") ?? 0),
-        awayScore: Number(formData.get("awayScore") ?? 0),
-        liveMinute: String(formData.get("liveMinute") ?? "").trim()
-          ? Number(formData.get("liveMinute"))
-          : null,
+        matchStatus: form.matchStatus,
+        homeScore: Number(form.homeScore),
+        awayScore: Number(form.awayScore),
+        liveMinute: form.liveMinute.trim() ? Number(form.liveMinute) : null,
         matchSummary: String(formData.get("matchSummary") ?? ""),
         isFeatured: formData.get("isFeatured") === "on",
       });
@@ -92,7 +92,7 @@ export function MatchForm({
   return (
     <form action={submitForm} className="glass-panel grid gap-4 rounded-[32px] p-6">
       <div className="flex items-center justify-between gap-3">
-        <p className="font-display text-3xl font-bold uppercase leading-none">
+        <p className="font-display text-3xl font-medium normal-case leading-none">
           {form.id ? "Edit fixture" : "New fixture"}
         </p>
         <div className="flex items-center gap-2">
@@ -100,7 +100,7 @@ export function MatchForm({
             <button
               type="button"
               onClick={onCancel}
-              className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+              className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)]"
             >
               Close
             </button>
@@ -109,7 +109,7 @@ export function MatchForm({
             <button
               type="button"
               onClick={() => setForm(emptyForm)}
-              className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/8"
+              className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)]"
             >
               Clear
             </button>
@@ -117,14 +117,8 @@ export function MatchForm({
         </div>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="grid gap-2 text-sm">
-          Home team
-          <input name="homeTeam" {...field("homeTeam")} className="dashboard-input" />
-        </label>
-        <label className="grid gap-2 text-sm">
-          Away team
-          <input name="awayTeam" required {...field("awayTeam")} className="dashboard-input" />
-        </label>
+        <TeamSelect name="homeTeam" value={form.homeTeam} onChange={value => setForm(current => ({...current, homeTeam: value}))} label="First team" />
+        <TeamSelect name="awayTeam" value={form.awayTeam} onChange={value => setForm(current => ({...current, awayTeam: value}))} label="Second team" />
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="grid gap-2 text-sm">
@@ -161,17 +155,6 @@ export function MatchForm({
         </label>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="grid gap-2 text-sm">
-          Match status
-          <select name="matchStatus" {...field("matchStatus")} className="dashboard-input">
-            <option value="scheduled">Scheduled</option>
-            <option value="live">Live</option>
-            <option value="halftime">Half-time</option>
-            <option value="fulltime">Full-time</option>
-            <option value="postponed">Postponed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
-        </label>
         <AdminImageField
           label="Hero image"
           name="imageUrl"
@@ -183,25 +166,20 @@ export function MatchForm({
             }))
           }
           mediaKind="match"
-          subject={`${form.homeTeam || "Home"} vs ${form.awayTeam || "Away"}`}
+          subject={fixtureInitials(form.homeTeam, form.awayTeam)}
           previewAlt="Fixture hero preview"
-          promptPlaceholder="Example: Intense matchday hero image for Home vs Away under stadium lights, premium sports-poster energy, room for headline overlay."
+          promptPlaceholder="Matchday photograph under stadium lights."
           className="sm:col-span-2"
         />
       </div>
-      <div className="grid gap-4 sm:grid-cols-3">
-        <label className="grid gap-2 text-sm">
-          Home score
-          <input type="number" name="homeScore" {...field("homeScore")} className="dashboard-input" />
-        </label>
-        <label className="grid gap-2 text-sm">
-          Away score
-          <input type="number" name="awayScore" {...field("awayScore")} className="dashboard-input" />
-        </label>
-        <label className="grid gap-2 text-sm">
-          Live minute
-          <input type="number" name="liveMinute" {...field("liveMinute")} className="dashboard-input" />
-        </label>
+      <div className="rounded-2xl bg-[var(--admin-surface-muted)] p-4 text-sm">
+        <p className="font-medium">Automatic match results</p>
+        <p className="mt-2 text-[var(--admin-text-muted)]">
+          Scores, match status and live minutes are managed by the LiveScore integration.
+        </p>
+        {form.id ? (
+          <p className="mt-2">{form.matchStatus} · {form.homeScore}–{form.awayScore}</p>
+        ) : null}
       </div>
       <label className="grid gap-2 text-sm">
         Match summary
@@ -213,7 +191,7 @@ export function MatchForm({
         />
       </label>
       <div className="grid gap-3 sm:grid-cols-2">
-        <label className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-white/5 px-4 py-3 text-sm">
+        <label className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-[var(--admin-surface-muted)] px-4 py-3 text-sm">
           <input
             type="checkbox"
             name="isOnSale"
@@ -227,7 +205,7 @@ export function MatchForm({
           />
           Tickets on sale
         </label>
-        <label className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-white/5 px-4 py-3 text-sm">
+        <label className="flex items-center gap-3 rounded-[22px] border border-border-soft bg-[var(--admin-surface-muted)] px-4 py-3 text-sm">
           <input
             type="checkbox"
             name="isFeatured"
@@ -244,7 +222,7 @@ export function MatchForm({
       </div>
       <button
         type="submit"
-        className="min-h-12 rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary"
+        className="min-h-12 rounded-full bg-action-blue px-5 py-3 font-semibold text-white transition hover:bg-action-blue-hover"
       >
         {form.id ? "Save fixture" : "Create fixture"}
       </button>

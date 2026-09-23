@@ -4,7 +4,7 @@ import 'package:core_network/core_network.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-enum PredictAdminAction { settings, prepare, confirmResult, settle, refund }
+enum PredictAdminAction { settings, prepare, settle, refund }
 
 class AdminPredictFixture {
   AdminPredictFixture(Map<String, dynamic> row)
@@ -32,7 +32,7 @@ class AdminPredictFixture {
   final int? stake, homeScore, awayScore;
   final bool confirmed;
   bool get completed => status == 'settled' || status == 'refunded';
-  bool get canConfirm =>
+  bool get hasFinalScore =>
       !completed &&
       fixtureStatus == 'finished' &&
       homeScore != null &&
@@ -91,7 +91,6 @@ class AdminPredictRepository implements AdminPredictGateway {
     final rpc = switch (action) {
       PredictAdminAction.settings => 'predict_admin_settings',
       PredictAdminAction.prepare => 'predict_admin_prepare',
-      PredictAdminAction.confirmResult => 'predict_admin_confirm_result',
       PredictAdminAction.settle ||
       PredictAdminAction.refund => 'predict_admin_settle',
     };

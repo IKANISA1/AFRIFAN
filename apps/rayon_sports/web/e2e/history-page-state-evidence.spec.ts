@@ -18,7 +18,7 @@ type ResponseMode =
 const confirmedMoments = [
   {
     id: "founding",
-    title: "The founding chapter",
+    title: "The founding moment",
     body: "Supporters established the club and built its first matchday identity.",
   },
   {
@@ -198,7 +198,7 @@ test("history proves all sixteen applicable rendered states", async ({
   await page.evaluate(() => window.dispatchEvent(new Event("offline")));
   await expectStatus(page, "offline", /you are offline/i);
   await expect(
-    page.getByRole("heading", { name: "The founding chapter" }),
+    page.getByRole("heading", { name: "The founding moment" }),
   ).toBeVisible();
   await capture(page, "offline_dark");
   await context.setOffline(false);
@@ -206,7 +206,7 @@ test("history proves all sixteen applicable rendered states", async ({
   mode = "permission_denied";
   await openHistory(page, "permission");
   await expectStatus(page, "permission_denied", /history access denied/i);
-  await expect(page.getByText("The founding chapter")).toHaveCount(0);
+  await expect(page.getByText("The founding moment")).toHaveCount(0);
   await capture(page, "permission_denied_dark");
 
   mode = "ready";
@@ -237,7 +237,7 @@ test("history proves all sixteen applicable rendered states", async ({
   });
 
   const secondChapter = page.getByRole("button", {
-    name: /chapter\s*2\s*the first title/i,
+    name: /moment\s*2\s*the first title/i,
   });
   await secondChapter.click();
   await expect(secondChapter).toHaveAttribute("aria-pressed", "true");
@@ -290,7 +290,7 @@ test("history proves all sixteen applicable rendered states", async ({
     await page
       .locator(".history-surface")
       .evaluate((element) => getComputedStyle(element).color),
-  ).toBe("rgb(248, 250, 252)");
+  ).toBe("rgb(244, 244, 244)");
   await expectNoSeriousAxeViolations(page);
   await capture(page, "dark_dark");
 
@@ -304,7 +304,7 @@ test("history proves all sixteen applicable rendered states", async ({
     await page
       .locator(".history-surface")
       .evaluate((element) => getComputedStyle(element).color),
-  ).toBe("rgb(15, 23, 42)");
+  ).toBe("rgb(25, 28, 31)");
   await expectNoSeriousAxeViolations(page);
   await capture(page, "light_light");
 
@@ -319,7 +319,7 @@ test("history proves all sixteen applicable rendered states", async ({
   await page.getByRole("button", { name: /refresh history/i }).click();
   await expectStatus(page, "syncing", /refreshing history/i);
   await expect(
-    page.getByRole("heading", { name: "The founding chapter" }),
+    page.getByRole("heading", { name: "The founding moment" }),
   ).toBeVisible();
   await expect(
     page.getByRole("button", { name: /refresh history/i }),
@@ -340,7 +340,7 @@ test("history proves all sixteen applicable rendered states", async ({
   await openHistory(page, "targets");
   await expectStatus(page, "ready", /history confirmed/i);
   const targetSizes = await page
-    .locator(".history-action, .history-chapters button")
+    .locator(".history-action, .history-FanClubs button")
     .evaluateAll((elements) =>
       elements.map((element) => {
         const rect = element.getBoundingClientRect();

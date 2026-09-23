@@ -1,6 +1,7 @@
 import 'package:core_auth/core_auth.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:feat_membership/src/providers/membership_mutation_gateway.dart';
 import 'package:feat_membership/src/providers/membership_provider.dart';
 import 'package:feat_membership/src/screens/membership_screen.dart';
@@ -9,60 +10,75 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  setUp(() => ConnectivityService.setOnlineForTest(true));
+  setUp(() {
+    ConnectivityService.setOnlineForTest(true);
+    AfriCountryCatalog.withCountries(const [
+      AfriCountry(
+        isoCode: 'RW',
+        dialCode: '+250',
+        name: 'Rwanda',
+        flagEmoji: '',
+        currencyCode: 'RWF',
+        currencyName: 'Rwandan franc',
+        momoUssdTemplate: '*182*{recipient}*{amount}#',
+      ),
+    ]);
+  });
   tearDown(() => ConnectivityService.setOnlineForTest(true));
 
-  testWidgets('free fan activation uses only the free membership RPC gateway', (
-    tester,
-  ) async {
+  testWidgets('there is no free membership activation', (tester) async {
     final gateway = _RecordingMembershipGateway();
     await _pumpMembership(
       tester,
       gateway: gateway,
-      package: const <String, dynamic>{
-        'id': 'official-fan',
+      package: const {
+        'id': 'free',
         'tier': 'fan',
-        'title': 'Fan',
         'annual_price': 0,
         'benefits': <String>[],
       },
     );
-
-    await _activate(tester, 'fan');
-
-    expect(gateway.freeActivationCalls, 1);
-    expect(gateway.physicalApplications, isEmpty);
-  });
-
-  testWidgets('digital offer cannot enter the external payment flow', (
-    tester,
-  ) async {
-    final gateway = _RecordingMembershipGateway();
-    await _pumpMembership(
-      tester,
-      gateway: gateway,
-      package: const <String, dynamic>{
-        'id': 'remote-digital',
-        'tier': 'gold',
-        'title': 'Digital Gold',
-        'annual_price': 1000,
-        'benefits': <String>['In-app entitlement'],
-        'benefit_scope': 'digital_entitlement',
-        'store_billing_required': true,
-      },
+    expect(
+      find.byKey(const ValueKey<String>('membership-action-fan')),
+      findsNothing,
     );
-
-    await _activate(tester, 'gold');
-
-    expect(gateway.freeActivationCalls, 0);
-    expect(gateway.physicalApplications, isEmpty);
+    expect(gateway.selectedTiers, isEmpty);
   });
+  testWidgets(
+    'any paid tier opens MoMo with the server price and no application',
+    (tester) async {
+      final gateway = _RecordingMembershipGateway();
+      final launches = <String>[];
+      await _pumpMembership(
+        tester,
+        gateway: gateway,
+        package: const {
+          'id': 'paid',
+          'tier': 'gold',
+          'annual_price': 500,
+          'benefits': <String>[],
+          'benefit_scope': 'unclassified',
+        },
+        paymentLauncher: (recipient, amount, country) async {
+          launches.add('$country/$recipient/$amount');
+          return true;
+        },
+      );
+      await _activate(tester, 'gold');
+      expect(gateway.selectedTiers, ['gold']);
+      expect(launches, ['RW/12345/1000']);
+      expect(find.textContaining('application'), findsNothing);
+      expect(find.text('Pending verification'), findsNothing);
+      await tester.pumpWidget(const SizedBox.shrink());
+    },
+  );
 }
 
 Future<void> _pumpMembership(
   WidgetTester tester, {
   required _RecordingMembershipGateway gateway,
   required Map<String, dynamic> package,
+  Future<bool> Function(String, int, String)? paymentLauncher,
 }) async {
   tester.view.physicalSize = const Size(390, 844);
   tester.view.devicePixelRatio = 1;
@@ -72,7 +88,7 @@ Future<void> _pumpMembership(
   final snapshot = MembershipSnapshot(
     packages: <Map<String, dynamic>>[package],
     membership: null,
-    applications: const <Map<String, dynamic>>[],
+
     contributions: const [],
   );
   await tester.pumpWidget(
@@ -92,7 +108,7 @@ Future<void> _pumpMembership(
       ],
       child: MaterialApp(
         theme: ClubTheme.from(ClubConfig.fallback()),
-        home: const MembershipScreen(),
+        home: MembershipScreen(paymentLauncher: paymentLauncher),
       ),
     ),
   );
@@ -112,30 +128,18 @@ Future<void> _activate(WidgetTester tester, String tier) async {
 }
 
 class _RecordingMembershipGateway implements MembershipMutationGateway {
-  int freeActivationCalls = 0;
-  final List<({String tier, String reference, String? chapter})>
-  physicalApplications = [];
-
+  final selectedTiers = <String>[];
   @override
-  Future<Map<String, dynamic>> activateFreeMembership() async {
-    freeActivationCalls += 1;
-    return <String, dynamic>{'id': 'membership-1', 'tier': 'fan'};
-  }
-
-  @override
-  Future<Map<String, dynamic>> submitPhysicalApplication({
+  Future<Map<String, dynamic>> preparePayment({
     required String tier,
-    required String paymentReference,
-    String? chapter,
+    required int clubId,
   }) async {
-    physicalApplications.add((
-      tier: tier,
-      reference: paymentReference,
-      chapter: chapter,
-    ));
-    return <String, dynamic>{
-      'id': 'application-1',
-      'metadata': <String, dynamic>{'amount': 1000},
+    selectedTiers.add(tier);
+    return {
+      'id': 'order-1',
+      'amount': 1000,
+      'recipient_code': '12345',
+      'country': 'RW',
     };
   }
 }

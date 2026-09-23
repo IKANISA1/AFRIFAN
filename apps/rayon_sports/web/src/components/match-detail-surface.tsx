@@ -1,5 +1,7 @@
 "use client";
 
+import { FixtureTeams } from "@/components/team-card";
+
 import Link from "next/link";
 import {
   type PointerEvent,
@@ -407,7 +409,7 @@ export function MatchDetailSurface({
               <p className="match-detail-eyebrow">
                 {copy.eyebrow} · {match.competition}
               </p>
-              <h1>{match.homeTeam} <span>vs</span> {match.awayTeam}</h1>
+              <h1><FixtureTeams homeTeam={match.homeTeam} awayTeam={match.awayTeam} /></h1>
               <p className="match-detail-score">
                 {isPlayed ? `${match.homeScore} — ${match.awayScore}` : "VS"}
               </p>

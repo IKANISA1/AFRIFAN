@@ -20,19 +20,19 @@ export function DisabledFeatureFallback({
   return (
     <div className="page-shell section-grid py-16">
       <section className="glass-panel mx-auto max-w-3xl rounded-[34px] p-8 text-center sm:p-10">
-        <p className="font-mono text-xs uppercase tracking-[0.28em] text-club-accent">
+        <p className="font-mono text-xs normal-case tracking-normal text-action-neutral">
           Feature availability
         </p>
-        <h1 className="mt-4 font-display text-4xl font-bold uppercase text-white sm:text-5xl">
+        <h1 className="mt-4 font-display text-4xl font-medium normal-case text-white sm:text-5xl">
           {title}
         </h1>
-        <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-300">
+        <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-muted">
           {description}
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Link
             href={ctaHref}
-            className="rounded-full bg-club-accent px-5 py-3 text-sm font-semibold text-slate-950 transition hover:brightness-110"
+            className="rounded-full bg-action-neutral px-5 py-3 text-sm font-semibold text-inverse-foreground transition hover:brightness-110"
           >
             {ctaLabel}
           </Link>

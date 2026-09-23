@@ -16,13 +16,13 @@ function fixture(t) {
     writeFileSync(join(root, path), content);
   };
   for (const path of [
-    'packages/features/feat_gamification/lib/src/fanzone_module.dart',
+    'packages/features/feat_gamification/lib/src/predict/predict_module.dart',
     'packages/features/feat_gamification/lib/src/repositories/prediction_repository.dart',
     'supabase/migrations/20260820080202_football_only_baseline.sql',
     'supabase/tests/repository_boundary_contract.sql',
   ]) write(path);
   write('packages/app_registry/lib/src/module_registry.dart',
-    'ClubModule() FanzoneModule() LiveModule() MembershipModule() TicketingModule() ShopModule()');
+    'ClubModule() PredictModule() LiveModule() MembershipModule() TicketingModule() ShopModule()');
   write('.gitignore', 'build/\nnode_modules/\noutput/\n');
   return {
     root, write,
@@ -69,7 +69,7 @@ test(`published club channel attribution in ${path} requires its source URL`, (t
 
 test('removing an active football capability fails validation', (t) => {
   const f = fixture(t);
-  rmSync(resolve(f.root, 'packages/features/feat_gamification/lib/src/fanzone_module.dart'));
+  rmSync(resolve(f.root, 'packages/features/feat_gamification/lib/src/predict/predict_module.dart'));
   const result = f.run();
   assert.notEqual(result.status, 0);
   assert.match(result.stderr, /required football capability is missing/);

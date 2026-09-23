@@ -582,6 +582,13 @@ class _NotificationPreferencesScreenState
                             permissionCopy,
                             style: TypographyTokens.bodySmall(),
                           ),
+                          const SizedBox(height: SpacingTokens.spacing2),
+                          Text(
+                            l10n.notificationPreferencesFullStream(appName),
+                            style: TypographyTokens.bodySmall(
+                              ColorTokens.onSurfaceVariant,
+                            ),
+                          ),
                           if (_localStatusMessage != null) ...[
                             const SizedBox(height: SpacingTokens.spacing2),
                             Text(
@@ -616,31 +623,6 @@ class _NotificationPreferencesScreenState
                                   permissionStatus != null &&
                                   permissionStatus !=
                                       PushPermissionStatus.unavailable,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: SpacingTokens.spacing4),
-                    GlassCard(
-                      animate: false,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            l10n.notificationPreferencesDeliveryModel,
-                            style: TypographyTokens.labelSmall(),
-                          ),
-                          const SizedBox(height: SpacingTokens.spacing2),
-                          Text(
-                            l10n.notificationPreferencesFullStream(appName),
-                            style: TypographyTokens.bodyMedium(),
-                          ),
-                          const SizedBox(height: SpacingTokens.spacing2),
-                          Text(
-                            l10n.notificationPreferencesPerCategory,
-                            style: TypographyTokens.bodySmall(
-                              ColorTokens.onSurfaceVariant,
                             ),
                           ),
                         ],

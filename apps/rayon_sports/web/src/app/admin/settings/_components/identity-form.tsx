@@ -138,7 +138,7 @@ export function IdentityForm({
   return (
     <section className="glass-panel grid gap-4 rounded-[32px] p-6">
       <div className="flex items-center justify-between gap-3">
-        <p className="font-display text-3xl font-bold uppercase leading-none">
+        <p className="font-display text-3xl font-medium normal-case leading-none">
           Identity settings
         </p>
         <span className="admin-meta-chip">
@@ -194,10 +194,10 @@ export function IdentityForm({
                     )
                   }
                   maxLength={2}
-                  className="dashboard-input uppercase"
+                  className="dashboard-input normal-case"
                 />
               </label>
-              <p className="text-sm text-slate-400">Product language: English</p>
+              <p className="text-sm text-[var(--admin-text-muted)]">Product language: English</p>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="grid gap-2 text-sm">
@@ -229,7 +229,7 @@ export function IdentityForm({
                     )
                   }
                   maxLength={3}
-                  className="dashboard-input uppercase"
+                  className="dashboard-input normal-case"
                 />
               </label>
               <label className="grid gap-2 text-sm">
@@ -262,7 +262,7 @@ export function IdentityForm({
                 className="dashboard-input"
               />
               {urlErrors.officialLogoUrl ? (
-                <span className="text-xs text-rose-300">
+                <span className="text-xs text-error">
                   {urlErrors.officialLogoUrl}
                 </span>
               ) : null}
@@ -277,7 +277,7 @@ export function IdentityForm({
                   className="dashboard-input"
                 />
                 {urlErrors.facebookUrl ? (
-                  <span className="text-xs text-rose-300">
+                  <span className="text-xs text-error">
                     {urlErrors.facebookUrl}
                   </span>
                 ) : null}
@@ -291,7 +291,7 @@ export function IdentityForm({
                   className="dashboard-input"
                 />
                 {urlErrors.xUrl ? (
-                  <span className="text-xs text-rose-300">
+                  <span className="text-xs text-error">
                     {urlErrors.xUrl}
                   </span>
                 ) : null}
@@ -305,7 +305,7 @@ export function IdentityForm({
                   className="dashboard-input"
                 />
                 {urlErrors.instagramUrl ? (
-                  <span className="text-xs text-rose-300">
+                  <span className="text-xs text-error">
                     {urlErrors.instagramUrl}
                   </span>
                 ) : null}
@@ -319,20 +319,20 @@ export function IdentityForm({
                   className="dashboard-input"
                 />
                 {urlErrors.tiktokUrl ? (
-                  <span className="text-xs text-rose-300">
+                  <span className="text-xs text-error">
                     {urlErrors.tiktokUrl}
                   </span>
                 ) : null}
               </label>
             </div>
-            <div className="rounded-[28px] border border-border-soft bg-white/5 p-5">
+            <div className="rounded-[28px] border border-border-soft bg-[var(--admin-surface-muted)] p-5">
               <div className="flex flex-col gap-1">
-                <p className="font-display text-2xl font-bold uppercase leading-none">
+                <p className="font-display text-2xl font-medium normal-case leading-none">
                   Team colors
                 </p>
-                <p className="text-sm text-slate-300">
+                <p className="text-sm text-[var(--admin-text-muted)]">
                   Pick a new color visually or type a HEX value like{" "}
-                  <span className="font-mono text-slate-100">#0038A8</span>.
+                  <span className="font-mono text-[var(--admin-text-strong)]">#0038A8</span>.
                 </p>
               </div>
               <div className="mt-4 grid gap-4 sm:grid-cols-3">
@@ -358,12 +358,12 @@ export function IdentityForm({
                 ].map((colorField) => (
                   <label
                     key={colorField.field}
-                    className="grid gap-2 rounded-[22px] border border-border-soft bg-black/10 p-4 text-sm"
+                    className="grid gap-2 rounded-[22px] border border-border-soft bg-[var(--admin-surface-muted)] p-4 text-sm"
                   >
-                    <span className="font-semibold text-slate-100">
+                    <span className="font-semibold text-[var(--admin-text-strong)]">
                       {colorField.label}
                     </span>
-                    <span className="text-xs text-slate-400">
+                    <span className="text-xs text-[var(--admin-text-muted)]">
                       {colorField.helper}
                     </span>
                     <div className="grid min-w-0 gap-3">
@@ -392,14 +392,14 @@ export function IdentityForm({
                             true,
                           )
                         }
-                        className="dashboard-input min-h-12 min-w-12 font-mono uppercase"
+                        className="dashboard-input min-h-12 min-w-12 font-mono normal-case"
                         placeholder={colorField.placeholder}
                         autoComplete="off"
                         spellCheck={false}
                       />
                     </div>
                     {colorErrors[colorField.field] ? (
-                      <span className="text-xs text-rose-300">
+                      <span className="text-xs text-error">
                         {colorErrors[colorField.field]}
                       </span>
                     ) : null}
@@ -408,7 +408,7 @@ export function IdentityForm({
               </div>
             </div>
             {validationErrors.length > 0 ? (
-              <div className="rounded-[22px] border border-amber-400/20 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+              <div className="rounded-[22px] border border-warning/20 bg-warning/10 px-4 py-3 text-sm text-warning">
                 {validationErrors[0]}
               </div>
             ) : null}
@@ -416,13 +416,13 @@ export function IdentityForm({
               type="button"
               onClick={onSave}
               disabled={!isValid || !canSave || saving}
-              className="min-h-12 rounded-full bg-club-primary px-5 py-3 font-semibold text-white transition hover:bg-club-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent disabled:cursor-not-allowed disabled:opacity-60 motion-reduce:transition-none"
+              className="min-h-12 rounded-full bg-action-blue px-5 py-3 font-semibold text-white transition hover:bg-action-blue-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-60 motion-reduce:transition-none"
             >
               {saving ? "Saving settings..." : "Save settings"}
             </button>
           </fieldset>
           {!canSave ? (
-            <p className="text-sm leading-6 text-slate-300" role="note">
+            <p className="text-sm leading-6 text-[var(--admin-text-muted)]" role="note">
               Club moderator access is read only. A club administrator must
               review and save identity changes.
             </p>

@@ -17,9 +17,9 @@ function mapAdminFanClub(row: Record<string, unknown>): AdminFanClub {
   return {
     id: toIdString(row.id, crypto.randomUUID()),
     clubId: typeof row.club_id === "number" ? row.club_id : null,
-    name: safeString(row.name, "Supporter chapter"),
+    name: safeString(row.name, "Supporter FanClubs"),
     region: safeString(row.region, "Official"),
-    description: safeString(row.description, "An official supporter chapter."),
+    description: safeString(row.description, "An official supporter FanClubs."),
     memberCount: safeNumber(row.member_count, 0),
     eventCount: safeNumber(row.event_count, 0),
     rating: safeNumber(row.rating, 0),
@@ -149,7 +149,7 @@ export async function getAdminFanClubs(
       signal: options.signal,
     });
   }
-  const clubId = requireAdminClubId(access, "load supporter chapters");
+  const clubId = requireAdminClubId(access, "load supporter FanClubs");
   const { data, error } = await client
     .from(fanClubTable)
     .select("*")
@@ -183,7 +183,7 @@ export async function saveAdminFanClub(
       body: input,
     });
   }
-  const clubId = requireAdminClubId(access, "save supporter chapters");
+  const clubId = requireAdminClubId(access, "save supporter FanClubs");
   const partnerId = await resolveClubFootballPartnerId(client, clubId);
   return mutateRecordWithVariantsIfUnchanged(
     client,
@@ -221,7 +221,7 @@ export async function deleteAdminFanClub(
     });
     return;
   }
-  const clubId = requireAdminClubId(access, "delete supporter chapters");
+  const clubId = requireAdminClubId(access, "delete supporter FanClubs");
   await deleteAdminRecordWithAuditIfUnchanged(
     client,
     fanClubTable,

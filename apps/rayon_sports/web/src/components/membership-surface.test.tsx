@@ -12,6 +12,11 @@ import {
   type PublicMembershipTier,
 } from "./membership-surface";
 
+const paymentMocks = vi.hoisted(() => ({ launch: vi.fn(), client: {} }));
+vi.mock("@/lib/supabase/browser", () => ({ getBrowserSupabase: () => paymentMocks.client }));
+vi.mock("@/lib/membership-payment", () => ({ launchPaidMembership: paymentMocks.launch }));
+vi.mock("./member-portal", () => ({ MemberPortal: () => <div>Member account</div> }));
+
 const packages: PublicMembershipTier[] = [
   {
     id: "bronze",
@@ -109,6 +114,7 @@ describe("MembershipSurface", () => {
   beforeEach(() => {
     vi.restoreAllMocks();
     vi.useRealTimers();
+    paymentMocks.launch.mockReset().mockResolvedValue(true);
     Object.defineProperty(window.navigator, "onLine", {
       configurable: true,
       value: true,
@@ -130,8 +136,23 @@ describe("MembershipSurface", () => {
       "aria-pressed",
       "true",
     );
+    await waitFor(() => expect(paymentMocks.launch).toHaveBeenCalledWith(paymentMocks.client, "gold", 24, expect.any(Function), expect.any(Function)));
+    expect(await screen.findByText("Complete your MoMo payment. Your membership updates automatically.")).toBeVisible();
     expect(screen.getAllByText("Blue Gold").length).toBeGreaterThan(1);
     expect(screen.getByText("Member events")).toBeInTheDocument();
+  });
+
+  it("does not launch twice while a tier payment is preparing", async () => {
+    vi.spyOn(globalThis, "fetch").mockImplementation(readyResponse);
+    paymentMocks.launch.mockReturnValue(new Promise(() => {}));
+    renderMembership(); await screen.findAllByText("Blue Bronze");
+    const tier = screen.getByRole("button", {name: /blue gold/i});
+    fireEvent.click(tier); fireEvent.click(tier);
+    expect(paymentMocks.launch).toHaveBeenCalledTimes(1);
+    expect(tier).toBeDisabled();
+  });
+  it("excludes free and fractional catalog prices", () => {
+    expect(normalizeMembershipSnapshot({packages: packages.map((p, i) => ({...p, annualPrice: i === 0 ? 0 : 1.5}))})).toEqual([]);
   });
 
   it("renders the controlled empty state", async () => {

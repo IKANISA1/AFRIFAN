@@ -47,18 +47,13 @@ insert into expected_mobile_rpc_acl values
   ('public.predict_admin_settle(uuid,text)', false, true, false),
   ('public.predict_lock_due(bigint)', false, false, true),
   ('public.prediction_cancel(uuid)', false, true, false),
-  ('public.prediction_create_friend_challenge(uuid,uuid,text,text)', false, false, true),
   ('public.prediction_get_active(integer,integer)', false, true, false),
-  ('public.prediction_get_active_jackpot_round(bigint)', false, false, true),
   ('public.prediction_get_detail(uuid)', false, true, false),
   ('public.prediction_get_fixture_markets(uuid)', true, true, false),
   ('public.prediction_get_history(integer,integer)', false, true, false),
   ('public.prediction_get_match_center(uuid)', true, true, true),
   ('public.prediction_get_user_badges(uuid)', false, true, false),
   ('public.prediction_get_user_stats()', false, true, false),
-  ('public.prediction_place(uuid,text)', false, true, false),
-  ('public.prediction_place_acca(jsonb)', false, true, false),
-  ('public.prediction_place_jackpot_entry(uuid,jsonb,text)', false, false, true),
   ('public.purchase_club_tickets(uuid,uuid,text,integer,text)', false, false, true);
 
 select is(

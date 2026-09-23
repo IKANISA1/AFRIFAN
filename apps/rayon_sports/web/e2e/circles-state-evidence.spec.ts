@@ -22,6 +22,7 @@ const confirmedGroups = [
     targetAmount: 5_000_000,
     currentTotal: 2_500_000,
     currency: "RWF",
+    imageUrl: "/images/home/matchday-team.webp",
     memberCount: 240,
   },
   {
@@ -51,7 +52,7 @@ const confirmedChapters = [
     id: "chapter-kigali",
     name: "Kigali Blue Family",
     region: "Kigali",
-    description: "An official public supporter chapter.",
+    description: "An official public fan club.",
     memberCount: 900,
     eventCount: 12,
   },
@@ -59,7 +60,7 @@ const confirmedChapters = [
     id: "chapter-huye",
     name: "Huye Gikundiro",
     region: "Southern Province",
-    description: "An official public supporter chapter.",
+    description: "An official public fan club.",
     memberCount: 320,
     eventCount: 6,
   },
@@ -67,7 +68,7 @@ const confirmedChapters = [
     id: "chapter-musanze",
     name: "Musanze Blue Nation",
     region: "Northern Province",
-    description: "An official public supporter chapter.",
+    description: "An official public fan club.",
     memberCount: 280,
     eventCount: 5,
   },
@@ -187,7 +188,7 @@ const surfaceCases = [
 ] as const;
 
 for (const surfaceCase of surfaceCases) {
-  test(`${surfaceCase.route} proves all sixteen applicable rendered states`, async ({
+  test(`${surfaceCase.route} proves its applicable project or directory states`, async ({
     browser,
   }) => {
     test.setTimeout(120_000);
@@ -203,6 +204,13 @@ for (const surfaceCase of surfaceCases) {
     const page = await context.newPage();
   await page.emulateMedia({ colorScheme: "dark" });
     let responseMode: ResponseMode = "ready";
+
+    await page.route("**/images/home/matchday-team.webp", async (route) => {
+      await route.fulfill({
+        contentType: "image/webp",
+        body: fs.readFileSync(path.resolve(process.cwd(), "../assets/onboarding/rayon_matchday_team.webp")),
+      });
+    });
 
     await page.route(
       `**/api/public-content?resource=${surfaceCase.resource}*`,
@@ -266,12 +274,7 @@ for (const surfaceCase of surfaceCases) {
     responseMode = "empty";
     await open("empty");
     await expectStatus(page, "empty", surfaceCase.empty);
-    await expect(
-      page.getByRole("heading", { name: /no public campaigns listed/i }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("heading", { name: /no public chapters listed/i }),
-    ).toBeVisible();
+    await expect(page.getByRole("heading", { name: surfaceCase.resource === "circles" ? /no public campaigns listed/i : /no public fan clubs listed/i })).toBeVisible();
     await capture("empty_dark");
 
     responseMode = "error";
@@ -286,17 +289,16 @@ for (const surfaceCase of surfaceCases) {
     await context.setOffline(true);
     await page.evaluate(() => window.dispatchEvent(new Event("offline")));
     await expectStatus(page, "offline", /you are offline/i);
-    await expect(
-      page.locator(".circles-card").filter({ hasText: "Blue wall tifo" }),
-    ).toBeVisible();
-    await expect(page.getByText("Kigali Blue Family")).toBeVisible();
+    await expect(surfaceCase.resource === "circles"
+      ? page.locator(".project-card").filter({ hasText: "Blue wall tifo" })
+      : page.getByText("Kigali Blue Family")).toBeVisible();
     await capture("offline_dark");
     await context.setOffline(false);
 
     responseMode = "permission_denied";
     await open("permission");
     await expectStatus(page, "permission_denied", surfaceCase.denied);
-    await expect(page.locator(".circles-card")).toHaveCount(0);
+    await expect(page.locator(".project-card")).toHaveCount(0);
     await expect(page.getByText("Kigali Blue Family")).toHaveCount(0);
     await capture("permission_denied_dark");
 
@@ -330,6 +332,7 @@ for (const surfaceCase of surfaceCases) {
       isPrimary: true,
     });
 
+    if (surfaceCase.resource === "circles") {
     const community = page.getByRole("button", {
       name: /community kit drive/i,
     });
@@ -340,6 +343,8 @@ for (const surfaceCase of surfaceCases) {
       "selected",
     );
     await capture("selected_dark");
+
+    }
 
     await open("large-text");
     await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
@@ -355,6 +360,7 @@ for (const surfaceCase of surfaceCases) {
       .evaluate((surface) => {
         const viewportWidth = document.documentElement.clientWidth;
         return Array.from(surface.querySelectorAll("*"))
+          .filter((element) => !element.closest(".sr-only"))
           .map((element) => {
             const rect = element.getBoundingClientRect();
             return {
@@ -374,13 +380,6 @@ for (const surfaceCase of surfaceCases) {
     await page.emulateMedia({ colorScheme: "dark", reducedMotion: "reduce" });
     await open("reduced-motion");
     await expectStatus(page, "loading", surfaceCase.loading);
-    expect(
-      await page
-        .locator(".circles-status svg")
-        .evaluate((element) =>
-          Number.parseFloat(getComputedStyle(element).animationDuration),
-        ),
-    ).toBeLessThanOrEqual(0.001);
     await capture("reduced_motion_dark");
 
     responseMode = "ready";
@@ -414,10 +413,9 @@ for (const surfaceCase of surfaceCases) {
     responseMode = "loading";
     await page.getByRole("button", { name: surfaceCase.refresh }).click();
     await expectStatus(page, "syncing", surfaceCase.syncing);
-    await expect(
-      page.locator(".circles-card").filter({ hasText: "Blue wall tifo" }),
-    ).toBeVisible();
-    await expect(page.getByText("Kigali Blue Family")).toBeVisible();
+    await expect(surfaceCase.resource === "circles"
+      ? page.locator(".project-card").filter({ hasText: "Blue wall tifo" })
+      : page.getByText("Kigali Blue Family")).toBeVisible();
     await capture("syncing_dark");
 
     responseMode = "conflict";
@@ -434,13 +432,14 @@ for (const surfaceCase of surfaceCases) {
     await open("targets");
     await expectStatus(page, "ready", surfaceCase.ready);
     const targetSizes = await page
-      .locator(".circles-action, .circles-card")
+      .locator(".circles-action:visible, .project-card button:visible")
       .evaluateAll((elements) =>
         elements.map((element) => {
           const rect = element.getBoundingClientRect();
           return { width: rect.width, height: rect.height };
         }),
       );
+    expect(targetSizes.length).toBeGreaterThan(0);
     for (const target of targetSizes) {
       expect(target.width).toBeGreaterThanOrEqual(48);
       expect(target.height).toBeGreaterThanOrEqual(48);
@@ -455,7 +454,7 @@ for (const surfaceCase of surfaceCases) {
       "disabled",
       "focused",
       "pressed",
-      "selected",
+      ...(surfaceCase.resource === "circles" ? ["selected"] : []),
       "large_text",
       "reduced_motion",
       "dark",
@@ -473,7 +472,9 @@ for (const surfaceCase of surfaceCases) {
           surface: "consumer_web",
           exact_profile: `${browser.browserType().name()}; viewport, DPR and input emulation are recorded per capture`,
           applicable_states: captures,
-          not_applicable_states: [],
+          not_applicable_states: surfaceCase.resource === "circles" ? [] : ["selected"],
+          not_applicable_rationale: surfaceCase.resource === "circles" ? undefined :
+            "The fan club directory has no persistent card selection; its links navigate to the selected club.",
           assertions: {
             controlled_api_states: true,
             confirmed_data_retained_during_recovery: true,

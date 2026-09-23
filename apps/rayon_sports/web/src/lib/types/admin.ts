@@ -147,22 +147,6 @@ export interface AdminMembershipPackage extends MembershipPackage {
   updatedAt: string;
 }
 
-export interface AdminMembershipApplication {
-  id: string;
-  userId: string;
-  clubId: number;
-  tier: MembershipTierSlug;
-  status: "pending" | "approved" | "rejected";
-  paymentStatus: "unpaid" | "paid" | "failed";
-  applicationDate: string;
-  reviewDate?: string | null;
-  reviewerId?: string | null;
-  notes?: string | null;
-  userName?: string;
-  userPhone?: string;
-  updatedAt: string;
-}
-
 export interface AdminSupporter {
   id: string;
   userId: string;

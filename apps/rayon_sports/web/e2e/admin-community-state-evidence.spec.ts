@@ -24,9 +24,9 @@ const chapters = Array.from({ length: 30 }, (_, index) => {
   return {
     id: `chapter-${number}`,
     clubId: 1,
-    name: `Kigali Chapter ${String(number).padStart(2, "0")}`,
+    name: `Kigali FanClubs ${String(number).padStart(2, "0")}`,
     region: number % 2 === 0 ? "Eastern Province" : "Kigali",
-    description: "Official controlled supporter chapter.",
+    description: "Official controlled supporter FanClubs.",
     memberCount: 100 + number,
     eventCount: number,
     rating: 4.5,
@@ -291,7 +291,7 @@ async function runAdminCommunityMatrix(browser: Browser) {
   await context.setOffline(true);
   await page.evaluate(() => window.dispatchEvent(new Event("offline")));
   await expectStatus("offline", /community workspace is offline/i);
-  await expect(page.getByText("Kigali Chapter 01")).toBeVisible();
+  await expect(page.getByText("Kigali FanClubs 01")).toBeVisible();
   await capture("offline");
   await context.setOffline(false);
 
@@ -299,10 +299,10 @@ async function runAdminCommunityMatrix(browser: Browser) {
   await open("permission-preparation");
   await expectStatus("ready", /community snapshot confirmed/i);
   await page
-    .getByRole("searchbox", { name: /search community chapters/i })
-    .fill("Kigali Chapter 01");
+    .getByRole("searchbox", { name: /search community FanClubs/i })
+    .fill("Kigali FanClubs 01");
   await page
-    .getByRole("button", { name: /edit community chapter Kigali Chapter 01/i })
+    .getByRole("button", { name: /edit community FanClubs Kigali FanClubs 01/i })
     .click();
   await expect(page.getByRole("dialog")).toBeVisible();
   responseMode = "permission_denied";
@@ -311,7 +311,7 @@ async function runAdminCommunityMatrix(browser: Browser) {
     .evaluate((button: HTMLButtonElement) => button.click());
   await expectStatus("permission_denied", /community access denied/i);
   await expect(page.getByRole("dialog")).toHaveCount(0);
-  await expect(page.getByText("Kigali Chapter 01")).toHaveCount(0);
+  await expect(page.getByText("Kigali FanClubs 01")).toHaveCount(0);
   await capture("permission_denied");
 
   responseMode = "ready";
@@ -337,15 +337,15 @@ async function runAdminCommunityMatrix(browser: Browser) {
   await page.mouse.up();
 
   await page
-    .getByRole("button", { name: /edit community chapter Kigali Chapter 01/i })
+    .getByRole("button", { name: /edit community FanClubs Kigali FanClubs 01/i })
     .click();
   await expect(surface()).toHaveAttribute(
     "data-admin-community-interaction",
     "selected",
   );
   await expect(
-    page.getByRole("textbox", { name: /chapter name/i }),
-  ).toHaveValue("Kigali Chapter 01");
+    page.getByRole("textbox", { name: /FanClubs name/i }),
+  ).toHaveValue("Kigali FanClubs 01");
   await expectNoSeriousAxeViolations(page);
   await capture("selected");
 
@@ -407,24 +407,28 @@ async function runAdminCommunityMatrix(browser: Browser) {
   });
   await page
     .getByRole("button", {
-      name: /remove community chapter Kigali Chapter 01/i,
+      name: /remove community FanClubs Kigali FanClubs 01/i,
     })
     .click();
   expect(deletionConfirmation).toContain("This action cannot be undone.");
 
   const chapterSearch = page.getByRole("searchbox", {
-    name: /search community chapters/i,
+    name: /search community FanClubs/i,
   });
-  await chapterSearch.fill("Kigali Chapter 01");
-  await expect(page.getByText("Kigali Chapter 01")).toBeVisible();
-  await expect(page.getByText("Kigali Chapter 30")).toHaveCount(0);
+  await chapterSearch.fill("Kigali FanClubs 01");
+  await expect(page.getByText("Kigali FanClubs 01")).toBeVisible();
+  await expect(page.getByText("Kigali FanClubs 30")).toHaveCount(0);
   await chapterSearch.fill("");
-  await page.getByRole("button", { name: /sort by Chapter name/i }).click();
+  await page.getByRole("button", { name: /sort by FanClubs name/i }).click();
   await page.getByRole("button", { name: /go to next page/i }).click();
   await expect(page.getByText(/page 2 of 2/i)).toBeVisible();
 
   await page.getByRole("tab", { name: "groups" }).click();
   await expect(page.getByText("Supporter Initiative 01")).toBeVisible();
+  await page.getByRole("button", { name: "Edit public group Supporter Initiative 01", exact: true }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(page.getByLabel("Initiative name", { exact: true })).toHaveValue("Supporter Initiative 01");
+  await page.getByRole("button", { name: "Close Edit public group", exact: true }).click();
   await page.getByRole("tab", { name: "contributions" }).click();
   await expect(page.getByText("supporter-co…").first()).toBeVisible();
 
@@ -449,7 +453,7 @@ async function runAdminCommunityMatrix(browser: Browser) {
     .getByRole("button", { name: /refresh community operations/i })
     .click();
   await expectStatus("syncing", /refreshing community operations/i);
-  await expect(page.getByText("Kigali Chapter 01")).toBeVisible();
+  await expect(page.getByText("Kigali FanClubs 01")).toBeVisible();
   await capture("syncing");
 
   responseMode = "ready";
@@ -460,13 +464,13 @@ async function runAdminCommunityMatrix(browser: Browser) {
     .getByRole("button", { name: /refresh community operations/i })
     .click();
   await expectStatus("conflict", /community records changed/i);
-  await expect(page.getByText("Kigali Chapter 01")).toBeVisible();
+  await expect(page.getByText("Kigali FanClubs 01")).toBeVisible();
   await capture("conflict");
 
   responseMode = "security_timeout";
   await open("security-timeout");
   await expectStatus("security_timeout", /community request timed out/i);
-  await expect(page.getByText("Kigali Chapter 01")).toHaveCount(0);
+  await expect(page.getByText("Kigali FanClubs 01")).toHaveCount(0);
   await capture("security_timeout");
 
   responseMode = "ready";

@@ -4,8 +4,8 @@ import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_gamification/src/models/partner_pool_models.dart';
 import 'package:feat_gamification/src/models/prediction_models.dart';
+import 'package:feat_gamification/src/predict/predict_match_screen.dart';
 import 'package:feat_gamification/src/providers/match_detail_provider.dart';
-import 'package:feat_gamification/src/screens/match_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -500,18 +500,18 @@ Future<void> _pumpRoute(
   addTearDown(() => ColorTokens.setBrightness(Brightness.dark));
 
   final router = GoRouter(
-    initialLocation: '/fanzone/match/fixture-1',
+    initialLocation: '/predict/match/fixture-1',
     routes: <RouteBase>[
       GoRoute(
-        path: '/fanzone/match/:fixtureId',
-        builder: (context, state) => MatchDetailScreen(
+        path: '/predict/match/:fixtureId',
+        builder: (context, state) => PredictMatchScreen(
           fixtureId: state.pathParameters['fixtureId']!,
           joinFocusNode: joinFocusNode,
         ),
       ),
       GoRoute(
-        path: '/fanzone',
-        builder: (context, state) => const Scaffold(body: Text('Fan Zone')),
+        path: '/predict',
+        builder: (context, state) => const Scaffold(body: Text('Predict')),
         routes: <RouteBase>[
           GoRoute(
             path: 'league/:slug',

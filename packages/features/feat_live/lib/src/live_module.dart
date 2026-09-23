@@ -10,7 +10,7 @@ class LiveModule extends FeatureModule {
     GoRoute(
       path: '/live',
       name: 'live',
-      redirect: (_, __) => '/fanzone/match/live',
+      redirect: (_, __) => '/predict/match/live',
     ),
     GoRoute(
       path: '/live/news/:articleId',
@@ -21,7 +21,7 @@ class LiveModule extends FeatureModule {
 
   @override
   List<RouteBase> get standaloneRoutes => <RouteBase>[
-    GoRoute(path: '/live-match', redirect: (_, __) => '/fanzone/match/live'),
+    GoRoute(path: '/live-match', redirect: (_, __) => '/predict/match/live'),
   ];
 
   @override
@@ -30,7 +30,7 @@ class LiveModule extends FeatureModule {
       path: '/live',
       presentation: RoutePresentation.redirect,
       recommendation: 'merge',
-      targetPath: '/fanzone/match/live',
+      targetPath: '/predict/match/live',
       rationale: 'Live match state opens in Match Center.',
     ),
     RoutePresentationDecision(
@@ -44,7 +44,7 @@ class LiveModule extends FeatureModule {
       path: '/live-match',
       presentation: RoutePresentation.redirect,
       recommendation: 'deep-link compatibility only',
-      targetPath: '/fanzone/match/live',
+      targetPath: '/predict/match/live',
       rationale: 'Alias route should never appear as a product surface.',
     ),
   ];

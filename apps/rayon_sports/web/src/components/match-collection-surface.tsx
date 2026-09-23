@@ -1,5 +1,7 @@
 "use client";
 
+import { FixtureTeams, TeamCard } from "@/components/team-card";
+
 import Link from "next/link";
 import {
   type PointerEvent,
@@ -437,13 +439,13 @@ export function MatchCollectionSurface({
                   {selected.competition}
                 </p>
                 <div className="match-collection-score">
-                  <strong>{selected.homeTeam}</strong>
+                  <TeamCard name={selected.homeTeam} vertical />
                   <b>
                     {mode === "results"
                       ? `${selected.homeScore}–${selected.awayScore}`
                       : "VS"}
                   </b>
-                  <strong>{selected.awayTeam}</strong>
+                  <TeamCard name={selected.awayTeam} vertical />
                 </div>
                 <dl className="match-collection-meta">
                   <div>
@@ -495,7 +497,7 @@ export function MatchCollectionSurface({
                     </span>
                     <span>
                       <small>{match.competition}</small>
-                      <strong>{match.homeTeam} vs {match.awayTeam}</strong>
+                      <FixtureTeams homeTeam={match.homeTeam} awayTeam={match.awayTeam} />
                       <time dateTime={match.matchDate}>
                         {formatDate(match.matchDate, locale)}
                       </time>

@@ -32,10 +32,10 @@ void main() {
       );
 
       final route = parser.toInternalUri(
-        Uri.parse('https://gikundiro.com/fanzone/match/123?tab=stats'),
+        Uri.parse('https://gikundiro.com/predict/match/123?tab=stats'),
       );
 
-      expect(route?.toString(), '/fanzone/match/123?tab=stats');
+      expect(route?.toString(), '/predict/match/123?tab=stats');
     });
 
     test('ignores website links for unknown hosts', () {
@@ -44,7 +44,7 @@ void main() {
       );
 
       final route = parser.toInternalUri(
-        Uri.parse('https://attacker.example/fanzone/match/123'),
+        Uri.parse('https://attacker.example/predict/match/123'),
       );
 
       expect(route, isNull);
@@ -54,10 +54,10 @@ void main() {
       final parser = DeepLinkParser(customScheme: 'gikundiro');
 
       final route = parser.toInternalUri(
-        Uri.parse('gikundiro://fanzone/fixtures?filter=live'),
+        Uri.parse('gikundiro://club/fixtures?filter=live'),
       );
 
-      expect(route?.toString(), '/fanzone/fixtures?filter=live');
+      expect(route?.toString(), '/club/fixtures?filter=live');
     });
 
     test('ignores unrelated schemes', () {
@@ -90,10 +90,10 @@ void main() {
   group('InternalRouteUriPolicy', () {
     test('accepts local canonical paths with query and fragment', () {
       final route = InternalRouteUriPolicy.validate(
-        Uri.parse('/fanzone/match/123?tab=stats#summary'),
+        Uri.parse('/predict/match/123?tab=stats#summary'),
       );
 
-      expect(route?.toString(), '/fanzone/match/123?tab=stats#summary');
+      expect(route?.toString(), '/predict/match/123?tab=stats#summary');
     });
 
     test(

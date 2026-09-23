@@ -391,71 +391,61 @@ class ClubNewsDetailScreen extends ConsumerWidget {
 }
 
 class ClubFixturesScreen extends ConsumerWidget {
-  const ClubFixturesScreen({super.key});
+  const ClubFixturesScreen({super.key, this.results = false});
+  final bool results;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.afriL10n;
-    final state = ref
-        .watch(clubMatchesProvider)
-        .whenData((items) => items.where((item) => !item.isCompleted).toList());
+    final state = ref.watch(clubMatchesProvider).whenData((items) {
+      final matches = items
+          .where((item) => item.isCompleted == results)
+          .toList();
+      return results ? matches.reversed.toList() : matches;
+    });
     return ClubCollectionScaffold(
       title: l10n.clubFixturesTitle,
       state: state,
-      emptyTitle: l10n.clubFixturesEmptyTitle,
-      emptyMessage: l10n.clubFixturesEmptyMessage,
+      emptyTitle: results
+          ? l10n.clubResultsEmptyTitle
+          : l10n.clubFixturesEmptyTitle,
+      emptyMessage: results
+          ? l10n.clubResultsEmptyMessage
+          : l10n.clubFixturesEmptyMessage,
       onRetry: () => ref.invalidate(clubMatchesProvider),
-      itemBuilder: (context, fixture) => AfriListRow(
-        icon: AfriIcons.fixture,
-        title: l10n.clubFixtureTitle(fixture.homeTeam, fixture.awayTeam),
+      header: Padding(
+        padding: const EdgeInsets.only(bottom: SpacingTokens.spacing4),
+        child: Wrap(
+          spacing: SpacingTokens.spacing2,
+          runSpacing: SpacingTokens.spacing2,
+          children: [
+            AfriChoiceChip(
+              label: Text(l10n.clubFixturesTitle),
+              selected: !results,
+              onSelected: (_) => context.go('/club/fixtures'),
+            ),
+            AfriChoiceChip(
+              label: Text(l10n.clubResultsTitle),
+              selected: results,
+              onSelected: (_) => context.go('/club/fixtures?tab=results'),
+            ),
+          ],
+        ),
+      ),
+      itemBuilder: (context, fixture) => AfriFixtureCard(
+        homeTeam: fixture.homeTeam,
+        awayTeam: fixture.awayTeam,
+        score: results ? '${fixture.homeScore}–${fixture.awayScore}' : null,
         subtitle: _fixtureSubtitle(context, fixture),
         onTap: fixture.id.isEmpty
             ? null
             : () => context.push('/club/fixtures/${fixture.id}'),
-        trailing: fixture.isOnSale
+        trailing: !results && fixture.isOnSale
             ? AfriStatusChip(
                 label: l10n.clubTicketsTitle,
                 tone: AfriStatusTone.success,
               )
             : null,
-      ),
-    );
-  }
-}
-
-class ClubResultsScreen extends ConsumerWidget {
-  const ClubResultsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = context.afriL10n;
-    final state = ref
-        .watch(clubMatchesProvider)
-        .whenData(
-          (items) => items
-              .where((item) => item.isCompleted)
-              .toList()
-              .reversed
-              .toList(),
-        );
-    return ClubCollectionScaffold(
-      title: l10n.clubResultsTitle,
-      state: state,
-      emptyTitle: l10n.clubResultsEmptyTitle,
-      emptyMessage: l10n.clubResultsEmptyMessage,
-      onRetry: () => ref.invalidate(clubMatchesProvider),
-      itemBuilder: (context, fixture) => AfriListRow(
-        icon: AfriIcons.score,
-        title: l10n.clubResultTitle(
-          fixture.homeTeam,
-          fixture.homeScore,
-          fixture.awayScore,
-          fixture.awayTeam,
-        ),
-        subtitle: _fixtureSubtitle(context, fixture),
-        onTap: fixture.id.isEmpty
-            ? null
-            : () => context.push('/club/fixtures/${fixture.id}'),
       ),
     );
   }
@@ -482,36 +472,23 @@ class ClubFixtureDetailScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (fixture.competition.isNotEmpty)
-              AfriStatusChip(
-                label: fixture.competition,
-                tone: AfriStatusTone.info,
-              ),
+            AfriFixtureTeams(
+              homeTeam: fixture.homeTeam,
+              awayTeam: fixture.awayTeam,
+              score: fixture.isCompleted
+                  ? '${fixture.homeScore}–${fixture.awayScore}'
+                  : null,
+            ),
             const SizedBox(height: SpacingTokens.spacing4),
             Text(
-              l10n.clubFixtureTitle(fixture.homeTeam, fixture.awayTeam),
-              style: TypographyTokens.headlineLarge().copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: SpacingTokens.spacing3),
-            Text(
               _fixtureSubtitle(context, fixture),
-              style: TypographyTokens.bodyLarge(ColorTokens.onSurfaceVariant),
+              style: TypographyTokens.bodyMedium(ColorTokens.onSurfaceVariant),
             ),
-            if (fixture.isCompleted) ...[
-              const SizedBox(height: SpacingTokens.spacing5),
-              Text(
-                l10n.clubScore(fixture.homeScore, fixture.awayScore),
-                style: TypographyTokens.displayMedium().copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
             if (fixture.isOnSale) ...[
               const SizedBox(height: SpacingTokens.spacing5),
               AfriButton(
                 label: l10n.clubViewAvailableTickets,
+                labelMaxLines: 3,
                 fullWidth: true,
                 onTap: () => unawaited(context.push('/tickets/$matchId')),
               ),
@@ -549,14 +526,7 @@ class ClubStandingsScreen extends ConsumerWidget {
                 ),
               ),
             ),
-            Expanded(
-              child: Text(
-                row.clubName,
-                style: TypographyTokens.titleMedium(),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
+            Expanded(child: AfriTeamCard(name: row.clubName)),
             _StandingValue(label: l10n.clubPlayedShort, value: row.played),
             _StandingValue(
               label: l10n.clubGoalDifferenceShort,
@@ -613,118 +583,6 @@ class ClubHistoryScreen extends ConsumerWidget {
               const SizedBox(height: SpacingTokens.spacing3),
               Text(item.body, style: TypographyTokens.bodyMedium()),
             ],
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ClubProjectsScreen extends ConsumerWidget {
-  const ClubProjectsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = context.afriL10n;
-    final state = ref.watch(clubProjectsProvider);
-    return ClubCollectionScaffold(
-      title: l10n.clubProjectsTitle,
-      state: state,
-      emptyTitle: l10n.clubProjectsEmptyTitle,
-      emptyMessage: l10n.clubProjectsEmptyMessage,
-      onRetry: () => ref.invalidate(clubProjectsProvider),
-      itemBuilder: (context, project) => GlassCard(
-        animate: false,
-        onTap: project.id.isEmpty
-            ? null
-            : () => context.push('/club/projects/${project.id}'),
-        semanticsLabel: project.name,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              project.name,
-              style: TypographyTokens.titleLarge().copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            if (project.description.isNotEmpty) ...[
-              const SizedBox(height: SpacingTokens.spacing2),
-              Text(
-                project.description,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                style: TypographyTokens.bodyMedium(),
-              ),
-            ],
-            const SizedBox(height: SpacingTokens.spacing4),
-            AfriLinearProgressIndicator(
-              value: project.progress,
-              minHeight: 8,
-              borderRadius: ShapeTokens.buttonRadius,
-            ),
-            const SizedBox(height: SpacingTokens.spacing2),
-            Text(
-              l10n.clubSupporters(project.memberCount),
-              style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ClubProjectDetailScreen extends ConsumerWidget {
-  const ClubProjectDetailScreen({required this.projectId, super.key});
-
-  final String projectId;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = context.afriL10n;
-    final state = ref.watch(clubProjectsProvider);
-    return _ClubDetailScaffold(
-      title: l10n.clubProjectTitle,
-      state: state,
-      onRetry: () => ref.invalidate(clubProjectsProvider),
-      select: (items) =>
-          _firstWhereOrNull(items, (item) => item.id == projectId),
-      notFoundTitle: l10n.clubProjectUnavailableTitle,
-      notFoundMessage: l10n.clubProjectUnavailableMessage,
-      builder: (project) => GlassCard(
-        animate: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              project.name,
-              style: TypographyTokens.headlineLarge().copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            if (project.description.isNotEmpty) ...[
-              const SizedBox(height: SpacingTokens.spacing3),
-              Text(project.description, style: TypographyTokens.bodyLarge()),
-            ],
-            const SizedBox(height: SpacingTokens.spacing5),
-            AfriLinearProgressIndicator(
-              value: project.progress,
-              minHeight: 10,
-              borderRadius: ShapeTokens.buttonRadius,
-            ),
-            const SizedBox(height: SpacingTokens.spacing3),
-            Text(
-              l10n.clubSupportersParticipate(project.memberCount),
-              style: TypographyTokens.bodyMedium(ColorTokens.onSurfaceVariant),
-            ),
-            const SizedBox(height: SpacingTokens.spacing5),
-            AfriButton(
-              label: l10n.clubOpenContribution,
-              fullWidth: true,
-              onTap: () =>
-                  unawaited(context.push('/contribute/group/${project.id}')),
-            ),
           ],
         ),
       ),
@@ -1022,10 +880,12 @@ String _shortDate(BuildContext context, DateTime? value) {
 String _fixtureSubtitle(BuildContext context, ClubFixtureItem fixture) {
   return <String>[
     fixture.competition,
-    _shortDate(context, fixture.matchDate),
-    fixture.kickoffTime,
+    [
+      _shortDate(context, fixture.matchDate),
+      fixture.kickoffTime,
+    ].where((value) => value.isNotEmpty).join(' · '),
     fixture.venue,
-  ].where((value) => value.isNotEmpty).join(' • ');
+  ].where((value) => value.isNotEmpty).join('\n');
 }
 
 T? _firstWhereOrNull<T>(Iterable<T> values, bool Function(T value) test) {

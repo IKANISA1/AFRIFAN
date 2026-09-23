@@ -73,7 +73,7 @@ export function FetEditorForm({
       className="glass-panel grid min-w-0 gap-4 rounded-[32px] p-6"
     >
       <div className="flex items-center justify-between gap-3">
-        <p className="font-display text-3xl font-bold uppercase leading-none">
+        <p className="font-display text-3xl font-medium normal-case leading-none">
           {form.id ? "Edit FET" : "New FET"}
         </p>
         {form.id ? (

@@ -36,5 +36,3 @@ dev_dependencies:
 resolution: workspace
 
 flutter:
-  assets:
-    - assets/crests/rayon_sports.png

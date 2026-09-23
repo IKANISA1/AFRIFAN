@@ -34,10 +34,10 @@ const icons: Record<ToastVariant, typeof Info> = {
 };
 
 const variantStyles: Record<ToastVariant, string> = {
-  success: "border-emerald-500/30 bg-emerald-500/10 text-emerald-200",
+  success: "border-success/30 bg-success/10 text-success",
   error:
-    "border-rose-400/30 bg-rose-500/10 text-[var(--admin-danger-text)]",
-  info: "border-border-soft bg-white/8 text-slate-200",
+    "border-error/30 bg-error/10 text-[var(--admin-danger-text)]",
+  info: "border-border-soft bg-[var(--admin-surface-muted)] text-[var(--admin-text-strong)]",
 };
 
 export function AdminToastProvider() {
@@ -96,7 +96,7 @@ export function AdminToastProvider() {
             <button
               type="button"
               onClick={() => dismiss(toast.id)}
-              className="mt-0.5 inline-flex min-h-12 min-w-12 flex-shrink-0 items-center justify-center rounded-full p-3 transition hover:bg-white/10"
+              className="mt-0.5 inline-flex min-h-12 min-w-12 flex-shrink-0 items-center justify-center rounded-full p-3 transition hover:bg-[var(--admin-surface-hover)]"
               aria-label="Dismiss"
             >
               <X size={14} />

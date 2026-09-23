@@ -167,8 +167,16 @@ class SupabaseGroupDetailGateway implements GroupDetailGateway {
         })
         .toList(growable: false);
 
+    final images = await loadPublishedProjectImages(
+      _client,
+      clubId: clubId,
+      groupIds: [groupId],
+    );
     return GroupDetailSnapshot(
-      group: ContributionGroup.fromJson(Map<String, dynamic>.from(groupRow)),
+      group: ContributionGroup.fromJson({
+        ...groupRow,
+        'image_url': images[groupId],
+      }),
       ledger: List<GroupLedgerEntry>.unmodifiable(ledger),
     );
   }

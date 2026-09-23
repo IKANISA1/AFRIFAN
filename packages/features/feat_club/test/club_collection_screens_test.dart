@@ -138,9 +138,6 @@ class _PendingClubContentGateway implements ClubContentGateway {
   Future<List<ClubNewsItem>> loadNews() => _news.future;
 
   @override
-  Future<List<ClubProjectItem>> loadProjects() async => const [];
-
-  @override
   Future<List<ClubSquadMember>> loadSquad() async => const [];
 
   @override
@@ -165,10 +162,6 @@ class _ThrowingClubContentGateway implements ClubContentGateway {
 
   @override
   Future<List<ClubNewsItem>> loadNews() => _fail<List<ClubNewsItem>>();
-
-  @override
-  Future<List<ClubProjectItem>> loadProjects() =>
-      _fail<List<ClubProjectItem>>();
 
   @override
   Future<List<ClubSquadMember>> loadSquad() => _fail<List<ClubSquadMember>>();

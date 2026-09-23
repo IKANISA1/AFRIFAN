@@ -1,5 +1,7 @@
 "use client";
 
+import { FixtureTeams } from "@/components/team-card";
+
 import { PencilLine, Search, Trash2 } from "lucide-react";
 import { AdminEmptyState } from "@/components/admin/admin-empty-state";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
@@ -100,7 +102,7 @@ export function MatchList({
                 type="button"
                 onClick={() => setFilter(item)}
                 className={cn(
-                  "min-h-12 min-w-12 px-3 py-2 text-[10px] font-bold uppercase tracking-wider rounded-md transition-colors",
+                  "min-h-12 min-w-12 px-3 py-2 text-xs font-medium normal-case tracking-normal rounded-md transition-colors",
                   filter === item
                     ? "bg-[var(--admin-zinc-800)] text-[var(--admin-zinc-100)] shadow-sm"
                     : "text-[var(--admin-zinc-500)] hover:text-[var(--admin-zinc-300)]"
@@ -156,10 +158,10 @@ export function MatchList({
           matchCollection.pageResult.items.map((match) => {
             const isLive = match.matchStatus === "live" || match.matchStatus === "halftime";
             return (
-              <tr key={match.id} data-row-id={match.id} className={cn(isLive && "bg-emerald-500/[0.02]")}>
+              <tr key={match.id} data-row-id={match.id} className={cn(isLive && "bg-success/[0.02]")}>
                 <td>
                   <div className="space-y-0.5">
-                    <p className="admin-row-title">{match.homeTeam} vs {match.awayTeam}</p>
+                    <FixtureTeams homeTeam={match.homeTeam} awayTeam={match.awayTeam} />
                     <p className="admin-row-copy">{match.competition} · {match.venue}</p>
                   </div>
                 </td>
@@ -173,7 +175,7 @@ export function MatchList({
                 <td>
                   <div className="space-y-0.5 text-sm">
                     <p className="font-medium text-[var(--admin-zinc-100)]">{formatDate(match.matchDate)}</p>
-                    <p className="text-[10px] text-[var(--admin-zinc-500)] uppercase font-bold">{match.kickoffTime}</p>
+                    <p className="text-xs text-[var(--admin-zinc-500)] normal-case font-medium">{match.kickoffTime}</p>
                   </div>
                 </td>
                 <td>
@@ -182,20 +184,20 @@ export function MatchList({
                       label={match.isOnSale ? "On sale" : "Closed"}
                       tone={match.isOnSale ? "success" : "neutral"}
                     />
-                    <p className="text-[10px] text-[var(--admin-zinc-500)] font-bold">{formatCurrency(match.generalPrice, currencyCode)}</p>
+                    <p className="text-xs text-[var(--admin-zinc-500)] font-medium">{formatCurrency(match.generalPrice, currencyCode)}</p>
                   </div>
                 </td>
                 <td>
                   <div className="space-y-0.5">
-                    <p className="text-sm font-bold text-[var(--admin-zinc-100)]">{match.homeScore} - {match.awayScore}</p>
-                    <p className="text-[10px] text-[var(--admin-zinc-500)] uppercase font-bold">
+                    <p className="text-sm font-medium text-[var(--admin-zinc-100)]">{match.homeScore} - {match.awayScore}</p>
+                    <p className="text-xs text-[var(--admin-zinc-500)] normal-case font-medium">
                       {isLive ? `${match.liveMinute ?? 0}' LIVE` : "Final"}
                     </p>
                   </div>
                 </td>
                 <td className="min-w-[140px]">
                   <ProgressBar value={match.soldCount} max={match.capacity} compact />
-                  <p className="mt-1.5 text-[10px] text-[var(--admin-zinc-500)] font-bold">
+                  <p className="mt-1.5 text-xs text-[var(--admin-zinc-500)] font-medium">
                     {match.soldCount} / {match.capacity} SOLD
                   </p>
                 </td>
@@ -210,7 +212,7 @@ export function MatchList({
                     </button>
                     <button
                       onClick={() => onDelete(match)}
-                      className="inline-flex min-h-12 min-w-12 items-center justify-center rounded hover:bg-[var(--admin-zinc-800)] text-[var(--admin-zinc-500)] hover:text-rose-500 transition-colors"
+                      className="inline-flex min-h-12 min-w-12 items-center justify-center rounded hover:bg-[var(--admin-zinc-800)] text-[var(--admin-zinc-500)] hover:text-error transition-colors"
                       aria-label={`Delete ${match.homeTeam} versus ${match.awayTeam}`}
                     >
                       <Trash2 size={16} />

@@ -203,15 +203,14 @@ class SupabaseTierDetailGateway implements TierDetailGateway {
   @override
   Future<TierDetailData?> load(String tierId) async {
     final normalized = normalizeMembershipSlug(tierId);
-    if (!storeReleasePolicy.allowsPaidDigitalMembership) {
-      final package = storeReleaseMembershipPackage(normalized);
-      return package == null ? null : TierDetailData.fromPackage(package);
-    }
+    final scope = await ClubScopeResolver(client: _client).requireResolved();
     final response = await _client
         .from('membership_tiers')
         .select(MembershipReadProjection.tier)
         .eq('category_slug', normalized)
+        .eq('club_id', scope.requiredClubId)
         .eq('active', true)
+        .gt('annual_price', 0)
         .order('sort_order', ascending: true)
         .limit(1);
     final rows = List<Map<String, dynamic>>.from(response);

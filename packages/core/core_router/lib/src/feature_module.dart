@@ -16,14 +16,14 @@ String _normalizeFeatureKey(String value) {
 const List<String> primaryBottomTabFeatureOrder = <String>[
   'home',
   'club',
-  'fanzone',
+  'predict',
   'membership',
 ];
 
 const Set<String> primaryBottomTabFeatureKeys = <String>{
   'home',
   'club',
-  'fanzone',
+  'predict',
   'membership',
 };
 

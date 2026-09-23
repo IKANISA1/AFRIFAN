@@ -48,16 +48,8 @@
     }
   },
   "supportUnavailable": "Support is unavailable in this build.",
-  "fanZoneLoading": "Picks, league, points, fans, and rewards are loading.",
-  "fanZoneJoinSession": "Join a live session and use this phone to play.",
-  "fanZoneRoundsEmpty": "Matchday rounds will appear when they open.",
-  "fanZoneRankingsEmpty": "Rankings will appear after updates resume.",
-  "fanZoneClubsMoved": "Fan clubs and chapters are under Supporters.",
-  "fanZoneRegistryMoved": "The supporter list is under Fan Zone Supporters.",
-  "fanZoneContributionMode": "Choose how to contribute.",
-  "fanZoneRewardsSummary": "Badges, streaks, and rewards.",
-  "fanZoneLineupsEmpty": "Lineups will appear before kickoff.",
-  "fanZoneStatsEmpty": "Stats will appear when the match starts.",
+  "predictLineupsEmpty": "Lineups will appear before kickoff.",
+  "predictStatsEmpty": "Stats will appear when the match starts.",
   "fanIdVerifyPrompt": "Verify your Fan ID to make picks and earn points.",
   "fanIdPrivacyTrust": "Verification uses your Fan ID. No personal details are shared.",
   "searchTitle": "Search",
@@ -116,9 +108,7 @@
   },
   "searchSupporterDirectoryTitle": "Find supporters",
   "searchSupporterDirectoryDescription": "Search public supporter aliases and manage friends.",
-  "searchFanZoneTitle": "Predict",
-  "searchFanZoneDescription": "Match picks, prediction history and FET activity.",
-  "searchFanRegistryTitle": "Fan registry",
+  "searchFanRegistryTitle": "Fan clubs",
   "searchFanRegistryDescription": "Browse the club supporter registry.",
   "searchFixturesTitle": "Fixtures",
   "searchFixturesDescription": "Upcoming and recent {clubName} matches.",
@@ -194,19 +184,9 @@
   "searchClubFixtureFallback": "Club fixture",
   "searchClubProductFallback": "Club product",
   "searchMerchandiseFallback": "Merchandise",
-  "membershipTitle": "Membership",
   "membershipSavedDetails": "Saved membership details",
   "membershipDigitalCard": "Digital card",
   "share": "Share",
-  "membershipReviewTitle": "Membership review",
-  "membershipReviewSubtitle": "{tier} request is awaiting payment verification.",
-  "@membershipReviewSubtitle": {
-    "placeholders": {
-      "tier": {
-        "type": "String"
-      }
-    }
-  },
   "membershipRenewsOn": "Renews on {date}",
   "@membershipRenewsOn": {
     "placeholders": {
@@ -216,7 +196,7 @@
     }
   },
   "fanRegistryTitle": "Fan registry",
-  "fanRegistryBrowseAll": "Browse all supporters",
+  "fanRegistryBrowseAll": "Find supporter communities",
   "membershipPackagesTitle": "Packages",
   "membershipOfflineTitle": "Membership unavailable",
   "membershipOfflineMessage": "Connect to load current membership details.",
@@ -228,37 +208,6 @@
   "membershipTimeoutTitle": "Membership request timed out",
   "membershipTimeoutMessage": "The secure request window expired. Refresh membership status before trying again.",
   "membershipUnavailableMessage": "Membership details are temporarily unavailable.",
-  "membershipPaymentSent": "Payment sent",
-  "membershipPaymentVerifying": "Verifying payment",
-  "membershipConfirmed": "Membership confirmed",
-  "membershipRequestTitle": "{tier} membership request",
-  "@membershipRequestTitle": {
-    "placeholders": {
-      "tier": {
-        "type": "String"
-      }
-    }
-  },
-  "membershipAmount": "Amount: {currency} {amount}",
-  "@membershipAmount": {
-    "placeholders": {
-      "currency": {
-        "type": "String"
-      },
-      "amount": {
-        "type": "String"
-      }
-    }
-  },
-  "membershipVerificationTime": "Verification typically takes 1–24 hours. You will be notified once confirmed.",
-  "membershipRequestedOn": "Requested: {date}",
-  "@membershipRequestedOn": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
   "contactSupport": "Contact support",
   "membershipPackageEmpty": "Membership packages will appear once the club publishes them.",
   "fanRegistrySearchHint": "Search fans by name",
@@ -312,7 +261,6 @@
   },
   "profileTitle": "Profile",
   "profileLoadingMembership": "Loading membership…",
-  "profileMembershipReviewPending": "Membership review pending",
   "profileMyClub": "My club",
   "profileMatchday": "Matchday",
   "profileMyPicks": "My picks",
@@ -368,21 +316,6 @@
   "tierOutdatedTitle": "Tier details may be out of date",
   "tierOutdatedMessage": "Official category details remain visible while the service is unavailable.",
   "tierDegradedMessage": "The last available category details remain visible until refresh succeeds.",
-  "contributionConfirmTitle": "Confirm contribution",
-  "contributionConfirmQuestion": "Did you complete the MoMo USSD payment for the {tier} tier?",
-  "@contributionConfirmQuestion": {
-    "placeholders": {
-      "tier": {
-        "type": "String"
-      }
-    }
-  },
-  "contributionSelectedTier": "Selected tier",
-  "contributionPendingVerification": "Pending verification",
-  "contributionNotYet": "Not yet",
-  "contributionConfirming": "Confirming…",
-  "contributionYesPaid": "Yes, I paid",
-  "contributionPrivacy": "Contributions are verified anonymously via Fan ID.",
   "contributionHistory": "Contribution history",
   "shareMembershipCard": "Share membership card",
   "shareMembershipCardHint": "Share your digital membership card",
@@ -394,15 +327,12 @@
       }
     }
   },
-  "membershipFanCard": "Fan card",
-  "membershipReviewPendingUpper": "Review pending",
   "navHome": "Home",
   "navClub": "Club",
-  "navFanZone": "Predict",
   "navMembership": "Membership",
   "membershipConnectBeforeChange": "Connect before changing membership.",
   "membershipSignInFirst": "Sign in first to activate membership.",
-  "membershipRequestSubmitted": "{tier} membership request submitted.",
+  "membershipRequestSubmitted": "Complete payment for {tier}. Your membership updates automatically.",
   "@membershipRequestSubmitted": {
     "placeholders": {
       "tier": {
@@ -410,24 +340,7 @@
       }
     }
   },
-  "membershipAlreadyPending": "{tier} membership is already pending payment verification.",
-  "@membershipAlreadyPending": {
-    "placeholders": {
-      "tier": {
-        "type": "String"
-      }
-    }
-  },
-  "membershipStarted": "{tier} membership started.",
-  "@membershipStarted": {
-    "placeholders": {
-      "tier": {
-        "type": "String"
-      }
-    }
-  },
-  "membershipPaymentSetupPending": "Membership payment setup is pending club activation.",
-  "membershipDialerFailed": "{tier} request was saved, but the MoMo dialer could not open.",
+  "membershipDialerFailed": "MoMo could not open for {tier}. Tap the tier to try again.",
   "@membershipDialerFailed": {
     "placeholders": {
       "tier": {
@@ -435,7 +348,7 @@
       }
     }
   },
-  "membershipSubmittedBackground": "{tier} request submitted. Payment verification happens in the background.",
+  "membershipSubmittedBackground": "Complete your MoMo payment. Your {tier} membership will update automatically.",
   "@membershipSubmittedBackground": {
     "placeholders": {
       "tier": {
@@ -443,10 +356,9 @@
       }
     }
   },
-  "membershipPendingReviewAction": "Pending review",
-  "membershipActivateAction": "Activate",
-  "membershipRenewAction": "Renew",
-  "membershipSwitchAction": "Switch",
+  "membershipActivateAction": "Pay membership",
+  "membershipRenewAction": "Renew membership",
+  "membershipSwitchAction": "Choose tier",
   "membershipCopied": "Membership details copied.",
   "membershipShareText": "{club} membership\nTier: {tier}\nSupporter ID: #{supporter}",
   "@membershipShareText": {
@@ -462,7 +374,7 @@
       }
     }
   },
-  "membershipActivityPending": "Membership activity appears after ticket, fanclub, and contribution reviews.",
+  "membershipActivityPending": "Your membership activity appears here.",
   "membershipActivityRecorded": "{count, plural, =0{No activity points recorded.} =1{1 activity point recorded.} other{{count} activity points recorded.}}",
   "@membershipActivityRecorded": {
     "placeholders": {
@@ -471,12 +383,9 @@
       }
     }
   },
-  "membershipSupportMessage": "Hi, I need help with my membership payment verification.",
-  "membershipWhatsAppUnavailable": "Could not open WhatsApp. Please contact support.",
-  "membershipSupportNotConfigured": "Support contact is not configured yet.",
-  "membershipSubmittingTitle": "Submitting membership request",
+  "membershipSubmittingTitle": "Opening MoMo",
   "membershipUpdatingTitle": "Updating membership",
-  "membershipSubmittingMessage": "Keep this screen open while the club receives your request.",
+  "membershipSubmittingMessage": "Your payment dialer will open automatically.",
   "membershipUpdatingMessage": "Refreshing packages and current membership details.",
   "membershipRefreshAction": "Refresh",
   "membershipCurrentStatus": "{tier} · Current",
@@ -488,7 +397,7 @@
     }
   },
   "membershipRefreshRequired": "Refresh required",
-  "membershipSubmittingAction": "Submitting",
+  "membershipSubmittingAction": "Opening payment…",
   "membershipPackageCurrentSemantic": "{tier} membership package, current",
   "@membershipPackageCurrentSemantic": {
     "placeholders": {
@@ -498,8 +407,6 @@
     }
   },
   "membershipPackageFallback": "Package",
-  "membershipFanFallback": "Fan",
-  "membershipDateNextYear": "next year",
   "membershipDate": "{day} {month} {year}",
   "@membershipDate": {
     "placeholders": {
@@ -744,13 +651,13 @@
   "authPhoneUnknownMessage": "The sign-in code could not be sent. Try again.",
   "authPhoneOfflineMessage": "Connect to the internet to send a WhatsApp code.",
   "authWhatsAppEyebrow": "WhatsApp",
-  "authEnterNumberTitle": "Enter number",
-  "authEnterNumberBody": "We will send a private sign-in code.",
-  "authPhoneLabel": "Phone",
+  "authEnterNumberTitle": "Enter your WhatsApp number",
+  "authEnterNumberBody": "We’ll send a one-time code via WhatsApp.",
+  "authPhoneLabel": "WhatsApp number",
   "authWhatsAppNumberLabel": "WhatsApp number",
-  "authPhoneHint": "Phone number",
+  "authPhoneHint": "WhatsApp number",
   "authPhonePrivacy": "Your number stays private.",
-  "authSendCode": "Send code",
+  "authSendCode": "Send WhatsApp code",
   "authGuestSessionUnavailable": "Could not start a guest session. Try again.",
   "authOtpInvalidMessage": "Check the code and try again.",
   "authOtpExpiredMessage": "Request a new code.",
@@ -768,7 +675,7 @@
   "authOtpConflictMessage": "This number is already linked to another sign-in.",
   "authOtpUnknownMessage": "The code could not be verified. Try again.",
   "authOtpOfflineMessage": "Connect to the internet to verify the WhatsApp code.",
-  "authPhoneMissingTitle": "Phone number missing",
+  "authPhoneMissingTitle": "WhatsApp number missing",
   "authPhoneMissingMessage": "Start again to request a WhatsApp code.",
   "authChangeNumber": "Change number",
   "authResendIn": "Resend in {seconds}s",
@@ -779,15 +686,15 @@
       }
     }
   },
-  "authResendCode": "Resend code",
+  "authResendCode": "Resend WhatsApp code",
   "authCheckWhatsAppEyebrow": "Check WhatsApp",
-  "authEnterCodeTitle": "Enter code",
+  "authEnterCodeTitle": "Enter your WhatsApp code",
   "authEnterCodeBody": "Sent to your WhatsApp number.",
-  "authCodeLabel": "Code",
+  "authCodeLabel": "WhatsApp code",
   "authWhatsAppCodeLabel": "WhatsApp code",
   "authCodeHint": "••••••",
   "authCodePrivacy": "Code hidden for privacy.",
-  "authVerifyCode": "Verify code",
+  "authVerifyCode": "Verify WhatsApp code",
   "authVerifyAndContinue": "Verify and continue",
   "homeRefreshingTitle": "Refreshing Home",
   "homeRefreshingMessage": "Keeping the current matchday, points, and shortcuts visible while updates load.",
@@ -800,12 +707,12 @@
   "homeMatchdayPendingNotice": "Matchday data will appear when published.",
   "homeOpenMatchday": "Open matchday",
   "homeMatchdayUnavailable": "Matchday unavailable",
-  "homeOpenMatchdaySemantic": "Open matchday in Fan Zone",
-  "homeMatchdayUnavailableSemantic": "Matchday in Fan Zone is unavailable",
+  "homeOpenMatchdaySemantic": "Open matchday in Predict",
+  "homeMatchdayUnavailableSemantic": "Matchday in Predict is unavailable",
   "homeMatchdayTitle": "Matchday",
   "homeNextFixturePending": "The next fixture will appear here when it is published.",
   "homeFixturesUnavailable": "Club fixtures are not available yet.",
-  "homeOpenFanZone": "Open Predict",
+  "homeOpenPredict": "Open Predict",
   "homeSearchHint": "Find",
   "homeSearchSemantic": "Search fans, fixtures, wallet",
   "homeNotifications": "Notifications",
@@ -890,7 +797,7 @@
       }
     }
   },
-  "homeFanZoneAction": "Predict",
+  "homePredictAction": "Predict",
   "homeShopAction": "Shop",
   "homeFetLabel": "FET",
   "homeRankLabel": "Rank",
@@ -985,7 +892,6 @@
     }
   },
   "fanClubMembersLabel": "Members",
-  "fanClubStatusLabel": "Status",
   "fanClubRegionLabel": "Region",
   "fanClubOpenSupportersSemantic": "Open Supporters area",
   "fanClubPendingReviewSemantic": "Fan club pending review",
@@ -1018,8 +924,8 @@
   "fanClubsCommunityEyebrow": "The community",
   "fanClubsTitle": "Fan clubs",
   "fanClubsSearchHint": "Search clubs or locations",
-  "fanClubsFeaturedChapter": "Featured chapter",
-  "fanClubOfficialChapterFallback": "Official supporter chapter.",
+  "fanClubsFeaturedChapter": "Featured FanClubs",
+  "fanClubOfficialChapterFallback": "Official supporter FanClubs.",
   "fanClubMembersValue": "{members} members",
   "@fanClubMembersValue": {
     "placeholders": {
@@ -1877,7 +1783,7 @@
     }
   },
   "contributionsCommunityUpper": "Community",
-  "contributionsFanClubsChapters": "Fan clubs & local chapters.",
+  "contributionsFanClubsChapters": "Local FanClubs.",
   "contributionsLive": "LIVE",
   "contributionsMomoSmsSync": "MoMo SMS sync",
   "contributionsUnavailableBuild": "Unavailable in this build.",
@@ -1941,7 +1847,7 @@
   "contributionsCheckingLatestTotal": "Checking latest total",
   "contributionsRefreshBeforeContributing": "Refresh before contributing",
   "contributionsContributeNow": "Contribute now",
-  "contributionsConfirmedTotal": "Confirmed total",
+  "contributionsConfirmedTotal": "Total raised",
   "contributionsTargetProgress": "Target {target} · {percent}%",
   "@contributionsTargetProgress": {
     "placeholders": {
@@ -1962,7 +1868,7 @@
     }
   },
   "contributionsTypeUpper": "Type",
-  "contributionsContributorsUpper": "Contributors",
+  "contributionsContributorsUpper": "Participants",
   "contributionsContributeToSemantic": "Contribute to {group}",
   "@contributionsContributeToSemantic": {
     "placeholders": {
@@ -2366,8 +2272,7 @@
   "notificationPreferencesConnectionRequiredUpper": "Connection required",
   "notificationPreferencesDisableAlerts": "Disable alerts",
   "notificationPreferencesEnableAlerts": "Enable alerts",
-  "notificationPreferencesDeliveryModel": "Delivery model",
-  "notificationPreferencesFullStream": "When alerts are enabled, this release delivers the full {app} notification stream available for your account.",
+  "notificationPreferencesFullStream": "When notifications are on, you receive all {app} alerts available to your account.",
   "@notificationPreferencesFullStream": {
     "placeholders": {
       "app": {
@@ -2375,7 +2280,6 @@
       }
     }
   },
-  "notificationPreferencesPerCategory": "Per-category tuning is not configurable on this build yet, so this switch controls the entire device delivery state.",
   "notificationPreferencesSave": "Save",
   "privacySettingsConnectionRestoredReview": "Connection restored. Review your kept changes, then save.",
   "privacySettingsConnectionRestoredRefreshing": "Connection restored. Refreshing privacy settings.",
@@ -2432,12 +2336,12 @@
   "privacySettingsMomoSmsSync": "MoMo SMS sync",
   "privacySettingsMomoSmsSyncDescription": "Match approved Mobile Money verification SMS for faster contribution checks.",
   "privacySettingsShareAnalytics": "Share anonymous usage analytics",
-  "privacySettingsShareAnalyticsDescription": "Help improve search, tickets, contributions, Fan Zone, and recovery flows.",
-  "privacySettingsAnalyticsFailClosed": "Analytics stays off unless you opt in and the signed release has an approved analytics configuration.",
+  "privacySettingsShareAnalyticsDescription": "Help improve search, tickets, contributions, Predict, and recovery flows.",
+  "privacySettingsAnalyticsFailClosed": "Usage sharing is optional and stays off until you enable it.",
   "privacySettingsNoChanges": "No changes to save",
   "privacySettingsSave": "Save privacy settings",
   "privacySettingsYourData": "Your data",
-  "privacySettingsExportDescription": "Request an account export through a configured support channel.",
+  "privacySettingsExportDescription": "Contact support to request a copy of your account data.",
   "privacySettingsExportAction": "Request data export",
   "privacySettingsExportWhatsAppMessage": "Data export request for {app}. Please send me a copy of my account data.",
   "@privacySettingsExportWhatsAppMessage": {
@@ -2470,7 +2374,7 @@
   "adminCommandCenter": "Command center",
   "adminTotalUsers": "Total users",
   "adminActiveGroups": "Active groups",
-  "adminTransactionsToday": "Tx today",
+  "adminTransactionsToday": "Transactions today",
   "adminTicketsSold": "Tickets sold",
   "adminQuickActions": "Quick actions",
   "adminManageCms": "Manage CMS",
@@ -2743,7 +2647,7 @@
   "adminMatchesDescription": "Manage fixtures, sale status, ticket allocation, and live scores from confirmed data.",
   "adminMatchesFixtures": "Fixtures",
   "adminMatchesOnSale": "On sale",
-  "adminMatchesStatus": "Status",
+  "adminMatchesStatus": "Fixtures",
   "adminMatchesFilterAll": "All",
   "adminMatchesFilterLive": "Live",
   "adminMatchesFilterUpcoming": "Upcoming",
@@ -2915,11 +2819,11 @@
   "adminFeatureManagerTitle": "Feature manager",
   "adminFeatureRegistryLoading": "Loading feature registry",
   "adminFeatureRegistryLoadingMessage": "Checking controlled feature configuration.",
-  "adminFeatureManagerDescription": "Control club-scoped feature availability with confirmed, bounded configuration.",
+  "adminFeatureManagerDescription": "Choose which features are visible and available for this club.",
   "adminFeatureRegistered": "Registered",
   "adminFeatureEnabledUpper": "Enabled",
   "adminFeatureDisabledUpper": "Disabled",
-  "adminFeatureStatus": "Status",
+  "adminFeatureStatus": "Availability",
   "adminFeatureFilterAll": "All",
   "adminFeatureNoneConfigured": "No features configured",
   "adminFeatureNoneMatch": "No features match",
@@ -3087,8 +2991,8 @@
   "adminNotificationSendTitle": "Send notification",
   "adminNotificationLoading": "Loading notification workspace",
   "adminNotificationLoadingMessage": "Checking controlled delivery information.",
-  "adminNotificationDeliveryStatus": "Delivery status",
-  "adminNotificationDeliveryStatusMessage": "Delivery via Edge Functions. Scheduled sends dispatch on cron.",
+  "adminNotificationDeliveryStatus": "Send or schedule",
+  "adminNotificationDeliveryStatusMessage": "Send to your selected audience now, or choose a delivery time.",
   "adminNotificationAudience": "Audience",
   "adminNotificationAudienceAllFans": "All fans",
   "adminNotificationAudienceByTier": "By tier",
@@ -3217,7 +3121,7 @@
   "adminContributionsLoadingMessage": "Checking the controlled contribution monitor.",
   "adminContributionsDescription": "Review club-scoped group totals without exposing supporter or payment identifiers.",
   "adminContributionsMonthlyTotal": "Total recorded this month",
-  "adminContributionsSummary": "{groups} groups • {records} bounded records",
+  "adminContributionsSummary": "Groups: {groups} • Records shown: {records}",
   "@adminContributionsSummary": {
     "placeholders": {
       "groups": {
@@ -3257,7 +3161,7 @@
   "adminContributionsClosed": "Closed",
   "adminContributionsActive": "Active",
   "adminContributionsTeamProject": "Team project",
-  "adminContributionsRecordMembers": "{records} bounded records • {members} registered members",
+  "adminContributionsRecordMembers": "Records shown: {records} • Members: {members}",
   "@adminContributionsRecordMembers": {
     "placeholders": {
       "records": {
@@ -3828,7 +3732,6 @@
   "gameDone": "Done.",
   "gameResults": "Results",
   "gameYourFriends": "Your friends",
-  "gameChallenge": "Challenge",
   "gameAccept": "Accept",
   "gamePending": "Pending",
   "gameAdd": "Add",
@@ -3932,7 +3835,6 @@
   "gameNotificationsUpper": "Notifications",
   "gameKickoffAlerts": "Match Kick-off Alerts",
   "gameRoundResults": "Round Results",
-  "gameFriendChallenges": "Friend Challenges",
   "gameLineupsUpper": "Lineups",
   "gameSubstitutes": "Subs",
   "gameActiveUpper": "Active",
@@ -4323,9 +4225,6 @@
     }
   },
   "gameUnknownTime": "Unknown time",
-  "gameClubFanZoneTitle": "Club fan zone",
-  "gameClubFanZoneTemporarilyUnavailable": "Club fan zone is temporarily unavailable.",
-  "gameFanZoneUnavailable": "Fan zone unavailable",
   "gameSupporterPulse": "Supporter pulse",
   "gameSupporterPulseDescription": "Real supporter momentum around active competitions, fixture picks, and top clubs.",
   "gameTopClubs": "Top clubs",
@@ -4452,7 +4351,6 @@
       }
     }
   },
-  "gameChallengeFlowTemporarilyUnavailable": "Challenge flow is temporarily unavailable.",
   "gameHeadToHeadMessage": "{appName} head-to-head on {home} vs {away}",
   "@gameHeadToHeadMessage": {
     "placeholders": {
@@ -4467,14 +4365,8 @@
       }
     }
   },
-  "gameChallengeSent": "Challenge sent",
-  "gameChallengeWaiting": "Your challenge is waiting for a response.",
-  "gameCouldNotSendChallenge": "Could not send the challenge right now.",
   "gameSending": "Sending…",
-  "gameSendChallenge": "Send challenge",
-  "gameChallengeUnavailable": "Challenge unavailable",
   "gameSupporter": "Supporter",
-  "gameAddFriendsBeforeChallenge": "Add friends before sending a challenge.",
   "gameFindFriends": "Find friends",
   "gameFixture": "Fixture",
   "gamePick": "Pick",
@@ -4785,14 +4677,10 @@
       }
     }
   },
-  "gameChallengesTitle": "Challenges",
-  "gameChallengesTemporarilyUnavailable": "Challenges are temporarily unavailable.",
-  "gameChallengesUnavailable": "Challenges unavailable",
   "gameDaily": "Daily",
   "gameWeeklyUpper": "Weekly",
   "gameSeasonal": "Seasonal",
   "gameCompleted": "Completed",
-  "gameChallengesRequireProfile": "Challenges appear once your supporter profile is active.",
   "gameWhatIsFet": "What is FET?",
   "gameWhatIsFetBody": "FET (Fan Engagement Tokens) are your supporter currency. Earn them by engaging with your club—attending matches, completing challenges, making predictions, and supporting the community.",
   "gameHowPredictionsWork": "How predictions work",
@@ -4805,10 +4693,6 @@
   "gameOpen": "Open",
   "gameRefresh": "Refresh",
   "gameMoreOptions": "More options",
-  "gameConnectToFanZone": "Connect to load Fan Zone.",
-  "gameOpeningFanZone": "Opening Fan Zone",
-  "gameRefreshingFanZone": "Refreshing Fan Zone",
-  "gameRefreshingFanZoneDescription": "Keeping your current points, rounds, and picks visible while updates load.",
   "gameMatchdayRounds": "Matchday rounds",
   "gameNoMatchdayRounds": "No matchday rounds",
   "gameReviewJoinedRounds": "Review joined rounds, cards, and results",
@@ -4819,7 +4703,7 @@
   "gameActivity": "Activity",
   "gameOpenPointsActivity": "Open recent points movement",
   "gameSupporterClubs": "Supporter clubs",
-  "gameSupporterClubsDescription": "Fan clubs, chapters, and community groups",
+  "gameSupporterClubsDescription": "FanClubs and community groups",
   "gameMemberFans": "Member fans",
   "gameMemberFansDescription": "Open the supporter registry as a sheet",
   "gameSupportClubDescription": "Projects and supporter contribution groups",
@@ -4872,14 +4756,6 @@
       }
     }
   },
-  "gameFanZoneAccessUnavailable": "Fan Zone access not available",
-  "gameFanZoneAccessUnavailableDescription": "Your account cannot open Fan Zone right now. Contact support if this should be available.",
-  "gameFanZoneChanged": "Fan Zone changed",
-  "gameFanZoneChangedDescription": "Fan Zone data changed while you were viewing it. Refresh to load the current version.",
-  "gameFanZoneSecurityTimedOut": "Fan Zone security check timed out",
-  "gameFanZoneSecurityTimedOutDescription": "We could not confirm current Fan Zone access. Refresh before continuing.",
-  "gameFanZoneTemporarilyUnavailable": "Fan Zone is temporarily unavailable.",
-  "gameSavedFanZoneContent": "Showing saved Fan Zone content. Reconnect and refresh for current fixtures and balances.",
   "gamePickSectionLabel": "Pick",
   "gamePicksLabel": "Picks",
   "gameRewardsLabel": "Rewards",
@@ -4887,7 +4763,6 @@
   "gameBadgesLabel": "Badges",
   "gamePointsLabel": "Points",
   "gameAccuracyLabel": "Accuracy",
-  "gameFanZoneUnavailableTitle": "Fan Zone unavailable",
   "walletRewardsUnavailable": "Rewards unavailable",
   "walletDisabledBody": "Points and reward activity are disabled for this build.",
   "walletNoActivity": "No points activity yet",
@@ -4918,7 +4793,7 @@
   },
   "walletEarn": "Earn",
   "walletEarnBody": "Earn points from partner initiatives and promotions.",
-  "walletUseBody": "Use points in rewards, matchday activities, and fan-zone challenges.",
+  "walletUseBody": "Use points in rewards and Predict.",
   "walletRewardsBody": "Use points for matchday perks and partner rewards.",
   "walletRewardsEmptyBody": "Available rewards appear here when the club or partners publish them.",
   "walletActivityEmptyBody": "Points activity appears after partner rewards or matchday actions.",
@@ -4935,8 +4810,8 @@
   "walletSavedUntilRefresh": "The last confirmed balance stays visible until refresh succeeds.",
   "gameShareOptionsClosed": "Share options closed. Confirm the destination before publishing.",
   "gameShareActionsUnavailable": "Share actions unavailable",
-  "gameShareActionsUnavailableDescription": "You can return to Fan Zone, but sharing is disabled for this build.",
-  "gameBackToFanZoneUpper": "Back to fan zone",
+  "gameShareActionsUnavailableDescription": "You can return to Predict, but sharing is disabled for this build.",
+  "gameBackToPredict": "Back to Predict",
   "gamePredictionAccessDenied": "Prediction access denied",
   "gamePredictionAccessDeniedDescription": "This account cannot open prediction history for sharing.",
   "gameMakePickFirst": "Make a pick first",
@@ -5135,7 +5010,6 @@
     }
   },
   "gameMatchTitle": "Match",
-  "gameBackToFanZoneTitleCase": "Back to Fan Zone",
   "gameMatchNotFound": "Match not found",
   "gameMatchNotFoundDescription": "This fixture may have ended, been removed, or no longer be available.",
   "gameWeekdayMon": "Mon",
@@ -5226,7 +5100,6 @@
   "gamePartnerWdwPools": "Partner WDW Pools",
   "gameNoPartnerPool": "No partner pool for this match",
   "gameNoPartnerPoolDescription": "Football predictions open only when a partner creates a fixed-entry WDW pool for this fixture.",
-  "gameViewFanZone": "View Fan Zone",
   "gamePartnerPoolsOnly": "{home} vs {away} uses partner-funded WDW pools only.",
   "@gamePartnerPoolsOnly": {
     "placeholders": {
@@ -5274,7 +5147,7 @@
   "predictRefund": "Predict refund",
   "predictActivity": "FET activity",
   "predictAdminTitle": "Predict operations",
-  "predictAdminIntro": "Prepare fixtures. Confirm official results. Settle or refund entries.",
+  "predictAdminIntro": "Prepare fixtures and manage entries. Match results come from the LiveScore integration.",
   "predictAdminSettings": "Settings",
   "predictAdminEnabled": "Open Predict",
   "predictAdminEntryPrice": "Entry price (FET)",
@@ -5286,7 +5159,6 @@
   "predictAdminSettled": "Settled",
   "predictAdminRefunded": "Refunded",
   "predictAdminPrepare": "Prepare fixture",
-  "predictAdminConfirm": "Confirm result",
   "predictAdminSettle": "Settle pool",
   "predictAdminRefund": "Void and refund",
   "predictAdminSource": "Official source URL",
@@ -5297,7 +5169,10 @@
   "predictAdminEmpty": "No fixtures to manage",
   "predictAdminPriceNote": "New price applies to newly prepared fixtures. Entries close automatically at kickoff.",
   "predictAdminTotals": "Entries / Staked / Paid",
-  "predictAdminConfirmBody": "Review the official final score before confirming.",
+  "predictAdminAutomaticResults": "LiveScore validates and confirms results automatically. No manual confirmation is needed.",
+  "predictAdminFinalScore": "Final score",
+  "predictAdminAwaitingResult": "Waiting for the final result",
+  "adminMatchAutomaticResults": "Scores, match status and live minutes are managed by the LiveScore integration.",
   "predictAdminSettleBody": "Distribute the whole pool to correct entries. If none are correct, refund every entry.",
   "clubAboutTitle": "About the club",
   "clubOriginLabel": "Roots",
@@ -5308,8 +5183,6 @@
   "clubMembershipAction": "Membership",
   "membershipStatusUnconfirmed": "Not confirmed",
   "membershipDateUnconfirmed": "Not provided",
-  "membershipProgrammeTitle": "Your membership",
-  "membershipProgrammeBody": "Your category is based on confirmed club contributions. FET activity is separate and does not determine your membership tier.",
   "predictReviewTitle": "Review your pick",
   "predictConfirmPick": "Confirm pick",
   "predictReviewRule": "One pick per fixture. Your pick cannot be changed after confirmation. The fixture closes at kickoff.",
@@ -5345,8 +5218,6 @@
   "clubFootballNow": "Football now",
   "clubFootballUpcoming": "Next fixture",
   "clubFootballRecent": "Latest result",
-  "membershipQualificationUnavailable": "Contribution qualification is not yet available for this club.",
-  "membershipQualificationWindow": "Rolling 12 months · membership contributions only",
   "predictInsufficientReview": "Insufficient FET. No charge will be made.",
   "shopEnquire": "Enquire on WhatsApp",
   "shopEnquiryExplanation": "Confirm size, availability and delivery with the club. Opening WhatsApp does not place an order or make a payment.",
@@ -5367,27 +5238,6 @@
       "amount": {
         "type": "int",
         "format": "decimalPattern"
-      }
-    }
-  },
-  "membershipConfirmedTotal": "{amount} RWF confirmed",
-  "@membershipConfirmedTotal": {
-    "placeholders": {
-      "amount": {
-        "type": "int",
-        "format": "decimalPattern"
-      }
-    }
-  },
-  "membershipRemainingTotal": "{amount} RWF to {tier}",
-  "@membershipRemainingTotal": {
-    "placeholders": {
-      "amount": {
-        "type": "int",
-        "format": "decimalPattern"
-      },
-      "tier": {
-        "type": "String"
       }
     }
   },
@@ -5416,6 +5266,7 @@
   "clubSquadStaff": "Staff",
   "clubSquadAllTeams": "All teams",
   "shopEnquiryOptions": "View enquiry options",
-  "fanZoneBackToFanZone": "Back to fan zone",
-  "commonTryAgain": "Try again"
+  "commonTryAgain": "Try again",
+  "fanClubsEmptyTitle": "No fan clubs found",
+  "fanClubsEmptyMessage": "Try another name or location."
 }

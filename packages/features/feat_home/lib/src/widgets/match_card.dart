@@ -143,27 +143,8 @@ class _MatchOverview extends StatelessWidget {
             ),
             const SizedBox(height: SpacingTokens.spacing3),
           ],
-          if (hasScore) ...[
-            Text(
-              '${slide.homeScore} : ${slide.awayScore}',
-              style: TypographyTokens.displayLarge(
-                colors.primaryText,
-              ).copyWith(fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: SpacingTokens.spacing3),
-            Text(
-              '${slide.homeTeam} · ${slide.awayTeam}',
-              textAlign: TextAlign.center,
-              style: TypographyTokens.bodyLarge(colors.primaryText),
-            ),
-          ] else
-            Text(
-              '${slide.homeTeam}\n${slide.awayTeam}',
-              textAlign: TextAlign.center,
-              style: TypographyTokens.displaySmall(
-                colors.primaryText,
-              ).copyWith(fontWeight: FontWeight.w600, height: 1.15),
-            ),
+          AfriFixtureTeams(homeTeam: slide.homeTeam, awayTeam: slide.awayTeam,
+            score: hasScore ? '${slide.homeScore}–${slide.awayScore}' : null, crestSize: 40),
           const SizedBox(height: SpacingTokens.spacing3),
           if (slide.dateInfo.isNotEmpty)
             Text(

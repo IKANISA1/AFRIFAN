@@ -26,13 +26,19 @@ Future<bool?> showPredictReview(
           children: [
             Text(l.predictReviewTitle, style: TypographyTokens.headlineLarge()),
             const SizedBox(height: SpacingTokens.sectionGap),
-            Text(
-              l.clubFixtureTeams(fixture.homeTeam, fixture.awayTeam),
-              style: TypographyTokens.titleLarge(),
+            AfriFixtureTeams(
+              homeTeam: fixture.homeTeam,
+              awayTeam: fixture.awayTeam,
+              homeCrest: fixture.homeCrest,
+              awayCrest: fixture.awayCrest,
             ),
             const SizedBox(height: SpacingTokens.spacing3),
             AfriStatusChip(
-              label: fixture.selectionName(selection, l.predictDraw),
+              label: selection == PredictSelection.draw
+                  ? l.predictDraw
+                  : teamInitials(
+                      fixture.selectionName(selection, l.predictDraw),
+                    ),
               tone: AfriStatusTone.info,
             ),
             const SizedBox(height: SpacingTokens.sectionGap),

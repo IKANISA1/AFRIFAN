@@ -90,7 +90,7 @@ test("support policy routes prove their six applicable static-support states", a
     let surface = await openSupportRoute(page, route.path, route.kind, "dark");
     expect(
       await surface.evaluate((element) => getComputedStyle(element).color),
-    ).toBe("rgb(248, 250, 252)");
+    ).toBe("rgb(244, 244, 244)");
     await expectNoSeriousAxeViolations(page);
     captures.push({
       route: route.path,
@@ -219,7 +219,7 @@ test("support policy routes prove their six applicable static-support states", a
     surface = await openSupportRoute(page, route.path, route.kind, "light");
     expect(
       await surface.evaluate((element) => getComputedStyle(element).color),
-    ).toBe("rgb(15, 23, 42)");
+    ).toBe("rgb(25, 28, 31)");
     await expectNoSeriousAxeViolations(page);
     captures.push({
       route: route.path,

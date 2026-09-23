@@ -92,7 +92,7 @@ for (const route of recoveryRoutes) {
       await page.locator(".recovery-title").evaluate((element) => {
         return getComputedStyle(element).color;
       }),
-    ).toBe("rgb(246, 248, 252)");
+    ).toBe("rgb(244, 244, 244)");
     await capture(page, route.filePrefix, "dark_dark");
 
     const axeResults = await new AxeBuilder({ page })
@@ -170,7 +170,7 @@ for (const route of recoveryRoutes) {
       await page.locator(".recovery-title").evaluate((element) => {
         return getComputedStyle(element).color;
       }),
-    ).toBe("rgb(13, 22, 39)");
+    ).toBe("rgb(25, 28, 31)");
     await capture(page, route.filePrefix, "light_light");
     const states = ["dark", "offline", "focused", "pressed", "large_text", "reduced_motion", "light"];
     fs.writeFileSync(path.join(evidenceDirectory, `${route.filePrefix}-state-evidence.json`), JSON.stringify({

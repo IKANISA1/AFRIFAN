@@ -1,0 +1,11 @@
+create extension if not exists pgtap with schema extensions;
+begin;
+select plan(6);
+select is((select count(*)::integer from public.platform_features where feature_key in ('fanzone','challenge')),0,'removed features are absent');
+select is((select count(*)::integer from public.platform_route_registry where path_pattern ~ '^/(fanzone|challenge)(/|$)'),0,'removed URLs have no route registry entries');
+select is((select count(*)::integer from pg_proc where pronamespace='public'::regnamespace and (proname ~ '^prediction_.*(jackpot|friend_challenge)' or proname in ('prediction_place','prediction_place_acca'))),0,'obsolete entry RPCs are absent');
+select ok(to_regprocedure('public.predict_place(bigint,uuid,text)') is not null,'current Predict entry remains available');
+select is((select count(*)::integer from public.quick_actions where route ~ '^/(fanzone|challenge)(/|\?|$)'),0,'discovery uses only current destinations');
+select ok(not has_schema_privilege('authenticated','retired','usage') and not has_schema_privilege('anon','retired','usage'),'historical records remain outside app access');
+select * from finish();
+rollback;

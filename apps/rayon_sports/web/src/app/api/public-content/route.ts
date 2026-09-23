@@ -355,7 +355,7 @@ export async function GET(request: Request) {
           currentTotal: group.currentTotal,
           currency: group.currency.trim().toUpperCase().slice(0, 3),
           memberCount: group.memberCount,
-        }))
+          ...(group.imageUrl ? { imageUrl: group.imageUrl } : {}),        }))
         .filter((group) => {
           const valid =
             group.id &&
@@ -462,8 +462,8 @@ export async function GET(request: Request) {
             Number.isInteger(membershipPackage.sortOrder) &&
             membershipPackage.sortOrder >= 0 &&
             membershipPackage.sortOrder <= 1_000_000 &&
-            Number.isFinite(membershipPackage.annualPrice) &&
-            membershipPackage.annualPrice >= 0 &&
+            Number.isSafeInteger(membershipPackage.annualPrice) &&
+            membershipPackage.annualPrice > 0 &&
             membershipPackage.annualPrice <= 1_000_000_000_000 &&
             membershipPackage.perks.length > 0 &&
             !ids.has(membershipPackage.id) &&

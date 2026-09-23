@@ -206,7 +206,10 @@ describe("HomeSurface", () => {
         response(httpStatus, { error: "database.internal password=private" }),
       );
       const { container } = renderHome();
-      await screen.findAllByText(expectedLabel);
+      await screen.findByText(expectedLabel);
+      expect(screen.getAllByText(expectedLabel)).toHaveLength(1);
+      expect(screen.queryByRole("heading", { name: "No public highlights" })).toBeNull();
+      expect(container.querySelector(".circles-stats")).not.toHaveTextContent("0");
       expect(container.querySelector(".home-surface")).toHaveAttribute(
         "data-home-status",
         expectedStatus,

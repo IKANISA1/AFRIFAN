@@ -511,9 +511,9 @@ export default function AdminAccessPage() {
           status === "permission_denied" ||
             status === "error" ||
             status === "security_timeout"
-            ? "border-rose-500/30 bg-rose-500/10"
+            ? "border-error/30 bg-error/10"
             : status === "offline" || status === "conflict"
-              ? "border-amber-400/30 bg-amber-400/10"
+              ? "border-warning/30 bg-warning/10"
               : "border-[var(--admin-border)] bg-[var(--admin-zinc-900)]",
         )}
         role={
@@ -533,7 +533,7 @@ export default function AdminAccessPage() {
       >
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="min-w-0">
-            <p className="font-bold text-[var(--admin-text-strong)]">
+            <p className="font-medium text-[var(--admin-text-strong)]">
               {statusCopy.label}
             </p>
             <p className="mt-1 text-sm leading-6 text-[var(--admin-zinc-400)]">
@@ -550,7 +550,7 @@ export default function AdminAccessPage() {
             onPointerUp={finishPointer}
             onPointerCancel={finishPointer}
             onLostPointerCapture={finishPointer}
-            className="admin-access-control inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[var(--admin-border)] px-4 py-3 text-sm font-bold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-zinc-800)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent disabled:cursor-not-allowed disabled:bg-[var(--admin-zinc-800)] disabled:text-[var(--admin-text-strong)] motion-reduce:transition-none"
+            className="admin-access-control inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[var(--admin-border)] px-4 py-3 text-sm font-medium text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-zinc-800)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:bg-[var(--admin-zinc-800)] disabled:text-[var(--admin-text-strong)] motion-reduce:transition-none"
           >
             <RefreshCw
               size={17}
@@ -577,12 +577,12 @@ export default function AdminAccessPage() {
       <div className="admin-surface">
         <AdminFilterBar
           actions={
-            <label className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-[var(--admin-zinc-500)] cursor-pointer hover:text-[var(--admin-zinc-300)] transition-colors">
+            <label className="flex items-center gap-2 text-xs font-medium normal-case tracking-normal text-[var(--admin-zinc-500)] cursor-pointer hover:text-[var(--admin-zinc-300)] transition-colors">
               <input
                 type="checkbox"
                 checked={showInactive}
                 onChange={(event) => setShowInactive(event.target.checked)}
-                className="rounded border-[var(--admin-border)] bg-[var(--admin-zinc-950)] text-club-accent focus:ring-club-accent"
+                className="rounded border-[var(--admin-border)] bg-[var(--admin-zinc-950)] text-[var(--admin-accent)] focus:ring-action-neutral"
               />
               Show revoked
             </label>
@@ -639,21 +639,21 @@ export default function AdminAccessPage() {
                     tone={roleBadgeTone(assignment.role)}
                   />
                   {!assignment.isActive && (
-                    <span className="ml-2 text-[9px] uppercase font-bold text-rose-500 bg-rose-500/10 px-1.5 py-0.5 rounded">Revoked</span>
+                    <span className="ml-2 text-xs normal-case font-medium text-error bg-error/10 px-1.5 py-0.5 rounded">Revoked</span>
                   )}
                 </td>
                 <td>
                   <div className="space-y-0.5">
                     <p className="text-sm font-medium text-[var(--admin-zinc-100)]">{assignment.clubName ?? "Platform scope"}</p>
                     {assignment.publicUserId && (
-                      <p className="text-[10px] uppercase font-bold text-[var(--admin-zinc-500)] tracking-tighter">ID: {assignment.publicUserId}</p>
+                      <p className="text-xs normal-case font-medium text-[var(--admin-zinc-500)] tracking-tighter">ID: {assignment.publicUserId}</p>
                     )}
                   </div>
                 </td>
                 <td>
                   <div className="space-y-0.5 text-xs text-[var(--admin-zinc-400)]">
                     <p className="font-medium text-[var(--admin-zinc-300)]">{new Date(assignment.grantedAt).toLocaleDateString("en-RW", { month: "short", day: "numeric", year: "numeric" })}</p>
-                    <p className="text-[10px]">by {assignment.grantedByName ?? "system"}</p>
+                    <p className="text-xs">by {assignment.grantedByName ?? "system"}</p>
                   </div>
                 </td>
                 <td className="text-right">
@@ -712,7 +712,7 @@ export default function AdminAccessPage() {
       >
         <div className="space-y-6">
           <div className="space-y-4">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--admin-zinc-500)]">User identity</p>
+            <p className="text-xs font-medium normal-case tracking-normal text-[var(--admin-zinc-500)]">User identity</p>
             <label className="grid gap-2">
               <div className="flex gap-2">
                 <input
@@ -732,9 +732,9 @@ export default function AdminAccessPage() {
             </label>
 
             {candidate ? (
-              <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
-                <p className="font-bold text-white text-lg">{candidate.fullName}</p>
-                <p className="text-[10px] text-emerald-400/60 font-mono tracking-tighter mt-1">{candidate.userId}</p>
+              <div className="rounded-xl border border-success/20 bg-success/5 p-4">
+                <p className="font-medium text-[var(--admin-text-strong)] text-lg">{candidate.fullName}</p>
+                <p className="text-xs text-[var(--admin-text-muted)] font-mono tracking-tighter mt-1">{candidate.userId}</p>
                 <div className="mt-4 grid gap-1 text-xs font-medium text-[var(--admin-zinc-400)]">
                   <p>{candidate.phone ?? "No phone"}</p>
                   <p>{candidate.email ?? "No email"}</p>
@@ -748,7 +748,7 @@ export default function AdminAccessPage() {
           </div>
 
           <div className="space-y-4 pt-6 border-t border-[var(--admin-border)]">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--admin-zinc-500)]">Permission profile</p>
+            <p className="text-xs font-medium normal-case tracking-normal text-[var(--admin-zinc-500)]">Permission profile</p>
             <label className="grid gap-2 text-sm font-semibold text-[var(--admin-zinc-100)]">
               Assign role
               <select
@@ -791,12 +791,12 @@ export default function AdminAccessPage() {
       <AdminActionDrawer open={detailAssignment != null} onClose={() => setDetailAssignment(null)} title="Administrator assignment details">
         {detailAssignment ? (
           <dl className="grid gap-4 text-sm">
-            <div><dt className="text-slate-500">Administrator</dt><dd className="mt-1 text-slate-100">{detailAssignment.userName}</dd></div>
-            <div><dt className="text-slate-500">Contact</dt><dd className="mt-1 text-slate-100">{detailAssignment.userPhone ?? detailAssignment.userEmail ?? "No contact verified"}</dd></div>
-            <div><dt className="text-slate-500">Role</dt><dd className="mt-1 text-slate-100">{formatAdminRoleLabel(detailAssignment.role)}</dd></div>
-            <div><dt className="text-slate-500">Scope</dt><dd className="mt-1 text-slate-100">{detailAssignment.clubName ?? "Platform scope"}</dd></div>
-            <div><dt className="text-slate-500">Authorized</dt><dd className="mt-1 text-slate-100">{new Date(detailAssignment.grantedAt).toLocaleString("en-RW")} by {detailAssignment.grantedByName ?? "system"}</dd></div>
-            <div><dt className="text-slate-500">Status</dt><dd className="mt-1 text-slate-100">{detailAssignment.isActive ? "Active" : "Revoked"}</dd></div>
+            <div><dt className="text-[var(--admin-text-muted)]">Administrator</dt><dd className="mt-1 text-[var(--admin-text-strong)]">{detailAssignment.userName}</dd></div>
+            <div><dt className="text-[var(--admin-text-muted)]">Contact</dt><dd className="mt-1 text-[var(--admin-text-strong)]">{detailAssignment.userPhone ?? detailAssignment.userEmail ?? "No contact verified"}</dd></div>
+            <div><dt className="text-[var(--admin-text-muted)]">Role</dt><dd className="mt-1 text-[var(--admin-text-strong)]">{formatAdminRoleLabel(detailAssignment.role)}</dd></div>
+            <div><dt className="text-[var(--admin-text-muted)]">Scope</dt><dd className="mt-1 text-[var(--admin-text-strong)]">{detailAssignment.clubName ?? "Platform scope"}</dd></div>
+            <div><dt className="text-[var(--admin-text-muted)]">Authorized</dt><dd className="mt-1 text-[var(--admin-text-strong)]">{new Date(detailAssignment.grantedAt).toLocaleString("en-RW")} by {detailAssignment.grantedByName ?? "system"}</dd></div>
+            <div><dt className="text-[var(--admin-text-muted)]">Status</dt><dd className="mt-1 text-[var(--admin-text-strong)]">{detailAssignment.isActive ? "Active" : "Revoked"}</dd></div>
           </dl>
         ) : null}
       </AdminActionDrawer>

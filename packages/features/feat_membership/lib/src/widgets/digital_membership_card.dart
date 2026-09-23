@@ -90,7 +90,7 @@ class DigitalMembershipCardFull extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: SpacingTokens.spacing4),
-              const AfriBrandMark(size: 40, showBorder: false),
+              const AfriBrandMark(size: 40),
             ],
           ),
         ],

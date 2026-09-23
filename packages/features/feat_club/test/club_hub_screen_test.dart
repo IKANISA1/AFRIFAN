@@ -29,8 +29,9 @@ void main() {
         home: ClubCrest(clubSlug: 'as_vita_cd', clubName: 'AS Vita Club'),
       ),
     );
-    expect(find.byType(Image), findsNothing);
-    expect(find.text('AV'), findsOneWidget);
+    final crest = tester.widget<Image>(find.byType(Image));
+    expect((crest.image as AssetImage).assetName, endsWith('/as-vita.png'));
+    expect(find.text('AV'), findsNothing);
   });
 
   testWidgets('shows official club identity and canonical destinations', (
@@ -40,7 +41,7 @@ void main() {
     await tester.pumpAndSettle();
 
     final l10n = lookupAfriLocalizations(const Locale('en'));
-    expect(find.text('Rayon Sports FC'), findsOneWidget);
+    expect(find.text('RAY'), findsOneWidget);
     expect(find.text('Gikundiro'), findsOneWidget);
     expect(find.text(l10n.clubTeamTitle), findsOneWidget);
     expect(find.text(l10n.clubNewsTitle), findsOneWidget);
@@ -51,7 +52,7 @@ void main() {
     expect(find.text(l10n.clubProjectsTitle), findsOneWidget);
     expect(find.text(l10n.clubTicketsTitle), findsOneWidget);
     expect(find.text(l10n.clubShopTitle), findsOneWidget);
-    final identityTitle = tester.widget<Text>(find.text('Rayon Sports FC'));
+    final identityTitle = tester.widget<Text>(find.text('RAY'));
     expect(identityTitle.style?.fontStyle, isNot(FontStyle.italic));
     expect(find.byType(AfriTopCommandBar), findsOneWidget);
     expect(find.byType(AfriListGroup), findsNWidgets(2));
@@ -136,9 +137,6 @@ class _FakeClubContentGateway implements ClubContentGateway {
 
   @override
   Future<List<ClubNewsItem>> loadNews() async => const [];
-
-  @override
-  Future<List<ClubProjectItem>> loadProjects() async => const [];
 
   @override
   Future<List<ClubSquadMember>> loadSquad() async => const [];

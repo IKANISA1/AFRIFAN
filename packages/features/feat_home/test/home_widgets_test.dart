@@ -37,7 +37,7 @@ void main() {
         routerConfig: router,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
-            seedColor: ColorTokens.clubPrimary,
+            seedColor: ColorTokens.primary,
             brightness: Brightness.dark,
           ),
         ),
@@ -103,8 +103,8 @@ void main() {
         sortOrder: 20,
       ),
       HomeQuickAction(
-        actionKey: 'fan_zone',
-        title: 'Fan Zone',
+        actionKey: 'predict',
+        title: 'Predict',
         route: '/fan-clubs',
         iconKey: 'members',
         sortOrder: 30,
@@ -119,7 +119,7 @@ void main() {
       HomeQuickAction(
         actionKey: 'matchday',
         title: 'Matchday',
-        route: '/fanzone/fixtures',
+        route: '/club/fixtures',
         iconKey: 'league',
         sortOrder: 0,
       ),
@@ -139,21 +139,21 @@ void main() {
           ),
           // Stub routes for navigation
           GoRoute(
-            path: '/fanzone/fixtures',
+            path: '/club/fixtures',
             builder: (_, __) => const SizedBox(),
           ),
-          GoRoute(path: '/fanzone/my', builder: (_, __) => const SizedBox()),
+          GoRoute(path: '/predict?section=history', builder: (_, __) => const SizedBox()),
           GoRoute(
-            path: '/fanzone/notifications',
+            path: '/predict/picks/:predictionId',
             builder: (_, __) => const SizedBox(),
           ),
           GoRoute(path: '/live', builder: (_, __) => const SizedBox()),
           GoRoute(
-            path: '/fanzone/leaderboard',
+            path: '/club/standings',
             builder: (_, __) => const SizedBox(),
           ),
           GoRoute(
-            path: '/fanzone/wallet',
+            path: '/predict',
             builder: (_, __) => const SizedBox(),
           ),
           GoRoute(path: '/tickets', builder: (_, __) => const SizedBox()),
@@ -172,7 +172,7 @@ void main() {
           routerConfig: router,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
-              seedColor: ColorTokens.clubPrimary,
+              seedColor: ColorTokens.primary,
               brightness: Brightness.dark,
             ),
           ),
@@ -188,7 +188,7 @@ void main() {
 
       expect(find.text('Tickets'), findsOneWidget);
       expect(find.text('Membership'), findsOneWidget);
-      expect(find.text('Fan Zone'), findsOneWidget);
+      expect(find.text('Predict'), findsOneWidget);
       expect(find.text('Shop'), findsOneWidget);
       expect(find.text('Matchday'), findsNothing);
       expect(find.byType(AfriQuickAction), findsNWidgets(4));
@@ -256,7 +256,7 @@ void main() {
       HomeQuickAction(
         actionKey: 'rewards',
         title: 'Rewards',
-        route: '/fanzone/rewards',
+        route: '/predict?section=wallet',
         iconKey: 'rewards',
         sortOrder: 1,
       ),
@@ -286,8 +286,8 @@ void main() {
     expect(prioritized.map((action) => action.actionKey), <String>[
       'tickets',
       'membership',
-      'shop',
       'rewards',
+      'shop',
     ]);
   });
 }

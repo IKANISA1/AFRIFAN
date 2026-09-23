@@ -87,24 +87,9 @@ approved fixtures; existing production store-release authorization is preserved.
 ## Unified navigation and state ownership — 6 September 2026
 
 The current shared mobile shell is Home, Club, Predict and Membership. Predict
-is `/predict`; `FanzoneModule` retains only the existing configuration key and
-hosts that tab. `PredictModule` is a deprecated compatibility type and is no
-longer registered separately. `FanzoneHubScreen` delegates to `PredictScreen`.
-The obsolete aggregate Fan Zone provider and unused hub widgets are removed.
-
-`section=history` and `section=wallet` preserve the active shell and are deep
-linkable. The old Challenge and Fan Zone entry routes redirect into those
-sections. Match/league browsing belongs under Club; communities use `/fan-clubs`
-and initiatives use `/contribute`, each with their existing detail routes.
-Historical prediction details remain registered.
-
-One PredictController owns fixtures, confirmed entries and FET activity. It
-blocks offline, duplicate and uncertain submissions, refreshes after reconnect
-or foregrounding, and preserves confirmed data on recoverable failures. The
-screen schedules the next actual lock/kickoff boundary instead of repainting
-every second. Backend RPC, authentication and store-release checks remain the
-write authority. This UI consolidation applies no remote database changes.
-
-Community discovery now filters reads by the resolved club id and opens details
-for request review; it no longer reports a request as sent without an API write.
-Its static club-specific fallback is not substituted into other clubs' data.
+is `/predict`, registered by `PredictModule` with the `predict` feature key.
+Supported detail routes are `/predict/match/:fixtureId`,
+`/predict/picks/:predictionId`, and `/predict/share`. Retired navigation modules,
+compatibility redirects, and unsupported challenge entry points are removed.
+The retirement migration preserves prior financial records in a private schema
+and refuses retirement while an unsettled entry would strand funds.

@@ -4,6 +4,7 @@ import 'package:core_utils/core_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/club_models.dart';
+import 'published_project_images.dart';
 
 class OrderConflictException implements Exception {
   const OrderConflictException();
@@ -30,13 +31,11 @@ class ClubRepository {
     required OperationalHealthService healthService,
     StoreReleasePolicy? storeReleasePolicy,
   }) : _client = client,
-       _health = healthService,
        _storeReleasePolicy =
            storeReleasePolicy ??
            StoreReleasePolicy.forCurrentBuild(const PlatformConfigSnapshot());
 
   final SupabaseClient _client;
-  final OperationalHealthService _health;
   final StoreReleasePolicy _storeReleasePolicy;
   late final ClubScopeResolver _scopeResolver = ClubScopeResolver(
     client: _client,
@@ -92,111 +91,6 @@ class ClubRepository {
       AfriLogger.warn('ClubRepository', 'getFanMembership error: $e');
       return null;
     }
-  }
-
-  /// Create a new fan membership.
-  Future<FanMembership> createFanMembership(
-    String userId, {
-    required String partnerId,
-    String chapter = 'Main',
-    FanTier tier = FanTier.imena,
-    int? points,
-    DateTime? expiresAt,
-    DateTime? renewedAt,
-  }) async {
-    final scope = await _scopeResolver.requireResolved(partnerId);
-    final membershipNumber = 'MEM-${DateTime.now().millisecondsSinceEpoch}';
-    final effectivePoints = _storeReleasePolicy.allowsPaidDigitalMembership
-        ? points ?? tier.minPoints
-        : 0;
-
-    final row = await _client
-        .from('fan_memberships')
-        .insert({
-          'user_id': userId,
-          ..._scopeResolver.payload(scope),
-          'tier': tier.value,
-          'points': effectivePoints,
-          'chapter': chapter,
-          'membership_number': membershipNumber,
-          if (expiresAt != null)
-            'expires_at': expiresAt.toUtc().toIso8601String(),
-          if (renewedAt != null)
-            'renewed_at': renewedAt.toUtc().toIso8601String(),
-        })
-        .select()
-        .single();
-
-    final membership = FanMembership.fromJson(row);
-
-    await _health.recordEvent(
-      service: 'club',
-      component: 'membership',
-      message: 'Fan membership created',
-      status: OperationalHealthStatus.ok,
-      userId: userId,
-      subjectType: 'fan_membership',
-      subjectId: membership.id,
-    );
-
-    return membership;
-  }
-
-  /// Activate or renew the current user's selected membership package.
-  Future<FanMembership> activateMembershipPackage({
-    required String userId,
-    required String partnerId,
-    required String packageTier,
-    String chapter = 'Main',
-  }) async {
-    final scope = await _scopeResolver.requireResolved(partnerId);
-    final tier = FanTierX.fromValue(packageTier);
-    final now = DateTime.now().toUtc();
-    final expiresAt = now.add(const Duration(days: 365));
-    final existing = await getFanMembership(userId, scope.partnerId);
-
-    if (existing == null) {
-      return createFanMembership(
-        userId,
-        partnerId: scope.partnerId,
-        chapter: chapter,
-        tier: tier,
-        points: tier.minPoints,
-        renewedAt: now,
-        expiresAt: expiresAt,
-      );
-    }
-
-    final upgradedPoints = _storeReleasePolicy.allowsPaidDigitalMembership
-        ? (existing.points >= tier.minPoints ? existing.points : tier.minPoints)
-        : existing.points;
-
-    final row = await _client
-        .from('fan_memberships')
-        .update({
-          'tier': tier.value,
-          'points': upgradedPoints,
-          'chapter': chapter,
-          'renewed_at': now.toIso8601String(),
-          'expires_at': expiresAt.toIso8601String(),
-        })
-        .eq('id', existing.id)
-        .select()
-        .single();
-
-    final membership = FanMembership.fromJson(row);
-
-    await _health.recordEvent(
-      service: 'club',
-      component: 'membership',
-      message: 'Fan membership activated',
-      status: OperationalHealthStatus.ok,
-      userId: userId,
-      subjectType: 'fan_membership',
-      subjectId: membership.id,
-    );
-
-    return membership;
   }
 
   /// Add FET points and potentially tier-up.
@@ -261,7 +155,7 @@ class ClubRepository {
   }
 
   // ═══════════════════════════════════════════════════════════
-  // Fan Clubs (Chapters)
+  // FanClubs
   // ═══════════════════════════════════════════════════════════
 
   Future<List<FanClub>> getFanClubs(String partnerId, String? region) async {
@@ -527,7 +421,21 @@ class ClubRepository {
     query = _scopeResolver.apply(query, scope);
     if (!includeClosedGroups) query = query.eq('is_closed', false);
     final rows = await query.order('created_at', ascending: false);
-    return rows.map((r) => ContributionGroup.fromJson(r)).toList();
+    final images = scope.clubId == null
+        ? const <String, String>{}
+        : await loadPublishedProjectImages(
+            _client,
+            clubId: scope.clubId!,
+            groupIds: rows.map((row) => row['id'].toString()),
+          );
+    return rows
+        .map(
+          (row) => ContributionGroup.fromJson({
+            ...row,
+            'image_url': images[row['id']],
+          }),
+        )
+        .toList();
   }
 
   /// Record a contribution against the ledger-backed group contributions table.

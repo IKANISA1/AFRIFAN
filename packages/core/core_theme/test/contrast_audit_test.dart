@@ -17,17 +17,7 @@ void main() {
   });
 
   setUpAll(() {
-    ColorTokens.init(
-      const ClubColors(
-        primary: ColorTokens.referenceAccountBlue,
-        secondary: ColorTokens.referenceAccountNavy,
-        accent: ColorTokens.referenceTrophyGold,
-        gradient: <Color>[
-          ColorTokens.referenceAccountNavy,
-          ColorTokens.referenceAccountBlue,
-        ],
-      ),
-    );
+    ColorTokens.init();
   });
 
   tearDown(() => ColorTokens.setBrightness(Brightness.dark));
@@ -141,7 +131,7 @@ void main() {
         ColorTokens.onSurfaceVariant,
         ColorTokens.primary,
         ColorTokens.primaryContainer,
-        ColorTokens.clubAccent,
+        ColorTokens.primary,
         ColorTokens.success,
         ColorTokens.warning,
         ColorTokens.info,

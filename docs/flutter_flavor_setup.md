@@ -36,7 +36,7 @@ regenerate existing club shells with scaffolding scripts.
 - `apps/*/assets/flavors/*.local.json` is ignored by git for local use.
 - `APP_WEBSITE_URL` powers verified `https://...` app links.
 - `APP_DEEP_LINK_SCHEME` powers custom-scheme links such as
-  `gikundiro://fanzone/fixtures`.
+  `gikundiro://predict`.
 - Tracked `production.json` / `staging.json` files are sanitized templates.
   Real backend values should be injected into `.local.json` files or CI
   generated overrides.

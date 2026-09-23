@@ -293,10 +293,10 @@ class HomeScreen extends ConsumerWidget {
         if (snapshot.heroSlides.isEmpty) {
           return const SliverToBoxAdapter(child: SizedBox.shrink());
         }
-        final fanZoneAccess = ref
+        final predictAccess = ref
             .watch(featureConfigServiceProvider)
-            .getFeatureAccess('fanzone');
-        if (!fanZoneAccess.isVisible) {
+            .getFeatureAccess('predict');
+        if (!predictAccess.isVisible) {
           return const SliverToBoxAdapter(child: SizedBox.shrink());
         }
         final heroRoute = snapshot.heroSlides.first.route ?? '/club/fixtures';
@@ -309,13 +309,13 @@ class HomeScreen extends ConsumerWidget {
           ),
           child: Center(
             child: AfriButton(
-              label: fanZoneAccess.isAvailable
+              label: predictAccess.isAvailable
                   ? context.afriL10n.homeOpenMatchday
                   : context.afriL10n.homeMatchdayUnavailable,
-              semanticsLabel: fanZoneAccess.isAvailable
+              semanticsLabel: predictAccess.isAvailable
                   ? context.afriL10n.homeOpenMatchdaySemantic
                   : context.afriL10n.homeMatchdayUnavailableSemantic,
-              enabled: fanZoneAccess.isAvailable,
+              enabled: predictAccess.isAvailable,
               onTap: () => context.push(heroRoute),
               variant: AfriButtonVariant.secondary,
               fullWidth: false,
@@ -341,13 +341,6 @@ class HomeScreen extends ConsumerWidget {
         );
         break;
       case 'membership_status':
-        final normalizedPaymentStatus = snapshot.membershipPaymentStatus
-            ?.trim()
-            .toLowerCase();
-        final reviewPending =
-            normalizedPaymentStatus == 'pending' ||
-            normalizedPaymentStatus == 'submitted' ||
-            normalizedPaymentStatus == 'verifying';
         content = Padding(
           padding: const EdgeInsets.fromLTRB(
             SpacingTokens.screenPadding,
@@ -365,9 +358,7 @@ class HomeScreen extends ConsumerWidget {
                     ClubConfigScope.maybeOf(context)?.appName ??
                         RuntimeBranding.displayAppName,
                   ),
-            subtitle: reviewPending
-                ? context.afriL10n.profileMembershipReviewPending
-                : context.afriL10n.searchMembershipDescription,
+            subtitle: context.afriL10n.searchMembershipDescription,
             trailing: const Icon(AfriIcons.chevronRight),
             onTap: () => context.go('/membership'),
           ),
@@ -486,6 +477,9 @@ class HomeScreen extends ConsumerWidget {
     final slides = snapshot.heroSlides;
 
     if (slides.isEmpty) {
+      final canOpenPredict = ref
+          .watch(featureConfigServiceProvider)
+          .isRouteAvailable('/predict');
       return _HomeHeroStateCard(
         key: const ValueKey<String>('home-hero-state-compact'),
         compactHeight: true,
@@ -499,8 +493,8 @@ class HomeScreen extends ConsumerWidget {
                 ? l10n.homeNextFixturePending
                 : l10n.homeFixturesUnavailable,
             icon: AfriIcons.league,
-            actionLabel: l10n.homeOpenFanZone,
-            onAction: () => context.go('/predict'),
+            actionLabel: canOpenPredict ? l10n.homeOpenPredict : null,
+            onAction: canOpenPredict ? () => context.go('/predict') : null,
             compact: true,
           ),
         ),

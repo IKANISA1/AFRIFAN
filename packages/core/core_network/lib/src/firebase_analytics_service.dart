@@ -239,11 +239,11 @@ class FirebaseAnalyticsService {
     },
   );
 
-  static Future<void> logFanzoneEngagement({
+  static Future<void> logPredictEngagement({
     required String surface,
     required String action,
   }) => logEvent(
-    'fanzone_engagement',
+    'predict_engagement',
     parameters: <String, Object>{'surface': surface, 'action': action},
   );
 

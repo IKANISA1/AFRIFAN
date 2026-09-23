@@ -39,11 +39,11 @@ void main() {
       const auditedRouteTests = <String>[
         'packages/features/feat_home/test/home_screen_states_test.dart',
         'packages/features/feat_home/test/discovery_search_test.dart',
-        'packages/features/feat_gamification/test/fanzone_hub_screen_test.dart',
+        'packages/features/feat_gamification/test/predict_shell_navigation_test.dart',
         'packages/features/feat_settings/test/settings_screens_test.dart',
         'packages/features/feat_onboarding/test/onboarding_flow_test.dart',
         'packages/features/feat_membership/test/membership_screen_ui_test.dart',
-        'packages/features/feat_contributions/test/groups_screen_empty_state_test.dart',
+        'packages/features/feat_contributions/test/contributions_hub_screen_test.dart',
         'packages/features/feat_ticketing/test/match_list_ui_test.dart',
         'packages/features/feat_shop/test/shop_screen_catalog_test.dart',
       ];
@@ -75,10 +75,6 @@ void main() {
               '_pageController.jumpToPage(next)',
               'AfriMotion.resolve(context, AfriMotion.standard)',
             ],
-        'packages/features/feat_gamification/lib/src/widgets/animated_fet_counter.dart':
-            ['_reduceMotion = AfriMotion.reduceMotion(context)'],
-        'packages/features/feat_gamification/lib/src/widgets/confetti_overlay.dart':
-            ['if (AfriMotion.reduceMotion(context))'],
         'packages/core/core_theme/lib/src/widgets/afri_skeleton.dart': [
           '_reduceMotion = AfriMotion.reduceMotion(context)',
         ],
@@ -86,8 +82,6 @@ void main() {
           '_reduceMotion = AfriMotion.reduceMotion(context)',
           '.afriAnimate(context)',
         ],
-        'packages/features/feat_gamification/lib/src/widgets/notification_toast_overlay.dart':
-            ['_reduceMotion = AfriMotion.reduceMotion(context)'],
         'packages/features/feat_shop/lib/src/widgets/shop_loading_skeleton.dart':
             ['final reduceMotion = AfriMotion.reduceMotion(context)'],
         'packages/core/core_theme/lib/src/widgets/afri_bottom_sheet.dart': [
@@ -1378,8 +1372,12 @@ bool _isGovernedRuntimeMedia(Directory repoRoot, File mediaFile) {
       normalizedPath.startsWith('$normalizedRoot/apps/') &&
       normalizedPath.contains('/assets/');
   final isClubCrest =
-      normalizedPath ==
-      '$normalizedRoot/packages/features/feat_club/assets/crests/rayon_sports.png';
+      normalizedPath.startsWith(
+        '$normalizedRoot/packages/core/core_theme/assets/crests/',
+      ) ||
+      normalizedPath.startsWith(
+        '$normalizedRoot/apps/rayon_sports/web/public/crests/',
+      );
   if (!isAppMedia && !isClubCrest) {
     return false;
   }
@@ -1463,13 +1461,20 @@ List<String> _findForbiddenStaticDesignReferences(Directory repoRoot) {
     allow: (path) =>
         ((path.endsWith('/docs/architecture/club-identity.md') ||
                 path.endsWith(
-                  '/packages/features/feat_club/lib/src/widgets/club_crest.dart',
+                  '/packages/core/core_theme/lib/src/widgets/afri_team_card.dart',
                 ) ||
-                path.endsWith('/packages/features/feat_club/pubspec.yaml')) &&
+                path.endsWith(
+                  '/packages/core/core_theme/lib/src/team_assets.g.dart',
+                ) ||
+                path.endsWith('/packages/core/core_theme/pubspec.yaml') ||
+                path.endsWith('/packages/testing/test_support/lib/predict_fixture_images.dart') ||
+                path.endsWith(
+                  '/packages/core/core_theme/test/team_identity_test.dart',
+                )) &&
             _isGovernedRuntimeMedia(
               repoRoot,
               File(
-                '${repoRoot.path}/packages/features/feat_club/assets/crests/rayon_sports.png',
+                '${repoRoot.path}/packages/core/core_theme/assets/crests/rayon-sports.png',
               ),
             )) ||
         path.endsWith(

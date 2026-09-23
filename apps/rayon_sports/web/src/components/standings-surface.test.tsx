@@ -152,7 +152,7 @@ describe("StandingsSurface", () => {
       "data-standings-status",
       "loading",
     );
-    await screen.findAllByText("Rayon Sports");
+    await screen.findAllByRole("group", { name: "Rayon Sports" });
     expect(container.querySelector(".standings-surface")).toHaveAttribute(
       "data-standings-status",
       "ready",
@@ -228,7 +228,7 @@ describe("StandingsSurface", () => {
       value: true,
     });
     fireEvent(window, new Event("online"));
-    await screen.findAllByText("Rayon Sports");
+    await screen.findAllByRole("group", { name: "Rayon Sports" });
   });
 
   it("retains confirmed rows during syncing and recoverable conflict", async () => {
@@ -247,7 +247,7 @@ describe("StandingsSurface", () => {
       );
 
     const { container } = renderStandings();
-    await screen.findAllByText("Rayon Sports");
+    await screen.findAllByRole("group", { name: "Rayon Sports" });
     fireEvent.click(
       screen.getByRole("button", { name: /refresh standings/i }),
     );
@@ -257,7 +257,7 @@ describe("StandingsSurface", () => {
         "syncing",
       ),
     );
-    expect(screen.getAllByText("Rayon Sports").length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("group", { name: "Rayon Sports" }).length).toBeGreaterThan(0);
     releaseRefresh?.(
       new Response(JSON.stringify({ code: "PUBLIC_STANDINGS_CONFLICT" }), {
         status: 409,
@@ -270,7 +270,7 @@ describe("StandingsSurface", () => {
         "conflict",
       ),
     );
-    expect(screen.getAllByText("Rayon Sports").length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("group", { name: "Rayon Sports" }).length).toBeGreaterThan(0);
   });
 
   it("records real focus and held-pointer interaction states", async () => {
@@ -279,7 +279,7 @@ describe("StandingsSurface", () => {
     );
 
     const { container } = renderStandings();
-    await screen.findAllByText("Rayon Sports");
+    await screen.findAllByRole("group", { name: "Rayon Sports" });
     const primary = screen.getByRole("link", { name: /fixture hub/i });
     fireEvent.focus(primary);
     expect(container.querySelector(".standings-surface")).toHaveAttribute(
@@ -312,6 +312,6 @@ describe("StandingsSurface", () => {
       "data-standings-status",
       "security_timeout",
     );
-    expect(screen.queryByText("Rayon Sports")).toBeNull();
+    expect(screen.queryByRole("group", { name: "Rayon Sports" })).toBeNull();
   });
 });

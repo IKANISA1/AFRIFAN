@@ -65,7 +65,7 @@ abstract final class AppModuleRegistry {
     HomeModule(),
     ClubModule(),
     LiveModule(),
-    FanzoneModule(),
+    PredictModule(),
     SettingsModule(),
     OnboardingModule(),
     MembershipModule(),

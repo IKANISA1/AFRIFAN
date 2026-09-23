@@ -44,12 +44,10 @@ int _homeActionRank(HomeQuickAction action) {
   final route = action.route.trim().toLowerCase();
   if (key.contains('ticket') || route.startsWith('/tickets')) return 10;
   if (key.contains('membership') || route.startsWith('/membership')) return 20;
-  if (key == 'fan_zone' ||
+  if (key == 'predict' ||
       key.contains('supporter') ||
       route == '/predict' ||
-      route.startsWith('/predict?') ||
-      route == '/fanzone' ||
-      route.startsWith('/fanzone?')) {
+      route.startsWith('/predict?')) {
     return 30;
   }
   if (key.contains('shop') || route.startsWith('/shop')) return 40;
@@ -168,13 +166,10 @@ class _QuickActionsGridState extends ConsumerState<QuickActionsGrid> {
   IconData _fallbackIconForRoute(String route) {
     final normalized = route.trim().toLowerCase();
     if (normalized.startsWith('/predict')) return AfriIcons.predict;
-    if (normalized.contains('/fanzone/fixtures')) return AfriIcons.predict;
-    if (normalized.contains('/fanzone/my')) return AfriIcons.myPicks;
     if (normalized.contains('/live')) return AfriIcons.live;
     if (normalized.contains('/leaderboard')) return AfriIcons.leaderboard;
     if (normalized.contains('/wallet')) return AfriIcons.wallet;
     if (normalized.contains('/tickets')) return AfriIcons.tickets;
-    if (normalized.contains('/fanzone/offers')) return AfriIcons.offers;
     if (normalized.contains('/contribute')) return AfriIcons.groups;
     return AfriIcons.chevronRight;
   }
@@ -331,13 +326,7 @@ String _localizedHomeActionTitle(
 ) {
   final configuredTitle = action.title.trim();
   final path = Uri.tryParse(action.route.trim())?.path;
-  if ((path == '/fanzone' || path == '/challenge' || path == '/predict') &&
-      const {
-        'fan zone',
-        'fanzone',
-        'challenge',
-        'predict',
-      }.contains(configuredTitle.toLowerCase())) {
+  if (path == '/predict') {
     return l10n.predictTitle;
   }
   if (configuredTitle.isNotEmpty) {
@@ -351,13 +340,11 @@ String _localizedHomeActionTitle(
   if (key.contains('membership') || route.startsWith('/membership')) {
     return l10n.homeMembershipAction(RuntimeBranding.displayAppName);
   }
-  if (key == 'fan_zone' ||
+  if (key == 'predict' ||
       key.contains('supporter') ||
       route == '/predict' ||
-      route.startsWith('/predict?') ||
-      route == '/fanzone' ||
-      route.startsWith('/fanzone?')) {
-    return l10n.homeFanZoneAction;
+      route.startsWith('/predict?')) {
+    return l10n.homePredictAction;
   }
   if (key.contains('shop') || route.startsWith('/shop')) {
     return l10n.homeShopAction;

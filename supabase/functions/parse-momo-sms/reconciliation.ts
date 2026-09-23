@@ -109,7 +109,7 @@ export async function reconcileParsedSms(
     }
 
     // Revalidate locked evidence and commit intent/ledger/reconciliation in one
-    // database transaction. This allocation does not fulfill a business target.
+    // database transaction. A deferred trigger activates matched membership orders.
     const fulfilled = await adminClient.rpc("allocate_momo_payment_intent", {
       p_parsed_sms_id: parsedSmsId,
       p_intent_id: intent.id,
@@ -124,6 +124,7 @@ export async function reconcileParsedSms(
       throw new Error("Payment intent allocation result is invalid.");
     }
 
+    const membershipActivated = intent.target_table === "membership_payment_orders";
     return {
       matchType: `intent_${intent.target_table}`,
       matchStatus: "matched",
@@ -131,14 +132,15 @@ export async function reconcileParsedSms(
       targetTable: intent.target_table ?? "payment_intents",
       targetRecordId: intent.target_record_id ?? intent.id,
       matchedReference: parsed.momo_tx_id ?? sourceReference(rawSms, parsed),
-      notes:
-        "Payment evidence allocated; linked target fulfillment is separate.",
+      notes: membershipActivated
+        ? "Membership activated automatically after matched payment."
+        : "Payment evidence allocated; linked target fulfillment is separate.",
       metadata: {
         auto_match: true,
         intent_id: intent.id,
         provider: normalizeProviderId(rawSms.provider),
         allocation_persisted: true,
-        business_target_fulfilled: false,
+        business_target_fulfilled: membershipActivated,
       },
     };
   } else if (pendingIntents.length > 1) {

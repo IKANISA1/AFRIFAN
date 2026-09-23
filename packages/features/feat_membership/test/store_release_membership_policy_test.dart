@@ -33,9 +33,9 @@ void main() {
           'store_billing_required': true,
         },
       ], allowsPaidDigital: false);
-      expect(rows, hasLength(1));
-      expect(rows.single['annual_price'], 1250000);
-      expect(rows.single['benefits'], ['Matchday programme']);
+      expect(rows, hasLength(2));
+      expect(rows.first['annual_price'], 1250000);
+      expect(rows.first['benefits'], ['Matchday programme']);
     },
   );
   test(

@@ -193,25 +193,8 @@ class StoreReleasePolicy {
   bool isRouteAllowed(String path) {
     if (!isEnforced) return true;
     final normalized = _normalizePath(path);
-    if (normalized == '/predict' ||
-        normalized.startsWith('/predict/') ||
-        normalized == '/challenge' ||
-        normalized.startsWith('/challenge/') ||
-        normalized == '/fanzone/jackpot' ||
-        normalized.startsWith('/fanzone/jackpot/') ||
-        normalized == '/fanzone/challenges' ||
-        normalized.startsWith('/fanzone/challenges/') ||
-        normalized == '/fanzone/challenge' ||
-        normalized.startsWith('/fanzone/challenge/') ||
-        normalized == '/fanzone/friends' ||
-        normalized.startsWith('/fanzone/friends/')) {
+    if (normalized == '/predict' || normalized.startsWith('/predict/')) {
       return allowsStakedCompetitions;
-    }
-    if (normalized == '/fanzone/rewards' ||
-        normalized.startsWith('/fanzone/rewards/') ||
-        normalized == '/fanzone/offers' ||
-        normalized.startsWith('/fanzone/offers/')) {
-      return allowsRewardRedemption;
     }
     return true;
   }

@@ -87,7 +87,7 @@ MembershipSnapshot _snapshot(String title) {
       {'tier': 'imena', 'title': title},
     ],
     membership: null,
-    applications: const [],
+
     contributions: const [],
   );
 }

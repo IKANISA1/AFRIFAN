@@ -4,7 +4,6 @@ import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 
-import '../official_ticket_categories.dart';
 import 'ticket_checkout_shared.dart';
 
 class TicketConfigureStep extends StatelessWidget {
@@ -39,14 +38,22 @@ class TicketConfigureStep extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         AfriIconButton(
+          key: const ValueKey('ticket-quantity-decrease'),
           icon: AfriIcons.remove,
+          tooltip: context.afriL10n.shopDecreaseQuantity,
           onTap: quantity > 1 ? () => onQuantityChanged(quantity - 1) : null,
         ),
         const SizedBox(width: SpacingTokens.spacing3),
-        Text('$quantity', style: TypographyTokens.headlineMedium()),
+        Text(
+          '$quantity',
+          key: const ValueKey('ticket-quantity-value'),
+          style: TypographyTokens.headlineMedium(),
+        ),
         const SizedBox(width: SpacingTokens.spacing3),
         AfriIconButton(
+          key: const ValueKey('ticket-quantity-increase'),
           icon: AfriIcons.add,
+          tooltip: context.afriL10n.shopIncreaseQuantity,
           onTap: quantity < 8 ? () => onQuantityChanged(quantity + 1) : null,
         ),
       ],
@@ -61,12 +68,9 @@ class TicketConfigureStep extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  context.afriL10n.ticketMatchVersus(
-                    match.homeTeam,
-                    match.awayTeam,
-                  ),
-                  style: TypographyTokens.headlineLarge(),
+                AfriFixtureTeams(
+                  homeTeam: match.homeTeam,
+                  awayTeam: match.awayTeam,
                 ),
                 const SizedBox(height: SpacingTokens.spacing2),
                 Text(
@@ -114,8 +118,6 @@ class TicketConfigureStep extends StatelessWidget {
             selected: !generalSelected,
             onTap: () => onSeatTypeChanged(SeatType.vip),
           ),
-          const SizedBox(height: SpacingTokens.spacing4),
-          _OfficialTicketCategoryReference(currency: currency),
           const SizedBox(height: SpacingTokens.spacing6),
           AfriSurfaceCard(
             child: stackControls
@@ -171,76 +173,6 @@ class TicketConfigureStep extends StatelessWidget {
             onTap: onReviewRequested,
             enabled: !match.isSoldOut && match.isOnSale,
             fullWidth: true,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _OfficialTicketCategoryReference extends StatelessWidget {
-  const _OfficialTicketCategoryReference({required this.currency});
-
-  final CurrencyFormatter currency;
-
-  @override
-  Widget build(BuildContext context) {
-    final stackContent = MediaQuery.textScalerOf(context).scale(16) >= 28;
-    return AfriSurfaceCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            context.afriL10n.ticketOfficialCategories,
-            style: TypographyTokens.labelLarge(),
-          ),
-          const SizedBox(height: SpacingTokens.spacing2),
-          Text(
-            context.afriL10n.ticketOfficialCategoriesMessage,
-            style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
-          ),
-          const SizedBox(height: SpacingTokens.spacing4),
-          ...officialTicketCategories.map(
-            (category) => Padding(
-              padding: const EdgeInsets.only(bottom: SpacingTokens.spacing2),
-              child: stackContent
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          category.name,
-                          style: TypographyTokens.bodyMedium().copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing1),
-                        Text(
-                          currency.format(category.priceRwf),
-                          style: TypographyTokens.labelMedium(
-                            ColorTokens.primaryContainer,
-                          ),
-                        ),
-                      ],
-                    )
-                  : Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            category.name,
-                            style: TypographyTokens.bodyMedium().copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                        Text(
-                          currency.format(category.priceRwf),
-                          style: TypographyTokens.labelMedium(
-                            ColorTokens.primaryContainer,
-                          ),
-                        ),
-                      ],
-                    ),
-            ),
           ),
         ],
       ),

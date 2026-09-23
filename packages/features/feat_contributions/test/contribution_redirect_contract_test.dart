@@ -28,7 +28,9 @@ void main() {
       expect(find.text('Club initiatives'), findsOneWidget);
       expect(
         router.routeInformationProvider.value.uri.toString(),
-        '/contribute',
+        source.endsWith('/projects')
+            ? '/contribute?type=project'
+            : '/contribute?type=community',
       );
       expect(router.routeInformationProvider.value.uri.path, isNot(source));
     });
@@ -44,7 +46,8 @@ void main() {
       containsAll(<String>['/contribute/projects', '/contribute/groups']),
     );
     expect(decisions.map((decision) => decision.targetPath).toSet(), <String>{
-      '/contribute',
+      '/contribute?type=project',
+      '/contribute?type=community',
     });
   });
 }

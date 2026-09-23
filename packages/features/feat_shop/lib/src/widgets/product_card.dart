@@ -52,8 +52,18 @@ class ArmouryProductCard extends StatelessWidget {
     final category = product['category']?.toString() ?? '';
     final usesLargeTextLayout =
         MediaQuery.textScalerOf(context).scale(1) >= 1.5;
-    const foreground = ColorTokens.shopEditorialText;
-    const secondary = ColorTokens.shopEditorialSecondaryText;
+    final image = Uri.tryParse(imageUrl ?? '');
+    final hasApprovedImage =
+        imageRightsApproved &&
+        image?.scheme == 'https' &&
+        image!.host.isNotEmpty &&
+        image.userInfo.isEmpty;
+    final foreground = hasApprovedImage
+        ? ColorTokens.shopEditorialText
+        : ColorTokens.onSurface;
+    final secondary = hasApprovedImage
+        ? ColorTokens.shopEditorialSecondaryText
+        : ColorTokens.onSurfaceVariant;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -66,33 +76,37 @@ class ArmouryProductCard extends StatelessWidget {
               semanticsLabel:
                   '${isAvailable ? name : l10n.shopProductUnavailableSemantic(name)}, ${currency.format(price)}',
               semanticsHint: l10n.shopOpenProduct,
-              backgroundColor: ColorTokens.shopEditorialSurface,
+              backgroundColor: hasApprovedImage
+                  ? ColorTokens.shopEditorialSurface
+                  : ColorTokens.surfaceContainerLow,
               padding: EdgeInsets.zero,
               child: ClipRRect(
                 borderRadius: ShapeTokens.cardRadius,
                 child: Stack(
                   children: [
-                    Positioned.fill(
-                      child: _ProductImage(
-                        imageUrl: imageUrl,
-                        semanticLabel: l10n.shopProductImageSemantic(name),
-                        provenanceId: imageProvenanceId.isEmpty
-                            ? 'shop:${product['id'] ?? 'unknown'}:unapproved'
-                            : imageProvenanceId,
-                        rightsApproved: imageRightsApproved,
+                    if (hasApprovedImage)
+                      Positioned.fill(
+                        child: _ProductImage(
+                          imageUrl: imageUrl,
+                          semanticLabel: l10n.shopProductImageSemantic(name),
+                          provenanceId: imageProvenanceId.isEmpty
+                              ? 'shop:${product['id'] ?? 'unknown'}:unapproved'
+                              : imageProvenanceId,
+                          rightsApproved: imageRightsApproved,
+                        ),
                       ),
-                    ),
-                    Positioned.fill(
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          gradient: ColorTokens.imageScrimGradient(
-                            color: ColorTokens.inkBase,
-                            alphas: const [0.38, 0.0, 0.15, 0.88, 0.98],
-                            stops: const [0.0, 0.24, 0.45, 0.78, 1.0],
+                    if (hasApprovedImage)
+                      Positioned.fill(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: ColorTokens.imageScrimGradient(
+                              color: ColorTokens.inkBase,
+                              alphas: const [0.38, 0.0, 0.15, 0.88, 0.98],
+                              stops: const [0.0, 0.24, 0.45, 0.78, 1.0],
+                            ),
                           ),
                         ),
                       ),
-                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -101,7 +115,7 @@ class ArmouryProductCard extends StatelessWidget {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Icon(
+                              Icon(
                                 AfriIcons.shop,
                                 color: foreground,
                                 size: SizeTokens.iconMd,
@@ -149,11 +163,12 @@ class ArmouryProductCard extends StatelessWidget {
                             ],
                           ),
                         ),
-                        SizedBox(
-                          height: usesLargeTextLayout
-                              ? width * 0.42
-                              : width * 0.72,
-                        ),
+                        if (hasApprovedImage)
+                          SizedBox(
+                            height: usesLargeTextLayout
+                                ? width * 0.42
+                                : width * 0.72,
+                          ),
                         Padding(
                           padding: EdgeInsets.fromLTRB(
                             SpacingTokens.spacing4,

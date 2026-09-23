@@ -27,7 +27,7 @@ void main() {
       'payment_channel': 'momo',
       'value_bucket': '1000_9999',
     },
-    'fanzone_engagement': <String, Object>{
+    'predict_engagement': <String, Object>{
       'surface': 'supporters',
       'action': 'open',
     },

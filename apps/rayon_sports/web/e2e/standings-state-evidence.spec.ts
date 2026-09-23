@@ -223,7 +223,7 @@ test("/standings proves all sixteen applicable rendered states", async ({
   await page.evaluate(() => window.dispatchEvent(new Event("offline")));
   await expectStatus(page, "offline", /you are offline/i);
   await expect(
-    page.locator(".standings-card").filter({ hasText: "Rayon Sports" }),
+    page.locator(".standings-card").filter({ has: page.getByRole("group", { name: "Rayon Sports", exact: true }) }),
   ).toBeVisible();
   await capture("offline_dark");
   await context.setOffline(false);
@@ -345,7 +345,7 @@ test("/standings proves all sixteen applicable rendered states", async ({
     .dispatchEvent("click");
   await expectStatus(page, "syncing", /refreshing league table/i);
   await expect(
-    page.locator(".standings-card").filter({ hasText: "Rayon Sports" }),
+    page.locator(".standings-card").filter({ has: page.getByRole("group", { name: "Rayon Sports", exact: true }) }),
   ).toBeVisible();
   await capture("syncing_dark");
 

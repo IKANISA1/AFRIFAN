@@ -251,17 +251,17 @@ class _InteractiveSeatMapScreenState
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       _buildLegendItem(
-                        ColorTokens.primaryContainer,
+                        _SeatMapPalette.vip,
                         l10n.ticketLegendVip,
                       ),
                       const SizedBox(width: SpacingTokens.spacing4),
                       _buildLegendItem(
-                        ColorTokens.primary,
+                        _SeatMapPalette.tribune,
                         l10n.ticketLegendTribune,
                       ),
                       const SizedBox(width: SpacingTokens.spacing4),
                       _buildLegendItem(
-                        ColorTokens.outlineVariant,
+                        _SeatMapPalette.standing,
                         l10n.ticketStandStanding,
                       ),
                     ],
@@ -430,6 +430,7 @@ class _InteractiveSeatMapScreenState
     return Row(
       children: [
         Container(
+          key: ValueKey<String>('seat-zone-$label'),
           width: 12,
           height: 12,
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
@@ -444,6 +445,15 @@ class _InteractiveSeatMapScreenState
       ],
     );
   }
+}
+
+// Match legend and geometry with distinct, readable reference colour roles.
+class _SeatMapPalette {
+  static Color get vip => ColorTokens.accessibleChartColor(ColorTokens.primary);
+  static Color get tribune =>
+      ColorTokens.accessibleChartColor(ColorTokens.referenceRewardsVioletHot);
+  static Color get standing =>
+      ColorTokens.accessibleChartColor(ColorTokens.onSurfaceVariant);
 }
 
 class _SelectedSeatLabel extends StatelessWidget {
@@ -669,7 +679,7 @@ class StadiumPainter extends CustomPainter {
       math.pi / 2 + 0.2, // startAngle
       math.pi - 0.4, // sweepAngle
       false,
-      paint..color = ColorTokens.primaryContainer,
+      paint..color = _SeatMapPalette.vip,
     );
 
     // East (Standing)
@@ -678,7 +688,7 @@ class StadiumPainter extends CustomPainter {
       -math.pi / 2 + 0.2,
       math.pi - 0.4,
       false,
-      paint..color = ColorTokens.outlineVariant,
+      paint..color = _SeatMapPalette.standing,
     );
 
     // North (Tribune Edge)
@@ -687,7 +697,7 @@ class StadiumPainter extends CustomPainter {
       -math.pi / 2 - 0.2,
       0.4,
       false,
-      paint..color = ColorTokens.primary,
+      paint..color = _SeatMapPalette.tribune,
     );
 
     // South (Tribune Red)
@@ -696,7 +706,7 @@ class StadiumPainter extends CustomPainter {
       math.pi / 2 - 0.2,
       0.4,
       false,
-      paint..color = ColorTokens.primary,
+      paint..color = _SeatMapPalette.tribune,
     );
 
     // Pitch

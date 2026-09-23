@@ -10,12 +10,9 @@ typedef MembershipRpcInvoker =
 
 /// The only supporter-authorized membership mutation surface.
 abstract interface class MembershipMutationGateway {
-  Future<Map<String, dynamic>> activateFreeMembership();
-
-  Future<Map<String, dynamic>> submitPhysicalApplication({
+  Future<Map<String, dynamic>> preparePayment({
     required String tier,
-    required String paymentReference,
-    String? chapter,
+    required int clubId,
   });
 }
 
@@ -33,37 +30,37 @@ class SupabaseMembershipMutationGateway implements MembershipMutationGateway {
   final MembershipRpcInvoker _invoke;
 
   @override
-  Future<Map<String, dynamic>> activateFreeMembership() async {
-    final response = await _invoke('activate_free_fan_membership');
-    return _requireRow(response, operation: 'activate free membership');
-  }
-
-  @override
-  Future<Map<String, dynamic>> submitPhysicalApplication({
+  Future<Map<String, dynamic>> preparePayment({
     required String tier,
-    required String paymentReference,
-    String? chapter,
+    required int clubId,
   }) async {
     final normalizedTier = tier.trim().toLowerCase();
-    final normalizedReference = paymentReference.trim();
-    final normalizedChapter = chapter?.trim();
-    if (normalizedTier.isEmpty || normalizedReference.isEmpty) {
-      throw ArgumentError(
-        'Membership tier and payment reference must not be empty.',
-      );
+    if (normalizedTier.isEmpty) {
+      throw ArgumentError('Membership tier must not be empty.');
     }
-
     final response = await _invoke(
-      'submit_membership_application',
+      'prepare_membership_payment_for_club',
       params: <String, dynamic>{
         'p_tier': normalizedTier,
-        'p_payment_reference': normalizedReference,
-        'p_chapter': normalizedChapter == null || normalizedChapter.isEmpty
-            ? null
-            : normalizedChapter,
+        'p_expected_club_id': clubId,
       },
     );
-    return _requireRow(response, operation: 'submit membership application');
+    final row = _requireRow(response, operation: 'prepare membership payment');
+    if (row['club_id'] != clubId ||
+        row['tier'] != normalizedTier ||
+        row['ussd_code'] is! String ||
+        !RegExp(r'^\*[0-9*]+#$').hasMatch(row['ussd_code'] as String) ||
+        row['amount'] is! int ||
+        (row['amount'] as num) <= 0 ||
+        row['recipient_code'] is! String ||
+        (row['recipient_code'] as String).trim().isEmpty ||
+        row['country'] is! String ||
+        (row['country'] as String).trim().isEmpty) {
+      throw StateError(
+        'The server did not return a configured paid membership.',
+      );
+    }
+    return row;
   }
 
   static Map<String, dynamic> _requireRow(

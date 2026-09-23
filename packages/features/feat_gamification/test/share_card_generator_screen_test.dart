@@ -1,6 +1,6 @@
 import 'package:core_l10n/core_l10n.dart';
 import 'package:feat_gamification/src/models/prediction_models.dart';
-import 'package:feat_gamification/src/screens/share_card_generator_screen.dart';
+import 'package:feat_gamification/src/predict/predict_share_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -110,7 +110,8 @@ void main() {
         findsNothing,
       );
       expect(find.text('Choose pick'), findsOneWidget);
-      expect(find.text('RAY vs APR'), findsWidgets);
+      expect(find.text('RAY'), findsWidgets);
+      expect(find.text('APR'), findsWidgets);
       expect(find.text('Selected'), findsOneWidget);
     },
   );

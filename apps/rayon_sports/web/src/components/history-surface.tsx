@@ -52,19 +52,19 @@ const historyStateCopy: Record<"en", HistoryStateCopy> = {
       },
       ready: {
         label: "History confirmed",
-        detail: "These chapters come from the latest confirmed club record.",
+        detail: "These moments come from the latest confirmed club record.",
       },
       empty: {
         label: "History not published",
-        detail: "No confirmed public history chapter is available yet.",
+        detail: "No confirmed public history moment is available yet.",
       },
       error: {
         label: "History unavailable",
-        detail: "Confirmed chapters remain visible. Retry when the service recovers.",
+        detail: "Published moments remain visible. Retry when the service recovers.",
       },
       offline: {
         label: "You are offline",
-        detail: "Confirmed chapters remain visible until the connection returns.",
+        detail: "Published moments remain visible until the connection returns.",
       },
       permission_denied: {
         label: "History access denied",
@@ -72,7 +72,7 @@ const historyStateCopy: Record<"en", HistoryStateCopy> = {
       },
       syncing: {
         label: "Refreshing history",
-        detail: "Confirmed chapters remain visible while the record updates.",
+        detail: "Published moments remain visible while the record updates.",
       },
       conflict: {
         label: "History changed",
@@ -80,14 +80,14 @@ const historyStateCopy: Record<"en", HistoryStateCopy> = {
       },
       security_timeout: {
         label: "History request timed out",
-        detail: "No new chapter is assumed. Confirmed chapters remain visible.",
+        detail: "No new moment is assumed. Published moments remain visible.",
       },
     },
     refresh: "Refresh history",
     retry: "Try again",
     refreshDisabled: "Refresh is unavailable while history is loading.",
-    chapters: "History chapters",
-    chapter: "Chapter",
+    chapters: "History moments",
+    chapter: "Moment",
     noHistory: "Club history is not published yet.",
     noHistoryDetail: "Return later for the confirmed public club record.",
   },

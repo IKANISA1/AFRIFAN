@@ -6,13 +6,23 @@ import type { Browser, BrowserContextOptions, Page, TestInfo } from "@playwright
 
 const sha256 = (bytes: Buffer) => createHash("sha256").update(bytes).digest("hex");
 
-function trackedSourceHash(workspace: string) {
-  // Binary patches from a full-system review can exceed Node's 1 MiB default.
-  // Keep hashing the complete diff; never truncate it to fit the default buffer.
-  return sha256(execFileSync("git", ["diff", "--binary", "HEAD"], {
-    cwd: workspace,
-    maxBuffer: 32 * 1024 * 1024,
-  }));
+export function trackedSourceHash(workspace: string) {
+  // Stream the complete binary diff in a child process: neither a fixed output
+  // buffer nor a temporary diff file can truncate a large visual revision.
+  return execFileSync(process.execPath, ["-e", `
+    const { spawn } = require("node:child_process");
+    const { createHash } = require("node:crypto");
+    const hash = createHash("sha256");
+    const git = spawn("git", ["diff", "--binary", "HEAD"], {
+      cwd: process.argv[1], stdio: ["ignore", "pipe", "inherit"],
+    });
+    git.stdout.on("data", chunk => hash.update(chunk));
+    git.on("error", error => { console.error(error.message); process.exitCode = 1; });
+    git.on("close", code => {
+      if (code !== 0) process.exitCode = code || 1;
+      else process.stdout.write(hash.digest("hex"));
+    });
+  `, workspace], { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
 }
 
 function validateProductionBuild(web: string): Record<string, string> {

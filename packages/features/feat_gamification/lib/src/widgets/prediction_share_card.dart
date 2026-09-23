@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../models/prediction_models.dart';
+import 'prediction_selection.dart';
 
 class PredictionShareData {
   const PredictionShareData({
@@ -122,15 +123,22 @@ class PredictionShareService {
     buffer.writeln(
       l10n.gameShareStatusLine(
         statusLabel,
-        data.homeTeamShort.toUpperCase(),
-        data.awayTeamShort.toUpperCase(),
+        teamInitials(data.homeTeam),
+        teamInitials(data.awayTeam),
       ),
     );
     if (data.homeScore != null && data.awayScore != null) {
       buffer.writeln(l10n.gameFinalScore(data.homeScore!, data.awayScore!));
     }
     buffer.writeln(
-      l10n.gameMarketSelection(data.marketName, data.selectedOutcome),
+      l10n.gameMarketSelection(
+        data.marketName,
+        predictionSelectionLabel(
+          selection: data.selectedOutcome,
+          homeTeam: data.homeTeam,
+          awayTeam: data.awayTeam,
+        ),
+      ),
     );
     if (data.status == PredictionStatus.won) {
       buffer.writeln(l10n.gameEarnedShare(data.fetEarned));
@@ -250,38 +258,12 @@ class PredictionShareCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: SpacingTokens.spacing4),
-          Center(
-            child: Column(
-              children: [
-                Text(
-                  data.homeTeamShort.toUpperCase(),
-                  style: TypographyTokens.headlineMedium().copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: SpacingTokens.spacing1,
-                  ),
-                  child: Text(
-                    data.homeScore != null && data.awayScore != null
-                        ? '${data.homeScore} - ${data.awayScore}'
-                        : 'VS',
-                    style:
-                        (data.homeScore != null
-                                ? TypographyTokens.headlineSmall(color)
-                                : TypographyTokens.titleSmall(color))
-                            .copyWith(fontWeight: FontWeight.w600),
-                  ),
-                ),
-                Text(
-                  data.awayTeamShort.toUpperCase(),
-                  style: TypographyTokens.headlineMedium().copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
+          AfriFixtureTeams(
+            homeTeam: data.homeTeam,
+            awayTeam: data.awayTeam,
+            score: data.homeScore != null && data.awayScore != null
+                ? '${data.homeScore}–${data.awayScore}'
+                : null,
           ),
           const SizedBox(height: SpacingTokens.spacing4),
           if (largeText)
@@ -295,6 +277,11 @@ class PredictionShareCard extends StatelessWidget {
                 _ShareMetric(
                   label: context.afriL10n.gamePickUpper,
                   value: data.selectedOutcome,
+                  valueWidget: PredictionSelection(
+                    selection: data.selectedOutcome,
+                    homeTeam: data.homeTeam,
+                    awayTeam: data.awayTeam,
+                  ),
                   accent: true,
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
@@ -324,6 +311,11 @@ class PredictionShareCard extends StatelessWidget {
                   child: _ShareMetric(
                     label: context.afriL10n.gamePickUpper,
                     value: data.selectedOutcome,
+                    valueWidget: PredictionSelection(
+                      selection: data.selectedOutcome,
+                      homeTeam: data.homeTeam,
+                      awayTeam: data.awayTeam,
+                    ),
                     accent: true,
                   ),
                 ),
@@ -366,8 +358,10 @@ class _ShareMetric extends StatelessWidget {
     required this.label,
     required this.value,
     this.accent = false,
+    this.valueWidget,
   });
 
+  final Widget? valueWidget;
   final String label;
   final String value;
   final bool accent;
@@ -376,19 +370,20 @@ class _ShareMetric extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
-          value,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
-          style: TypographyTokens.titleSmall(
-            accent
-                ? ColorTokens.accessibleMetricColor(
-                    context.afriSemanticColors.accent,
-                  )
-                : ColorTokens.onSurface,
-          ).copyWith(fontWeight: FontWeight.w600),
-        ),
+        valueWidget ??
+            Text(
+              value,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: TypographyTokens.titleSmall(
+                accent
+                    ? ColorTokens.accessibleMetricColor(
+                        context.afriSemanticColors.accent,
+                      )
+                    : ColorTokens.onSurface,
+              ).copyWith(fontWeight: FontWeight.w600),
+            ),
         const SizedBox(height: SpacingTokens.spacing1),
         Text(
           label,

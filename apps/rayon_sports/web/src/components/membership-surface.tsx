@@ -19,6 +19,8 @@ import {
   WifiOff,
 } from "lucide-react";
 import { MemberPortal } from "./member-portal";
+import { getBrowserSupabase } from "@/lib/supabase/browser";
+import { launchPaidMembership } from "@/lib/membership-payment";
 import {
   resolveFixturesFailureStatus,
   type FixturesSurfaceStatus,
@@ -133,13 +135,13 @@ const en: MembershipCopy = {
   included: "Included benefits",
   directory: "Confirmed membership catalog",
   directoryDetail:
-    "Choose a tier to compare its approved public price and benefits.",
+    "Choose any paid tier to open MoMo and complete payment.",
   noTiers: "No public membership tiers",
   noTiersDetail: "Tiers appear only after club confirmation.",
-  boundaryEyebrow: "Membership boundary",
-  boundaryTitle: "Compare here. Activate securely in the app.",
+  boundaryEyebrow: "Paid membership",
+  boundaryTitle: "Choose. Pay. Your membership activates automatically.",
   boundaryDetail:
-    "Public web never exposes supporter identity, application status, payment details, receipts, entitlement state, or an activation action. Confirm current terms and eligibility in the supporter app.",
+    "Sign in to your club account and choose any paid tier. MoMo opens for payment; your card and benefits update automatically when payment is matched.",
 };
 
 function localizedCopy(_locale: string): MembershipCopy {
@@ -188,8 +190,8 @@ export function normalizeMembershipSnapshot(value: unknown) {
       !Number.isInteger(sortOrder) ||
       sortOrder < 0 ||
       sortOrder > 1_000_000 ||
-      !Number.isFinite(annualPrice) ||
-      annualPrice < 0 ||
+      !Number.isSafeInteger(annualPrice) ||
+      annualPrice <= 0 ||
       annualPrice > 1_000_000_000_000 ||
       perks.length === 0 ||
       ids.has(id) ||
@@ -238,6 +240,57 @@ export function MembershipSurface({
   fanAppHref,
   hasExternalAppUrl,
 }: MembershipSurfaceProps) {
+  const [paymentBusy, setPaymentBusy] = useState(false);
+  const [paymentMessage, setPaymentMessage] = useState<string | null>(null);
+  const [memberRefresh, setMemberRefresh] = useState(0);
+  const paymentRequest = useRef(0);
+  const paymentInFlight = useRef<number | null>(null);
+  const paymentPolling = useRef<ReturnType<typeof setInterval> | null>(null);
+  useEffect(() => {
+    const lifecycle = paymentRequest;
+    const refresh = () => { if (document.visibilityState === "visible") setMemberRefresh(value => value + 1); };
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      lifecycle.current++;
+      paymentInFlight.current = null;
+      setPaymentBusy(false);
+      if (paymentPolling.current) clearInterval(paymentPolling.current);
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+    };
+  }, [clubId]);
+  async function payTier(tier: PublicMembershipTier) {
+    if (paymentInFlight.current === paymentRequest.current) return;
+    setSelectedId(tier.id);
+    setInteraction("selected");
+    const client = getBrowserSupabase();
+    if (!client) { setPaymentMessage("Member payments are unavailable. Try again when connected."); return; }
+    const request = ++paymentRequest.current;
+    paymentInFlight.current = request;
+    setPaymentBusy(true);
+    setPaymentMessage(null);
+    try {
+      const launched = await launchPaidMembership(client, tier.tier, clubId,
+        href => window.location.assign(href), () => request === paymentRequest.current);
+      if (request !== paymentRequest.current || !launched) return;
+      setPaymentMessage("Complete your MoMo payment. Your membership updates automatically.");
+      if (paymentPolling.current) clearInterval(paymentPolling.current);
+      let checks = 0;
+      paymentPolling.current = setInterval(() => {
+        if (document.visibilityState === "visible") setMemberRefresh(value => value + 1);
+        if (++checks >= 60 && paymentPolling.current) clearInterval(paymentPolling.current);
+      }, 5000);
+    } catch (error) {
+      if (request !== paymentRequest.current) return;
+      setPaymentMessage(error instanceof Error && error.message === "MEMBER_AUTH_REQUIRED"
+        ? "Sign in above, then choose any paid tier."
+        : "Payment could not be opened. Check your connection and try the tier again.");
+    } finally {
+      if (paymentInFlight.current === request) paymentInFlight.current = null;
+      if (request === paymentRequest.current) setPaymentBusy(false);
+    }
+  }
   const copy = useMemo(() => localizedCopy(locale), [locale]);
   const [packages, setPackages] = useState<PublicMembershipTier[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -428,8 +481,9 @@ export function MembershipSurface({
           </dl>
         </header>
 
-        <MemberPortal clubId={clubId} clubShortName={clubShortName} countryCode={countryCode} currencyCode={currencyCode} />
+        <MemberPortal refreshKey={memberRefresh} clubId={clubId} clubShortName={clubShortName} countryCode={countryCode} currencyCode={currencyCode} />
 
+        {paymentMessage ? <p role="status">{paymentMessage}</p> : null}
         {isRecovery ? (
           <aside className="circles-recovery" role="status">
             <strong>{message.label}</strong>
@@ -469,13 +523,12 @@ export function MembershipSurface({
                     </li>
                   ))}
                 </ul>
-                <Link
-                  href={fanAppHref}
-                  className="membership-action circles-action circles-action-primary"
-                >
-                  {hasExternalAppUrl ? copy.openApp : copy.appPending}
+                <button type="button" disabled={isBusy || paymentBusy}
+                  onClick={() => void payTier(selected)}
+                  className="membership-action circles-action circles-action-primary">
+                  {paymentBusy ? "Opening MoMo…" : `Pay for ${selected.title}`}
                   <ArrowRight aria-hidden="true" />
-                </Link>
+                </button>
               </div>
             </article>
           ) : status === "loading" ? (
@@ -512,10 +565,8 @@ export function MembershipSurface({
                     key={membershipPackage.id}
                     className="membership-card circles-card"
                     aria-pressed={membershipPackage.id === selected?.id}
-                    onClick={() => {
-                      setSelectedId(membershipPackage.id);
-                      setInteraction("selected");
-                    }}
+                    disabled={isBusy || paymentBusy}
+                    onClick={() => void payTier(membershipPackage)}
                     onFocus={() => setInteraction("focused")}
                     onBlur={() =>
                       setInteraction((current) =>

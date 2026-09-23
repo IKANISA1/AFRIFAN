@@ -168,10 +168,10 @@ export function MobileNavDrawer({
               className={`${ui.brandMark} shrink-0 rounded-full object-cover`}
             />
             <div className="min-w-0 flex-1 basis-[100px] [overflow-wrap:anywhere]">
-              <p className="font-display text-lg font-bold uppercase leading-none mt-1">
+              <p className="font-display text-lg font-medium normal-case leading-none mt-1">
                 {club.nickname || club.shortName}
               </p>
-              <p className="text-[10px] uppercase tracking-[0.24em] text-slate-500">
+              <p className="text-[10px] normal-case tracking-normal text-muted">
                 {club.clubName}
               </p>
             </div>
@@ -180,7 +180,7 @@ export function MobileNavDrawer({
             ref={closeButtonRef}
             type="button"
             onClick={onClose}
-            className={`${ui.iconButton} shrink-0 p-0 text-slate-300 focus-ring`}
+            className={`${ui.iconButton} shrink-0 p-0 text-muted focus-ring`}
             aria-label="Close menu"
           >
             <X size={24} />
@@ -195,8 +195,8 @@ export function MobileNavDrawer({
               prefetch={false}
               className={`${ui.drawerShortcut} focus-ring min-w-0 rounded-[24px] p-3`}
             >
-              <User size={20} className="text-club-primary-light" />
-              <span className="text-xs uppercase tracking-wider font-semibold">
+              <User size={20} className="text-action-blue-hover" />
+              <span className="text-xs normal-case tracking-normal font-semibold">
                 Fan App
               </span>
             </Link>
@@ -205,8 +205,8 @@ export function MobileNavDrawer({
               prefetch={false}
               className={`${ui.drawerShortcut} focus-ring min-w-0 rounded-[24px] p-3`}
             >
-              <Ticket size={20} className="text-club-accent" />
-              <span className="text-xs uppercase tracking-wider font-semibold">
+              <Ticket size={20} className="text-action-neutral" />
+              <span className="text-xs normal-case tracking-normal font-semibold">
                 Tickets
               </span>
             </Link>
@@ -215,8 +215,8 @@ export function MobileNavDrawer({
               prefetch={false}
               className={`${ui.drawerShortcut} focus-ring min-w-0 rounded-[24px] p-3`}
             >
-              <ShoppingBag size={20} className="text-club-secondary" />
-              <span className="text-xs uppercase tracking-wider font-semibold">
+              <ShoppingBag size={20} className="text-muted" />
+              <span className="text-xs normal-case tracking-normal font-semibold">
                 Shop
               </span>
             </Link>
@@ -224,7 +224,7 @@ export function MobileNavDrawer({
 
           {/* Primary Navigation List */}
           <nav className="flex flex-col gap-1">
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500 mb-2 pl-2">
+            <p className="font-mono text-[10px] normal-case tracking-normal text-muted mb-2 pl-2">
               Menu
             </p>
             {!navigationItems.some((item) => item.href === "/search") && (
@@ -255,7 +255,7 @@ export function MobileNavDrawer({
           </nav>
 
           <div className="space-y-3">
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500 pl-2">
+            <p className="font-mono text-[10px] normal-case tracking-normal text-muted pl-2">
               Utility
             </p>
             <div className="flex flex-wrap gap-2">
@@ -264,7 +264,7 @@ export function MobileNavDrawer({
                   key={item.href}
                   href={item.href}
                   prefetch={false}
-                  className={`${ui.utilityPill} rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em]`}
+                  className={`${ui.utilityPill} rounded-full px-3 py-1.5 text-[11px] font-semibold normal-case tracking-normal`}
                 >
                   {item.label}
                 </Link>

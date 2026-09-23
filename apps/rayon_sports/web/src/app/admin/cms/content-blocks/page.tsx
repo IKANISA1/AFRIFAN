@@ -362,7 +362,7 @@ export default function AdminContentBlocksPage() {
             type="button"
             onClick={beginCreate}
             disabled={mutationLocked}
-            className="admin-action-button min-h-12 !bg-club-primary !text-white hover:!bg-club-primary-light disabled:opacity-70"
+            className="admin-action-button min-h-12 !bg-action-blue !text-white hover:!bg-action-blue-hover disabled:opacity-70"
           >
             <Plus size={16} aria-hidden="true" /> New block
           </button>
@@ -522,7 +522,7 @@ export default function AdminContentBlocksPage() {
                       <p className="admin-row-meta">{block.blockType}</p>
                     </td>
                     <td>
-                      <code className="break-all rounded bg-white/5 px-1.5 py-0.5 font-mono text-[10px]">
+                      <code className="break-all rounded bg-[var(--admin-surface-muted)] px-1.5 py-0.5 font-mono text-xs">
                         {block.placementKey}
                       </code>
                     </td>
@@ -724,7 +724,7 @@ export default function AdminContentBlocksPage() {
                     onChange={(event) =>
                       setForm({ ...form, isActive: event.target.checked })
                     }
-                    className="h-5 w-5 accent-club-accent"
+                    className="h-5 w-5 accent-action-neutral"
                   />
                   Active placement
                 </label>
@@ -749,7 +749,7 @@ export default function AdminContentBlocksPage() {
             <div className="mt-6 flex flex-wrap gap-3 border-t border-[var(--admin-border)] pt-6">
               <button
                 type="submit"
-                className="admin-action-button min-h-12 flex-1 !bg-club-primary !text-white hover:!bg-club-primary-light"
+                className="admin-action-button min-h-12 flex-1 !bg-action-blue !text-white hover:!bg-action-blue-hover"
               >
                 Save block
               </button>

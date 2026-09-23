@@ -62,7 +62,7 @@ class LineupsTabBody extends StatelessWidget {
               ),
               const SizedBox(height: SpacingTokens.spacing2),
               Text(
-                context.afriL10n.fanZoneLineupsEmpty,
+                context.afriL10n.predictLineupsEmpty,
                 textAlign: TextAlign.center,
                 style: TypographyTokens.bodySmall(),
               ),
@@ -179,16 +179,7 @@ class _TeamLineup extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          teamName,
-          style:
-              TypographyTokens.titleSmall(
-                isHome ? ColorTokens.primaryContainer : ColorTokens.onSurface,
-              ).copyWith(
-                fontWeight: FontWeight.w600,
-                letterSpacing: TypographyTokens.trackingNone,
-              ),
-        ),
+        AfriTeamCard(name: teamName),
         const SizedBox(height: SpacingTokens.spacing3),
 
         // Starters

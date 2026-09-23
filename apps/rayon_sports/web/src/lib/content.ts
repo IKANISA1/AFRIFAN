@@ -1,5 +1,6 @@
 import type { ClubProfile } from "@/lib/types";
 import { rayonClub } from "@/lib/config";
+import { teamCrestUrl } from "@/lib/team-identity";
 
 export const fallbackClubProfile: ClubProfile = {
   id: rayonClub.numericId,
@@ -19,7 +20,7 @@ export const fallbackClubProfile: ClubProfile = {
   xUrl: "https://x.com/rayon_sports",
   instagramUrl: "https://instagram.com/rayonsports_official",
   tiktokUrl: "https://tiktok.com/@rayonsports",
-  officialLogoUrl: "/brand-mark.svg",
+  officialLogoUrl: teamCrestUrl(rayonClub.name),
   primaryColorHex: rayonClub.primaryColorHex,
   secondaryColorHex: rayonClub.secondaryColorHex,
   accentColorHex: rayonClub.accentColorHex,
@@ -51,7 +52,7 @@ export const supportedClubProfiles: readonly ClubProfile[] = [
     defaultLanguage: "en", supportedLanguages: ["en"],
     officialContact: "Official club channels and matchday help desk",
     facebookUrl: null, xUrl: null, instagramUrl: null, tiktokUrl: null,
-    officialLogoUrl: "/brand-mark.svg", featureFlags: {},
+    officialLogoUrl: teamCrestUrl(identity.clubName), featureFlags: {},
   })),
 ];
 
@@ -83,7 +84,6 @@ export const adminNavigation = [
   { href: "/admin/predictions", label: "Predictions" },
   { href: "/admin/community", label: "Community" },
   { href: "/admin/standings", label: "Standings" },
-  { href: "/admin/contributions", label: "Contributions" },
   { href: "/admin/notifications", label: "Notifications" },
   { href: "/admin/sms-monitor", label: "SMS" },
   { href: "/admin/football-sync", label: "Football Sync" },

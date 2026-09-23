@@ -74,17 +74,4 @@ void main() {
     expect(fixture.isCompleted, isFalse);
     expect(fixture.isOnSale, isTrue);
   });
-
-  test('ClubProjectItem clamps published project progress', () {
-    final project = ClubProjectItem.fromJson(<String, dynamic>{
-      'id': 'project-1',
-      'name': 'Training ground',
-      'current_total': 150,
-      'target_amount': 100,
-      'member_count': 12,
-    });
-
-    expect(project.progress, 1);
-    expect(project.memberCount, 12);
-  });
 }

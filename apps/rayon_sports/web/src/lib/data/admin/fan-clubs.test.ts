@@ -73,7 +73,7 @@ describe("saveAdminFanClub", () => {
                 club_id: 24,
                 name: "Kigali North",
                 region: "Kigali",
-                description: "North chapter",
+                description: "North FanClubs",
                 member_count: 42,
                 event_count: 3,
                 rating: 4.5,
@@ -108,7 +108,7 @@ describe("saveAdminFanClub", () => {
         {
           name: "Kigali North",
           region: "Kigali",
-          description: "North chapter",
+          description: "North FanClubs",
           memberCount: 42,
           eventCount: 3,
           rating: 4.5,

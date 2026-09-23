@@ -20,21 +20,37 @@ void main() {
   });
 
   test('every canonical Flutter route resolves through the router graph', () {
-    expect(canonicalRoutes.length, 86);
+    expect(canonicalRoutes.length, 61);
     expect(
-      canonicalRoutes.keys.any((path) => path.startsWith('/fanzone/venue')),
+      canonicalRoutes.keys.any((path) => path.startsWith('/fanzone')),
       isFalse,
     );
     expect(canonicalRoutes, contains('/predict'));
     expect(
       canonicalRoutes.keys.any((path) => path.startsWith('/challenge')),
-      isTrue,
+      isFalse,
     );
 
     for (final path in canonicalRoutes.keys) {
       final concreteUri = Uri.parse(_concretePath(path));
       final match = appRouter.router.configuration.findMatch(concreteUri);
       expect(match.isError, isFalse, reason: '$path -> $concreteUri');
+    }
+  });
+
+  test('removed destinations fail routing instead of redirecting', () {
+    for (final path in [
+      '/fanzone',
+      '/fanzone/fixtures',
+      '/fanzone/my/pick-1',
+      '/fanzone/jackpot',
+      '/challenge',
+      '/challenge/create',
+      '/challenge/my',
+      '/challenge/pool-1',
+    ]) {
+      final match = appRouter.router.configuration.findMatch(Uri.parse(path));
+      expect(match.isError, isTrue, reason: path);
     }
   });
 
@@ -111,19 +127,14 @@ void main() {
       addTearDown(router.dispose);
       await tester.pumpWidget(MaterialApp.router(routerConfig: router));
       for (final entry in {
-        '/fanzone': '/predict',
-        '/challenge': '/predict',
-        '/challenge/create': '/predict',
-        '/challenge/my': '/predict?section=history',
-        '/fanzone?section=predictions': '/predict',
-        '/fanzone?section=supporters': '/fan-clubs',
-        '/fanzone?section=league': '/club/fixtures',
-        '/fanzone/wallet': '/predict?section=wallet',
+        '/club/projects': '/contribute?type=project',
+        '/club/projects/project-1': '/contribute/group/project-1',
+        '/club/results': '/club/fixtures?tab=results',
         '/membership/fans': '/fan-clubs',
         '/fan-clubs': '/fan-clubs',
         '/contribute': '/contribute',
-        '/contribute/groups': '/contribute',
-        '/contribute/projects': '/contribute',
+        '/contribute/groups': '/contribute?type=community',
+        '/contribute/projects': '/contribute?type=project',
       }.entries) {
         router.go(entry.key);
         await tester.pumpAndSettle();

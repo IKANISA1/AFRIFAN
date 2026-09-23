@@ -130,10 +130,3 @@ final clubHistoryProvider = FutureProvider<List<ClubHistoryItem>>(
       .loadHistory()
       .timeout(ref.watch(clubContentLoadTimeoutProvider)),
 );
-
-final clubProjectsProvider = FutureProvider<List<ClubProjectItem>>(
-  (ref) => ref
-      .watch(clubContentGatewayProvider)
-      .loadProjects()
-      .timeout(ref.watch(clubContentLoadTimeoutProvider)),
-);

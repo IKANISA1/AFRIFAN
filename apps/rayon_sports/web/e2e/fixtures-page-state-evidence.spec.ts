@@ -166,6 +166,15 @@ test.afterEach(async ({}, testInfo) => {
   if (testInfo.status === "passed") finalizeStateEvidence(evidenceDirectory);
 });
 
+async function expectHeadingBelowNavigation(page: Page) {
+  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+  await expect.poll(() => page.evaluate(() => {
+    const navigation = document.querySelector("[data-site-header]")!.getBoundingClientRect();
+    const heading = document.querySelector(".fixtures-title")!.getBoundingClientRect();
+    return heading.top - navigation.bottom;
+  })).toBeGreaterThanOrEqual(16);
+}
+
 test("fixtures prove all sixteen applicable rendered states", async ({
   browser,
 }) => {
@@ -228,14 +237,14 @@ test("fixtures prove all sixteen applicable rendered states", async ({
   await context.setOffline(true);
   await page.evaluate(() => window.dispatchEvent(new Event("offline")));
   await expectStatus(page, "offline", /you are offline/i);
-  await expect(page.getByText("Rayon Sports vs APR FC")).toBeVisible();
+  await expect(page.getByRole("group", { name: "Rayon Sports versus APR FC", exact: true })).toBeVisible();
   await capture(page, "offline_dark");
   await context.setOffline(false);
 
   mode = "permission_denied";
   await openFixtures(page, "permission");
   await expectStatus(page, "permission_denied", /fixture access denied/i);
-  await expect(page.getByText("Rayon Sports vs APR FC")).toHaveCount(0);
+  await expect(page.getByRole("group", { name: "Rayon Sports versus APR FC", exact: true })).toHaveCount(0);
   await capture(page, "permission_denied_dark");
 
   mode = "ready";
@@ -279,6 +288,7 @@ test("fixtures prove all sixteen applicable rendered states", async ({
   mode = "ready";
   await openFixtures(page, "large-text");
   await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
+  await expectHeadingBelowNavigation(page);
   expect(
     await page.evaluate(
       () =>
@@ -308,11 +318,12 @@ test("fixtures prove all sixteen applicable rendered states", async ({
   });
   await openFixtures(page, "dark");
   await expectStatus(page, "ready", /fixture list confirmed/i);
+  await expectHeadingBelowNavigation(page);
   expect(
     await page
       .locator(".fixtures-surface")
       .evaluate((element) => getComputedStyle(element).color),
-  ).toBe("rgb(248, 250, 252)");
+  ).toBe("rgb(244, 244, 244)");
   await expectNoSeriousAxeViolations(page);
   await capture(page, "dark_dark");
 
@@ -326,7 +337,7 @@ test("fixtures prove all sixteen applicable rendered states", async ({
     await page
       .locator(".fixtures-surface")
       .evaluate((element) => getComputedStyle(element).color),
-  ).toBe("rgb(15, 23, 42)");
+  ).toBe("rgb(25, 28, 31)");
   await expectNoSeriousAxeViolations(page);
   await capture(page, "light_light");
 
@@ -340,7 +351,7 @@ test("fixtures prove all sixteen applicable rendered states", async ({
   mode = "loading";
   await page.getByRole("button", { name: /refresh fixtures/i }).click();
   await expectStatus(page, "syncing", /refreshing fixtures/i);
-  await expect(page.getByText("Rayon Sports vs APR FC")).toBeVisible();
+  await expect(page.getByRole("group", { name: "Rayon Sports versus APR FC", exact: true })).toBeVisible();
   await capture(page, "syncing_dark");
 
   mode = "conflict";

@@ -187,9 +187,9 @@ class _MyTicketsScreenState extends ConsumerState<MyTicketsScreen>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        ticket.matchTitle,
-                        style: TypographyTokens.labelLarge(),
+                      AfriFixtureTeams(
+                        homeTeam: ticket.match.homeTeam,
+                        awayTeam: ticket.match.awayTeam,
                       ),
                       const SizedBox(height: SpacingTokens.spacing2),
                       Text(

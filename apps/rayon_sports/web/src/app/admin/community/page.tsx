@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { DollarSign, Download, Plus, Search, Users } from "lucide-react";
 import { AdminActionDrawer } from "@/components/admin/admin-action-drawer";
 import { AdminDataGrid } from "@/components/admin/admin-data-grid";
@@ -40,11 +41,11 @@ import { useAdminCollection } from "@/lib/use-admin-collection";
 import { useAdminResourceState } from "@/lib/use-admin-resource-state";
 import { cn, formatCurrency } from "@/lib/utils";
 import { useHydrated } from "@/lib/use-hydrated";
-import { ContributionGroupForm } from "../contributions/_components/group-form";
+import { ContributionGroupForm } from "./_components/group-form";
 import {
   emptyGroupForm,
   groupToFormState,
-} from "../contributions/_components/group-form-state";
+} from "./_components/group-form-state";
 import { CommunityContentEditor } from "./_components/community-content-editor";
 import {
   emptyForm as emptyChapterForm,
@@ -84,11 +85,11 @@ const statusCopy: Record<
   },
   ready: {
     label: "Community snapshot confirmed",
-    detail: "Chapters, public groups, and contribution activity are current.",
+    detail: "FanClubs, public groups, and contribution activity are current.",
   },
   empty: {
     label: "No community records in this scope",
-    detail: "Create the first authorized chapter or public group.",
+    detail: "Create the first authorized FanClubs or public group.",
   },
   error: {
     label: "Community operations unavailable",
@@ -143,9 +144,20 @@ function fundingPercent(group: AdminContributionGroup) {
 }
 
 export default function AdminCommunityHubPage() {
+  return <Suspense fallback={<section aria-label="Loading community operations" aria-busy="true" />}>
+    <CommunityWorkspace />
+  </Suspense>;
+}
+
+function CommunityWorkspace() {
+  const query = useSearchParams();
+  const requestedTab = query.get("tab");
+  const initialTab: CommunityTab = requestedTab === "groups" || requestedTab === "contributions"
+    ? requestedTab : "chapters";
   const { access, client, activeClub } = useAdminPortal();
   const hydrated = useHydrated();
-  const [activeTab, setActiveTab] = useState<CommunityTab>("chapters");
+  const [activeTab, setActiveTab] = useState<CommunityTab>(initialTab);
+  useEffect(() => { setActiveTab(initialTab); }, [initialTab]);
   const [chapterForm, setChapterForm] =
     useState<CommunityForm>(emptyChapterForm);
   const [circleForm, setCircleForm] = useState(emptyGroupForm);
@@ -370,13 +382,13 @@ export default function AdminCommunityHubPage() {
       });
       closeEditor();
       await refresh();
-      showAdminToast("Community chapter saved.", "success");
+      showAdminToast("Community FanClubs saved.", "success");
     } catch (caught) {
       if (isAdminMutationConflict(caught)) {
         await refresh();
       }
       showAdminToast(
-        mutationFailureMessage(caught, "Could not confirm the chapter change."),
+        mutationFailureMessage(caught, "Could not confirm the FanClubs change."),
         "error",
       );
     }
@@ -389,7 +401,7 @@ export default function AdminCommunityHubPage() {
         action: "Remove",
         subject: chapter.name,
         scope: `Active club ${access.clubId ?? "not selected"}`,
-        impact: "The supporter chapter and its admin listing will be removed.",
+        impact: "The supporter FanClubs and its admin listing will be removed.",
         undo: "not_available",
       })
     ) {
@@ -399,13 +411,13 @@ export default function AdminCommunityHubPage() {
     try {
       await deleteAdminFanClub(client, access, chapter.id, chapter.updatedAt);
       await refresh();
-      showAdminToast("Community chapter removed.", "success");
+      showAdminToast("Community FanClubs removed.", "success");
     } catch (caught) {
       if (isAdminMutationConflict(caught)) {
         await refresh();
       }
       showAdminToast(
-        mutationFailureMessage(caught, "Could not confirm chapter removal."),
+        mutationFailureMessage(caught, "Could not confirm FanClubs removal."),
         "error",
       );
     }
@@ -483,7 +495,7 @@ export default function AdminCommunityHubPage() {
         meta={
           <span className="admin-meta-chip">
             <Users size={12} className="mr-1 inline" aria-hidden="true" />
-            Chapters, groups & contributions
+            FanClubs, groups & contributions
           </span>
         }
         actions={
@@ -492,9 +504,9 @@ export default function AdminCommunityHubPage() {
               type="button"
               onClick={beginChapterCreate}
               disabled={mutationLocked}
-              className="admin-action-button min-h-12 !bg-club-primary !text-white hover:!bg-club-primary-light disabled:opacity-70"
+              className="admin-action-button min-h-12 !bg-action-blue !text-white hover:!bg-action-blue-hover disabled:opacity-70"
             >
-              <Plus size={16} aria-hidden="true" /> New chapter
+              <Plus size={16} aria-hidden="true" /> New FanClubs
             </button>
             <button
               type="button"
@@ -523,12 +535,12 @@ export default function AdminCommunityHubPage() {
 
       <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr))]">
         <AdminStateCard
-          label="Total chapters"
+          label="Total FanClubs"
           value={initialLoading ? "…" : String(data.chapters.length)}
           icon={Users}
         />
         <AdminStateCard
-          label="Chapter members"
+          label="FanClubs members"
           value={initialLoading ? "…" : totalMembers.toLocaleString()}
           helper="Geographic reach"
         />
@@ -569,23 +581,23 @@ export default function AdminCommunityHubPage() {
             {(["chapters", "groups", "contributions"] as CommunityTab[]).map(
               (tab) => (
                 <button
-                  key={tab}
+                  key={tab === "chapters" ? "FanClubs" : tab}
                   type="button"
                   role="tab"
                   aria-selected={activeTab === tab}
                   onClick={() => selectTab(tab)}
                   className={cn(
-                    "relative min-h-12 shrink-0 px-5 py-3 text-xs font-bold uppercase tracking-widest transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-club-accent motion-reduce:transition-none",
+                    "relative min-h-12 shrink-0 px-5 py-3 text-xs font-medium normal-case tracking-normal transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none",
                     activeTab === tab
                       ? "text-[var(--admin-text-strong)]"
                       : "text-[var(--admin-text-muted)] hover:text-[var(--admin-text-strong)]",
                   )}
                 >
-                  {tab}
+                  {tab === "chapters" ? "FanClubs" : tab}
                   {activeTab === tab ? (
                     <span
                       aria-hidden="true"
-                      className="absolute inset-x-0 bottom-0 h-0.5 bg-club-accent"
+                      className="absolute inset-x-0 bottom-0 h-0.5 bg-[var(--admin-accent)]"
                     />
                   ) : null}
                 </button>
@@ -598,19 +610,19 @@ export default function AdminCommunityHubPage() {
               <AdminFilterBar>
                 <label className="admin-search-field min-h-12">
                   <Search size={16} aria-hidden="true" />
-                  <span className="sr-only">Search community chapters</span>
+                  <span className="sr-only">Search community FanClubs</span>
                   <input
                     type="search"
                     value={chapterCollection.query}
                     onChange={(event) =>
                       chapterCollection.setQuery(event.target.value)
                     }
-                    placeholder="Search chapter, region, or state"
+                    placeholder="Search FanClubs, region, or state"
                   />
                 </label>
               </AdminFilterBar>
               <AdminDataGrid
-                caption="Community chapters"
+                caption="Community FanClubs"
                 busy={busy}
                 onRowActivate={(rowId) => {
                   const chapter = data.chapters.find(
@@ -621,7 +633,7 @@ export default function AdminCommunityHubPage() {
                 columns={[
                   {
                     key: "chapter",
-                    label: "Chapter name",
+                    label: "FanClubs name",
                     priority: "primary",
                     sortable: true,
                     sortDirection: chapterCollection.sortDirectionFor("name"),
@@ -675,8 +687,8 @@ export default function AdminCommunityHubPage() {
                       className="py-8 text-center text-sm text-[var(--admin-text-muted)]"
                     >
                       {chapterCollection.query
-                        ? "No chapters match the current search."
-                        : "No community chapters in this scope."}
+                        ? "No FanClubs match the current search."
+                        : "No community FanClubs in this scope."}
                     </td>
                   </tr>
                 ) : (
@@ -708,8 +720,8 @@ export default function AdminCommunityHubPage() {
                         <p className="admin-row-meta">official fans</p>
                       </td>
                       <td>
-                        <span className="text-xs font-bold text-[var(--admin-text-strong)]">
-                          <span aria-hidden="true" className="text-amber-400">
+                        <span className="text-xs font-medium text-[var(--admin-text-strong)]">
+                          <span aria-hidden="true" className="text-warning">
                             ★
                           </span>{" "}
                           {chapter.rating.toFixed(1)}
@@ -721,7 +733,7 @@ export default function AdminCommunityHubPage() {
                             type="button"
                             onClick={() => beginChapterEdit(chapter)}
                             disabled={mutationLocked}
-                            aria-label={`Edit community chapter ${chapter.name}`}
+                            aria-label={`Edit community FanClubs ${chapter.name}`}
                             className="admin-action-button min-h-12"
                           >
                             Edit
@@ -730,7 +742,7 @@ export default function AdminCommunityHubPage() {
                             type="button"
                             onClick={() => void removeChapter(chapter)}
                             disabled={mutationLocked}
-                            aria-label={`Remove community chapter ${chapter.name}`}
+                            aria-label={`Remove community FanClubs ${chapter.name}`}
                             className="admin-action-button admin-action-button-danger min-h-12"
                           >
                             Remove
@@ -744,7 +756,7 @@ export default function AdminCommunityHubPage() {
               <AdminPagination
                 page={chapterCollection.pageResult}
                 onPageChange={chapterCollection.setPage}
-                label="Community chapters"
+                label="Community FanClubs"
               />
             </div>
           ) : null}
@@ -851,7 +863,7 @@ export default function AdminCommunityHubPage() {
                         </td>
                         <td>
                           <div className="w-full max-w-40 space-y-1">
-                            <div className="flex flex-wrap justify-between gap-2 text-[10px] font-bold uppercase tracking-wider text-[var(--admin-text-strong)]">
+                            <div className="flex flex-wrap justify-between gap-2 text-xs font-medium normal-case tracking-normal text-[var(--admin-text-strong)]">
                               <span>{percent}%</span>
                               <span className="text-[var(--admin-text-muted)]">
                                 {formatCurrency(
@@ -869,7 +881,7 @@ export default function AdminCommunityHubPage() {
                               aria-valuenow={percent}
                             >
                               <div
-                                className="h-full bg-emerald-500"
+                                className="h-full bg-success"
                                 style={{ width: `${percent}%` }}
                               />
                             </div>
@@ -1032,7 +1044,7 @@ export default function AdminCommunityHubPage() {
                           </p>
                         </td>
                         <td>
-                          <p className="text-sm font-bold text-emerald-300">
+                          <p className="text-sm font-medium text-success">
                             {formatCurrency(item.amount, group?.currency)}
                           </p>
                         </td>
@@ -1071,8 +1083,8 @@ export default function AdminCommunityHubPage() {
         title={
           drawerMode === "chapter"
             ? chapterForm.id
-              ? "Edit chapter"
-              : "New chapter"
+              ? "Edit FanClubs"
+              : "New FanClubs"
             : circleForm.id
               ? "Edit public group"
               : "New public group"

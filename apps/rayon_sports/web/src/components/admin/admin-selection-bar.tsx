@@ -41,7 +41,7 @@ export function AdminSelectionBar({
         </button>
         <button
           type="button"
-          className="admin-action-button !bg-club-accent !text-white"
+          className="admin-action-button !bg-action-neutral !text-inverse-foreground"
           onClick={onReview}
         >
           {reviewLabel}

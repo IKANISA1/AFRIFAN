@@ -57,7 +57,7 @@ class AppStartupCoordinator {
   Future<void>? _scheduledDeferredInitialization;
 
   Future<void> initialize(ClubConfig config) async {
-    ColorTokens.init(config.colors);
+    ColorTokens.init();
 
     if (options.configureDeviceChrome) {
       await _configureDeviceChrome();

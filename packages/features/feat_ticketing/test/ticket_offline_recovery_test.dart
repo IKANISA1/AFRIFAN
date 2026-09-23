@@ -41,13 +41,13 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Rayon Sports vs APR FC'), findsOneWidget);
+    expect(find.byType(AfriFixtureTeams), findsOneWidget);
 
     ConnectivityService.setOnlineForTest(false);
     await tester.pump();
 
     expect(find.text('Saved ticket inventory'), findsOneWidget);
-    expect(find.text('Rayon Sports vs APR FC'), findsOneWidget);
+    expect(find.byType(AfriFixtureTeams), findsOneWidget);
     expect(
       find.byTooltip('Connection required to refresh matches'),
       findsOneWidget,
@@ -58,14 +58,14 @@ void main() {
 
     expect(calls, 2);
     expect(find.text('Refreshing ticket inventory'), findsOneWidget);
-    expect(find.text('Rayon Sports vs APR FC'), findsOneWidget);
+    expect(find.byType(AfriFixtureTeams), findsOneWidget);
 
     reconnected.complete([_fixture]);
     await tester.pumpAndSettle();
 
     expect(find.text('Saved ticket inventory'), findsNothing);
     expect(find.text('Refreshing ticket inventory'), findsNothing);
-    expect(find.text('Rayon Sports vs APR FC'), findsOneWidget);
+    expect(find.byType(AfriFixtureTeams), findsOneWidget);
   });
 }
 

@@ -8,6 +8,7 @@ class ContributionGroup extends Equatable {
     required this.creatorId,
     required this.name,
     this.description,
+    this.imageUrl,
     this.groupType = jh.ContributionGroupType.community,
     this.targetAmount = 0,
     this.currentTotal = 0,
@@ -24,6 +25,7 @@ class ContributionGroup extends Equatable {
   final String creatorId;
   final String name;
   final String? description;
+  final String? imageUrl;
   final jh.ContributionGroupType groupType;
   final int targetAmount;
   final int currentTotal;
@@ -51,6 +53,7 @@ class ContributionGroup extends Equatable {
       creatorId: jh.asStringOrNull(json['creator_id']) ?? '',
       name: json['name'] as String,
       description: json['description'] as String?,
+      imageUrl: json['image_url'] as String?,
       groupType: jh.ContributionGroupTypeX.fromValue(
         json['group_type'] as String?,
       ),

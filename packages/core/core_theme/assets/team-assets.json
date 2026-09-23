@@ -1,0 +1,4388 @@
+{
+  "schema_version": 1,
+  "teams": [
+    {
+      "id": "bb1e4b20-5e9c-47e3-a59e-ea847702dee6",
+      "slug": "newcastle-united",
+      "name": "Newcastle United",
+      "initials": "NEW",
+      "aliases": [
+        "Newcastle United",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/newcastle-united.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/4.svg",
+        "newcastle-united"
+      ],
+      "asset": "premier-league-official-newcastle-united.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/4.svg",
+      "sha256": "c22245c6265c78035859015945ece2554e94b5916eab7075ca501a6e915b2147"
+    },
+    {
+      "id": "82085d3b-0ea0-4999-8a43-7c0db7815e9b",
+      "slug": "manchester-united",
+      "name": "Manchester United",
+      "initials": "MUN",
+      "aliases": [
+        "Manchester United",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/manchester-united.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/1.svg",
+        "manchester-united"
+      ],
+      "asset": "premier-league-official-manchester-united.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/1.svg",
+      "sha256": "26a24cef1e79effd71f2ce571b5ac73a847916f53c4d50c60731f669dc32c004"
+    },
+    {
+      "id": "6c6cbe04-8b26-477e-ac84-1771004dee2e",
+      "slug": "manchester-city",
+      "name": "Manchester City",
+      "initials": "MCI",
+      "aliases": [
+        "Manchester City",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/manchester-city.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/43.svg",
+        "manchester-city"
+      ],
+      "asset": "premier-league-official-manchester-city.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/43.svg",
+      "sha256": "5992dc73d3a29ef6d1e028a1658207b0b77e5afe9221fd14add86b03e3f54c42"
+    },
+    {
+      "id": "806bfda4-cf6c-4d38-8d21-ee2f5c12530e",
+      "slug": "fc-barcelona",
+      "name": "FC Barcelona",
+      "initials": "BAR",
+      "aliases": [
+        "4",
+        "BAR",
+        "FC Barcelona",
+        "https://assets.laliga.com/assets/2019/06/07/medium/barcelona.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/4.png"
+      ],
+      "asset": "laliga-official-4.png",
+      "source": "https://assets.laliga.com/assets/2019/06/07/medium/barcelona.png",
+      "sha256": "002d4372063687acce1f3059c82a94f0c784683da79dff2b6b7dce161d65793d"
+    },
+    {
+      "id": "40210e7f-cc50-4709-8167-a309f6ecc484",
+      "slug": "real-madrid",
+      "name": "Real Madrid",
+      "initials": "RMA",
+      "aliases": [
+        "15",
+        "RMA",
+        "Real Madrid",
+        "https://assets.laliga.com/assets/2019/06/07/medium/real-madrid.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/15.png"
+      ],
+      "asset": "laliga-official-15.png",
+      "source": "https://assets.laliga.com/assets/2019/06/07/medium/real-madrid.png",
+      "sha256": "df7bf96a1528d2145774d03b59bb8541fcd48c0e68a09ab35684e063e7635041"
+    },
+    {
+      "id": "2c1f7128-32c2-4871-b0e2-05d19fb92fea",
+      "slug": "real-betis",
+      "name": "Real Betis",
+      "initials": "BET",
+      "aliases": [
+        "5",
+        "BET",
+        "Real Betis",
+        "https://assets.laliga.com/assets/2022/09/15/medium/e4a09419d3bd115b8f3dab73d480e146.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/5.png"
+      ],
+      "asset": "laliga-official-5.png",
+      "source": "https://assets.laliga.com/assets/2022/09/15/medium/e4a09419d3bd115b8f3dab73d480e146.png",
+      "sha256": "cdb14a5a1ae34747c61410914d3f74a56220ed37414a9443754d838bb7b1ed2e"
+    },
+    {
+      "id": "fed3d85a-e599-4c0b-95f0-83b153ffc385",
+      "slug": "girona-fc",
+      "name": "Girona FC",
+      "initials": "GIR",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "b7c6592f-f561-4d98-8e04-8309376a7c92",
+      "slug": "real-sociedad",
+      "name": "Real Sociedad",
+      "initials": "RSO",
+      "aliases": [
+        "16",
+        "RSO",
+        "Real Sociedad",
+        "https://assets.laliga.com/assets/2019/06/07/medium/real-sociedad.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/16.png"
+      ],
+      "asset": "laliga-official-16.png",
+      "source": "https://assets.laliga.com/assets/2019/06/07/medium/real-sociedad.png",
+      "sha256": "1a599593e4d79cd70af47e223b8a5990f86290b5d370656156b330a238e68e7c"
+    },
+    {
+      "id": "40a26ca2-b534-49e0-aed8-2ef28c09d8c7",
+      "slug": "sm-sanga-balende",
+      "name": "SM Sanga Balende",
+      "initials": "SSB",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "8c9f36a9-ef83-4792-9a5c-26cdd3a66280",
+      "slug": "as-nyuki",
+      "name": "AS Nyuki",
+      "initials": "AN",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "e595c396-368d-452a-97d2-80160880eac9",
+      "slug": "apr-fc",
+      "name": "APR FC",
+      "initials": "APR",
+      "aliases": [
+        "APR",
+        "APR Football Club"
+      ],
+      "asset": "apr-fc.png",
+      "source": "https://rwandapremierleague.rw/",
+      "sha256": "4e2d7976f874b7759e24c6dd73e4799a9252d0df5596071b01db48c38faf53a6"
+    },
+    {
+      "id": "899db9cd-d027-4f25-abe4-488d9dbdde9b",
+      "slug": "as-kigali-fc",
+      "name": "AS Kigali FC",
+      "initials": "AKF",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "42415a3a-ddc5-4ac6-88a7-9af07564e1d3",
+      "slug": "rutsiro-fc",
+      "name": "Rutsiro FC",
+      "initials": "RF",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "e1c10a94-d5f1-4feb-bce4-decca8c5a650",
+      "slug": "amagaju-fc",
+      "name": "Amagaju FC",
+      "initials": "AMA",
+      "aliases": [
+        "Amagaju"
+      ],
+      "asset": "amagaju-fc.png",
+      "source": "https://rwandapremierleague.rw/",
+      "sha256": "3a05d47e65b1a90955149d4808686b0a50e668a2946f8a3091937a4e8102abe2"
+    },
+    {
+      "id": "5f0f8abd-a075-486c-8b04-d9934ea74b40",
+      "slug": "al-hilal-omdurman",
+      "name": "Al-Hilal Omdurman",
+      "initials": "AHO",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "17f9b24e-73d2-4248-84ff-fe5a7f902dfb",
+      "slug": "al-merrikh",
+      "name": "Al Merrikh",
+      "initials": "AM",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "fb09e2c9-8341-41d6-8b3c-32523adf7e79",
+      "slug": "as-muhanga-fc",
+      "name": "AS Muhanga FC",
+      "initials": "AMF",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "25e0759b-8c8a-4fc4-8c3c-add2b14cd4fe",
+      "slug": "brighton-hove-albion",
+      "name": "Brighton & Hove Albion",
+      "initials": "BHA",
+      "aliases": [
+        "8a67bdf4-4440-4723-9f94-d3aa5838b4ed",
+        "Brighton",
+        "Brighton & Hove Albion",
+        "brighton",
+        "brighton-and-hove-albion",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/brighton-and-hove-albion.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/36.svg"
+      ],
+      "asset": "premier-league-official-brighton-and-hove-albion.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/36.svg",
+      "sha256": "4a101c7a33dd2b68d7eeb874e2d3a8a44a1b32a63fe9c3a592d8868dc434f53b"
+    },
+    {
+      "id": "9a7d01f7-a054-415a-b363-7be5ce117026",
+      "slug": "southampton",
+      "name": "Southampton",
+      "initials": "S",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "6c0bd833-9f4d-4931-9a6a-9e828c9091eb",
+      "slug": "borussia-dortmund",
+      "name": "Borussia Dortmund",
+      "initials": "BD",
+      "aliases": [
+        "Borussia Dortmund",
+        "DFL-CLU-000007",
+        "Dortmund",
+        "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-000007.svg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/bundesliga-official/dfl-clu-000007.svg"
+      ],
+      "asset": "bundesliga-official-dfl-clu-000007.svg",
+      "source": "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-000007.svg",
+      "sha256": "29a0b1c5ffb1584cea00b76f0c80e64b4c8af2f207e88f6c21de0fb506673c31"
+    },
+    {
+      "id": "60eaeff1-e41c-492c-bfbe-d2c62f72c896",
+      "slug": "vfb-stuttgart",
+      "name": "VfB Stuttgart",
+      "initials": "VS",
+      "aliases": [
+        "DFL-CLU-00000D",
+        "Stuttgart",
+        "VfB Stuttgart",
+        "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-00000D.svg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/bundesliga-official/dfl-clu-00000d.svg"
+      ],
+      "asset": "bundesliga-official-dfl-clu-00000d.svg",
+      "source": "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-00000D.svg",
+      "sha256": "9fc3aa34178ff4e1a3929d89c614091ceaff44d78c887c9dc729eb9eafd84103"
+    },
+    {
+      "id": "11e583a5-dc88-4b0d-94c5-f1b05d54d2d4",
+      "slug": "juventus",
+      "name": "Juventus",
+      "initials": "J",
+      "aliases": [
+        "JUV",
+        "Juventus",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-0ae9210dce6f4f9b9d50aeeb19b0d371.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/0ae9210dce6f4f9b9d50aeeb19b0d371.webp",
+        "serie-a::Football_Team::0ae9210dce6f4f9b9d50aeeb19b0d371"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-0ae9210dce6f4f9b9d50aeeb19b0d371.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/0ae9210dce6f4f9b9d50aeeb19b0d371.webp",
+      "sha256": "9046a87adbc5a1cf60bffbaf7d2424f735ad397a58db7c711c161d705ce7b8b1"
+    },
+    {
+      "id": "14d7a791-b192-4cc2-b32e-f06fc82da233",
+      "slug": "atalanta",
+      "name": "Atalanta",
+      "initials": "A",
+      "aliases": [
+        "ATA",
+        "Atalanta",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-b5846a2413804c2e8cab8b773b18370a.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/b5846a2413804c2e8cab8b773b18370a.webp",
+        "serie-a::Football_Team::b5846a2413804c2e8cab8b773b18370a"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-b5846a2413804c2e8cab8b773b18370a.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/b5846a2413804c2e8cab8b773b18370a.webp",
+      "sha256": "20559af5cfe022e13d3f7e5d77cfaf084654eba14e7e2cbb020e51dc19084b19"
+    },
+    {
+      "id": "79d27245-8e11-43bc-989c-d4625a59ead3",
+      "slug": "bologna",
+      "name": "Bologna",
+      "initials": "B",
+      "aliases": [
+        "BOL",
+        "Bologna",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-4af71b35aab34ad5a7d06148abe66ad6.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/4af71b35aab34ad5a7d06148abe66ad6.webp",
+        "serie-a::Football_Team::4af71b35aab34ad5a7d06148abe66ad6"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-4af71b35aab34ad5a7d06148abe66ad6.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/4af71b35aab34ad5a7d06148abe66ad6.webp",
+      "sha256": "a6ed3f2be2d39e0dcedde74fe4d808f115d4ee6d7e7bb50e5e0dc02e4d3280c5"
+    },
+    {
+      "id": "ba7d4460-2e4e-4796-b79b-a845fbde0247",
+      "slug": "as-monaco",
+      "name": "AS Monaco",
+      "initials": "AM",
+      "aliases": [
+        "AS Monaco",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/ligue1-official/l1-championship-club-2026-9.png",
+        "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_9_128x128_486e4b383509816f94f5ab9269a14449.png",
+        "l1_championship_club_2026_9"
+      ],
+      "asset": "ligue1-official-l1-championship-club-2026-9.png",
+      "source": "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_9_128x128_486e4b383509816f94f5ab9269a14449.png",
+      "sha256": "ed2df086880a7ef3d197bae93f4185fcfaf32aa4adc27d7ef1c268a733ead15d"
+    },
+    {
+      "id": "bc6ce6c7-5b9c-45d4-9df4-6b1954fe2c1c",
+      "slug": "psv-eindhoven",
+      "name": "PSV Eindhoven",
+      "initials": "PSV",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "3dd2035c-0436-423b-8f65-9058dee09aab",
+      "slug": "feyenoord",
+      "name": "Feyenoord",
+      "initials": "F",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "2ee04701-21f8-4c4a-812f-4ad6caafb384",
+      "slug": "club-brugge",
+      "name": "Club Brugge",
+      "initials": "CB",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "79539502-1519-457c-aedd-fe9c08e434eb",
+      "slug": "sporting-cp",
+      "name": "Sporting CP",
+      "initials": "SC",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "0e11d65e-4460-4e48-8f46-545364a9cb0a",
+      "slug": "celtic",
+      "name": "Celtic",
+      "initials": "C",
+      "aliases": [
+        "50050",
+        "CEL",
+        "Celtic",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50050.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/50050.png"
+      ],
+      "asset": "uefa-champions-league-official-50050.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50050.png",
+      "sha256": "524728906b1ff74d7b2a224908ead74de95983d7e643315c49f2cd5165eb977c"
+    },
+    {
+      "id": "8f03284c-e393-4fde-a882-bbb923380a83",
+      "slug": "sturm-graz",
+      "name": "Sturm Graz",
+      "initials": "SG",
+      "aliases": [
+        "50111",
+        "SGR",
+        "Sturm Graz",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50111.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/50111.png"
+      ],
+      "asset": "uefa-champions-league-official-50111.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50111.png",
+      "sha256": "94998b23983aa5883cfb6a4067742f6c13071baa74b649f5fa9b4de96b331d73"
+    },
+    {
+      "id": "60e095fa-78c5-4f76-887f-6d6c352303ed",
+      "slug": "young-boys",
+      "name": "BSC Young Boys",
+      "initials": "BYB",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "0c6749db-5db7-4540-ab4d-b7b494eb6937",
+      "slug": "shakhtar-donetsk",
+      "name": "Shakhtar Donetsk",
+      "initials": "SD",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "dfc31253-8a85-403a-95e8-368422d051a3",
+      "slug": "rb-leipzig",
+      "name": "RB Leipzig",
+      "initials": "RL",
+      "aliases": [
+        "DFL-CLU-000017",
+        "Leipzig",
+        "RB Leipzig",
+        "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-000017.svg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/bundesliga-official/dfl-clu-000017.svg"
+      ],
+      "asset": "bundesliga-official-dfl-clu-000017.svg",
+      "source": "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-000017.svg",
+      "sha256": "23311d1bbb634fa51827ddfa719965381f8623e4f64e3ceb657037003b177033"
+    },
+    {
+      "id": "b0a46bc3-b83e-47f2-a7a6-53c38a3f1073",
+      "slug": "deportivo-alaves",
+      "name": "Deportivo Alavés",
+      "initials": "DAS",
+      "aliases": [
+        "21",
+        "ALA",
+        "Alaves",
+        "Deportivo Alavés",
+        "a993f44d-0fae-4cca-8a9a-1d626be531b0",
+        "alaves",
+        "https://assets.laliga.com/assets/2020/09/01/medium/27002754a98bf535807fe49a24cc63ea.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/21.png"
+      ],
+      "asset": "laliga-official-21.png",
+      "source": "https://assets.laliga.com/assets/2020/09/01/medium/27002754a98bf535807fe49a24cc63ea.png",
+      "sha256": "a5bb730c137f7566eeda400d09cdbd6d9947e1927e988ce8fbbd439aa09055b7"
+    },
+    {
+      "id": "7f926bf4-b4ce-41d7-a67f-b8945b5d856d",
+      "slug": "las-palmas",
+      "name": "UD Las Palmas",
+      "initials": "ULP",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "920abfce-6ed7-402a-8d74-1bbd6a2d67cf",
+      "slug": "cd-leganes",
+      "name": "CD Leganés",
+      "initials": "CLS",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "603915e2-02d6-45eb-99c4-0c34d4f58092",
+      "slug": "real-valladolid",
+      "name": "Real Valladolid",
+      "initials": "RV",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "8032d3e7-b91f-4bd5-9d48-2c6b178dae96",
+      "slug": "don-bosco-lubumbashi",
+      "name": "Don Bosco Lubumbashi",
+      "initials": "DBL",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "38a88fe8-3be8-41ae-ae88-700b00b7fbfd",
+      "slug": "fc-lupopo",
+      "name": "FC Lupopo",
+      "initials": "FL",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "28b1a0a9-ffdc-4113-8603-ef97aa6c88a0",
+      "slug": "fc-renaissance-du-congo",
+      "name": "FC Renaissance du Congo",
+      "initials": "FRDC",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "5103892d-a1d8-4a86-8216-1ed0d8179a87",
+      "slug": "us-tshinkunku",
+      "name": "US Tshinkunku",
+      "initials": "UT",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "189e6800-156d-4a73-9b52-225681448686",
+      "slug": "fc-les-marquis",
+      "name": "FC Les Marquis",
+      "initials": "FLM",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "06f730a4-58df-49e8-af19-f4c4d127ad59",
+      "slug": "fc-shark-xi",
+      "name": "FC Shark XI",
+      "initials": "FSX",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "31cb6590-ecc3-4b7a-b56a-746c2ab0194e",
+      "slug": "om-lubumbashi",
+      "name": "OM Lubumbashi",
+      "initials": "OL",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "c1fad683-ce3a-4c6f-862b-cc0fea45145a",
+      "slug": "ac-rangers",
+      "name": "AC Rangers",
+      "initials": "AR",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "070e6581-ece4-4576-a090-f230db5d330c",
+      "slug": "nt-spain",
+      "name": "Spain",
+      "initials": "ESP",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "63e09773-8b55-4829-8d6f-c1e0295b9245",
+      "slug": "green-eagles-zm",
+      "name": "Green Eagles FC",
+      "initials": "GEF",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "d2db51e4-7b94-42bc-834d-4427707e6275",
+      "slug": "forest-rangers-zm",
+      "name": "Forest Rangers FC",
+      "initials": "FRF",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "df61412a-9441-4696-9915-dfd02be8337b",
+      "slug": "buildcon-fc",
+      "name": "Buildcon FC",
+      "initials": "BF",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "5fbf33d5-2fe7-404e-a712-466badef91c6",
+      "slug": "lumwana-radiants",
+      "name": "Lumwana Radiants FC",
+      "initials": "LRF",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "7ece3bc1-ed80-41bd-b40a-b09c902c3c76",
+      "slug": "prison-leopards",
+      "name": "Prison Leopards FC",
+      "initials": "PLF",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "8e1e2dc4-0e2b-4c63-b505-9485b410e2dd",
+      "slug": "konkola-blades",
+      "name": "Konkola Blades FC",
+      "initials": "KBF",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "84045885-7b58-4576-8f7a-1f98347d9363",
+      "slug": "chambishi-fc",
+      "name": "Chambishi FC",
+      "initials": "CF",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "4a12851e-68e1-48ca-867a-3cd67a1cfceb",
+      "slug": "indeni-fc",
+      "name": "Indeni FC",
+      "initials": "IF",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "8da00c7c-0d73-4a31-b326-c4e72a3f043c",
+      "slug": "nt-mexico",
+      "name": "Mexico",
+      "initials": "MEX",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "97a9bd9c-89fd-4e84-9b65-5d105e70a5d7",
+      "slug": "nt-south-africa",
+      "name": "South Africa",
+      "initials": "RSA",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "ff9d1f8b-4e2c-4ac3-b68f-e77ff4643abd",
+      "slug": "nt-south-korea",
+      "name": "South Korea",
+      "initials": "KOR",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "364b5963-ab68-4ad2-9e44-09e4c9060fc3",
+      "slug": "nt-czechia",
+      "name": "Czechia",
+      "initials": "CZE",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "450197a1-22da-4179-b03c-a1c40042030c",
+      "slug": "nt-canada",
+      "name": "Canada",
+      "initials": "CAN",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "4594a51a-03a5-49a9-a046-116749fbeb79",
+      "slug": "nt-bosnia",
+      "name": "Bosnia and Herzegovina",
+      "initials": "BIH",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "b6952f23-2daa-45f7-ad2e-d35d052f3a82",
+      "slug": "nt-qatar",
+      "name": "Qatar",
+      "initials": "QAT",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "424f8843-4b6f-4090-8366-5f2c079f89e1",
+      "slug": "nt-switzerland",
+      "name": "Switzerland",
+      "initials": "SUI",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "659678e2-3797-434c-afa9-0821b2d9bace",
+      "slug": "nt-brazil",
+      "name": "Brazil",
+      "initials": "BRA",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "173609f4-d8e3-488c-9b6d-3502fadaf45b",
+      "slug": "nt-morocco",
+      "name": "Morocco",
+      "initials": "MAR",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "7e4b70df-7a6a-49ee-afe5-7b9a3d3e14c6",
+      "slug": "nt-haiti",
+      "name": "Haiti",
+      "initials": "HAI",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "75f84b2e-2ab0-4f7f-8350-ce20c52458b1",
+      "slug": "nt-scotland",
+      "name": "Scotland",
+      "initials": "SCO",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "05e31359-f7cb-4594-8669-73c401e5304c",
+      "slug": "nt-usa",
+      "name": "United States",
+      "initials": "USA",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "e23a7de7-d4e5-48dc-b52d-9ef4505666d4",
+      "slug": "nt-paraguay",
+      "name": "Paraguay",
+      "initials": "PAR",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "f4320f5f-6c5b-44f2-9274-3a0f75e5e242",
+      "slug": "nt-australia",
+      "name": "Australia",
+      "initials": "AUS",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "04b7d910-9373-4615-b202-62a8afbea97c",
+      "slug": "nt-turkiye",
+      "name": "Türkiye",
+      "initials": "TUR",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "e625d777-c4d7-4722-9965-3195d7177078",
+      "slug": "nt-germany",
+      "name": "Germany",
+      "initials": "GER",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "2b8118be-0d24-4f37-963d-41c4da7b3a1b",
+      "slug": "nt-curacao",
+      "name": "Curaçao",
+      "initials": "CUW",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "fda2478d-2da1-441d-ac76-7dc19ea5f833",
+      "slug": "nt-ivory-coast",
+      "name": "Ivory Coast",
+      "initials": "CIV",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "a138c92a-801a-43f2-82a2-8f741aa503d9",
+      "slug": "nt-ecuador",
+      "name": "Ecuador",
+      "initials": "ECU",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "ce87de0e-9d2a-4d1b-bcc7-c1f0ea5fa2a0",
+      "slug": "nt-netherlands",
+      "name": "Netherlands",
+      "initials": "NED",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "1878cb68-1be4-45e5-94b9-5ab601fcd03f",
+      "slug": "nt-japan",
+      "name": "Japan",
+      "initials": "JPN",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "9f25b4b2-4d59-4d01-b5a9-b4b7c641a171",
+      "slug": "nt-tunisia",
+      "name": "Tunisia",
+      "initials": "TUN",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "1cfa9326-baa6-417c-969f-569c14354d1f",
+      "slug": "nt-sweden",
+      "name": "Sweden",
+      "initials": "SWE",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "a97644f3-d4f4-4f96-8774-e3912ff5ea3f",
+      "slug": "nt-belgium",
+      "name": "Belgium",
+      "initials": "BEL",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "670089a1-7778-42bf-8d33-13622538c9ad",
+      "slug": "nt-egypt",
+      "name": "Egypt",
+      "initials": "EGY",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "7f182cc9-b121-452d-b75a-0e03beba045c",
+      "slug": "nt-iran",
+      "name": "Iran",
+      "initials": "IRN",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "321c344e-6c67-4d67-99ff-d4156f046be6",
+      "slug": "nt-new-zealand",
+      "name": "New Zealand",
+      "initials": "NZL",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "44abf627-e7ff-4e62-a173-b8fed3136e10",
+      "slug": "fc-celeste",
+      "name": "FC Celeste",
+      "initials": "FC",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "0da40d35-ec28-4084-bd29-2ef1d154f903",
+      "slug": "nt-cape-verde",
+      "name": "Cape Verde",
+      "initials": "CPV",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "43ac2b18-c69b-4119-8dc1-f9523274ec39",
+      "slug": "nt-saudi-arabia",
+      "name": "Saudi Arabia",
+      "initials": "KSA",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "40231963-be78-45d4-af8c-0b2b3c43c59b",
+      "slug": "nt-uruguay",
+      "name": "Uruguay",
+      "initials": "URU",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "2a378e0b-4347-4740-8f67-e100153ee7da",
+      "slug": "nt-france",
+      "name": "France",
+      "initials": "FRA",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "c7c3fcd5-2ed1-4054-b119-a0ec9001dfbc",
+      "slug": "nt-senegal",
+      "name": "Senegal",
+      "initials": "SEN",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "1f1a9620-7d95-4286-a5d8-5b35289e9673",
+      "slug": "nt-norway",
+      "name": "Norway",
+      "initials": "NOR",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "069ecca5-0fa6-4799-8bc5-aa111836533a",
+      "slug": "nt-iraq",
+      "name": "Iraq",
+      "initials": "IRQ",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "f7c39705-f918-480d-a082-f3351533c9ea",
+      "slug": "nt-argentina",
+      "name": "Argentina",
+      "initials": "ARG",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "292a09cf-d102-4ca0-9aad-809ac4f4c9e5",
+      "slug": "nt-algeria",
+      "name": "Algeria",
+      "initials": "ALG",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "3daab3c3-7cee-4983-beef-e3fbdad84d48",
+      "slug": "nt-austria",
+      "name": "Austria",
+      "initials": "AUT",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "abca9efb-20cd-4f8a-99b9-9825e42eac3f",
+      "slug": "nt-jordan",
+      "name": "Jordan",
+      "initials": "JOR",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "b32311bf-340c-49ba-a1ec-5e5c2328a05d",
+      "slug": "nt-portugal",
+      "name": "Portugal",
+      "initials": "POR",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "0a605fc9-4f46-4f3f-acab-1ee347fd5f56",
+      "slug": "nt-dr-congo",
+      "name": "DR Congo",
+      "initials": "COD",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "bea4a4f6-be57-4240-97d4-9b0bdbe4866d",
+      "slug": "nt-uzbekistan",
+      "name": "Uzbekistan",
+      "initials": "UZB",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "4d22aa8e-f37e-40d8-9fe6-d44907ef1fef",
+      "slug": "nt-colombia",
+      "name": "Colombia",
+      "initials": "COL",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "2c038dd5-2a9d-4535-849c-e3afa87d0de1",
+      "slug": "nt-england",
+      "name": "England",
+      "initials": "ENG",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "ff39fa68-10ef-4d34-8892-fc135681abd4",
+      "slug": "nt-croatia",
+      "name": "Croatia",
+      "initials": "CRO",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "2d210967-45f9-4ffa-bef4-a57158375123",
+      "slug": "nt-ghana",
+      "name": "Ghana",
+      "initials": "GHA",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "691de83b-205f-45f7-ad30-f0b5cf2e883a",
+      "slug": "nt-panama",
+      "name": "Panama",
+      "initials": "PAN",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "ebce57d9-5d87-40e9-bbbf-bac7e88b9598",
+      "slug": "mines-united-zm",
+      "name": "Mines United FC",
+      "initials": "MUF",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "7291f944-ef39-4f51-bae9-6ac9df9ee2af",
+      "slug": "maestro-united-zm",
+      "name": "Maestro United Zambia",
+      "initials": "MUZ",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "22d3db69-9455-4471-9c34-309172f6ec07",
+      "slug": "kansanshi-dynamos",
+      "name": "Kansanshi Dynamos FC",
+      "initials": "KDF",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "7273ba71-94a8-4a70-8418-267f5563b5a3",
+      "slug": "zanaco-fc",
+      "name": "Zanaco FC",
+      "initials": "ZF",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "4fe48ea9-ee87-4641-bf1b-09353436c15e",
+      "slug": "red-arrows-zm",
+      "name": "Red Arrows FC",
+      "initials": "RAF",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "3dcd17c5-d023-4fef-aaa1-5251393bfb27",
+      "slug": "fc-les-aigles-du-congo",
+      "name": "FC Les Aigles du Congo",
+      "initials": "FLAD",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "ac05d700-a868-4cb0-9e6e-c8231133ddb2",
+      "slug": "lubumbashi-sport",
+      "name": "Lubumbashi Sport",
+      "initials": "LS",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "6e9916b6-1b25-4e15-9934-cf0fe06b45a1",
+      "slug": "as-new-soger",
+      "name": "AS New Soger",
+      "initials": "ANS",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "3d415115-2158-4e2f-8633-33199b76de71",
+      "slug": "malole-fc",
+      "name": "Malole FC",
+      "initials": "MF",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "2ea9fc48-11fe-4e2a-aad9-46a8bffe064f",
+      "slug": "js-groupe-bazano",
+      "name": "JS Groupe Bazano",
+      "initials": "JGB",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "d525bd8d-e4d2-459f-8df0-b2ab8d008c69",
+      "slug": "us-panda-b52",
+      "name": "US Panda B52",
+      "initials": "UPB",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "ec50dcd9-a499-45ee-be74-ca467c71f4a7",
+      "slug": "etoile-de-kivu",
+      "name": "Etoile de Kivu",
+      "initials": "EDK",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "ff72c1fb-c8dc-495a-8f8a-0d0473f9bbc8",
+      "slug": "dc-motema-pembe",
+      "name": "DC Motema Pembe",
+      "initials": "DCMP",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "a1a01306-082d-4fc3-9561-539390b44fa3",
+      "slug": "st-eloi-lupopo",
+      "name": "Saint-Eloi Lupopo",
+      "initials": "SEL",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "94b5f5b0-ff00-4061-ba9c-f66ea5098257",
+      "slug": "as-dauphins-noirs",
+      "name": "AS Dauphins Noirs",
+      "initials": "ADN",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "29641cd5-f3df-402d-b497-d84d0ad16673",
+      "slug": "fc-blessing",
+      "name": "FC Blessing",
+      "initials": "FB",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "0f24f077-7822-4edb-b833-114e21b0d632",
+      "slug": "fc-simba-kolwezi",
+      "name": "FC Simba Kolwezi",
+      "initials": "FSK",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "eae9e651-0f95-4897-a526-7b0ef75bd6ea",
+      "slug": "paris-saint-germain",
+      "name": "Paris Saint-Germain",
+      "initials": "PSG",
+      "aliases": [
+        "PSG",
+        "Paris Saint-Germain",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/ligue1-official/l1-championship-club-2026-13.png",
+        "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_13_128x128_71452974055596a4cdae24a2112ead57.png",
+        "l1_championship_club_2026_13"
+      ],
+      "asset": "ligue1-official-l1-championship-club-2026-13.png",
+      "source": "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_13_128x128_71452974055596a4cdae24a2112ead57.png",
+      "sha256": "1581a8f9d29f652c9186109dad1e2dfc043a8ffe1960265e38ea3ab4621a2604"
+    },
+    {
+      "id": "ea4ebf89-0a28-407d-9319-164f818b463e",
+      "slug": "arsenal",
+      "name": "Arsenal",
+      "initials": "ARS",
+      "aliases": [
+        "Arsenal",
+        "arsenal",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/arsenal.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/3.svg"
+      ],
+      "asset": "premier-league-official-arsenal.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/3.svg",
+      "sha256": "34846859662c2f27d51e0880d82998cbe15edbaaf265df191e18a050cb8b6216"
+    },
+    {
+      "id": "cfc6aa21-484b-4874-a360-c7038c90c485",
+      "slug": "liverpool",
+      "name": "Liverpool",
+      "initials": "LIV",
+      "aliases": [
+        "Liverpool",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/liverpool.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/14.svg",
+        "liverpool"
+      ],
+      "asset": "premier-league-official-liverpool.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/14.svg",
+      "sha256": "546343327ca8f2c5006eb2498016fb3d58f18d35a21958507281eeef20f01363"
+    },
+    {
+      "id": "41452a72-357e-4af0-ab66-9017643e9611",
+      "slug": "crystal-palace",
+      "name": "Crystal Palace",
+      "initials": "CRY",
+      "aliases": [
+        "Crystal Palace",
+        "crystal-palace",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/crystal-palace.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/31.svg"
+      ],
+      "asset": "premier-league-official-crystal-palace.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/31.svg",
+      "sha256": "e40fc09ca61fa76545c4bd0c99acc6fc7d3f7339ca1d5344a76dc68cb803be7f"
+    },
+    {
+      "id": "e4d968b1-6374-4923-8d3d-11eb54c9b2e8",
+      "slug": "west-ham-united",
+      "name": "West Ham United",
+      "initials": "WHU",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "9fcc9d3b-c667-4ba7-bdbf-62459f62cea1",
+      "slug": "everton",
+      "name": "Everton",
+      "initials": "EVE",
+      "aliases": [
+        "Everton",
+        "everton",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/everton.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/11.svg"
+      ],
+      "asset": "premier-league-official-everton.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/11.svg",
+      "sha256": "40a0fb8285317d6b3f3a34e9a6d9b0f2a5eb3226993e65a500748c4e9483decc"
+    },
+    {
+      "id": "8d950926-157b-410a-8296-39e6ac6807bf",
+      "slug": "wolverhampton-wanderers",
+      "name": "Wolverhampton Wanderers",
+      "initials": "WOL",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "631c0b40-57ae-4e16-ac45-5e87dead291b",
+      "slug": "tottenham-hotspur",
+      "name": "Tottenham Hotspur",
+      "initials": "TOT",
+      "aliases": [
+        "Tottenham Hotspur",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/tottenham-hotspur.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/6.svg",
+        "tottenham-hotspur"
+      ],
+      "asset": "premier-league-official-tottenham-hotspur.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/6.svg",
+      "sha256": "ad83cf2a2c7508445dd8e398ab16e767002c21e5945e84bd49782370e19de3ad"
+    },
+    {
+      "id": "92a18564-3a58-4a1c-8423-9e2d22b24f55",
+      "slug": "brentford",
+      "name": "Brentford",
+      "initials": "BRE",
+      "aliases": [
+        "Brentford",
+        "brentford",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/brentford.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/94.svg"
+      ],
+      "asset": "premier-league-official-brentford.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/94.svg",
+      "sha256": "f785147e395b80f9f63f1d8015a70cc39978c208745a585fa5c8dd23aed68045"
+    },
+    {
+      "id": "9a37485b-bce4-454e-8f5e-9b3b74e72c58",
+      "slug": "fulham",
+      "name": "Fulham",
+      "initials": "FUL",
+      "aliases": [
+        "Fulham",
+        "fulham",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/fulham.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/54.svg"
+      ],
+      "asset": "premier-league-official-fulham.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/54.svg",
+      "sha256": "8686cfca58f1bd2243bc55bc96a5886d2850188efe83df1835003595aed75956"
+    },
+    {
+      "id": "8d5bcd1b-65e4-4a5d-bc91-76df9d7d3606",
+      "slug": "aston-villa",
+      "name": "Aston Villa",
+      "initials": "AVL",
+      "aliases": [
+        "Aston Villa",
+        "aston-villa",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/aston-villa.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/7.svg"
+      ],
+      "asset": "premier-league-official-aston-villa.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/7.svg",
+      "sha256": "7f3c149342283f285bceb557eb94c47a8e0f0cfc8b0e25cccf3c3478cd690d52"
+    },
+    {
+      "id": "cd9c7686-0635-4742-9824-79c7629da7ef",
+      "slug": "sunderland",
+      "name": "Sunderland",
+      "initials": "SUN",
+      "aliases": [
+        "Sunderland",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/sunderland.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/56.svg",
+        "sunderland"
+      ],
+      "asset": "premier-league-official-sunderland.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/56.svg",
+      "sha256": "1ed05c0fb1391f1dfcfe60440b17d1bd18f1b7c75d25dd72035946448b918992"
+    },
+    {
+      "id": "c06a54be-5485-4c2a-aa86-48220550c40c",
+      "slug": "nottingham-forest",
+      "name": "Nottingham Forest",
+      "initials": "NFO",
+      "aliases": [
+        "Nottingham Forest",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/nottingham-forest.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/17.svg",
+        "nottingham-forest"
+      ],
+      "asset": "premier-league-official-nottingham-forest.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/17.svg",
+      "sha256": "c3bc36f713d19db7aa55e46bffa51220b23ecdb77977e02e4017c2b1ea5eb173"
+    },
+    {
+      "id": "e0e7e2c6-f1b4-48e0-9d1c-002815f2fe06",
+      "slug": "chelsea",
+      "name": "Chelsea",
+      "initials": "CHE",
+      "aliases": [
+        "Chelsea",
+        "chelsea",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/chelsea.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/8.svg"
+      ],
+      "asset": "premier-league-official-chelsea.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/8.svg",
+      "sha256": "6becc4017666ea018c50d1ea9fab51c21a0b6019deffe8971e7eec26f1108739"
+    },
+    {
+      "id": "4f412b32-7178-48de-88ca-8132771aa43d",
+      "slug": "afc-bournemouth",
+      "name": "AFC Bournemouth",
+      "initials": "BOU",
+      "aliases": [
+        "AFC Bournemouth",
+        "Bournemouth",
+        "afc-bournemouth",
+        "bournemouth",
+        "ee4b0a3a-5084-4620-b2bf-a6bec99d043f",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/afc-bournemouth.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/91.svg"
+      ],
+      "asset": "premier-league-official-afc-bournemouth.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/91.svg",
+      "sha256": "3815981d1993309836ba0ef09cad8bda57becd61530e6449ffad14ca08c89d43"
+    },
+    {
+      "id": "b40927cb-634b-4b0c-bd4c-d4a1382a2b2c",
+      "slug": "leeds-united",
+      "name": "Leeds United",
+      "initials": "LEE",
+      "aliases": [
+        "Leeds United",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/leeds-united.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/2.svg",
+        "leeds-united"
+      ],
+      "asset": "premier-league-official-leeds-united.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/2.svg",
+      "sha256": "55cf765eb2bd722f35a5fa5714a55f90912222d96dc9ef0c24ab7fbb33fa7c0c"
+    },
+    {
+      "id": "6a388abe-ed19-4142-ac14-1ada2cc8c221",
+      "slug": "burnley",
+      "name": "Burnley",
+      "initials": "BUR",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "c1814d9f-69a4-4109-b13e-c9f7f4484643",
+      "slug": "rcd-mallorca",
+      "name": "RCD Mallorca",
+      "initials": "MAL",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "6e777a13-d382-49cf-aeac-d1b6221b7ffa",
+      "slug": "athletic-club",
+      "name": "Athletic Club",
+      "initials": "ATH",
+      "aliases": [
+        "2066ab62-beb8-4b75-a608-5bdd432e9d50",
+        "3",
+        "ATH",
+        "Athletic Bilbao",
+        "Athletic Club",
+        "athletic-bilbao",
+        "https://assets.laliga.com/assets/2019/06/07/medium/athletic.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/3.png"
+      ],
+      "asset": "laliga-official-3.png",
+      "source": "https://assets.laliga.com/assets/2019/06/07/medium/athletic.png",
+      "sha256": "ab6e8befd691a039ddda4f07fc63c97b5d656711a1579a673c41d45a1bf9ba0d"
+    },
+    {
+      "id": "53c6c6c6-5933-46d9-a572-063e2e122c6d",
+      "slug": "rayo-vallecano",
+      "name": "Rayo Vallecano",
+      "initials": "RAY",
+      "aliases": [
+        "14",
+        "RAY",
+        "Rayo Vallecano",
+        "https://assets.laliga.com/assets/2023/04/27/medium/57d9950a8745ead226c04d37235c0786.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/14.png"
+      ],
+      "asset": "laliga-official-14.png",
+      "source": "https://assets.laliga.com/assets/2023/04/27/medium/57d9950a8745ead226c04d37235c0786.png",
+      "sha256": "ef15e51c7ca203896ae0f3df1ba9431b42530f9764c64f26f0b3a3927434a7b3"
+    },
+    {
+      "id": "4b641ed9-87ae-4a76-8fd7-33dd5eec8971",
+      "slug": "rayon-sports",
+      "name": "Rayon Sports",
+      "initials": "RAY",
+      "aliases": [
+        "24",
+        "903b6715-d0ec-45a2-af3a-f893d05b1f1b",
+        "Rayon",
+        "Rayon Sports FC",
+        "Rayon Sports Football Club",
+        "rayon-sports-fc",
+        "rayon_sports",
+        "rayon_sports_rw"
+      ],
+      "asset": "rayon-sports.png",
+      "source": "https://rwandapremierleague.rw/",
+      "sha256": "0ef8c691c97a76d7dc36ef7a3fbe02367b23a73f9478c742c5b0cfead699b963"
+    },
+    {
+      "id": "a33a91e2-dbf6-4401-b67b-b4ac1771701d",
+      "slug": "as-kigali",
+      "name": "AS Kigali",
+      "initials": "ASK",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "6dcff386-a39b-4941-9fd6-16071252ddfd",
+      "slug": "musanze-fc",
+      "name": "Musanze FC",
+      "initials": "MUS",
+      "aliases": [],
+      "asset": "musanze-fc.png",
+      "source": "https://rwandapremierleague.rw/",
+      "sha256": "20ece1e669c5d216bdc9a4e14f7edb50d1bbc5a0411ee11a26a743671b9ed3fa"
+    },
+    {
+      "id": "e0922912-a4bd-43c2-b8c7-4e1f56566cf9",
+      "slug": "police-fc",
+      "name": "Police FC",
+      "initials": "POL",
+      "aliases": [
+        "Police"
+      ],
+      "asset": "police-fc.png",
+      "source": "https://rwandapremierleague.rw/",
+      "sha256": "529e2014bd0fa01e629be63adee82afa3676ae942e2897327814bef56fe07048"
+    },
+    {
+      "id": "dcca0022-86e6-418e-ad40-69994773f2aa",
+      "slug": "gasogi-united",
+      "name": "Gasogi United",
+      "initials": "GAS",
+      "aliases": [],
+      "asset": "gasogi-united.png",
+      "source": "https://rwandapremierleague.rw/",
+      "sha256": "054166a0b886b2c11e8f69a0f7a927fa6993d44a536fa1e5b85e4fa97d27e4b5"
+    },
+    {
+      "id": "a58956ba-0509-473e-8c2e-993e6fd1d9b9",
+      "slug": "gorilla-fc",
+      "name": "Gorilla FC",
+      "initials": "GOR",
+      "aliases": [],
+      "asset": "gorilla-fc.png",
+      "source": "https://rwandapremierleague.rw/",
+      "sha256": "26ee86d831aebb7cc75b5b03d2e8672d1f27cf96d7dae21e292abaf736329764"
+    },
+    {
+      "id": "70676279-8387-4597-ac6f-d1639849722b",
+      "slug": "mukura-vs",
+      "name": "Mukura VS",
+      "initials": "MUK",
+      "aliases": [
+        "Mukura Victory Sports",
+        "ddd6271c-e605-4cc0-ae36-fec32332e8c4",
+        "mukura-victory-sports"
+      ],
+      "asset": "mukura-vs.png",
+      "source": "https://rwandapremierleague.rw/",
+      "sha256": "d4c9c299027ac71e25798d36c40932f9aac55678cb12a93d988bd852c2b69a99"
+    },
+    {
+      "id": "d43968cb-f5ee-45e9-9f24-04dfa4a7f0c6",
+      "slug": "etincelles-fc",
+      "name": "Etincelles FC",
+      "initials": "ETI",
+      "aliases": [],
+      "asset": "etincelles-fc.png",
+      "source": "https://rwandapremierleague.rw/",
+      "sha256": "1fecbacfb0cff120c552145dfecd5be28984ba913025bc1ee78f90a885e5daa7"
+    },
+    {
+      "id": "14aaf92c-ea33-4fb7-be0a-bff67abc5868",
+      "slug": "gicumbi-fc",
+      "name": "Gicumbi FC",
+      "initials": "GIC",
+      "aliases": [],
+      "asset": "gicumbi-fc.png",
+      "source": "https://rwandapremierleague.rw/",
+      "sha256": "eb4325b60b95b30c0738ea9efd87dd3247b69913027a0058a8ac8f7404da7468"
+    },
+    {
+      "id": "9c3cb09e-0878-421b-9213-b1d07e9df97b",
+      "slug": "bugesera-fc",
+      "name": "Bugesera FC",
+      "initials": "BUG",
+      "aliases": [],
+      "asset": "bugesera-fc.png",
+      "source": "https://rwandapremierleague.rw/",
+      "sha256": "3d5a3a50b08214f2b6335078830835e0c500ba4532ec5eaef9de93af6e6e118e"
+    },
+    {
+      "id": "6cd5cf35-9ce0-45c5-8a12-df9fa2d98015",
+      "slug": "kiyovu-sports",
+      "name": "Kiyovu Sports",
+      "initials": "KIY",
+      "aliases": [],
+      "asset": "kiyovu-sports.png",
+      "source": "https://rwandapremierleague.rw/",
+      "sha256": "e047f1b287e859a0af71ce792866a3146f31363882d693e139263d94c9d4fe33"
+    },
+    {
+      "id": "3fb62c68-7878-4a16-9523-5c5334e3d464",
+      "slug": "tp-mazembe",
+      "name": "TP Mazembe",
+      "initials": "MAZ",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "24053ac7-877d-42f6-b341-66a7534f0396",
+      "slug": "as-vita-club",
+      "name": "AS Vita Club",
+      "initials": "VIT",
+      "aliases": [
+        "6",
+        "AS Vita",
+        "Vita Club",
+        "as_vita",
+        "as_vita_cd"
+      ],
+      "asset": "as-vita.png",
+      "source": "https://asvitaclub.info/about-us/",
+      "sha256": "b030acd7d7139568f9fa0517b4b7d0ee2c0b580e5b929382714c658b8a4e17db"
+    },
+    {
+      "id": "e9ad1665-ee5c-4eb3-a12b-6273309e18d6",
+      "slug": "saint-eloi-lupopo",
+      "name": "Saint Eloi Lupopo",
+      "initials": "LUP",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "ca4da5d5-9648-4be3-84ae-4b2fe91f9c4b",
+      "slug": "cs-don-bosco",
+      "name": "CS Don Bosco",
+      "initials": "DON",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "1e430304-221c-45c7-8e9e-bd84d960bb63",
+      "slug": "les-aigles-du-congo",
+      "name": "Les Aigles du Congo",
+      "initials": "AIG",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "4b130e08-d9e3-40b1-92d5-603cafd6c6ab",
+      "slug": "celeste-fc",
+      "name": "Celeste FC",
+      "initials": "CEL",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "868a4f90-4328-4080-adb4-5770fb39922d",
+      "slug": "as-simba",
+      "name": "AS Simba",
+      "initials": "SIM",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "04ae2510-667b-4d41-9bef-202b8d4698f9",
+      "slug": "as-maniema-union",
+      "name": "AS Maniema Union",
+      "initials": "MAN",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "46f6931d-b2a3-4e4f-9176-978a0d503631",
+      "slug": "zesco-united",
+      "name": "ZESCO United",
+      "initials": "ZES",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "a81cd7ac-d995-413b-aa4e-b252b6c1da6c",
+      "slug": "power-dynamos",
+      "name": "Power Dynamos",
+      "initials": "POW",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "ffff4295-22b5-4438-867c-7fc83b99941f",
+      "slug": "nkana-fc",
+      "name": "Nkana FC",
+      "initials": "NKA",
+      "aliases": [
+        "26",
+        "Nkana",
+        "nkana",
+        "nkana_zm"
+      ],
+      "asset": "nkana.png",
+      "source": "https://nkanafc.online/",
+      "asset_source": "https://nkanafc.online/__l5e/assets-v1/12da8cfe-2121-4a0d-8e8b-6f73ccca8251/nkana-logo.png",
+      "sha256": "14940e4f8ff1eae8ba299926d99956e306113b2ca4de740f20e235dec306782d"
+    },
+    {
+      "id": "17629a20-5777-46e1-8b3c-5d8efc421636",
+      "slug": "green-buffaloes",
+      "name": "Green Buffaloes",
+      "initials": "GBF",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "80e799f7-9f88-4fad-826f-8d5bcce85ad2",
+      "slug": "green-eagles",
+      "name": "Green Eagles",
+      "initials": "GEA",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "23dfc696-c72e-4734-ab12-62c0ec2c9a7b",
+      "slug": "napsa-stars",
+      "name": "NAPSA Stars",
+      "initials": "NAP",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "18cb98c8-05a9-471c-87f7-de0cc8ff371e",
+      "slug": "kabwe-warriors",
+      "name": "Kabwe Warriors",
+      "initials": "KAB",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "6eca293f-9d30-40d1-be5b-57953772edda",
+      "slug": "nkwazi-fc",
+      "name": "Nkwazi FC",
+      "initials": "NKW",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "d292c22d-cf91-4b20-850f-b9a471b89676",
+      "slug": "mufulira-wanderers",
+      "name": "Mufulira Wanderers",
+      "initials": "MUF",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "e55bf2e1-31c4-44f0-9901-fa3c0cf03beb",
+      "slug": "nchanga-rangers",
+      "name": "Nchanga Rangers",
+      "initials": "NCH",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "56c68251-2ef2-41a1-9310-5d3e018f9d0c",
+      "slug": "mutondo-stars",
+      "name": "Mutondo Stars",
+      "initials": "MUT",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "39d71431-c734-4dd7-9a2b-749862234716",
+      "slug": "mines-united",
+      "name": "Mines United",
+      "initials": "MIN",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "f5aa96cb-daa9-43e4-9101-24f907b8b4e2",
+      "slug": "gor-mahia",
+      "name": "Gor Mahia",
+      "initials": "GOR",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "4d0a0a1a-4299-410a-b952-268a5d85a1da",
+      "slug": "afc-leopards",
+      "name": "AFC Leopards",
+      "initials": "LEO",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "ad801062-8151-4185-96dd-abbee15cceb9",
+      "slug": "tusker-fc",
+      "name": "Tusker FC",
+      "initials": "TUS",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "3a554cfd-98ef-4e45-8882-6afd3a5d627d",
+      "slug": "bandari-fc",
+      "name": "Bandari FC",
+      "initials": "BAN",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "243efe3d-a9ee-4f5f-9ece-dbf722d8c459",
+      "slug": "kcb-fc",
+      "name": "KCB FC",
+      "initials": "KCB",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "fd1d08e3-d593-4172-a775-d52bf9c4fb59",
+      "slug": "kariobangi-sharks",
+      "name": "Kariobangi Sharks",
+      "initials": "KAR",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "4f92afdd-caad-45ec-91da-d68041de7154",
+      "slug": "ulinzi-stars",
+      "name": "Ulinzi Stars",
+      "initials": "ULI",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "28a56e04-899b-489c-9b7c-529cd7805648",
+      "slug": "posta-rangers",
+      "name": "Posta Rangers",
+      "initials": "POS",
+      "aliases": [],
+      "asset": null,
+      "source": null
+    },
+    {
+      "id": "rpl:etoile-de-l-est",
+      "slug": "etoile-de-l-est",
+      "name": "Etoile De L Est",
+      "initials": "EDLE",
+      "aliases": [],
+      "asset": "etoile-de-l-est.png",
+      "source": "https://rwandapremierleague.rw/",
+      "sha256": "21be7149a873c3af080c0dfe457c4c8f7d2d1ebc96e792821a10ccb8757c31f4"
+    },
+    {
+      "id": "rpl:marine-fc",
+      "slug": "marine-fc",
+      "name": "Marine Fc",
+      "initials": "MAR",
+      "aliases": [
+        "Marine",
+        "Marine FC",
+        "Marines",
+        "Marines FC",
+        "da2bd395-ebd0-4eea-bc0b-c71dc2e75e96",
+        "marine-fc-rw"
+      ],
+      "asset": "marine-fc.png",
+      "source": "https://rwandapremierleague.rw/",
+      "sha256": "603d8a1843c76db9c8706ca0e95d76fbb1e311aa8828f1511bb3afcd500bcfdf"
+    },
+    {
+      "id": "rpl:sunrise",
+      "slug": "sunrise",
+      "name": "Sunrise",
+      "initials": "S",
+      "aliases": [],
+      "asset": "sunrise.png",
+      "source": "https://rwandapremierleague.rw/",
+      "sha256": "52ce72e7c04f868235401577feeae84562b0121a1f31f3ba09330a1979420c24"
+    },
+    {
+      "id": "rpl:kigali-fc",
+      "slug": "kigali-fc",
+      "name": "Kigali Fc",
+      "initials": "KF",
+      "aliases": [],
+      "asset": "kigali-fc.png",
+      "source": "https://rwandapremierleague.rw/",
+      "sha256": "9cbac35b35ba10420dfa2d36bee3747353cb62ed280a65392cc7895c67d8add2"
+    },
+    {
+      "id": "rpl:al-merrikh-sc",
+      "slug": "al-merrikh-sc",
+      "name": "Al Merrikh Sc",
+      "initials": "AMS",
+      "aliases": [],
+      "asset": "al-merrikh-sc.png",
+      "source": "https://rwandapremierleague.rw/",
+      "sha256": "76eba27da0fcb7ecfa98361121a86dff23af83d744a179c2035fa6d4af2b7931"
+    },
+    {
+      "id": "rpl:al-hilal-sc",
+      "slug": "al-hilal-sc",
+      "name": "Al Hilal Sc",
+      "initials": "AHS",
+      "aliases": [],
+      "asset": "al-hilal-sc.png",
+      "source": "https://rwandapremierleague.rw/",
+      "sha256": "b24ef605f357df21eba55e6d0ad786c475238f9542b5d339109ddc6add4fcdb2"
+    },
+    {
+      "id": "club:44",
+      "slug": "vitalo",
+      "name": "Vital'O FC",
+      "initials": "VFC",
+      "aliases": [
+        "44",
+        "Vital'O",
+        "Vitalo",
+        "Vital’O FC",
+        "vitalo_bi"
+      ],
+      "asset": "vitalo.png",
+      "source": "https://ffb.bi/joomsport_team/vitalo-fc/",
+      "sha256": "4998b34ac3966ddc9abeb1d02fb74c9f8eac947bdb7f1eed8b635980a8a119e4"
+    },
+    {
+      "id": "bundesliga-official:DFL-CLU-00000G",
+      "slug": "bundesliga-official-DFL-CLU-00000G",
+      "name": "FC Bayern München",
+      "initials": "FBMN",
+      "aliases": [
+        "Bayern",
+        "Bayern Munich",
+        "DFL-CLU-00000G",
+        "FC Bayern München",
+        "ad03c614-d72b-46a2-8881-0f99873bdb9d",
+        "bayern-munich",
+        "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-00000G.svg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/bundesliga-official/dfl-clu-00000g.svg"
+      ],
+      "asset": "bundesliga-official-dfl-clu-00000g.svg",
+      "source": "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-00000G.svg",
+      "sha256": "fe1e059956ddc61feec68dd4aeee2eafd18a146af8473b6fa4c9a35378986504"
+    },
+    {
+      "id": "bundesliga-official:DFL-CLU-000004",
+      "slug": "bundesliga-official-DFL-CLU-000004",
+      "name": "Borussia Mönchengladbach",
+      "initials": "BMN",
+      "aliases": [
+        "Borussia Mönchengladbach",
+        "DFL-CLU-000004",
+        "M'gladbach",
+        "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-000004.svg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/bundesliga-official/dfl-clu-000004.svg"
+      ],
+      "asset": "bundesliga-official-dfl-clu-000004.svg",
+      "source": "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-000004.svg",
+      "sha256": "591635b97f81a4483258b9c0762619d9017cf71e45854561aad970df8951bccf"
+    },
+    {
+      "id": "bundesliga-official:DFL-CLU-000006",
+      "slug": "bundesliga-official-DFL-CLU-000006",
+      "name": "1. FSV Mainz 05",
+      "initials": "1FM0",
+      "aliases": [
+        "1. FSV Mainz 05",
+        "DFL-CLU-000006",
+        "Mainz",
+        "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-000006.svg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/bundesliga-official/dfl-clu-000006.svg"
+      ],
+      "asset": "bundesliga-official-dfl-clu-000006.svg",
+      "source": "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-000006.svg",
+      "sha256": "7175310c9ba3c48d082b16ca0ef0417fd6bffa007d1891df2ffda39e1ce10a0e"
+    },
+    {
+      "id": "bundesliga-official:DFL-CLU-00000L",
+      "slug": "bundesliga-official-DFL-CLU-00000L",
+      "name": "SC Paderborn 07",
+      "initials": "SP0",
+      "aliases": [
+        "DFL-CLU-00000L",
+        "Paderborn",
+        "SC Paderborn 07",
+        "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-00000L.svg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/bundesliga-official/dfl-clu-00000l.svg"
+      ],
+      "asset": "bundesliga-official-dfl-clu-00000l.svg",
+      "source": "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-00000L.svg",
+      "sha256": "b568c4b394b83b1af5149e166df46c1f5bf5572d59f16f7f738a8ce137d3a7bc"
+    },
+    {
+      "id": "bundesliga-official:DFL-CLU-00000V",
+      "slug": "bundesliga-official-DFL-CLU-00000V",
+      "name": "1. FC Union Berlin",
+      "initials": "1FUB",
+      "aliases": [
+        "1. FC Union Berlin",
+        "DFL-CLU-00000V",
+        "Union Berlin",
+        "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-00000V.svg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/bundesliga-official/dfl-clu-00000v.svg"
+      ],
+      "asset": "bundesliga-official-dfl-clu-00000v.svg",
+      "source": "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-00000V.svg",
+      "sha256": "16eef1b104c25f5a6f27dde730fd891629059885cd376762553acf467c34e5c9"
+    },
+    {
+      "id": "bundesliga-official:DFL-CLU-00000F",
+      "slug": "bundesliga-official-DFL-CLU-00000F",
+      "name": "Eintracht Frankfurt",
+      "initials": "EF",
+      "aliases": [
+        "DFL-CLU-00000F",
+        "Eintracht Frankfurt",
+        "Frankfurt",
+        "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-00000F.svg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/bundesliga-official/dfl-clu-00000f.svg"
+      ],
+      "asset": "bundesliga-official-dfl-clu-00000f.svg",
+      "source": "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-00000F.svg",
+      "sha256": "fbadda554b9478c540a85a269ebf7576fb881ccc2bcc4c710e4baee5241673a3"
+    },
+    {
+      "id": "bundesliga-official:DFL-CLU-000008",
+      "slug": "bundesliga-official-DFL-CLU-000008",
+      "name": "1. FC Köln",
+      "initials": "1FKL",
+      "aliases": [
+        "1. FC Köln",
+        "DFL-CLU-000008",
+        "Köln",
+        "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-000008.svg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/bundesliga-official/dfl-clu-000008.svg"
+      ],
+      "asset": "bundesliga-official-dfl-clu-000008.svg",
+      "source": "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-000008.svg",
+      "sha256": "62cb979efdb29fd851d0a5890264e4674b4ccd22b3b33aeb23573b7d4becf188"
+    },
+    {
+      "id": "bundesliga-official:DFL-CLU-000002",
+      "slug": "bundesliga-official-DFL-CLU-000002",
+      "name": "TSG Hoffenheim",
+      "initials": "TH",
+      "aliases": [
+        "DFL-CLU-000002",
+        "Hoffenheim",
+        "TSG Hoffenheim",
+        "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-000002.svg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/bundesliga-official/dfl-clu-000002.svg"
+      ],
+      "asset": "bundesliga-official-dfl-clu-000002.svg",
+      "source": "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-000002.svg",
+      "sha256": "2ac7debff648995167364b5adb919ae1510c15ab0d81bc70ca64fc5ee1cb5b22"
+    },
+    {
+      "id": "bundesliga-official:DFL-CLU-000N6L",
+      "slug": "bundesliga-official-DFL-CLU-000N6L",
+      "name": "SV Elversberg",
+      "initials": "SE",
+      "aliases": [
+        "DFL-CLU-000N6L",
+        "Elversberg",
+        "SV Elversberg",
+        "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-000N6L.svg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/bundesliga-official/dfl-clu-000n6l.svg"
+      ],
+      "asset": "bundesliga-official-dfl-clu-000n6l.svg",
+      "source": "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-000N6L.svg",
+      "sha256": "90401b4a3afcd5dbc5c7764b8ff488fa74b0dc0abe015cbdaa3a95d9c8176578"
+    },
+    {
+      "id": "bundesliga-official:DFL-CLU-00000B",
+      "slug": "bundesliga-official-DFL-CLU-00000B",
+      "name": "Bayer 04 Leverkusen",
+      "initials": "B0L",
+      "aliases": [
+        "740dc93a-85d5-4d8f-aae0-19ad0109e28c",
+        "Bayer 04 Leverkusen",
+        "Bayer Leverkusen",
+        "DFL-CLU-00000B",
+        "Leverkusen",
+        "bayer-leverkusen",
+        "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-00000B.svg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/bundesliga-official/dfl-clu-00000b.svg"
+      ],
+      "asset": "bundesliga-official-dfl-clu-00000b.svg",
+      "source": "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-00000B.svg",
+      "sha256": "7e1fdcff8b5cfbefac9f1503aaa028ac254b6b6433a24a213cafd13bcb5049ee"
+    },
+    {
+      "id": "bundesliga-official:DFL-CLU-00000C",
+      "slug": "bundesliga-official-DFL-CLU-00000C",
+      "name": "Hamburger SV",
+      "initials": "HS",
+      "aliases": [
+        "DFL-CLU-00000C",
+        "Hamburg",
+        "Hamburger SV",
+        "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-00000C.svg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/bundesliga-official/dfl-clu-00000c.svg"
+      ],
+      "asset": "bundesliga-official-dfl-clu-00000c.svg",
+      "source": "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-00000C.svg",
+      "sha256": "5738d4e7ed8ef4bce0078a55029a785c50b3701dc5b591ae65ac6b79c25c3f1d"
+    },
+    {
+      "id": "bundesliga-official:DFL-CLU-00000A",
+      "slug": "bundesliga-official-DFL-CLU-00000A",
+      "name": "Sport-Club Freiburg",
+      "initials": "SCF",
+      "aliases": [
+        "DFL-CLU-00000A",
+        "Freiburg",
+        "Sport-Club Freiburg",
+        "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-00000A.svg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/bundesliga-official/dfl-clu-00000a.svg"
+      ],
+      "asset": "bundesliga-official-dfl-clu-00000a.svg",
+      "source": "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-00000A.svg",
+      "sha256": "1f6832c0d3da34d9b11482bcebfc59610d16cf9420a003c8f06cf254babb549d"
+    },
+    {
+      "id": "bundesliga-official:DFL-CLU-00000E",
+      "slug": "bundesliga-official-DFL-CLU-00000E",
+      "name": "SV Werder Bremen",
+      "initials": "SWB",
+      "aliases": [
+        "Bremen",
+        "DFL-CLU-00000E",
+        "SV Werder Bremen",
+        "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-00000E.svg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/bundesliga-official/dfl-clu-00000e.svg"
+      ],
+      "asset": "bundesliga-official-dfl-clu-00000e.svg",
+      "source": "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-00000E.svg",
+      "sha256": "a10ef984868b7aec5b7b91ee93f85ed325fab22d18f0117e17b69520e3cb8ad6"
+    },
+    {
+      "id": "bundesliga-official:DFL-CLU-000010",
+      "slug": "bundesliga-official-DFL-CLU-000010",
+      "name": "FC Augsburg",
+      "initials": "FA",
+      "aliases": [
+        "Augsburg",
+        "DFL-CLU-000010",
+        "FC Augsburg",
+        "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-000010.svg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/bundesliga-official/dfl-clu-000010.svg"
+      ],
+      "asset": "bundesliga-official-dfl-clu-000010.svg",
+      "source": "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-000010.svg",
+      "sha256": "26bf36a7d96b260b1ef7b9e814391c72e30bab5f50622a0be498439a64c90283"
+    },
+    {
+      "id": "bundesliga-official:DFL-CLU-000009",
+      "slug": "bundesliga-official-DFL-CLU-000009",
+      "name": "FC Schalke 04",
+      "initials": "FS0",
+      "aliases": [
+        "DFL-CLU-000009",
+        "FC Schalke 04",
+        "Schalke",
+        "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-000009.svg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/bundesliga-official/dfl-clu-000009.svg"
+      ],
+      "asset": "bundesliga-official-dfl-clu-000009.svg",
+      "source": "https://assets.bundesliga.com/clublogos/DFL-SEA-0001KA/DFL-CLU-000009.svg",
+      "sha256": "1b9f37b99ea9754e5fb5aacba7326d33f0d7614dcde929fc8efe5876513ef080"
+    },
+    {
+      "id": "ligue1-official:l1_championship_club_2026_1",
+      "slug": "ligue1-official-l1_championship_club_2026_1",
+      "name": "Olympique de Marseille",
+      "initials": "OM",
+      "aliases": [
+        "OM",
+        "Olympique de Marseille",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/ligue1-official/l1-championship-club-2026-1.png",
+        "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2025_1_1_128x128_0c05c0138f105c2fb1632d16a6e5a9e8.png",
+        "l1_championship_club_2026_1"
+      ],
+      "asset": "ligue1-official-l1-championship-club-2026-1.png",
+      "source": "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2025_1_1_128x128_0c05c0138f105c2fb1632d16a6e5a9e8.png",
+      "sha256": "ebc129ee29f99cdc01abde148fb7c94e4508f5a32aeb5daf28c60ac568a091a9"
+    },
+    {
+      "id": "ligue1-official:l1_championship_club_2026_15",
+      "slug": "ligue1-official-l1_championship_club_2026_15",
+      "name": "RC Strasbourg Alsace",
+      "initials": "RSA",
+      "aliases": [
+        "RC Strasbourg Alsace",
+        "Strasbourg",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/ligue1-official/l1-championship-club-2026-15.png",
+        "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_15_128x128_b0690caabe8c7f44215d7664eed973b4.png",
+        "l1_championship_club_2026_15"
+      ],
+      "asset": "ligue1-official-l1-championship-club-2026-15.png",
+      "source": "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_15_128x128_b0690caabe8c7f44215d7664eed973b4.png",
+      "sha256": "55c35d9a0fd9161c932b74e096231ca9dd7a5c5cfcb5d2f054964b1b5da22218"
+    },
+    {
+      "id": "ligue1-official:l1_championship_club_2026_6",
+      "slug": "ligue1-official-l1_championship_club_2026_6",
+      "name": "RC Lens",
+      "initials": "RL",
+      "aliases": [
+        "RC Lens",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/ligue1-official/l1-championship-club-2026-6.png",
+        "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2026_1_6_128x128_0c59b9fd66a5c5256756a19fba1239ee.png",
+        "l1_championship_club_2026_6"
+      ],
+      "asset": "ligue1-official-l1-championship-club-2026-6.png",
+      "source": "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2026_1_6_128x128_0c59b9fd66a5c5256756a19fba1239ee.png",
+      "sha256": "e9bfd3c659010892785e728d89aff1146954f628683259191678574c19e2dd9a"
+    },
+    {
+      "id": "ligue1-official:l1_championship_club_2026_2",
+      "slug": "ligue1-official-l1_championship_club_2026_2",
+      "name": "AJ Auxerre",
+      "initials": "AA",
+      "aliases": [
+        "AJ Auxerre",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/ligue1-official/l1-championship-club-2026-2.png",
+        "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_4_2_128x128_f25b3b461b1ed57875618ac6f3ea96e8.png",
+        "l1_championship_club_2026_2"
+      ],
+      "asset": "ligue1-official-l1-championship-club-2026-2.png",
+      "source": "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_4_2_128x128_f25b3b461b1ed57875618ac6f3ea96e8.png",
+      "sha256": "9fe21611363594f45e491dcf59d32a257ea64f5827b5f2ef9a28e82434964043"
+    },
+    {
+      "id": "ligue1-official:l1_championship_club_2026_26",
+      "slug": "ligue1-official-l1_championship_club_2026_26",
+      "name": "Le Mans FC",
+      "initials": "LMF",
+      "aliases": [
+        "LE Mans FC",
+        "Le Mans FC",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/ligue1-official/l1-championship-club-2026-26.png",
+        "https://s3.eu-west-1.amazonaws.com/image.mpg/7f0c4f0c-37e4-411f-b765-fbe1b5f4732e",
+        "l1_championship_club_2026_26"
+      ],
+      "asset": "ligue1-official-l1-championship-club-2026-26.png",
+      "source": "https://s3.eu-west-1.amazonaws.com/image.mpg/7f0c4f0c-37e4-411f-b765-fbe1b5f4732e",
+      "sha256": "f5fff6342bf9fba87fe5fd6924b4e4b793a2814e99da828ae848a411395c53c1"
+    },
+    {
+      "id": "ligue1-official:l1_championship_club_2026_44",
+      "slug": "ligue1-official-l1_championship_club_2026_44",
+      "name": "Stade Brestois 29",
+      "initials": "SB2",
+      "aliases": [
+        "3d2740d4-3b2c-4bb8-952e-898f4f8ad15e",
+        "Brest",
+        "Stade Brestois",
+        "Stade Brestois 29",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/ligue1-official/l1-championship-club-2026-44.png",
+        "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_44_128x128_6e80f6db6cec2117be34cd65ab9edbd1.png",
+        "l1_championship_club_2026_44",
+        "stade-brestois"
+      ],
+      "asset": "ligue1-official-l1-championship-club-2026-44.png",
+      "source": "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_44_128x128_6e80f6db6cec2117be34cd65ab9edbd1.png",
+      "sha256": "1e06d11a8fa438e84545300cac74c327c7a3ddc3a4637bf83851c0500abe7336"
+    },
+    {
+      "id": "ligue1-official:l1_championship_club_2026_30",
+      "slug": "ligue1-official-l1_championship_club_2026_30",
+      "name": "OGC Nice",
+      "initials": "ON",
+      "aliases": [
+        "OGC Nice",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/ligue1-official/l1-championship-club-2026-30.png",
+        "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_30_128x128_eb33f30ec2a8dfbebe1f8d5b49149451.png",
+        "l1_championship_club_2026_30"
+      ],
+      "asset": "ligue1-official-l1-championship-club-2026-30.png",
+      "source": "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_30_128x128_eb33f30ec2a8dfbebe1f8d5b49149451.png",
+      "sha256": "7934842bd4e2d0589cdb27b22df2f5d1e730184940b87e7eaa0b8d0f480afa6c"
+    },
+    {
+      "id": "ligue1-official:l1_championship_club_2026_7",
+      "slug": "ligue1-official-l1_championship_club_2026_7",
+      "name": "FC Lorient",
+      "initials": "FL",
+      "aliases": [
+        "FC Lorient",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/ligue1-official/l1-championship-club-2026-7.png",
+        "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_7_128x128_3d6b3608abb5b1dfa14a5e0c138c6c9d.png",
+        "l1_championship_club_2026_7"
+      ],
+      "asset": "ligue1-official-l1-championship-club-2026-7.png",
+      "source": "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_7_128x128_3d6b3608abb5b1dfa14a5e0c138c6c9d.png",
+      "sha256": "3ccb0fe9e78b60d044e3d9156c2ce4216e31e93cf6878502ad94f53a3f3b86d2"
+    },
+    {
+      "id": "ligue1-official:l1_championship_club_2026_16",
+      "slug": "ligue1-official-l1_championship_club_2026_16",
+      "name": "Toulouse FC",
+      "initials": "TF",
+      "aliases": [
+        "Toulouse FC",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/ligue1-official/l1-championship-club-2026-16.png",
+        "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_16_128x128_a5add8c2d780e5d231b1b2732e313eeb.png",
+        "l1_championship_club_2026_16"
+      ],
+      "asset": "ligue1-official-l1-championship-club-2026-16.png",
+      "source": "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_16_128x128_a5add8c2d780e5d231b1b2732e313eeb.png",
+      "sha256": "555bea2b4a824adac16aaff9daf61e9dc489e8aceceb05314f2a4fb21524d8a8"
+    },
+    {
+      "id": "ligue1-official:l1_championship_club_2026_159",
+      "slug": "ligue1-official-l1_championship_club_2026_159",
+      "name": "Olympique Lyonnais",
+      "initials": "OL",
+      "aliases": [
+        "OL",
+        "Olympique Lyonnais",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/ligue1-official/l1-championship-club-2026-159.png",
+        "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_159_128x128_019eb4a1eab9b4c9b89829cbcbbeb1de.png",
+        "l1_championship_club_2026_159"
+      ],
+      "asset": "ligue1-official-l1-championship-club-2026-159.png",
+      "source": "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_159_128x128_019eb4a1eab9b4c9b89829cbcbbeb1de.png",
+      "sha256": "41f978c5700bc22a3475a2e2b371cf9275357953a95458020ec0c51d150021b4"
+    },
+    {
+      "id": "ligue1-official:l1_championship_club_2026_33",
+      "slug": "ligue1-official-l1_championship_club_2026_33",
+      "name": "Estac Troyes",
+      "initials": "ET",
+      "aliases": [
+        "Estac Troyes",
+        "Troyes",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/ligue1-official/l1-championship-club-2026-33.png",
+        "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_4_33_128x128_fda89ec63ce6cd3429cf0d4c366bddee.png",
+        "l1_championship_club_2026_33"
+      ],
+      "asset": "ligue1-official-l1-championship-club-2026-33.png",
+      "source": "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_4_33_128x128_fda89ec63ce6cd3429cf0d4c366bddee.png",
+      "sha256": "aef19c65617bff12d1ebfdeabc58d92ddf81c767db42da342d459f763303c1bf"
+    },
+    {
+      "id": "ligue1-official:l1_championship_club_2026_90",
+      "slug": "ligue1-official-l1_championship_club_2026_90",
+      "name": "Paris FC",
+      "initials": "PF",
+      "aliases": [
+        "Paris FC",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/ligue1-official/l1-championship-club-2026-90.png",
+        "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_4_90_128x128_d90ab29bf86df11b3190baad3ffb3d1a.png",
+        "l1_championship_club_2026_90"
+      ],
+      "asset": "ligue1-official-l1-championship-club-2026-90.png",
+      "source": "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_4_90_128x128_d90ab29bf86df11b3190baad3ffb3d1a.png",
+      "sha256": "2a0ffe324ebc9f067e49372eccd19b489a2359ed369e3049eb7e3142dd1347cd"
+    },
+    {
+      "id": "ligue1-official:l1_championship_club_2026_37",
+      "slug": "ligue1-official-l1_championship_club_2026_37",
+      "name": "Angers SCO",
+      "initials": "AS",
+      "aliases": [
+        "Angers SCO",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/ligue1-official/l1-championship-club-2026-37.png",
+        "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_4_37_128x128_22f933b61100266bf7f510aad9b5ad28.png",
+        "l1_championship_club_2026_37"
+      ],
+      "asset": "ligue1-official-l1-championship-club-2026-37.png",
+      "source": "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_4_37_128x128_22f933b61100266bf7f510aad9b5ad28.png",
+      "sha256": "cd996a7923022b309fe427c66321df3329fe71618d0db3e47d87110dbd367838"
+    },
+    {
+      "id": "ligue1-official:l1_championship_club_2026_158",
+      "slug": "ligue1-official-l1_championship_club_2026_158",
+      "name": "LOSC Lille",
+      "initials": "LOSC",
+      "aliases": [
+        "2066f7d0-ea07-4f9c-b21c-ed5884f151a5",
+        "LOSC",
+        "LOSC Lille",
+        "Lille OSC",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/ligue1-official/l1-championship-club-2026-158.png",
+        "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_158_128x128_7bf9576cddda33d2c1ebd966f44779d3.png",
+        "l1_championship_club_2026_158",
+        "lille"
+      ],
+      "asset": "ligue1-official-l1-championship-club-2026-158.png",
+      "source": "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_158_128x128_7bf9576cddda33d2c1ebd966f44779d3.png",
+      "sha256": "73227d3a54714557aa8133a2db8fe3c6886a3a84b04e35f6e315509a5ea70fea"
+    },
+    {
+      "id": "ligue1-official:l1_championship_club_2026_5",
+      "slug": "ligue1-official-l1_championship_club_2026_5",
+      "name": "Havre Athletic Club",
+      "initials": "HAC",
+      "aliases": [
+        "Havre AC",
+        "Havre Athletic Club",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/ligue1-official/l1-championship-club-2026-5.png",
+        "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_5_128x128_08ea6f21e63bbc926a6b2e99a54d66b9.png",
+        "l1_championship_club_2026_5"
+      ],
+      "asset": "ligue1-official-l1-championship-club-2026-5.png",
+      "source": "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_5_128x128_08ea6f21e63bbc926a6b2e99a54d66b9.png",
+      "sha256": "ebd39c1d00739f8796bff20d8fa31bb97cf3da8b647b4b7c853b7e2ed7d0c329"
+    },
+    {
+      "id": "ligue1-official:l1_championship_club_2026_14",
+      "slug": "ligue1-official-l1_championship_club_2026_14",
+      "name": "Stade Rennais FC",
+      "initials": "SRF",
+      "aliases": [
+        "Rennes",
+        "Stade Rennais FC",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/ligue1-official/l1-championship-club-2026-14.png",
+        "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_14_128x128_e7371f8a913a19713876abf7cb92e131.png",
+        "l1_championship_club_2026_14"
+      ],
+      "asset": "ligue1-official-l1-championship-club-2026-14.png",
+      "source": "https://s3.eu-west-1.amazonaws.com/image.mpg/assets/clubs/logo/2023_1_14_128x128_e7371f8a913a19713876abf7cb92e131.png",
+      "sha256": "977b2c2016ec77e22b5d5441f3a90c41152adb0ce501cc6760ac3ec75004f51e"
+    },
+    {
+      "id": "serie-a-official:serie-a::Football_Team::b7421caff23448c49134fa4f9095ee09",
+      "slug": "serie-a-official-serie-a::Football_Team::b7421caff23448c49134fa4f9095ee09",
+      "name": "Inter",
+      "initials": "INT",
+      "aliases": [
+        "INT",
+        "Inter",
+        "Inter Milan",
+        "e76eefc8-9c4c-44e0-b626-8f9ed6360797",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-b7421caff23448c49134fa4f9095ee09.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/b7421caff23448c49134fa4f9095ee09.webp",
+        "inter-milan",
+        "serie-a::Football_Team::b7421caff23448c49134fa4f9095ee09"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-b7421caff23448c49134fa4f9095ee09.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/b7421caff23448c49134fa4f9095ee09.webp",
+      "sha256": "6686a0a8f78710875be2bd34be35262911f873e9dd93ad559c718423e813ec86"
+    },
+    {
+      "id": "serie-a-official:serie-a::Football_Team::9ba470f39580450fac7654956ba574fa",
+      "slug": "serie-a-official-serie-a::Football_Team::9ba470f39580450fac7654956ba574fa",
+      "name": "Monza",
+      "initials": "MON",
+      "aliases": [
+        "MON",
+        "Monza",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-9ba470f39580450fac7654956ba574fa.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/9ba470f39580450fac7654956ba574fa.webp",
+        "serie-a::Football_Team::9ba470f39580450fac7654956ba574fa"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-9ba470f39580450fac7654956ba574fa.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/9ba470f39580450fac7654956ba574fa.webp",
+      "sha256": "6da30440a67a7d04cf4f41c23442dd745bd2c16c1760d65e6844092783703ef0"
+    },
+    {
+      "id": "serie-a-official:serie-a::Football_Team::630b1e3631db42498d1b7bc94595c5e0",
+      "slug": "serie-a-official-serie-a::Football_Team::630b1e3631db42498d1b7bc94595c5e0",
+      "name": "Udinese",
+      "initials": "UDI",
+      "aliases": [
+        "UDI",
+        "Udinese",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-630b1e3631db42498d1b7bc94595c5e0.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/630b1e3631db42498d1b7bc94595c5e0.webp",
+        "serie-a::Football_Team::630b1e3631db42498d1b7bc94595c5e0"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-630b1e3631db42498d1b7bc94595c5e0.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/630b1e3631db42498d1b7bc94595c5e0.webp",
+      "sha256": "79241c0d09af9d1c9d3f620a8af2adb44d209d2111c796392844ee4b2be18ca2"
+    },
+    {
+      "id": "serie-a-official:serie-a::Football_Team::367e70bf50b346209f8a0f16429850cb",
+      "slug": "serie-a-official-serie-a::Football_Team::367e70bf50b346209f8a0f16429850cb",
+      "name": "Como",
+      "initials": "COM",
+      "aliases": [
+        "COM",
+        "Como",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-367e70bf50b346209f8a0f16429850cb.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/367e70bf50b346209f8a0f16429850cb.webp",
+        "serie-a::Football_Team::367e70bf50b346209f8a0f16429850cb"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-367e70bf50b346209f8a0f16429850cb.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/367e70bf50b346209f8a0f16429850cb.webp",
+      "sha256": "2c5c5dc4d34ee36a0054c1d2cf317a8bf14fd80cc16477aec195054d0deb377a"
+    },
+    {
+      "id": "serie-a-official:serie-a::Football_Team::8c7aa94d22f44738951748e2ccdf319a",
+      "slug": "serie-a-official-serie-a::Football_Team::8c7aa94d22f44738951748e2ccdf319a",
+      "name": "Genoa",
+      "initials": "GEN",
+      "aliases": [
+        "GEN",
+        "Genoa",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-8c7aa94d22f44738951748e2ccdf319a.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/8c7aa94d22f44738951748e2ccdf319a.webp",
+        "serie-a::Football_Team::8c7aa94d22f44738951748e2ccdf319a"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-8c7aa94d22f44738951748e2ccdf319a.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/8c7aa94d22f44738951748e2ccdf319a.webp",
+      "sha256": "7decbc6c78b29e4249fba49554298acfd550aeea0ed4210b8365851e526e6f9b"
+    },
+    {
+      "id": "serie-a-official:serie-a::Football_Team::f791dab8f0e4449e9884dd8dbd42dbcc",
+      "slug": "serie-a-official-serie-a::Football_Team::f791dab8f0e4449e9884dd8dbd42dbcc",
+      "name": "Napoli",
+      "initials": "NAP",
+      "aliases": [
+        "NAP",
+        "Napoli",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-f791dab8f0e4449e9884dd8dbd42dbcc.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/f791dab8f0e4449e9884dd8dbd42dbcc.webp",
+        "serie-a::Football_Team::f791dab8f0e4449e9884dd8dbd42dbcc"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-f791dab8f0e4449e9884dd8dbd42dbcc.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/f791dab8f0e4449e9884dd8dbd42dbcc.webp",
+      "sha256": "98088b48ae48196b043eb851c3d262869b6aed1c048ca851587ec599befe5a1f"
+    },
+    {
+      "id": "serie-a-official:serie-a::Football_Team::3294993c79b14d918ccdc78da0fb90c5",
+      "slug": "serie-a-official-serie-a::Football_Team::3294993c79b14d918ccdc78da0fb90c5",
+      "name": "Parma",
+      "initials": "PAR",
+      "aliases": [
+        "PAR",
+        "Parma",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-3294993c79b14d918ccdc78da0fb90c5.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/3294993c79b14d918ccdc78da0fb90c5.webp",
+        "serie-a::Football_Team::3294993c79b14d918ccdc78da0fb90c5"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-3294993c79b14d918ccdc78da0fb90c5.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/3294993c79b14d918ccdc78da0fb90c5.webp",
+      "sha256": "970eea68f08e7c85adaf42aa0463deaaaae8987121d87c02fe371e16e0e4051d"
+    },
+    {
+      "id": "serie-a-official:serie-a::Football_Team::25aecd0eda3e4453aabd9a9d5e7fba0d",
+      "slug": "serie-a-official-serie-a::Football_Team::25aecd0eda3e4453aabd9a9d5e7fba0d",
+      "name": "Cagliari",
+      "initials": "CAG",
+      "aliases": [
+        "CAG",
+        "Cagliari",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-25aecd0eda3e4453aabd9a9d5e7fba0d.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/25aecd0eda3e4453aabd9a9d5e7fba0d.webp",
+        "serie-a::Football_Team::25aecd0eda3e4453aabd9a9d5e7fba0d"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-25aecd0eda3e4453aabd9a9d5e7fba0d.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/25aecd0eda3e4453aabd9a9d5e7fba0d.webp",
+      "sha256": "b5b10bdc35b2b6ea5d3c8ec48125a1def1078213f94ba654abedceb45bf897b5"
+    },
+    {
+      "id": "serie-a-official:serie-a::Football_Team::b283fcc0aeda401bb081fcd764e290db",
+      "slug": "serie-a-official-serie-a::Football_Team::b283fcc0aeda401bb081fcd764e290db",
+      "name": "Frosinone",
+      "initials": "FRO",
+      "aliases": [
+        "FRO",
+        "Frosinone",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-b283fcc0aeda401bb081fcd764e290db.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/b283fcc0aeda401bb081fcd764e290db.webp",
+        "serie-a::Football_Team::b283fcc0aeda401bb081fcd764e290db"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-b283fcc0aeda401bb081fcd764e290db.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/b283fcc0aeda401bb081fcd764e290db.webp",
+      "sha256": "e87db568634235ed59d2aaff18072b51f679389a06d965bfcee0b1042f701a76"
+    },
+    {
+      "id": "serie-a-official:serie-a::Football_Team::a28236708d214df3a2e2e04ceb7e5c54",
+      "slug": "serie-a-official-serie-a::Football_Team::a28236708d214df3a2e2e04ceb7e5c54",
+      "name": "Venezia",
+      "initials": "VEN",
+      "aliases": [
+        "VEN",
+        "Venezia",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-a28236708d214df3a2e2e04ceb7e5c54.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/a28236708d214df3a2e2e04ceb7e5c54.webp",
+        "serie-a::Football_Team::a28236708d214df3a2e2e04ceb7e5c54"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-a28236708d214df3a2e2e04ceb7e5c54.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/a28236708d214df3a2e2e04ceb7e5c54.webp",
+      "sha256": "3d287ebad6ff466cd7fa1395ef3ee1f60ee70f058ec3255c054303daa8cac15b"
+    },
+    {
+      "id": "serie-a-official:serie-a::Football_Team::ced7bf0df3a140dfa48138311122133b",
+      "slug": "serie-a-official-serie-a::Football_Team::ced7bf0df3a140dfa48138311122133b",
+      "name": "Lecce",
+      "initials": "LEC",
+      "aliases": [
+        "LEC",
+        "Lecce",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-ced7bf0df3a140dfa48138311122133b.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/ced7bf0df3a140dfa48138311122133b.webp",
+        "serie-a::Football_Team::ced7bf0df3a140dfa48138311122133b"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-ced7bf0df3a140dfa48138311122133b.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/ced7bf0df3a140dfa48138311122133b.webp",
+      "sha256": "9a1fa12b02fe4209c0d2f4b1089bfc05304c2af57287c90d219e0d7f41810116"
+    },
+    {
+      "id": "serie-a-official:serie-a::Football_Team::b70390ba4e3c4bc2947a37617d53e8a3",
+      "slug": "serie-a-official-serie-a::Football_Team::b70390ba4e3c4bc2947a37617d53e8a3",
+      "name": "Sassuolo",
+      "initials": "SAS",
+      "aliases": [
+        "SAS",
+        "Sassuolo",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-b70390ba4e3c4bc2947a37617d53e8a3.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/b70390ba4e3c4bc2947a37617d53e8a3.webp",
+        "serie-a::Football_Team::b70390ba4e3c4bc2947a37617d53e8a3"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-b70390ba4e3c4bc2947a37617d53e8a3.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/b70390ba4e3c4bc2947a37617d53e8a3.webp",
+      "sha256": "28c5a22be0b26a18c19a88c93aff150ece2bdddde88c9bc053afcba84f77d74a"
+    },
+    {
+      "id": "serie-a-official:serie-a::Football_Team::a55dcc2058e94976b572262fc564a74c",
+      "slug": "serie-a-official-serie-a::Football_Team::a55dcc2058e94976b572262fc564a74c",
+      "name": "Torino",
+      "initials": "TOR",
+      "aliases": [
+        "TOR",
+        "Torino",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-a55dcc2058e94976b572262fc564a74c.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/a55dcc2058e94976b572262fc564a74c.webp",
+        "serie-a::Football_Team::a55dcc2058e94976b572262fc564a74c"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-a55dcc2058e94976b572262fc564a74c.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/a55dcc2058e94976b572262fc564a74c.webp",
+      "sha256": "d11e1fefb11187b61cb1d0f65665e3ce591ea0ac8f80ad059fd8d48835017075"
+    },
+    {
+      "id": "serie-a-official:serie-a::Football_Team::d0867ddf777c41789ca282b8276002b0",
+      "slug": "serie-a-official-serie-a::Football_Team::d0867ddf777c41789ca282b8276002b0",
+      "name": "Milan",
+      "initials": "MIL",
+      "aliases": [
+        "4f33c26d-6a4a-40f9-9c3f-cfc56580eda1",
+        "AC Milan",
+        "MIL",
+        "Milan",
+        "ac-milan",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-d0867ddf777c41789ca282b8276002b0.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/d0867ddf777c41789ca282b8276002b0.webp",
+        "serie-a::Football_Team::d0867ddf777c41789ca282b8276002b0"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-d0867ddf777c41789ca282b8276002b0.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/d0867ddf777c41789ca282b8276002b0.webp",
+      "sha256": "bcc9193835c712a6e9037f9d62a49f43cd0d86a4b4d014b92f7c034e38789b0d"
+    },
+    {
+      "id": "serie-a-official:serie-a::Football_Team::fe6490f2b16e45be9956a1cd04aaf3a2",
+      "slug": "serie-a-official-serie-a::Football_Team::fe6490f2b16e45be9956a1cd04aaf3a2",
+      "name": "Lazio",
+      "initials": "LAZ",
+      "aliases": [
+        "LAZ",
+        "Lazio",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-fe6490f2b16e45be9956a1cd04aaf3a2.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/fe6490f2b16e45be9956a1cd04aaf3a2.webp",
+        "serie-a::Football_Team::fe6490f2b16e45be9956a1cd04aaf3a2"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-fe6490f2b16e45be9956a1cd04aaf3a2.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/fe6490f2b16e45be9956a1cd04aaf3a2.webp",
+      "sha256": "a22aa6332f9927288efb5945de2c60908d99002cf981bdf93e3137398cffc04b"
+    },
+    {
+      "id": "serie-a-official:serie-a::Football_Team::8ddc09c1aa73448da2dff953edd95d82",
+      "slug": "serie-a-official-serie-a::Football_Team::8ddc09c1aa73448da2dff953edd95d82",
+      "name": "Roma",
+      "initials": "ROM",
+      "aliases": [
+        "ROM",
+        "Roma",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-8ddc09c1aa73448da2dff953edd95d82.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/8ddc09c1aa73448da2dff953edd95d82.webp",
+        "serie-a::Football_Team::8ddc09c1aa73448da2dff953edd95d82"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-8ddc09c1aa73448da2dff953edd95d82.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/8ddc09c1aa73448da2dff953edd95d82.webp",
+      "sha256": "ddfc72fd6ed5c7357212f3d6a1e1f9b71383829f11a36514c3f3110558ba1c37"
+    },
+    {
+      "id": "serie-a-official:serie-a::Football_Team::5bce12d5bd864c2297695d970f92576d",
+      "slug": "serie-a-official-serie-a::Football_Team::5bce12d5bd864c2297695d970f92576d",
+      "name": "Fiorentina",
+      "initials": "FIO",
+      "aliases": [
+        "FIO",
+        "Fiorentina",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/serie-a-official/serie-a-football-team-5bce12d5bd864c2297695d970f92576d.webp",
+        "https://media-sdp.legaseriea.it/clubLogos/5bce12d5bd864c2297695d970f92576d.webp",
+        "serie-a::Football_Team::5bce12d5bd864c2297695d970f92576d"
+      ],
+      "asset": "serie-a-official-serie-a-football-team-5bce12d5bd864c2297695d970f92576d.webp",
+      "source": "https://media-sdp.legaseriea.it/clubLogos/5bce12d5bd864c2297695d970f92576d.webp",
+      "sha256": "37ac3c56180962e5e398f847a94efb83e310f2ff3ab6beca65c3b52e90820312"
+    },
+    {
+      "id": "laliga-official:9",
+      "slug": "laliga-official-9",
+      "name": "Getafe CF",
+      "initials": "GET",
+      "aliases": [
+        "9",
+        "9d4a3733-f47f-4281-ab70-695b7ce9d5d8",
+        "GET",
+        "Getafe",
+        "Getafe CF",
+        "getafe",
+        "https://assets.laliga.com/assets/2023/05/12/medium/dc59645c96bc2c9010341c16dd6d4bfa.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/9.png"
+      ],
+      "asset": "laliga-official-9.png",
+      "source": "https://assets.laliga.com/assets/2023/05/12/medium/dc59645c96bc2c9010341c16dd6d4bfa.png",
+      "sha256": "ba4630f282e738cf52f9a401cbde817404043d2b9e72f7567e336e2271800633"
+    },
+    {
+      "id": "laliga-official:17",
+      "slug": "laliga-official-17",
+      "name": "Sevilla FC",
+      "initials": "SEV",
+      "aliases": [
+        "17",
+        "4a450622-0030-47aa-bce8-5f9a0bf94228",
+        "SEV",
+        "Sevilla",
+        "Sevilla FC",
+        "https://assets.laliga.com/assets/2019/06/07/medium/sevilla.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/17.png",
+        "sevilla"
+      ],
+      "asset": "laliga-official-17.png",
+      "source": "https://assets.laliga.com/assets/2019/06/07/medium/sevilla.png",
+      "sha256": "37bd07fb8c47f195182caf1de620fe8b1d4cf8ece9f81aa3fade7e2a54f179e8"
+    },
+    {
+      "id": "laliga-official:49",
+      "slug": "laliga-official-49",
+      "name": "R. Racing Club",
+      "initials": "RAC",
+      "aliases": [
+        "49",
+        "R. Racing Club",
+        "RAC",
+        "https://assets.laliga.com/assets/2019/06/07/medium/racing.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/49.png"
+      ],
+      "asset": "laliga-official-49.png",
+      "source": "https://assets.laliga.com/assets/2019/06/07/medium/racing.png",
+      "sha256": "b33dbfff6c09ca802cc708f39fc121323e5064e0298e2f7df1542391f5a2f9b5"
+    },
+    {
+      "id": "laliga-official:20",
+      "slug": "laliga-official-20",
+      "name": "Villarreal CF",
+      "initials": "VIL",
+      "aliases": [
+        "20",
+        "VIL",
+        "Villarreal",
+        "Villarreal CF",
+        "c24f99d9-14af-4a8e-9eac-51deb845f51d",
+        "https://assets.laliga.com/assets/2019/06/07/medium/villarreal.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/20.png",
+        "villarreal"
+      ],
+      "asset": "laliga-official-20.png",
+      "source": "https://assets.laliga.com/assets/2019/06/07/medium/villarreal.png",
+      "sha256": "a318ebc43fad014024495d0a284de4f19acfd7dac9edc3dfe6ed0199ff4ee7f6"
+    },
+    {
+      "id": "laliga-official:8",
+      "slug": "laliga-official-8",
+      "name": "RCD Espanyol de Barcelona",
+      "initials": "ESP",
+      "aliases": [
+        "8",
+        "8c31d551-f658-4210-b625-22dba912f067",
+        "ESP",
+        "Espanyol",
+        "RCD Espanyol de Barcelona",
+        "espanyol",
+        "https://assets.laliga.com/assets/2025/07/02/medium/e9177f6edd72c6360602adbca85e442f.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/8.png"
+      ],
+      "asset": "laliga-official-8.png",
+      "source": "https://assets.laliga.com/assets/2025/07/02/medium/e9177f6edd72c6360602adbca85e442f.png",
+      "sha256": "7b01a6f648c5490ef08d59382835946db90531901ba39e03f5fbbbe79a4f57bf"
+    },
+    {
+      "id": "laliga-official:11",
+      "slug": "laliga-official-11",
+      "name": "Levante UD",
+      "initials": "LEV",
+      "aliases": [
+        "11",
+        "LEV",
+        "Levante",
+        "Levante UD",
+        "fc19bcba-c6aa-4528-a819-bb268c11cf95",
+        "https://assets.laliga.com/assets/2019/06/07/medium/levante.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/11.png",
+        "levante"
+      ],
+      "asset": "laliga-official-11.png",
+      "source": "https://assets.laliga.com/assets/2019/06/07/medium/levante.png",
+      "sha256": "d73e8287b9d217b643b1f23edf16bcb1ccd235e68b615c9a92a819cfe03ce88d"
+    },
+    {
+      "id": "laliga-official:26",
+      "slug": "laliga-official-26",
+      "name": "RC Deportivo",
+      "initials": "DEP",
+      "aliases": [
+        "26",
+        "DEP",
+        "RC Deportivo",
+        "https://assets.laliga.com/assets/2026/06/24/medium/6b88661529a2c06840c8bf6bddd90970.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/26.png"
+      ],
+      "asset": "laliga-official-26.png",
+      "source": "https://assets.laliga.com/assets/2026/06/24/medium/6b88661529a2c06840c8bf6bddd90970.png",
+      "sha256": "09da5a18a9b38abcb5c6180da2d9f0e9c19c416d7e8a3e0f20192d0d54306e96"
+    },
+    {
+      "id": "laliga-official:7",
+      "slug": "laliga-official-7",
+      "name": "Elche CF",
+      "initials": "ELC",
+      "aliases": [
+        "59c36565-a4ea-4885-9757-1abcc055356b",
+        "7",
+        "ELC",
+        "Elche",
+        "Elche CF",
+        "elche",
+        "https://assets.laliga.com/assets/2019/06/07/medium/elche.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/7.png"
+      ],
+      "asset": "laliga-official-7.png",
+      "source": "https://assets.laliga.com/assets/2019/06/07/medium/elche.png",
+      "sha256": "8375d1c1e079b9cac5ed1721e4f1b865e71a4614cb481c9eccf73e0186512d72"
+    },
+    {
+      "id": "laliga-official:2",
+      "slug": "laliga-official-2",
+      "name": "Atlético de Madrid",
+      "initials": "ATM",
+      "aliases": [
+        "2",
+        "ATM",
+        "Atletico Madrid",
+        "Atlético de Madrid",
+        "atletico-madrid",
+        "caa30b4a-88cd-47a5-a4b4-f6d6397421f0",
+        "https://assets.laliga.com/assets/2024/06/17/medium/cbc5c8cc8c3e8abd0e175c00ee53b723.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/2.png"
+      ],
+      "asset": "laliga-official-2.png",
+      "source": "https://assets.laliga.com/assets/2024/06/17/medium/cbc5c8cc8c3e8abd0e175c00ee53b723.png",
+      "sha256": "4cf35d3f17666e96d109b3d9fc364584e1088776217dd07f4f077d1255e76a5b"
+    },
+    {
+      "id": "laliga-official:12",
+      "slug": "laliga-official-12",
+      "name": "Málaga CF",
+      "initials": "MGA",
+      "aliases": [
+        "12",
+        "MGA",
+        "Málaga CF",
+        "https://assets.laliga.com/assets/2019/06/07/medium/malaga.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/12.png"
+      ],
+      "asset": "laliga-official-12.png",
+      "source": "https://assets.laliga.com/assets/2019/06/07/medium/malaga.png",
+      "sha256": "0acc43d13d3f9998e51ab720483631dffda47caab90120ad559769793bc067a4"
+    },
+    {
+      "id": "laliga-official:18",
+      "slug": "laliga-official-18",
+      "name": "Valencia CF",
+      "initials": "VAL",
+      "aliases": [
+        "18",
+        "3d0e2903-bbeb-4531-b777-6779870570f3",
+        "VAL",
+        "Valencia",
+        "Valencia CF",
+        "https://assets.laliga.com/assets/2019/06/07/medium/valencia.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/18.png",
+        "valencia"
+      ],
+      "asset": "laliga-official-18.png",
+      "source": "https://assets.laliga.com/assets/2019/06/07/medium/valencia.png",
+      "sha256": "a44bb1cb59aa509aedf7c0b55e3385d11d8ed448047ec1f686a834e44c058d74"
+    },
+    {
+      "id": "laliga-official:6",
+      "slug": "laliga-official-6",
+      "name": "Celta",
+      "initials": "CEL",
+      "aliases": [
+        "28f6ea3c-d284-4926-b0a3-0460f57230f8",
+        "6",
+        "6f25c30a-12f3-4997-a144-7cc88e66dc4b",
+        "CEL",
+        "Celta",
+        "Celta de Vigo",
+        "RC Celta de Vigo",
+        "celta-de-vigo",
+        "celta-vigo",
+        "https://assets.laliga.com/assets/2025/07/11/medium/0a796827f9e758d7d750db805adde7c5.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/6.png"
+      ],
+      "asset": "laliga-official-6.png",
+      "source": "https://assets.laliga.com/assets/2025/07/11/medium/0a796827f9e758d7d750db805adde7c5.png",
+      "sha256": "1e38e7a9dfab87b7a5593779ff155649e5010a2ea58b7d4a1a4cd39bb9d03260"
+    },
+    {
+      "id": "laliga-official:13",
+      "slug": "laliga-official-13",
+      "name": "CA Osasuna",
+      "initials": "OSA",
+      "aliases": [
+        "13",
+        "19ad734c-2556-441a-a04a-495f3ef04d87",
+        "CA Osasuna",
+        "OSA",
+        "Osasuna",
+        "https://assets.laliga.com/assets/2019/06/07/medium/osasuna.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/laliga-official/13.png",
+        "osasuna"
+      ],
+      "asset": "laliga-official-13.png",
+      "source": "https://assets.laliga.com/assets/2019/06/07/medium/osasuna.png",
+      "sha256": "f2973250a0d6fc88f9ea0d25f6b7e74d420cbe7e7eed367864bc8352a910cb14"
+    },
+    {
+      "id": "uefa-champions-league-official:2609356",
+      "slug": "uefa-champions-league-official-2609356",
+      "name": "Sabah",
+      "initials": "SAB",
+      "aliases": [
+        "2609356",
+        "SAB",
+        "Sabah",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/2609356.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/2609356.png"
+      ],
+      "asset": "uefa-champions-league-official-2609356.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/2609356.png",
+      "sha256": "5d73af1c07b8c027bae7dedf06d46e7e22d2a9a3c065a578e6d1a27422a63710"
+    },
+    {
+      "id": "uefa-champions-league-official:60457",
+      "slug": "uefa-champions-league-official-60457",
+      "name": "The New Saints",
+      "initials": "TNS",
+      "aliases": [
+        "60457",
+        "TNS",
+        "The New Saints",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/60457.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/60457.png"
+      ],
+      "asset": "uefa-champions-league-official-60457.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/60457.png",
+      "sha256": "7a5f584413e431bded54448a0203bbb7218228320de65ea1fb1d0fd86ccca479"
+    },
+    {
+      "id": "uefa-champions-league-official:2605572",
+      "slug": "uefa-champions-league-official-2605572",
+      "name": "L. Red Imps",
+      "initials": "LRI",
+      "aliases": [
+        "2605572",
+        "L. Red Imps",
+        "LRI",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/2605572.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/2605572.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/2605572.png"
+      ],
+      "asset": "uefa-champions-league-official-2605572.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/2605572.png",
+      "sha256": "1d500c219168566f272c747a1ae23e40cae0897df6a35f380b469efc15a4bbd9"
+    },
+    {
+      "id": "uefa-champions-league-official:63401",
+      "slug": "uefa-champions-league-official-63401",
+      "name": "Inter Escaldes",
+      "initials": "IES",
+      "aliases": [
+        "63401",
+        "IES",
+        "Inter Escaldes",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/63401.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/63401.png"
+      ],
+      "asset": "uefa-champions-league-official-63401.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/63401.png",
+      "sha256": "fdb91e8814f9c8fd3a5fdb07dad03b0f6176dbf1266d2c2e1409372ec803e500"
+    },
+    {
+      "id": "uefa-champions-league-official:2610304",
+      "slug": "uefa-champions-league-official-2610304",
+      "name": "Ararat-Armenia",
+      "initials": "ARA",
+      "aliases": [
+        "2610304",
+        "ARA",
+        "Ararat-Armenia",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/2610304.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/2610304.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/2610304.png"
+      ],
+      "asset": "uefa-champions-league-official-2610304.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/2610304.png",
+      "sha256": "b145ce45f0667120a37bf2f7168bc5e1204262d0a8507665436fa64b57bb8ecd"
+    },
+    {
+      "id": "uefa-champions-league-official:2607924",
+      "slug": "uefa-champions-league-official-2607924",
+      "name": "Riga",
+      "initials": "RIG",
+      "aliases": [
+        "2607924",
+        "RIG",
+        "Riga",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/2607924.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/2607924.png"
+      ],
+      "asset": "uefa-champions-league-official-2607924.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/2607924.png",
+      "sha256": "9012f9b525cd44295271b3fefb20efba2b1ebe2ea9eb11afd576b790c2d3e210"
+    },
+    {
+      "id": "uefa-champions-league-official:2605907",
+      "slug": "uefa-champions-league-official-2605907",
+      "name": "Kauno Žalgiris",
+      "initials": "KAU",
+      "aliases": [
+        "2605907",
+        "KAU",
+        "Kauno Žalgiris",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/2605907.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/2605907.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/2605907.png"
+      ],
+      "asset": "uefa-champions-league-official-2605907.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/2605907.png",
+      "sha256": "36556c226bbff40354ff3285b11a5623af43f20c2abda23839dcb15038156f8b"
+    },
+    {
+      "id": "uefa-champions-league-official:2608290",
+      "slug": "uefa-champions-league-official-2608290",
+      "name": "Drita",
+      "initials": "DRI",
+      "aliases": [
+        "2608290",
+        "DRI",
+        "Drita",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/2608290.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/2608290.png"
+      ],
+      "asset": "uefa-champions-league-official-2608290.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/2608290.png",
+      "sha256": "4dba92efd236d6df2c2c78e1657f9ae13b20f1c5bbe6489385b222d480e7d8ce"
+    },
+    {
+      "id": "uefa-champions-league-official:53080",
+      "slug": "uefa-champions-league-official-53080",
+      "name": "Vardar",
+      "initials": "VAR",
+      "aliases": [
+        "53080",
+        "VAR",
+        "Vardar",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/53080.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/53080.png"
+      ],
+      "asset": "uefa-champions-league-official-53080.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/53080.png",
+      "sha256": "4898f301c6c2de9f60e28b3cc85f273bef73bfe7d52df957ad84543fd3ef6f66"
+    },
+    {
+      "id": "uefa-champions-league-official:52350",
+      "slug": "uefa-champions-league-official-52350",
+      "name": "KuPS Kuopio",
+      "initials": "KUP",
+      "aliases": [
+        "52350",
+        "KUP",
+        "KuPS Kuopio",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/52350.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/52350.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/52350.png"
+      ],
+      "asset": "uefa-champions-league-official-52350.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52350.png",
+      "sha256": "1205055ff94fdb263ebccdcd359c9d5e5b7c56cfbba2ca4f856c4452c0c41c46"
+    },
+    {
+      "id": "uefa-champions-league-official:50092",
+      "slug": "uefa-champions-league-official-50092",
+      "name": "Floriana",
+      "initials": "FLO",
+      "aliases": [
+        "50092",
+        "FLO",
+        "Floriana",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50092.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/50092.png"
+      ],
+      "asset": "uefa-champions-league-official-50092.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50092.png",
+      "sha256": "fa9d43dc7f446fa9360aac2a02d0894d3eca365393d5e6e4a87914b532bae0ca"
+    },
+    {
+      "id": "uefa-champions-league-official:52381",
+      "slug": "uefa-champions-league-official-52381",
+      "name": "Shamrock Rovers",
+      "initials": "SHR",
+      "aliases": [
+        "52381",
+        "SHR",
+        "Shamrock Rovers",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/52381.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/52381.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/52381.png"
+      ],
+      "asset": "uefa-champions-league-official-52381.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52381.png",
+      "sha256": "863ed084b8ba82e5d93130e50eadb0322661a98e1414cbe77a8543e23cefadf9"
+    },
+    {
+      "id": "uefa-champions-league-official:64514",
+      "slug": "uefa-champions-league-official-64514",
+      "name": "Tre Fiori",
+      "initials": "TRE",
+      "aliases": [
+        "64514",
+        "TRE",
+        "Tre Fiori",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/64514.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/64514.png"
+      ],
+      "asset": "uefa-champions-league-official-64514.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/64514.png",
+      "sha256": "4cbb7b5ae6037002d485803f0d378b4e6325c097982eb4f3994f485d6130d20b"
+    },
+    {
+      "id": "uefa-champions-league-official:85009",
+      "slug": "uefa-champions-league-official-85009",
+      "name": "Larne",
+      "initials": "LAR",
+      "aliases": [
+        "85009",
+        "LAR",
+        "Larne",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/85009.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/85009.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/85009.png"
+      ],
+      "asset": "uefa-champions-league-official-85009.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/85009.png",
+      "sha256": "f1d424043284ac0a9e6b89b1da2b6e75738a590331aae31043906258dce8e921"
+    },
+    {
+      "id": "uefa-champions-league-official:50104",
+      "slug": "uefa-champions-league-official-50104",
+      "name": "Borac",
+      "initials": "BOR",
+      "aliases": [
+        "50104",
+        "BOR",
+        "Borac",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50104.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/50104.png"
+      ],
+      "asset": "uefa-champions-league-official-50104.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50104.png",
+      "sha256": "11f30eafe11dad8cf13212607c25ea6fafb17d1ff930d7ee0ad5d507b85c2ffa"
+    },
+    {
+      "id": "uefa-champions-league-official:50044",
+      "slug": "uefa-champions-league-official-50044",
+      "name": "Levski Sofia",
+      "initials": "LSO",
+      "aliases": [
+        "50044",
+        "LSO",
+        "Levski Sofia",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50044.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/50044.png"
+      ],
+      "asset": "uefa-champions-league-official-50044.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50044.png",
+      "sha256": "f02fcf5d9c5895c4f3cd913dc2450866724d2bc9bf3c0001900b2881cf6ceb45"
+    },
+    {
+      "id": "uefa-champions-league-official:57475",
+      "slug": "uefa-champions-league-official-57475",
+      "name": "Klaksvík",
+      "initials": "KLA",
+      "aliases": [
+        "57475",
+        "KLA",
+        "Klaksvík",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/57475.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/57475.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/57475.png"
+      ],
+      "asset": "uefa-champions-league-official-57475.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/57475.png",
+      "sha256": "6175a004c454e2a24189938ec7035e3d26b718042db72c4d71597337b416b517"
+    },
+    {
+      "id": "uefa-champions-league-official:2605351",
+      "slug": "uefa-champions-league-official-2605351",
+      "name": "Atert Bissen",
+      "initials": "AB",
+      "aliases": [
+        "2605351",
+        "Atert Bissen",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/2605351.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/2605351.png"
+      ],
+      "asset": "uefa-champions-league-official-2605351.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/2605351.png",
+      "sha256": "877f8e8e5731dd4e9cdce07f26df6f07c8b06089acd15a90d90a37c7e0eaacfd"
+    },
+    {
+      "id": "uefa-champions-league-official:52697",
+      "slug": "uefa-champions-league-official-52697",
+      "name": "Víkingur R.",
+      "initials": "VKR",
+      "aliases": [
+        "52697",
+        "VKR",
+        "Víkingur R.",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/52697.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/52697.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/52697.png"
+      ],
+      "asset": "uefa-champions-league-official-52697.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52697.png",
+      "sha256": "44857af5cfb74750003eef4d65dd3db0044576ae9894fcaef8879be00d2ffdc7"
+    },
+    {
+      "id": "uefa-champions-league-official:52287",
+      "slug": "uefa-champions-league-official-52287",
+      "name": "Győri ETO",
+      "initials": "ETO",
+      "aliases": [
+        "52287",
+        "ETO",
+        "Győri ETO",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/52287.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/52287.png"
+      ],
+      "asset": "uefa-champions-league-official-52287.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52287.png",
+      "sha256": "42c7199903be438ae35770986a9d7edc5f0fa4cd61143c17b1aac8b03bfb87e0"
+    },
+    {
+      "id": "uefa-champions-league-official:79970",
+      "slug": "uefa-champions-league-official-79970",
+      "name": "Kairat Almaty",
+      "initials": "KAI",
+      "aliases": [
+        "79970",
+        "KAI",
+        "Kairat Almaty",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/79970.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/79970.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/79970.png"
+      ],
+      "asset": "uefa-champions-league-official-79970.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/79970.png",
+      "sha256": "06118bd3abdd8b98b691d680ab64a1ec51b1b2eb9011f0a2c49b4345b6073581"
+    },
+    {
+      "id": "uefa-champions-league-official:73936",
+      "slug": "uefa-champions-league-official-73936",
+      "name": "Sutjeska",
+      "initials": "SUT",
+      "aliases": [
+        "73936",
+        "SUT",
+        "Sutjeska",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/73936.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/73936.png"
+      ],
+      "asset": "uefa-champions-league-official-73936.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/73936.png",
+      "sha256": "be6a62d7bb8979af162a24dbb8eec8d80353c4cf1526ae1bf386c1ea2a2ac579"
+    },
+    {
+      "id": "uefa-champions-league-official:59341",
+      "slug": "uefa-champions-league-official-59341",
+      "name": "Flora Tallinn",
+      "initials": "FLO",
+      "aliases": [
+        "59341",
+        "FLO",
+        "Flora Tallinn",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/59341.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/59341.png"
+      ],
+      "asset": "uefa-champions-league-official-59341.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/59341.png",
+      "sha256": "a02e375cc7417c6a5403cb2081a82fe05df5c5e0a37424a75aa740480b7dd628"
+    },
+    {
+      "id": "uefa-champions-league-official:2605905",
+      "slug": "uefa-champions-league-official-2605905",
+      "name": "Iberia Tbilisi",
+      "initials": "IBE",
+      "aliases": [
+        "2605905",
+        "IBE",
+        "Iberia Tbilisi",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/2605905.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/2605905.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/2605905.png"
+      ],
+      "asset": "uefa-champions-league-official-2605905.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/2605905.png",
+      "sha256": "37f7a5df46103301c201d33b58c1deb8e8d2af26ea2635134097fe568f277cd6"
+    },
+    {
+      "id": "uefa-champions-league-official:2613945",
+      "slug": "uefa-champions-league-official-2613945",
+      "name": "ML Vitebsk",
+      "initials": "MV",
+      "aliases": [
+        "2613945",
+        "ML Vitebsk",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/2613945.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/2613945.png"
+      ],
+      "asset": "uefa-champions-league-official-2613945.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/2613945.png",
+      "sha256": "5c895836330e7f5f6813d349c59648dda5fc94a73345f0f6837cfb6dcbbdc703"
+    },
+    {
+      "id": "uefa-champions-league-official:2606501",
+      "slug": "uefa-champions-league-official-2606501",
+      "name": "U. Craiova",
+      "initials": "UCR",
+      "aliases": [
+        "2606501",
+        "U. Craiova",
+        "UCR",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/2606501.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/2606501.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/2606501.png"
+      ],
+      "asset": "uefa-champions-league-official-2606501.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/2606501.png",
+      "sha256": "89370b2ad01857bb6e74eacc1a072a10a53e5352cd777d75aef9af4bde3eb348"
+    },
+    {
+      "id": "uefa-champions-league-official:2607112",
+      "slug": "uefa-champions-league-official-2607112",
+      "name": "Petrocub",
+      "initials": "PET",
+      "aliases": [
+        "2607112",
+        "PET",
+        "Petrocub",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/2607112.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/2607112.png"
+      ],
+      "asset": "uefa-champions-league-official-2607112.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/2607112.png",
+      "sha256": "30535b33af368e89ed38c6538cf22ee19f6d388953901990b04f21ac9cef0b41"
+    },
+    {
+      "id": "uefa-champions-league-official:88148",
+      "slug": "uefa-champions-league-official-88148",
+      "name": "Egnatia",
+      "initials": "EGN",
+      "aliases": [
+        "88148",
+        "EGN",
+        "Egnatia",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/88148.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/88148.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/88148.png"
+      ],
+      "asset": "uefa-champions-league-official-88148.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/88148.png",
+      "sha256": "c20d90105ba70795cb0585da73182457805a8bc61868a6f80a58ad5d856ca4f8"
+    },
+    {
+      "id": "uefa-champions-league-official:74233",
+      "slug": "uefa-champions-league-official-74233",
+      "name": "Mjällby",
+      "initials": "MJA",
+      "aliases": [
+        "74233",
+        "MJA",
+        "Mjällby",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/74233.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/74233.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/74233.png"
+      ],
+      "asset": "uefa-champions-league-official-74233.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/74233.png",
+      "sha256": "492e52e3ee4043a4943d130ebc8df86b6bf2408d6de24d6a2d7aa4a31ac23db9"
+    },
+    {
+      "id": "uefa-champions-league-official:52797",
+      "slug": "uefa-champions-league-official-52797",
+      "name": "S. Bratislava",
+      "initials": "SLB",
+      "aliases": [
+        "52797",
+        "S. Bratislava",
+        "SLB",
+        "Slovan Bratislava",
+        "eaa0ece8-087a-4a76-b4c8-708c84d4d034",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/52797.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/52797.png",
+        "slovan-bratislava"
+      ],
+      "asset": "uefa-champions-league-official-52797.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52797.png",
+      "sha256": "eae31dd7ed17394e24081c7db319aa17ceb457f7a1418312f479c75a06ba465f"
+    },
+    {
+      "id": "uefa-champions-league-official:50019",
+      "slug": "uefa-champions-league-official-50019",
+      "name": "Aarhus",
+      "initials": "AGF",
+      "aliases": [
+        "50019",
+        "AGF",
+        "Aarhus",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50019.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/50019.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/50019.png"
+      ],
+      "asset": "uefa-champions-league-official-50019.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50019.png",
+      "sha256": "f91d3f14511cdd222b00581f47f169a2c1dd88d94a2df2162359e5f2c8865acf"
+    },
+    {
+      "id": "uefa-champions-league-official:64227",
+      "slug": "uefa-champions-league-official-64227",
+      "name": "Lech Poznań",
+      "initials": "LPO",
+      "aliases": [
+        "64227",
+        "LPO",
+        "Lech Poznań",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/64227.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/64227.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/64227.png"
+      ],
+      "asset": "uefa-champions-league-official-64227.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/64227.png",
+      "sha256": "9e08ef1362f094b3cdffa423c999e985802184a458da447a182026dfadb4b0d6"
+    },
+    {
+      "id": "uefa-champions-league-official:80409",
+      "slug": "uefa-champions-league-official-80409",
+      "name": "Thun",
+      "initials": "THU",
+      "aliases": [
+        "80409",
+        "THU",
+        "Thun",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/80409.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/80409.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/80409.png"
+      ],
+      "asset": "uefa-champions-league-official-80409.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/80409.png",
+      "sha256": "7cdfacb538a3334baee24e98d469c41181276115719a7ad5a7cc9cd7bb5df8d4"
+    },
+    {
+      "id": "uefa-champions-league-official:50164",
+      "slug": "uefa-champions-league-official-50164",
+      "name": "GNK Dinamo",
+      "initials": "DIN",
+      "aliases": [
+        "4914e820-1a36-4afd-b34b-d44175a9a5e3",
+        "50164",
+        "DIN",
+        "Dinamo Zagreb",
+        "GNK Dinamo",
+        "dinamo-zagreb",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50164.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/50164.png"
+      ],
+      "asset": "uefa-champions-league-official-50164.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50164.png",
+      "sha256": "cf9399153eef58e6f25a4582e218c425d24ad1cd7dd33e22d996a87998c305ae"
+    },
+    {
+      "id": "uefa-champions-league-official:52692",
+      "slug": "uefa-champions-league-official-52692",
+      "name": "Fenerbahçe",
+      "initials": "FEN",
+      "aliases": [
+        "52692",
+        "FEN",
+        "Fenerbahçe",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/52692.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/52692.png"
+      ],
+      "asset": "uefa-champions-league-official-52692.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52692.png",
+      "sha256": "87ec6e0bcfe71988b70e6a362c4ced1825d89509177fccd8c52c127ea0f093a3"
+    },
+    {
+      "id": "uefa-champions-league-official:50063",
+      "slug": "uefa-champions-league-official-50063",
+      "name": "Górnik Zabrze",
+      "initials": "GOR",
+      "aliases": [
+        "50063",
+        "GOR",
+        "Górnik Zabrze",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50063.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/50063.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/50063.png"
+      ],
+      "asset": "uefa-champions-league-official-50063.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50063.png",
+      "sha256": "94cd59d6927154f9f2ba935ca6ed7cb350c5c2b392d1a8e15b9eaa764bb3f8fa"
+    },
+    {
+      "id": "uefa-champions-league-official:50120",
+      "slug": "uefa-champions-league-official-50120",
+      "name": "Hearts",
+      "initials": "HEA",
+      "aliases": [
+        "50120",
+        "HEA",
+        "Hearts",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50120.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/50120.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/50120.png"
+      ],
+      "asset": "uefa-champions-league-official-50120.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50120.png",
+      "sha256": "818dadbfce6585eedaff1689593860f19304e5fb2f8efb2b120ad5b3b1e9cb51"
+    },
+    {
+      "id": "uefa-champions-league-official:50069",
+      "slug": "uefa-champions-league-official-50069",
+      "name": "Crvena Zvezda",
+      "initials": "ZVE",
+      "aliases": [
+        "50069",
+        "Crvena Zvezda",
+        "Red Star Belgrade",
+        "ZVE",
+        "d91b33a6-3318-4054-af6f-89a621851156",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50069.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/50069.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/50069.png",
+        "red-star-belgrade"
+      ],
+      "asset": "uefa-champions-league-official-50069.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50069.png",
+      "sha256": "2f70b4c1faef2d47efc5619df5b549328300bde6f0f922f788a79fd850124933"
+    },
+    {
+      "id": "uefa-champions-league-official:59340",
+      "slug": "uefa-champions-league-official-59340",
+      "name": "H. Beer-Sheva",
+      "initials": "HBS",
+      "aliases": [
+        "59340",
+        "H. Beer-Sheva",
+        "HBS",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/59340.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/59340.png"
+      ],
+      "asset": "uefa-champions-league-official-59340.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/59340.png",
+      "sha256": "0680036b66d3fa9f76921b2d132099af37a2a24b16d9e9781cb3161199255688"
+    },
+    {
+      "id": "uefa-champions-league-official:50077",
+      "slug": "uefa-champions-league-official-50077",
+      "name": "Omonia",
+      "initials": "OMO",
+      "aliases": [
+        "50077",
+        "OMO",
+        "Omonia",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50077.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/50077.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/50077.png"
+      ],
+      "asset": "uefa-champions-league-official-50077.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50077.png",
+      "sha256": "021050458e01284412470816e3614ee76fb11d8fdf8b2616f73e4f7aa44a538e"
+    },
+    {
+      "id": "uefa-champions-league-official:59030",
+      "slug": "uefa-champions-league-official-59030",
+      "name": "Celje",
+      "initials": "CLJ",
+      "aliases": [
+        "59030",
+        "CLJ",
+        "Celje",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/59030.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/59030.png"
+      ],
+      "asset": "uefa-champions-league-official-59030.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/59030.png",
+      "sha256": "64a4e8fb24be41c3b2c6404f36434ac41aaa409cee10d32c0118d3a1b3745323"
+    },
+    {
+      "id": "uefa-champions-league-official:2610",
+      "slug": "uefa-champions-league-official-2610",
+      "name": "Olympiacos",
+      "initials": "OLY",
+      "aliases": [
+        "2610",
+        "OLY",
+        "Olympiacos",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/2610.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/2610.png"
+      ],
+      "asset": "uefa-champions-league-official-2610.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/2610.png",
+      "sha256": "1f61023830204ff58eec148a7ae34c28b7829b32938889b06c4c06e7d2ff4728"
+    },
+    {
+      "id": "uefa-champions-league-official:52330",
+      "slug": "uefa-champions-league-official-52330",
+      "name": "N.E.C.",
+      "initials": "NEC",
+      "aliases": [
+        "52330",
+        "N.E.C.",
+        "NEC",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/52330.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/52330.png"
+      ],
+      "asset": "uefa-champions-league-official-52330.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52330.png",
+      "sha256": "4dd01051d433df345c0e5753c6df502f1e8c052b9cbb42e3dc8da6b809964863"
+    },
+    {
+      "id": "uefa-champions-league-official:64125",
+      "slug": "uefa-champions-league-official-64125",
+      "name": "Union SG",
+      "initials": "USG",
+      "aliases": [
+        "64125",
+        "USG",
+        "Union SG",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/64125.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/64125.png"
+      ],
+      "asset": "uefa-champions-league-official-64125.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/64125.png",
+      "sha256": "b8f20219e27f2a722f24f5e00141af39b667a812a89c83fc1e226fdb8566bbd4"
+    },
+    {
+      "id": "uefa-champions-league-official:59333",
+      "slug": "uefa-champions-league-official-59333",
+      "name": "Bodø/Glimt",
+      "initials": "BOD",
+      "aliases": [
+        "59333",
+        "BOD",
+        "Bodø/Glimt",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/59333.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/59333.png"
+      ],
+      "asset": "uefa-champions-league-official-59333.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/59333.png",
+      "sha256": "88e434b02683e96be60b54ceb7d2e076fa378dbb5b7cf08934a95bbec23b16e6"
+    },
+    {
+      "id": "uefa-champions-league-official:50033",
+      "slug": "uefa-champions-league-official-50033",
+      "name": "Sparta Praha",
+      "initials": "SPA",
+      "aliases": [
+        "50033",
+        "SPA",
+        "Sparta Prague",
+        "Sparta Praha",
+        "b5e2807c-bbbe-4b7c-823e-363b20109bd1",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50033.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/50033.png",
+        "sparta-prague"
+      ],
+      "asset": "uefa-champions-league-official-50033.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50033.png",
+      "sha256": "921ebc39a4041adc76cbbd93c4ce339b428e0414901b76b5623aa4a57788f1db"
+    },
+    {
+      "id": "uefa-champions-league-official:5312",
+      "slug": "uefa-champions-league-official-5312",
+      "name": "Lyon",
+      "initials": "LYO",
+      "aliases": [
+        "5312",
+        "LYO",
+        "Lyon",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/5312.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/5312.png"
+      ],
+      "asset": "uefa-champions-league-official-5312.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/5312.png",
+      "sha256": "c1a26b87f7d7409ca81c72096adb4eae7f7bae14494e108935728fdcfed5364e"
+    },
+    {
+      "id": "uefa-champions-league-official:50129",
+      "slug": "uefa-champions-league-official-50129",
+      "name": "AEK Athens",
+      "initials": "AEK",
+      "aliases": [
+        "50129",
+        "AEK",
+        "AEK Athens",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50129.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/50129.png"
+      ],
+      "asset": "uefa-champions-league-official-50129.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50129.png",
+      "sha256": "0d6d43e72c81276ea15eab2b6cfeffbdde96184e51b01d8335703e936cd08790"
+    },
+    {
+      "id": "uefa-champions-league-official:52319",
+      "slug": "uefa-champions-league-official-52319",
+      "name": "Viking",
+      "initials": "VFK",
+      "aliases": [
+        "52319",
+        "VFK",
+        "Viking",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/52319.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/52319.png"
+      ],
+      "asset": "uefa-champions-league-official-52319.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52319.png",
+      "sha256": "bc3e53ba516edcc81287879a99141ae5677a05d6917bae707958bf46d5e5e0d3"
+    },
+    {
+      "id": "uefa-champions-league-official:63405",
+      "slug": "uefa-champions-league-official-63405",
+      "name": "LASK",
+      "initials": "LASK",
+      "aliases": [
+        "63405",
+        "LASK",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/63405.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-champions-league-official/63405.png"
+      ],
+      "asset": "uefa-champions-league-official-63405.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/63405.png",
+      "sha256": "48748babde0b6c48b97fe83a8f36467dacd0f02618b085fef342a594397fd9ec"
+    },
+    {
+      "id": "premier-league-official:coventry-city",
+      "slug": "premier-league-official-coventry-city",
+      "name": "Coventry City",
+      "initials": "CC",
+      "aliases": [
+        "Coventry City",
+        "coventry-city",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/coventry-city.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/9.svg"
+      ],
+      "asset": "premier-league-official-coventry-city.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/9.svg",
+      "sha256": "24a0fdc400f20bb7a2c3b67742b4c72e81b67b24602a69b10b18a10edc03a733"
+    },
+    {
+      "id": "premier-league-official:ipswich-town",
+      "slug": "premier-league-official-ipswich-town",
+      "name": "Ipswich Town",
+      "initials": "IT",
+      "aliases": [
+        "Ipswich Town",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/ipswich-town.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/40.svg",
+        "ipswich-town"
+      ],
+      "asset": "premier-league-official-ipswich-town.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/40.svg",
+      "sha256": "ad9bea65d13a4311d0f9a4e4a60e8ec9769ddd360968386e9fda2c03ae8b608a"
+    },
+    {
+      "id": "premier-league-official:hull-city",
+      "slug": "premier-league-official-hull-city",
+      "name": "Hull City",
+      "initials": "HC",
+      "aliases": [
+        "Hull City",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/premier-league-official/hull-city.svg",
+        "https://resources.premierleague.com/premierleague25/badges-alt/88.svg",
+        "hull-city"
+      ],
+      "asset": "premier-league-official-hull-city.svg",
+      "source": "https://resources.premierleague.com/premierleague25/badges-alt/88.svg",
+      "sha256": "eedc6ee0f255653ad2e9e5cfdbafae3fcae93fe7108438478f830f6904cf5668"
+    },
+    {
+      "id": "uefa-europa-league-official:60609",
+      "slug": "uefa-europa-league-official-60609",
+      "name": "Qarabağ",
+      "initials": "QAR",
+      "aliases": [
+        "60609",
+        "QAR",
+        "Qarabağ",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/60609.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/60609.png"
+      ],
+      "asset": "uefa-europa-league-official-60609.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/60609.png",
+      "sha256": "6590b1545cc04f4183bce1ea54f98b68bbe8d430ec1dbca8e6bdcf1c5cacb85c"
+    },
+    {
+      "id": "uefa-europa-league-official:2610384",
+      "slug": "uefa-europa-league-official-2610384",
+      "name": "Vestri",
+      "initials": "VES",
+      "aliases": [
+        "2610384",
+        "Vestri",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/2610384.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/2610384.png"
+      ],
+      "asset": "uefa-europa-league-official-2610384.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/2610384.png",
+      "sha256": "11d290eee8b70d0a3db85db67bae84c914821880d676c1817c7c2f7536bb2887"
+    },
+    {
+      "id": "uefa-europa-league-official:52723",
+      "slug": "uefa-europa-league-official-52723",
+      "name": "Dynamo Kyiv",
+      "initials": "DKY",
+      "aliases": [
+        "52723",
+        "DKY",
+        "Dynamo Kyiv",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/52723.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/52723.png"
+      ],
+      "asset": "uefa-europa-league-official-52723.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52723.png",
+      "sha256": "99bb7f55f42d04c8346207ca6c53abd37544e89f05504514aa2bdb644b293019"
+    },
+    {
+      "id": "uefa-europa-league-official:53025",
+      "slug": "uefa-europa-league-official-53025",
+      "name": "U. Cluj",
+      "initials": "CLU",
+      "aliases": [
+        "53025",
+        "CLU",
+        "U. Cluj",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/53025.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/53025.png"
+      ],
+      "asset": "uefa-europa-league-official-53025.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/53025.png",
+      "sha256": "d84ba1da5678ce90c99f8829c10f64a1407cc203ca2d1bab55606cf61c920f08"
+    },
+    {
+      "id": "uefa-europa-league-official:69606",
+      "slug": "uefa-europa-league-official-69606",
+      "name": "Sheriff",
+      "initials": "SHE",
+      "aliases": [
+        "69606",
+        "SHE",
+        "Sheriff",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/69606.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/69606.png"
+      ],
+      "asset": "uefa-europa-league-official-69606.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/69606.png",
+      "sha256": "7de8b16428aa3a378e72ceeb8c4b5bd0cd0fc6f37b4930517974b42093b3f58e"
+    },
+    {
+      "id": "uefa-europa-league-official:77916",
+      "slug": "uefa-europa-league-official-77916",
+      "name": "Aluminij",
+      "initials": "ALU",
+      "aliases": [
+        "77916",
+        "ALU",
+        "Aluminij",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/77916.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/77916.png"
+      ],
+      "asset": "uefa-europa-league-official-77916.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/77916.png",
+      "sha256": "6d0f82169565ba261f2f90241f33143b791666227ce0ea3d6b4e5ebf192be0d8"
+    },
+    {
+      "id": "uefa-europa-league-official:52359",
+      "slug": "uefa-europa-league-official-52359",
+      "name": "Hajduk Split",
+      "initials": "HAJ",
+      "aliases": [
+        "52359",
+        "HAJ",
+        "Hajduk Split",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/52359.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/52359.png"
+      ],
+      "asset": "uefa-europa-league-official-52359.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52359.png",
+      "sha256": "9d586229d41e610c9d9bf770ed905841d97d33ce8a8bd20b0aba1944b57c6b68"
+    },
+    {
+      "id": "uefa-europa-league-official:61601",
+      "slug": "uefa-europa-league-official-61601",
+      "name": "Žilina",
+      "initials": "ZIL",
+      "aliases": [
+        "61601",
+        "ZIL",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/61601.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/61601.png",
+        "Žilina"
+      ],
+      "asset": "uefa-europa-league-official-61601.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/61601.png",
+      "sha256": "bffeef09a548e9628f4e875110ae805fb593b3b3fef5d9cccdd3719b76b6ed6b"
+    },
+    {
+      "id": "uefa-europa-league-official:2608297",
+      "slug": "uefa-europa-league-official-2608297",
+      "name": "CSKA Sofia",
+      "initials": "CSO",
+      "aliases": [
+        "2608297",
+        "CSKA Sofia",
+        "CSO",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/2608297.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/2608297.png"
+      ],
+      "asset": "uefa-europa-league-official-2608297.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/2608297.png",
+      "sha256": "1a9a16f18d03eb28725a348f5864421f557ff460613e9a79fea23e4648219d12"
+    },
+    {
+      "id": "uefa-europa-league-official:50086",
+      "slug": "uefa-europa-league-official-50086",
+      "name": "Derry",
+      "initials": "DER",
+      "aliases": [
+        "50086",
+        "DER",
+        "Derry",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50086.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/50086.png"
+      ],
+      "asset": "uefa-europa-league-official-50086.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50086.png",
+      "sha256": "8478d4a3d8ec07b4866b931bf7cfdb6a7094a7eb52c9300e4c6df3cb1c08f2dd"
+    },
+    {
+      "id": "uefa-europa-league-official:52810",
+      "slug": "uefa-europa-league-official-52810",
+      "name": "Vojvodina",
+      "initials": "VOJ",
+      "aliases": [
+        "52810",
+        "VOJ",
+        "Vojvodina",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/52810.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/52810.png"
+      ],
+      "asset": "uefa-europa-league-official-52810.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52810.png",
+      "sha256": "4a3280b67875a0e6e92202c420843420faa2e5f00ad56925139ee2a7b6aa2e6f"
+    },
+    {
+      "id": "uefa-europa-league-official:52298",
+      "slug": "uefa-europa-league-official-52298",
+      "name": "Ferencváros",
+      "initials": "FER",
+      "aliases": [
+        "52298",
+        "FER",
+        "Ferencváros",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/52298.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/52298.png"
+      ],
+      "asset": "uefa-europa-league-official-52298.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52298.png",
+      "sha256": "8eb846d1eba38b0f621a1d399bbece5ff133c551843585cea18bbb4d73a012e3"
+    },
+    {
+      "id": "uefa-europa-league-official:52343",
+      "slug": "uefa-europa-league-official-52343",
+      "name": "Hammarby",
+      "initials": "HAM",
+      "aliases": [
+        "52343",
+        "HAM",
+        "Hammarby",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/52343.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/52343.png"
+      ],
+      "asset": "uefa-europa-league-official-52343.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52343.png",
+      "sha256": "fc1eb8b9b569913ef381987c54b6e756a73817d4b2e57d904078cf6a2117870e"
+    },
+    {
+      "id": "uefa-europa-league-official:50074",
+      "slug": "uefa-europa-league-official-50074",
+      "name": "Anderlecht",
+      "initials": "AND",
+      "aliases": [
+        "50074",
+        "AND",
+        "Anderlecht",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50074.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/50074.png"
+      ],
+      "asset": "uefa-europa-league-official-50074.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50074.png",
+      "sha256": "b8861a37073dd5550f692dd0f7fe3dd862ced7adc8f0f7bd39061fa81dd4dff8"
+    },
+    {
+      "id": "uefa-europa-league-official:53001",
+      "slug": "uefa-europa-league-official-53001",
+      "name": "Tromsø",
+      "initials": "TRO",
+      "aliases": [
+        "53001",
+        "TRO",
+        "Tromsø",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/53001.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/53001.png"
+      ],
+      "asset": "uefa-europa-league-official-53001.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/53001.png",
+      "sha256": "8fc1eee605fb2469d7f349c71aae1b1a3cc11139d436e53e134061641717a479"
+    },
+    {
+      "id": "uefa-europa-league-official:59878",
+      "slug": "uefa-europa-league-official-59878",
+      "name": "Hradec Králové",
+      "initials": "HRA",
+      "aliases": [
+        "59878",
+        "HRA",
+        "Hradec Králové",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/59878.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/59878.png"
+      ],
+      "asset": "uefa-europa-league-official-59878.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/59878.png",
+      "sha256": "a55175b8367a76aa746e874445fffcf11f6e779b124cc7445110fc3f4ace059b"
+    },
+    {
+      "id": "uefa-europa-league-official:57477",
+      "slug": "uefa-europa-league-official-57477",
+      "name": "M. Tel-Aviv",
+      "initials": "MTA",
+      "aliases": [
+        "57477",
+        "M. Tel-Aviv",
+        "MTA",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/57477.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/57477.png"
+      ],
+      "asset": "uefa-europa-league-official-57477.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/57477.png",
+      "sha256": "ed67cdc4ea11eea56dd266f2caaf7afecd05bc7b0dc3a8dc621a678482bbdf4d"
+    },
+    {
+      "id": "uefa-europa-league-official:50130",
+      "slug": "uefa-europa-league-official-50130",
+      "name": "PAOK",
+      "initials": "PAOK",
+      "aliases": [
+        "50130",
+        "PAOK",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50130.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/50130.png"
+      ],
+      "asset": "uefa-europa-league-official-50130.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50130.png",
+      "sha256": "74e953534f57c0386ba0fccd236b5da8ef5435013173b27c5ac1444bf511def1"
+    },
+    {
+      "id": "uefa-europa-league-official:52818",
+      "slug": "uefa-europa-league-official-52818",
+      "name": "Twente",
+      "initials": "TWE",
+      "aliases": [
+        "52818",
+        "TWE",
+        "Twente",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/52818.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/52818.png"
+      ],
+      "asset": "uefa-europa-league-official-52818.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52818.png",
+      "sha256": "6f8019117b07eaa63f190742dcb20175319628b195d87b52b1454326010e746e"
+    },
+    {
+      "id": "uefa-europa-league-official:50157",
+      "slug": "uefa-europa-league-official-50157",
+      "name": "Beşiktaş",
+      "initials": "BES",
+      "aliases": [
+        "50157",
+        "BES",
+        "Beşiktaş",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50157.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/50157.png"
+      ],
+      "asset": "uefa-europa-league-official-50157.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50157.png",
+      "sha256": "c75f1fbee8a794b18b9854b7a7b1829b48c199f052bf4573464c7c4c655b2b61"
+    },
+    {
+      "id": "uefa-europa-league-official:75795",
+      "slug": "uefa-europa-league-official-75795",
+      "name": "Midtjylland",
+      "initials": "MID",
+      "aliases": [
+        "75795",
+        "MID",
+        "Midtjylland",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/75795.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/75795.png"
+      ],
+      "asset": "uefa-europa-league-official-75795.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/75795.png",
+      "sha256": "e7a8e5d834c4a6fa7e4ba1051c5242f18c4ba8f8dbaa0518b7962dc83eab9fb4"
+    },
+    {
+      "id": "uefa-europa-league-official:51151",
+      "slug": "uefa-europa-league-official-51151",
+      "name": "St. Gallen",
+      "initials": "SGA",
+      "aliases": [
+        "51151",
+        "SGA",
+        "St. Gallen",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/51151.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/51151.png"
+      ],
+      "asset": "uefa-europa-league-official-51151.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/51151.png",
+      "sha256": "e9476c1bae8339d0aa9bb92b906b3c4f9b75241a41ef636196e285ea3a1bc9cc"
+    },
+    {
+      "id": "uefa-europa-league-official:50147",
+      "slug": "uefa-europa-league-official-50147",
+      "name": "Benfica",
+      "initials": "BEN",
+      "aliases": [
+        "50147",
+        "BEN",
+        "Benfica",
+        "SL Benfica",
+        "b89e3478-8a7a-481c-943e-2d33158d9fa3",
+        "benfica",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50147.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/50147.png"
+      ],
+      "asset": "uefa-europa-league-official-50147.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50147.png",
+      "sha256": "bb2b41cb80b01649543bb9a3ebb493af41dbd7440aaf9d81152da297271f6243"
+    },
+    {
+      "id": "uefa-europa-league-official:2609532",
+      "slug": "uefa-europa-league-official-2609532",
+      "name": "Pafos",
+      "initials": "PAF",
+      "aliases": [
+        "2609532",
+        "PAF",
+        "Pafos",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/2609532.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/2609532.png"
+      ],
+      "asset": "uefa-europa-league-official-2609532.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/2609532.png",
+      "sha256": "fb5203e3476d65d206b0732e84f3347741bf425044b626590ee79e0881b6dbc7"
+    },
+    {
+      "id": "uefa-europa-league-official:2600277",
+      "slug": "uefa-europa-league-official-2600277",
+      "name": "Jagiellonia",
+      "initials": "JAG",
+      "aliases": [
+        "2600277",
+        "JAG",
+        "Jagiellonia",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/2600277.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/2600277.png"
+      ],
+      "asset": "uefa-europa-league-official-2600277.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/2600277.png",
+      "sha256": "a4fe8a507172e8150b577edfc6302d5c5c32d62e6abf1560510a8cc65543b7a3"
+    },
+    {
+      "id": "uefa-europa-league-official:50121",
+      "slug": "uefa-europa-league-official-50121",
+      "name": "Rangers",
+      "initials": "RAN",
+      "aliases": [
+        "50121",
+        "RAN",
+        "Rangers",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50121.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/50121.png"
+      ],
+      "asset": "uefa-europa-league-official-50121.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50121.png",
+      "sha256": "9681cc0620fd12a48f6a69ca97551580ab2ad11ac5176ec482b413b16f121e95"
+    },
+    {
+      "id": "uefa-europa-league-official:50030",
+      "slug": "uefa-europa-league-official-50030",
+      "name": "Salzburg",
+      "initials": "SAL",
+      "aliases": [
+        "50030",
+        "RB Salzburg",
+        "SAL",
+        "Salzburg",
+        "d9611916-c4d9-4faf-abae-d7041eafdc7a",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/50030.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/50030.png",
+        "rb-salzburg"
+      ],
+      "asset": "uefa-europa-league-official-50030.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/50030.png",
+      "sha256": "a2752fb36c8753779b9631c33b872e58464de3bd2fecdf7ca6e83e2eb7602fae"
+    },
+    {
+      "id": "uefa-europa-league-official:52731",
+      "slug": "uefa-europa-league-official-52731",
+      "name": "Trabzonspor",
+      "initials": "TRA",
+      "aliases": [
+        "52731",
+        "TRA",
+        "Trabzonspor",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/52731.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/52731.png"
+      ],
+      "asset": "uefa-europa-league-official-52731.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52731.png",
+      "sha256": "6dc733dbaa7ca44dce85511a613516cbd393c1d2f13f8e77c945fecaba84931e"
+    },
+    {
+      "id": "uefa-europa-league-official:52314",
+      "slug": "uefa-europa-league-official-52314",
+      "name": "Lillestrøm",
+      "initials": "LST",
+      "aliases": [
+        "52314",
+        "LST",
+        "Lillestrøm",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/52314.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/52314.png"
+      ],
+      "asset": "uefa-europa-league-official-52314.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52314.png",
+      "sha256": "2cee42c85d9fb3822531b96aa22f3c38e526a607500f0f60a8e4c1af5fdeaa2f"
+    },
+    {
+      "id": "uefa-europa-league-official:52883",
+      "slug": "uefa-europa-league-official-52883",
+      "name": "Sint-Truidense",
+      "initials": "STR",
+      "aliases": [
+        "52883",
+        "STR",
+        "Sint-Truidense",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/52883.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/52883.png"
+      ],
+      "asset": "uefa-europa-league-official-52883.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52883.png",
+      "sha256": "db7bb10088957c7e1b6accd6d5af08111a1c79a7f93ef760a2a3d5587a86ba0b"
+    },
+    {
+      "id": "uefa-europa-league-official:64388",
+      "slug": "uefa-europa-league-official-64388",
+      "name": "Viktoria Plzeň",
+      "initials": "PLZ",
+      "aliases": [
+        "64388",
+        "PLZ",
+        "Viktoria Plzeň",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/64388.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/64388.png"
+      ],
+      "asset": "uefa-europa-league-official-64388.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/64388.png",
+      "sha256": "ae941241c2ce909d4fa5bb8e2ec80b62734acdf3382750f4e835013783bd5d5f"
+    },
+    {
+      "id": "uefa-europa-league-official:52953",
+      "slug": "uefa-europa-league-official-52953",
+      "name": "OFI Crete",
+      "initials": "OFI",
+      "aliases": [
+        "52953",
+        "OFI",
+        "OFI Crete",
+        "https://img.uefa.com/imgml/TP/teams/logos/70x70/52953.png",
+        "https://loxcwbfukbqziuxgkfcm.supabase.co/storage/v1/object/public/gikundiro-media/fc49b605-6eda-408d-afc6-46e11bc17710/library/team-crests/v20260823-1/uefa-europa-league-official/52953.png"
+      ],
+      "asset": "uefa-europa-league-official-52953.png",
+      "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52953.png",
+      "sha256": "394ae37519fb52e5fb33153eceb245785afbc81bba39dfa0b0331ed722cf09a3"
+    }
+  ],
+  "provenance": "Existing official competition library with SHA-256 validation, plus federation/club-published crest files retrieved 20 September 2026. Unmapped records have no invented crest."
+}

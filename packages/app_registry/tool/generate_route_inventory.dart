@@ -351,7 +351,8 @@ bool _matchesScreenArchetype(Map<String, Object?> route, String archetype) {
   final surface = route['surface'] as String;
   final path = route['path'] as String;
   final kind = route['kind'] as String;
-  final rendered = kind != 'api_route' && kind != 'http_route';
+  final rendered =
+      kind != 'api_route' && kind != 'http_route' && kind != 'redirect';
   bool containsAny(Iterable<String> fragments) => fragments.any(path.contains);
 
   return switch (archetype) {
@@ -1265,6 +1266,12 @@ List<Map<String, Object?>> _collectNextRoutes(Directory workspace) {
     final path = normalized.isEmpty ? '/' : '/$normalized';
     final isApi = path == '/api' || path.startsWith('/api/');
     final isRouteHandler = file.path.endsWith('/route.ts');
+    final redirectTarget =
+        !isRouteHandler &&
+            path == '/admin/contributions' &&
+            file.readAsStringSync().contains('redirect(`/admin/community?')
+        ? '/admin/community?tab=groups'
+        : null;
     final isDeterministicAsset =
         isRouteHandler &&
         const <String>{'/brand-mark.svg', '/brand-surface.svg'}.contains(path);
@@ -1304,7 +1311,9 @@ List<Map<String, Object?>> _collectNextRoutes(Directory workspace) {
       'surface': surface,
       'path': path,
       'name': null,
-      'kind': isApi
+      'kind': redirectTarget != null
+          ? 'redirect'
+          : isApi
           ? 'api_route'
           : isRouteHandler
           ? 'http_route'
@@ -1313,7 +1322,9 @@ List<Map<String, Object?>> _collectNextRoutes(Directory workspace) {
       'guard': isAdmin || isApi
           ? 'proxy plus server-side authorization'
           : 'route-specific',
-      'presentation': isApi || isRouteHandler
+      'presentation': redirectTarget != null
+          ? 'compatibility redirect'
+          : isApi || isRouteHandler
           ? 'endpoint'
           : 'responsive web page',
       'endpoint_state_contract': isDeterministicAsset
@@ -1337,10 +1348,11 @@ List<Map<String, Object?>> _collectNextRoutes(Directory workspace) {
           ? 'controlled_history_surface'
           : null,
       'recommendation': null,
-      'target_path': null,
+      'target_path': redirectTarget,
       'source': file.path.substring(workspace.path.length + 1),
-      'required_state_evidence':
-          isDeterministicAsset || isDeterministicVerifierDocument
+      'required_state_evidence': redirectTarget != null
+          ? <String>['redirect_navigation']
+          : isDeterministicAsset || isDeterministicVerifierDocument
           ? <String>['deterministic_success']
           : isApi || isRouteHandler
           ? <String>[

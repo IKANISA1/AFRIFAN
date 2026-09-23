@@ -66,6 +66,10 @@ export async function validateWebCapture(root, directory, binding) {
   if (manifest.not_applicable_states.length) assert(typeof manifest.not_applicable_rationale === "string" && manifest.not_applicable_rationale.trim().length > 0, "N/A states require a reason");
   const require = createRequire(path.join(repository, webRelative, "package.json"));
   const sharp = require("sharp");
+  // Decode one capture at a time without retaining hundreds of image pipelines.
+  // Long high-DPR pages otherwise exhaust local memory and temporary disk.
+  sharp.cache(false);
+  sharp.concurrency(1);
   const screenshots = [], cells = new Set(), baseFiles = new Set();
   for (const capture of manifest.captures) {
     const route = capture.route ?? manifest.route;
@@ -85,8 +89,18 @@ export async function validateWebCapture(root, directory, binding) {
       assert(!screenshots.some((entry) => entry.file === tile.file), "Screenshot tile is used twice");
       const file = path.join(full, tile.file);
       const image = sharp(file, { failOn: "warning", limitInputPixels: 200_000_000 });
-      const metadata = await image.metadata();
-      await image.stats(); // Decode the image, including compressed pixel data.
+      let metadata;
+      try {
+        metadata = await image.metadata();
+        // Decode every pixel without computing unused entropy/dominant-colour
+        // statistics for thousands of tall screenshots.
+        const decoded = await image.raw({ depth: "uchar" }).toBuffer({ resolveWithObject: true });
+        assert(decoded.info.width === metadata.width && decoded.info.height === metadata.height &&
+          decoded.data.length === decoded.info.width * decoded.info.height * decoded.info.channels,
+        `Incomplete decoded pixel coverage: ${tile.file}`);
+      } finally {
+        image.destroy();
+      }
       const width = (profile.full_page ? profile.document.width : profile.viewport.width) * profile.device_pixel_ratio;
       assert(metadata.format === "png" && Math.abs(metadata.width - width) <= 1 && Math.abs(metadata.height - tile.height * profile.device_pixel_ratio) <= 1, `Screenshot dimensions do not match the recorded profile: ${tile.file}`);
       screenshots.push({ file: tile.file, sha256: artifacts.get(tile.file), width: metadata.width, height: metadata.height });

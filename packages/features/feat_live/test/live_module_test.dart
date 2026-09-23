@@ -1,6 +1,5 @@
 import 'package:core_router/core_router.dart';
 import 'package:feat_live/feat_live.dart';
-import 'package:feat_live/src/widgets/live_match_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -64,6 +63,31 @@ void main() {
       expect(module.isEnabled({'live': false}), isFalse);
     });
 
+    testWidgets('legacy news links open the canonical Club reader', (
+      tester,
+    ) async {
+      final router = GoRouter(
+        initialLocation: '/live/news/club%20update',
+        routes: <RouteBase>[
+          ...module.routes,
+          GoRoute(
+            path: '/club/news/:articleId',
+            builder: (_, state) => Scaffold(
+              body: Text('Article: ${state.pathParameters['articleId']}'),
+            ),
+          ),
+        ],
+      );
+      addTearDown(router.dispose);
+      await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+      await tester.pumpAndSettle();
+      expect(find.text('Article: club update'), findsOneWidget);
+      expect(
+        router.routeInformationProvider.value.uri.toString(),
+        '/club/news/club%20update',
+      );
+    });
+
     test(
       'declares route presentation decisions for the minimal app policy',
       () {
@@ -94,7 +118,7 @@ void main() {
           routes: <RouteBase>[
             redirectRoute,
             GoRoute(
-              path: '/fanzone/match/:fixtureId',
+              path: '/predict/match/:fixtureId',
               builder: (context, state) =>
                   Scaffold(body: Text('Target: ${state.uri}')),
             ),
@@ -110,7 +134,7 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        const target = '/fanzone/match/live';
+        const target = '/predict/match/live';
         expect(find.text('Target: $target'), findsOneWidget);
         expect(router.routeInformationProvider.value.uri.toString(), target);
         expect(
@@ -121,30 +145,4 @@ void main() {
     }
   });
 
-  // ═══════════════════════════════════════════════════════════
-  // MatchIntelEvent (data model)
-  // ═══════════════════════════════════════════════════════════
-
-  group('MatchIntelEvent', () {
-    test('stores minute, title, and body correctly', () {
-      const event = MatchIntelEvent(
-        minute: "45'",
-        title: 'GOAL',
-        body: 'Nshuti scores from a free kick.',
-      );
-
-      expect(event.minute, "45'");
-      expect(event.title, 'GOAL');
-      expect(event.body, 'Nshuti scores from a free kick.');
-    });
-
-    test('supports const construction', () {
-      // Verify const semantics (should compile without issues)
-      const events = [
-        MatchIntelEvent(minute: "12'", title: 'CORNER', body: 'Left side'),
-        MatchIntelEvent(minute: "23'", title: 'YELLOW CARD', body: 'Foul'),
-      ];
-      expect(events, hasLength(2));
-    });
-  });
 }

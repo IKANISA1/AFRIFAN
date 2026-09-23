@@ -4,6 +4,7 @@ import 'package:core_theme/core_theme.dart';
 import 'package:feat_ticketing/src/providers/e_ticket_provider.dart';
 import 'package:feat_ticketing/src/screens/e_ticket_qr_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -46,6 +47,33 @@ void main() {
 
     expect(controller.refreshCalls, 1);
   });
+
+  for (final width in <double>[320, 390, 430]) {
+    for (final scale in <double>[1, 2]) {
+      testWidgets(
+        'wallet names stay readable at $width and text scale $scale',
+        (tester) async {
+          await _pumpRoute(
+            tester,
+            controller: _Controller(AsyncData<ETicketState>(_ready())),
+            capture: false,
+            size: Size(width, 844),
+            textScale: scale,
+          );
+          for (final label in <String>['Apple Wallet', 'Google Wallet']) {
+            final text = find.text(label);
+            await tester.ensureVisible(text);
+            await tester.pumpAndSettle();
+            final paragraph = tester.renderObject<RenderParagraph>(
+              find.descendant(of: text, matching: find.byType(RichText)),
+            );
+            expect(paragraph.didExceedMaxLines, isFalse, reason: label);
+          }
+          expect(tester.takeException(), isNull);
+        },
+      );
+    }
+  }
 
   testWidgets('golden E-ticket loading state', (tester) async {
     await _pumpState(

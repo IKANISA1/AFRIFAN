@@ -1,5 +1,7 @@
 "use client";
 
+import { TeamCard } from "@/components/team-card";
+
 import Link from "next/link";
 import {
   type PointerEvent,
@@ -405,7 +407,7 @@ export function StandingsSurface({
                 <div className="standings-featured-rank">
                   <strong>#{selected.position}</strong>
                   <div>
-                    <h2>{selected.club}</h2>
+                    <h2><TeamCard name={selected.club} /></h2>
                     <p>{copy.positionInRace}</p>
                   </div>
                 </div>
@@ -479,7 +481,7 @@ export function StandingsSurface({
                     >
                       <b>#{row.position}</b>
                       <span>
-                        <strong>{row.club}</strong>
+                        <TeamCard name={row.club} />
                         <small>
                           {copy.played}: {row.played} · {copy.goalDifference}:{" "}
                           {row.goalDifference > 0

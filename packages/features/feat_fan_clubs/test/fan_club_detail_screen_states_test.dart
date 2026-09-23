@@ -192,7 +192,7 @@ void main() {
       size: const Size(320, 720),
       textScale: 2,
       check: (tester) async {
-        final action = find.text('Supporters');
+        final action = find.text('Copy link');
         await tester.ensureVisible(action);
         await tester.pumpAndSettle();
         final actionRect = tester.getRect(action);
@@ -224,6 +224,17 @@ void main() {
       tester,
       id: 'dark',
       value: AsyncData<FanClubDetailState>(_ready()),
+      check: (_) async {
+        expect(
+          find.text(
+            'A verified public community for Rayon Sports supporters in Kigali.',
+          ),
+          findsOneWidget,
+        );
+        expect(find.text('Status'), findsNothing);
+        expect(find.text('Active'), findsNothing);
+        expect(find.text('Joining options'), findsNothing);
+      },
     );
   });
 
@@ -336,9 +347,9 @@ Future<void> _pumpRoute(
     initialLocation: '/fan-clubs/blue-family',
     routes: [
       GoRoute(
-        path: '/fanzone',
+        path: '/predict',
         builder: (context, state) =>
-            const Scaffold(body: Text('Fan Zone Supporters')),
+            const Scaffold(body: Text('Fan clubs directory')),
       ),
       GoRoute(
         path: '/fan-clubs/:clubId',

@@ -190,7 +190,7 @@ select ok(
       from pg_proc as procedure
       join pg_namespace as namespace on namespace.oid = procedure.pronamespace
      where namespace.nspname = 'public'
-       and procedure.proname = 'prediction_place'
+       and procedure.proname = 'predict_place'
   ),
   'football prediction storage and server entry point remain present'
 );
