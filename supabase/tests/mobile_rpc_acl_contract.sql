@@ -54,12 +54,14 @@ insert into expected_mobile_rpc_acl values
   ('public.prediction_get_match_center(uuid)', true, true, true),
   ('public.prediction_get_user_badges(uuid)', false, true, false),
   ('public.prediction_get_user_stats()', false, true, false),
+  ('public.prepare_membership_payment(text)', false, true, true),
+  ('public.prepare_membership_payment_for_club(text,bigint)', false, true, false),
   ('public.purchase_club_tickets(uuid,uuid,text,integer,text)', false, false, true);
 
 select is(
   (select count(*)::integer from expected_mobile_rpc_acl),
-  46,
-  'the current football-only mobile and supporting service RPC denominator is 46'
+  43,
+  'the current mobile and supporting service RPC denominator includes both paid membership entrypoints'
 );
 
 -- The 20260906082522 migration deliberately removed Challenge after stake
@@ -149,7 +151,7 @@ select ok(
     where acl.grantee = 0
       and acl.privilege_type = 'EXECUTE'
   ),
-  'none of the 48 functions inherits execution through PUBLIC'
+  'none of the reviewed functions inherits execution through PUBLIC'
 );
 
 select ok(
