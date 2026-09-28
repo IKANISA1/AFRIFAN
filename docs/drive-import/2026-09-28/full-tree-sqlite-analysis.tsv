@@ -1,0 +1,5 @@
+drive_path	drive_id	integrity_check	tables
+cloudflare/rayon-public/.wrangler/state/v3/cache/miniflare-CacheObject/metadata.sqlite	1dEKrNSmsTnCvmCTHpNZ5C7NKlRhSY1aC	ok	0
+cloudflare/rayon-public/.wrangler/state/v3/d1/miniflare-D1DatabaseObject/metadata.sqlite	1r8Xps6f83HUFx4EVCHb8IPrFOBKx-kq2	ok	0
+cloudflare/rayon-public/.wrangler/state/v3/observability/miniflare-wobs-trace-store/a590acd76969f996ec6e4b599c3c09f58c283a76f2d61392b5d3046caf557602.sqlite	1LwTifcZnbiaNnu_ni4DVgEkYXCgDg7CB	ok	0
+cloudflare/rayon-public/.wrangler/state/v3/observability/miniflare-wobs-trace-store/metadata.sqlite	1PEitvve2hOMFlYtebQUPJXwpOP2jPdMg	ok	0

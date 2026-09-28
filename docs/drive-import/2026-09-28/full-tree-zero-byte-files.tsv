@@ -1,0 +1,628 @@
+drive_path	drive_id	role	extension	analysis_result
+.dart_tool/hooks_runner/objective_c/1f2474df3a/stderr.txt	1xKEvZmXmTAW7NylcmGem5zIXqFEqYM8h	generated_tooling	.txt	utf8_text_read
+.dart_tool/hooks_runner/objective_c/407c785a7d/stderr.txt	1al_h6JhI2TEgWgHyrr30o0V5iPSic_lX	generated_tooling	.txt	utf8_text_read
+.dart_tool/hooks_runner/objective_c/7e31ff87f4/stderr.txt	1Xwc2fwuREbUxAK8lm9gfEnXCITW0hnQ4	generated_tooling	.txt	utf8_text_read
+.dart_tool/hooks_runner/objective_c/8b64ce388a/stderr.txt	16fuBSeyVv3vDyeHN003ePoUiafpK1bNX	generated_tooling	.txt	utf8_text_read
+.dart_tool/hooks_runner/objective_c/9b2539a35a/stderr.txt	1C-jyPDBEdnKw3BDXIBVSkle71cyJIuIv	generated_tooling	.txt	utf8_text_read
+.dart_tool/hooks_runner/objective_c/9fb02c5622/stderr.txt	1J1lKL38XG3xIMF5Mi9hslI_nf-2ro5fB	generated_tooling	.txt	utf8_text_read
+.dart_tool/hooks_runner/objective_c/ad74f6fe0c/stderr.txt	17mhggYB7fFH-FEfk1w9NVr9CXH3PC4-G	generated_tooling	.txt	utf8_text_read
+.dart_tool/hooks_runner/objective_c/b8c2d55d59/stderr.txt	188UDbYTqQPrXQlsegIJl6jSf5RQIJ-Bp	generated_tooling	.txt	utf8_text_read
+.dart_tool/hooks_runner/objective_c/cd662d2432/stderr.txt	1H7E5JLOQi5LXyl7Lpc8CNVg_0hezpVUI	generated_tooling	.txt	utf8_text_read
+.dart_tool/hooks_runner/objective_c/d092f97139/stderr.txt	1g6A0vMtnr8JmSB3XDVPG0zy_e9C6M-08	generated_tooling	.txt	utf8_text_read
+apps/as_vita/android/.gradle/8.14/gc.properties	1pfW1xWHLYEwrHLT8s0AjGw3ZUaYHYsn3	project_source_or_docs	.properties	utf8_text_read
+apps/as_vita/android/.gradle/vcs-1/gc.properties	1a-ZW2q_Cv7xQN8Vv4Z_KAhGJQ46XXgYR	project_source_or_docs	.properties	utf8_text_read
+apps/as_vita/build/.cxx/debug/4l2p3z3q/arm64-v8a/.cmake/api/v1/query/client-agp/cache-v2	1cqfQ5_vBnTV2HXZcCoufFFkNEzpvTs2l	generated_build		utf8_text_read
+apps/as_vita/build/.cxx/debug/4l2p3z3q/arm64-v8a/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1viZ39B0vZpIMxcElFWq_wPPiJfPO5ldU	generated_build		utf8_text_read
+apps/as_vita/build/.cxx/debug/4l2p3z3q/arm64-v8a/.cmake/api/v1/query/client-agp/codemodel-v2	1m96BfJO_CvdB06F6EhTfq5N6cBpswKRf	generated_build		utf8_text_read
+apps/as_vita/build/.cxx/debug/4l2p3z3q/arm64-v8a/additional_project_files.txt	1gqysTGh5Bip-d0e-vvSUokUfUi7jJQxE	generated_build	.txt	utf8_text_read
+apps/as_vita/build/.cxx/debug/4l2p3z3q/armeabi-v7a/.cmake/api/v1/query/client-agp/cache-v2	1HBc3cb7nU3kdZwivPh-Jge6WrRXHEDOz	generated_build		utf8_text_read
+apps/as_vita/build/.cxx/debug/4l2p3z3q/armeabi-v7a/.cmake/api/v1/query/client-agp/cmakeFiles-v1	18x9USsOzV3pRUBKMt12ZDhTdW1ybaIdm	generated_build		utf8_text_read
+apps/as_vita/build/.cxx/debug/4l2p3z3q/armeabi-v7a/.cmake/api/v1/query/client-agp/codemodel-v2	1mpDcO3uj-7LGIXwFv6FWHS8Rn8GcPnC1	generated_build		utf8_text_read
+apps/as_vita/build/.cxx/debug/4l2p3z3q/armeabi-v7a/additional_project_files.txt	1S2mrnp1TtWvWgzh8MHe6v7XMrkM8_e1p	generated_build	.txt	utf8_text_read
+apps/as_vita/build/.cxx/debug/4l2p3z3q/x86_64/.cmake/api/v1/query/client-agp/cache-v2	1ZRu-M-ltOyuRz9ncG9W2NCb2AwMNFwz5	generated_build		utf8_text_read
+apps/as_vita/build/.cxx/debug/4l2p3z3q/x86_64/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1xi-72kBjBFtceEt-FZWeTJCxMLdyuXm8	generated_build		utf8_text_read
+apps/as_vita/build/.cxx/debug/4l2p3z3q/x86_64/.cmake/api/v1/query/client-agp/codemodel-v2	16Z08lko8d-jH_o5UIlDbQvOmu7jNgqAN	generated_build		utf8_text_read
+apps/as_vita/build/.cxx/debug/4l2p3z3q/x86_64/additional_project_files.txt	1BZnK3q7mpAVqbAtnhQ16jrf6bBHpkuaC	generated_build	.txt	utf8_text_read
+apps/as_vita/build/.cxx/debug/6b3b631q/arm64-v8a/.cmake/api/v1/query/client-agp/cache-v2	1gtti03JpAAWltIKHeJNgtoLnQMJHdK0H	generated_build		utf8_text_read
+apps/as_vita/build/.cxx/debug/6b3b631q/arm64-v8a/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1RxGBhs7f8byc-K7b45S1Dr0f58YsujPs	generated_build		utf8_text_read
+apps/as_vita/build/.cxx/debug/6b3b631q/arm64-v8a/.cmake/api/v1/query/client-agp/codemodel-v2	1aKF7iVLnaEAIMwsH_mMKqGYHMOjujgoV	generated_build		utf8_text_read
+apps/as_vita/build/.cxx/debug/6b3b631q/arm64-v8a/additional_project_files.txt	1ExdnOGBtqMONu33TdgJfIcSy6-moa85j	generated_build	.txt	utf8_text_read
+apps/as_vita/build/.cxx/debug/6b3b631q/armeabi-v7a/.cmake/api/v1/query/client-agp/cache-v2	1GwekF1eL93rknftIP_QtJG1gaZ0Q6X0F	generated_build		utf8_text_read
+apps/as_vita/build/.cxx/debug/6b3b631q/armeabi-v7a/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1p4ew52CYM2a8Z1YpOwZuHau5Rz95WKNz	generated_build		utf8_text_read
+apps/as_vita/build/.cxx/debug/6b3b631q/armeabi-v7a/.cmake/api/v1/query/client-agp/codemodel-v2	1_B8kDjeI9XVE6NOids6GSxEcMo2dJk2u	generated_build		utf8_text_read
+apps/as_vita/build/.cxx/debug/6b3b631q/armeabi-v7a/additional_project_files.txt	1taef_oZxvZ3gJPreXsJDy12kDP8DFve7	generated_build	.txt	utf8_text_read
+apps/as_vita/build/.cxx/debug/6b3b631q/x86_64/.cmake/api/v1/query/client-agp/cache-v2	13H5O-ruZ1olcRWQtX86U4olmAySCjSia	generated_build		utf8_text_read
+apps/as_vita/build/.cxx/debug/6b3b631q/x86_64/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1WKbh6yJFMlNxov8NiQ2tHzGQ28_EsqBr	generated_build		utf8_text_read
+apps/as_vita/build/.cxx/debug/6b3b631q/x86_64/.cmake/api/v1/query/client-agp/codemodel-v2	1XwJnvF_QpiIeQ2t62ADl3dGaSxqoDNrL	generated_build		utf8_text_read
+apps/as_vita/build/.cxx/debug/6b3b631q/x86_64/additional_project_files.txt	12BH7K3muTt1Lm_PZwC17u1enjgUT7gHl	generated_build	.txt	utf8_text_read
+apps/as_vita/build/app/intermediates/cxx/debug/4l2p3z3q/logs/arm64-v8a/configure_stderr.txt	1NllHdWbQDWaMPYUueSrYIE61RA3-wsTM	generated_build	.txt	utf8_text_read
+apps/as_vita/build/app/intermediates/cxx/debug/4l2p3z3q/logs/armeabi-v7a/configure_stderr.txt	1ivlVVrpgyQgh02S29JxASr6jqvvkarR3	generated_build	.txt	utf8_text_read
+apps/as_vita/build/app/intermediates/cxx/debug/4l2p3z3q/logs/x86_64/configure_stderr.txt	1hWfmNku2D09DH4D-A_CFsf4ISzEKpcwZ	generated_build	.txt	utf8_text_read
+apps/as_vita/build/app/intermediates/cxx/debug/6b3b631q/logs/arm64-v8a/configure_stderr.txt	18aG4KGeDVVYM1eXMQ3FtlZp8eTGtvWes	generated_build	.txt	utf8_text_read
+apps/as_vita/build/app/intermediates/cxx/debug/6b3b631q/logs/armeabi-v7a/configure_stderr.txt	1bbfZDGHOSLXYfgOgdKQVl_y_5j3yEwIt	generated_build	.txt	utf8_text_read
+apps/as_vita/build/app/intermediates/cxx/debug/6b3b631q/logs/x86_64/configure_stderr.txt	17zJzdOYn-mjSAcEhUGwAcfo7ZKGgJgD0	generated_build	.txt	utf8_text_read
+apps/as_vita/build/app_links/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	12Jvz8XaSp6ELtPPQdkZiOeSHQo-WuNPU	generated_build	.txt	utf8_text_read
+apps/as_vita/build/app_links/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1jAbweuNfF2y35q4CkQzopb4WJsRt7ABw	generated_build	.txt	utf8_text_read
+apps/as_vita/build/connectivity_plus/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1LX7vD2WVreTVhDXV3XFQiWkOl_d_Tli6	generated_build	.txt	utf8_text_read
+apps/as_vita/build/connectivity_plus/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1_fbbxLzAEJEUCn0c0y4o3O-WEx4ghrgU	generated_build	.txt	utf8_text_read
+apps/as_vita/build/firebase_analytics/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1LJAhQF0jCvoXCjzGM-M3v0rb-5nvrPnV	generated_build	.txt	utf8_text_read
+apps/as_vita/build/firebase_analytics/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1yE2aJIOZUbjsdaE8SQ5Dgs77vAQhGlCJ	generated_build	.txt	utf8_text_read
+apps/as_vita/build/firebase_app_check/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1l9Yj1LpKL7ulbmCpXbsPgjMIFOS7na7n	generated_build	.txt	utf8_text_read
+apps/as_vita/build/firebase_app_check/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1svdX_aC7TNNgAgi9cZYYixj3EEjYKRMT	generated_build	.txt	utf8_text_read
+apps/as_vita/build/firebase_core/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1PFGUfhFCYLXCvbhVDO3ctsJtPHy0Ucxt	generated_build	.txt	utf8_text_read
+apps/as_vita/build/firebase_core/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1yZz1Yh7DCcHM1RX3mAJRJOKeZVhtcvSs	generated_build	.txt	utf8_text_read
+apps/as_vita/build/firebase_crashlytics/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1lHwAK4FgIWPwCTNFcKoaTGEIyCruZc6R	generated_build	.txt	utf8_text_read
+apps/as_vita/build/firebase_messaging/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1Ke5z5Ny11yL0qyJDQF6v4PaK-ufvg5IG	generated_build	.txt	utf8_text_read
+apps/as_vita/build/firebase_messaging/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1PwpV1hAz1F7hgai50_qHH8KtFgR2h5l0	generated_build	.txt	utf8_text_read
+apps/as_vita/build/firebase_performance/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1YXnQKm0P61WXXs402BQTxiztLaQ1iD-g	generated_build	.txt	utf8_text_read
+apps/as_vita/build/firebase_performance/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1yrGBsUDikElpfLFiGeTzbQ7AIgs8qvqT	generated_build	.txt	utf8_text_read
+apps/as_vita/build/flutter_secure_storage/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1B9fnF-0A-s3P6MQFmlSC7_nRmg0o8Wgi	generated_build	.txt	utf8_text_read
+apps/as_vita/build/flutter_secure_storage/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1fiyJZ8rb1XgI9ikDNL4FaxRxU2tTNek9	generated_build	.txt	utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_firestore/cloud_firestore/ios/cloud_firestore/Sources/cloud_firestore/Resources/.gitkeep	1punCCNXxKhQc_rDetjnuqOvSlgmEnNDC	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_firestore/cloud_firestore/macos/cloud_firestore/Sources/cloud_firestore/Resources/.gitkeep	1k-tjsg8DdgyPRLIqhf8rQS-030uRxiYN	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_functions/cloud_functions/ios/cloud_functions/Sources/cloud_functions/Resources/.gitkeep	1KqodnDAh3WaSMquVI1H5yx4SlWspSiw-	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_functions/cloud_functions/macos/cloud_functions/Sources/cloud_functions/Resources/.gitkeep	1lOBAKasjyhKp68Bd0FjpkXhPgU_4ABjV	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ai/firebase_ai/ios/firebase_ai/Sources/firebase_ai/Resources/.gitkeep	1bIYEOBYuXCUUMP6-2pFr5k2BzB1StJRJ	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ai/firebase_ai/macos/firebase_ai/Sources/firebase_ai/Resources/.gitkeep	1M8xCcYGI1EDoPVS2-qBWFBjGoA-JCu4b	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_analytics/firebase_analytics/ios/firebase_analytics/Sources/firebase_analytics/Resources/.gitkeep	1WQTYd4sZf1zTuJt-jwUXrbZJHoE9K90J	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_check/firebase_app_check/ios/firebase_app_check/Sources/firebase_app_check/Resources/.gitkeep	1TcgpPEXEco2W2hzXtwEOYNZbWeQNbKnD	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_check/firebase_app_check/macos/firebase_app_check/Sources/firebase_app_check/Resources/.gitkeep	1aNHgrXdi-jx1FlFz78HyVxoAvUJVc5GP	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_installations/firebase_app_installations/ios/firebase_app_installations/Sources/firebase_app_installations/Resources/.gitkeep	1xtGGKQWdyzQrIjwMzljafGtJUPTxDU1G	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_installations/firebase_app_installations/macos/firebase_app_installations/Sources/firebase_app_installations/Resources/.gitkeep	1KsYKQwOwCEhR_tu8im8o8ALdFKtRR5lV	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_auth/firebase_auth/ios/firebase_auth/Sources/firebase_auth/Resources/.gitkeep	16PMSYpa7T3x9TtLPYX9tSAnOGt2GXPSv	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_auth/firebase_auth/macos/firebase_auth/Sources/firebase_auth/Resource/.gitkeep	1yComMueixC59hl2fNh2EHLezC_SwGZJx	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_core/firebase_core/ios/firebase_core/Sources/firebase_core/Resources/.gitkeep	1GNiyLFFeicxYJXIimx_1Om_KQtZievth	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_core/firebase_core/ios/firebase_core/Sources/firebase_core/include/firebase_core/.gitkeep	1IIcz9zT_aBgy1wXU7jZMwxuS8kC3OktX	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_crashlytics/firebase_crashlytics/ios/firebase_crashlytics/Sources/firebase_crashlytics/Resources/.gitkeep	1cxXkm7L8GOvPel64wUlcqCYcxdhxlJOG	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_crashlytics/firebase_crashlytics/macos/firebase_crashlytics/Sources/firebase_crashlytics/Resources/.gitkeep	1dnt_F62QPTivTlrLiBeTfBrvug6TjZOU	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_database/firebase_database/ios/firebase_database/Sources/firebase_database/Resources/.gitkeep	1Z9AwwmpAIwXS_0xc8479mov5IzR5hngs	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_database/firebase_database/macos/firebase_database/Sources/firebase_database/Resources/.gitkeep	1u7pNMyDl9FIKirxp_h0RYuxoASBi-kJ9	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_in_app_messaging/firebase_in_app_messaging/ios/firebase_in_app_messaging/Sources/firebase_in_app_messaging/Resources/.gitkeep	1sIadJ-NeEo2LgWbd68PNt2aG9ZCBqHY4	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ml_model_downloader/firebase_ml_model_downloader/ios/firebase_ml_model_downloader/Sources/firebase_ml_model_downloader/Resources/.gitkeep	1rMnlX0DWoQIzCRkduZVJ1GcDYgmPxrhH	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ml_model_downloader/firebase_ml_model_downloader/macos/firebase_ml_model_downloader/Sources/firebase_ml_model_downloader/Resources/.gitkeep	1r9iVQqeYunW9T7aCvJd_loc0-NGhtH_R	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_performance/firebase_performance/ios/firebase_performance/Sources/firebase_performance/Resources/.gitkeep	11t--3uMJnCOL3cjXU4noJaeLa0PQpDAm	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_remote_config/firebase_remote_config/ios/firebase_remote_config/Sources/firebase_remote_config/Resources/.gitkeep	1xXDuRAVdcE3l5IAY-H-lIlguOgo43XFF	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_remote_config/firebase_remote_config/macos/firebase_remote_config/Sources/firebase_remote_config/Resources/.gitkeep	1ifqDHLM8Twh--df4hlwbK4LIa8OJQsm9	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_storage/firebase_storage/ios/firebase_storage/Sources/firebase_storage/Resources/.gitkeep	1yFXK7rdQRkRCdw4U1bVUvQkTFfErSOd8	generated_build		utf8_text_read
+apps/as_vita/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_storage/firebase_storage/macos/firebase_storage/Sources/firebase_storage/Resources/.gitkeep	1xth8SpI6T_4bsl4wyFjsV2sJEGiDJ201	generated_build		utf8_text_read
+apps/as_vita/build/path_provider_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1-rv6YeJ0GWERxQTSGfCb24sYQPYUGxuq	generated_build	.txt	utf8_text_read
+apps/as_vita/build/path_provider_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1V7P13hywo0kz8btH0wqOV8XI69P2umwt	generated_build	.txt	utf8_text_read
+apps/as_vita/build/share_plus/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1jkRZrNgqkKhN2qRKNoKFnP2JrWh2POTG	generated_build	.txt	utf8_text_read
+apps/as_vita/build/shared_preferences_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1inAJrPW8VK4O8YSiYvQuAPkVemqtMVkF	generated_build	.txt	utf8_text_read
+apps/as_vita/build/shared_preferences_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1rxPHlh3NuLXY8o5CkMypQtutJuoiV-Q_	generated_build	.txt	utf8_text_read
+apps/as_vita/build/sqflite_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1PXw5cxEHIzsLmHmgfoLG-B9OPNfwyMcQ	generated_build	.txt	utf8_text_read
+apps/as_vita/build/sqflite_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1eWknybAXN8yNB4OSlSTcBE8ELDkRCOR6	generated_build	.txt	utf8_text_read
+apps/as_vita/build/url_launcher_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1cqDcxB_ApON1W9EvHbM4q3KcpnBo4lrN	generated_build	.txt	utf8_text_read
+apps/as_vita/build/url_launcher_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1zE5x09Eof1ftxX_SQwnAyMXNaLOIIGnf	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/android/.gradle/8.14/gc.properties	1VIwqvvyRlb7Ns2hICWz-asZIwHf2oV5r	project_source_or_docs	.properties	utf8_text_read
+apps/costa_do_sol/android/.gradle/vcs-1/gc.properties	1YqRFPp244c6somn-l63paidRBlv7Az1W	project_source_or_docs	.properties	utf8_text_read
+apps/costa_do_sol/build/.cxx/debug/2r496d1j/arm64-v8a/.cmake/api/v1/query/client-agp/cache-v2	1G8oCG9skEEbtQxNbzx7-FLw2XTL-rQDO	generated_build		utf8_text_read
+apps/costa_do_sol/build/.cxx/debug/2r496d1j/arm64-v8a/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1TfTJ-qKpIVnWd1IMrpfC_eqbOlx5uefz	generated_build		utf8_text_read
+apps/costa_do_sol/build/.cxx/debug/2r496d1j/arm64-v8a/.cmake/api/v1/query/client-agp/codemodel-v2	10V2YzK7EZDWp-en5MxXSF43Q0vUEwE-K	generated_build		utf8_text_read
+apps/costa_do_sol/build/.cxx/debug/2r496d1j/arm64-v8a/additional_project_files.txt	1gdRF4Vg-yeApSgQgDF1acy0X2R6cGxXu	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/.cxx/debug/2r496d1j/armeabi-v7a/.cmake/api/v1/query/client-agp/cache-v2	1aWc3xlgIu0B8hi56h3KDp8GpsqazOdWV	generated_build		utf8_text_read
+apps/costa_do_sol/build/.cxx/debug/2r496d1j/armeabi-v7a/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1xc5Xa36VMVqRtBeNuhsfUKaNdVJuGF2J	generated_build		utf8_text_read
+apps/costa_do_sol/build/.cxx/debug/2r496d1j/armeabi-v7a/.cmake/api/v1/query/client-agp/codemodel-v2	1OJQIzMqYPrWND-ou1F_k-H3bs4qMnUH5	generated_build		utf8_text_read
+apps/costa_do_sol/build/.cxx/debug/2r496d1j/armeabi-v7a/additional_project_files.txt	1l8XPGCk-NUPh8KW6_jNwqFv09halxm6d	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/.cxx/debug/2r496d1j/x86_64/.cmake/api/v1/query/client-agp/cache-v2	1MQgQbQ_v1nd_JADXM1m-XNG4ggMQIJdM	generated_build		utf8_text_read
+apps/costa_do_sol/build/.cxx/debug/2r496d1j/x86_64/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1JZ7tSqLijxNRrQ4RMXlqBbfzfbLXLbia	generated_build		utf8_text_read
+apps/costa_do_sol/build/.cxx/debug/2r496d1j/x86_64/.cmake/api/v1/query/client-agp/codemodel-v2	1c-m34Xws_PXDthd28C2LclxB-2TaAqAL	generated_build		utf8_text_read
+apps/costa_do_sol/build/.cxx/debug/2r496d1j/x86_64/additional_project_files.txt	1nkk8HzADKtGL4vLXLGDRcZG64A6Auo5s	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/app/intermediates/cxx/debug/2r496d1j/logs/arm64-v8a/configure_stderr.txt	1umy44sOjRcye2emwPyErdVnqbf9l6Gjq	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/app/intermediates/cxx/debug/2r496d1j/logs/armeabi-v7a/configure_stderr.txt	1W1DL7s1REJdJ-93y61KNxpWq2_v5fcxS	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/app/intermediates/cxx/debug/2r496d1j/logs/x86_64/configure_stderr.txt	17o2Igt3IBGJOqvHi4seW2TqhCvxqKDsJ	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/app_links/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1MxIXxERPbgso_28dN8oT-qne8CFIAE6Y	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/app_links/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1DlmdcNBSw16tCC9OSF30uFJAAY5txzZW	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/connectivity_plus/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1vWJlsI2ItREfURysk6h2RV-bPrJzX6uX	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/connectivity_plus/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	16t8PdLytfSspMELZWC6PhGsxHDlfd2gd	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/firebase_analytics/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1xfsJALS1TvaX_XHJ6pvTwqE5cXvUQNS9	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/firebase_analytics/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1uTibI1wbvotm-azWt0dOR7pTXHwYDACF	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/firebase_app_check/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1XsRYt2-H9dUHEJGq95UvymkrJgJRL0cw	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/firebase_app_check/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1F1vz5Yrx8U__UESryu4I_xNTIkbaQQVl	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/firebase_core/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1r2zR_AqMgn6rdeBpE1efyiog1H4SFGz1	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/firebase_core/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1XU7Xn_IA6aCYLvXNxKHBFsfGvOsRL5LV	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/firebase_crashlytics/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1apZm4dMlQ8u44aSHfRX52-eMvjGXs0Fc	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/firebase_messaging/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1L1AMleyzTay8DVoPv330eiedfX8Hg0cZ	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/firebase_messaging/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1KkOxn7-Y1_6R2VuEfG5ytEoeURdJQcZP	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/firebase_performance/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1d2HU-RVVvuOwLw5hxhlYBVgFupvVv_ui	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/firebase_performance/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1VXmZoa8cjPpejSWFAO8HTgzqo-k5Bpip	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/flutter_secure_storage/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	15wsP2MJDhJu9nJkHJPiB9i1qCMmQPwIX	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/flutter_secure_storage/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	17Le4t0yd0nknUh_tBGgye-u82IeKY_Fm	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_firestore/cloud_firestore/ios/cloud_firestore/Sources/cloud_firestore/Resources/.gitkeep	1PiuZiXurES6wKoaWsPGqOj5mQyl-3Bmd	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_firestore/cloud_firestore/macos/cloud_firestore/Sources/cloud_firestore/Resources/.gitkeep	1_PMvp4vbBs1OJ67seJ5t-_rO6YkelNUV	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_functions/cloud_functions/ios/cloud_functions/Sources/cloud_functions/Resources/.gitkeep	1MS2vab0Wso6WT7_zYANNJelna0DaR9UJ	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_functions/cloud_functions/macos/cloud_functions/Sources/cloud_functions/Resources/.gitkeep	1LgbM7Akj8dTSUbJlYVfN7UJTJdNWY0jG	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ai/firebase_ai/ios/firebase_ai/Sources/firebase_ai/Resources/.gitkeep	1SVInwoJ3M4YUypTrqsZs8_bO2fXDR1ES	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ai/firebase_ai/macos/firebase_ai/Sources/firebase_ai/Resources/.gitkeep	1BsVmHfdv9D2pTANowbIz_mUeeHpgK2gY	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_analytics/firebase_analytics/ios/firebase_analytics/Sources/firebase_analytics/Resources/.gitkeep	14Ld3v9aVmSFLs98Cf2NtmVn6owconwC5	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_check/firebase_app_check/ios/firebase_app_check/Sources/firebase_app_check/Resources/.gitkeep	1Q5mOCkay7TPWPrB1pvysA-wmB8FK85Zz	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_check/firebase_app_check/macos/firebase_app_check/Sources/firebase_app_check/Resources/.gitkeep	1AkezmiMMw_D4kRoFBFZ9qrZrwXNZ8LHm	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_installations/firebase_app_installations/ios/firebase_app_installations/Sources/firebase_app_installations/Resources/.gitkeep	1G3YdMr6rEc8Lptqkkqjf2eT365YHsJ46	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_installations/firebase_app_installations/macos/firebase_app_installations/Sources/firebase_app_installations/Resources/.gitkeep	1jWwKKh1u0mOkwf-Uv8BuSdlatlmltdFF	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_auth/firebase_auth/ios/firebase_auth/Sources/firebase_auth/Resources/.gitkeep	1bAO1H0zFG68_g7lEQfjyldUeH4UzIZhN	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_auth/firebase_auth/macos/firebase_auth/Sources/firebase_auth/Resource/.gitkeep	1MtV5uHbihRz5NBAM0PWJ_EmuQ7HCPWlG	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_core/firebase_core/ios/firebase_core/Sources/firebase_core/Resources/.gitkeep	1D_CYgzqUAZh_Nkhx076Jd-JKeHBMTTUY	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_core/firebase_core/ios/firebase_core/Sources/firebase_core/include/firebase_core/.gitkeep	1yU8aJ2mD3mgx7vMDTlla1xKhCa2ZCS7u	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_crashlytics/firebase_crashlytics/ios/firebase_crashlytics/Sources/firebase_crashlytics/Resources/.gitkeep	1A8YS84udXjGQWLV3JbJrouqxcK0ZwRvX	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_crashlytics/firebase_crashlytics/macos/firebase_crashlytics/Sources/firebase_crashlytics/Resources/.gitkeep	1HKAtWnSVW00dckQte3WtrO5_f35GJQAT	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_database/firebase_database/ios/firebase_database/Sources/firebase_database/Resources/.gitkeep	1wo2nLO_1JydaaqiuaXRZyQHKqdYEWfA_	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_database/firebase_database/macos/firebase_database/Sources/firebase_database/Resources/.gitkeep	1CYlbAgXUXVXesE1o3rAUE-WqwfskE6D2	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_in_app_messaging/firebase_in_app_messaging/ios/firebase_in_app_messaging/Sources/firebase_in_app_messaging/Resources/.gitkeep	1rvCymp-61hA1dmEDZQxcnClM3XY6W-8U	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ml_model_downloader/firebase_ml_model_downloader/ios/firebase_ml_model_downloader/Sources/firebase_ml_model_downloader/Resources/.gitkeep	1GxqRtQgUA0hrghVHjqiga8GMa95Z2831	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ml_model_downloader/firebase_ml_model_downloader/macos/firebase_ml_model_downloader/Sources/firebase_ml_model_downloader/Resources/.gitkeep	17-uMrh5zIgGfsA3cNf36d1AOZZmSyPY0	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_performance/firebase_performance/ios/firebase_performance/Sources/firebase_performance/Resources/.gitkeep	1o0QOBImf-yoJkZk08qI5ZLso8nLVQzkj	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_remote_config/firebase_remote_config/ios/firebase_remote_config/Sources/firebase_remote_config/Resources/.gitkeep	1Wj5lhzcpVQwfmJEfL2ppvyYZlogzp56O	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_remote_config/firebase_remote_config/macos/firebase_remote_config/Sources/firebase_remote_config/Resources/.gitkeep	1IVJVZgEK750LUaefwi-D8-edVhugAS6F	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_storage/firebase_storage/ios/firebase_storage/Sources/firebase_storage/Resources/.gitkeep	1qNKbdSV33WY84uhQ-v8b5ZD8FcxJqlS-	generated_build		utf8_text_read
+apps/costa_do_sol/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_storage/firebase_storage/macos/firebase_storage/Sources/firebase_storage/Resources/.gitkeep	12q6N68GRlZKoTrCFzIjngLJpphKMVBYM	generated_build		utf8_text_read
+apps/costa_do_sol/build/path_provider_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1zUqpJ0dXWmMi6Gg5bLeputD_T_DAode3	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/path_provider_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1a6FLf1COJQtqUYlYTbb9gBgy2ps7b8p2	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/share_plus/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1wBlA0P95ybtlPPgOyTbsjftNy0QDsd8X	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/shared_preferences_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1LTtIxHp_QRo7Q9decGRz1hxVDGGQBuD6	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/shared_preferences_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1LcTn2sI5U0cBBEMNYiBPt7NO7WqLxjW3	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/sqflite_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1o0c_xcOhRaO_NT7KVpJ5MsEq34f4N2A9	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/sqflite_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1-IKKyqqnP4rLKgEUPEiwHIiJKdV9hc47	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/url_launcher_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1jEWEIYYpalZ71g_W7TpzSv2LfTImOhw_	generated_build	.txt	utf8_text_read
+apps/costa_do_sol/build/url_launcher_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	15i6Wm0AcBrOoOC4f8D8oHY76tZlUMd3o	generated_build	.txt	utf8_text_read
+apps/nkana/android/.gradle/8.14/gc.properties	1LzYlD_WW2FzfboGiTCkF8lDXvbea216Z	project_source_or_docs	.properties	utf8_text_read
+apps/nkana/android/.gradle/vcs-1/gc.properties	1t7ECEQAFk84Yuo6pMiHwGDSoFhKiI6wk	project_source_or_docs	.properties	utf8_text_read
+apps/nkana/build/.cxx/debug/4x161n1b/arm64-v8a/.cmake/api/v1/query/client-agp/cache-v2	1ellddoyuRdAoOXR2g5dXy_MJfYnlvOGe	generated_build		utf8_text_read
+apps/nkana/build/.cxx/debug/4x161n1b/arm64-v8a/.cmake/api/v1/query/client-agp/cmakeFiles-v1	12cMDcfMaJNy0HugciSCvF5dpnDwtQU7L	generated_build		utf8_text_read
+apps/nkana/build/.cxx/debug/4x161n1b/arm64-v8a/.cmake/api/v1/query/client-agp/codemodel-v2	1O3lAA_yiZPmgS4PRz2aGUR8n1ixUUQjS	generated_build		utf8_text_read
+apps/nkana/build/.cxx/debug/4x161n1b/arm64-v8a/additional_project_files.txt	1BLqgWLpDFYzpOC9G_G2nH16PfuoMnDNQ	generated_build	.txt	utf8_text_read
+apps/nkana/build/.cxx/debug/4x161n1b/armeabi-v7a/.cmake/api/v1/query/client-agp/cache-v2	1xNQxgE5vyMxm1PrfgUbTfseADDoTE76q	generated_build		utf8_text_read
+apps/nkana/build/.cxx/debug/4x161n1b/armeabi-v7a/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1IWLHHMxwKzEePJ1YvGjFm1hk5eKAu0Ib	generated_build		utf8_text_read
+apps/nkana/build/.cxx/debug/4x161n1b/armeabi-v7a/.cmake/api/v1/query/client-agp/codemodel-v2	11Xu6iZnhDPoG8llrRehCmforp1VxHx2Z	generated_build		utf8_text_read
+apps/nkana/build/.cxx/debug/4x161n1b/armeabi-v7a/additional_project_files.txt	1c0UbZUh7AMQLfKoiu0rVh90PHDXhcaZ-	generated_build	.txt	utf8_text_read
+apps/nkana/build/.cxx/debug/4x161n1b/x86_64/.cmake/api/v1/query/client-agp/cache-v2	1qWfOvMcF4o4q672T8aM0JIp6tJ47-0vu	generated_build		utf8_text_read
+apps/nkana/build/.cxx/debug/4x161n1b/x86_64/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1mLwauh8n1Dqij9_jz1Mko5MpspWTi8Vr	generated_build		utf8_text_read
+apps/nkana/build/.cxx/debug/4x161n1b/x86_64/.cmake/api/v1/query/client-agp/codemodel-v2	1LUeBRC3_VwpPhsGUhuJS3iU-jwZ0xuYm	generated_build		utf8_text_read
+apps/nkana/build/.cxx/debug/4x161n1b/x86_64/additional_project_files.txt	130Exfn0Wk_hE8_bT8d96qCleHhSUqeAP	generated_build	.txt	utf8_text_read
+apps/nkana/build/.cxx/debug/5m142091/arm64-v8a/.cmake/api/v1/query/client-agp/cache-v2	1aOUJRDVYYHpwcZnAJUrvCE7CJI8HSLQw	generated_build		utf8_text_read
+apps/nkana/build/.cxx/debug/5m142091/arm64-v8a/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1QljHFqCYOD8sVKY0G83goxnmvLQ3DP4O	generated_build		utf8_text_read
+apps/nkana/build/.cxx/debug/5m142091/arm64-v8a/.cmake/api/v1/query/client-agp/codemodel-v2	1m0cKJX6P0NnzCUmhKYZeHyOCwvhOLglj	generated_build		utf8_text_read
+apps/nkana/build/.cxx/debug/5m142091/arm64-v8a/additional_project_files.txt	1xHzIVwEzO12KInKgZPQvH8ZmObmHYwC1	generated_build	.txt	utf8_text_read
+apps/nkana/build/.cxx/debug/5m142091/armeabi-v7a/.cmake/api/v1/query/client-agp/cache-v2	1rewXCFG42e2UUZ6YrLiMkKlqDTo3VwtA	generated_build		utf8_text_read
+apps/nkana/build/.cxx/debug/5m142091/armeabi-v7a/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1nRZqWjyf8YHQy9g3MS-3xpHpzvuqKmnY	generated_build		utf8_text_read
+apps/nkana/build/.cxx/debug/5m142091/armeabi-v7a/.cmake/api/v1/query/client-agp/codemodel-v2	1XraHmmVqETH04sr99S3t8XolNUoJXBf6	generated_build		utf8_text_read
+apps/nkana/build/.cxx/debug/5m142091/armeabi-v7a/additional_project_files.txt	1_CteBHCu364lBKTJvj3582j4vMZLcNj5	generated_build	.txt	utf8_text_read
+apps/nkana/build/.cxx/debug/5m142091/x86_64/.cmake/api/v1/query/client-agp/cache-v2	1upAEC1rlTWXivv4nu5NGWtkgv-QocxAV	generated_build		utf8_text_read
+apps/nkana/build/.cxx/debug/5m142091/x86_64/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1dgbwxkoGcbNEL_3MAHMkNyJkTv5rwEVp	generated_build		utf8_text_read
+apps/nkana/build/.cxx/debug/5m142091/x86_64/.cmake/api/v1/query/client-agp/codemodel-v2	1gj8znnSi71vKlsD3esSX8XR9hgacHrE1	generated_build		utf8_text_read
+apps/nkana/build/.cxx/debug/5m142091/x86_64/additional_project_files.txt	1Hi_9j65IExMmKSoGgd9WGTk3zpRI2XjE	generated_build	.txt	utf8_text_read
+apps/nkana/build/app/intermediates/cxx/debug/4x161n1b/logs/arm64-v8a/configure_stderr.txt	1iPuaThaDf35e0ZwLakIM7vIdcuEW1xGc	generated_build	.txt	utf8_text_read
+apps/nkana/build/app/intermediates/cxx/debug/4x161n1b/logs/armeabi-v7a/configure_stderr.txt	1yBrHQtibk4UTaB5TxpbulIUC3b5wAvyC	generated_build	.txt	utf8_text_read
+apps/nkana/build/app/intermediates/cxx/debug/4x161n1b/logs/x86_64/configure_stderr.txt	1uT2etAQ-PASLetp4zLcKCoUP4rJBWE8-	generated_build	.txt	utf8_text_read
+apps/nkana/build/app/intermediates/cxx/debug/5m142091/logs/arm64-v8a/configure_stderr.txt	1tovtsNxiqjXqyaHai9PX8gLjHxbqXQ-f	generated_build	.txt	utf8_text_read
+apps/nkana/build/app/intermediates/cxx/debug/5m142091/logs/armeabi-v7a/configure_stderr.txt	1Zm21nwxdA6VSOYyd9hkvUm8G5919_I4E	generated_build	.txt	utf8_text_read
+apps/nkana/build/app/intermediates/cxx/debug/5m142091/logs/x86_64/configure_stderr.txt	1cs7c_IkL--8aqigxdPJE0FS5cyLmgqMq	generated_build	.txt	utf8_text_read
+apps/nkana/build/app_links/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1A7RVxldOJ99fAaOyWT4CEQZ4l6IgwG-Q	generated_build	.txt	utf8_text_read
+apps/nkana/build/app_links/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1Ed8L4_P15rzLyQzV_s5Kfq33c3CaAXs2	generated_build	.txt	utf8_text_read
+apps/nkana/build/connectivity_plus/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1YBfgJKdcr9UK8lkzwj3lUg9-6wWYVTfO	generated_build	.txt	utf8_text_read
+apps/nkana/build/connectivity_plus/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1iahgRMnl3XHL8ZUTcT-BgSq9YfNemf9s	generated_build	.txt	utf8_text_read
+apps/nkana/build/firebase_analytics/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1cWKLbAY3vBAsT5wkEV6QUyJ90SJpJcRU	generated_build	.txt	utf8_text_read
+apps/nkana/build/firebase_analytics/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1xy2UmYtRYL23VB8tA0-h_-IZ9sQ3qWnP	generated_build	.txt	utf8_text_read
+apps/nkana/build/firebase_app_check/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1kNbqIogrDB5ODa2H3uT_T5Ii1HEc0GTS	generated_build	.txt	utf8_text_read
+apps/nkana/build/firebase_app_check/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1qy1HMD11FneLDvIrw7nVkDCH5reNORJt	generated_build	.txt	utf8_text_read
+apps/nkana/build/firebase_core/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1Fsu4TPrZAMMbbux91bmRZjQ_gWeR18bI	generated_build	.txt	utf8_text_read
+apps/nkana/build/firebase_core/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	18ESr_ssN47T5FoI0_Swiqku2X6HfI0kN	generated_build	.txt	utf8_text_read
+apps/nkana/build/firebase_crashlytics/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1rZym-Vf35jpCdQZJBdHAmPm6dLBY0mzv	generated_build	.txt	utf8_text_read
+apps/nkana/build/firebase_messaging/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1dxF3oVvrLhX3cbfbgA8f1b3dR0-3p0Ql	generated_build	.txt	utf8_text_read
+apps/nkana/build/firebase_messaging/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1mzNRfRE1xZI2d2wH0UwTeD5tBGm7ZIEl	generated_build	.txt	utf8_text_read
+apps/nkana/build/firebase_performance/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1HK6MEtu3ByJtyrR9k2WPJ05nORm7LWrI	generated_build	.txt	utf8_text_read
+apps/nkana/build/firebase_performance/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1I0d_CSjy2GmZmsqUuj8-xWxk-OI4jwNS	generated_build	.txt	utf8_text_read
+apps/nkana/build/flutter_secure_storage/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1dG58tacRzlJkiXjm0c3VYWUuLhq10Es4	generated_build	.txt	utf8_text_read
+apps/nkana/build/flutter_secure_storage/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1k5cyS38QwpwdIVvHvZAnU6szz5dRtVO4	generated_build	.txt	utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_firestore/cloud_firestore/ios/cloud_firestore/Sources/cloud_firestore/Resources/.gitkeep	1KrNTiJC58EM-eKgnWSDf0ORQE8l3m5mD	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_firestore/cloud_firestore/macos/cloud_firestore/Sources/cloud_firestore/Resources/.gitkeep	1SQrRNwworfSDOOt5XHbDaIBzCYLG13eB	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_functions/cloud_functions/ios/cloud_functions/Sources/cloud_functions/Resources/.gitkeep	1o0tMHXrQhDb-ICvab6ZMh3Q_Cd4RFKqj	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_functions/cloud_functions/macos/cloud_functions/Sources/cloud_functions/Resources/.gitkeep	1FTPhCY1UdaQUci32HbUXzdPujCzU0gbA	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ai/firebase_ai/ios/firebase_ai/Sources/firebase_ai/Resources/.gitkeep	180cWZ2l18MWZzhkuPJH7BbUKkqR79TMR	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ai/firebase_ai/macos/firebase_ai/Sources/firebase_ai/Resources/.gitkeep	1KvYVixxpYIiUW23INzOH5iyZoAtsnQXp	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_analytics/firebase_analytics/ios/firebase_analytics/Sources/firebase_analytics/Resources/.gitkeep	1UAADbvwFvXqqPRpmPL7ZcGltv-PmIKhn	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_check/firebase_app_check/ios/firebase_app_check/Sources/firebase_app_check/Resources/.gitkeep	1oprzdciraET3k6DSxeZyT-190Nvu_x0W	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_check/firebase_app_check/macos/firebase_app_check/Sources/firebase_app_check/Resources/.gitkeep	14IiIZylrdMLDl9DDYw3hYDpQB98phSFD	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_installations/firebase_app_installations/ios/firebase_app_installations/Sources/firebase_app_installations/Resources/.gitkeep	1_NjR75HpaGCfawuQ4h2jJZdoqpGb3fFW	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_installations/firebase_app_installations/macos/firebase_app_installations/Sources/firebase_app_installations/Resources/.gitkeep	1-yTfLQE8BK-nam1OAcRzFj33pVldwfA6	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_auth/firebase_auth/ios/firebase_auth/Sources/firebase_auth/Resources/.gitkeep	13f3u5P4FGP83KmIa_mDiNcViCqyCHyOt	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_auth/firebase_auth/macos/firebase_auth/Sources/firebase_auth/Resource/.gitkeep	1ROInn_xgNYuByEa3CCASxM-8Ki7m7OUx	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_core/firebase_core/ios/firebase_core/Sources/firebase_core/Resources/.gitkeep	11Tz8XlQ11h_qrP48zCHXEirsjp9-O0hE	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_core/firebase_core/ios/firebase_core/Sources/firebase_core/include/firebase_core/.gitkeep	1aD-rfvrxz4duAgJ-posCT5fdaZ5Kb6V4	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_crashlytics/firebase_crashlytics/ios/firebase_crashlytics/Sources/firebase_crashlytics/Resources/.gitkeep	1_gW9_N9tpYQk5LA5TBX8PVX5RW0L5zQI	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_crashlytics/firebase_crashlytics/macos/firebase_crashlytics/Sources/firebase_crashlytics/Resources/.gitkeep	1eDrBmwH6ue4AvkxLN8Up1voKSr4fh4Fy	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_database/firebase_database/ios/firebase_database/Sources/firebase_database/Resources/.gitkeep	1fwzwV1MKW7U_Ml7Gg64_XvdKKgC2xJTM	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_database/firebase_database/macos/firebase_database/Sources/firebase_database/Resources/.gitkeep	1u9BZskypDm3Q_NW92zdK_sCT5E_y9PBk	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_in_app_messaging/firebase_in_app_messaging/ios/firebase_in_app_messaging/Sources/firebase_in_app_messaging/Resources/.gitkeep	1WxmeQCLnaQkS3A_k72PEPDKQjhahwPF1	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ml_model_downloader/firebase_ml_model_downloader/ios/firebase_ml_model_downloader/Sources/firebase_ml_model_downloader/Resources/.gitkeep	1YFgqMFZXRStiI2Lte6GlFac5N1ZY4h1e	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ml_model_downloader/firebase_ml_model_downloader/macos/firebase_ml_model_downloader/Sources/firebase_ml_model_downloader/Resources/.gitkeep	1Whhen3HXj1A91PsJQ_8eWX2mZiK09Q4Q	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_performance/firebase_performance/ios/firebase_performance/Sources/firebase_performance/Resources/.gitkeep	1X1y--MQA0xzBfKuhqttyKP2tl2kyM7vg	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_remote_config/firebase_remote_config/ios/firebase_remote_config/Sources/firebase_remote_config/Resources/.gitkeep	15RstokUgnThLpXwQToDMpF-u0kI4ZaOc	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_remote_config/firebase_remote_config/macos/firebase_remote_config/Sources/firebase_remote_config/Resources/.gitkeep	1aPE26HfYO2G6FYpz3OkXhsJlU_kjAAXF	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_storage/firebase_storage/ios/firebase_storage/Sources/firebase_storage/Resources/.gitkeep	1ElC8WiLlkE5pezCbKvYywSL-A2XA8uH5	generated_build		utf8_text_read
+apps/nkana/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_storage/firebase_storage/macos/firebase_storage/Sources/firebase_storage/Resources/.gitkeep	1uKY3Ki69ATRb4IYJ-rxP5QK8t-cWaYLJ	generated_build		utf8_text_read
+apps/nkana/build/path_provider_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	15jpA-nsosFj9TpF_KuY1sRQSmDYDyEX7	generated_build	.txt	utf8_text_read
+apps/nkana/build/path_provider_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1PNWKjraQH2NPu3kVYf9pmVgZrJI6rFGF	generated_build	.txt	utf8_text_read
+apps/nkana/build/share_plus/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	16Ng8Eea5b74nvVfK1BCowZaH6QBf9gOV	generated_build	.txt	utf8_text_read
+apps/nkana/build/shared_preferences_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1vyH2vxmWDpwWgP3zshNxVyW0pMbs-nqt	generated_build	.txt	utf8_text_read
+apps/nkana/build/shared_preferences_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1DOlFLbJTWMlCn3v6sIefjUoaf0QK4dVh	generated_build	.txt	utf8_text_read
+apps/nkana/build/sqflite_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1pLcvNSYJg3P6rBQyQKcq0kwNmw9TnU2o	generated_build	.txt	utf8_text_read
+apps/nkana/build/sqflite_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1lY83TRi4JpEN-PfwBvtpeYpDsqsKSPFg	generated_build	.txt	utf8_text_read
+apps/nkana/build/url_launcher_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	16Q066rjo8NpL3fnsA37TpknlkPcuriTU	generated_build	.txt	utf8_text_read
+apps/nkana/build/url_launcher_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1jZxodE3wwnS3EUPxIkZ9AJpWS0UI3biO	generated_build	.txt	utf8_text_read
+apps/rayon_sports/android/.gradle/8.14/gc.properties	1pXYq0wDuyxhK_hCABu64oUMI8cmeYHRv	project_source_or_docs	.properties	utf8_text_read
+apps/rayon_sports/android/.gradle/vcs-1/gc.properties	1SI-wblR9ZcwpADKDrU6JnsULx_3Y06GO	project_source_or_docs	.properties	utf8_text_read
+apps/rayon_sports/android/fastlane/metadata/android/en-US/video.txt	1b20x2ZiDXiMrwmiLaTFTmJM2UkfiihwB	project_source_or_docs	.txt	utf8_text_read
+apps/rayon_sports/build/.cxx/debug/321d6r1o/arm64-v8a/.cmake/api/v1/query/client-agp/cache-v2	1XIBA4nYKWodycEATFRz0YlP0aAiMNprW	generated_build		utf8_text_read
+apps/rayon_sports/build/.cxx/debug/321d6r1o/arm64-v8a/.cmake/api/v1/query/client-agp/cmakeFiles-v1	19Uq9Scc1ol-bEU3v5F5tvJdoHr1BcuEb	generated_build		utf8_text_read
+apps/rayon_sports/build/.cxx/debug/321d6r1o/arm64-v8a/.cmake/api/v1/query/client-agp/codemodel-v2	1QFzVMMydcmWa0uojHa9cLn2MCNIum0Jn	generated_build		utf8_text_read
+apps/rayon_sports/build/.cxx/debug/321d6r1o/arm64-v8a/additional_project_files.txt	16-ukKZBTWgoPlx_1co6OZlIVcPdfbzEK	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/.cxx/debug/321d6r1o/armeabi-v7a/.cmake/api/v1/query/client-agp/cache-v2	1bZUPnMFAIjMk795MiZqN-yvo8BSjY12o	generated_build		utf8_text_read
+apps/rayon_sports/build/.cxx/debug/321d6r1o/armeabi-v7a/.cmake/api/v1/query/client-agp/cmakeFiles-v1	10Sqd59JqRCKHVZBQ2DWIVYYjSQ7Zfqym	generated_build		utf8_text_read
+apps/rayon_sports/build/.cxx/debug/321d6r1o/armeabi-v7a/.cmake/api/v1/query/client-agp/codemodel-v2	19d09JcBau4mk8eomP1sF5g27r4vuVC0g	generated_build		utf8_text_read
+apps/rayon_sports/build/.cxx/debug/321d6r1o/armeabi-v7a/additional_project_files.txt	1H-IXA4tN_3NjpoKLkw8a6v4ppH6eB0Cd	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/.cxx/debug/321d6r1o/x86_64/.cmake/api/v1/query/client-agp/cache-v2	1a3d-1pLhJjGifYtD6K7CXSeYE2zr_Twc	generated_build		utf8_text_read
+apps/rayon_sports/build/.cxx/debug/321d6r1o/x86_64/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1tEbo1pFpZwyzgHvOfZ2cCQpFozWdK-xB	generated_build		utf8_text_read
+apps/rayon_sports/build/.cxx/debug/321d6r1o/x86_64/.cmake/api/v1/query/client-agp/codemodel-v2	1vC9KmElcMvli__B6l1Yvrjc5J2VQcdAI	generated_build		utf8_text_read
+apps/rayon_sports/build/.cxx/debug/321d6r1o/x86_64/additional_project_files.txt	119ERbLfivOPI4Jj4E_9SHDOJiluOyNpt	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/.cxx/debug/6t274lu2/arm64-v8a/.cmake/api/v1/query/client-agp/cache-v2	19aRXBm5_D3VKas9c6UL1Tnj5CE0oNyN9	generated_build		utf8_text_read
+apps/rayon_sports/build/.cxx/debug/6t274lu2/arm64-v8a/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1TEJrscqDR1-1oRcf1Vfr_OgrEGIx4Vyy	generated_build		utf8_text_read
+apps/rayon_sports/build/.cxx/debug/6t274lu2/arm64-v8a/.cmake/api/v1/query/client-agp/codemodel-v2	1rywAe-KQgG5tJnuoSNenOjfr3jB9ovgx	generated_build		utf8_text_read
+apps/rayon_sports/build/.cxx/debug/6t274lu2/arm64-v8a/additional_project_files.txt	1T3KW-hfgfzKMrbpbGxdEw5bB2tIB6yuX	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/.cxx/debug/6t274lu2/armeabi-v7a/.cmake/api/v1/query/client-agp/cache-v2	1v3y8ZeJvZQ44omV-k1iFNhmgYBvYT2Ud	generated_build		utf8_text_read
+apps/rayon_sports/build/.cxx/debug/6t274lu2/armeabi-v7a/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1lLda0V1mjoQKNMY8F54xfbVMBcD2HIox	generated_build		utf8_text_read
+apps/rayon_sports/build/.cxx/debug/6t274lu2/armeabi-v7a/.cmake/api/v1/query/client-agp/codemodel-v2	1vLJQf1zYDL08F_xh7ZU9S7-uTt8mG2-v	generated_build		utf8_text_read
+apps/rayon_sports/build/.cxx/debug/6t274lu2/armeabi-v7a/additional_project_files.txt	1tCHyPRaF8CP9_3jkP5ReiOO8OX24RNR7	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/.cxx/debug/6t274lu2/x86_64/.cmake/api/v1/query/client-agp/cache-v2	1GaledDd-f06FGPXwdlxnY3M-PU9fDx6R	generated_build		utf8_text_read
+apps/rayon_sports/build/.cxx/debug/6t274lu2/x86_64/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1eFpXFFogfYbKdGAmpP1SH5FJtmG1W76j	generated_build		utf8_text_read
+apps/rayon_sports/build/.cxx/debug/6t274lu2/x86_64/.cmake/api/v1/query/client-agp/codemodel-v2	1WYjmMASR81TUdCJW3tHONRhY6_PNfGYW	generated_build		utf8_text_read
+apps/rayon_sports/build/.cxx/debug/6t274lu2/x86_64/additional_project_files.txt	1YpGbn_sZdEUXGhbu8bNgofmksYInOaZg	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/app/intermediates/cxx/debug/321d6r1o/logs/arm64-v8a/configure_stderr.txt	1mM6E94wZx7-GorAfxhdayBXb4AYfirMR	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/app/intermediates/cxx/debug/321d6r1o/logs/armeabi-v7a/configure_stderr.txt	13etMXrPDl8_5GyWoYvuEWjui6nk2fF3m	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/app/intermediates/cxx/debug/321d6r1o/logs/x86_64/configure_stderr.txt	1lv291eOaIcu9Pa_qcmRSkiY_H9ptNrO2	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/app/intermediates/cxx/debug/6t274lu2/logs/arm64-v8a/configure_stderr.txt	1KJzLWWulEQukQ3ehlJWQ5nJhpgiEKx-C	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/app/intermediates/cxx/debug/6t274lu2/logs/armeabi-v7a/configure_stderr.txt	1NoQY-enTEU2ipx4-4Az69LRFhUK-o3Bi	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/app/intermediates/cxx/debug/6t274lu2/logs/x86_64/configure_stderr.txt	1tuH5QWDrV5ITS_jJswANjbxEmhA-kSGa	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/app_links/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1W9yQhJumYGclDMFL_UO1TzL-OVisEE8q	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/app_links/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1fON0w69SYz7xH4KIEnN81OyLnXIouDCq	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/connectivity_plus/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1jiOWaDypeN1emtAjkTybGFYImz8CfF0P	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/connectivity_plus/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1AR8-y9swd2pP7c3H7xOPRa_jc2ME6UhS	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/firebase_analytics/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1G0x8ri4O7yQY2aZ5cMUlsakYDP8rQ_e7	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/firebase_analytics/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1kw-O2suq10EzXIl3nB_V23NkyE79OxlM	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/firebase_app_check/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1dj_fXgHughixQjgz5iOtT93OD1OuM4wW	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/firebase_app_check/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1e-D87dcIH2DPPcftyE16Pwk4PdrUKnsm	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/firebase_core/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1wWPw9Pcg0Vl00RBlLgDK6Zhd2-OG2hNa	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/firebase_core/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1-lzl2Ntz6bNf1fsc3lAAiePUqU4I9x9u	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/firebase_crashlytics/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1EccHhJovJOmp1tfO428PTUdGMhmN5cUf	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/firebase_messaging/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1VVVmnCrqCADSVtLf6fm5x_NanYIr7vR4	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/firebase_messaging/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	161TiDAkMBNeIMngsQMPFsmWo9ZhIRjEW	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/firebase_performance/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1BUgIRXlS3vu0WjU8Ek9VR0f9CQuiaZAO	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/firebase_performance/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1qb4y9Cm8XqFBbRnWF2g9OxzLTCh_ROBX	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/flutter_secure_storage/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1vp22C0q_IfxEbXLnMahaOGlisl0xDYSc	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/flutter_secure_storage/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1eAS6U4Jvl03B0On-D-him281imA96JBY	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/integration_test/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1hoVXuQhZ_BMpY9FIyIMx9mYV9K3wofcH	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/integration_test/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1tNjHl21Wme1BAbEy8g5oz2Zcz5fSoMYG	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_firestore/cloud_firestore/ios/cloud_firestore/Sources/cloud_firestore/Resources/.gitkeep	15t6LkgiVDVxACdEMTtG58zOGcSjGC850	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_firestore/cloud_firestore/macos/cloud_firestore/Sources/cloud_firestore/Resources/.gitkeep	1iMn5p5oh2KSxylkCe5TQyDP-siUxvp2-	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_functions/cloud_functions/ios/cloud_functions/Sources/cloud_functions/Resources/.gitkeep	1RKhkbvROkCxNeQVoU_8rNaPjaCTCgSTv	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_functions/cloud_functions/macos/cloud_functions/Sources/cloud_functions/Resources/.gitkeep	1jfSK7e4NUvbBPDj_ct0m1gZpk7AN0Uw0	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ai/firebase_ai/ios/firebase_ai/Sources/firebase_ai/Resources/.gitkeep	1QVCxOlieJrUsGS0WO4IJElnn4tZSs8l3	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ai/firebase_ai/macos/firebase_ai/Sources/firebase_ai/Resources/.gitkeep	1P0E3YC7JwyCxhsCRaW3RMdOH3vGWVkQp	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_analytics/firebase_analytics/ios/firebase_analytics/Sources/firebase_analytics/Resources/.gitkeep	1-Ba4rPr6CCETPUj4hsmVvUPiJ1asHfWA	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_check/firebase_app_check/ios/firebase_app_check/Sources/firebase_app_check/Resources/.gitkeep	1CzcNqBIavf78_ipcdgudTXQxp6F3236R	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_check/firebase_app_check/macos/firebase_app_check/Sources/firebase_app_check/Resources/.gitkeep	1uQQwvNfFzUmUg_rFvUXf-1ofqifWuHgQ	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_installations/firebase_app_installations/ios/firebase_app_installations/Sources/firebase_app_installations/Resources/.gitkeep	1XAa_lwwkI01NQ3cXveBYt3dHn-HFqmQd	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_installations/firebase_app_installations/macos/firebase_app_installations/Sources/firebase_app_installations/Resources/.gitkeep	1UYIahylBKJ-h-32PmfmebxO6VHi9_ATj	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_auth/firebase_auth/ios/firebase_auth/Sources/firebase_auth/Resources/.gitkeep	1YiwtOhJU-2amBIQtWoP5TOUP8cIc9jpD	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_auth/firebase_auth/macos/firebase_auth/Sources/firebase_auth/Resource/.gitkeep	12LWuIaDuLd4ciUMXeBKXOcN5HJjPHcXp	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_core/firebase_core/ios/firebase_core/Sources/firebase_core/Resources/.gitkeep	1uJ5ULmDyPnQB4ZWPL6ua4qkrDdkNpJp3	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_core/firebase_core/ios/firebase_core/Sources/firebase_core/include/firebase_core/.gitkeep	19xGio7b1vl0PkcfZcKvN74_YZ8W2E5gc	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_crashlytics/firebase_crashlytics/ios/firebase_crashlytics/Sources/firebase_crashlytics/Resources/.gitkeep	1Ilw1VPrN8akzTx_ebuxyZHC2kpVVXqq6	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_crashlytics/firebase_crashlytics/macos/firebase_crashlytics/Sources/firebase_crashlytics/Resources/.gitkeep	1at6uJkGqW17b-8W2Bshwh46NKZMchWH2	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_database/firebase_database/ios/firebase_database/Sources/firebase_database/Resources/.gitkeep	1RYMBaPPenhBL0j3oTHvzBGxiPx5CAgIH	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_database/firebase_database/macos/firebase_database/Sources/firebase_database/Resources/.gitkeep	1k7debd6da1PqwGooXT68EYo2iW_biY4e	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_in_app_messaging/firebase_in_app_messaging/ios/firebase_in_app_messaging/Sources/firebase_in_app_messaging/Resources/.gitkeep	14Y0zRMd0_ZQmNkSSiK8ARQeSxgN_V-vk	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ml_model_downloader/firebase_ml_model_downloader/ios/firebase_ml_model_downloader/Sources/firebase_ml_model_downloader/Resources/.gitkeep	1gr6jsa5STxifD01Z_Ib7icf3K7sOopP4	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ml_model_downloader/firebase_ml_model_downloader/macos/firebase_ml_model_downloader/Sources/firebase_ml_model_downloader/Resources/.gitkeep	190OVODwI7GjIGcpDzUvgfyYPO9Jhh3HO	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_performance/firebase_performance/ios/firebase_performance/Sources/firebase_performance/Resources/.gitkeep	1sbNkxVH8nlaKz23QmJYDbvQsLsGfZrzF	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_remote_config/firebase_remote_config/ios/firebase_remote_config/Sources/firebase_remote_config/Resources/.gitkeep	19hF4QKmSET50fB6epxEAoJSNMJ07v2C8	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_remote_config/firebase_remote_config/macos/firebase_remote_config/Sources/firebase_remote_config/Resources/.gitkeep	1KALG162sI2z33cZzJeFFhezeXI9lI3m6	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_storage/firebase_storage/ios/firebase_storage/Sources/firebase_storage/Resources/.gitkeep	1FgSa_339YLq3Y5OCKM5F8gYa27NiUdec	generated_build		utf8_text_read
+apps/rayon_sports/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_storage/firebase_storage/macos/firebase_storage/Sources/firebase_storage/Resources/.gitkeep	1DiX6ZJseKRo2ufXMKguBXZDLhCg0O_w5	generated_build		utf8_text_read
+apps/rayon_sports/build/path_provider_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1d2roSb_kr9OfDNCClS6WynVW4HEAt8mD	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/path_provider_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1JEyGexVR6zQ9D0zDeV3Oh4hj-LyYrtHI	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/share_plus/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1b7m9V6Jtp1EiM8doGXOmOSY8Fnik1RtT	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/shared_preferences_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1m1m8VB882P5tO8hFqsuFKNetKiXTvi-P	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/shared_preferences_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1sf4Wj8Nzt0D6u0oxaXDz-jorXKgBM_tQ	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/sqflite_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1PuesxuYsGEKRzyrJ4_ummYYhtV7s5C2-	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/sqflite_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1G8anqx93TVGr_oIoGNBdQNlwjFbbm6-S	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/url_launcher_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1sXzkPxhJXXSZSE2BaQVxvUGkENIDyd-d	generated_build	.txt	utf8_text_read
+apps/rayon_sports/build/url_launcher_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1KcvOn8cJ0bKc8x_FMSHVCgj5GZFxBryX	generated_build	.txt	utf8_text_read
+apps/rayon_sports/web/.next/standalone/node_modules/client-only/index.js	1o5KO3cDSJUkjCxcDDzzdbRSATYueqXqI	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/@opennextjs/cloudflare/dist/cli/build/utils/index.d.ts	1Be5AopQ-oW51bQzcp2m2MdrCqJx0BAiU	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/@poppinss/dumper/build/formatters/console/types.js	1RRZ3QBaz9f27wHaZYb545P1i4Zm9LyuA	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/@poppinss/dumper/build/formatters/html/types.js	1V8L1q8UuDSs69zrLFUt6mX7nOUdUi5CA	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/@poppinss/dumper/build/src/types.js	19-slJEuWbLBndeV_9dSfkeNmpGTuRMoc	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/@standard-schema/spec/dist/index.js	1oLLOpFFnRzqNaAw_FnWdH9aM0oeWItZ8	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/client-only/index.js	1Keoj1YX3Oai20sg_i04lxwokCvUxrNa0	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/build/adapter/setup-node-env.external.d.ts	1Ge411hv3k9m0n8Rs0Z5f6BY-OS7AbHQr	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/build/jest/__mocks__/empty.d.ts	1oOGT9rxKtlvBM1nRbM-0DETe8n5vRVXj	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/build/jest/__mocks__/fileMock.d.ts	1ARlMEkAo9mDwDfaUQjWXK4P7WFsUuxEE	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/build/jest/__mocks__/nextFontMock.d.ts	1b0rKvlVb7NpQ8zoL_BSAgsE7aeTRhNXI	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/build/jest/__mocks__/styleMock.d.ts	1c6WRMwtmIILepjxmKgePgjyoK6izlWi1	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/build/polyfills/fetch/whatwg-fetch.d.ts	1ZJsjoDE0emg_h44xVso2omYqtMDqZKj-	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/build/polyfills/object.assign/auto.d.ts	1EGMrt_JT_lCc4bqptLQ9BB7vymYtdcsX	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/build/polyfills/object.assign/implementation.d.ts	1qkfEPZJo-YIZ7MlDvp7qXdyxH20BYeE3	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/build/polyfills/object.assign/polyfill.d.ts	1FSVmw1107tJEAIXiwS6jEGFSdQhMC88_	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/build/polyfills/object.assign/shim.d.ts	1LJ0YWR8ALC6ADohEaLR7ojNsw_Iv3jAO	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/build/polyfills/process.d.ts	1wjCsnQUjU07wrJLc00KTeNkiNRaJE3C9	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/build/webpack/loaders/css-loader/src/runtime/getUrl.d.ts	17yMTb9e3O0kK0N4p27GYla9BfYaY1mvM	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/compiled/@edge-runtime/primitives/abort-controller.js.LEGAL.txt	1se6IwPfep4l17vSDoFkspCvzWjhWd3rN	dependency_install	.txt	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/compiled/@edge-runtime/primitives/console.js.LEGAL.txt	1adCL2r8EJkLtG_99MN_YA8037ipHnqT3	dependency_install	.txt	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/compiled/@edge-runtime/primitives/crypto.js.LEGAL.txt	1yObQt-7UKDUENOehxc8EaowXdWs1wmFr	dependency_install	.txt	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/compiled/@edge-runtime/primitives/events.js.LEGAL.txt	1zV7I-kMaBSVrAA9X2-odMQwlXDf_QAow	dependency_install	.txt	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/compiled/@edge-runtime/primitives/index.js.LEGAL.txt	1EQ2wVkVGPgSuvelYc2ceZxEI78MypuCH	dependency_install	.txt	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/compiled/@edge-runtime/primitives/stream.js.LEGAL.txt	1Na3npOBRk1Rc6KcX2bce5hZdu2U2E3ht	dependency_install	.txt	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/compiled/@edge-runtime/primitives/timers.js.LEGAL.txt	13WKkWDLhCVuQ0K7garMpwBafYZmgE0ee	dependency_install	.txt	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/compiled/@edge-runtime/primitives/url.js.LEGAL.txt	1EDKYGe9QFhIU1LjR1T0LT9OZpmp9Rje4	dependency_install	.txt	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/compiled/client-only/index.js	1B-w-Wiu6JnEJB__fagEqbbzcT0btZdMe	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/compiled/server-only/empty.js	1_NWWUvpRPldJXPVi_ZJAyAO4pkm3-DWI	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/lib/require-instrumentation-client.d.ts	13_s-2NepQKBt5lvLq5zl9F0xHz_fLzIs	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/lib/setup-exception-listeners.d.ts	18KkkJBPVrfvO54kngOZMpJquJodqhXfH	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/node-environment-baseline.d.ts	13QGC65CNe3BkMWK6HQii1ZA6Q_BXCOlm	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/node-polyfill-crypto.d.ts	1BAd1CR6Gwb-bKK-h1jQFloAGp4DfqOFZ	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/contexts/app-router-context.d.ts	1N96-gOqfLeB7Bwexa0_2DIm6pTk0f-o6	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/contexts/head-manager-context.d.ts	117BI2zi0ATYvO4YRjIEJUWgOBbIkNzc1	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/contexts/hooks-client-context.d.ts	1U_jJYNAHXJg3i8ChDGGteRnmuvsg1Vir	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/contexts/image-config-context.d.ts	1wckbiKtPJ7Q_55MeW20tbXCHh02acW_F	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/contexts/router-context.d.ts	1yb0R12ZhKU5LXdC_IGfTLSWB3_vHiSE5	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/contexts/server-inserted-html.d.ts	1Sby28tqC7biRAuf7rZvMJ4STntYLPGa9	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-compiler-runtime.d.ts	1ADHeqw2DdzIOuhSB_tCzoktcGaCV2ebg	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-dom.d.ts	1Wh28y2gv1qeTv1Ej3tv8JDIAnv8vyW7U	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-jsx-dev-runtime.d.ts	1CMi-FxRTu8D1B3FtWJiWLs6OR99sOVaZ	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-jsx-runtime.d.ts	1_4uHdzJ0tYwiMSBNqnUDkHWLg5O5B_Zi	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-server-dom-turbopack-server.d.ts	1nddtZn2RX-mDUXqHfgYeZ-pQABfA88D4	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-server-dom-turbopack-static.d.ts	1gAiOhTNKZzoyiperl4hLlgBIaFPDXQBE	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-server-dom-webpack-server.d.ts	1M3ySg0VC0r_mpiNlFQbYfF0IdsfhSGuU	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react-server-dom-webpack-static.d.ts	1hWpTag2_6Zut239XpKF4oYDOXhYaWIqM	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/rsc/react.d.ts	1oPbkqT53EBRoESscdZOAGWSnqQT-Wily	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react-compiler-runtime.d.ts	1oJAzUR5dKoIlUbmHhnTykEBVXbrExhgV	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react-dom-server.d.ts	1sMC-8PpTAigDGmmiP0iSiPWdpeDqgN-2	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react-dom.d.ts	1Ciy64KGXjl8EAzaRBK9husop7V1cHsMb	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react-jsx-dev-runtime.d.ts	192Owz0sEsK2E1hcjkdkNhgaG3Hzu4JWx	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react-jsx-runtime.d.ts	1YEtVNT5KhclVSjP5d_oWE_53XBPoJ0QK	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react-server-dom-turbopack-client.d.ts	174Mn90KoospKhINwV_pwVzK-cpUZcmim	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react-server-dom-webpack-client.d.ts	1MQYEKIU8Lsh5s-xCH4sHDmOYu5ZVLF3l	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react.d.ts	1oajSc53mSGra_gCNI7VknJ2F2EHcKq7y	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/pages/vendored/contexts/app-router-context.d.ts	1BEMuDM41Am0M3Fx08Npuwxjm4Q8Gpf_U	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/pages/vendored/contexts/head-manager-context.d.ts	1BEBY57RUK0ieZEPEtFJs_3cPhvCdkRfA	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/pages/vendored/contexts/hooks-client-context.d.ts	1-9M2BzfeECwQcLErAWAqsC6mlIne-lGq	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/pages/vendored/contexts/html-context.d.ts	1eAz6jFMC1FZ-fvX4UtXg3QJOwmI6AZ7E	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/pages/vendored/contexts/image-config-context.d.ts	1zZ1JB_2N9MHA3QgqOSrQZRpaSDZavOH2	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/pages/vendored/contexts/loadable-context.d.ts	1mX9hYPZ7JTFm54sdVfhTbY67vl3TSMBk	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/pages/vendored/contexts/loadable.d.ts	1u6GMD-D2VaKwZmgOAbpG3QlkiuNrFNwS	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/pages/vendored/contexts/router-context.d.ts	14or-J-EcRjGe9KPsG5MyWNrYf9usPNQY	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/dist/server/route-modules/pages/vendored/contexts/server-inserted-html.d.ts	1B2FTSEqSt28GVRygRB73-pytb8pw3BJX	dependency_install	.ts	utf8_text_read
+apps/rayon_sports/web/node_modules/next/font/google/index.js	1RMd6V2PzG2iYyDRwkfkdO6VlBB4Dbcjo	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/next/font/local/index.js	1D_rw1GEGpQdNnM2fPW5MlEAPNC9XLQau	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/node-domexception/.history/index_20210527203842.js	1LOdts4AzwfdWph6gbTTvSe0E2rCkatdr	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/node-domexception/.history/test_20210527205603.js	1dMWUDQWqTfh0nA8qVWkmfXg-vi9qFPEM	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/node-fetch/node_modules/tr46/lib/.gitkeep	1mlzop2WkhrZaCVi63xZKjIS9xp3R-pT4	dependency_install		utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/dotdot/abc/index.js	1R0d_8_KjaUgVwLu7jkXrMXYDN5SvZTyo	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/dotdot/index.js	1VHzWucP20T-NNHK9tPs2UfgEMlpC-q5H	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/module_dir/xmodules/aaa/index.js	16tZCGFn5XUVcVq_IEb-iZv6IRyaPTCT-	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/module_dir/ymodules/aaa/index.js	1oskgiro4Iteba0zDiKtU6GHjk5PQ969f	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/module_dir/zmodules/bbb/main.js	1H0q0IM59xxmfMObddEWhc1HhiYj-lhSN	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/node_path/x/aaa/index.js	1VAhXLxCl3d-0jjLphDmYBaNvZBc5B4MF	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/node_path/x/ccc/index.js	1MaL9RKzzu4FV8Va7u8lp6BDCEdtf_4O-	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/node_path/y/bbb/index.js	1X1RhYSgNxCuh4ztULgKT872h3vgpcc6o	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/node_path/y/ccc/index.js	1SUYLZQx0mJz2s-dqsLsfXT3A7UCZAoe9	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/pathfilter/deep_ref/main.js	1FS75Vy-L2qQBNOAs9QIeUT8xuWZz6irT	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/precedence/aaa.js	1W_TCS8Nr-Gn5DBfSDvt57NoztGBIu8Y2	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/precedence/aaa/index.js	1JAVgmPqXKVrQz_FBdF1mjlH8OKXCYDFI	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/precedence/aaa/main.js	10egow4dCkyYTe4mAdEdUSuBKpjmU7Cc1	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/precedence/bbb.js	10e6zk_bAl8_Mf5yog5UGK4YMdfjb2K_P	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/precedence/bbb/main.js	1JZ6U2Zw_8_r5G01A7BXPjDqPTeBungYY	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/baz/doom.js	1BjZA69harXVa0taWMin_aUXhLXrUjZQf	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/baz/quux.js	1EeRoDJ9rYRkgAvQet75GW9iAgfzekxrx	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/browser_field/a.js	1fGjy7SJcKo-5t50GNzdXjFtTXCE7Ynlc	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/browser_field/b.js	1z_RiUEeFDQ21u6kR5_01KD2eUr6BXbdE	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/dot_main/index.js	1bqoYmV22i-h6nWrJcjpx4K363-z_uOpq	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/dot_slash_main/index.js	1OIrkkrLn4BnXpsPhF87o2X7xOV1Aa_Cy	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/empty_main/index.js	1Lv_e_LLu1uaY06C3E1Et-FMTeg_dmzWM	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/false_main/index.js	1RQat7t2EyAruWOa-u2ZAnHB9uPz-9ycR	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/foo.js	1rCmUXJGxP5-g7IjJJlcOFUM95SJmKy_b	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/incorrect_main/index.js	1Yo8SLY5syT_IKUR_cf-mJIWHt9PvuMhX	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/missing_main/index.js	1oyiAhXs7Eediy56IPGULo7SDSryPCBgG	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/mug.coffee	1nt4FwaD7wrf_UOKMkfmefwvVuZya7HWn	dependency_install	.coffee	readable_binary
+apps/rayon_sports/web/node_modules/resolve/test/resolver/mug.js	1ixWo6XIlzgzQkKur62hgjDUcaOXTvQOq	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/multirepo/packages/package-b/index.js	1ucQmXePJePBfGgAeIy3qhyKt5ggBPZeF	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/null_main/index.js	1ihHk2RHW8SyQzg1411nWA4BzpX50PR1_	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/other_path/lib/other-lib.js	140BJCEVbPdRrQeNebRBgfD2C4QsaNhyM	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/other_path/root.js	1ls7UQWU-5t07mAhHWQcTx5lGpgiX7oWQ	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/quux/foo/index.js	14WFxqYCniN7aitu8za17Zc6LNvV7dglr	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/same_names/foo.js	1yybozfkrCT4iYxJNI758MK1HZfJIGZO3	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/same_names/foo/index.js	1xannGjICLO3T6MqhXNvdBPIRlaGgdEGz	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/symlinked/_/node_modules/foo.js	1izMKr_zdnjFxfD8KANsf0QALe6Hv4CUl	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/symlinked/_/symlink_target/.gitkeep	1XK1DJnAepbxUJsL1OZPn8beRshsYaJqV	dependency_install		utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/resolver/symlinked/package/bar.js	1Siz9NnglH53omuE2OIQo9pbMz1Y0fwJK	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/resolve/test/shadowed_core/node_modules/util/index.js	1c9nhkzwqhICAUdVRqYIl7oeLq6OCw6dM	dependency_install	.js	utf8_text_read
+apps/rayon_sports/web/node_modules/terser/dist/.gitkeep	1UrQ9FHsm62q1eUw3eW7SJCzvL39lrCz4	dependency_install		utf8_text_read
+apps/rayon_sports/web/node_modules/undici/lib/llhttp/.gitkeep	1IF1xMBE1cyaP7eHfSa12n0uAl6k0_KgQ	dependency_install		utf8_text_read
+apps/rayon_sports/web/node_modules/youch-core/build/src/types.js	18kS58KkGxTl-x5ANfyK5vCe-hNZ3Ws9M	dependency_install	.js	utf8_text_read
+apps/vitalo/android/.gradle/8.14/gc.properties	1aqsGvt1rj04OyTSCNiKNmBawwnymvu2E	project_source_or_docs	.properties	utf8_text_read
+apps/vitalo/android/.gradle/vcs-1/gc.properties	1z7wWQVIWJREs-KmvUeaiAA_PTVGkq-IU	project_source_or_docs	.properties	utf8_text_read
+apps/vitalo/build/.cxx/debug/c242o1l1/arm64-v8a/.cmake/api/v1/query/client-agp/cache-v2	1gykcDeOAyFdUG2j5rym8sZF_nIN7_s0F	generated_build		utf8_text_read
+apps/vitalo/build/.cxx/debug/c242o1l1/arm64-v8a/.cmake/api/v1/query/client-agp/cmakeFiles-v1	155NyKRrTAG7gIYDuy0KNaPH52F2Y2f2m	generated_build		utf8_text_read
+apps/vitalo/build/.cxx/debug/c242o1l1/arm64-v8a/.cmake/api/v1/query/client-agp/codemodel-v2	1H05_VJ1JAKrRDYfZv38bueM9ZYPIsoJH	generated_build		utf8_text_read
+apps/vitalo/build/.cxx/debug/c242o1l1/arm64-v8a/additional_project_files.txt	1O6HjBt6XyZaIZepd7AzjyUve41NNAyvp	generated_build	.txt	utf8_text_read
+apps/vitalo/build/.cxx/debug/c242o1l1/armeabi-v7a/.cmake/api/v1/query/client-agp/cache-v2	15JTBTARI9GNvLCyXLno957yYW-ZPO8uc	generated_build		utf8_text_read
+apps/vitalo/build/.cxx/debug/c242o1l1/armeabi-v7a/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1fsON-oPsz8EF7EAxVqjE6g-Lqy62NSnk	generated_build		utf8_text_read
+apps/vitalo/build/.cxx/debug/c242o1l1/armeabi-v7a/.cmake/api/v1/query/client-agp/codemodel-v2	19qAUc5AFFDdAUh0MeVqb4oawd2nFXMVl	generated_build		utf8_text_read
+apps/vitalo/build/.cxx/debug/c242o1l1/armeabi-v7a/additional_project_files.txt	1ShaSbW72R8tHK391c8eUM2JY0UVhMi0d	generated_build	.txt	utf8_text_read
+apps/vitalo/build/.cxx/debug/c242o1l1/x86_64/.cmake/api/v1/query/client-agp/cache-v2	1GCdktJMPaJq2AMZi9Dihu4_o0Ti3DM-h	generated_build		utf8_text_read
+apps/vitalo/build/.cxx/debug/c242o1l1/x86_64/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1lBjJDZa84DJks2jQQ23i_R5GyKNvgSdD	generated_build		utf8_text_read
+apps/vitalo/build/.cxx/debug/c242o1l1/x86_64/.cmake/api/v1/query/client-agp/codemodel-v2	1M6by9g0vIenGYlz2ZtfTIUwYu-z6bC6Z	generated_build		utf8_text_read
+apps/vitalo/build/.cxx/debug/c242o1l1/x86_64/additional_project_files.txt	1t2pm8fZORDX_Bpt6S4Fw2RSbbELZ72nf	generated_build	.txt	utf8_text_read
+apps/vitalo/build/.cxx/debug/p4s1k504/arm64-v8a/.cmake/api/v1/query/client-agp/cache-v2	1cCxVaT-x7SPldhPKRQocJpwE1MLHvbWb	generated_build		utf8_text_read
+apps/vitalo/build/.cxx/debug/p4s1k504/arm64-v8a/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1t1KcBX6XYkEZJJlHxmYb4FNAxIx0iEmE	generated_build		utf8_text_read
+apps/vitalo/build/.cxx/debug/p4s1k504/arm64-v8a/.cmake/api/v1/query/client-agp/codemodel-v2	1Coj2Fuli1Hf12weIMWVIT_pWFFAkfwO0	generated_build		utf8_text_read
+apps/vitalo/build/.cxx/debug/p4s1k504/arm64-v8a/additional_project_files.txt	1EfegJ2d0BVN-UKaRy8E9jfBvKnf9CpE9	generated_build	.txt	utf8_text_read
+apps/vitalo/build/.cxx/debug/p4s1k504/armeabi-v7a/.cmake/api/v1/query/client-agp/cache-v2	1NrWQvtUD1RqPeL406gZGjSV2d_g1fAlP	generated_build		utf8_text_read
+apps/vitalo/build/.cxx/debug/p4s1k504/armeabi-v7a/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1CDGyLIj5Bo5HriUgI8Xx2eQLe6rre1rT	generated_build		utf8_text_read
+apps/vitalo/build/.cxx/debug/p4s1k504/armeabi-v7a/.cmake/api/v1/query/client-agp/codemodel-v2	1Kl_v3f_SSAl_Fpx3X7NkBowSTUnFkwoB	generated_build		utf8_text_read
+apps/vitalo/build/.cxx/debug/p4s1k504/armeabi-v7a/additional_project_files.txt	11ZIrmOKVAT_dgDiCcAZEsFxaMIWEbOiU	generated_build	.txt	utf8_text_read
+apps/vitalo/build/.cxx/debug/p4s1k504/x86_64/.cmake/api/v1/query/client-agp/cache-v2	1xkBd4ax6JfuIMNPggFkE0BADGl9uFtRC	generated_build		utf8_text_read
+apps/vitalo/build/.cxx/debug/p4s1k504/x86_64/.cmake/api/v1/query/client-agp/cmakeFiles-v1	1AadyE4j6fMDEjOBRnfr18xZjmx4jgVHm	generated_build		utf8_text_read
+apps/vitalo/build/.cxx/debug/p4s1k504/x86_64/.cmake/api/v1/query/client-agp/codemodel-v2	1I7GdaT-kwxWSS75VLiC-F6brGoee3MAL	generated_build		utf8_text_read
+apps/vitalo/build/.cxx/debug/p4s1k504/x86_64/additional_project_files.txt	1nGojx5BL21lsU7m3Mq4l1aDPdm6h4WdG	generated_build	.txt	utf8_text_read
+apps/vitalo/build/app/intermediates/cxx/debug/c242o1l1/logs/arm64-v8a/configure_stderr.txt	1QYFZLTexMw7PaHwOYBDZGrl5IsKcIM4N	generated_build	.txt	utf8_text_read
+apps/vitalo/build/app/intermediates/cxx/debug/c242o1l1/logs/armeabi-v7a/configure_stderr.txt	1AY8M-IjUOm-YqglDCaMkxhbuZpKtNGHR	generated_build	.txt	utf8_text_read
+apps/vitalo/build/app/intermediates/cxx/debug/c242o1l1/logs/x86_64/configure_stderr.txt	1GZhoqaiUitYBX_4_ErN7ndW92InODbJe	generated_build	.txt	utf8_text_read
+apps/vitalo/build/app/intermediates/cxx/debug/p4s1k504/logs/arm64-v8a/configure_stderr.txt	1fXg-0LDOF9K-UWARHTOXluHZRRZ8Nm_W	generated_build	.txt	utf8_text_read
+apps/vitalo/build/app/intermediates/cxx/debug/p4s1k504/logs/armeabi-v7a/configure_stderr.txt	16L3l-2A-YPyK4uvndomvJlLKumQn3VNd	generated_build	.txt	utf8_text_read
+apps/vitalo/build/app/intermediates/cxx/debug/p4s1k504/logs/x86_64/configure_stderr.txt	14LUtUlxnWHmSzzxWfrZLSoxQiqKSExny	generated_build	.txt	utf8_text_read
+apps/vitalo/build/app_links/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1Lle3Inv3TzojiUtpGBHZ9x6HvjeW9HB2	generated_build	.txt	utf8_text_read
+apps/vitalo/build/app_links/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1bAcYFYbKuPq1ivdnmad9M7x5kslIOTC9	generated_build	.txt	utf8_text_read
+apps/vitalo/build/connectivity_plus/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	18owL31srdF1MP3uHLme4u7tmvPHDTVxs	generated_build	.txt	utf8_text_read
+apps/vitalo/build/connectivity_plus/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1KpMAkStD4XFTDbqWabUsqY_HGSbBTrMm	generated_build	.txt	utf8_text_read
+apps/vitalo/build/firebase_analytics/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	179KIFtN0-XFquVC8UHhvRRbQ7lC17nnm	generated_build	.txt	utf8_text_read
+apps/vitalo/build/firebase_analytics/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	13Evm_0WidDbJLvjN8xCYUFuZIwet8CA_	generated_build	.txt	utf8_text_read
+apps/vitalo/build/firebase_app_check/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1FI68oNv99o0i_npCo3vgGJPb6XUhl_vG	generated_build	.txt	utf8_text_read
+apps/vitalo/build/firebase_app_check/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1XnGB7Bx0z0fzvaIeKu7S_1lvYeewFPIc	generated_build	.txt	utf8_text_read
+apps/vitalo/build/firebase_core/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	12Y1tyUUG0bRw3sfRGeqCClaaUWvq2fwl	generated_build	.txt	utf8_text_read
+apps/vitalo/build/firebase_core/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	15KreLFQnQziZDWut7beF_GzDZjYn28Dn	generated_build	.txt	utf8_text_read
+apps/vitalo/build/firebase_crashlytics/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1M5z2MvH5kI3_mx2Zq4D5ZrKD4-4mYSk7	generated_build	.txt	utf8_text_read
+apps/vitalo/build/firebase_messaging/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1ptmXUp-HcTuHROIQAraT5OdTaoXaBmyM	generated_build	.txt	utf8_text_read
+apps/vitalo/build/firebase_messaging/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	186mcwno0lNEGIEWERqbQeUBHfSOYg-05	generated_build	.txt	utf8_text_read
+apps/vitalo/build/firebase_performance/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1_0vQUStip-OKYxtybpF4zvHQ9uZM0s_k	generated_build	.txt	utf8_text_read
+apps/vitalo/build/firebase_performance/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	19YF1D1W4SjUMBq-VQ_LuJ95aKs8-YEnp	generated_build	.txt	utf8_text_read
+apps/vitalo/build/flutter_secure_storage/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1E6mmZFfK6A71hGVISht8Ou4grE809zXF	generated_build	.txt	utf8_text_read
+apps/vitalo/build/flutter_secure_storage/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	19bM5luR_KU6LbvWrHYiE63E0xhS6gjJ3	generated_build	.txt	utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_firestore/cloud_firestore/ios/cloud_firestore/Sources/cloud_firestore/Resources/.gitkeep	1CT7VwPOLwDdmdtk63tD5b6IcvBNHQqYL	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_firestore/cloud_firestore/macos/cloud_firestore/Sources/cloud_firestore/Resources/.gitkeep	1_uiSUdFruBtsAgeDle3xhkp2YbeHEuUg	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_functions/cloud_functions/ios/cloud_functions/Sources/cloud_functions/Resources/.gitkeep	1W4YBW385bNQfYtGz0WuwI1WJWgUqDQ0o	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/cloud_functions/cloud_functions/macos/cloud_functions/Sources/cloud_functions/Resources/.gitkeep	1R96gmvEvPK6d_J9iWDV5sjyhtmrBEPJ4	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ai/firebase_ai/ios/firebase_ai/Sources/firebase_ai/Resources/.gitkeep	1YojEQwEGPMK58L71cx65FffSqji_baqi	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ai/firebase_ai/macos/firebase_ai/Sources/firebase_ai/Resources/.gitkeep	1jHN8A60HgWNOu3Ogu9kFmNt2CQWYB-3L	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_analytics/firebase_analytics/ios/firebase_analytics/Sources/firebase_analytics/Resources/.gitkeep	1Yuj40lNpk9DLQrWOR_bRMl9TvlNi7Ana	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_check/firebase_app_check/ios/firebase_app_check/Sources/firebase_app_check/Resources/.gitkeep	1CYej4tldPqFM-EEF3Qfw9sqMquceaVLI	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_check/firebase_app_check/macos/firebase_app_check/Sources/firebase_app_check/Resources/.gitkeep	1Muf0GAPfKOxEFRS4GacE77BUKNPpTXgK	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_installations/firebase_app_installations/ios/firebase_app_installations/Sources/firebase_app_installations/Resources/.gitkeep	1FOi9u-ZhgcViGLpaVQUBLLh5WT18KroI	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_app_installations/firebase_app_installations/macos/firebase_app_installations/Sources/firebase_app_installations/Resources/.gitkeep	1aqpkK7Kz9Ed0pn6-luXOo22J7uic_ntJ	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_auth/firebase_auth/ios/firebase_auth/Sources/firebase_auth/Resources/.gitkeep	15jiuAVmoQQwfg8TrnbgV1hf-D4YmuUv9	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_auth/firebase_auth/macos/firebase_auth/Sources/firebase_auth/Resource/.gitkeep	1LVXBvHK4YkZy7o3FJMtS4b_Vvd-Lyadu	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_core/firebase_core/ios/firebase_core/Sources/firebase_core/Resources/.gitkeep	1m9M235TQ5ky2TUA94jo_SXDuIcF72FHW	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_core/firebase_core/ios/firebase_core/Sources/firebase_core/include/firebase_core/.gitkeep	1UTS0zAWgw8uaj5SULNizeCwQ6u_5eOPa	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_crashlytics/firebase_crashlytics/ios/firebase_crashlytics/Sources/firebase_crashlytics/Resources/.gitkeep	1Ni3fxOQ-WF9WzH0S7spfWOb9neFzHW4z	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_crashlytics/firebase_crashlytics/macos/firebase_crashlytics/Sources/firebase_crashlytics/Resources/.gitkeep	1foGsPPkN4cb3nZDxJAgeNO-Rx4ZC2g5-	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_database/firebase_database/ios/firebase_database/Sources/firebase_database/Resources/.gitkeep	1sd-6la2AGFMptUl28Yc-0KyZvWaTen9c	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_database/firebase_database/macos/firebase_database/Sources/firebase_database/Resources/.gitkeep	1r0sFZM3SJ_nbtAfK0HumfaT9WvdOUdCf	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_in_app_messaging/firebase_in_app_messaging/ios/firebase_in_app_messaging/Sources/firebase_in_app_messaging/Resources/.gitkeep	1lkG0bcDEYHVEt7ono87r4G25lewzOv2y	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ml_model_downloader/firebase_ml_model_downloader/ios/firebase_ml_model_downloader/Sources/firebase_ml_model_downloader/Resources/.gitkeep	1_loe_SrQ5CZUksvVp51fgl9a08Z2O9YI	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_ml_model_downloader/firebase_ml_model_downloader/macos/firebase_ml_model_downloader/Sources/firebase_ml_model_downloader/Resources/.gitkeep	1YF2FOt2_EPC1yRiLCOqKACahSS7GMmQH	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_performance/firebase_performance/ios/firebase_performance/Sources/firebase_performance/Resources/.gitkeep	1oY4ef5V4FJkDTLvRUJzAf8uwoRSUt6S6	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_remote_config/firebase_remote_config/ios/firebase_remote_config/Sources/firebase_remote_config/Resources/.gitkeep	11aiFSPYzSPgwnTyG8ju4oz1mz7DOvoox	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_remote_config/firebase_remote_config/macos/firebase_remote_config/Sources/firebase_remote_config/Resources/.gitkeep	1QtIRLauFER24X7giC9orEgWBrPDqljQ6	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_storage/firebase_storage/ios/firebase_storage/Sources/firebase_storage/Resources/.gitkeep	1wMdJij-q3zTW3eUvy2-eZqwRlZ9r9-RP	generated_build		utf8_text_read
+apps/vitalo/build/ios/SourcePackages/checkouts/flutterfire/packages/firebase_storage/firebase_storage/macos/firebase_storage/Sources/firebase_storage/Resources/.gitkeep	1O1yErd_67TxRLqggk36Ycttt0sLVXM-Z	generated_build		utf8_text_read
+apps/vitalo/build/path_provider_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1Jr84d9Jq_pUsla3OJ4G0z2m2hkvwWA4P	generated_build	.txt	utf8_text_read
+apps/vitalo/build/path_provider_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1lFpJoO63-F1vXaxMKi2eHiFxQN9FpjZI	generated_build	.txt	utf8_text_read
+apps/vitalo/build/share_plus/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1ZFMQmS0MltvdjPc0Q96Q2bQ0boDv1j3b	generated_build	.txt	utf8_text_read
+apps/vitalo/build/shared_preferences_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1utXcz-Y35tyd-9oarEYFq_QaaErnE7KT	generated_build	.txt	utf8_text_read
+apps/vitalo/build/shared_preferences_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1dAhywi2XgDSKcXTFNsNEfU5FcvpvVpAd	generated_build	.txt	utf8_text_read
+apps/vitalo/build/sqflite_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1jvFgk1sa-MrUoLIfqxfMLkq156TChhM2	generated_build	.txt	utf8_text_read
+apps/vitalo/build/sqflite_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1JxTJ1E0wiE7NGaTHhdIwQHLcCOJi2H2H	generated_build	.txt	utf8_text_read
+apps/vitalo/build/url_launcher_android/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt	1MV0Ja4lMPoUqHeecGuWFztVqDyKaifHW	generated_build	.txt	utf8_text_read
+apps/vitalo/build/url_launcher_android/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt	1563UGxEV0CKc0HKThhZ-_07f-swGb601	generated_build	.txt	utf8_text_read
+cloudflare/rayon-public/.wrangler/state/v3/d1/miniflare-D1DatabaseObject/be20dd55f49814c660097719a7798ed6dd43008f4034bdd68515bed0d9a130f9.sqlite-wal	1GUs83IKq3Bp2xyZe0ng6QBaRK5Op3gc8	project_source_or_docs	.sqlite-wal	readable_binary
+output/qa/full-stack-20260914/android-avds/AFRICLUB_EXCLUSIVE_QA_20260919_5674.avd/bootcompleted.ini	1SFSYCMq58Z7uw6JquWuAW_zyt2_gMJ49	qa_output	.ini	readable_binary
+output/qa/full-stack-20260914/android-avds/AFRICLUB_EXCLUSIVE_QA_20260919_5674.avd/multiinstance.lock	1DgD7_cSqsKtbuLLLWcBPnXQZJuT6HXM3	qa_output	.lock	utf8_text_read
+output/qa/full-stack-20260914/android-avds/AFRICLUB_EXCLUSIVE_QA_20260919_5674.avd/read-snapshot.txt	12a4tIfgc7pt0I2ZlztlnhdYzuO8Kj442	qa_output	.txt	utf8_text_read
+output/qa/full-stack-20260914/android-avds/AFRICLUB_QA_PHONE_API36_20260914.avd/bootcompleted.ini	1tTnUgTfNg9i3wP7imKgdRm_532gnu1DJ	qa_output	.ini	readable_binary
+output/qa/full-stack-20260914/android-avds/AFRICLUB_QA_PHONE_API36_20260914.avd/multiinstance.lock	1m50fZAzR-YmymrSuxGcZrKN1sR8xdb-s	qa_output	.lock	utf8_text_read
+output/qa/full-stack-20260914/android-avds/AFRICLUB_QA_PHONE_API36_20260914.avd/read-snapshot.txt	1ppaVmWL5FLRZ8Tq9Mv7jY_72g4l9Y53I	qa_output	.txt	utf8_text_read
+output/qa/full-stack-20260914/consolidated-browser-v8-20260920/admin-squad-state-evidence-6c5a8-nticated-squad-state-matrix-mobile-webkit/capture-attempt-XLe7IB/admin_squad_state_focused_dark_desktop_1440x1000.png	1eVggmgeYaNinw5ER4IxioAlv1Yf_NmTm	qa_output	.png	empty_image
+output/qa/full-stack-20260914/database-reset-initial-logs/clean-reset-vendor-passwords.log	1OoQtgXuDePx2Ui6nrNm_6GuRmm3VgcwL	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/design-source-review-final/violations.txt	1i12jX3e7BT_wybrdkWiobhcoYkHnAFK8	qa_output	.txt	utf8_text_read
+output/qa/full-stack-20260914/design-source-review-verified/violations.txt	1HC5l-4tYyIrU-LznHhgKG9yInYogjvZj	qa_output	.txt	utf8_text_read
+output/qa/full-stack-20260914/goal-update-consolidated-web-browser-v8-20260920.stdout	1-76S8N9H_d2YiqmMBehHk1kfMhjIDF9o	qa_output	.stdout	readable_binary
+output/qa/full-stack-20260914/goal-update-playwright-baseline-results/recovery-state-evidence--o-ba4cd--applicable-recovery-states-mobile-chromium/capture-attempt-TaekaP/offline_state_large_text_dark_viewport.png	1SL9dJipUYBiosLjECUkD2INh1tj5XZOm	qa_output	.png	empty_image
+output/qa/full-stack-20260914/goal-update-predict-card-captures-20260924.stdout	18CP6OqrOYfqtjqx1AZqqCSleE5oVkozA	qa_output	.stdout	readable_binary
+output/qa/full-stack-20260914/goal-update-stage-web-firefox-v8-20260920.stdout	1Y0f9BKv9E8pfJGRsDVxqg_kggvNL1Ht2	qa_output	.stdout	readable_binary
+output/qa/full-stack-20260914/history/database-before-nine-migration-reset-20260914T184106Z/clean-reset-vendor-auth.log	1SOtsqIzyH28EJSzTsI56Hs9Gs6Xg7Eo2	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/history/database-before-nine-migration-reset-20260914T184106Z/clean-reset-vendor-passwords.log	15wkJ9Q1H7Do5ANUEvIdZGeIiuL5pHoDj	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/history/database-before-nine-migration-reset-20260914T184106Z/clean-reset-vendor-storage.log	1Ps7wD1UyHQbGC33q-HL7IZuGLiyp1hD4	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/history/database-nine-migrations-20260914T191149Z/clean-reset-vendor-auth.log	1_1h977pj1Y8SEHki4VvXMX177_cTPePt	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/history/database-nine-migrations-20260914T191149Z/clean-reset-vendor-passwords.log	1is32pNdh1Yc9kgSkGVPj-2cw7lv2DD63	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/history/database-nine-migrations-20260914T191149Z/clean-reset-vendor-storage.log	1x6hseXzp-NreNVOxFHIwXNn9v5QN9C38	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/admin-assignment-repair-lint.log	1lF8m_9C7DZ7CfsfbxjyVakeekfp_Huip	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/auth-bootstrap-isolated.log	1VNkVt10Ra4EzeO9M9p-OS8YE1ShsCS6Q	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/clean-reset-vendor-auth.log	1eVu1D7L-IxorkWfNvv05BNrUzSzz0a0g	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/clean-reset-vendor-passwords.log	19SP4Vs1Fque2_q6A0qIKYaLZja8GUXez	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/clean-reset-vendor-storage.log	1-FNSuV6STh1BSqdzlvpD9G_6F7apcEXr	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/database-advisors-ticket-deadline-isolated-config.stderr.log	16nCfUTmI787ZIhXRmD8IdPLNEdEuta4u	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/database-advisors-ticket-deadline.stderr.log	1CAp7_xLiEPjHnkmbBtI6MntRJp_rqknP	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/database-client-acl-forward-final.log	1qv6XZbpj-0nWFvhfpT86cDYG1Ms9H7g9	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/database-client-acl-forward.log	18oSHlZqZxhSmpDhr9yxW-Iij5qG-x_e9	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/database-client-acl-with-columns.log	1dVvna0mG1KZ7yasdAnAj9h79LORJ7nqE	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/database-ticket-retry-migration.log	1Eb3r4-HGdwgRy4Xv2jfK7pqHzsw87lk4	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/database-wallet-lock-migration.log	1bpzs3-h8eLL84d2itNPm4Gbix1OJwfbO	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/diff-check-payment-atomic.log	1kPiDOAr7QtPckMr-3X6KXaKtpKgMynzA	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/diff-check-payment-handler.log	1g7oU42Ic2RdT-ahpfGipYiBs48a7UsWh	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/four-club-reset-20260916184248_grant_member_campaign_ordering.log	1aU6xqW1sBHfvwcEexlnx-QbJJnr4e0QD	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/four-club-reset-20260916185609_member_contribution_history_and_route_validation.log	1xnJfytsSl4bMlq9Of4spJ8t2xmhsNUd1	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/four-club-reset-20260919164057_atomic_initiative_confirmation.log	1EgKTt7VvOQX1h_ICIPvvi1agtgubPu_k	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/four-club-reset-vendor-auth.log	1DWRNvvC89Q6IdvZh_5Otc_LhigsOmbU9	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/four-club-reset-vendor-passwords.log	1MiAEOGuHx6tjLKV_VpopKdCYoWgyBYs8	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/four-club-reset-vendor-storage.log	1H2St_jRN5x0WdRPp7CMVYqh4JgpVKFq9	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/git-integrity.log	1RcSVdRKoYb3J9EVdRSKKMt_kXvpQvV2E	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/goal-update-consolidated-web-types-v7-20260920.log	1A0D72vzmEjehZH6RdhCxHFafsUQidhpX	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/goal-update-ios-as-vita-app-stdout.log	1KgfVqQ7zipjKppgDFdRnZO73QdE6xr3X	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/goal-update-ios-nkana-app-stdout.log	1iynIjT6oJBJKeVhnPqmGJnAsoLhwP4Mo	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/goal-update-ios-rayon-app-stdout.log	1jZseRCMPmS7f6lJRsIErPXq6vI_yhQNe	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/goal-update-ios-vitalo-app-stdout.log	1UsLH9GpMpiuOabBReFe65PfhLgXJYUgg	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/goal-update-pwa-update-static.log	1Dq9z2dX_YrY2_bvnuXcNrcQSwmHBVu1i	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/goal-update-reset-20260916184248_grant_member_campaign_ordering.log	15CxAb2ElfwnC7Viz3T_GUuopuOPljPsZ	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/goal-update-reset-20260916185609_member_contribution_history_and_route_validation.log	1KWoHXOSsLvcsTpZ32X_C7zZfszT4bWNp	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/goal-update-reset-20260919164057_atomic_initiative_confirmation.log	1Qq67WByvHQmrvYDYQ6JUYxx2WYLlXzLq	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/goal-update-reset-vendor-auth.log	1sXxi74YxFEQp2xcPxzAwi48pXdLH1CUa	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/goal-update-reset-vendor-passwords.log	11Hfjlzc53CV51z_y1OZGyRu7_sU3h4Eu	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/goal-update-reset-vendor-storage.log	1KiUnF_CBcN6_FHeJB9M4tG4rqA74BFIt	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/http-operating-fixture.log	1p_bNNrtw2ZMoTCnvZp-43dI2lKAV7jMu	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/isolated-http-operating-fixture-final.log	1MHZ5NBaN0zyIHydt77vBIlHMPgH0lb8J	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/latest-browser-harness-lint.log	1tMqnuc09XQ9KmMvuBBDhV4SlJbW-aTx_	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/latest-browser-harness-typecheck.log	1jFPEOoRXJ8kJZv0ertzDezaJwAA4BGcE	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/native-shell-syntax-final.log	1Ac6JZz4x8vstBcCLiwlTb1YuzCge_ahC	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/onboarding-sync-candidate-apply.log	1vsw59ke7nIkvwPuk5VnRAH9HDO4m5GX3	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/onboarding-sync-clean-apply.log	1rPNNaTOKzhcbE7d3Xc4haoqsL_MmwuH2	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/onboarding-sync-concurrency-apply.log	1p3ED45wVh9yYTmp-pWEdaf2oUXJ835Ed	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/onboarding-sync-preserve-name-apply.log	1obxxtduN7zPLZ8-9t8MZ6-E5AB3gynIy	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/public-provenance-lint.log	1zFPhXoUUt0Zaf-207xnUWh5jXZGLBHlT	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/public-provenance-typecheck.log	1pa3Ds8jT0feFQVtRJlY9p6TMi7q8xX9u	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/storage-bootstrap-isolated.log	1UC3U9zw0ihsTrxiZcP1mo17dr0vRS48h	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/targeted-browser-harness-lint.log	1RMDsBZZLMqzVfxCl0GFWWFw8pW0tmq5y	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/targeted-web-typecheck.log	1ozUNzL4-NBpVAZ_lmIFqk0rwApbuLoLH	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/ticket-deadline-diff-whitespace.log	1Aovsfo-xrry3YUqkuTqcY6I4pvBsjTPW	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/ticket-upgrade-apply-migration.log	1hfKzO6GiGLNDvHge3j1Pf1DQaesCR5oZ	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/ticket-upgrade-reset-20260916184248_grant_member_campaign_ordering.log	1GS45oo9_-sRmoCyljHgvdaH9_DoqVX5n	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/ticket-upgrade-reset-20260916185609_member_contribution_history_and_route_validation.log	1lJU0J14a3Ktpwm9wtiz2H5WSA2csSZdH	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/ticket-upgrade-reset-20260919164057_atomic_initiative_confirmation.log	1QT6nMOsr-r05FSPJqX7hUFUcSqO0CTYq	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/ticket-upgrade-reset-vendor-auth.log	1ACeUb6QPeNYauuYYhrnhL8PZa78AeN2v	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/ticket-upgrade-reset-vendor-passwords.log	1_qcI-4chBBHjso3sLgPC6gej7oqOqACA	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/ticket-upgrade-reset-vendor-storage.log	1j5OoilbgBSD0U3a4KRwSE4iB2I939AX6	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/ticket-upgrade-seed-existing-ticket.log	1RKFdEYScACoYvfKQqhdjM7LjX5N43V50	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/venue-access-acl-migration.log	1nyAP6ZDLQWPozgWsnLo4VzomQsvBoPBy	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/venue-removal-reset-20260916184248_grant_member_campaign_ordering.log	15UNjzXP4Hv9754JDDnrfeZzvv-a4NHQc	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/venue-removal-reset-20260916185609_member_contribution_history_and_route_validation.log	1eI_VM7wwSlBO1dVZRzgFvPjIJXHkjJUu	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/venue-removal-reset-20260919164057_atomic_initiative_confirmation.log	1nPKIU6GnJUrlUqlVYsUo1tMoKL8g3Buf	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/venue-removal-reset-vendor-auth.log	1_eYG1w4cKwW1zObpgaJ1TrwCzrLhJ-L1	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/venue-removal-reset-vendor-passwords.log	145junP8TF7NdPz0jkPanfItCquBVEewS	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/venue-removal-reset-vendor-storage.log	1x4GipUWfyb-VC9jCP_JgmBqxiP7wyB49	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/web-cache-repair-lint.log	1KikbuBSTTBa3sy-cEzZkxuwrGFY0_h9R	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/web-capture-final-lint.log	147bWiAyAYSX8Eo_isUvL7xMxSbFfyXTy	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/web-capture-final-typecheck.log	1RapokJEjBLMQ8RAvJdx2xBAsCNK7PKO_	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/web-dialog-focus-lint.log	1HmJa49IiIV55TponA_ZaaY5Ko_nTst_B	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/web-home-reflow-lint.log	1VS4Cxgnj0XssEQZWhMjrI_s2_p2ubWJ5	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/web-navigation-final-lint.log	1CTlkVYcqP5HK75Rp5M-NmyaxMmOWZC55	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/logs/web-navigation-hydration-lint.log	1SGhvESNi3nkvZD89IbvfClM_kMhVW8Pk	qa_output	.log	utf8_text_read
+output/qa/full-stack-20260914/sole-design-source-compliance/violations.txt	1xSaKCei3PK2JFSqwCrDfc5-9cgjBInP3	qa_output	.txt	utf8_text_read

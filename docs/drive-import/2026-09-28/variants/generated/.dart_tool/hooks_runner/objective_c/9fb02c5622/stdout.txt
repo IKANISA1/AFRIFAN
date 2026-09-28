@@ -1,0 +1,65 @@
+Running `(cd /Users/jeanbosco/.pub-cache/hosted/pub.dev/objective_c-9.3.0/; ANDROID_HOME=/Volumes/PRO-G40/Development/Android/Library-Android/sdk TMPDIR=/var/folders/yx/gzgvttgj2ljd6n_vs2qzdjq80000gn/T/ PATH=/Volumes/PRO-G40/Applications/Docker.app/Contents/Resources/bin:/Volumes/PRO-G40/Development/Node/bin:/Users/jeanbosco/.bun/bin:/Users/jeanbosco/.bun/bin:/Users/jeanbosco/.bun/bin:/Volumes/PRO-G40/Development/Python/codex-agents-venv/bin:/Volumes/PRO-G40/Development/Flutter/flutter/bin:/Volumes/PRO-G40/Applications/Visual Studio Code.app/Contents/Resources/app/bin:/Users/jeanbosco/.local/bin:/Users/jeanbosco/.gem/ruby/2.6.0/bin:/Volumes/PRO-G40/Development/Android/Library-Android/sdk/cmdline-tools/latest/bin:/Volumes/PRO-G40/Development/Android/Library-Android/sdk/platform-tools:/Volumes/PRO-G40/Development/Android/Library-Android/sdk/emulator:/Volumes/PRO-G40/Applications/Docker.app/Contents/Resources/bin:/Volumes/PRO-G40/Development/Node/bin:/Users/jeanbosco/.local/bin:/Users/jeanbosco/.gem/ruby/2.6.0/bin:/Volumes/PRO-G40/Development/Python/codex-agents-venv/bin:/Volumes/PRO-G40/Development/Flutter/flutter/bin:/Volumes/PRO-G40/Applications/Visual Studio Code.app/Contents/Resources/app/bin:/Volumes/PRO-G40/Development/Android/Library-Android/sdk/cmdline-tools/latest/bin:/Volumes/PRO-G40/Development/Android/Library-Android/sdk/platform-tools:/Volumes/PRO-G40/Development/Android/Library-Android/sdk/emulator:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/Users/jeanbosco/.codex/tmp/arg0/codex-arg0LrqJ6I:/Users/jeanbosco/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/override:/Volumes/PRO-G40/Applications/Docker.app/Contents/Resources/bin:/Volumes/PRO-G40/Development/Node/bin:/Users/jeanbosco/.bun/bin:/Volumes/PRO-G40/Development/Python/codex-agents-venv/bin:/Volumes/PRO-G40/Development/Flutter/flutter/bin:/Volumes/PRO-G40/Applications/Visual Studio Code.app/Contents/Resources/app/bin:/Users/jeanbosco/.local/bin:/Users/jeanbosco/.gem/ruby/2.6.0/bin:/Volumes/PRO-G40/Development/Android/Library-Android/sdk/cmdline-tools/latest/bin:/Volumes/PRO-G40/Development/Android/Library-Android/sdk/platform-tools:/Volumes/PRO-G40/Development/Android/Library-Android/sdk/emulator:/Users/jeanbosco/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback:/Volumes/PRO-G40/Applications/ChatGPT.app/Contents/Resources HOME=/Users/jeanbosco /Volumes/PRO-G40/Development/Flutter/flutter/bin/cache/dart-sdk/bin/dart --packages=/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/package_config.json /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/objective_c/9fb02c5622/hook.dill --config=/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/objective_c/9fb02c5622/input.json )`.
+INFO: 2026-09-23 23:56:42.248008: Running `which clang`.
+
+INFO: 2026-09-23 23:56:42.259645: Running `/usr/bin/clang --version`.
+
+INFO: 2026-09-23 23:56:42.274137: Running `/usr/bin/clang --version`.
+
+INFO: 2026-09-23 23:56:42.292170: Running: /usr/bin/clang -isysroot /Volumes/PRO-G40/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-darwin -mmacos-version-min=12 -c /Users/jeanbosco/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/include/dart_api_dl.c -fpic -I src -o /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/include/dart_api_dl.c.o
+
+INFO: 2026-09-23 23:56:42.292437: Running: /usr/bin/clang -isysroot /Volumes/PRO-G40/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-darwin -mmacos-version-min=12 -c /Users/jeanbosco/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/objective_c.c -fpic -I src -o /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/objective_c.c.o
+
+INFO: 2026-09-23 23:56:42.292598: Running: /usr/bin/clang -isysroot /Volumes/PRO-G40/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-darwin -mmacos-version-min=12 -c /Users/jeanbosco/.pub-cache/hosted/pub.dev/objective_c-9.3.0/test/util.c -fpic -I src -o /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/test/util.c.o
+
+INFO: 2026-09-23 23:56:42.292725: Running: /usr/bin/clang -isysroot /Volumes/PRO-G40/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-darwin -mmacos-version-min=12 -x objective-c -fobjc-arc -c /Users/jeanbosco/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/input_stream_adapter.m -fpic -I src -o /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/input_stream_adapter.m.o
+
+INFO: 2026-09-23 23:56:42.292817: Running: /usr/bin/clang -isysroot /Volumes/PRO-G40/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-darwin -mmacos-version-min=12 -x objective-c -fobjc-arc -c /Users/jeanbosco/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/objective_c.m -fpic -I src -o /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/objective_c.m.o
+
+INFO: 2026-09-23 23:56:42.292994: Running: /usr/bin/clang -isysroot /Volumes/PRO-G40/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-darwin -mmacos-version-min=12 -x objective-c -fobjc-arc -c /Users/jeanbosco/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/ns_number.m -fpic -I src -o /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/ns_number.m.o
+
+INFO: 2026-09-23 23:56:42.293076: Running: /usr/bin/clang -isysroot /Volumes/PRO-G40/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-darwin -mmacos-version-min=12 -x objective-c -fobjc-arc -c /Users/jeanbosco/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/protocol.m -fpic -I src -o /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/protocol.m.o
+
+INFO: 2026-09-23 23:56:42.293160: Running: /usr/bin/clang -isysroot /Volumes/PRO-G40/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-darwin -mmacos-version-min=12 -x objective-c -fobjc-arc -c /Users/jeanbosco/.pub-cache/hosted/pub.dev/objective_c-9.3.0/src/objective_c_bindings_generated.m -fpic -I src -o /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/objective_c_bindings_generated.m.o
+
+INFO: 2026-09-23 23:56:42.338292: 
+INFO: 2026-09-23 23:56:42.338454: 
+INFO: 2026-09-23 23:56:42.338516: Generated /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/include/dart_api_dl.c.o
+
+INFO: 2026-09-23 23:56:42.345739: 
+INFO: 2026-09-23 23:56:42.345778: 
+INFO: 2026-09-23 23:56:42.345787: Generated /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/objective_c.c.o
+
+INFO: 2026-09-23 23:56:42.359309: 
+INFO: 2026-09-23 23:56:42.359341: 
+INFO: 2026-09-23 23:56:42.359350: Generated /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/test/util.c.o
+
+INFO: 2026-09-23 23:56:42.372573: 
+INFO: 2026-09-23 23:56:42.372606: 
+INFO: 2026-09-23 23:56:42.372615: Generated /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/protocol.m.o
+
+INFO: 2026-09-23 23:56:42.377110: 
+INFO: 2026-09-23 23:56:42.377186: 
+INFO: 2026-09-23 23:56:42.377208: Generated /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/observer.m.o
+
+INFO: 2026-09-23 23:56:42.517509: 
+INFO: 2026-09-23 23:56:42.517555: 
+INFO: 2026-09-23 23:56:42.517566: Generated /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/objective_c.m.o
+
+INFO: 2026-09-23 23:56:42.529056: 
+INFO: 2026-09-23 23:56:42.529093: 
+INFO: 2026-09-23 23:56:42.529110: Generated /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/ns_number.m.o
+
+INFO: 2026-09-23 23:56:42.552933: 
+INFO: 2026-09-23 23:56:42.552966: 
+INFO: 2026-09-23 23:56:42.552974: Generated /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/input_stream_adapter.m.o
+
+INFO: 2026-09-23 23:56:42.564461: 
+INFO: 2026-09-23 23:56:42.564493: 
+INFO: 2026-09-23 23:56:42.564501: Generated /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/objective_c_bindings_generated.m.o
+
+INFO: 2026-09-23 23:56:42.564701: Running: /usr/bin/clang -shared -Wl,-encryptable -undefined dynamic_lookup -isysroot /Volumes/PRO-G40/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-darwin -mmacos-version-min=12 /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/include/dart_api_dl.c.o /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/objective_c.c.o /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/test/util.c.o /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/input_stream_adapter.m.o /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/objective_c.m.o /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/observer.m.o /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/ns_number.m.o /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/protocol.m.o /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/obj/src/objective_c_bindings_generated.m.o -o /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/objective_c.dylib
+
+INFO: 2026-09-23 23:56:42.614713: 
+INFO: 2026-09-23 23:56:42.614759: 
+INFO: 2026-09-23 23:56:42.614770: Generated /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/.dart_tool/hooks_runner/shared/objective_c/build/9fb02c5622/objective_c.dylib
+

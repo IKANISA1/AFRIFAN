@@ -1,5 +1,7 @@
 # AFRICLUB Google Drive import and comparison
 
+> **Full-tree follow-up:** [FULL-TREE-REVIEW.md](FULL-TREE-REVIEW.md) now covers the previously excluded `.git`, generated build, dependency, and QA folders. The counts and coverage limits below describe the earlier source-and-delivery pass only.
+
 **Review date:** 28 September 2026
 **Drive folder:** [AFRICLUB](https://drive.google.com/drive/folders/1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH)
 **Checkout:** `/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB`
@@ -11,7 +13,7 @@ The Drive folder contains an older repository mirror, dated implementation packa
 
 The latest numbered source package, Implementation 08, was also extracted byte-for-byte as a **416-file review candidate** in [`candidates/implementation-08-source/`](candidates/implementation-08-source/). This is a *scoped subset*, not a full monorepo export. Its per-file SHA-256 comparison and reason for preservation are in [`candidate-08-vs-checkout.tsv`](candidate-08-vs-checkout.tsv). No existing application, SQL migration, Cloudflare configuration, or other active source file was overwritten.
 
-These 1,290 additions are staged in the local Git index under `docs/drive-import/2026-09-28/`. They have not been committed, deployed, or applied to a database.
+These 1,290 additions were committed locally as `345c9309` under `docs/drive-import/2026-09-28/`. They were not deployed or applied to a database.
 
 ## What was added and why
 

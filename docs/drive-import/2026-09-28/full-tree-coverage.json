@@ -1,0 +1,72 @@
+{
+  "archive_analysis": {
+    "archives": 1887,
+    "entries_including_nested": 171210,
+    "errors": 0,
+    "nested_depth_limit": 0,
+    "nested_size_limit": 0,
+    "nested_zips": 130,
+    "symlink_entries": 0,
+    "tar_archives": 201,
+    "unsafe_paths": 0,
+    "zip_archives": 1686
+  },
+  "drive_file_copies_or_variants_added": 1836,
+  "drive_folder_id": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+  "duplicate_name_extra_ids": 30,
+  "file_occurrences": 260865,
+  "file_roles": {
+    "dated_delivery": 430,
+    "dependency_install": 65861,
+    "generated_build": 145649,
+    "generated_tooling": 630,
+    "git_internal": 1010,
+    "output_evidence": 342,
+    "project_source_or_docs": 4549,
+    "qa_output": 41724,
+    "recovery_evidence": 640
+  },
+  "folder_count": 67157,
+  "folder_errors": 0,
+  "generated_byte_comparison_not_attempted": 251828,
+  "generated_drive_byte_comparison": {
+    "different": 5,
+    "error": 1174,
+    "identical": 857
+  },
+  "generated_drive_size_comparison": {
+    "different_size": 4,
+    "same_size": 253860
+  },
+  "generated_file_count": 253864,
+  "generated_size_comparison_pending": 0,
+  "git_internal_same_path_byte_comparison": {
+    "different": 16,
+    "identical": 45
+  },
+  "local_format_analysis": {
+    "empty_image": 2,
+    "git_object_sha1_valid": 947,
+    "git_pack_sidecar_preserved": 2,
+    "image_decoded": 38224,
+    "json_parse_failed": 2,
+    "json_parsed": 16154,
+    "jsonc_or_nonstandard_json": 108,
+    "non_utf8_binary_read": 3045,
+    "readable_binary": 40445,
+    "utf8_text_read": 160250,
+    "zip_container_for_archive_scan": 1686
+  },
+  "prior_connector_inventory_ids": 7098,
+  "prior_connector_inventory_ids_matched": 7098,
+  "same_path_presence": {
+    "checkout_same_path": 259021,
+    "git_storage_preserved_separately": 949,
+    "imported_mirror": 865
+  },
+  "substantive_drive_byte_comparison": {
+    "different": 1,
+    "identical": 5960
+  },
+  "unique_drive_paths": 260835
+}

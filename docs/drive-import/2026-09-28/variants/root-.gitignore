@@ -1,0 +1,116 @@
+# Flutter/Dart
+*.dart_tool/
+.packages
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Melos
+.melos/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+*.pem
+
+# Android
+**/android/**/gradle-wrapper.jar
+**/android/.gradle
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/android/key.properties
+**/android/keystore.properties
+**/android/**/keystore.properties
+*.jks
+*.keystore
+
+# iOS
+**/ios/**/*.mode1v3
+**/ios/**/*.mode2v3
+**/ios/**/*.moved-aside
+**/ios/**/*.pbxproj.backup
+**/ios/**/*.pbxuser
+**/ios/**/*.perspectivev3
+**/ios/**/*.xcscheme.backup
+**/ios/**/DerivedData/
+**/ios/**/Flutter/App.framework
+**/ios/**/Flutter/Flutter.framework
+**/ios/**/Flutter/Flutter.podspec
+**/ios/**/Flutter/Generated.xcconfig
+**/ios/**/Flutter/ephemeral/
+**/ios/**/Flutter/app.flx
+**/ios/**/Flutter/app.zip
+**/ios/**/Flutter/flutter_assets/
+**/ios/**/Flutter/flutter_export_environment.sh
+**/ios/**/ServiceDefinitions.json
+**/ios/Flutter/
+!**/ios/Flutter/
+!**/ios/Flutter/Debug.xcconfig
+!**/ios/Flutter/Release.xcconfig
+!**/ios/Flutter/AppFrameworkInfo.plist
+**/ios/Runner/GeneratedPluginRegistrant.*
+**/ios/Pods/
+
+# Coverage
+coverage/
+*.lcov
+**/test/failures/
+
+# Generated
+*.g.dart
+!packages/core/core_theme/lib/src/team_assets.g.dart
+*.freezed.dart
+*.mocks.dart
+*.config.dart
+
+# Env
+.env
+.env.*
+!/.env.example
+!/apps/rayon_sports/web/.env.example
+*.service-account.json
+*service-account*.json
+apps/*/assets/flavors/*.local.json
+
+# Additional ignores
+.dart_tool/
+pubspec.lock
+!/pubspec.lock
+output/
+*.log
+firebase-debug.log
+.gemini/
+node_modules/
+.next/
+
+# Release artifacts (too large for GitHub)
+*.aab
+*.apk
+**/release_artifacts/
+apps/rayon_sports/web/.wrangler/
+apps/rayon_sports/web/.lighthouseci/
+apps/rayon_sports/web/tmp/
+supabase/recovery/*
+!supabase/recovery/*.sql
+
+# Sensitive credentials — never commit
+**/ios/AuthKey_*.p8
+**/google-services.json
+!**/android/app/google-services.json
+supabase/.temp/
+
+# Local Supabase branch selection and language caches
+supabase/.branches/
+__pycache__/
+*.pyc
+.kotlin/

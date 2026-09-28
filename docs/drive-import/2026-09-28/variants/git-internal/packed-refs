@@ -1,0 +1,13 @@
+# pack-refs with: peeled fully-peeled sorted 
+e465954030b7aad9ec013517292d0dc3892b9165 refs/codex/turn-diffs/checkpoints/127e7eeeb9a0c25efb22a2c31f9b59d9/eb681b517f0144dbbcd855c0c34334c9/1789902669251/c913d05b-d65c-45bd-8cd5-fe7021da0a36
+a046bbcb15511e26f09a490a8bb3f040e43e1cbc refs/codex/turn-diffs/checkpoints/8881e53ba8a3e923ab30898c43075995/1102298278991b83db0c00a069dd64b8/1789921368621/c0592a8a-e44f-4232-8de8-7a558ccb9057
+e642995f55e8472b6968797f46ef0f601236c772 refs/heads/codex/gikundiro-club
+1460dddb256875fc7d3c1411a192c1ccc633ef2a refs/heads/codex/google-wallet-ticketing-foundation
+77dce9fda99298d2daba15ac8d433d2b02886e8c refs/heads/codex/predict-only-cleanup
+ca796a6f2f2ae54b7ce121b2177f8c570d3a3729 refs/heads/codex/recovered-pro-g40-2026-09-10
+2b80d665b62acb67ec7274f966fba3b0ec1c5721 refs/heads/codex/repository-cleanup
+eb73befd18b4a9d031696524c98ceb60c94a6ffc refs/heads/codex/split-tv-trivia-to-lets-play
+77dce9fda99298d2daba15ac8d433d2b02886e8c refs/heads/main
+a6e6e8cae166c30117699f4f6968e79248b3eb9c refs/remotes/origin/codex/google-wallet-ticketing-foundation
+36c533869c058c23acb09c254cf4ef21a059f299 refs/remotes/origin/codex/repository-cleanup
+77dce9fda99298d2daba15ac8d433d2b02886e8c refs/remotes/origin/main

@@ -1,0 +1,24 @@
+0000000000000000000000000000000000000000 ca796a6f2f2ae54b7ce121b2177f8c570d3a3729 Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1789030713 +0200	clone: from https://github.com/IKANISA1/AFRIFAN.git
+ca796a6f2f2ae54b7ce121b2177f8c570d3a3729 ca796a6f2f2ae54b7ce121b2177f8c570d3a3729 Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1789030791 +0200	checkout: moving from main to codex/recovered-pro-g40-2026-09-10
+ca796a6f2f2ae54b7ce121b2177f8c570d3a3729 ca796a6f2f2ae54b7ce121b2177f8c570d3a3729 Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1789464205 +0200	checkout: moving from codex/recovered-pro-g40-2026-09-10 to main
+ca796a6f2f2ae54b7ce121b2177f8c570d3a3729 703e78be032b3f6771d688a8c7e90acd575e3267 Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1789464233 +0200	commit: Strengthen full-stack QA, tenant boundaries and native isolation
+703e78be032b3f6771d688a8c7e90acd575e3267 d96f4f10444c7f8c37fd3d0c660de55bf2cfd932 Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1789493408 +0200	commit: Reject ticket admission after deadlines expire during lock waits
+d96f4f10444c7f8c37fd3d0c660de55bf2cfd932 9b02f5eff11ae90162454999a92ac5374a271983 Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1789521002 +0200	commit: Bind ticket retries to their request and enforce event revocation
+9b02f5eff11ae90162454999a92ac5374a271983 8e4ae0b51108f84f1f2d3138a90c8f20586ce90e Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1789548745 +0200	commit: Recover uncertain venue admission checks and restore staff access
+8e4ae0b51108f84f1f2d3138a90c8f20586ce90e 6480e6e130d89aa5cc7f498e6d7b898ba048f881 Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1789549658 +0200	commit: Prevent wallet preparation and admission deadlocks
+6480e6e130d89aa5cc7f498e6d7b898ba048f881 876102bee2b7ed8fa93e5a2addb5b88f2206d63f Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1789584729 +0200	commit: Protect member sessions and restore contribution reads
+876102bee2b7ed8fa93e5a2addb5b88f2206d63f 79d96a71361eea74be6fd199d0a8a6a1595d521b Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1789641849 +0200	commit: Correct contribution totals and paginate member history
+79d96a71361eea74be6fd199d0a8a6a1595d521b b9295977194135ffe8154c389dba02e81aa55699 Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1789839250 +0200	commit: Harden payment reconciliation and verify native QA captures
+b9295977194135ffe8154c389dba02e81aa55699 0d56badcaffdf9ff6167485b8ed3eadd431cec5a Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1789841250 +0200	commit: Retain only Vitalo, Rayon Sports, Nkana and AS Vita [skip ci]
+0d56badcaffdf9ff6167485b8ed3eadd431cec5a fbcf812019c12cc716839151e3d957878c9d6e8c Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1789843893 +0200	commit: Remove retired venue product across clients and backend [skip ci]
+fbcf812019c12cc716839151e3d957878c9d6e8c 44ee22182b7e13adf67606eb357b4ba5115e8f6a Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1789870220 +0200	commit: Harden four-club payments, recovery and native QA [skip ci]
+44ee22182b7e13adf67606eb357b4ba5115e8f6a 69cc1a0cdab89a8925e1cd26e8922d05b972e45d Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1789871889 +0200	commit: Recover abandoned SMS parser claims safely [skip ci]
+69cc1a0cdab89a8925e1cd26e8922d05b972e45d 77dce9fda99298d2daba15ac8d433d2b02886e8c Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1789895699 +0200	commit: Use revolut-design as the sole design authority [skip ci]
+77dce9fda99298d2daba15ac8d433d2b02886e8c 77dce9fda99298d2daba15ac8d433d2b02886e8c Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1789909330 +0200	checkout: moving from main to codex/predict-only-cleanup
+77dce9fda99298d2daba15ac8d433d2b02886e8c c31fd9a8fd579c4420e18a2a6a45ee96805e8f51 Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1790158195 +0200	commit: Preserve recovered Predict and paid membership work
+c31fd9a8fd579c4420e18a2a6a45ee96805e8f51 ef31a17e9909db4179716898b8c31d40e3525d84 Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1790158215 +0200	commit: Restore recovered file permissions
+ef31a17e9909db4179716898b8c31d40e3525d84 43987b56504f230aa78701475cabfc4863316fee Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1790158238 +0200	commit: Clean crest asset whitespace
+43987b56504f230aa78701475cabfc4863316fee 77dce9fda99298d2daba15ac8d433d2b02886e8c Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1790158257 +0200	checkout: moving from codex/predict-only-cleanup to main
+77dce9fda99298d2daba15ac8d433d2b02886e8c 43987b56504f230aa78701475cabfc4863316fee Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1790158257 +0200	merge codex/predict-only-cleanup: Fast-forward
+43987b56504f230aa78701475cabfc4863316fee d1dd6916af807c4414dfd26c9475981eb23146b5 Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1790158347 +0200	commit: Align mobile RPC ACL contract with paid membership
+d1dd6916af807c4414dfd26c9475981eb23146b5 d1dd6916af807c4414dfd26c9475981eb23146b5 Jean Bosco <jeanbosco@Jeans-Mac-mini.local> 1790195153 +0200	checkout: moving from main to codex/add-cd-costa-do-sol
