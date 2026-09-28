@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "artifacts": {
+    "AFRICLUB_Implementation_08_2026-09-28.zip": {
+      "bytes": 1375626,
+      "sha256": "4264a115e3974bf6236d90cfd8bc59537f066725d56757b9e03dd256095a8af5"
+    },
+    "AFRICLUB_Implementation_08_Report_2026-09-28.md": {
+      "bytes": 10018,
+      "sha256": "17f4595ded085a98ef535ba4b8ae23371786ac5caba35ae6fed99c79e61bb1e6"
+    },
+    "AFRICLUB_Task_Register_08_2026-09-28.json": {
+      "bytes": 238772,
+      "sha256": "13aae3341f424ad099d713b264cb7592abe9b4c6f99bcaab407d2725ca56316a"
+    },
+    "AFRICLUB_All_Remaining_Tasks_08_2026-09-28.md": {
+      "bytes": 16804,
+      "sha256": "f68e850405adeaff73104a9d568dcf7534944d3a79332d5a82a46734843209f3"
+    },
+    "AFRICLUB_Execution_Plan_08_2026-09-28.json": {
+      "bytes": 88920,
+      "sha256": "726a6576336a05274b1e0a857fdd13b98b5456ff678934043e09f0d05a6f7fbb"
+    },
+    "AFRICLUB_Verification_08_2026-09-28.json": {
+      "bytes": 3001,
+      "sha256": "21ce70b52202d634a7c1fd73f2534789950c2b5219216fb9e0181dd8fbf3fd1d"
+    }
+  },
+  "internalFilesVerified": 508,
+  "localZipVerified": true
+}

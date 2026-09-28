@@ -1,0 +1,27 @@
+{
+  "captured_at_utc": "2026-09-25T18:51:47.351065+00:00",
+  "club_id": "fc49b605-6eda-408d-afc6-46e11bc17710",
+  "counts": {
+    "clubs": 1,
+    "fanclubs": 42,
+    "marketplace_categories": 5,
+    "marketplace_products": 15,
+    "media_assets": 283,
+    "membership_tiers": 6,
+    "news_posts": 30,
+    "partners": 3,
+    "players": 39,
+    "prediction_competitions": 8,
+    "prediction_fixtures": 1770,
+    "prediction_pools": 99,
+    "prediction_teams": 151,
+    "ticket_sale_categories": 160,
+    "ticket_sales": 16
+  },
+  "media_originals_exported": false,
+  "public_read_only": true,
+  "rows_file": "rayon-public-source-rows.json",
+  "rows_sha256": "61d99dbdc28532c26754dbf6f81dd1d591383d4eae8a7c17f2a821a484d99024",
+  "source_host": "loxcwbfukbqziuxgkfcm.supabase.co",
+  "transactionally_consistent": false
+}

@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "createdAtUtc": "2026-09-28T05:19:07.175305+00:00",
+  "archive": "AFRICLUB_Production_Remediation_Source_2026-09-28.zip",
+  "bytes": 3146553,
+  "sha256": "3fb8c5e47767582234c46bb80423894ec18da62daf52e4208d9a0ebde5e13e41",
+  "zipCrcPassed": true,
+  "archiveFiles": 442,
+  "allBundleHashesPassed": true,
+  "checksummedFiles": 441,
+  "sourceOverlayEntries": 169,
+  "sourcePrerequisites": 113,
+  "allSourceManifestHashesPassed": true,
+  "uniqueTargetedTestsPassed": 1704,
+  "testGroups": {
+    "node": 1378,
+    "python": 156,
+    "kotlin": 69,
+    "swift": 68,
+    "installer": 33
+  },
+  "sourceInstallTrials": [
+    {
+      "scenario": "selected-known-hash-baseline",
+      "sourceFilesChanged": 160,
+      "startingBytesRestored": true
+    },
+    {
+      "scenario": "alternating-changes-already-present",
+      "sourceFilesChanged": 79,
+      "startingBytesRestored": true
+    },
+    {
+      "scenario": "all-source-already-matching",
+      "sourceFilesChanged": 0,
+      "startingBytesRestored": true
+    }
+  ],
+  "syntaxChecksPassed": 181,
+  "statuses": {
+    "strictRuntimeGate": "blocked",
+    "browser": "blocked_by_administrator",
+    "androidIOSSDK": "unverified",
+    "dart": "not_executed",
+    "driveUpload": "not_performed",
+    "sourceRepositoryMutation": "not_performed",
+    "deployment": "not_performed"
+  },
+  "taskStatus": {
+    "inProgress": 21,
+    "open": 109,
+    "releaseAccepted": 0
+  },
+  "extractedArchiveRetest": {
+    "contracts": {
+      "node": 1378,
+      "python": 156
+    },
+    "installer": {
+      "installer": 33
+    },
+    "sourceTrials": [
+      {
+        "scenario": "selected-known-hash-baseline",
+        "sourceFilesChanged": 160,
+        "startingBytesRestored": true
+      },
+      {
+        "scenario": "alternating-changes-already-present",
+        "sourceFilesChanged": 79,
+        "startingBytesRestored": true
+      },
+      {
+        "scenario": "all-source-already-matching",
+        "sourceFilesChanged": 0,
+        "startingBytesRestored": true
+      }
+    ],
+    "contractGateStatus": "blocked_release_gates",
+    "sameSourceManifestVerified": true,
+    "repeatedTestsAddedToTotal": false
+  },
+  "deliverables": [
+    {
+      "name": "AFRICLUB_Production_Remediation_Baseline_2026-09-28.zip",
+      "bytes": 563289,
+      "sha256": "ff05c8ff3adb85af8a31fb189471e6c9ad5c87dfa4806eaafc8578a7b877b604"
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Evidence_2026-09-28.zip",
+      "bytes": 167473,
+      "sha256": "23de15cca5d4b622a9648ecf450f9cb7edcf209defe8649ac079225383407209"
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Report_2026-09-28.md",
+      "bytes": 18363,
+      "sha256": "8742e8a7fce1b9ad6b336cb8f9307ce716f20c1102fa4adb799051ec347e5f4f"
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Source_2026-09-28.zip",
+      "bytes": 3146553,
+      "sha256": "3fb8c5e47767582234c46bb80423894ec18da62daf52e4208d9a0ebde5e13e41"
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Upload_Pending_2026-09-28.json",
+      "bytes": 151550,
+      "sha256": "b6b449fbd2b38d98c5ea560737b48ae37f889bff17e6c18bb3081e6a69181825"
+    },
+    {
+      "name": "AFRICLUB_Production_Task_Register_Updated_2026-09-28.json",
+      "bytes": 190564,
+      "sha256": "19d37532e3e3a554828f1f922f56486549a59dd29525d1eeb984f82d7449a320"
+    }
+  ]
+}

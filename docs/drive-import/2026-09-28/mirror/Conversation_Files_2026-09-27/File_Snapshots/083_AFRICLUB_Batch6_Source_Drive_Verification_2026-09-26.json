@@ -1,0 +1,180 @@
+{
+  "verified_at_utc": "2026-09-26T13:54:30.034178+00:00",
+  "folder_path": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery",
+  "source_files": [
+    {
+      "path": "cloudflare/auth-code-delivery/DELIVERY_RECEIPTS.md",
+      "drive_file_id": "1iyXhwJ_bFmdN98mdu0YdUsJisob_njNi",
+      "sha256": "43bdbe035cd752e5c7cccaf2fa3e17fece53129bb817bd6158ae4e9af8837c17",
+      "bytes": 12525,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/README.md",
+      "drive_file_id": "1QxtShiuJnRHW5k72-T2hClK7030Tcj3H",
+      "sha256": "211badf9dc72f96eabbb7d7011ab0b727f739c51c2df9bdb83df181eec84bca9",
+      "bytes": 8842,
+      "readback_matched": true,
+      "operation": "update_preserving_id"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/contracts/delivery-receipts.json",
+      "drive_file_id": "1Bv9ba0gJHwI-6bpP9G1iO3D-cj8c3TxH",
+      "sha256": "8e3c488739bf42846f09630412452306e3ef81e98ab509450f9d4594d7e80e08",
+      "bytes": 2275,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/migrations/0002_delivery_status_receipts.sql",
+      "drive_file_id": "115RUV1CynSFBnjMWrI9eM7xJt2bHuiPC",
+      "sha256": "724411afebc9c81e7975b15444d59b49be474830f645253d32013fff82a86f61",
+      "bytes": 3495,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/scripts/check-receipts-deployment.mjs",
+      "drive_file_id": "1RXdb8RfC9mC56px7ga4dYsoEowGFHbfP",
+      "sha256": "c40192bf655108402f34ef6e892f55ce032bf8345c0b7606fbeb40d5c66830b8",
+      "bytes": 6598,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipt-http.mjs",
+      "drive_file_id": "1rw_7pYHIm0VZh5ryWwePTXuNj5wZqn3M",
+      "sha256": "6099650d404e09db6f296518438edb94cf9d55b681ac8a66ef1420c27f2177f3",
+      "bytes": 7265,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipt-reader-worker.mjs",
+      "drive_file_id": "1MssX4Iax1z6kKSiM0TOt-twJJ8Q3WoEf",
+      "sha256": "b4d3aa095744d075699b40a20cca8a61c4bb1d879c2157a78fe19c8148371937",
+      "bytes": 488,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipt-store.mjs",
+      "drive_file_id": "1hdWCE2KKliaK0WcFjpsVw0UToP2SOuKP",
+      "sha256": "f575777f7bfb2780951f3fa2009196a29d02a0533f68087a39ecbf9f4fd02a6f",
+      "bytes": 5436,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipts-policy.mjs",
+      "drive_file_id": "10FX9jreNUeC8cpFJCd17OiFIjqEqVn-W",
+      "sha256": "b8254634216301a9e30656bb1b2ec8ec79f9e2a3d3e8241432dd1f75a8436f83",
+      "bytes": 4587,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipts-webhook-worker.mjs",
+      "drive_file_id": "1HEulsr_B50wEFmSurldi5e9WOPoqnBQh",
+      "sha256": "f2204db70d38aa364f662625475f1374ceed82ebec2e435e6d334d3f6ddf8bc8",
+      "bytes": 425,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/status-aware-service.mjs",
+      "drive_file_id": "10Rba7mSPVVhdx6QQsSK3ZsIYiK67dret",
+      "sha256": "77d4711499a1026242627e60eecd564b5bd108ae719f647b887f2220fb41272a",
+      "bytes": 2972,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/status-aware-worker.mjs",
+      "drive_file_id": "1M0ugTK59iM1yGG4mnRnNmwyHUhp-yBZA",
+      "sha256": "dc8d69a5fc5d7e23494e27f2622165f6c4a3d03db6994aea89a8d92d1ba3309d",
+      "bytes": 691,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/receipts-config.test.mjs",
+      "drive_file_id": "11DIo3A68gtUqR01z7FGNXGrWr8NkU_mh",
+      "sha256": "29983d7560075bf0c03dd61586df015afb899eaa5afc54fee4d19bcc30470510",
+      "bytes": 4299,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/receipts-fixture.mjs",
+      "drive_file_id": "1DVhFZ-6ZUAB4oTu0_vVRpIxk8xBCp8Om",
+      "sha256": "4201225649a90713223f40ee828eb67816956383a67192b1f6a9aa9a07fad272",
+      "bytes": 3314,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/receipts-http.test.mjs",
+      "drive_file_id": "10VxjgA63BrG4AMt87626FBo3IqKC-_Ko",
+      "sha256": "a5520701937129d658f94cec95967e93dbd14db666aa50f14a2ff5fcb94ba0b8",
+      "bytes": 8642,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/receipts-integration.test.mjs",
+      "drive_file_id": "1-Lmpysags14in7WcR5lZlTZgMrbJd3lp",
+      "sha256": "0f5562f40f2711733fb3f16b89362e82bd77cc932ae89cabcd54499222d937c9",
+      "bytes": 6795,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/receipts-store.test.mjs",
+      "drive_file_id": "1GUBUpfJW8sX9V6d42zKBBPtvW9Pc1A7i",
+      "sha256": "aa4f5f8ded6080b5cece53ca39e483aa0bdf86a8b53c70804abaf4d9010b436c",
+      "bytes": 9313,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/wrangler.receipt-reader.staging.jsonc",
+      "drive_file_id": "14lHOiE064a9Zvd7oiARqX8GIF_J5r5ks",
+      "sha256": "ea9c04ceac8f2bef07947604d1a0047d308960168d04576a93dc023d60b68817",
+      "bytes": 653,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/wrangler.receipts-webhook.staging.jsonc",
+      "drive_file_id": "1Sgzh0nAls18dIb87Iw53yHeGFDDCbGk_",
+      "sha256": "9a8c96eef3f47224e984529b26cc81e37cb9795c8182306c5327d74cb78f120d",
+      "bytes": 886,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/wrangler.status-aware.staging.jsonc",
+      "drive_file_id": "1GsG1ilcvJ8tycIUGa1yb5M7A0k59CAdz",
+      "sha256": "a484717b4f9d6ab5b70e3d7fac454d1e0d7a33c523cb2136bf2ee9a197fea296",
+      "bytes": 746,
+      "readback_matched": true,
+      "operation": "create"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/delivery.mjs",
+      "drive_file_id": "1g57kNjdwxPjyGc5zEWXMrniFPHI3wQrt",
+      "sha256": "29439e44d9efc0b54f4c8b058e70eb2b2f20205ceaeaa8502d6c013079b3196d",
+      "bytes": 5060,
+      "readback_matched": true,
+      "operation": "update_preserving_id"
+    }
+  ],
+  "new_files_created": 19,
+  "existing_file_ids_preserved": 2,
+  "readback_code_tests_passed": 329,
+  "secrets_or_user_exports_uploaded": false,
+  "provider_messages_sent": 0,
+  "deployments": 0
+}

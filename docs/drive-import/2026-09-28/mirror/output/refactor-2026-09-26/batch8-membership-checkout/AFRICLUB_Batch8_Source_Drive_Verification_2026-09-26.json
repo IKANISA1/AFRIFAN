@@ -1,0 +1,195 @@
+{
+  "verifiedAtUtc": "2026-09-26T18:00:58.119449+00:00",
+  "sourceFiles": [
+    {
+      "path": "cloudflare/payment-allocation/MEMBERSHIP_CHECKOUT.md",
+      "driveFileId": "1E2Cc8vrLr4b3JP-dFCBAvfUO7U0VOEub",
+      "sha256": "e8245aec5a5917e40172f11f9fcb3ddbcdc95bacfe42c8afa3f1ee8faf530d8f",
+      "bytes": 11830,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/README.md",
+      "driveFileId": "11c2iijJkMgVqUIhC9JivYi8vxb5prAsr",
+      "sha256": "edda1f00271e3adc03273162b5f371480e772ddd899b78687970901d42afcf18",
+      "bytes": 11688,
+      "readbackMatched": true,
+      "operation": "update_preserving_id"
+    },
+    {
+      "path": "cloudflare/payment-allocation/checkout-client.ts",
+      "driveFileId": "16_82B5WksmT9mbgo3hekcWFksfNNy-EE",
+      "sha256": "afdb865f2f948f8310d7f9cf7a00251226430422faea458e45c6e0aba0615a89",
+      "bytes": 5564,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/contracts/membership-checkout.json",
+      "driveFileId": "1dCzcF7vNE0NjmEPTOPagWP7BnGJtM8pE",
+      "sha256": "47cfbb8c07c48daeb384d03de808d4e033d06fcb4243880cfaa7a9df0834a4e7",
+      "bytes": 3014,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/docs/checkout-source-map.md",
+      "driveFileId": "12VJgsEB9lfdQYCEGPGe38dB2-JlOSS6Q",
+      "sha256": "6e197ef025bbadbb8d872ac57d33736d0af9bacb0f7eed7774fe2e7eaa8574f3",
+      "bytes": 2299,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/migrations/0002_membership_checkout.sql",
+      "driveFileId": "15C04FF7xO6TUqDg_M-9U9aFLDr82i8JE",
+      "sha256": "924269edcc59d9e7f90d72f102c7e977404d77cbdad30c13fdd3ffd124d8d7a7",
+      "bytes": 19081,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/check-checkout-deployment.mjs",
+      "driveFileId": "1itQAiio9_363W8qUTvEX4DtqKx0Dg1fh",
+      "sha256": "50daca04129ffb1289cc6d5e426ae4a2fe358ca385589918bf70b1c48d7a07e0",
+      "bytes": 2919,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/compile-checkout-client.mjs",
+      "driveFileId": "1OwE-mOR6Qw_SLAfdkLrTMUUvO-e0D2_I",
+      "sha256": "d0238f849624d817570381aef1ae737b8240dce6f02a30a30bbbd92a5e2b2265",
+      "bytes": 1051,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/prepare-checkout-catalog.mjs",
+      "driveFileId": "134T0iLrArBkcZW5Fw0COnNocDNePXNtr",
+      "sha256": "cde856fdc73cc74b787baf366d5da5a374949916b30ce5a49fb3274dbea22d79",
+      "bytes": 4496,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-policy.mjs",
+      "driveFileId": "1B4xhYvNn_Z8zvEYoFSao2POSNIXI9ADU",
+      "sha256": "2f9289df7c6a3c522544f0c7787fa4611177e82ffa826110ddfd2b48ef54dea2",
+      "bytes": 2066,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-service.mjs",
+      "driveFileId": "1IQ0j1CbRMRzrL8sb8pn-CmldmL95UOar",
+      "sha256": "31750238e703b9b77880e64f4306ada67da2e033356012f2d66c9a751c090800",
+      "bytes": 4863,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "driveFileId": "1ewEmRV2DYWoHTL3R5ysSlYPfHZzdqlgW",
+      "sha256": "363240764eaa9bfc4651d02952fb50294145f1b046ecf58e68562d7754b655ba",
+      "bytes": 729,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-catalog.test.mjs",
+      "driveFileId": "1gUIBQo4rUsRY0RlbqIsuY5m7e3LsLAgX",
+      "sha256": "3c1a0c51898a381b6b722e6280a0a1c2af7c9a3759bfa428013e2ffeb2f15fed",
+      "bytes": 5073,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-client.test.mjs",
+      "driveFileId": "17Uc6DKMmqxpQw3urAOEhcYtRC0zUy8bL",
+      "sha256": "f46298d4e38bc790eeb9f00afbc71fd6bf81993c42c3f470759cac91583de307",
+      "bytes": 6527,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-concurrency.test.mjs",
+      "driveFileId": "14IcB3gph-Bge_dEYC66G9XXSDqJgW35v",
+      "sha256": "f2cf1978b495de119a7175303847774d7f3440b1055d6f71fe97ce7a28c102d5",
+      "bytes": 3739,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-concurrent-worker.mjs",
+      "driveFileId": "1ti0BaPMPB4O1EMoD7YiW1M8-Jso0incY",
+      "sha256": "880f5ed7d1f5170ba31610dcd0c6a6e7edd4ca0f77587a5041b0d567460c58d0",
+      "bytes": 1876,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-contract.test.mjs",
+      "driveFileId": "1oSVuVjA1osJ-MmgboDQ9_O1cGVulTG2E",
+      "sha256": "5eed439b95001612123117ca4fea6ac40716b25733240ea1c77ed33e8d8d4979",
+      "bytes": 2561,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-core.test.mjs",
+      "driveFileId": "1XGhg4I2KwEU6Cq-oCivfjgEyew5Lrzk3",
+      "sha256": "7c8c9c96b1427f1537ad209d1158092562d7a5b2b589a2c3de067d56b6384cb5",
+      "bytes": 5932,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-fixture.mjs",
+      "driveFileId": "1vDfLt8lBXcHQjcr_Peg7oDyCf8CFHq-f",
+      "sha256": "a531491a5f794415a2e72f95003f9dda70e911a1684116d0d7b6b18365860b7f",
+      "bytes": 3378,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-security.test.mjs",
+      "driveFileId": "1QbT0w834CQf6tSqgG_-UnjB_GZHj0E7i",
+      "sha256": "db423da059d72bc8e44be9fc3f28e63b3d5d9af53897d940bc348f5185508a35",
+      "bytes": 8354,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-tooling.test.mjs",
+      "driveFileId": "12fORjxLEYIlpvtNumbez5yKHqQqgArXq",
+      "sha256": "a83c36b961420df8019fd66c72ecd64876a99c0dc82fedb1a3f031beeb75da26",
+      "bytes": 5483,
+      "readbackMatched": true,
+      "operation": "new_file"
+    },
+    {
+      "path": "cloudflare/payment-allocation/wrangler.checkout.staging.jsonc",
+      "driveFileId": "1OOrjNpEE7_tY6Rz2I7Ici6Atxl-cIGc1",
+      "sha256": "8a8c53785e48ce3b613e32ebd6edc3439635358351f545002cd3bf84de813c8d",
+      "bytes": 684,
+      "readbackMatched": true,
+      "operation": "new_file"
+    }
+  ],
+  "allSourcePathsSaved": 22,
+  "sourceAdditionsSaved": 21,
+  "existingFilesUpdated": 1,
+  "readbackCodeTestsPassed": 432,
+  "currentDriveSourcePreflight": {
+    "status": "dry_run",
+    "source_files_to_change": 0,
+    "already_matching": 22,
+    "paths": [],
+    "source_files_changed": 0
+  },
+  "runtimeEnabled": false,
+  "remoteMigrations": 0,
+  "productionDeployments": 0
+}

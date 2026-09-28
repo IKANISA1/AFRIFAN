@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-09-28",
+  "driveUploaded": false,
+  "intendedParentId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+  "reason": "The current Google Drive tool discovery exposes29 read actions; no upload/create/update action was available. Plugin discovery found only the installed same connection. This is not a folder-permission conclusion.",
+  "remoteIds": [],
+  "artifacts": [
+    {
+      "name": "AFRICLUB_Implementation_07_2026-09-28.zip",
+      "localPath": "/mnt/data/AFRICLUB_Implementation_07_2026-09-28.zip",
+      "bytes": 1541741,
+      "sha256": "c316ddae3270cb53116efcbaee0341b04f206259b0c0b2ad154e3840583fb839"
+    },
+    {
+      "name": "AFRICLUB_Implementation_07_Report_2026-09-28.md",
+      "localPath": "/mnt/data/AFRICLUB_Implementation_07_Report_2026-09-28.md",
+      "bytes": 12922,
+      "sha256": "ce865081f10127bedf1ce4f75dac8f9ea729bf5992ef15e528bfba22e2b2e2ff"
+    },
+    {
+      "name": "AFRICLUB_Task_Register_07_2026-09-28.json",
+      "localPath": "/mnt/data/AFRICLUB_Task_Register_07_2026-09-28.json",
+      "bytes": 234877,
+      "sha256": "b7a2a118cda2d7280dde8cbf1b358c6d4e6866c1ab9130f16d67c77f7054b94f"
+    },
+    {
+      "name": "AFRICLUB_Execution_Plan_07_2026-09-28.json",
+      "localPath": "/mnt/data/AFRICLUB_Execution_Plan_07_2026-09-28.json",
+      "bytes": 88913,
+      "sha256": "ca7f5f0c555a869d8cefdbce7f4586021f5b6701aa9beaa0924c4b893aa0e24e"
+    },
+    {
+      "name": "AFRICLUB_All_Remaining_Tasks_07_2026-09-28.md",
+      "localPath": "/mnt/data/AFRICLUB_All_Remaining_Tasks_07_2026-09-28.md",
+      "bytes": 18444,
+      "sha256": "bb5830cde9f0583b1cebefa22f98b64746d5df7fb97180109c583b4b051b20f5"
+    },
+    {
+      "name": "AFRICLUB_Verification_07_2026-09-28.json",
+      "localPath": "/mnt/data/AFRICLUB_Verification_07_2026-09-28.json",
+      "bytes": 4139,
+      "sha256": "ab7b83a7bd69b2ef66b5db43c50368917f1070e34e832f69fe89e44690f5c15d"
+    },
+    {
+      "name": "AFRICLUB_Artifact_Checksums_07_2026-09-28.json",
+      "localPath": "/mnt/data/AFRICLUB_Artifact_Checksums_07_2026-09-28.json",
+      "bytes": 1497,
+      "sha256": "4cde0878aa0e9004865a5f63b8fbc7345a8c7ee1d6c582bf313031c2ad207d6a"
+    }
+  ],
+  "localArchiveVerification": {
+    "archive": "AFRICLUB_Implementation_07_2026-09-28.zip",
+    "bytes": 1541741,
+    "sha256": "c316ddae3270cb53116efcbaee0341b04f206259b0c0b2ad154e3840583fb839",
+    "internalFilesVerified": 527,
+    "zipCrcPassed": true,
+    "sourceMatchesCandidate": true,
+    "sourceFiles": 394,
+    "changedFiles": 35,
+    "baselineMatched": true,
+    "driveUploaded": false,
+    "remoteReadbackPerformed": false
+  },
+  "sourcePathsInsideArchive": [
+    "apps/rayon_sports/web/public/sw.js",
+    "apps/rayon_sports/web/src/components/browser-membership-portal.tsx",
+    "cloudflare/payment-allocation/MEMBERSHIP_HISTORY.md",
+    "cloudflare/payment-allocation/README.md",
+    "cloudflare/payment-allocation/migrations/0005_membership_history_read_index.sql",
+    "cloudflare/payment-allocation/src/checkout-service.mjs",
+    "cloudflare/payment-allocation/src/checkout-worker.mjs",
+    "cloudflare/payment-allocation/src/membership-history.mjs",
+    "cloudflare/payment-allocation/tests/checkout-fixture.mjs",
+    "cloudflare/payment-allocation/tests/membership-history.test.mjs",
+    "cloudflare/shared/membership-history.mjs",
+    "cloudflare/supporter-browser-api/PORTAL_INTEGRATION.md",
+    "cloudflare/supporter-browser-api/client.ts",
+    "cloudflare/supporter-browser-api/contracts/browser-v1.json",
+    "cloudflare/supporter-browser-api/portal-controller.ts",
+    "cloudflare/supporter-browser-api/src/index.mjs",
+    "cloudflare/supporter-browser-api/tests/config.test.mjs",
+    "cloudflare/supporter-browser-api/tests/history.test.mjs",
+    "cloudflare/supporter-browser-api/tests/portal.test.mjs",
+    "cloudflare/supporter-browser-api/tests/support/fixture.mjs",
+    "cloudflare/supporter-membership-api/README.md",
+    "cloudflare/supporter-membership-api/client.ts",
+    "cloudflare/supporter-membership-api/contracts/openapi.json",
+    "cloudflare/supporter-membership-api/src/http.mjs",
+    "cloudflare/supporter-membership-api/src/index.mjs",
+    "cloudflare/supporter-membership-api/tests/contract.test.mjs",
+    "cloudflare/supporter-membership-api/tests/fixture.mjs",
+    "cloudflare/supporter-membership-api/tests/history.test.mjs",
+    "cloudflare/supporter-web-router/tests/notifications.test.mjs",
+    "packages/features/feat_membership/lib/native_membership.dart",
+    "packages/features/feat_membership/lib/src/native_checkout/client.dart",
+    "packages/features/feat_membership/lib/src/native_checkout/history.dart",
+    "packages/features/feat_membership/test/native_checkout/history_harness.dart",
+    "tools/scripts/test_converged_suite_inventory.py",
+    "tools/scripts/verify_native_membership.py"
+  ],
+  "preserveHierarchy": true,
+  "overwriteOriginalDriveFiles": false,
+  "deployments": 0,
+  "remoteMigrations": 0
+}

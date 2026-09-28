@@ -1,0 +1,16 @@
+{
+  "artifact": "AFRICLUB_All_Conversation_Files_2026-09-27.zip",
+  "sha256": "feacb47284d3d3df568522247782bf4b9ef2b9dda067bf45a297288a94955eac",
+  "bytes": 14301017,
+  "archiveFiles": 2486,
+  "manifestCheckedFiles": 2484,
+  "deliverableNames": 79,
+  "deliverableVersions": 80,
+  "originalArchiveCount": 24,
+  "readbackFiles": 259,
+  "zipCrcPassed": true,
+  "allManifestHashesPassed": true,
+  "uploadedToDrive": false,
+  "batch12DriveCopiesByteVerified": 6,
+  "driveWritesPerformedThisTurn": 0
+}

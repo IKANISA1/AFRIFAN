@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "observationDateUtc": "2026-09-27",
+  "observationWindowUtc": "approximately 10:52 UTC",
+  "method": "Google_Drive.get_file_metadata, permissions fields explicitly requested",
+  "observations": [
+    {
+      "fileId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+      "relativePath": "AFRICLUB/",
+      "shared": true,
+      "permission": {
+        "type": "anyone",
+        "role": "writer",
+        "allowFileDiscovery": false
+      },
+      "contentsRead": false
+    },
+    {
+      "fileId": "1CkBh6849kWtd8TJ3jLKJgRnr2xuPJdVC",
+      "relativePath": "apps/rayon_sports/web/.env.local",
+      "shared": true,
+      "permission": {
+        "type": "anyone",
+        "role": "writer",
+        "allowFileDiscovery": false
+      },
+      "contentsRead": false
+    },
+    {
+      "fileId": "1m8qAjoBhpeD7sopp8Xld0sFMtJw5bN9E",
+      "relativePath": "apps/rayon_sports/android/upload-keystore.jks",
+      "shared": true,
+      "permission": {
+        "type": "anyone",
+        "role": "writer",
+        "allowFileDiscovery": false
+      },
+      "contentsRead": false
+    }
+  ],
+  "limits": [
+    "Metadata establishes permission configuration, not an observed unauthorized access.",
+    "Secret contents, credential validity and certificate lineage not inspected.",
+    "No sharing, credentials, deployment or runtime changes performed."
+  ],
+  "recommendedSeverity": "P0: contain access and investigate potential exposure and tampering before release",
+  "rootRecheckedAtUtc": "2026-09-27T11:33:00.295570+00:00",
+  "rootRecheckSameAnyoneWriter": true
+}

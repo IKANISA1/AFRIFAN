@@ -1,0 +1,15 @@
+{
+  "localArchive": "AFRICLUB_Batch12_Current_Source_Patch_2026-09-27.zip",
+  "bytes": 353866,
+  "sha256": "577c7581ca0afdd2f851c62551d3bdb9e7b06ea5de3fd5db658db9018d1d765d",
+  "archiveEntries": 180,
+  "checksummedFiles": 179,
+  "sourceChanges": 13,
+  "testsPassed": 962,
+  "nativeReleaseGate": "blocked",
+  "driveUploadsCompleted": 0,
+  "uploadStatus": "pending_no_write_action_exposed",
+  "archiveExtractedInstallerPreflightChanges": 13,
+  "archiveExtractedSwiftTestsPassed": 68,
+  "repeatedTestsNotAddedToTotal": true
+}

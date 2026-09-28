@@ -1,0 +1,73 @@
+{
+  "verifiedAtUtc": "2026-09-27T00:25:22.481675+00:00",
+  "localDate": "2026-09-27",
+  "driveFolderId": "1VTbL8CSuAfJ2g7_Sz0XP_CsZStlPRcXr",
+  "driveFolderPath": "/Google Drive/AFRICLUB/output/refactor-2026-09-27/batch11-native-recovery-storage",
+  "deliverables": [
+    {
+      "name": "AFRICLUB_Batch11_Current_Drive_Patch_2026-09-27.zip",
+      "driveFileId": "1ADjom7XyBlgL77oObD5Srs-zm13zcwS4",
+      "bytes": 344783,
+      "sha256": "32df6c24663c71d1be4a7d3f9a695cd8a78322e769a7b28997679ecf9da638b0",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch11_Implementation_Report_2026-09-27.md",
+      "driveFileId": "1vp1WgODK5ubxzL3JNnRXFcX-keL9xbHZ",
+      "bytes": 13077,
+      "sha256": "993c02b6bc150f34659a1a25dc79ab4aa5fe4461c64a773dacde57e5b5ffda63",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Remaining_Actions_Batch11_2026-09-27.json",
+      "driveFileId": "16NQAN8s7ljQYIqPkAswyIKr8nUDVmGtI",
+      "bytes": 14153,
+      "sha256": "b9e965e85d480697b822c177b7c80d916d3a916a78b9ef4b3453364dc173becf",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch11_Verification_2026-09-27.json",
+      "driveFileId": "18iSsOEpOBMKZhV-kl_GihSkvT8un11b4",
+      "bytes": 3904,
+      "sha256": "3053272252c75eef92f537723ce5fcffd663eb00a85e5996f461aeeb444c6c4d",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch11_Source_Drive_Verification_2026-09-27.json",
+      "driveFileId": "1V1USeAMj6S4QqUUa_uQXwoMZqQpFATHi",
+      "bytes": 5609,
+      "sha256": "2608057aba0c7a4022de92563594410f068a22265a4b1fe0eba675fffa62f2aa",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch11_Prechange_Source_2026-09-27.zip",
+      "driveFileId": "12E3rJRVvhRPHUXkANj5G2WveRXV31bIM",
+      "bytes": 202542,
+      "sha256": "10786b06bfb22c42699452ef8124f8be6dd7dd4863e65b7b409245a4f09fd06f",
+      "readbackMatched": true
+    }
+  ],
+  "sourcePathsSaved": 16,
+  "sourceAdditions": 13,
+  "existingFilesUpdatedPreservingId": 3,
+  "sourceReadbackMatches": 16,
+  "nodeTestsPassed": 792,
+  "portableKotlinJvmTestsPassed": 69,
+  "installerTestsPassed": 33,
+  "totalTargetedTestsPassed": 894,
+  "readbackPortableJvmTestsPassed": 69,
+  "readbackSourceChangesNeeded": 0,
+  "nativeDartTestsExecuted": false,
+  "androidHostCompiled": false,
+  "androidKeystoreVerified": false,
+  "flutterCompiled": false,
+  "deviceStorageVerified": false,
+  "appsRegistered": 0,
+  "providerCalls": 0,
+  "remoteMigrations": 0,
+  "deployments": 0,
+  "wholeMigrationComplete": false,
+  "nativeGate": "blocked_native_sdk_and_device_acceptance",
+  "archiveEntries": 185,
+  "checksummedFiles": 184
+}

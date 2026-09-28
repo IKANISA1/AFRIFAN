@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-09-28",
+  "implementation": "08",
+  "destinationFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+  "artifacts": [
+    {
+      "name": "AFRICLUB_Implementation_08_2026-09-28.zip",
+      "driveFileId": "15TXHOrMOpSSfaKbzJdJ-yKucdoISPZGi",
+      "url": "https://drive.google.com/file/d/15TXHOrMOpSSfaKbzJdJ-yKucdoISPZGi/view?usp=drivesdk",
+      "parentFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+      "uploadSuccessful": true,
+      "readbackMethod": "raw_archive",
+      "parentVerified": true,
+      "remoteBytes": 1375626,
+      "localBytes": 1375626,
+      "localSHA256": "4264a115e3974bf6236d90cfd8bc59537f066725d56757b9e03dd256095a8af5",
+      "byteHashReadbackVerified": true
+    },
+    {
+      "name": "AFRICLUB_Implementation_08_Report_2026-09-28.md",
+      "driveFileId": "1SYLU50jqf8f6zBoNu14HtDNwWGRmDJlS",
+      "url": "https://drive.google.com/file/d/1SYLU50jqf8f6zBoNu14HtDNwWGRmDJlS/view?usp=drivesdk",
+      "parentFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+      "uploadSuccessful": true,
+      "readbackMethod": "readable_text_and_metadata",
+      "parentVerified": true,
+      "remoteBytes": 10018,
+      "localBytes": 10018,
+      "localSHA256": "17f4595ded085a98ef535ba4b8ae23371786ac5caba35ae6fed99c79e61bb1e6",
+      "byteHashReadbackVerified": false
+    },
+    {
+      "name": "AFRICLUB_Task_Register_08_2026-09-28.json",
+      "driveFileId": "1EWjurGBrxdnRRq6Ep2WcI_ZmrUkxP8XC",
+      "url": "https://drive.google.com/file/d/1EWjurGBrxdnRRq6Ep2WcI_ZmrUkxP8XC/view?usp=drivesdk",
+      "parentFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+      "uploadSuccessful": true,
+      "readbackMethod": "metadata",
+      "parentVerified": true,
+      "remoteBytes": 238772,
+      "localBytes": 238772,
+      "localSHA256": "13aae3341f424ad099d713b264cb7592abe9b4c6f99bcaab407d2725ca56316a",
+      "byteHashReadbackVerified": false
+    },
+    {
+      "name": "AFRICLUB_Execution_Plan_08_2026-09-28.json",
+      "driveFileId": "1mmw4Jtuejm0vsyg9CFOqJaavqRk69_20",
+      "url": "https://drive.google.com/file/d/1mmw4Jtuejm0vsyg9CFOqJaavqRk69_20/view?usp=drivesdk",
+      "parentFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+      "uploadSuccessful": true,
+      "readbackMethod": "metadata",
+      "parentVerified": true,
+      "remoteBytes": 88920,
+      "localBytes": 88920,
+      "localSHA256": "726a6576336a05274b1e0a857fdd13b98b5456ff678934043e09f0d05a6f7fbb",
+      "byteHashReadbackVerified": false
+    },
+    {
+      "name": "AFRICLUB_All_Remaining_Tasks_08_2026-09-28.md",
+      "driveFileId": "1WdFGfw8bP28JdpcZ7nAlot1ruRX5CveZ",
+      "url": "https://drive.google.com/file/d/1WdFGfw8bP28JdpcZ7nAlot1ruRX5CveZ/view?usp=drivesdk",
+      "parentFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+      "uploadSuccessful": true,
+      "readbackMethod": "metadata",
+      "parentVerified": true,
+      "remoteBytes": 16804,
+      "localBytes": 16804,
+      "localSHA256": "f68e850405adeaff73104a9d568dcf7534944d3a79332d5a82a46734843209f3",
+      "byteHashReadbackVerified": false
+    },
+    {
+      "name": "AFRICLUB_Verification_08_2026-09-28.json",
+      "driveFileId": "1AukaUdJ1bJWuqfU8uwXk2UA254u3wAmj",
+      "url": "https://drive.google.com/file/d/1AukaUdJ1bJWuqfU8uwXk2UA254u3wAmj/view?usp=drivesdk",
+      "parentFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+      "uploadSuccessful": true,
+      "readbackMethod": "metadata",
+      "parentVerified": true,
+      "remoteBytes": 3001,
+      "localBytes": 3001,
+      "localSHA256": "21ce70b52202d634a7c1fd73f2534789950c2b5219216fb9e0181dd8fbf3fd1d",
+      "byteHashReadbackVerified": false
+    },
+    {
+      "name": "AFRICLUB_Artifact_Checksums_08_2026-09-28.json",
+      "driveFileId": "1llUn-G82JTC0VyhW0rRlx_EA0J88QAY8",
+      "url": "https://drive.google.com/file/d/1llUn-G82JTC0VyhW0rRlx_EA0J88QAY8/view?usp=drivesdk",
+      "parentFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+      "uploadSuccessful": true,
+      "readbackMethod": "metadata",
+      "parentVerified": true,
+      "remoteBytes": 1096,
+      "localBytes": 1096,
+      "localSHA256": "b6058c22656609769a3f9425d777ec8d8267402fff9b80fb1bfb5bd18e203bc2",
+      "byteHashReadbackVerified": false
+    }
+  ],
+  "currentDeliverablesVerified": 7,
+  "zipReadback": {
+    "zipSHA256Matched": true,
+    "bytes": 1375626,
+    "sha256": "4264a115e3974bf6236d90cfd8bc59537f066725d56757b9e03dd256095a8af5",
+    "internalFilesVerified": 508,
+    "zipEntries": 509,
+    "readbackDriveFileId": "15TXHOrMOpSSfaKbzJdJ-yKucdoISPZGi",
+    "parentVerified": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+    "scope": "Readback archive integrity; not deployment or release acceptance"
+  },
+  "priorCodeArchiveCatchUp": {
+    "name": "AFRICLUB_Implementation_07_2026-09-28.zip",
+    "sha256": "c316ddae3270cb53116efcbaee0341b04f206259b0c0b2ad154e3840583fb839",
+    "bytes": 1541741,
+    "driveId": "1t0VLOlQuPusGUFn2bY1pZPO2Z0QNAhls",
+    "downloadedHashMatched": true
+  },
+  "receiptScope": "This separate receipt records the seven completed Implementation 08 uploads above plus the prior Implementation 07 code archive catch-up. The receipt itself is uploaded afterwards and verified by connector metadata; it does not attest its own future upload.",
+  "limits": [
+    "Standalone JSON/Markdown files other than the report were read back by metadata, not by rehashing remote bytes. Their included copies are covered by the verified ZIP except this external checksum manifest.",
+    "Only the Implementation 07 code archive was caught up; separate historical standalone reports are not claimed uploaded.",
+    "Source archives were added as new versioned files. Existing code, sharing, credentials and live databases were not overwritten or changed.",
+    "Upload is not installation, deployment, named reviewer approval or production release acceptance."
+  ],
+  "controls": {
+    "productionDeployed": false,
+    "productionReady": false,
+    "remoteMigrations": 0,
+    "realPayments": 0,
+    "messagesSent": 0,
+    "originalDriveSourceOverwritten": false,
+    "permissionsChanged": false
+  }
+}

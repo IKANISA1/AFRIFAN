@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-09-28",
+  "scope": "322-file scoped source candidate, not complete monorepo or release acceptance",
+  "runtime": {
+    "node": "22.16.0",
+    "repositoryNodePin": "22.23.2",
+    "python": "3.13.5",
+    "typescript": "5.8.3",
+    "nodePinMatched": false
+  },
+  "tests": {
+    "node": {
+      "passed": 1670,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0,
+      "newThisDelivery": 114,
+      "log": "evidence/all-node-final.log"
+    },
+    "pythonSourceAndLineage": {
+      "passed": 168,
+      "failed": 0,
+      "newThisDelivery": 12,
+      "log": "evidence/python-tests.log"
+    },
+    "installer": {
+      "passed": 39,
+      "failed": 0,
+      "newDeliveryScenarios": 6,
+      "logs": [
+        "evidence/installer-core-part1.log",
+        "evidence/installer-core-part2.log",
+        "evidence/installer-delivery.log"
+      ]
+    },
+    "uniquePassingTotal": 1877,
+    "newTestCases": 132
+  },
+  "additionalChecks": {
+    "syntaxAndParseChecks": 217,
+    "syntaxFailures": 0,
+    "strictClientCompilation": "passed inside client.test.mjs",
+    "caseDisabledTemplate": "passed",
+    "gatewayDisabledTemplate": "passed",
+    "sourceSensitiveScan": {
+      "filesRead": 322,
+      "issues": 0,
+      "scope": "limited pattern/path scan; not proof of absence of all secrets"
+    },
+    "migrationNameHashGuard": "passed on packaged source; conflict fixture rejected"
+  },
+  "source": {
+    "priorCandidateFiles": 301,
+    "newFiles": 21,
+    "modifiedFiles": 4,
+    "changedPaths": 25,
+    "unchangedPrerequisites": 297,
+    "packagedCandidateFiles": 322
+  },
+  "notExecuted": [
+    "Full monorepo Flutter/Dart analysis and tests",
+    "Next.js full build and browser acceptance",
+    "Android/iOS native and physical-device acceptance",
+    "Cloudflare workerd/D1 and real Access acceptance",
+    "Real payment, provider or handset journeys",
+    "Supabase pgTAP and remote migration reconciliation",
+    "Independent security review, load test, backup restore and country/store approval"
+  ],
+  "controls": {
+    "productionDeployed": false,
+    "remoteMigrations": 0,
+    "realPayments": 0,
+    "permissionsChanged": false,
+    "productionReady": false
+  },
+  "testRunNotes": [
+    "The first combined installer test invocation hit the tool time limit. Only the subsequent completed 17+16+6 test runs are counted. Its partial log is retained.",
+    "Repeated Node runs and the previous delivery's historical 1882 tests are not added to this total.",
+    "Tests use genuine local SQLite with D1-shaped adapters and synthetic Access identities. Three tests use separate SQLite connections in worker threads. This is not a workerd or real D1 run."
+  ]
+}

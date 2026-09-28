@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "candidateId": null,
+  "stage": "cutover",
+  "singleWriter": null,
+  "authoritativeWriter": null,
+  "cloudflareFinancialWritesStarted": null,
+  "gates": [
+    {
+      "id": "consistent_backup_restore",
+      "passed": false,
+      "candidateId": null,
+      "observedAt": null,
+      "reviewer": null,
+      "artifacts": []
+    },
+    {
+      "id": "complete_original_media_export",
+      "passed": false,
+      "candidateId": null,
+      "observedAt": null,
+      "reviewer": null,
+      "artifacts": []
+    },
+    {
+      "id": "identity_session_migration",
+      "passed": false,
+      "candidateId": null,
+      "observedAt": null,
+      "reviewer": null,
+      "artifacts": []
+    },
+    {
+      "id": "tenant_and_role_authorization",
+      "passed": false,
+      "candidateId": null,
+      "observedAt": null,
+      "reviewer": null,
+      "artifacts": []
+    },
+    {
+      "id": "transaction_concurrency_failure_tests",
+      "passed": false,
+      "candidateId": null,
+      "observedAt": null,
+      "reviewer": null,
+      "artifacts": []
+    },
+    {
+      "id": "ledger_entitlement_ticket_parity",
+      "passed": false,
+      "candidateId": null,
+      "observedAt": null,
+      "reviewer": null,
+      "artifacts": []
+    },
+    {
+      "id": "function_behavior_dispositions",
+      "passed": false,
+      "candidateId": null,
+      "observedAt": null,
+      "reviewer": null,
+      "artifacts": []
+    },
+    {
+      "id": "scheduled_job_dispositions",
+      "passed": false,
+      "candidateId": null,
+      "observedAt": null,
+      "reviewer": null,
+      "artifacts": []
+    },
+    {
+      "id": "queue_retry_and_dead_letter_recovery",
+      "passed": false,
+      "candidateId": null,
+      "observedAt": null,
+      "reviewer": null,
+      "artifacts": []
+    },
+    {
+      "id": "public_content_rights_and_refresh",
+      "passed": false,
+      "candidateId": null,
+      "observedAt": null,
+      "reviewer": null,
+      "artifacts": []
+    },
+    {
+      "id": "old_client_minimum_version",
+      "passed": false,
+      "candidateId": null,
+      "observedAt": null,
+      "reviewer": null,
+      "artifacts": []
+    },
+    {
+      "id": "five_club_device_acceptance",
+      "passed": false,
+      "candidateId": null,
+      "observedAt": null,
+      "reviewer": null,
+      "artifacts": []
+    },
+    {
+      "id": "web_member_admin_acceptance",
+      "passed": false,
+      "candidateId": null,
+      "observedAt": null,
+      "reviewer": null,
+      "artifacts": []
+    },
+    {
+      "id": "monitoring_and_restore",
+      "passed": false,
+      "candidateId": null,
+      "observedAt": null,
+      "reviewer": null,
+      "artifacts": []
+    },
+    {
+      "id": "capacity_locality_cost",
+      "passed": false,
+      "candidateId": null,
+      "observedAt": null,
+      "reviewer": null,
+      "artifacts": []
+    },
+    {
+      "id": "prediction_economics_approval",
+      "passed": false,
+      "candidateId": null,
+      "observedAt": null,
+      "reviewer": null,
+      "artifacts": []
+    },
+    {
+      "id": "write_freeze_final_delta_reconciliation",
+      "passed": false,
+      "candidateId": null,
+      "observedAt": null,
+      "reviewer": null,
+      "artifacts": []
+    },
+    {
+      "id": "accountable_cutover_approval",
+      "passed": false,
+      "candidateId": null,
+      "observedAt": null,
+      "reviewer": null,
+      "artifacts": []
+    }
+  ]
+}

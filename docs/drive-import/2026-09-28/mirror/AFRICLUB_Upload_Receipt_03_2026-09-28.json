@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "verifiedAtUtc": "2026-09-28T09:20:45.808840+00:00",
+  "destinationFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+  "allSixArtifactUploadsAcknowledged": true,
+  "originalFilesOverwritten": false,
+  "productionDeployed": false,
+  "permissionsChanged": false,
+  "codeDeliveryFormat": "ZIP with original relative paths; not individually flattened files",
+  "artifacts": [
+    {
+      "name": "AFRICLUB_Implementation_03_2026-09-28.zip",
+      "id": "1uUEN_akGYv8r9NmA5RYtNppfQO3GlbXa",
+      "url": "https://drive.google.com/file/d/1uUEN_akGYv8r9NmA5RYtNppfQO3GlbXa/view",
+      "bytes": 1103820,
+      "localSha256": "d35896e455afbdb5f858abe760f0c54a3afe6e3403a908655513c85c90b43a28",
+      "parentReadBackConfirmed": true,
+      "verification": "downloaded_bytes_sha256_match"
+    },
+    {
+      "name": "AFRICLUB_Implementation_03_Report_2026-09-28.md",
+      "id": "1WymkEXIzYMgAfeiGi1fYZq7N_RoadFei",
+      "url": "https://drive.google.com/file/d/1WymkEXIzYMgAfeiGi1fYZq7N_RoadFei/view",
+      "bytes": 11749,
+      "localSha256": "28995fb4874e8ade149132ee23b7b9041e65158583fb97136f07f5fd6207e160",
+      "parentReadBackConfirmed": true,
+      "verification": "content_and_parent_readback"
+    },
+    {
+      "name": "AFRICLUB_All_Remaining_Tasks_2026-09-28.md",
+      "id": "1EgtqPw-l_GAnKIxKH9fKeO2fcZ9ZLyI0",
+      "url": "https://drive.google.com/file/d/1EgtqPw-l_GAnKIxKH9fKeO2fcZ9ZLyI0/view",
+      "bytes": 15060,
+      "localSha256": "9bf927c2fd8917052e5af53005c02b84e64105bb29d202638e7581c245a0589b",
+      "parentReadBackConfirmed": true,
+      "verification": "metadata_name_size_parent_match"
+    },
+    {
+      "name": "AFRICLUB_Task_Register_03_2026-09-28.json",
+      "id": "1fIgXhW5KpoYu2_S29_Uf6GriPhor0nF8",
+      "url": "https://drive.google.com/file/d/1fIgXhW5KpoYu2_S29_Uf6GriPhor0nF8/view",
+      "bytes": 198945,
+      "localSha256": "681f7e39aa76faeb04f30fff4fbcf37d7a74bdcb6fb426d1fdf92ecd9359d008",
+      "parentReadBackConfirmed": true,
+      "verification": "metadata_name_size_parent_match"
+    },
+    {
+      "name": "AFRICLUB_Verification_03_2026-09-28.json",
+      "id": "1ePX6PBKSoTJ1R3z4LjEDGqirAa7qVeK0",
+      "url": "https://drive.google.com/file/d/1ePX6PBKSoTJ1R3z4LjEDGqirAa7qVeK0/view",
+      "bytes": 2725,
+      "localSha256": "1bdf626d810b92bf00cfb4b54737391010072dd31ad4a48f7a5234b452887fd8",
+      "parentReadBackConfirmed": true,
+      "verification": "downloaded_bytes_sha256_match"
+    },
+    {
+      "name": "AFRICLUB_Artifact_Checksums_03_2026-09-28.json",
+      "id": "1Ag4IXlOu6_jmZ2y46wBLGE3W-R0DVpVN",
+      "url": "https://drive.google.com/file/d/1Ag4IXlOu6_jmZ2y46wBLGE3W-R0DVpVN/view",
+      "bytes": 974,
+      "localSha256": "9beb61bcb754e4f87f188851e56be434f63f5626d0809f4595f6e8b31ea632c1",
+      "parentReadBackConfirmed": true,
+      "verification": "metadata_name_size_parent_match"
+    }
+  ]
+}

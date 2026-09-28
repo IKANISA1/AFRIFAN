@@ -1,0 +1,1211 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AFRICLUB supporter identity candidate",
+    "version": "0.1.0",
+    "description": "Native/controlled-server bearer transport. No browser cookie support, paid entitlement grant, generic user mapping API, or production enablement. No public delivery/drain route."
+  },
+  "paths": {
+    "/v1/auth/clubs/{clubId}/otp/challenges": {
+      "post": {
+        "operationId": "otp_challenges",
+        "security": [],
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "X-AFRICLUB-Client",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "native-v1"
+            },
+            "description": "Transport marker, not an authentication credential. Browser requests are not supported."
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            },
+            "description": "Persist before sending; reuse only for the identical operation. Never change after an unknown outcome."
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted for processing; not a handset-delivery or external-erasure assertion.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Challenge"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChallengeRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/clubs/{clubId}/otp/verifications": {
+      "post": {
+        "operationId": "otp_verifications",
+        "security": [],
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "X-AFRICLUB-Client",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "native-v1"
+            },
+            "description": "Transport marker, not an authentication credential. Browser requests are not supported."
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            },
+            "description": "Persist before sending; reuse only for the identical operation. Never change after an unknown outcome."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authoritative identity response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionBundle"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/clubs/{clubId}/sessions/refresh": {
+      "post": {
+        "operationId": "sessions_refresh",
+        "security": [],
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "X-AFRICLUB-Client",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "native-v1"
+            },
+            "description": "Transport marker, not an authentication credential. Browser requests are not supported."
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            },
+            "description": "Persist before sending; reuse only for the identical operation. Never change after an unknown outcome."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authoritative identity response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionBundle"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/clubs/{clubId}/session": {
+      "get": {
+        "operationId": "session",
+        "security": [
+          {
+            "opaqueBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "X-AFRICLUB-Client",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "native-v1"
+            },
+            "description": "Transport marker, not an authentication credential. Browser requests are not supported."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authoritative identity response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionInfo"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/clubs/{clubId}/sessions/revoke": {
+      "post": {
+        "operationId": "sessions_revoke",
+        "security": [
+          {
+            "opaqueBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "X-AFRICLUB-Client",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "native-v1"
+            },
+            "description": "Transport marker, not an authentication credential. Browser requests are not supported."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authoritative identity response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Revoked"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RevokeRequest"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/clubs/{clubId}/deletion-requests": {
+      "post": {
+        "operationId": "deletion_requests",
+        "security": [
+          {
+            "opaqueBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "X-AFRICLUB-Client",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "native-v1"
+            },
+            "description": "Transport marker, not an authentication credential. Browser requests are not supported."
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            },
+            "description": "Persist before sending; reuse only for the identical operation. Never change after an unknown outcome."
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted for processing; not a handset-delivery or external-erasure assertion.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletionReceipt"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Safe machine error; retain operation state for interrupted or server-failed mutations.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeletionRequest"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "opaqueBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Club-scoped opaque access token; not a JWT."
+      }
+    },
+    "schemas": {
+      "ChallengeRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "phone",
+          "clientSecret"
+        ],
+        "properties": {
+          "phone": {
+            "type": "string",
+            "pattern": "^\\+[1-9]\\d{7,14}$"
+          },
+          "clientSecret": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$"
+          }
+        }
+      },
+      "VerifyRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "challengeId",
+          "code",
+          "clientSecret"
+        ],
+        "properties": {
+          "challengeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string",
+            "pattern": "^\\d{6}$"
+          },
+          "clientSecret": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{43}$"
+          }
+        }
+      },
+      "RefreshRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "refreshToken"
+        ],
+        "properties": {
+          "refreshToken": {
+            "type": "string",
+            "minLength": 80,
+            "maxLength": 80
+          }
+        }
+      },
+      "RevokeRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "scope"
+        ],
+        "properties": {
+          "scope": {
+            "enum": [
+              "current",
+              "others",
+              "all"
+            ]
+          }
+        }
+      },
+      "DeletionRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "confirmation"
+        ],
+        "properties": {
+          "confirmation": {
+            "const": "DELETE MY ACCOUNT"
+          }
+        }
+      },
+      "Challenge": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "challengeId",
+          "clubId",
+          "expiresAt",
+          "delivery"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "challengeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clubId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "expiresAt": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "delivery": {
+            "const": "queued_or_pending"
+          }
+        }
+      },
+      "SessionBundle": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "userId",
+          "clubId",
+          "sessionId",
+          "accessToken",
+          "refreshToken",
+          "accessExpiresAt",
+          "refreshExpiresAt",
+          "authenticatedAt"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clubId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "accessToken": {
+            "type": "string",
+            "minLength": 80,
+            "maxLength": 80
+          },
+          "refreshToken": {
+            "type": "string",
+            "minLength": 80,
+            "maxLength": 80
+          },
+          "accessExpiresAt": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "refreshExpiresAt": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "authenticatedAt": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "SessionInfo": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "userId",
+          "clubId",
+          "sessionId",
+          "phoneVerified",
+          "role",
+          "authenticatedAt"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clubId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "phoneVerified": {
+            "const": true
+          },
+          "role": {
+            "const": "supporter"
+          },
+          "authenticatedAt": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "Revoked": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "scope",
+          "revoked"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "scope": {
+            "enum": [
+              "current",
+              "others",
+              "all"
+            ]
+          },
+          "revoked": {
+            "const": true
+          }
+        }
+      },
+      "DeletionReceipt": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "requestId",
+          "state",
+          "sessionsRevoked",
+          "erasureCompleted"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "state": {
+            "const": "pending_external_erasure"
+          },
+          "sessionsRevoked": {
+            "const": true
+          },
+          "erasureCompleted": {
+            "const": false
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "error"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "error": {
+            "type": "string",
+            "pattern": "^[a-z_]{1,80}$"
+          }
+        }
+      }
+    }
+  }
+}

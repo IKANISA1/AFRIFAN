@@ -1,0 +1,2787 @@
+{
+  "schemaVersion": 1,
+  "sourceRegisterSha256": "5eb32e34df377636ba6e7bcaf54ccfc0d3cae7ae10deb06de1cfc4858f70f1c1",
+  "scope": "closure_prerequisites_not_an_implementation_or_approval_engine",
+  "tasks": [
+    {
+      "id": "ARC-01",
+      "task": "Approve data-store boundaries and single-writer topology",
+      "priority": "P0",
+      "workstream": "Architecture and boundaries",
+      "status": "Open",
+      "ownerRole": "Technical architect",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-06",
+        "REG-01"
+      ],
+      "unacceptedDependencies": [
+        "REP-06",
+        "REG-01"
+      ],
+      "closureEvidenceRequired": "ADR identifies command authorities, transaction boundaries, backups, residency and rollback; no unsupported cross-DB atomicity claim.",
+      "dependencyLayer": 5,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "ARC-02",
+      "task": "Benchmark actual D1 transaction and trigger behavior",
+      "priority": "P0",
+      "workstream": "Architecture and boundaries",
+      "status": "Open",
+      "ownerRole": "Technical architect",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "ARC-01",
+        "DAT-03"
+      ],
+      "unacceptedDependencies": [
+        "ARC-01",
+        "DAT-03"
+      ],
+      "closureEvidenceRequired": "Real isolated D1 tests cover every financial statement/trigger, limits, foreign keys, retries, concurrency and rollback.",
+      "dependencyLayer": 7,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "ARC-03",
+      "task": "Define revocation semantics by operation",
+      "priority": "P0",
+      "workstream": "Architecture and boundaries",
+      "status": "Open",
+      "ownerRole": "Technical architect",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "ARC-01",
+        "AUT-01"
+      ],
+      "unacceptedDependencies": [
+        "ARC-01",
+        "AUT-01"
+      ],
+      "closureEvidenceRequired": "Checkout, read, allocation, refund and admin decisions have documented acceptance points and tested revocation races.",
+      "dependencyLayer": 6,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "ARC-07",
+      "task": "Preserve one global consumed-payment-reference authority",
+      "priority": "P0",
+      "workstream": "Architecture and boundaries",
+      "status": "Open",
+      "ownerRole": "Technical architect",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "ARC-01"
+      ],
+      "unacceptedDependencies": [
+        "ARC-01"
+      ],
+      "closureEvidenceRequired": "Cross-club/provider race tests and historic claims prevent reuse; any partition proposal includes a proven replacement uniqueness mechanism.",
+      "dependencyLayer": 6,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "AUT-01",
+      "task": "Threat-model identity and tenant trust boundaries",
+      "priority": "P0",
+      "workstream": "Identity and authorization",
+      "status": "Open",
+      "ownerRole": "Identity lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-01"
+      ],
+      "unacceptedDependencies": [
+        "REP-01"
+      ],
+      "closureEvidenceRequired": "Document access/refresh/OTP flows, trusted issuer, key lifecycle, abuse paths and user/staff separation; review independently.",
+      "dependencyLayer": 2,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "AUT-06",
+      "task": "Enforce tested revocation/fencing for sensitive domain commands",
+      "priority": "P0",
+      "workstream": "Identity and authorization",
+      "status": "Open",
+      "ownerRole": "Identity lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "ARC-03"
+      ],
+      "unacceptedDependencies": [
+        "ARC-03"
+      ],
+      "closureEvidenceRequired": "Revoked/stale epochs cannot authorize new protected mutations beyond the approved boundary; response loss remains recoverable.",
+      "dependencyLayer": 7,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "DAT-01",
+      "task": "Refresh complete source-object and runtime-caller inventory",
+      "priority": "P0",
+      "workstream": "Data migration and integrity",
+      "status": "Open",
+      "ownerRole": "Data migration lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "SEC-06",
+        "REP-01"
+      ],
+      "unacceptedDependencies": [
+        "SEC-06",
+        "REP-01"
+      ],
+      "closureEvidenceRequired": "Every table/view/function/trigger/policy/job/provider call has source identity, disposition, owner and evidence; dynamic calls traced.",
+      "dependencyLayer": 3,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "DAT-02",
+      "task": "Reconcile local versus deployed function behavior",
+      "priority": "P0",
+      "workstream": "Data migration and integrity",
+      "status": "Open",
+      "ownerRole": "Data migration lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "DAT-01"
+      ],
+      "unacceptedDependencies": [
+        "DAT-01"
+      ],
+      "closureEvidenceRequired": "All 18 deployed entrypoints and local-only Wallet functions mapped; bundle differences compared behaviorally and retired scope approved.",
+      "dependencyLayer": 4,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "DAT-03",
+      "task": "Create isolated migration environments with approved locality",
+      "priority": "P0",
+      "workstream": "Data migration and integrity",
+      "status": "Open",
+      "ownerRole": "Data migration lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REG-01",
+        "ARC-01"
+      ],
+      "unacceptedDependencies": [
+        "REG-01",
+        "ARC-01"
+      ],
+      "closureEvidenceRequired": "Account, resource IDs, bindings and dummy data checked; no existing project resources reused by accident.",
+      "dependencyLayer": 6,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "DAT-04",
+      "task": "Produce a transactionally consistent final export strategy",
+      "priority": "P0",
+      "workstream": "Data migration and integrity",
+      "status": "Open",
+      "ownerRole": "Data migration lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "DAT-01",
+        "DAT-03"
+      ],
+      "unacceptedDependencies": [
+        "DAT-01",
+        "DAT-03"
+      ],
+      "closureEvidenceRequired": "Rehearsal includes write freeze/delta capture, Auth/app data, privileges, operational dependencies and exact cutoff proof.",
+      "dependencyLayer": 7,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "DAT-05",
+      "task": "Reconcile complete historical payment reference claims",
+      "priority": "P0",
+      "workstream": "Data migration and integrity",
+      "status": "Open",
+      "ownerRole": "Data migration lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "DAT-01",
+        "ARC-07"
+      ],
+      "unacceptedDependencies": [
+        "DAT-01",
+        "ARC-07"
+      ],
+      "closureEvidenceRequired": "Counts, uniqueness, provenance and source coverage across every affected club/target reconcile before candidate allocation is enabled.",
+      "dependencyLayer": 7,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "DAT-06",
+      "task": "Map data types and financial balances with exception reports",
+      "priority": "P0",
+      "workstream": "Data migration and integrity",
+      "status": "In progress",
+      "ownerRole": "Data migration lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "DAT-01"
+      ],
+      "unacceptedDependencies": [
+        "DAT-01"
+      ],
+      "closureEvidenceRequired": "IDs, amounts, timestamps, JSON, nulls and enums transformed deterministically; counts/sums/member terms/stock/tickets reconcile.",
+      "dependencyLayer": 4,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "DAT-07",
+      "task": "Recover and verify the eight unresolved AFRICLUB media originals",
+      "priority": "P0",
+      "workstream": "Data migration and integrity",
+      "status": "Open",
+      "ownerRole": "Data migration lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "SEC-06",
+        "DAT-01"
+      ],
+      "unacceptedDependencies": [
+        "SEC-06",
+        "DAT-01"
+      ],
+      "closureEvidenceRequired": "Read source access status afresh; all originals or formally approved remediation evidenced by bytes, hashes and rights.",
+      "dependencyLayer": 4,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "DAT-09",
+      "task": "Restore complete database and object backups in isolation",
+      "priority": "P0",
+      "workstream": "Data migration and integrity",
+      "status": "Open",
+      "ownerRole": "Data migration lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "DAT-04",
+        "DAT-05",
+        "DAT-06",
+        "DAT-07"
+      ],
+      "unacceptedDependencies": [
+        "DAT-04",
+        "DAT-05",
+        "DAT-06",
+        "DAT-07"
+      ],
+      "closureEvidenceRequired": "Fresh restore proves row/key/financial parity and executable app dependencies, with all restored jobs disabled until approved.",
+      "dependencyLayer": 8,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "MOB-06",
+      "task": "Implement server-authoritative lost-state and unresolved-attempt recovery",
+      "priority": "P0",
+      "workstream": "Native app completion",
+      "status": "In progress",
+      "ownerRole": "Mobile lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "ARC-05",
+        "AUT-06"
+      ],
+      "unacceptedDependencies": [
+        "ARC-05",
+        "AUT-06"
+      ],
+      "closureEvidenceRequired": "Reinstall/clear-data/device-loss cannot silently authorize a second unresolved payment attempt; governed resolution has durable audit.",
+      "dependencyLayer": 8,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PAY-01",
+      "task": "Integrate authenticated payment evidence and account reconciliation",
+      "priority": "P0",
+      "workstream": "Payments and fulfillment",
+      "status": "Open",
+      "ownerRole": "Payments lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "DAT-05",
+        "DAT-06",
+        "ARC-07"
+      ],
+      "unacceptedDependencies": [
+        "DAT-05",
+        "DAT-06",
+        "ARC-07"
+      ],
+      "closureEvidenceRequired": "Verified ingress identifies exact receiver/provider/transaction; three-way evidence/order/receiving-account match with no manual fabricated attestation.",
+      "dependencyLayer": 8,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PAY-02",
+      "task": "Implement late, partial, duplicate and ambiguous payment exceptions",
+      "priority": "P0",
+      "workstream": "Payments and fulfillment",
+      "status": "In progress",
+      "ownerRole": "Payments lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "PAY-01",
+        "MOB-06"
+      ],
+      "unacceptedDependencies": [
+        "PAY-01",
+        "MOB-06"
+      ],
+      "closureEvidenceRequired": "Expired/cancelled/overpaid/wrong-amount payments enter governed queues; resolution preserves original references and audit, not forced reuse.",
+      "dependencyLayer": 9,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PAY-03",
+      "task": "Implement refunds, reversals and administrative corrections",
+      "priority": "P0",
+      "workstream": "Payments and fulfillment",
+      "status": "Open",
+      "ownerRole": "Payments lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "PAY-01",
+        "SEC-09"
+      ],
+      "unacceptedDependencies": [
+        "PAY-01",
+        "SEC-09"
+      ],
+      "closureEvidenceRequired": "Compensating records preserve original financial history; duplicate refunds prevented; approvals and external status reconciled.",
+      "dependencyLayer": 9,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PAY-10",
+      "task": "Prove end-to-end financial conservation and cutover parity",
+      "priority": "P0",
+      "workstream": "Payments and fulfillment",
+      "status": "Open",
+      "ownerRole": "Payments lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "PAY-02",
+        "PAY-03",
+        "PAY-04",
+        "PAY-09",
+        "DAT-10"
+      ],
+      "unacceptedDependencies": [
+        "PAY-02",
+        "PAY-03",
+        "PAY-04",
+        "PAY-09",
+        "DAT-10"
+      ],
+      "closureEvidenceRequired": "Duplicate callbacks and concurrency cannot duplicate membership/stock/debits; aggregate balances/claims and source cutoffs reconcile.",
+      "dependencyLayer": 10,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PRD-01",
+      "task": "Approve one Predict/FET economic contract",
+      "priority": "P0",
+      "workstream": "Product, content and design",
+      "status": "Open",
+      "ownerRole": "Product/design lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REG-08",
+        "REP-10"
+      ],
+      "unacceptedDependencies": [
+        "REG-08",
+        "REP-10"
+      ],
+      "closureEvidenceRequired": "Versioned free-entry or separately approved alternative; ledger/API/UI/terms/tests and historical treatment agree before transactional enablement.",
+      "dependencyLayer": 5,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "QAT-01",
+      "task": "Bind release checks to immutable candidate artifacts",
+      "priority": "P0",
+      "workstream": "Verification and assurance",
+      "status": "In progress",
+      "ownerRole": "QA/security verification lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-06",
+        "SEC-10"
+      ],
+      "unacceptedDependencies": [
+        "REP-06",
+        "SEC-10"
+      ],
+      "closureEvidenceRequired": "Required job results, config hashes, signing provenance and source SHAs agree; deployments consume the checked artifact only.",
+      "dependencyLayer": 5,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REG-01",
+      "task": "Map Rwanda storage/transfer obligations to actual architecture",
+      "priority": "P0",
+      "workstream": "Legal, privacy and club approvals",
+      "status": "Open",
+      "ownerRole": "Privacy/legal lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "SEC-03"
+      ],
+      "unacceptedDependencies": [
+        "SEC-03"
+      ],
+      "closureEvidenceRequired": "Controller/processor roles, applicable registrations and valid foreign-storage authorization evidenced for DB/replicas/logs/backups/processors.",
+      "dependencyLayer": 2,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REG-08",
+      "task": "Resolve contest/reward and store-billing classification",
+      "priority": "P0",
+      "workstream": "Legal, privacy and club approvals",
+      "status": "Open",
+      "ownerRole": "Privacy/legal lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REG-02"
+      ],
+      "unacceptedDependencies": [
+        "REG-02"
+      ],
+      "closureEvidenceRequired": "Counsel/product record free versus paid entry, redemption, age and territories; each membership benefit classified physical/digital under current store rules.",
+      "dependencyLayer": 4,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REL-01",
+      "task": "Approve narrowly scoped staged rollout instead of big-bang release",
+      "priority": "P0",
+      "workstream": "Controlled launch and retirement",
+      "status": "Open",
+      "ownerRole": "Release manager",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-10",
+        "ARC-01"
+      ],
+      "unacceptedDependencies": [
+        "REP-10",
+        "ARC-01"
+      ],
+      "closureEvidenceRequired": "Public read-only, authenticated membership, financial products and club/platform expansions have separate acceptance gates and kill switches.",
+      "dependencyLayer": 6,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REL-05",
+      "task": "Rehearse single-writer cutover with versioned client admission",
+      "priority": "P0",
+      "workstream": "Controlled launch and retirement",
+      "status": "Open",
+      "ownerRole": "Release manager",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "DAT-10",
+        "REL-02",
+        "PAY-10"
+      ],
+      "unacceptedDependencies": [
+        "DAT-10",
+        "REL-02",
+        "PAY-10"
+      ],
+      "closureEvidenceRequired": "Final consistent export/deltas, drained jobs, old-client policy, source freeze, reconciliation and target writer enablement executed in rehearsal.",
+      "dependencyLayer": 11,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REL-06",
+      "task": "Rehearse rollback after target financial writes",
+      "priority": "P0",
+      "workstream": "Controlled launch and retirement",
+      "status": "Open",
+      "ownerRole": "Release manager",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REL-05",
+        "OPS-06"
+      ],
+      "unacceptedDependencies": [
+        "REL-05",
+        "OPS-06"
+      ],
+      "closureEvidenceRequired": "Document restore/forward-reconcile strategy; no traffic flip to stale source; customer obligations and original references preserved.",
+      "dependencyLayer": 12,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REP-01",
+      "task": "Establish one protected canonical candidate commit",
+      "priority": "P0",
+      "workstream": "Source convergence",
+      "status": "In progress",
+      "ownerRole": "Repository maintainer",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "SEC-01"
+      ],
+      "unacceptedDependencies": [
+        "SEC-01"
+      ],
+      "closureEvidenceRequired": "Repository URL, commit SHA, branch protections, ownership and accepted source manifest recorded; Drive archive classified separately.",
+      "dependencyLayer": 1,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REP-02",
+      "task": "Reconcile every batch payload with current paths and hashes",
+      "priority": "P0",
+      "workstream": "Source convergence",
+      "status": "In progress",
+      "ownerRole": "Repository maintainer",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-01"
+      ],
+      "unacceptedDependencies": [
+        "REP-01"
+      ],
+      "closureEvidenceRequired": "Path-by-path accepted/rejected/superseded mapping includes original files, revised siblings and Batch 12 additions.",
+      "dependencyLayer": 2,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REP-03",
+      "task": "Promote approved fixes without downgrading newer code",
+      "priority": "P0",
+      "workstream": "Source convergence",
+      "status": "In progress",
+      "ownerRole": "Repository maintainer",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-02"
+      ],
+      "unacceptedDependencies": [
+        "REP-02"
+      ],
+      "closureEvidenceRequired": "Reviewed merge commits preserve current auth/payment interfaces; no blind application of cumulative v1–v4 archives.",
+      "dependencyLayer": 3,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REP-04",
+      "task": "Repair boundary validator and real-source exception handling",
+      "priority": "P0",
+      "workstream": "Source convergence",
+      "status": "In progress",
+      "ownerRole": "Repository maintainer",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-03"
+      ],
+      "unacceptedDependencies": [
+        "REP-03"
+      ],
+      "closureEvidenceRequired": "Minimal valid fixture and actual migration inventory pass; prohibited runtime schema/routes and expired/wrong-hash exceptions fail.",
+      "dependencyLayer": 4,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "SEC-01",
+      "task": "Restrict public-link write/read permissions",
+      "priority": "P0",
+      "workstream": "Security containment",
+      "status": "Open",
+      "ownerRole": "Security lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [],
+      "unacceptedDependencies": [],
+      "closureEvidenceRequired": "Fresh metadata for root, children and archives shows approved named principals only; owner signs the access review.",
+      "dependencyLayer": 0,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "SEC-02",
+      "task": "Preserve and review Drive/Git/provider audit history",
+      "priority": "P0",
+      "workstream": "Security containment",
+      "status": "Open",
+      "ownerRole": "Security lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "SEC-01"
+      ],
+      "unacceptedDependencies": [
+        "SEC-01"
+      ],
+      "closureEvidenceRequired": "Time-bounded access/revision evidence preserved; unexplained edits and downloads investigated with a documented incident decision.",
+      "dependencyLayer": 1,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "SEC-03",
+      "task": "Inventory sensitive artifact exposure without broadcasting values",
+      "priority": "P0",
+      "workstream": "Security containment",
+      "status": "Open",
+      "ownerRole": "Security lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "SEC-01"
+      ],
+      "unacceptedDependencies": [
+        "SEC-01"
+      ],
+      "closureEvidenceRequired": "Classify .env, keystores, service credentials, exports and caches; distinguish public client keys from secrets and map validity/use.",
+      "dependencyLayer": 1,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "SEC-04",
+      "task": "Rotate exposed live backend/provider secrets where confirmed",
+      "priority": "P0",
+      "workstream": "Security containment",
+      "status": "Open",
+      "ownerRole": "Security lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "SEC-03"
+      ],
+      "unacceptedDependencies": [
+        "SEC-03"
+      ],
+      "closureEvidenceRequired": "Validated replacement, revoked old secret, service smoke and rollback plan; do not rotate unclassified values blindly.",
+      "dependencyLayer": 2,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "SEC-05",
+      "task": "Review Android upload/signing credentials and reset affected key",
+      "priority": "P0",
+      "workstream": "Security containment",
+      "status": "Open",
+      "ownerRole": "Security lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "SEC-03"
+      ],
+      "unacceptedDependencies": [
+        "SEC-03"
+      ],
+      "closureEvidenceRequired": "Determine Play App Signing arrangement; approved reset/rotation plus clean-build signature verification and release continuity.",
+      "dependencyLayer": 2,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "SEC-06",
+      "task": "Restrict production backups and personal-data exports",
+      "priority": "P0",
+      "workstream": "Security containment",
+      "status": "Open",
+      "ownerRole": "Security lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "SEC-03"
+      ],
+      "unacceptedDependencies": [
+        "SEC-03"
+      ],
+      "closureEvidenceRequired": "Private encrypted backup store, least-privilege ACLs and access audit; no unrestricted conversation/archive copies of sensitive exports.",
+      "dependencyLayer": 2,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "WEB-01",
+      "task": "Install active-snapshot publication/read integration",
+      "priority": "P0",
+      "workstream": "Public web and administration",
+      "status": "In progress",
+      "ownerRole": "Web/admin lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-03",
+        "DAT-08"
+      ],
+      "unacceptedDependencies": [
+        "REP-03",
+        "DAT-08"
+      ],
+      "closureEvidenceRequired": "The executed public entrypoint reads one sealed approved snapshot; partial imports and stale mixed records fail covered tests.",
+      "dependencyLayer": 6,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "ARC-04",
+      "task": "Reassess custom authentication operational burden",
+      "priority": "P1",
+      "workstream": "Architecture and boundaries",
+      "status": "Open",
+      "ownerRole": "Technical architect",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "AUT-01",
+        "ARC-01"
+      ],
+      "unacceptedDependencies": [
+        "AUT-01",
+        "ARC-01"
+      ],
+      "closureEvidenceRequired": "Threat model and cost/risk ADR compares maintaining custom identity to approved alternatives; no identity rewrite without migration plan.",
+      "dependencyLayer": 6,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "ARC-05",
+      "task": "Version all service and public client contracts",
+      "priority": "P1",
+      "workstream": "Architecture and boundaries",
+      "status": "In progress",
+      "ownerRole": "Technical architect",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-06"
+      ],
+      "unacceptedDependencies": [
+        "REP-06"
+      ],
+      "closureEvidenceRequired": "Generated schemas, compatibility matrix and tests cover old clients, unknown fields, error envelopes and enum evolution.",
+      "dependencyLayer": 5,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "ARC-06",
+      "task": "Centralize immutable club/slug/partner mapping",
+      "priority": "P1",
+      "workstream": "Architecture and boundaries",
+      "status": "Open",
+      "ownerRole": "Technical architect",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "DAT-01"
+      ],
+      "unacceptedDependencies": [
+        "DAT-01"
+      ],
+      "closureEvidenceRequired": "Missing, conflicting and wrong-host tenant inputs fail; IDs preserved and all five release mappings signed off.",
+      "dependencyLayer": 4,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "ARC-08",
+      "task": "Approve currency units, rounding, timezone and period rules",
+      "priority": "P1",
+      "workstream": "Architecture and boundaries",
+      "status": "Open",
+      "ownerRole": "Technical architect",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "DAT-06",
+        "REG-06"
+      ],
+      "unacceptedDependencies": [
+        "DAT-06",
+        "REG-06"
+      ],
+      "closureEvidenceRequired": "Tests cover RWF/BIF/ZMW/CDF/MZN conventions, leap dates and cutoff boundaries using signed business rules.",
+      "dependencyLayer": 5,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "ARC-09",
+      "task": "Minimize service capabilities and external attack surface",
+      "priority": "P1",
+      "workstream": "Architecture and boundaries",
+      "status": "In progress",
+      "ownerRole": "Technical architect",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "ARC-05",
+        "SEC-09"
+      ],
+      "unacceptedDependencies": [
+        "ARC-05",
+        "SEC-09"
+      ],
+      "closureEvidenceRequired": "Each binding has an explicit principal and allowed methods; public HTTP cannot invoke financial or admin private capabilities.",
+      "dependencyLayer": 6,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "ARC-10",
+      "task": "Measure game-day capacity and choose scaling boundaries",
+      "priority": "P1",
+      "workstream": "Architecture and boundaries",
+      "status": "Open",
+      "ownerRole": "Technical architect",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "ARC-02",
+        "OPS-01"
+      ],
+      "unacceptedDependencies": [
+        "ARC-02",
+        "OPS-01"
+      ],
+      "closureEvidenceRequired": "Load model includes read/write mix, OTP bursts and shared databases; p95/p99, overload behavior and cost satisfy approved budgets.",
+      "dependencyLayer": 8,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "AUT-02",
+      "task": "Replace pilot OTP limits with fair measured controls",
+      "priority": "P1",
+      "workstream": "Identity and authorization",
+      "status": "In progress",
+      "ownerRole": "Identity lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "AUT-01",
+        "OPS-01"
+      ],
+      "unacceptedDependencies": [
+        "AUT-01",
+        "OPS-01"
+      ],
+      "closureEvidenceRequired": "Per-club, per-subject/phone, IP and global cost budgets tested; one club cannot silently exhaust unrelated sign-ins.",
+      "dependencyLayer": 3,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "AUT-03",
+      "task": "Complete lost-phone, phone-change and account-linking flows",
+      "priority": "P1",
+      "workstream": "Identity and authorization",
+      "status": "Open",
+      "ownerRole": "Identity lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "AUT-01"
+      ],
+      "unacceptedDependencies": [
+        "AUT-01"
+      ],
+      "closureEvidenceRequired": "Proof-of-control, recovery escalation, reassignment risks and identity continuity tested; no name/suffix-based account merging.",
+      "dependencyLayer": 3,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "AUT-04",
+      "task": "Complete protected native credential storage and refresh coordination",
+      "priority": "P1",
+      "workstream": "Identity and authorization",
+      "status": "Open",
+      "ownerRole": "Identity lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "AUT-01",
+        "MOB-01",
+        "MOB-02"
+      ],
+      "unacceptedDependencies": [
+        "AUT-01",
+        "MOB-01",
+        "MOB-02"
+      ],
+      "closureEvidenceRequired": "Keystore/Keychain-backed credentials, single-flight rotation and original retry keys survive crash; no plain-preference fallback.",
+      "dependencyLayer": 5,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "AUT-05",
+      "task": "Implement browser authentication and CSRF contract",
+      "priority": "P1",
+      "workstream": "Identity and authorization",
+      "status": "In progress",
+      "ownerRole": "Identity lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "AUT-01",
+        "WEB-03"
+      ],
+      "unacceptedDependencies": [
+        "AUT-01",
+        "WEB-03"
+      ],
+      "closureEvidenceRequired": "HttpOnly/Secure cookies, session rotation, logout, CSRF and origin checks validated against the intended browser portal.",
+      "dependencyLayer": 5,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "AUT-07",
+      "task": "Implement complete account erasure orchestration",
+      "priority": "P1",
+      "workstream": "Identity and authorization",
+      "status": "Open",
+      "ownerRole": "Identity lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REG-02",
+        "OPS-04"
+      ],
+      "unacceptedDependencies": [
+        "REG-02",
+        "OPS-04"
+      ],
+      "closureEvidenceRequired": "Processor acknowledgements, retained legal records, deletion status, backups policy and failed-job recovery recorded without false completion.",
+      "dependencyLayer": 8,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "AUT-08",
+      "task": "Reconcile existing identity and profile bootstrap",
+      "priority": "P1",
+      "workstream": "Identity and authorization",
+      "status": "Open",
+      "ownerRole": "Identity lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "DAT-06"
+      ],
+      "unacceptedDependencies": [
+        "DAT-06"
+      ],
+      "closureEvidenceRequired": "Original UUIDs, phone binding, club mappings and profiles preserved; signup does not grant paid or staff entitlements.",
+      "dependencyLayer": 5,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "AUT-09",
+      "task": "Implement custom-auth key rotation and incident recovery",
+      "priority": "P1",
+      "workstream": "Identity and authorization",
+      "status": "Open",
+      "ownerRole": "Identity lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "AUT-01",
+        "SEC-04"
+      ],
+      "unacceptedDependencies": [
+        "AUT-01",
+        "SEC-04"
+      ],
+      "closureEvidenceRequired": "Old/new versions coexist for controlled window; revocation, ciphertext recovery and key-loss runbooks proven with test keys.",
+      "dependencyLayer": 3,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "AUT-10",
+      "task": "Run live isolated identity/provider acceptance",
+      "priority": "P1",
+      "workstream": "Identity and authorization",
+      "status": "Open",
+      "ownerRole": "Identity lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "AUT-02",
+        "AUT-03",
+        "AUT-04",
+        "DAT-03"
+      ],
+      "unacceptedDependencies": [
+        "AUT-02",
+        "AUT-03",
+        "AUT-04",
+        "DAT-03"
+      ],
+      "closureEvidenceRequired": "Real approved test phone/WhatsApp template, code expiry, duplicate status, blocked user and session restore succeed without production imports.",
+      "dependencyLayer": 7,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "DAT-08",
+      "task": "Keep the separate Gikundiro public dataset provenance distinct",
+      "priority": "P1",
+      "workstream": "Data migration and integrity",
+      "status": "Open",
+      "ownerRole": "Data migration lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "DAT-07"
+      ],
+      "unacceptedDependencies": [
+        "DAT-07"
+      ],
+      "closureEvidenceRequired": "Source season, owner, rights, IDs and 11-object mapping documented; do not substitute these for missing AFRICLUB originals.",
+      "dependencyLayer": 5,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "DAT-10",
+      "task": "Implement repeatable migration reconciliation and delta checks",
+      "priority": "P1",
+      "workstream": "Data migration and integrity",
+      "status": "In progress",
+      "ownerRole": "Data migration lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "DAT-09"
+      ],
+      "unacceptedDependencies": [
+        "DAT-09"
+      ],
+      "closureEvidenceRequired": "Machine-readable pre/post evidence reports no unexplained drift; rejected rows and policy differences receive approved disposition.",
+      "dependencyLayer": 9,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "MOB-01",
+      "task": "Compile and test actual Android recovery host",
+      "priority": "P1",
+      "workstream": "Native app completion",
+      "status": "Open",
+      "ownerRole": "Mobile lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-09"
+      ],
+      "unacceptedDependencies": [
+        "REP-09"
+      ],
+      "closureEvidenceRequired": "Repository-pinned Kotlin/AGP/SDK compile host and bridge; emulator/device tests prove Keystore, locked-device and engine-disposal behavior.",
+      "dependencyLayer": 3,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "MOB-02",
+      "task": "Compile and test actual iOS recovery host",
+      "priority": "P1",
+      "workstream": "Native app completion",
+      "status": "Open",
+      "ownerRole": "Mobile lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-08",
+        "REP-09"
+      ],
+      "unacceptedDependencies": [
+        "REP-08",
+        "REP-09"
+      ],
+      "closureEvidenceRequired": "Supported Xcode/iOS SDK compiles Keychain/Flutter host; accessibility classes, entitlements and foreground checks verified on devices.",
+      "dependencyLayer": 4,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "MOB-03",
+      "task": "Run pure Dart and Flutter analysis and authored harnesses",
+      "priority": "P1",
+      "workstream": "Native app completion",
+      "status": "Open",
+      "ownerRole": "Mobile lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-09",
+        "MOB-01",
+        "MOB-02"
+      ],
+      "unacceptedDependencies": [
+        "REP-09",
+        "MOB-01",
+        "MOB-02"
+      ],
+      "closureEvidenceRequired": "All previously blocked Dart contracts and channel cases execute with no findings; no JVM/TS result counted as a Dart pass.",
+      "dependencyLayer": 5,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "MOB-04",
+      "task": "Register shared adapters in all five governed app compositions",
+      "priority": "P1",
+      "workstream": "Native app completion",
+      "status": "Open",
+      "ownerRole": "Mobile lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "MOB-03",
+        "AUT-04"
+      ],
+      "unacceptedDependencies": [
+        "MOB-03",
+        "AUT-04"
+      ],
+      "closureEvidenceRequired": "No duplicated business logic; dependency/layer validators pass; feature remains disabled in unapproved clubs/platforms.",
+      "dependencyLayer": 6,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "MOB-05",
+      "task": "Build accessible review, confirm and recovery screens",
+      "priority": "P1",
+      "workstream": "Native app completion",
+      "status": "Open",
+      "ownerRole": "Mobile lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "MOB-04",
+        "PRD-05"
+      ],
+      "unacceptedDependencies": [
+        "MOB-04",
+        "PRD-05"
+      ],
+      "closureEvidenceRequired": "All payment fields and consequences displayed; separate foreground confirmation, assistive-technology and large-text tests pass.",
+      "dependencyLayer": 7,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "MOB-07",
+      "task": "Wire lifecycle, logout, account-switch and route guards",
+      "priority": "P1",
+      "workstream": "Native app completion",
+      "status": "In progress",
+      "ownerRole": "Mobile lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "MOB-04",
+        "MOB-06"
+      ],
+      "unacceptedDependencies": [
+        "MOB-04",
+        "MOB-06"
+      ],
+      "closureEvidenceRequired": "Backgrounding/session/club change invalidates review; restoration performs reads only and preserves unknown outcomes.",
+      "dependencyLayer": 9,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "MOB-08",
+      "task": "Validate USSD handoff on approved carriers and SIM scenarios",
+      "priority": "P1",
+      "workstream": "Native app completion",
+      "status": "Open",
+      "ownerRole": "Mobile lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "MOB-05",
+        "MOB-07",
+        "REG-06"
+      ],
+      "unacceptedDependencies": [
+        "MOB-05",
+        "MOB-07",
+        "REG-06"
+      ],
+      "closureEvidenceRequired": "Each supported Android/iOS-carrier path proves exact code display and explicit confirmation; unsupported paths fail clearly; no automatic payment.",
+      "dependencyLayer": 10,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "MOB-09",
+      "task": "Verify merged native privacy/link/notification configuration",
+      "priority": "P1",
+      "workstream": "Native app completion",
+      "status": "Open",
+      "ownerRole": "Mobile lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "MOB-04",
+        "SEC-07"
+      ],
+      "unacceptedDependencies": [
+        "MOB-04",
+        "SEC-07"
+      ],
+      "closureEvidenceRequired": "Final manifests, associated domains, permission requests, push token scoping and app links checked for every release flavor.",
+      "dependencyLayer": 7,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "MOB-10",
+      "task": "Execute ten signed club/platform release journeys",
+      "priority": "P1",
+      "workstream": "Native app completion",
+      "status": "Open",
+      "ownerRole": "Mobile lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "MOB-08",
+        "MOB-09"
+      ],
+      "unacceptedDependencies": [
+        "MOB-08",
+        "MOB-09"
+      ],
+      "closureEvidenceRequired": "Five clubs times Android/iOS cover install, upgrade, weak network, restore, payment recovery and logout on representative physical devices.",
+      "dependencyLayer": 11,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "OPS-01",
+      "task": "Approve traffic, latency, availability and cost budgets",
+      "priority": "P1",
+      "workstream": "Operations and resilience",
+      "status": "Open",
+      "ownerRole": "SRE/operations lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-01"
+      ],
+      "unacceptedDependencies": [
+        "REP-01"
+      ],
+      "closureEvidenceRequired": "Game-day assumptions and business thresholds signed off; latency percentiles and financial-integrity targets defined per journey.",
+      "dependencyLayer": 2,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "OPS-02",
+      "task": "Implement privacy-safe structured metrics and tracing",
+      "priority": "P1",
+      "workstream": "Operations and resilience",
+      "status": "In progress",
+      "ownerRole": "SRE/operations lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "SEC-08",
+        "OPS-01"
+      ],
+      "unacceptedDependencies": [
+        "SEC-08",
+        "OPS-01"
+      ],
+      "closureEvidenceRequired": "Correlation IDs link requests/operations without secrets; OTP failures, allocation lag, unknown outcomes and tenant fairness visible.",
+      "dependencyLayer": 3,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "OPS-03",
+      "task": "Configure actionable alerts and human escalation",
+      "priority": "P1",
+      "workstream": "Operations and resilience",
+      "status": "Open",
+      "ownerRole": "SRE/operations lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "OPS-02"
+      ],
+      "unacceptedDependencies": [
+        "OPS-02"
+      ],
+      "closureEvidenceRequired": "Test alerts for overdue reconciliation, stale snapshots, auth/provider failures, high error rate, duplicate anomalies and storage limits.",
+      "dependencyLayer": 4,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "OPS-04",
+      "task": "Implement queue retry, poison-event and DLQ operating policy",
+      "priority": "P1",
+      "workstream": "Operations and resilience",
+      "status": "In progress",
+      "ownerRole": "SRE/operations lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "ARC-09"
+      ],
+      "unacceptedDependencies": [
+        "ARC-09"
+      ],
+      "closureEvidenceRequired": "Idempotent consumers, bounded retry/backoff, retention and approved re-drive paths tested with traceable owners.",
+      "dependencyLayer": 7,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "OPS-05",
+      "task": "Create incident and financial exception runbooks",
+      "priority": "P1",
+      "workstream": "Operations and resilience",
+      "status": "In progress",
+      "ownerRole": "SRE/operations lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "PAY-02",
+        "PAY-03",
+        "OPS-03"
+      ],
+      "unacceptedDependencies": [
+        "PAY-02",
+        "PAY-03",
+        "OPS-03"
+      ],
+      "closureEvidenceRequired": "Named responders can contain, diagnose and recover without deleting ledgers or guessing payment failure.",
+      "dependencyLayer": 10,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "OPS-06",
+      "task": "Approve RPO/RTO and prove restore procedures",
+      "priority": "P1",
+      "workstream": "Operations and resilience",
+      "status": "Open",
+      "ownerRole": "SRE/operations lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "DAT-09",
+        "OPS-01"
+      ],
+      "unacceptedDependencies": [
+        "DAT-09",
+        "OPS-01"
+      ],
+      "closureEvidenceRequired": "Database/object/config/key dependencies restored within measured targets; no reliance on Time Travel as complete object backup.",
+      "dependencyLayer": 9,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "OPS-07",
+      "task": "Establish approved retention, export and erasure jobs",
+      "priority": "P1",
+      "workstream": "Operations and resilience",
+      "status": "In progress",
+      "ownerRole": "SRE/operations lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REG-02",
+        "AUT-07"
+      ],
+      "unacceptedDependencies": [
+        "REG-02",
+        "AUT-07"
+      ],
+      "closureEvidenceRequired": "Legal schedules applied to operational data, encrypted secrets, logs, exports and backups; deletion failures observable.",
+      "dependencyLayer": 9,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "OPS-08",
+      "task": "Implement authoritative scheduling and notification routing",
+      "priority": "P1",
+      "workstream": "Operations and resilience",
+      "status": "In progress",
+      "ownerRole": "SRE/operations lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "DAT-02",
+        "PAY-09"
+      ],
+      "unacceptedDependencies": [
+        "DAT-02",
+        "PAY-09"
+      ],
+      "closureEvidenceRequired": "One active owner per cron; timezone, missed-run catch-up, duplicates, tenant push tokens and provider receipts tested.",
+      "dependencyLayer": 10,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "OPS-09",
+      "task": "Budget and monitor cloud/provider/support unit costs",
+      "priority": "P1",
+      "workstream": "Operations and resilience",
+      "status": "Open",
+      "ownerRole": "SRE/operations lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "ARC-10",
+        "OPS-02"
+      ],
+      "unacceptedDependencies": [
+        "ARC-10",
+        "OPS-02"
+      ],
+      "closureEvidenceRequired": "Cost model includes D1 reads/writes, R2, Workers, messages, logs and human exception handling; alerts tested at agreed limits.",
+      "dependencyLayer": 9,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "OPS-10",
+      "task": "Complete operator training and support rehearsal",
+      "priority": "P1",
+      "workstream": "Operations and resilience",
+      "status": "Open",
+      "ownerRole": "SRE/operations lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "WEB-06",
+        "PAY-02",
+        "PAY-03",
+        "OPS-05"
+      ],
+      "unacceptedDependencies": [
+        "WEB-06",
+        "PAY-02",
+        "PAY-03",
+        "OPS-05"
+      ],
+      "closureEvidenceRequired": "Named club staff resolve login, renewal, refunds, ticket scans and uncertain payments using approved controls and escalation.",
+      "dependencyLayer": 11,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PAY-04",
+      "task": "Complete current membership entitlement and receipt separation",
+      "priority": "P1",
+      "workstream": "Payments and fulfillment",
+      "status": "In progress",
+      "ownerRole": "Payments lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "PAY-01",
+        "AUT-06"
+      ],
+      "unacceptedDependencies": [
+        "PAY-01",
+        "AUT-06"
+      ],
+      "closureEvidenceRequired": "Current status/expiry/suspension read distinct from historical receipt; renewal preserves member ID and does not lift suspension.",
+      "dependencyLayer": 9,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PAY-05",
+      "task": "Complete initiative contributions including totals/rewards/referrals",
+      "priority": "P1",
+      "workstream": "Payments and fulfillment",
+      "status": "Open",
+      "ownerRole": "Payments lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "PAY-01",
+        "PRD-01"
+      ],
+      "unacceptedDependencies": [
+        "PAY-01",
+        "PRD-01"
+      ],
+      "closureEvidenceRequired": "All approved effects commit or recover together; allocation-only records never shown as confirmed contributions.",
+      "dependencyLayer": 9,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PAY-06",
+      "task": "Complete supporter-group contributions and statements",
+      "priority": "P1",
+      "workstream": "Payments and fulfillment",
+      "status": "Open",
+      "ownerRole": "Payments lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "PAY-01",
+        "DAT-06"
+      ],
+      "unacceptedDependencies": [
+        "PAY-01",
+        "DAT-06"
+      ],
+      "closureEvidenceRequired": "Group/member ownership, allocation, balances, exports and correction rules reconcile with preserved source behavior.",
+      "dependencyLayer": 9,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PAY-07",
+      "task": "Complete ticket inventory, issuance, transfer and redemption",
+      "priority": "P1",
+      "workstream": "Payments and fulfillment",
+      "status": "Open",
+      "ownerRole": "Payments lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "PAY-01",
+        "PAY-03",
+        "ARC-02"
+      ],
+      "unacceptedDependencies": [
+        "PAY-01",
+        "PAY-03",
+        "ARC-02"
+      ],
+      "closureEvidenceRequired": "Concurrent last-seat purchase, duplicate scans, cancellations and refunds tested; offline validation policy prevents silent double entry.",
+      "dependencyLayer": 10,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PAY-08",
+      "task": "Complete shop inventory, ordering and fulfillment",
+      "priority": "P1",
+      "workstream": "Payments and fulfillment",
+      "status": "Open",
+      "ownerRole": "Payments lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "PAY-01",
+        "PAY-03"
+      ],
+      "unacceptedDependencies": [
+        "PAY-01",
+        "PAY-03"
+      ],
+      "closureEvidenceRequired": "Stock reservations, shipping/service terms, cancellation/refund, receipts and idempotent fulfillment reconcile end to end.",
+      "dependencyLayer": 10,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PAY-09",
+      "task": "Implement idempotent outbox consumers and dead-letter handling",
+      "priority": "P1",
+      "workstream": "Payments and fulfillment",
+      "status": "Open",
+      "ownerRole": "Payments lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "PAY-01",
+        "OPS-04"
+      ],
+      "unacceptedDependencies": [
+        "PAY-01",
+        "OPS-04"
+      ],
+      "closureEvidenceRequired": "Effect deduplication is atomic with downstream state; retry, acknowledgement loss, poison events and manual re-drive tested.",
+      "dependencyLayer": 9,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PRD-02",
+      "task": "Complete authoritative fixture/result lifecycle",
+      "priority": "P1",
+      "workstream": "Product, content and design",
+      "status": "Open",
+      "ownerRole": "Product/design lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "DAT-02",
+        "PRD-01"
+      ],
+      "unacceptedDependencies": [
+        "DAT-02",
+        "PRD-01"
+      ],
+      "closureEvidenceRequired": "Feed IDs, kickoff, postponement, void, official-result correction and settlement finality controlled server-side; duplicate feeds tested.",
+      "dependencyLayer": 6,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PRD-03",
+      "task": "Approve source/media/brand rights with expiry and scope",
+      "priority": "P1",
+      "workstream": "Product, content and design",
+      "status": "Open",
+      "ownerRole": "Product/design lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "DAT-08",
+        "REG-09"
+      ],
+      "unacceptedDependencies": [
+        "DAT-08",
+        "REG-09"
+      ],
+      "closureEvidenceRequired": "Club crests, players, ticket/shop images, feeds and generated assets have owner, permission, territory and renewal evidence.",
+      "dependencyLayer": 6,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PRD-04",
+      "task": "Reconcile design authority and reusable semantic tokens",
+      "priority": "P1",
+      "workstream": "Product, content and design",
+      "status": "Open",
+      "ownerRole": "Product/design lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-10"
+      ],
+      "unacceptedDependencies": [
+        "REP-10"
+      ],
+      "closureEvidenceRequired": "One accessible shared token/component system and documented club identity overrides; private skill provisioned to authorized reviewers/CI.",
+      "dependencyLayer": 4,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PRD-05",
+      "task": "Define complete state and accessibility matrix",
+      "priority": "P1",
+      "workstream": "Product, content and design",
+      "status": "Open",
+      "ownerRole": "Product/design lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "PRD-04"
+      ],
+      "unacceptedDependencies": [
+        "PRD-04"
+      ],
+      "closureEvidenceRequired": "Loading/empty/error/offline/permission/unknown/disabled/destructive states mapped to real routes; WCAG 2.2 AA and native checks specified.",
+      "dependencyLayer": 5,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PRD-06",
+      "task": "Populate current route/state and artifact-evidence registries",
+      "priority": "P1",
+      "workstream": "Product, content and design",
+      "status": "Open",
+      "ownerRole": "Product/design lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "PRD-05",
+        "QAT-08"
+      ],
+      "unacceptedDependencies": [
+        "PRD-05",
+        "QAT-08"
+      ],
+      "closureEvidenceRequired": "Each required cell links exact candidate/config/build/screenshot/test and accountable reviewer; empty registry is no longer treated as closure.",
+      "dependencyLayer": 14,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PRD-07",
+      "task": "Resolve market-language and translation policy explicitly",
+      "priority": "P1",
+      "workstream": "Product, content and design",
+      "status": "Open",
+      "ownerRole": "Product/design lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REG-06",
+        "PRD-04"
+      ],
+      "unacceptedDependencies": [
+        "REG-06",
+        "PRD-04"
+      ],
+      "closureEvidenceRequired": "Current English-only/source policy preserved until an approved change; test comprehension and terminology with each club market.",
+      "dependencyLayer": 5,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PRD-08",
+      "task": "Complete onboarding, consent, help and support journeys",
+      "priority": "P1",
+      "workstream": "Product, content and design",
+      "status": "Open",
+      "ownerRole": "Product/design lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "AUT-03",
+        "PAY-02"
+      ],
+      "unacceptedDependencies": [
+        "AUT-03",
+        "PAY-02"
+      ],
+      "closureEvidenceRequired": "New supporter, returning member, denied staff, missing record and recoverable payment flows have clear human support escalation.",
+      "dependencyLayer": 10,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PRD-09",
+      "task": "Verify runtime flags and deep-link authorization everywhere",
+      "priority": "P1",
+      "workstream": "Product, content and design",
+      "status": "Open",
+      "ownerRole": "Product/design lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "ARC-05",
+        "AUT-06"
+      ],
+      "unacceptedDependencies": [
+        "ARC-05",
+        "AUT-06"
+      ],
+      "closureEvidenceRequired": "Build capability, club policy, runtime enablement and user authority agree; direct links/cached sessions cannot re-enable blocked operations.",
+      "dependencyLayer": 8,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "QAT-02",
+      "task": "Run complete pinned-toolchain workspace and web checks",
+      "priority": "P1",
+      "workstream": "Verification and assurance",
+      "status": "Open",
+      "ownerRole": "QA/security verification lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-07",
+        "REP-09"
+      ],
+      "unacceptedDependencies": [
+        "REP-07",
+        "REP-09"
+      ],
+      "closureEvidenceRequired": "Fresh checkout resolves locked dependencies; Flutter/Dart analysis/tests, Next typecheck/lint/build and asset checks all pass.",
+      "dependencyLayer": 5,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "QAT-03",
+      "task": "Run local replay plus real isolated D1/Workers contract tests",
+      "priority": "P1",
+      "workstream": "Verification and assurance",
+      "status": "Open",
+      "ownerRole": "QA/security verification lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "ARC-02",
+        "WEB-05"
+      ],
+      "unacceptedDependencies": [
+        "ARC-02",
+        "WEB-05"
+      ],
+      "closureEvidenceRequired": "Migrations, triggers, RPC envelopes, Access context and service bindings validated in actual target runtime in addition to Node/SQLite.",
+      "dependencyLayer": 8,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "QAT-04",
+      "task": "Create positive and negative multi-tenant acceptance suite",
+      "priority": "P1",
+      "workstream": "Verification and assurance",
+      "status": "In progress",
+      "ownerRole": "QA/security verification lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "ARC-06",
+        "AUT-06"
+      ],
+      "unacceptedDependencies": [
+        "ARC-06",
+        "AUT-06"
+      ],
+      "closureEvidenceRequired": "Cross-club reads/writes/storage/realtime/cache/exports/deep links denied; legitimate five-club journeys preserved.",
+      "dependencyLayer": 8,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "QAT-05",
+      "task": "Commission independent API/web/mobile security verification",
+      "priority": "P1",
+      "workstream": "Verification and assurance",
+      "status": "Open",
+      "ownerRole": "QA/security verification lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "SEC-07",
+        "QAT-03",
+        "MOB-04"
+      ],
+      "unacceptedDependencies": [
+        "SEC-07",
+        "QAT-03",
+        "MOB-04"
+      ],
+      "closureEvidenceRequired": "Versioned ASVS/MASVS scope, threat model and findings register; no unresolved critical/high exploitable issues in enabled release scope.",
+      "dependencyLayer": 9,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "QAT-06",
+      "task": "Test financial concurrency and failure recovery on actual target",
+      "priority": "P1",
+      "workstream": "Verification and assurance",
+      "status": "Open",
+      "ownerRole": "QA/security verification lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "PAY-10",
+        "QAT-03"
+      ],
+      "unacceptedDependencies": [
+        "PAY-10",
+        "QAT-03"
+      ],
+      "closureEvidenceRequired": "Callback duplication, competing stock, cutoff waits, crashes, retries and reversals preserve approved invariants and immutable history.",
+      "dependencyLayer": 11,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "QAT-07",
+      "task": "Run dependency, SBOM, license and supply-chain review",
+      "priority": "P1",
+      "workstream": "Verification and assurance",
+      "status": "Open",
+      "ownerRole": "QA/security verification lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-09",
+        "SEC-10"
+      ],
+      "unacceptedDependencies": [
+        "REP-09",
+        "SEC-10"
+      ],
+      "closureEvidenceRequired": "Current advisories checked on exact lockfiles and artifacts; reachable vulnerabilities and licenses have approved disposition.",
+      "dependencyLayer": 4,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "QAT-08",
+      "task": "Execute native/browser accessibility and visual acceptance",
+      "priority": "P1",
+      "workstream": "Verification and assurance",
+      "status": "Open",
+      "ownerRole": "QA/security verification lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "PRD-05",
+        "MOB-05",
+        "WEB-10"
+      ],
+      "unacceptedDependencies": [
+        "PRD-05",
+        "MOB-05",
+        "WEB-10"
+      ],
+      "closureEvidenceRequired": "TalkBack/VoiceOver/keyboard/large text/reduced motion/contrast pass; exact current screenshots and design sign-off recorded.",
+      "dependencyLayer": 13,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "QAT-09",
+      "task": "Run game-day load, degraded-provider and recovery drills",
+      "priority": "P1",
+      "workstream": "Verification and assurance",
+      "status": "Open",
+      "ownerRole": "QA/security verification lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "ARC-10",
+        "OPS-06",
+        "PAY-09"
+      ],
+      "unacceptedDependencies": [
+        "ARC-10",
+        "OPS-06",
+        "PAY-09"
+      ],
+      "closureEvidenceRequired": "Measured latency, saturation, queue delay, failover and restoration meet approved SLOs; no financial duplicate effects.",
+      "dependencyLayer": 10,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "QAT-10",
+      "task": "Publish per-surface and per-club go/no-go dossier",
+      "priority": "P1",
+      "workstream": "Verification and assurance",
+      "status": "Open",
+      "ownerRole": "QA/security verification lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "QAT-01",
+        "QAT-02",
+        "QAT-04",
+        "QAT-05",
+        "QAT-06",
+        "QAT-07",
+        "QAT-08",
+        "QAT-09"
+      ],
+      "unacceptedDependencies": [
+        "QAT-01",
+        "QAT-02",
+        "QAT-04",
+        "QAT-05",
+        "QAT-06",
+        "QAT-07",
+        "QAT-08",
+        "QAT-09"
+      ],
+      "closureEvidenceRequired": "Evidence matrix states passed/failed/blocked/not-applicable with owners; no cumulative test-count or archive-presence substitute.",
+      "dependencyLayer": 14,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REG-02",
+      "task": "Approve data map, notices, lawful grounds and retention",
+      "priority": "P1",
+      "workstream": "Legal, privacy and club approvals",
+      "status": "Open",
+      "ownerRole": "Privacy/legal lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REG-01"
+      ],
+      "unacceptedDependencies": [
+        "REG-01"
+      ],
+      "closureEvidenceRequired": "Personal-data processing inventory and processor contracts cover consent, rights, children, access requests, erasure and breach response.",
+      "dependencyLayer": 3,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REG-03",
+      "task": "Complete Burundi legal and payment launch assessment",
+      "priority": "P1",
+      "workstream": "Legal, privacy and club approvals",
+      "status": "Open",
+      "ownerRole": "Privacy/legal lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REG-02",
+        "PRD-01"
+      ],
+      "unacceptedDependencies": [
+        "REG-02",
+        "PRD-01"
+      ],
+      "closureEvidenceRequired": "Qualified local assessment documents privacy/transfers, consumer terms, payment model and contest/age requirements or scope restrictions.",
+      "dependencyLayer": 6,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REG-04",
+      "task": "Complete DR Congo legal and payment launch assessment",
+      "priority": "P1",
+      "workstream": "Legal, privacy and club approvals",
+      "status": "Open",
+      "ownerRole": "Privacy/legal lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REG-02",
+        "PRD-01"
+      ],
+      "unacceptedDependencies": [
+        "REG-02",
+        "PRD-01"
+      ],
+      "closureEvidenceRequired": "Qualified local assessment documents privacy/transfers, consumer terms, payment model and contest/age requirements or scope restrictions.",
+      "dependencyLayer": 6,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REG-05",
+      "task": "Complete Zambia legal and payment launch assessment",
+      "priority": "P1",
+      "workstream": "Legal, privacy and club approvals",
+      "status": "Open",
+      "ownerRole": "Privacy/legal lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REG-02",
+        "PRD-01"
+      ],
+      "unacceptedDependencies": [
+        "REG-02",
+        "PRD-01"
+      ],
+      "closureEvidenceRequired": "Qualified local assessment documents privacy/transfers, consumer terms, payment model and contest/age requirements or scope restrictions.",
+      "dependencyLayer": 6,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REG-06",
+      "task": "Approve all club commercial, price, currency and receiver records",
+      "priority": "P1",
+      "workstream": "Legal, privacy and club approvals",
+      "status": "Open",
+      "ownerRole": "Privacy/legal lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REG-02"
+      ],
+      "unacceptedDependencies": [
+        "REG-02"
+      ],
+      "closureEvidenceRequired": "Each country/club has authorized merchant identity, settlement ownership, unit rules, refund terms and carrier/payment routes.",
+      "dependencyLayer": 4,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REG-07",
+      "task": "Complete Mozambique legal and payment launch assessment",
+      "priority": "P1",
+      "workstream": "Legal, privacy and club approvals",
+      "status": "Open",
+      "ownerRole": "Privacy/legal lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REG-02",
+        "REG-06"
+      ],
+      "unacceptedDependencies": [
+        "REG-02",
+        "REG-06"
+      ],
+      "closureEvidenceRequired": "Qualified local assessment plus Costa do Sol native IDs, crest/palette, receiver routes and tenant-1001 collision check completed.",
+      "dependencyLayer": 5,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REG-09",
+      "task": "Approve white-label submission and brand ownership",
+      "priority": "P1",
+      "workstream": "Legal, privacy and club approvals",
+      "status": "Open",
+      "ownerRole": "Privacy/legal lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REG-02"
+      ],
+      "unacceptedDependencies": [
+        "REG-02"
+      ],
+      "closureEvidenceRequired": "Content-provider/developer-account responsibilities and per-club authorization documented; Apple 4.2.6 template and 4.3 duplicate sports-team variant risks assessed.",
+      "dependencyLayer": 4,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REG-10",
+      "task": "Complete current store and public-policy submission package",
+      "priority": "P1",
+      "workstream": "Legal, privacy and club approvals",
+      "status": "Open",
+      "ownerRole": "Privacy/legal lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REG-08",
+        "REG-09",
+        "QAT-10"
+      ],
+      "unacceptedDependencies": [
+        "REG-08",
+        "REG-09",
+        "QAT-10"
+      ],
+      "closureEvidenceRequired": "Reviewer access, support, privacy/Data Safety, in-app/web deletion paths, age ratings, required SDK/target levels and regional billing rules verified at submission.",
+      "dependencyLayer": 15,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REL-02",
+      "task": "Verify infrastructure-as-code and environmental isolation",
+      "priority": "P1",
+      "workstream": "Controlled launch and retirement",
+      "status": "Open",
+      "ownerRole": "Release manager",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "DAT-03",
+        "SEC-10"
+      ],
+      "unacceptedDependencies": [
+        "DAT-03",
+        "SEC-10"
+      ],
+      "closureEvidenceRequired": "Approved accounts, regions, resource IDs, secrets, routes and principals read back; no placeholders or production test overrides.",
+      "dependencyLayer": 7,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REL-03",
+      "task": "Release a read-only pilot only after its own gates pass",
+      "priority": "P1",
+      "workstream": "Controlled launch and retirement",
+      "status": "Open",
+      "ownerRole": "Release manager",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "WEB-01",
+        "WEB-02",
+        "WEB-09",
+        "OPS-03",
+        "QAT-01"
+      ],
+      "unacceptedDependencies": [
+        "WEB-01",
+        "WEB-02",
+        "WEB-09",
+        "OPS-03",
+        "QAT-01"
+      ],
+      "closureEvidenceRequired": "Approved fresh source, rights, public read behavior, domain/security/operational checks and owner acceptance tied to exact artifact.",
+      "dependencyLayer": 8,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REL-04",
+      "task": "Run supervised authenticated membership pilot",
+      "priority": "P1",
+      "workstream": "Controlled launch and retirement",
+      "status": "Open",
+      "ownerRole": "Release manager",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "AUT-10",
+        "PAY-10",
+        "MOB-10",
+        "WEB-10",
+        "QAT-10"
+      ],
+      "unacceptedDependencies": [
+        "AUT-10",
+        "PAY-10",
+        "MOB-10",
+        "WEB-10",
+        "QAT-10"
+      ],
+      "closureEvidenceRequired": "Real isolated end-to-end sign-in/checkout/provider evidence/renewal/recovery and support checks succeed before real-money expansion.",
+      "dependencyLayer": 15,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REL-07",
+      "task": "Obtain named go/no-go approvals and staged store rollout",
+      "priority": "P1",
+      "workstream": "Controlled launch and retirement",
+      "status": "Open",
+      "ownerRole": "Release manager",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REG-10",
+        "QAT-10",
+        "REL-06"
+      ],
+      "unacceptedDependencies": [
+        "REG-10",
+        "QAT-10",
+        "REL-06"
+      ],
+      "closureEvidenceRequired": "Security, privacy, finance, product, QA, ops and club owners approve exact scope; percentages/observation windows chosen from evidence.",
+      "dependencyLayer": 16,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REL-08",
+      "task": "Observe and reconcile the launch before expanding clubs",
+      "priority": "P1",
+      "workstream": "Controlled launch and retirement",
+      "status": "Open",
+      "ownerRole": "Release manager",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REL-07",
+        "OPS-09",
+        "OPS-10"
+      ],
+      "unacceptedDependencies": [
+        "REL-07",
+        "OPS-09",
+        "OPS-10"
+      ],
+      "closureEvidenceRequired": "Per-club errors, support demand, provider settlement and duplicate-prevention checks meet budgets; pause criteria enforced.",
+      "dependencyLayer": 17,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REL-09",
+      "task": "Retire source services only after dependency and restore closure",
+      "priority": "P1",
+      "workstream": "Controlled launch and retirement",
+      "status": "Open",
+      "ownerRole": "Release manager",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REL-08",
+        "DAT-09"
+      ],
+      "unacceptedDependencies": [
+        "REL-08",
+        "DAT-09"
+      ],
+      "closureEvidenceRequired": "No remaining client/function/job/storage dependency; archives restorable; keys revoked; paid obligations and retention approvals complete.",
+      "dependencyLayer": 18,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REP-05",
+      "task": "Separate source, generated output and archival evidence",
+      "priority": "P1",
+      "workstream": "Source convergence",
+      "status": "Open",
+      "ownerRole": "Repository maintainer",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-02",
+        "SEC-06"
+      ],
+      "unacceptedDependencies": [
+        "REP-02",
+        "SEC-06"
+      ],
+      "closureEvidenceRequired": "Clean fresh clone excludes caches, build outputs, signing files and archive copies; recoverable evidence retained outside tracked source.",
+      "dependencyLayer": 3,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REP-06",
+      "task": "Create source-to-build-to-deployment manifest",
+      "priority": "P1",
+      "workstream": "Source convergence",
+      "status": "In progress",
+      "ownerRole": "Repository maintainer",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-01",
+        "REP-03"
+      ],
+      "unacceptedDependencies": [
+        "REP-01",
+        "REP-03"
+      ],
+      "closureEvidenceRequired": "Every artifact maps to source SHA, dependencies, toolchain, config fingerprint, migrations and intended environment.",
+      "dependencyLayer": 4,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REP-07",
+      "task": "Register all current backend/native verification commands",
+      "priority": "P1",
+      "workstream": "Source convergence",
+      "status": "In progress",
+      "ownerRole": "Repository maintainer",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-03"
+      ],
+      "unacceptedDependencies": [
+        "REP-03"
+      ],
+      "closureEvidenceRequired": "Main CI invokes relevant current module suites; missing SDK/platform jobs report blocked rather than success.",
+      "dependencyLayer": 4,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REP-08",
+      "task": "Install/reconcile iOS recovery source into the candidate",
+      "priority": "P1",
+      "workstream": "Source convergence",
+      "status": "In progress",
+      "ownerRole": "Repository maintainer",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-02"
+      ],
+      "unacceptedDependencies": [
+        "REP-02"
+      ],
+      "closureEvidenceRequired": "Thirteen Batch 12 source paths accepted or replaced explicitly; imports and build registration tracked, not archive-only.",
+      "dependencyLayer": 3,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REP-09",
+      "task": "Pin and reproduce supported toolchains and dependency locks",
+      "priority": "P1",
+      "workstream": "Source convergence",
+      "status": "In progress",
+      "ownerRole": "Repository maintainer",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-01"
+      ],
+      "unacceptedDependencies": [
+        "REP-01"
+      ],
+      "closureEvidenceRequired": "Fresh install with repository-required Dart/Flutter/Node/npm and pinned Android/Apple tools succeeds without lock mutation.",
+      "dependencyLayer": 2,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REP-10",
+      "task": "Normalize governance hierarchy and task identifiers",
+      "priority": "P1",
+      "workstream": "Source convergence",
+      "status": "In progress",
+      "ownerRole": "Repository maintainer",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-02"
+      ],
+      "unacceptedDependencies": [
+        "REP-02"
+      ],
+      "closureEvidenceRequired": "One design authority/adapter hierarchy, unique task IDs, authoritative object disposition register and dated evidence semantics.",
+      "dependencyLayer": 3,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "SEC-07",
+      "task": "Scan candidate, Git history, bundles and archives for secrets",
+      "priority": "P1",
+      "workstream": "Security containment",
+      "status": "In progress",
+      "ownerRole": "Security lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "SEC-03",
+        "REP-01"
+      ],
+      "unacceptedDependencies": [
+        "SEC-03",
+        "REP-01"
+      ],
+      "closureEvidenceRequired": "Independent scan reports zero unapproved live secrets; false positives reviewed and historical exposure addressed.",
+      "dependencyLayer": 2,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "SEC-08",
+      "task": "Define redaction and evidence-publication policy",
+      "priority": "P1",
+      "workstream": "Security containment",
+      "status": "In progress",
+      "ownerRole": "Security lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "SEC-03"
+      ],
+      "unacceptedDependencies": [
+        "SEC-03"
+      ],
+      "closureEvidenceRequired": "Automated tests prevent token/phone/payment-body leakage; approved synthetic data and masking rules for screenshots/logs.",
+      "dependencyLayer": 2,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "SEC-09",
+      "task": "Require phishing-resistant MFA and privileged access review",
+      "priority": "P1",
+      "workstream": "Security containment",
+      "status": "Open",
+      "ownerRole": "Security lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "SEC-01"
+      ],
+      "unacceptedDependencies": [
+        "SEC-01"
+      ],
+      "closureEvidenceRequired": "Named staff access, step-up for critical actions, break-glass logging and tested removal of a departing operator.",
+      "dependencyLayer": 1,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "SEC-10",
+      "task": "Harden build and deployment credentials",
+      "priority": "P1",
+      "workstream": "Security containment",
+      "status": "Open",
+      "ownerRole": "Security lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "SEC-04",
+        "REP-01"
+      ],
+      "unacceptedDependencies": [
+        "SEC-04",
+        "REP-01"
+      ],
+      "closureEvidenceRequired": "Minimal token scopes, environment-separated secrets, immutable action pins, protected runners and approved artifact access.",
+      "dependencyLayer": 3,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "WEB-02",
+      "task": "Implement media digest, rights revocation and cache policy",
+      "priority": "P1",
+      "workstream": "Public web and administration",
+      "status": "In progress",
+      "ownerRole": "Web/admin lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "WEB-01"
+      ],
+      "unacceptedDependencies": [
+        "WEB-01"
+      ],
+      "closureEvidenceRequired": "Same-size wrong bytes denied; expired/revoked rights unavailable through CDN/object URLs; content-addressed caching tested.",
+      "dependencyLayer": 7,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "WEB-03",
+      "task": "Define browser member portal boundaries and session contract",
+      "priority": "P1",
+      "workstream": "Public web and administration",
+      "status": "In progress",
+      "ownerRole": "Web/admin lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-10"
+      ],
+      "unacceptedDependencies": [
+        "REP-10"
+      ],
+      "closureEvidenceRequired": "Approved route/product matrix covers current web membership and contribution initiation without reusing native-only headers as security.",
+      "dependencyLayer": 4,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "WEB-04",
+      "task": "Connect browser membership/contribution flows to approved APIs",
+      "priority": "P1",
+      "workstream": "Public web and administration",
+      "status": "In progress",
+      "ownerRole": "Web/admin lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "AUT-05",
+        "PAY-04",
+        "WEB-03"
+      ],
+      "unacceptedDependencies": [
+        "AUT-05",
+        "PAY-04",
+        "WEB-03"
+      ],
+      "closureEvidenceRequired": "Cookie session, CSRF, owned reads, unknown writes and no automatic financial retry pass integrated browser tests.",
+      "dependencyLayer": 10,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "WEB-05",
+      "task": "Reconcile and wire operator console configuration and wrapper",
+      "priority": "P1",
+      "workstream": "Public web and administration",
+      "status": "In progress",
+      "ownerRole": "Web/admin lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REP-03",
+        "SEC-09"
+      ],
+      "unacceptedDependencies": [
+        "REP-03",
+        "SEC-09"
+      ],
+      "closureEvidenceRequired": "Documented console entrypoint/config/assets exist and build; current API implements all UI-used methods with real Access identity.",
+      "dependencyLayer": 4,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "WEB-06",
+      "task": "Complete role-scoped admin actions and maker/checker where required",
+      "priority": "P1",
+      "workstream": "Public web and administration",
+      "status": "In progress",
+      "ownerRole": "Web/admin lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "AUT-06",
+        "WEB-05"
+      ],
+      "unacceptedDependencies": [
+        "AUT-06",
+        "WEB-05"
+      ],
+      "closureEvidenceRequired": "Finance/content/support roles have explicit per-club authority, separation-of-duties rules and immutable audit trails.",
+      "dependencyLayer": 8,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "WEB-07",
+      "task": "Harden PWA caches, offline states and logout cleanup",
+      "priority": "P1",
+      "workstream": "Public web and administration",
+      "status": "Open",
+      "ownerRole": "Web/admin lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "WEB-04",
+        "WEB-06"
+      ],
+      "unacceptedDependencies": [
+        "WEB-04",
+        "WEB-06"
+      ],
+      "closureEvidenceRequired": "Private pages/responses not cached across accounts; offline status does not show success for unconfirmed writes; stale assets update safely.",
+      "dependencyLayer": 11,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "WEB-08",
+      "task": "Replace permissive CSP and broad origins with reviewed policy",
+      "priority": "P1",
+      "workstream": "Public web and administration",
+      "status": "In progress",
+      "ownerRole": "Web/admin lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "WEB-04",
+        "WEB-06"
+      ],
+      "unacceptedDependencies": [
+        "WEB-04",
+        "WEB-06"
+      ],
+      "closureEvidenceRequired": "Nonce/hash policy or documented safe alternative; no unexpected script/storage origins, unsafe redirects or cross-tenant cache keys.",
+      "dependencyLayer": 11,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "WEB-09",
+      "task": "Validate domains, SEO and link metadata per club",
+      "priority": "P1",
+      "workstream": "Public web and administration",
+      "status": "Open",
+      "ownerRole": "Web/admin lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "ARC-06",
+        "REG-09"
+      ],
+      "unacceptedDependencies": [
+        "ARC-06",
+        "REG-09"
+      ],
+      "closureEvidenceRequired": "Hostname/slug mapping, canonical URLs, sitemap, robots, legal routes, previews, universal/app links and TLS checked for five sites.",
+      "dependencyLayer": 5,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "WEB-10",
+      "task": "Complete real desktop/mobile-browser and operator UAT",
+      "priority": "P1",
+      "workstream": "Public web and administration",
+      "status": "Open",
+      "ownerRole": "Web/admin lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "WEB-02",
+        "WEB-04",
+        "WEB-06",
+        "WEB-08",
+        "WEB-09"
+      ],
+      "unacceptedDependencies": [
+        "WEB-02",
+        "WEB-04",
+        "WEB-06",
+        "WEB-08",
+        "WEB-09"
+      ],
+      "closureEvidenceRequired": "Current candidate tested in Chromium/WebKit/Firefox where supported with real isolated Access and private roles; screenshots not surrogate network proof.",
+      "dependencyLayer": 12,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "PRD-10",
+      "task": "Validate product analytics and club success measures",
+      "priority": "P2",
+      "workstream": "Product, content and design",
+      "status": "Open",
+      "ownerRole": "Product/design lead",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "OPS-02",
+        "REG-02"
+      ],
+      "unacceptedDependencies": [
+        "OPS-02",
+        "REG-02"
+      ],
+      "closureEvidenceRequired": "Privacy-approved events distinguish prepared checkout, dialer opened, evidence allocated and active member; no inflated conversion success.",
+      "dependencyLayer": 4,
+      "releaseAcceptedDeclared": false
+    },
+    {
+      "id": "REL-10",
+      "task": "Maintain continuous post-launch assurance and policy watch",
+      "priority": "P2",
+      "workstream": "Controlled launch and retirement",
+      "status": "Open",
+      "ownerRole": "Release manager",
+      "namedOwnerAssigned": false,
+      "dependencies": [
+        "REL-08"
+      ],
+      "unacceptedDependencies": [
+        "REL-08"
+      ],
+      "closureEvidenceRequired": "Periodic access, dependency, privacy, store-policy, rights, disaster-recovery and cost reviews have accountable owners.",
+      "dependencyLayer": 18,
+      "releaseAcceptedDeclared": false
+    }
+  ],
+  "counts": {
+    "tasks": 130,
+    "priorities": {
+      "P0": 37,
+      "P1": 91,
+      "P2": 2
+    },
+    "statuses": {
+      "Open": 95,
+      "In progress": 35
+    },
+    "namedOwnersMissing": 130
+  },
+  "dependencyLayers": [
+    [
+      "SEC-01"
+    ],
+    [
+      "REP-01",
+      "SEC-02",
+      "SEC-03",
+      "SEC-09"
+    ],
+    [
+      "AUT-01",
+      "REG-01",
+      "REP-02",
+      "SEC-04",
+      "SEC-05",
+      "SEC-06",
+      "OPS-01",
+      "REP-09",
+      "SEC-07",
+      "SEC-08"
+    ],
+    [
+      "DAT-01",
+      "REP-03",
+      "AUT-02",
+      "AUT-03",
+      "AUT-09",
+      "MOB-01",
+      "OPS-02",
+      "REG-02",
+      "REP-05",
+      "REP-08",
+      "REP-10",
+      "SEC-10"
+    ],
+    [
+      "DAT-02",
+      "DAT-06",
+      "DAT-07",
+      "REG-08",
+      "REP-04",
+      "ARC-06",
+      "MOB-02",
+      "OPS-03",
+      "PRD-04",
+      "QAT-07",
+      "REG-06",
+      "REG-09",
+      "REP-06",
+      "REP-07",
+      "WEB-03",
+      "WEB-05",
+      "PRD-10"
+    ],
+    [
+      "ARC-01",
+      "PRD-01",
+      "QAT-01",
+      "ARC-05",
+      "ARC-08",
+      "AUT-04",
+      "AUT-05",
+      "AUT-08",
+      "DAT-08",
+      "MOB-03",
+      "PRD-05",
+      "PRD-07",
+      "QAT-02",
+      "REG-07",
+      "WEB-09"
+    ],
+    [
+      "ARC-03",
+      "ARC-07",
+      "DAT-03",
+      "REL-01",
+      "WEB-01",
+      "ARC-04",
+      "ARC-09",
+      "MOB-04",
+      "PRD-02",
+      "PRD-03",
+      "REG-03",
+      "REG-04",
+      "REG-05"
+    ],
+    [
+      "ARC-02",
+      "AUT-06",
+      "DAT-04",
+      "DAT-05",
+      "AUT-10",
+      "MOB-05",
+      "MOB-09",
+      "OPS-04",
+      "REL-02",
+      "WEB-02"
+    ],
+    [
+      "DAT-09",
+      "MOB-06",
+      "PAY-01",
+      "ARC-10",
+      "AUT-07",
+      "PRD-09",
+      "QAT-03",
+      "QAT-04",
+      "REL-03",
+      "WEB-06"
+    ],
+    [
+      "PAY-02",
+      "PAY-03",
+      "DAT-10",
+      "MOB-07",
+      "OPS-06",
+      "OPS-07",
+      "OPS-09",
+      "PAY-04",
+      "PAY-05",
+      "PAY-06",
+      "PAY-09",
+      "QAT-05"
+    ],
+    [
+      "PAY-10",
+      "MOB-08",
+      "OPS-05",
+      "OPS-08",
+      "PAY-07",
+      "PAY-08",
+      "PRD-08",
+      "QAT-09",
+      "WEB-04"
+    ],
+    [
+      "REL-05",
+      "MOB-10",
+      "OPS-10",
+      "QAT-06",
+      "WEB-07",
+      "WEB-08"
+    ],
+    [
+      "REL-06",
+      "WEB-10"
+    ],
+    [
+      "QAT-08"
+    ],
+    [
+      "PRD-06",
+      "QAT-10"
+    ],
+    [
+      "REG-10",
+      "REL-04"
+    ],
+    [
+      "REL-07"
+    ],
+    [
+      "REL-08"
+    ],
+    [
+      "REL-09",
+      "REL-10"
+    ]
+  ],
+  "cyclicTaskIds": [],
+  "unscheduledTaskIds": [],
+  "issues": [],
+  "sourceWorkMayProceedBeforeClosure": true,
+  "approvalEvidenceVerified": false,
+  "releaseAuthorized": false,
+  "remoteChanges": 0
+}

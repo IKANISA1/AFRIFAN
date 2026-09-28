@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-09-28",
+  "scope": "362-file scoped candidate, not full monorepo or release acceptance",
+  "runtime": {
+    "node": "22.16.0",
+    "repositoryNodePin": "22.23.2",
+    "nodePinMatched": false,
+    "python": "3.13.5",
+    "typescript": "5.8.3"
+  },
+  "tests": {
+    "node": {
+      "passed": 1897,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0,
+      "newThisDelivery": 136,
+      "log": "evidence/all-node.log"
+    },
+    "python": {
+      "passed": 229,
+      "failed": 0,
+      "newThisDelivery": 2,
+      "log": "evidence/all-python.log"
+    },
+    "installer": {
+      "passed": 39,
+      "failed": 0,
+      "newThisDelivery": 0,
+      "logs": [
+        "evidence/installer-part1.log",
+        "evidence/installer-part2.log",
+        "evidence/installer-delivery.log"
+      ]
+    },
+    "portableKotlin": {
+      "passed": 69,
+      "log": "evidence/strict-gate/portable-kotlin/contracts.log",
+      "androidHostAccepted": false
+    },
+    "portableSwift": {
+      "passed": 68,
+      "log": "evidence/strict-gate/portable-swift/swift-tests.json",
+      "iosHostAccepted": false
+    },
+    "uniquePassingTotal": 2302,
+    "newTests": 138
+  },
+  "additionalChecks": {
+    "syntaxAndParse": {
+      "checks": 235,
+      "byKind": {
+        "json_parse": 25,
+        "javascript_syntax": 178,
+        "python_ast": 32
+      },
+      "failures": 0
+    },
+    "sensitiveSourceScan": {
+      "schemaVersion": 1,
+      "sourceFilesRead": 362,
+      "issues": [],
+      "passed": true,
+      "matchedValuesIncluded": false,
+      "drivePermissionsVerified": false
+    },
+    "commands": [
+      {
+        "name": "operator-asset-parity",
+        "command": [
+          "node",
+          "cloudflare/operator-api/scripts/build-ui.mjs",
+          "--check"
+        ],
+        "exitCode": 0,
+        "passed": true
+      },
+      {
+        "name": "browser-config",
+        "command": [
+          "node",
+          "cloudflare/supporter-browser-api/scripts/check-deployment.mjs"
+        ],
+        "exitCode": 0,
+        "passed": true
+      },
+      {
+        "name": "operator-config",
+        "command": [
+          "node",
+          "cloudflare/operator-api/scripts/check-deployment.mjs"
+        ],
+        "exitCode": 0,
+        "passed": true
+      },
+      {
+        "name": "case-config",
+        "command": [
+          "node",
+          "cloudflare/payment-exceptions/scripts/check-deployment.mjs"
+        ],
+        "exitCode": 0,
+        "passed": true
+      },
+      {
+        "name": "membership-config",
+        "command": [
+          "node",
+          "cloudflare/supporter-membership-api/scripts/check-deployment.mjs"
+        ],
+        "exitCode": 0,
+        "passed": true
+      },
+      {
+        "name": "migration-lineage",
+        "command": [
+          "python",
+          "/mnt/data/africlub05/input04/AFRICLUB_Implementation_04_2026-09-28/bundle_tools/check_migration_lineage.py",
+          "--root",
+          "/mnt/data/africlub05/work"
+        ],
+        "exitCode": 0,
+        "passed": true
+      }
+    ],
+    "inputBundleHashesVerified": 479,
+    "strictSourceGate": {
+      "exitCode": 2,
+      "status": "blocked",
+      "reasons": [
+        "Node 22.16.0 does not match required 22.23.2",
+        "Dart/Flutter absent"
+      ],
+      "log": "evidence/strict-gate/verification.json"
+    }
+  },
+  "source": {
+    "baselineFiles": 342,
+    "newFiles": 20,
+    "modifiedFiles": 5,
+    "changedPaths": 25,
+    "unchangedPrerequisites": 337,
+    "candidateFiles": 362
+  },
+  "notExecuted": [
+    "Full monorepo Flutter/Dart/Next.js build and acceptance",
+    "Rendered browser, PWA, keyboard and screen-reader flows",
+    "Cloudflare workerd/D1 and live service bindings/origin policies",
+    "Android/iOS hosts, secure storage and physical-device journeys",
+    "Real OTP provider and payment/reconciliation/refund journeys",
+    "Hosted migration lineage, historical data and restore/cutover acceptance",
+    "Independent security, load, country/store and owner approvals"
+  ],
+  "controls": {
+    "productionDeployed": false,
+    "remoteMigrations": 0,
+    "realPayments": 0,
+    "permissionsChanged": false,
+    "productionReady": false,
+    "originalDriveSourceReplaced": false
+  },
+  "testRunNotes": [
+    "The 229 Python tests rerun by the strict source gate are counted once only. Prior delivery totals are not added.",
+    "Three new concurrency tests use separate SQLite connections in worker threads. All network/provider/identity values are synthetic; this is not real Cloudflare D1.",
+    "Installer runs completed in separate 17/16/6 groups. These 39 inherited test cases were rerun against the current installer and bundle, not described as newly authored.",
+    "The first API negative test expectation treated malformed upstream keys as a client error; it was corrected to service-unavailable before the passing final run.",
+    "No browser navigation was attempted this turn; earlier administrator blocking was not bypassed.",
+    "A package-registry query for miniflare failed with EAI_AGAIN; no runtime dependency was installed and no lockfile or required runtime pin was changed."
+  ]
+}

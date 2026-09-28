@@ -1,0 +1,310 @@
+{
+  "schemaVersion": 1,
+  "scope": "selected reconciled files only; not complete Git candidate or approval",
+  "files": [
+    {
+      "path": ".github/workflows/ci.yaml",
+      "sha256": "c43c6d0dc48e245f40006b8f60c9616737abfe09c0234131cba6ae9ab155c726"
+    },
+    {
+      "path": ".github/workflows/deploy-gikundiro-web.yml",
+      "sha256": "af8b2e2d4d82fadd55d829cea28ae431d5e34303dcf84e7cb76d7e53d432bf7c"
+    },
+    {
+      "path": "apps/rayon_sports/web/next.config.ts",
+      "sha256": "918ef6df44ccf64779acf3373fca34c43110c1fa2a9539679da329f5ba476d30"
+    },
+    {
+      "path": "apps/rayon_sports/web/src/app/admin/publishing/page.tsx",
+      "sha256": "74a6732158fe5cb8c5aee6ccb054fc8750691d8d94bcbb40d3488651ec8562e8"
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/publishing-launch.ts",
+      "sha256": "ae1e978e21fae64070db954055bc9053f3b57c135eb7b4b4716b3247c2bd5601"
+    },
+    {
+      "path": "cloudflare/operator-api/CONSOLE.md",
+      "sha256": "6f7de9281da01d143e3214efc3675ea9eabae9c7ed0d8af8ed1bebdc8bab7be5"
+    },
+    {
+      "path": "cloudflare/operator-api/README.md",
+      "sha256": "3d147edaaf77635d31f64b4d1ebfe2b0123c30f801218c3baf102478b43f5868"
+    },
+    {
+      "path": "cloudflare/operator-api/client.ts",
+      "sha256": "8ef7b2e22f4f53b28027608926b86a89f1dd2a6dcd124c6a77e2b0e5491c47df"
+    },
+    {
+      "path": "cloudflare/operator-api/contracts/openapi.json",
+      "sha256": "eb844623047ac2c0d06ab816982e4778994af69f455b524e6388513245a00de3"
+    },
+    {
+      "path": "cloudflare/operator-api/scripts/build-console.mjs",
+      "sha256": "4bfceb87c1e11819af8c911747bd4e7caa99c79d9f2ee89db14eeeb46064db60"
+    },
+    {
+      "path": "cloudflare/operator-api/scripts/build-ui.mjs",
+      "sha256": "467cc619478a0439a575a9798785c19438fe690fc1da8b063023a8e7024d57e8"
+    },
+    {
+      "path": "cloudflare/operator-api/scripts/check-deployment.mjs",
+      "sha256": "2c270ca42355aa76ac7ec5fee55de8478ebb3ffa8cf9f6bfe01cf2a784402372"
+    },
+    {
+      "path": "cloudflare/operator-api/scripts/replay-saved-export.mjs",
+      "sha256": "cea18a20fe7b6cb0d78ae8b6e18a9d60bae4101ec8c420a212b61e428591f631"
+    },
+    {
+      "path": "cloudflare/operator-api/src/console-handler.mjs",
+      "sha256": "112d1580cc8da7dbd691cf84149130cea2b252a2bb03d427c436ba4d0cbf7d75"
+    },
+    {
+      "path": "cloudflare/operator-api/src/index.mjs",
+      "sha256": "fd6e1074c0fcecae1c0783f9c396b1d85a683532651b733a7e13f10ec888fa2b"
+    },
+    {
+      "path": "cloudflare/operator-api/src/ui-assets.mjs",
+      "sha256": "cdfd966d5fc0d0ba343c7936d51183ac11369f17d4966c7bc8bbeed38db928bd"
+    },
+    {
+      "path": "cloudflare/operator-api/src/ui-response.mjs",
+      "sha256": "50fa5caba3ddc2321661ecee0ef6fb38a190ad8397e8d9e90910490c72e526d5"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/browser/run_browser.py",
+      "sha256": "d073304ad8ca48b4b9ab50398fc4a5cb63965dc6ea53192cc6feef92c0328b3f"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/browser/server.mjs",
+      "sha256": "183abd931f5b6b9854425c306dc1e822642b7c16d3153646e733ca4004a8a579"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/canonical-console.test.mjs",
+      "sha256": "3e0b444f7f59d22f4ed87638c1e514637e04115e2ec44448d8728f73e2aa57c2"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/contract.test.mjs",
+      "sha256": "f9083c7d51bae4048363615723ce5b5e0372fa8337c9e235261eaa6bc00139e3"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/deployment.test.mjs",
+      "sha256": "736f3cd33f3f510b76c8b5e6100300852b2ae32eda6abf7241334247498ce9d8"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/inspection.test.mjs",
+      "sha256": "5c63630fb2a2ac48b7bfbe8e8e9c47d89f8a36ad4222d3c5684dfa01c3f10484"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/support/fixture.mjs",
+      "sha256": "4988991fd6c914c237dc3309f9d25cc6e447158642bc5cd42e1270758be0bf48"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/ui-controller.test.mjs",
+      "sha256": "ac454ea118e31007df25965f694a21c28911433bbc119d98979d4f8477fe243b"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/ui-static.test.mjs",
+      "sha256": "72df2b0227ca8033c4da8d7b3bef1fb529853aecc820c7cdef3ec59a78948761"
+    },
+    {
+      "path": "cloudflare/operator-api/ui/README.md",
+      "sha256": "4b4d75bd3066a0fa69c018ad414148ee403a64fb666e381c0fb91da2ea9bbd81"
+    },
+    {
+      "path": "cloudflare/operator-api/ui/app.mjs",
+      "sha256": "33ba38b8a1b7ff402afa4b754db73715982e787c514867e05580c2d35484ae52"
+    },
+    {
+      "path": "cloudflare/operator-api/ui/controller.mjs",
+      "sha256": "c2d6d4afa65087c548155f2853111e12c83f212b3c2088657080b5d203cb297e"
+    },
+    {
+      "path": "cloudflare/operator-api/ui/page.html",
+      "sha256": "974c55ad43f05cccbca710dc46f819dc72ccf761cd29c363a0b45fddf4aab145"
+    },
+    {
+      "path": "cloudflare/operator-api/ui/styles.css",
+      "sha256": "dd8424312e3397b9539dd79f23318dc321cbe22b19d3e7d7dee152c8e01f3264"
+    },
+    {
+      "path": "cloudflare/operator-api/wrangler.staging.jsonc",
+      "sha256": "a8bdb4f6982ce576f4ef3c67c29f340bd085e026d3c7b6753ce0b4ab662d7031"
+    },
+    {
+      "path": "cloudflare/rayon-public/README.md",
+      "sha256": "4cacc66c06aefa0676e1184f9adfd05cc23e00c4b0494506a55219320301fc1b"
+    },
+    {
+      "path": "cloudflare/rayon-public/migrations/0005_operator_candidate_index.sql",
+      "sha256": "1404b8173f68331326dc6c91b8dab7a22e2fc99ad94e862b7d219aad4f1fbe23"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/authorized-publication-worker.mjs",
+      "sha256": "d890e839cf25cb8d0bbacbd9c5e873e3cb418c6c7ff20e77c212351106f0c855"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/index.mjs",
+      "sha256": "0b155161c4176259e9d76b6721201bbc6b8e08f9f6cc8538ef44500672233110"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/operator-publication.mjs",
+      "sha256": "7e3f7a27401e529ea7bd62f86a97310dec52f8dd980ba8e29b1ad5087c447a44"
+    },
+    {
+      "path": "cloudflare/rayon-public/tests/snapshot.test.mjs",
+      "sha256": "89a96400609d9642fd0cba20d7543783623ca6aa1d12daf9f17374c832e97ebd"
+    },
+    {
+      "path": "cloudflare/rayon-public/tests/support/d1-sqlite-adapter.mjs",
+      "sha256": "24441631e0e727562fe8daeadf133b75630eff49e049411957fffaedb860134f"
+    },
+    {
+      "path": "cloudflare/supporter-auth/migrations/0002_club_delivery_index.sql",
+      "sha256": "7813579941b5e67dadb7562550dd95c9a51729ab10f301a1ac234742b113ef76"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/delivery.mjs",
+      "sha256": "5dd128750f87bea0239143f98c1a9bce469547f79abd7d6d66c7b7afd6783f82"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/identity-service.mjs",
+      "sha256": "13ca70f54d3d477b38fd0d2cfb2af43871ec75875cc65afcdd17733ca85e64ff"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/otp-rate-policy.mjs",
+      "sha256": "49062c7bec7398570299762d8bd3e765c9211c8e7f9dc5d5e5362eabf0fb298d"
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/otp-fairness.test.mjs",
+      "sha256": "5cf44bd4e6d87a543d6b1287c805bcc2bf2f473ca879f150b5f85a0baeda8b5f"
+    },
+    {
+      "path": "docs/blueprint.md",
+      "sha256": "322e1acec56d184adc8ad08f5cc35f7c87881ac890cfd4528ed9c623214a42bb"
+    },
+    {
+      "path": "docs/operations/production-gates.md",
+      "sha256": "4c539af9b08267195b2a5484332d024a099ad6e8258fb8f6fe65ebb8cb3b019f"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/native_membership_storage_ios.dart",
+      "sha256": "84ca2d6380ba1f526bb0315f737be071a7fa6f8ecbb92db10304cdfdec8e7a5e"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/README.md",
+      "sha256": "1dde8cfe8416c1e3b308b6727d6bca0d434b70ce4f76abd3eff3de23e8a42733"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryHost.swift",
+      "sha256": "b1bb78b315f2781307449b5ff09c2ee41b880ccf52787265f3057b5f12067dd2"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/KeychainRecoveryBlob.swift",
+      "sha256": "6f87df0aaee43ebdfd4cd14bf48e3be073671922a47d8389bd2dfca6bce3f7a7"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/RecoveryDispatcher.swift",
+      "sha256": "7c014a35685aae1ef1045bd9cd194b084344d364cbce9a82aefa9a276a418e15"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/RecoveryFiles.swift",
+      "sha256": "b4d7d7b2216862fbfc0605c99aeb0ed5f714635dc4f0e0e389dc2f9e634abbf8"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/RecoveryProtocol.swift",
+      "sha256": "92619396de3ac90eb4f013da5ea3f1210da5fabfd13a241550f7c246bacedf31"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/RecoveryStore.swift",
+      "sha256": "e5aac7f3a830be11a1813ee999dad6ec82e83d42a46e4df0ef757ce3ea798fb5"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Tests/KeychainRecoveryIntegrationTests.swift",
+      "sha256": "589b652140c9a4020e49d2af182e0e79a345eb2c1ed4968a472fd916e393db1c"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Tests/RecoveryHarness.swift",
+      "sha256": "bdc4581e368d6dc410301780640bc398e6f3012c3c1c783f95b45ecce05c2b49"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/contracts/recovery-channel.json",
+      "sha256": "875422b65061edbae1eb7c024b58ced17d7ab28596a7d736ef42794a6d007864"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/contracts/source-provenance.json",
+      "sha256": "fc663df23f4c1d09309596b79c3132ccf0b42279c48ac1fdca65ded6a3b58f98"
+    },
+    {
+      "path": "pubspec.yaml",
+      "sha256": "c6aa94b097231c0aa20a074f9bf351c50f220693d19d570b30f5c64e95d8d560"
+    },
+    {
+      "path": "tools/release/candidate-integrity.mjs",
+      "sha256": "03bf8093a54c1ce01bc3a374ed668406fa6e3d32ff570b688aa742ecbe2911bf"
+    },
+    {
+      "path": "tools/scripts/replay_public_snapshot_export.mjs",
+      "sha256": "b8fda9a7340083dc0786dff9cf3b1738b38ba0eb589e22c985a6d50cf132ae42"
+    },
+    {
+      "path": "tools/scripts/seed_rayon_public_d1_local.py",
+      "sha256": "c16a871d02d5dc8a7fdac6c3d9203fda353ce94f5eea23a8e9d6b69242b55b45"
+    },
+    {
+      "path": "tools/scripts/stage_rayon_public_media_r2.py",
+      "sha256": "55f4936bd2b97ff81602fac47e0a318fadef0948fcf4c46afc7fd48a45182d51"
+    },
+    {
+      "path": "tools/scripts/test_public_snapshot_import.py",
+      "sha256": "66815203aad06300e7e5167df1eccedf734ff5af64f9152e483451c2e3d1a461"
+    },
+    {
+      "path": "tools/scripts/validate_repository_boundary.mjs",
+      "sha256": "fae8c1d490f27e50ffc1494c88e5dd7ce8d3ae8d9496d5bb579b60f218afd53e"
+    },
+    {
+      "path": "tools/scripts/validate_repository_boundary.test.mjs",
+      "sha256": "709c6e23e0da11bfe85b0b880aec063a8f53c0a42ff0a1677a7e2e77d9d09080"
+    },
+    {
+      "path": "tools/scripts/verify_ios_recovery.py",
+      "sha256": "c81f4656fea8b878c22f9d74ed085cd80bc682a8565c7f0f712ed6bf8027c035"
+    },
+    {
+      "path": "tools/scripts/verify_production_candidate.py",
+      "sha256": "c7392995cab4da89bf6d58860bda84a2874e7fb0b6d3db8158fec5e193621a3f"
+    },
+    {
+      "path": "tools/scripts/verify_rayon_public_api_local.py",
+      "sha256": "48eadbdec68f870b8f69cc715e8a35ac3031c0d7da8677a2a88b1aa424258ba5"
+    },
+    {
+      "path": "tools/scripts/verify_rayon_public_d1_local.py",
+      "sha256": "2742999e79c1fb5c186f189415b76c5e125562e47d9d519935e4697c0ca33928"
+    },
+    {
+      "path": "tools/security/production_source_lock_test.py",
+      "sha256": "9e75109ea40a232ec7929e54dc07cad01a6b051e267f35dbff46634b92b4c42b"
+    },
+    {
+      "path": "tools/security/source_safety.py",
+      "sha256": "c98bc6ca33652309a46595fbca57c756723cce22732aba5549e6417ae6089fba"
+    },
+    {
+      "path": "tools/security/source_safety_test.py",
+      "sha256": "21d7e56caa9b8d41b83a5bf3f5996c6be499f01210fa6ea7d33bfab7f04da26d"
+    },
+    {
+      "path": "tools/tests/candidate-integrity.test.mjs",
+      "sha256": "114ac2fb9a365ce9f4a54150bb62b4d098d67cb75615d8f586d6d84c67a0d4cb"
+    },
+    {
+      "path": "tools/tests/production-workflow.test.mjs",
+      "sha256": "12b13cb5d2428b6789eb94fbe84690cd43ae1ebe154b4bfbff8af031e752148d"
+    },
+    {
+      "path": "tools/tests/publishing-launch.test.mjs",
+      "sha256": "fcc44abc20b4fa3258a861882e52688374e886047e26b074e5d5ab853f597998"
+    }
+  ]
+}

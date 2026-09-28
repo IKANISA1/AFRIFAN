@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "completedAtUtc": "2026-09-27T11:17:12.399186+00:00",
+  "requestedDestinationFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+  "archiveFolderId": "1rKfc92KLmvPI4nRZMis0pB_LlRoPUmd2",
+  "archiveFolderUrl": "https://drive.google.com/drive/folders/1rKfc92KLmvPI4nRZMis0pB_LlRoPUmd2",
+  "mode": "new-files-only",
+  "originalFilesOverwritten": 0,
+  "originalFilesDeleted": 0,
+  "conversationSnapshotsEnumerated": 379,
+  "conversationSnapshotUploadsSucceeded": 379,
+  "snapshotLocations": {
+    "File_Snapshots": 378,
+    "archive_root_recovered_ordinal028": 1
+  },
+  "numbering": "001 through 379; ordinal 028 is the Recovered file in the archive root. 350 and 351 use screenshot basenames instead of their prior full local-path titles.",
+  "unresolvedUploadFailures": 0,
+  "recoveredOrdinal028": {
+    "fileId": "1XLRVWjLKu-dCT3k0xtJfKpzHomFn36iO",
+    "bytes": 319286,
+    "sha256": "150137983c9841befb71529fe9fbc2ed5ec45f862836fdc5b4ae4ea14340193c",
+    "name": "028_Recovered_AFRICLUB_Batch10_Current_Drive_Patch_2026-09-27.zip",
+    "sourceBytesMatchSnapshot029": true
+  },
+  "combinedArchive": {
+    "fileId": "1vs6szqhqgpu-N5wIGyDoiBkif4DlKIZW",
+    "name": "AFRICLUB_All_Conversation_Files_2026-09-27.zip",
+    "bytes": 14301017,
+    "sha256": "feacb47284d3d3df568522247782bf4b9ef2b9dda067bf45a297288a94955eac",
+    "archiveFileCount": 2486,
+    "manifestFilesVerified": 2484,
+    "zipCrcPassed": true,
+    "downloadedArchiveHashMatchedPriorReceipt": true,
+    "allManifestHashesVerifiedOnDownloadedArchive": true
+  },
+  "archiveInventory": {
+    "fileId": "1G9WXAhQNRiB5BOSnS1vfWARS_HoiEIO-",
+    "sha256": "62eef78fba0fa4b63b618b70a1a800435e52215a9307cf5e2ce1c13d80ae87db",
+    "originalDeliverableNames": 79,
+    "originalDeliverableVersions": 80,
+    "originalArchives": 24
+  },
+  "batch12OriginalDeliverablesCopiedSeparately": 6,
+  "batch12AdditionalVerificationFileId": "1Ez__haHaUPLCEjP76wfCEh5mxc2Cs1mC",
+  "batch12SourceCopies": [
+    {
+      "path": "packages/features/feat_membership/lib/native_membership_storage_ios.dart",
+      "sha256": "84ca2d6380ba1f526bb0315f737be071a7fa6f8ecbb92db10304cdfdec8e7a5e",
+      "bytes": 1085,
+      "drive_file_id": "144Dro7bmZuRYtYrabTUVoPnF0bsNI3Wt",
+      "drive_file_name": "Batch12_native_membership_storage_ios.dart",
+      "upload_success_confirmed": true
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/README.md",
+      "sha256": "1dde8cfe8416c1e3b308b6727d6bca0d434b70ce4f76abd3eff3de23e8a42733",
+      "bytes": 8899,
+      "drive_file_id": "1nZ5ebVaOf6DI9rlLwJWKOwZpa2vB6iX6",
+      "drive_file_name": "Batch12_iOS_README.md",
+      "upload_success_confirmed": true
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryHost.swift",
+      "sha256": "b1bb78b315f2781307449b5ff09c2ee41b880ccf52787265f3057b5f12067dd2",
+      "bytes": 7169,
+      "drive_file_id": "1UP8ej2sFw3yg5hZR2kHl0AYIItoNiMa7",
+      "drive_file_name": "Batch12_IOSNativeRecoveryHost.swift",
+      "upload_success_confirmed": true
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/KeychainRecoveryBlob.swift",
+      "sha256": "6f87df0aaee43ebdfd4cd14bf48e3be073671922a47d8389bd2dfca6bce3f7a7",
+      "bytes": 3070,
+      "drive_file_id": "1ue7JVEBKFqhYb05UTNR8Z2jJDUFSKCHn",
+      "drive_file_name": "Batch12_KeychainRecoveryBlob.swift",
+      "upload_success_confirmed": true
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/RecoveryDispatcher.swift",
+      "sha256": "7c014a35685aae1ef1045bd9cd194b084344d364cbce9a82aefa9a276a418e15",
+      "bytes": 2684,
+      "drive_file_id": "1sf0utu9rAezbdmKgZ0aXcZq7s8fnKnGd",
+      "drive_file_name": "Batch12_RecoveryDispatcher.swift",
+      "upload_success_confirmed": true
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/RecoveryFiles.swift",
+      "sha256": "b4d7d7b2216862fbfc0605c99aeb0ed5f714635dc4f0e0e389dc2f9e634abbf8",
+      "bytes": 4141,
+      "drive_file_id": "1y2QvJDshVrSle9XwML-oErms4r78GL5l",
+      "drive_file_name": "Batch12_RecoveryFiles.swift",
+      "upload_success_confirmed": true
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/RecoveryProtocol.swift",
+      "sha256": "92619396de3ac90eb4f013da5ea3f1210da5fabfd13a241550f7c246bacedf31",
+      "bytes": 5135,
+      "drive_file_id": "1xlYOmxLWcZgHIHxFE_GPGeTxTuyyGvcG",
+      "drive_file_name": "Batch12_RecoveryProtocol.swift",
+      "upload_success_confirmed": true
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/RecoveryStore.swift",
+      "sha256": "e5aac7f3a830be11a1813ee999dad6ec82e83d42a46e4df0ef757ce3ea798fb5",
+      "bytes": 7868,
+      "drive_file_id": "15LtzzBehI4SIS0N80yOGQah82-eypfzn",
+      "drive_file_name": "Batch12_RecoveryStore.swift",
+      "upload_success_confirmed": true
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Tests/KeychainRecoveryIntegrationTests.swift",
+      "sha256": "589b652140c9a4020e49d2af182e0e79a345eb2c1ed4968a472fd916e393db1c",
+      "bytes": 5088,
+      "drive_file_id": "19efQqXKjlNiMG3Sxiyu9vVvqWvZCHl0v",
+      "drive_file_name": "Batch12_KeychainRecoveryIntegrationTests.swift",
+      "upload_success_confirmed": true
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Tests/RecoveryHarness.swift",
+      "sha256": "bdc4581e368d6dc410301780640bc398e6f3012c3c1c783f95b45ecce05c2b49",
+      "bytes": 23618,
+      "drive_file_id": "17v7NNY5Ql5wPTZo-fSlhpT26FeCPP1a2",
+      "drive_file_name": "Batch12_RecoveryHarness.swift",
+      "upload_success_confirmed": true
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/contracts/recovery-channel.json",
+      "sha256": "875422b65061edbae1eb7c024b58ced17d7ab28596a7d736ef42794a6d007864",
+      "bytes": 2547,
+      "drive_file_id": "1Ds0Ws-D265ACYqHFCpHp8FKU2rfdMYtF",
+      "drive_file_name": "Batch12_recovery-channel.json",
+      "upload_success_confirmed": true
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/contracts/source-provenance.json",
+      "sha256": "fc663df23f4c1d09309596b79c3132ccf0b42279c48ac1fdca65ded6a3b58f98",
+      "bytes": 1613,
+      "drive_file_id": "1FoujshXQ0NzoilbtVqcK8KNOultbOaiC",
+      "drive_file_name": "Batch12_source-provenance.json",
+      "upload_success_confirmed": true
+    },
+    {
+      "path": "tools/scripts/verify_ios_recovery.py",
+      "sha256": "c81f4656fea8b878c22f9d74ed085cd80bc682a8565c7f0f712ed6bf8027c035",
+      "bytes": 4009,
+      "drive_file_id": "17h7KeAdcZferFSXF84EHrH3Z3gOVAUmx",
+      "drive_file_name": "Batch12_verify_ios_recovery.py",
+      "upload_success_confirmed": true
+    }
+  ],
+  "verificationScope": "All 379 snapshot copy operations returned success after resolving one failed copy to a different writable location. Folder parent and representative destination metadata were read back. Full ZIP CRC and 2,484 manifest hashes verified against the downloaded aggregate archive; this is not a claim of independently downloading every individual snapshot.",
+  "historicalStatusNote": "Prior reports, including files named Upload_Pending, remain unchanged as historical evidence. This receipt records completed file delivery, not completed implementation or release.",
+  "scope": "All 379 available conversation file snapshots plus the existing collected archive of recoverable deliverables/source/test/evidence files, and 13 separate Batch12 source copies. Not a fresh full live-repository export or a verbatim chat transcript.",
+  "codeExecutedForDeployment": false,
+  "databaseMigrationsApplied": 0,
+  "productionDeployments": 0
+}

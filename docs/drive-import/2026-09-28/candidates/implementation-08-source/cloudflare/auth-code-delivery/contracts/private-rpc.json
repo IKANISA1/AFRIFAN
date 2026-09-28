@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "binding": "OTP_DELIVERY",
+  "entrypoint": "AuthenticationCodeDelivery",
+  "currentQueueMethod": "deliverWithReceipt",
+  "legacyV4CandidateMethod": "deliver",
+  "currentQueueRequestFields": ["challengeId", "clubId", "phone", "code", "expiresAt", "channel", "template"],
+  "acceptedResponseFields": ["accepted", "challengeId", "messageId"],
+  "unconfirmedResponseFields": ["accepted", "challengeId"],
+  "maxCodeLifetimeMilliseconds": 600000,
+  "maxProviderMessageIdLength": 256,
+  "trust": {
+    "privateServiceBindingRequired": true,
+    "serverSelectedClubAndTemplateRequired": true,
+    "callerProvidedIdentityIsNotAuthentication": true,
+    "automaticProviderRetry": false,
+    "providerAcceptanceIsHandsetDelivery": false,
+    "enabledByDefault": false
+  }
+}

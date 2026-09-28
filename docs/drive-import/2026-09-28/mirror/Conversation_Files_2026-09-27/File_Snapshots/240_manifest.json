@@ -1,0 +1,138 @@
+{
+  "captured_at_utc": "2026-09-25T18:51:55.812360+00:00",
+  "objects": [
+    {
+      "bytes": 216764,
+      "file": "39bd55be-d09c-461c-89a8-7d39e4a67633.bin",
+      "sha256": "ffc2f85faf752a1e5f916872f6d241bf45b7654ae656edec07bd5c98ba8488a3",
+      "source_bucket": "gikundiro-media",
+      "source_id": "39bd55be-d09c-461c-89a8-7d39e4a67633",
+      "source_path": "fc49b605-6eda-408d-afc6-46e11bc17710/library/shop/rayon-current-white-training-top.jpg",
+      "usage_rights": "official-owned-channel-media",
+      "usage_scopes": [
+        "shop"
+      ]
+    },
+    {
+      "bytes": 26551,
+      "file": "42c55772-5284-440c-b88b-19bb63a580ae.bin",
+      "sha256": "fcdff535f60eaec62058da55e6f3e82f4023bd4c8aae7a3f3e81fa18358bcefe",
+      "source_bucket": "gikundiro-media",
+      "source_id": "42c55772-5284-440c-b88b-19bb63a580ae",
+      "source_path": "fc49b605-6eda-408d-afc6-46e11bc17710/library/shop/rayon-2026-27-home-jersey-official-store-20260827.jpg",
+      "usage_rights": "official-store-product-media-with-source-attribution",
+      "usage_scopes": [
+        "shop"
+      ]
+    },
+    {
+      "bytes": 165331,
+      "file": "664bc026-7d29-4cd2-a061-18afecdb39c7.bin",
+      "sha256": "9fa1592c707d97453bc58a2c04a9d658f8d1b978d22c2890d41d09df6a31e1e9",
+      "source_bucket": "gikundiro-media",
+      "source_id": "664bc026-7d29-4cd2-a061-18afecdb39c7",
+      "source_path": "fc49b605-6eda-408d-afc6-46e11bc17710/library/squad/charles-tchouplaou.jpg",
+      "usage_rights": "public-editorial-media-with-source-attribution",
+      "usage_scopes": [
+        "squad"
+      ]
+    },
+    {
+      "bytes": 109029,
+      "file": "731278ab-6814-4293-8fa0-e6a80b17b5cb.bin",
+      "sha256": "17bedcce8599b9eb0289888642912a01fda93a91ecf6a53ade745d0a3ea14762",
+      "source_bucket": "gikundiro-media",
+      "source_id": "731278ab-6814-4293-8fa0-e6a80b17b5cb",
+      "source_path": "fc49b605-6eda-408d-afc6-46e11bc17710/library/squad/fabio-nkundimana.jpg",
+      "usage_rights": "public-editorial-media-with-source-attribution",
+      "usage_scopes": [
+        "squad"
+      ]
+    },
+    {
+      "bytes": 135763,
+      "file": "7739b6af-5fcf-4f20-9502-67f9cfe3e3d0.bin",
+      "sha256": "8c9f3c8f21b174efde92383b0e7eaaa83374d589d408d27f0eee0aa4a2e10908",
+      "source_bucket": "gikundiro-media",
+      "source_id": "7739b6af-5fcf-4f20-9502-67f9cfe3e3d0",
+      "source_path": "fc49b605-6eda-408d-afc6-46e11bc17710/library/partners/skol.png",
+      "usage_rights": "public-source-recorded-review-before-commercial-reuse",
+      "usage_scopes": [
+        "partners"
+      ]
+    },
+    {
+      "bytes": 236429,
+      "file": "8347f2fa-e372-454a-b875-5945a12facca.bin",
+      "sha256": "21bf34f619b6a581cc1594092cb199bb05e64a0015e93de1abec51e8b24b6963",
+      "source_bucket": "gikundiro-media",
+      "source_id": "8347f2fa-e372-454a-b875-5945a12facca",
+      "source_path": "fc49b605-6eda-408d-afc6-46e11bc17710/library/squad/junior-dande.jpg",
+      "usage_rights": "official-owned-channel-media",
+      "usage_scopes": [
+        "squad"
+      ]
+    },
+    {
+      "bytes": 71552,
+      "file": "b7dc64bd-5e32-48fd-811a-18f1801fcaa4.bin",
+      "sha256": "2662cb98109f366706747181b83d1d0daa7507d96c525cf9ac3359474b5e4170",
+      "source_bucket": "gikundiro-media",
+      "source_id": "b7dc64bd-5e32-48fd-811a-18f1801fcaa4",
+      "source_path": "fc49b605-6eda-408d-afc6-46e11bc17710/library/partners/bank-of-kigali.svg",
+      "usage_rights": "public-source-recorded-review-before-commercial-reuse",
+      "usage_scopes": [
+        "partners"
+      ]
+    },
+    {
+      "bytes": 159077,
+      "file": "d4cc7d78-40d7-4220-a9f1-f2d3c481827d.bin",
+      "sha256": "e9d0f4d62a6bd64ba7eba4f563165d168a3a35775df310873801f4d66ce5815f",
+      "source_bucket": "gikundiro-media",
+      "source_id": "d4cc7d78-40d7-4220-a9f1-f2d3c481827d",
+      "source_path": "fc49b605-6eda-408d-afc6-46e11bc17710/library/squad/emmanuel-nshimiyimana.jpg",
+      "usage_rights": "public-editorial-media-with-source-attribution",
+      "usage_scopes": [
+        "squad"
+      ]
+    },
+    {
+      "bytes": 53120,
+      "file": "e35a87ce-92cd-4210-94fd-95b95b9dfaa9.bin",
+      "sha256": "76a486d579ee65892eed588a2bf1c4eeb10437d06d4e1cd8804a9c6134bf3db5",
+      "source_bucket": "gikundiro-media",
+      "source_id": "e35a87ce-92cd-4210-94fd-95b95b9dfaa9",
+      "source_path": "fc49b605-6eda-408d-afc6-46e11bc17710/library/partners/jayrutty.svg",
+      "usage_rights": "public-source-recorded-review-before-commercial-reuse",
+      "usage_scopes": [
+        "partners"
+      ]
+    },
+    {
+      "bytes": 141506,
+      "file": "ef0286be-776b-4d08-a3f2-fb62fb98be72.bin",
+      "sha256": "6a13c26284de86186c1e161d5d7023606eed0d467808d2cc7e1b9594c8d77478",
+      "source_bucket": "gikundiro-media",
+      "source_id": "ef0286be-776b-4d08-a3f2-fb62fb98be72",
+      "source_path": "fc49b605-6eda-408d-afc6-46e11bc17710/library/squad/issa-djiguiba.jpg",
+      "usage_rights": "public-editorial-media-with-source-attribution",
+      "usage_scopes": [
+        "squad"
+      ]
+    },
+    {
+      "bytes": 144737,
+      "file": "fdf2a700-db50-478a-9b31-58953049d62a.bin",
+      "sha256": "6ac4495f5a048aadf8641db50f3e82736da6c37b97cc30e8da7a20fb68964d01",
+      "source_bucket": "gikundiro-media",
+      "source_id": "fdf2a700-db50-478a-9b31-58953049d62a",
+      "source_path": "fc49b605-6eda-408d-afc6-46e11bc17710/library/squad/asman-ndikumana.jpg",
+      "usage_rights": "public-editorial-media-with-source-attribution",
+      "usage_scopes": [
+        "squad"
+      ]
+    }
+  ],
+  "source_rows_file": "rayon-public-source-rows.json"
+}

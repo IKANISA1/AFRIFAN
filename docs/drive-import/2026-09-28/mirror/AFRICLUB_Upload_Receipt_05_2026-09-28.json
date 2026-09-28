@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "verifiedAtUtc": "2026-09-28T11:17:09.191459+00:00",
+  "parentFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+  "delivery": "Implementation 05",
+  "uploadedFiles": [
+    {
+      "fileName": "AFRICLUB_Implementation_05_2026-09-28.zip",
+      "driveFileId": "1zpYupsiL8fulfwtei2u8mEaXqtVFnxfj",
+      "bytes": 1279404,
+      "localSha256": "67935edb898e3b05bc086f38255371cd0649784687bb80fabfb0a33fe6880f42",
+      "uploadConfirmed": true,
+      "parentConfirmed": true,
+      "readbackMethod": "downloaded_byte_sha256_and_metadata"
+    },
+    {
+      "fileName": "AFRICLUB_Implementation_05_Report_2026-09-28.md",
+      "driveFileId": "1hVORl0S7NLsSoBAOAn80zTCff-_1f1jK",
+      "bytes": 14262,
+      "localSha256": "c32b37f61b6fa10b45c7ffeb6551fa6fba6d005912dec9786317bf8a6223bfc8",
+      "uploadConfirmed": true,
+      "parentConfirmed": true,
+      "readbackMethod": "readable_content_and_parent_readback"
+    },
+    {
+      "fileName": "AFRICLUB_Task_Register_05_2026-09-28.json",
+      "driveFileId": "1AlvREgiu99HwO-rXpE0aAOxtGnKOupUV",
+      "bytes": 219699,
+      "localSha256": "804f33f5f26901efeb892ad6a05e89708cf043c85ec98e82e05292d0f46adc6a",
+      "uploadConfirmed": true,
+      "parentConfirmed": true,
+      "readbackMethod": "metadata_size_and_parent"
+    },
+    {
+      "fileName": "AFRICLUB_Execution_Plan_05_2026-09-28.json",
+      "driveFileId": "1TXUois8L7Ms5mQSHuGDsiX13VxgjwUc-",
+      "bytes": 88903,
+      "localSha256": "1c0d40eafb0e8df74e347198ad70bb4afe3d5eeb2dbbdf3c909bad24d352f9ab",
+      "uploadConfirmed": true,
+      "parentConfirmed": true,
+      "readbackMethod": "metadata_size_and_parent"
+    },
+    {
+      "fileName": "AFRICLUB_All_Remaining_Tasks_05_2026-09-28.md",
+      "driveFileId": "1aTdVxewEObInjV49PdgILEd5fw4A18tj",
+      "bytes": 18386,
+      "localSha256": "63c6b0e66ef335056e990c6ef9bd55a41cae350e14ceb581bfd52092e4542dd8",
+      "uploadConfirmed": true,
+      "parentConfirmed": true,
+      "readbackMethod": "metadata_size_and_parent"
+    },
+    {
+      "fileName": "AFRICLUB_Verification_05_2026-09-28.json",
+      "driveFileId": "1NIjVahTmkT6vsAUfClUe4I8kFt1UiQLL",
+      "bytes": 5199,
+      "localSha256": "37ac7a57aa91f138e794e7129bff0f172262b550c65d2905032ae6b58cb2ff65",
+      "uploadConfirmed": true,
+      "parentConfirmed": true,
+      "readbackMethod": "metadata_size_and_parent"
+    },
+    {
+      "fileName": "AFRICLUB_Artifact_Checksums_05_2026-09-28.json",
+      "driveFileId": "1aCZAOqfhtjXRXNvvBzBlJXtdzrTIcMRQ",
+      "bytes": 1185,
+      "localSha256": "e06dde973814954f9f7c3cf98cec9b373c1e9ac31d6ae8d22e458a9d565a185a",
+      "uploadConfirmed": true,
+      "parentConfirmed": true,
+      "readbackMethod": "metadata_size_and_parent"
+    }
+  ],
+  "archiveVerification": {
+    "driveFileId": "1zpYupsiL8fulfwtei2u8mEaXqtVFnxfj",
+    "parentFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+    "bytes": 1279404,
+    "originalSha256": "67935edb898e3b05bc086f38255371cd0649784687bb80fabfb0a33fe6880f42",
+    "downloadedSha256": "67935edb898e3b05bc086f38255371cd0649784687bb80fabfb0a33fe6880f42",
+    "archiveReadbackMatched": true,
+    "internalFilesVerified": 451,
+    "zipIntegrityPassed": true
+  },
+  "sidecarVerificationBoundary": "Non-archive sidecars were read as text or checked for metadata/size/parent as specified, not all re-downloaded byte-for-byte. Their local hashes and equivalent packaged copies are provided.",
+  "sourcePathsChanged": 25,
+  "sourceCandidateFiles": 362,
+  "allAuthoredApplicationSourceIncludedInZip": true,
+  "originalSourceOverwritten": false,
+  "productionDeployed": false,
+  "liveMigrations": 0,
+  "realPayments": 0,
+  "sharingChanged": false,
+  "releaseAccepted": false
+}

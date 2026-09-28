@@ -1,0 +1,2090 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AFRICLUB supporter membership gateway",
+    "version": "1.4.0",
+    "description": "Disabled isolated-staging native-bearer candidate. No browser cookie/CORS interface, payment execution, membership grant at checkout, automatic write retry or atomic cross-database revocation. All actions require current authentication. No server URLs are shipped."
+  },
+  "security": [
+    {
+      "SupporterBearer": []
+    }
+  ],
+  "paths": {
+    "/v1/supporter/clubs/{clubId}/session": {
+      "get": {
+        "operationId": "getSupporterSession",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Club"
+          },
+          {
+            "$ref": "#/components/parameters/NativeClient"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No-store response. A receipt is historical, not a current entitlement.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Session"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/supporter/clubs/{clubId}/membership/checkouts": {
+      "post": {
+        "operationId": "prepareMembershipCheckout",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Club"
+          },
+          {
+            "$ref": "#/components/parameters/NativeClient"
+          },
+          {
+            "$ref": "#/components/parameters/ExpectedSession"
+          },
+          {
+            "$ref": "#/components/parameters/RequestKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No-store response. A receipt is historical, not a current entitlement.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Prepared"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "$ref": "#/components/schemas/UnknownPrepareOutcome"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "description": "At most 2048 UTF-8 bytes. Exact canonical one-field JSON object {\"tier\":\"gold\"}; duplicate keys and escaped aliases are rejected. No amount, recipient, actor, role or club body fields.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PrepareInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/supporter/clubs/{clubId}/membership/checkouts/{orderId}": {
+      "get": {
+        "operationId": "getMembershipCheckout",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Club"
+          },
+          {
+            "$ref": "#/components/parameters/NativeClient"
+          },
+          {
+            "$ref": "#/components/parameters/ExpectedSession"
+          },
+          {
+            "$ref": "#/components/parameters/Order"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No-store response. A receipt is historical, not a current entitlement.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckoutStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/supporter/clubs/{clubId}/membership/checkouts/{orderId}/receipt": {
+      "get": {
+        "operationId": "getMembershipReceipt",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Club"
+          },
+          {
+            "$ref": "#/components/parameters/NativeClient"
+          },
+          {
+            "$ref": "#/components/parameters/ExpectedSession"
+          },
+          {
+            "$ref": "#/components/parameters/Order"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No-store response. A receipt is historical, not a current entitlement.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentReceipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/supporter/clubs/{clubId}/membership/handoffs/current": {
+      "get": {
+        "operationId": "currentPaymentHandoff",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Club"
+          },
+          {
+            "$ref": "#/components/parameters/NativeClient"
+          },
+          {
+            "$ref": "#/components/parameters/ExpectedSession"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No-store response. A receipt is historical, not a current entitlement.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HandoffStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated, opt-in journal. No funds movement. Never automatically retry a claim or dial after a replay."
+      }
+    },
+    "/v1/supporter/clubs/{clubId}/membership/handoffs/reservations": {
+      "post": {
+        "operationId": "reservePaymentHandoff",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Club"
+          },
+          {
+            "$ref": "#/components/parameters/NativeClient"
+          },
+          {
+            "$ref": "#/components/parameters/ExpectedSession"
+          },
+          {
+            "$ref": "#/components/parameters/RequestKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No-store response. A receipt is historical, not a current entitlement.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HandoffStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "$ref": "#/components/schemas/UnknownHandoffOutcome"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "orderId"
+                ],
+                "properties": {
+                  "orderId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated, opt-in journal. No funds movement. Never automatically retry a claim or dial after a replay."
+      }
+    },
+    "/v1/supporter/clubs/{clubId}/membership/handoffs/claims": {
+      "post": {
+        "operationId": "claimPaymentHandoff",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Club"
+          },
+          {
+            "$ref": "#/components/parameters/NativeClient"
+          },
+          {
+            "$ref": "#/components/parameters/ExpectedSession"
+          },
+          {
+            "$ref": "#/components/parameters/RequestKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No-store response. A receipt is historical, not a current entitlement.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HandoffStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "$ref": "#/components/schemas/UnknownHandoffOutcome"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "handoffId"
+                ],
+                "properties": {
+                  "handoffId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated, opt-in journal. No funds movement. Never automatically retry a claim or dial after a replay."
+      }
+    },
+    "/v1/supporter/clubs/{clubId}/membership/handoffs/releases": {
+      "post": {
+        "operationId": "releaseUnclaimedMembershipHandoff",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Club"
+          },
+          {
+            "$ref": "#/components/parameters/NativeClient"
+          },
+          {
+            "$ref": "#/components/parameters/ExpectedSession"
+          },
+          {
+            "$ref": "#/components/parameters/RequestKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No-store response. A receipt is historical, not a current entitlement.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HandoffStatus"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    },
+                    {
+                      "$ref": "#/components/schemas/UnknownHandoffOutcome"
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "handoffId"
+                ],
+                "properties": {
+                  "handoffId": {
+                    "type": "string",
+                    "format": "uuid",
+                    "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "description": "Authenticated, opt-in journal. No funds movement. Never automatically retry a claim or dial after a replay.",
+        "summary": "Explicit release of a never-claimed server reservation; not a cancellation, refund or proof of nonpayment."
+      }
+    },
+    "/v1/supporter/clubs/{clubId}/membership/status": {
+      "get": {
+        "operationId": "currentMembershipStatus",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Club"
+          },
+          {
+            "$ref": "#/components/parameters/NativeClient"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No-store point-in-time membership; not a future authorization grant.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentMembership"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Sanitized error; no private provider or database detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Read current owned membership separately from historical receipts"
+      }
+    },
+    "/v1/supporter/clubs/{clubId}/membership/history": {
+      "get": {
+        "operationId": "getMembershipHistory",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Club"
+          },
+          {
+            "$ref": "#/components/parameters/NativeClient"
+          },
+          {
+            "name": "X-AfriClub-Session",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "X-Africlub-History-Cursor",
+            "in": "header",
+            "required": false,
+            "description": "Owner-bound page selector; not a credential. Never log or persist. Only this list endpoint accepts it.",
+            "schema": {
+              "type": "string",
+              "maxLength": 160
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fixed 20-row no-store live history page. Never a wallet or current entitlement."
+          },
+          "400": {
+            "description": "Invalid cursor or request."
+          },
+          "403": {
+            "description": "Current identity/subject/service scope denied."
+          }
+        }
+      }
+    },
+    "/v1/supporter/clubs/{clubId}/membership/history/{orderId}": {
+      "get": {
+        "operationId": "getHistoricalMembershipReceipt",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Club"
+          },
+          {
+            "$ref": "#/components/parameters/NativeClient"
+          },
+          {
+            "name": "X-AfriClub-Session",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "orderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No-store owned receipt envelope. Does not require a new checkout snapshot."
+          },
+          "404": {
+            "description": "No owned historical membership receipt."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "SupporterBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "AFRICLUB native opaque session UUID + 32-byte base64url secret"
+      }
+    },
+    "parameters": {
+      "Club": {
+        "name": "clubId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        }
+      },
+      "Order": {
+        "name": "orderId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        }
+      },
+      "NativeClient": {
+        "name": "X-AFRICLUB-Client",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "const": "native-v1"
+        },
+        "description": "Native transport marker, not an authentication credential."
+      },
+      "ExpectedSession": {
+        "name": "X-AFRICLUB-Session",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "description": "Must match the currently verified bearer session. Never an identity grant."
+      },
+      "RequestKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+        },
+        "description": "Persist before POST. Reuse this exact key and canonical operation payload after an unknown outcome."
+      }
+    },
+    "schemas": {
+      "Session": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "userId",
+          "clubId",
+          "sessionId"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": 1,
+            "type": "integer"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "clubId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "sessionId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          }
+        }
+      },
+      "PrepareInput": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "tier"
+        ],
+        "properties": {
+          "tier": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,31}$"
+          }
+        }
+      },
+      "Prepared": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "requestId",
+          "clubId",
+          "orderId",
+          "tier",
+          "reused",
+          "paymentVerified",
+          "membershipActivated"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": 1,
+            "type": "integer"
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "clubId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "orderId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "tier": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,31}$"
+          },
+          "reused": {
+            "type": "boolean"
+          },
+          "paymentVerified": {
+            "const": false
+          },
+          "membershipActivated": {
+            "const": false
+          }
+        }
+      },
+      "PaymentInstruction": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "amount",
+          "currency",
+          "country",
+          "provider",
+          "recipient",
+          "ussdCode"
+        ],
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$"
+          },
+          "country": {
+            "type": "string",
+            "pattern": "^[A-Z]{2}$"
+          },
+          "provider": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_-]{0,63}$"
+          },
+          "recipient": {
+            "type": "string",
+            "pattern": "^[0-9]{3,32}$"
+          },
+          "ussdCode": {
+            "type": "string",
+            "maxLength": 128,
+            "pattern": "^\\*[0-9*]+#$"
+          }
+        }
+      },
+      "CheckoutStatus": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "clubId",
+          "orderId",
+          "tier",
+          "status",
+          "paymentEvidenceAllocated",
+          "observedAt",
+          "expiresAt",
+          "paymentInstruction"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": 1,
+            "type": "integer"
+          },
+          "clubId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "orderId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "tier": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,31}$"
+          },
+          "status": {
+            "enum": [
+              "pending_current",
+              "expired",
+              "cancelled",
+              "allocated",
+              "configuration_changed"
+            ]
+          },
+          "paymentEvidenceAllocated": {
+            "type": "boolean"
+          },
+          "observedAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 253402300799999
+          },
+          "expiresAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 253402300799999
+          },
+          "paymentInstruction": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PaymentInstruction"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "pending_current"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "paymentInstruction": {
+                  "$ref": "#/components/schemas/PaymentInstruction"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "paymentInstruction": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "allocated"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "paymentEvidenceAllocated": {
+                  "const": true
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "paymentEvidenceAllocated": {
+                  "const": false
+                }
+              }
+            }
+          }
+        ]
+      },
+      "MembershipAtAllocation": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "tier",
+          "status",
+          "paymentStatus",
+          "expiresAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "tier": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]{0,31}$"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "suspended",
+              "expired"
+            ]
+          },
+          "paymentStatus": {
+            "const": "verified"
+          },
+          "expiresAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 253402300799999
+          }
+        }
+      },
+      "PaymentReceipt": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "clubId",
+          "orderId",
+          "allocationId",
+          "amount",
+          "currency",
+          "recordedAt",
+          "allocationPersisted",
+          "businessTargetFulfilled",
+          "membershipAtAllocation",
+          "historical"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": 1,
+            "type": "integer"
+          },
+          "clubId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          },
+          "orderId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "allocationId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "amount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "currency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$"
+          },
+          "recordedAt": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 253402300799999
+          },
+          "allocationPersisted": {
+            "const": true
+          },
+          "businessTargetFulfilled": {
+            "const": true
+          },
+          "membershipAtAllocation": {
+            "$ref": "#/components/schemas/MembershipAtAllocation"
+          },
+          "historical": {
+            "const": true
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "error"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": 1,
+            "type": "integer"
+          },
+          "error": {
+            "type": "string",
+            "enum": [
+              "unauthenticated",
+              "permission_denied",
+              "rate_limited",
+              "service_disabled",
+              "service_unavailable",
+              "identity_unavailable",
+              "not_found",
+              "receipt_not_available",
+              "session_changed",
+              "invalid_request",
+              "staging_only",
+              "invalid_configuration",
+              "invalid_origin",
+              "native_transport_required",
+              "ingress_unverified",
+              "unsupported_media_type",
+              "payload_too_large",
+              "upstream_timeout",
+              "upstream_contract_invalid",
+              "method_not_allowed"
+            ]
+          }
+        }
+      },
+      "UnknownPrepareOutcome": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "error",
+          "outcome",
+          "requestId"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": 1,
+            "type": "integer"
+          },
+          "error": {
+            "const": "checkout_outcome_unknown"
+          },
+          "outcome": {
+            "const": "unknown"
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          }
+        }
+      },
+      "HandoffRecord": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "handoffId",
+          "orderId",
+          "clubId",
+          "phase",
+          "createdAt",
+          "claimedAt",
+          "orderExpiresAt",
+          "paymentEvidenceAllocated",
+          "observedAt"
+        ],
+        "properties": {
+          "handoffId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "orderId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          },
+          "clubId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "phase": {
+            "type": "string",
+            "enum": [
+              "reserved",
+              "claimed",
+              "allocated",
+              "released"
+            ]
+          },
+          "createdAt": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "claimedAt": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "orderExpiresAt": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "paymentEvidenceAllocated": {
+            "type": "boolean"
+          },
+          "observedAt": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "HandoffStatus": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "handoff",
+          "mayOpenDialer"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "handoff": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/HandoffRecord"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "mayOpenDialer": {
+            "type": "boolean"
+          }
+        },
+        "description": "Current/reserve always return mayOpenDialer=false. Only the first successfully observed claim response can return true; replay never regrants. Neither a claim nor this permission is payment confirmation. A pending server marker survives device-data loss."
+      },
+      "UnknownHandoffOutcome": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "error",
+          "outcome",
+          "requestId"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "error": {
+            "const": "handoff_outcome_unknown"
+          },
+          "outcome": {
+            "const": "unknown"
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+          }
+        }
+      },
+      "CurrentMembershipRecord": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "membershipId",
+          "tier",
+          "recordedStatus",
+          "paymentStatus",
+          "renewedAt",
+          "expiresAt"
+        ],
+        "properties": {
+          "membershipId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tier": {
+            "type": "string"
+          },
+          "recordedStatus": {
+            "type": "string",
+            "enum": [
+              "active",
+              "suspended",
+              "expired"
+            ]
+          },
+          "paymentStatus": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "verified"
+            ]
+          },
+          "renewedAt": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "expiresAt": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          }
+        }
+      },
+      "CurrentMembership": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "schemaVersion",
+          "clubId",
+          "userId",
+          "observedAt",
+          "currentStatus",
+          "isActive",
+          "historical",
+          "membership"
+        ],
+        "properties": {
+          "schemaVersion": {
+            "type": "integer",
+            "const": 1
+          },
+          "clubId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "observedAt": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "currentStatus": {
+            "type": "string",
+            "enum": [
+              "not_member",
+              "active",
+              "suspended",
+              "expired",
+              "pending",
+              "incomplete"
+            ]
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "historical": {
+            "type": "boolean",
+            "const": false
+          },
+          "membership": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CurrentMembershipRecord"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "description": "Point-in-time owned read. Suspension/expiry have precedence over an old verified receipt. isActive is true only for active state with a complete current verified term. It is not authority for subsequent mutations."
+      }
+    }
+  },
+  "x-africlub-security-boundary": {
+    "nativeOnly": true,
+    "browserHeadersRejected": [
+      "Origin",
+      "Cookie",
+      "Sec-Fetch-Site",
+      "Sec-Fetch-Mode",
+      "Sec-Fetch-Dest"
+    ],
+    "callerIdentityOverridesRejected": true,
+    "directCloudflareIngressRequired": true,
+    "allResponsesNoStore": true,
+    "preAndPostIntrospection": true,
+    "crossDatabaseRevocationAtomic": false,
+    "productionEnabled": false
+  }
+}

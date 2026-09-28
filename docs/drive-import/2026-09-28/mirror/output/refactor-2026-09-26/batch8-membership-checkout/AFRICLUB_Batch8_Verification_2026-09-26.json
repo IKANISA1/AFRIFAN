@@ -1,0 +1,55 @@
+{
+  "manifestSha256": "0feef2e1e9dd68f09133d7e15b4fa05f26813b32348ea92ab44f736652df4767",
+  "sourceAdditions": 21,
+  "originalFilesModified": 1,
+  "nodeVersion": "v22.16.0",
+  "pythonVersion": "3.13.5",
+  "runtimeProductionEnabled": false,
+  "liveProviderRequests": 0,
+  "actualCloudflareRuntimeVerified": false,
+  "databaseMigrationsAppliedRemotely": 0,
+  "moduleTests": {
+    "tests": 432,
+    "pass": 432,
+    "fail": 0,
+    "skipped": 0
+  },
+  "preservedAllocationTests": 202,
+  "newCheckoutTests": 230,
+  "sqliteRuntime": {
+    "sqlite_version": "3.49.1",
+    "current_time_ms": 1790445804487,
+    "leap_day": "2025-02-28",
+    "shape_ok": 1
+  },
+  "syntaxAndJsonChecks": 17,
+  "installerTestsPassed": 33,
+  "sourceInstallationTrials": [
+    {
+      "startingState": "no-additions",
+      "sourceFilesChanged": 22,
+      "repeatChanged": 0,
+      "startingBytesRestored": true
+    },
+    {
+      "startingState": "half-preinstalled",
+      "sourceFilesChanged": 11,
+      "repeatChanged": 0,
+      "startingBytesRestored": true
+    },
+    {
+      "startingState": "all-preinstalled",
+      "sourceFilesChanged": 0,
+      "repeatChanged": 0,
+      "startingBytesRestored": true
+    }
+  ],
+  "targetedTestsPassed": 465,
+  "sourcePathsSaved": 22,
+  "sourceReadbackMatched": 22,
+  "readbackCodeTestsPassed": 432,
+  "currentDriveSourcePreflightChanges": 0,
+  "newIndependentSqliteConcurrencyCases": 4,
+  "typescriptVersion": "Version 5.8.3",
+  "sourceAuthorityScope": "current critical files plus preserved checked Batch7 context; not full repository"
+}

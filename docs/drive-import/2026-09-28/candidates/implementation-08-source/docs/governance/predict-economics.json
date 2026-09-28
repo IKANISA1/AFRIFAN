@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "status": "unresolved",
+  "mechanic": null,
+  "entryDebitFet": null,
+  "entryDebitMoney": null,
+  "transactionalMigrationEnabled": false,
+  "releaseAuthorized": false,
+  "approvals": [],
+  "conflictingSources": [
+    "docs/blueprint.md",
+    "docs/fet_ledger_and_rewards_policy.md",
+    "docs/architecture/predict-migration.md",
+    "DESIGN.md"
+  ],
+  "requiredReviewers": [
+    "product",
+    "legal",
+    "payments",
+    "store-release"
+  ],
+  "historicalLedgerDisposition": "preserve; no reset or silent rewrite",
+  "versionedDecisionRef": null
+}

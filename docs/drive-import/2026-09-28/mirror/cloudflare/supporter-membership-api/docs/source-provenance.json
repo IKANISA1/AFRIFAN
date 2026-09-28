@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "workspaceDriveFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+  "sourceBasis": "Current Drive contract reads; unchanged contextual dependencies reused from previously checksum-verified incremental packages. No historical cumulative v4 replacement.",
+  "freshByteComparisons": [
+    {
+      "path": "cloudflare/supporter-auth/src/identity-service.mjs",
+      "sha256": "0531558d9d2b307300d49710f3950d97be2699fbc09574ecafaff152fe6cb2d1",
+      "freshDriveRead": true,
+      "driveFileId": "1nZBkMaq85TVbCtagt109zHTRYm3Q1K7Y"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/identity-verifier-worker.mjs",
+      "sha256": "543403b191806ff14aac53533898aed5b941ec6c6b2ea2af8d06305f434f25f1",
+      "freshDriveRead": true,
+      "driveFileId": "1sMPCbAX6KnelOuFUpCPXJwys3tE8hyH0"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/crypto.mjs",
+      "sha256": "16a0a6b502554c50597f6510edeecbedf00c3316951883f31c42def17146452f",
+      "freshDriveRead": true,
+      "driveFileId": "1EXcLbW8qnT-DqpqXNAnfbK8Spw8Sy1t9"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/errors.mjs",
+      "sha256": "ca6bcab5e215589f060f0acf825709c0383fbd6d656b43b17832919167fd2901",
+      "freshDriveRead": true,
+      "driveFileId": "1ZWGYKXJyROpBITO6fHHBzuFYsDapnJ7A"
+    },
+    {
+      "path": "cloudflare/supporter-auth/migrations/0001_supporter_identity.sql",
+      "sha256": "969b463d31c8dfd03d8b9e633b82900cd9e36ccd6635ad54bc291aedde061799",
+      "freshDriveRead": true,
+      "driveFileId": "1b0xOcTlwXn3WRO83CaoIDqIKJkkMbR1g"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-service.mjs",
+      "sha256": "31750238e703b9b77880e64f4306ada67da2e033356012f2d66c9a751c090800",
+      "freshDriveRead": true,
+      "driveFileId": "1IQ0j1CbRMRzrL8sb8pn-CmldmL95UOar"
+    },
+    {
+      "path": "cloudflare/payment-allocation/migrations/0002_membership_checkout.sql",
+      "sha256": "924269edcc59d9e7f90d72f102c7e977404d77cbdad30c13fdd3ffd124d8d7a7",
+      "freshDriveRead": true,
+      "driveFileId": "15C04FF7xO6TUqDg_M-9U9aFLDr82i8JE"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/service.mjs",
+      "sha256": "cc1571645eb15f841eb9f9ab34aeb5f632eaa84e62768fd51e3d8625849f4f24",
+      "freshDriveRead": true,
+      "driveFileId": "1cpCkpbugLJhfNBkE2aPYmFQhawKvTHdb"
+    },
+    {
+      "path": "cloudflare/payment-allocation/checkout-client.ts",
+      "sha256": "afdb865f2f948f8310d7f9cf7a00251226430422faea458e45c6e0aba0615a89",
+      "freshDriveRead": true,
+      "driveFileId": "16_82B5WksmT9mbgo3hekcWFksfNNy-EE"
+    }
+  ],
+  "unchangedContextArchives": [
+    {
+      "fileName": "AFRICLUB_Batch8_Current_Drive_Patch_2026-09-26.zip",
+      "sha256": "5f06cf144d9275a4d9344fb80358efef196c7fd7f8bf0dbef079d0355a7d894e"
+    },
+    {
+      "fileName": "AFRICLUB_Batch5_Current_Drive_Patch_2026-09-26.zip",
+      "sha256": "77c324f1173245d5532721e131759bdd1f286bf566c84de87a71a3a4438d4498"
+    }
+  ],
+  "notClaimed": [
+    "Complete checkout",
+    "Fresh full repository export",
+    "Real user or payment import",
+    "Remote runtime verification"
+  ]
+}

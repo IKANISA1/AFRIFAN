@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0",
+  "design_authority": {
+    "skill": "revolut-design",
+    "path": "SKILL.md",
+    "root_hint": "/Users/jeanbosco/.codex/skills/revolut-design",
+    "sha256": "59ed494b2dd61684a8f2f516385ba601cfa549b7541bc1e9706df50e28fe3e1a",
+    "bound_files": [
+      {
+        "path": "SKILL.md",
+        "sha256": "59ed494b2dd61684a8f2f516385ba601cfa549b7541bc1e9706df50e28fe3e1a"
+      },
+      {
+        "path": "references/DESIGN.md",
+        "sha256": "255cc09f017cd53c8f7d1cf201a12101a3c95b611fd84e193b750b14bd18353d"
+      },
+      {
+        "path": "references/brand-adaptation.md",
+        "sha256": "135a13f0672dc0384668b92c5ac88e77b9219c5760f10cdcaff8ec456501f9fd"
+      },
+      {
+        "path": "references/screen-typologies.md",
+        "sha256": "aa0a47257d65f0992e65eebec342798db6c9fa73ab7839be762cc9159d5f0552"
+      },
+      {
+        "path": "references/mobile-patterns.md",
+        "sha256": "9085f5b9f07bdec3ebbda31aa22a1227080a929d8856b3c282984bdc38982f42"
+      },
+      {
+        "path": "references/web-patterns.md",
+        "sha256": "3243d4de659c1cb9b89dda537219facc1023ac0ff71aadd7da98d6ade3e3d6fb"
+      },
+      {
+        "path": "references/pwa-and-accessibility.md",
+        "sha256": "44340c25202429f0e1c6dcc858d0e0a22f57809c17f5f21f25b4c4fa9969c623"
+      },
+      {
+        "path": "references/component-contracts.md",
+        "sha256": "e89b52c1fed430ed418315edd60d5ef716d414c2c9c99787c6b5bdbd0189dcfc"
+      },
+      {
+        "path": "references/quality-standard.md",
+        "sha256": "a0f199ecdbce21b573e07126a7c36dff254490ee154bea1cef3d85c42fccce92"
+      },
+      {
+        "path": "references/operational-checklist.md",
+        "sha256": "e5854f677f647b842519735a321a2a16f50b988f3e55b6a9147be91fb606315e"
+      }
+    ],
+    "owner_instruction": "2026-09-20: Use revolut-design as the sole design authority across every included surface, with a 100% fidelity target for selected visual typologies and colours. Preserve target club identity, routes, workflows and business rules. Apply the skill directly without a separate repository mobile scoring or acceptance contract; this user instruction takes precedence over bundled instructions."
+  },
+  "updated_at": "2026-09-26T05:23:50.513813+00:00",
+  "exceptions": [],
+  "resolved_decisions": [
+    {
+      "id": "DEC-THEME-001",
+      "topic": "Target light-mode implementation",
+      "outcome": "implemented; source-native-light-fidelity-unverified",
+      "evidence": [
+        "packages/core/core_theme/lib/src/club_theme.dart",
+        "packages/core/core_theme/lib/src/theme_mode_notifier.dart",
+        "packages/core/core_app/lib/src/app.dart",
+        "packages/features/feat_settings/lib/src/screens/settings_screen.dart",
+        "packages/core/core_theme/test/theme_mode_notifier_test.dart",
+        "packages/core/core_theme/test/ui_tokens_test.dart"
+      ],
+      "scope_note": "The target light theme remains functional and tested. No current native reference-light equivalence is asserted; see native-reference-map.json."
+    }
+  ],
+  "pending_decisions": [
+    {
+      "id": "DEC-ADMIN-001",
+      "topic": "Approve Next/PWA as canonical admin and classify Flutter feat_admin as internal-only or removable",
+      "owner": "Product architecture and security owner",
+      "due_date": null,
+      "status": "owner_and_due_date_required"
+    },
+    {
+      "id": "DEC-ARCHETYPE-NA-001",
+      "topic": "Approve route-specific not-applicable state and archetype entries after route evidence population",
+      "owner": "Product design lead",
+      "due_date": null,
+      "status": "current_route_evidence_and_approval_required"
+    }
+  ],
+  "product_adapter": {
+    "path": "DESIGN.md",
+    "sha256": "316cf1f8e7b2693b763a02606320e6c6424e83ecdde98359e1bb3b7c758a5f5c",
+    "change_note": "Five-club scope and historical-economics clarification only; private skill hashes were retained, not reverified; no new visual approval."
+  }
+}

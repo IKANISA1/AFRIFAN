@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "verifiedAtUtc": "2026-09-28T06:18:53.134042+00:00",
+  "targetDriveFolder": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+  "uploadedToDrive": false,
+  "driveWrites": 0,
+  "sourceFilesCreatedOrModified": 49,
+  "existingIndexIncludedUnchanged": 1,
+  "cumulativeOverlayPaths": 194,
+  "sourceCandidatePaths": 301,
+  "targetedTestsPassed": 1882,
+  "repeatedFinalArchiveTests": {
+    "node": 1556,
+    "python": 156
+  },
+  "repeatedTestsAddedToTotal": false,
+  "archiveVerification": {
+    "bytes": 7897483,
+    "sha256": "dd5d6888408eedc10a66d4413f4851f10c644e846632c8f6574e59a2496c76a2",
+    "archiveFiles": 786,
+    "checksummedBundleFiles": 785,
+    "allBundleHashesMatched": true,
+    "crcPassed": true,
+    "unsafePathsOrFontSdkKeysFound": false,
+    "uploadedToDrive": false
+  },
+  "gateStatus": "blocked_release_gates",
+  "blockers": [
+    "Drive upload/update actions not exposed",
+    "Root anyone/writer sharing still observed; not changed",
+    "Node22.16.0 is below unchanged exact22.23.2 pin",
+    "Dart/Flutter SDK unavailable",
+    "Actual D1/Workers/provider/native/device/browser/full application acceptance not performed"
+  ],
+  "files": [
+    {
+      "name": "AFRICLUB_Remediation_02_Baseline_2026-09-28.zip",
+      "bytes": 752657,
+      "sha256": "2d93a17c6a36b96890f6277e4e374fe6d9501fd24ec7e174fbafd01739f56b9b",
+      "status": "local_verified_pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Evidence_2026-09-28.zip",
+      "bytes": 378222,
+      "sha256": "4f41398ea65d575b37ce0480ed6efa434152ab8070f979b83df935a4e70e744b",
+      "status": "local_verified_pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Report_2026-09-28.md",
+      "bytes": 14821,
+      "sha256": "29e7137b5aee6bbe6cabc8053334b44c8aaf077ce055253b0e57387180f02172",
+      "status": "local_verified_pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Source_2026-09-28.zip",
+      "bytes": 7897483,
+      "sha256": "dd5d6888408eedc10a66d4413f4851f10c644e846632c8f6574e59a2496c76a2",
+      "status": "local_verified_pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Task_Register_2026-09-28.json",
+      "bytes": 194981,
+      "sha256": "05714315b230bf1a5454e8f2e8f2ed4bc85564e53ec74e02913cec7fe88fe642",
+      "status": "local_verified_pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Upload_Pending_2026-09-28.json",
+      "bytes": 91981,
+      "sha256": "99a51452f5abd9e7f0b89b3bf8b42960b0f2b369cad7bb99ea7b1f563b1cb7d8",
+      "status": "local_verified_pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Verification_2026-09-28.json",
+      "bytes": 2621,
+      "sha256": "a9cd52331e65fdb6bed2614c1b40cf90c5052aa73be96fa0d44a6d2f7a27ec9b",
+      "status": "local_verified_pending_upload"
+    }
+  ]
+}

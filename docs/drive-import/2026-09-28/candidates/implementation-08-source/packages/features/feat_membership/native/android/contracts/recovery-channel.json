@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "channel": "africlub/native-checkout-recovery/v1",
+  "scope": "africlub-(membership|payment-handoff)-v1:<clubId>:<canonical-user-UUID>",
+  "enabledByDefault": false,
+  "platform": "Android API 26+ optional host; not registered in an app",
+  "methods": {
+    "tryAcquire": {
+      "requestFields": [
+        "scope",
+        "acquisitionId"
+      ],
+      "responseFields": [
+        "version",
+        "busy",
+        "lease"
+      ],
+      "semantics": "fixed host owner; one global OS/process lock; same acquisition can recover its token; busy means no granted token"
+    },
+    "load": {
+      "requestFields": [
+        "scope",
+        "lease"
+      ],
+      "responseFields": [
+        "version",
+        "value"
+      ],
+      "semantics": "matching engine, scope and current token required"
+    },
+    "compareAndSet": {
+      "requestFields": [
+        "scope",
+        "lease",
+        "expected",
+        "value"
+      ],
+      "responseFields": [
+        "version",
+        "updated"
+      ],
+      "semantics": "false only on expected-value conflict; successful replacement follows file fsync, atomic rename, directory fsync and readback"
+    },
+    "release": {
+      "requestFields": [
+        "scope",
+        "acquisitionId"
+      ],
+      "responseFields": [
+        "version",
+        "released"
+      ],
+      "semantics": "original acquisition key releases only its own live lock; no record deletion"
+    }
+  },
+  "limits": {
+    "scopes": 64,
+    "valueUtf8Bytes": 2048,
+    "plaintextBytes": 160000,
+    "nativeQueuedCalls": 32
+  },
+  "noOperations": [
+    "delete",
+    "clear",
+    "reset",
+    "rotateKey",
+    "dial",
+    "pay",
+    "credentialImport"
+  ],
+  "writeUnknown": "An error after a write may mean it committed. Preserve the original recovery operation; do not infer absence or reset the store.",
+  "nativeAcceptance": {
+    "androidCompiled": false,
+    "androidKeystoreTested": false,
+    "flutterCompiled": false,
+    "dartExecuted": false,
+    "deviceTested": false
+  }
+}

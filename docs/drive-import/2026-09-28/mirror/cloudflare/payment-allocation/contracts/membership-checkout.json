@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "name": "membership-checkout-private-rpc",
+  "version": "1.0.0",
+  "transport": "Cloudflare named WorkerEntrypoint private RPC; all HTTP handlers return 404",
+  "scope": "isolated-staging only; authenticated human identity must be established by the trusted caller, not these RPC fields",
+  "entrypoints": {
+    "MembershipCheckout": {
+      "principalVariable": "CHECKOUT_PRINCIPAL_ID",
+      "capability": "prepare",
+      "methods": {
+        "prepare": {
+          "requestFields": [
+            "requestId",
+            "clubId",
+            "userId",
+            "tier"
+          ],
+          "responseFields": [
+            "schemaVersion",
+            "requestId",
+            "reused",
+            "checkout"
+          ]
+        }
+      }
+    },
+    "MembershipCheckoutReader": {
+      "principalVariable": "CHECKOUT_READ_PRINCIPAL_ID",
+      "capability": "read",
+      "methods": {
+        "read": {
+          "requestFields": [
+            "clubId",
+            "userId",
+            "orderId"
+          ],
+          "responseFields": [
+            "schemaVersion",
+            "checkout",
+            "status",
+            "mayPresentPaymentInstruction",
+            "paymentEvidenceAllocated",
+            "observedAt"
+          ]
+        }
+      }
+    }
+  },
+  "snapshotFields": [
+    "schemaVersion",
+    "orderId",
+    "intentId",
+    "userId",
+    "clubId",
+    "packageId",
+    "tier",
+    "amount",
+    "currency",
+    "country",
+    "provider",
+    "recipient",
+    "ussdCode",
+    "createdAt",
+    "expiresAt",
+    "paymentVerified",
+    "membershipActivated"
+  ],
+  "snapshotConstants": {
+    "schemaVersion": 1,
+    "paymentVerified": false,
+    "membershipActivated": false,
+    "lifetimeMs": 86400000
+  },
+  "statuses": [
+    "pending_current",
+    "expired",
+    "cancelled",
+    "allocated",
+    "configuration_changed"
+  ],
+  "invariants": [
+    "No caller-selected amount, package, route, recipient, currency, provider or principal.",
+    "Only the private trusted caller supplies a securely derived userId; no public browser API exists here.",
+    "Prepare stores original checkout instructions. Their existence is not proof of payment, membership activation or a current offer.",
+    "Same original operation key returns the original immutable response under current authorization; do not replace the key after an unknown outcome.",
+    "Read recomputes current status; mayPresentPaymentInstruction is true only for pending_current.",
+    "paymentEvidenceAllocated is true only for allocated; no receipt or status is external settlement attestation.",
+    "Checkout preparation must never dial a USSD code or call a provider. A real client requires separate explicit payment action and server-confirmed evidence.",
+    "Unrecognized errors after write invocation are unknown outcomes; no automatic client write retry.",
+    "Twenty new requests per club/user over a rolling fifteen-minute window is a pilot control, not a production-approved quota."
+  ]
+}

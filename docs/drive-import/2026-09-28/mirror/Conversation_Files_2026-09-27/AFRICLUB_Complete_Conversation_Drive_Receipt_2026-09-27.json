@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "verifiedAtUtc": "2026-09-27T10:22:36.116683+00:00",
+  "targetFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+  "archiveFolderId": "1rKfc92KLmvPI4nRZMis0pB_LlRoPUmd2",
+  "archiveFolderPath": "/Google Drive/AFRICLUB/Conversation_Files_2026-09-27",
+  "archiveUploadCompleted": true,
+  "newFilesOnly": true,
+  "existingFilesOverwritten": 0,
+  "deliverables": [
+    {
+      "name": "AFRICLUB_All_Conversation_Files_2026-09-27.zip",
+      "driveFileId": "1vs6szqhqgpu-N5wIGyDoiBkif4DlKIZW",
+      "bytes": 14301017,
+      "sha256": "feacb47284d3d3df568522247782bf4b9ef2b9dda067bf45a297288a94955eac",
+      "downloadedBytesMatchOriginal": true
+    },
+    {
+      "name": "AFRICLUB_Conversation_File_Inventory_2026-09-27.json",
+      "driveFileId": "1G9WXAhQNRiB5BOSnS1vfWARS_HoiEIO-",
+      "bytes": 1162534,
+      "sha256": "62eef78fba0fa4b63b618b70a1a800435e52215a9307cf5e2ce1c13d80ae87db",
+      "downloadedBytesMatchOriginal": true
+    },
+    {
+      "name": "AFRICLUB_Conversation_Archive_Verification_2026-09-27.json",
+      "driveFileId": "1z2wkusVBLw9vWx1Gg5kU6-Li_m0kssiO",
+      "bytes": 496,
+      "sha256": "551c1b5e46095048ee9a0f5bc7ad66ded021e3d25d0375083925bf376e36ab2b",
+      "downloadedBytesMatchOriginal": true
+    }
+  ],
+  "archiveFileCount": 2486,
+  "manifestCheckedFileCount": 2484,
+  "originalDeliverableNames": 79,
+  "originalDeliverableVersions": 80,
+  "originalArchiveCount": 24,
+  "zipCrcPassed": true,
+  "allManifestHashesPassedOnDriveDownload": true,
+  "allInventoriedFilesPreservedInUploadedArchive": true,
+  "allFilesIndividuallyPlacedInRepositorySubfolders": false,
+  "scope": "All recoverable files represented by the existing conversation inventory, initial review through Batch 12. The collection is not a full live-repository export or a verbatim chat transcript.",
+  "historicalStatusNote": "Original reports and the previous archive-verification file are preserved unchanged and describe status at their original timestamps. This new delivery receipt records the completed archive upload.",
+  "deploymentActions": 0
+}

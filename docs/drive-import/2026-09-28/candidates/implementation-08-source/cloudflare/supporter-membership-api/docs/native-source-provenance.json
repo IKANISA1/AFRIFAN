@@ -1,0 +1,31 @@
+{
+  "asOfLocalDate": "2026-09-27",
+  "sourceAuthority": "current AFRICLUB Google Drive",
+  "sourceFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+  "freshReadSources": [
+    {
+      "path": "cloudflare/supporter-membership-api/client.ts",
+      "driveFileId": "1rbTgLIJzrkYEt3LtNahCIijmsEMpoe-j",
+      "sha256": "d056c088b35891479d29dddf4d9b8d3b2445b641e50e005c5801d26aa24c6e4d"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/README.md",
+      "driveFileId": "1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h",
+      "sha256": "8feed17fc00c55a45ca95c2f21c72ec6f375118f0967946e9dd40b09d1a0227b"
+    },
+    {
+      "path": "packages/features/feat_membership/pubspec.yaml",
+      "driveFileId": "1hUzQ4DqSwZVtOafuOfm5nxmkqCh0zeCx",
+      "sha256": "19906e7de3c523ce9a036fa1df9cd9daf2bcc4c426fdcc6325d068d74c33de13"
+    }
+  ],
+  "contextSource": {
+    "fileId": "1JD4nFjuimlnBgxQtEdNj4zijXQTUShRD",
+    "name": "AFRICLUB_Batch9_Current_Drive_Patch_2026-09-26.zip",
+    "sha256": "aecc1576a784caddd2bbf8cd1b387998b1c3e70d2e12f4eeeb4d9dcff5d09aa3",
+    "bundleChecksumsVerified": true
+  },
+  "nativeExecution": "blocked_no_sdk",
+  "livePaymentOrProviderRequests": 0,
+  "newProductionConfiguration": false
+}

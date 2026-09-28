@@ -1,0 +1,9 @@
+/// Opt-in native checkout candidate. Does not switch the existing repository/routes.
+library;
+export 'src/native_checkout/models.dart';
+export 'src/native_checkout/ports.dart';
+export 'src/native_checkout/client.dart';
+export 'src/native_checkout/io_transport.dart';
+export 'src/native_checkout/recovery.dart';
+export 'src/native_checkout/payment_handoff.dart';
+export 'src/native_checkout/platform_recovery_store.dart';

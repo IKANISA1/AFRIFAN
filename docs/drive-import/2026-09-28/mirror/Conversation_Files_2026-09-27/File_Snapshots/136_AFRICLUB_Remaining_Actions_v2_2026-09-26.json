@@ -1,0 +1,118 @@
+{
+  "as_of_utc": "2026-09-26T09:30:46.747763+00:00",
+  "whole_requested_migration_completed": false,
+  "original_drive_source_files_replaced": 0,
+  "source_patch_modified_files": 24,
+  "source_patch_new_files": 45,
+  "production_deployments": 0,
+  "items": [
+    {
+      "id": "R01",
+      "title": "Original Drive source integration",
+      "status": "blocked",
+      "evidence": "Original validator re-fetched and before-hash matched; in-place replacement again returned HTTP 403 appNotAuthorizedToFile. Twenty-four source additions were created and SHA-256 read back; originals remain unchanged.",
+      "next_required_action": "Apply the hash-checked package to an authorized local checkout or use an authorized source-file write connection; preserve original IDs."
+    },
+    {
+      "id": "R02",
+      "title": "Full checkout and Dart/Flutter verification",
+      "status": "not_executed",
+      "evidence": "Dart/Flutter SDKs and the complete mounted checkout were unavailable. New Dart policy and router tests are unexecuted.",
+      "next_required_action": "Run pinned toolchains, the new Melos verify_refactor command, existing analysis/tests and the new Flutter router test; resolve regressions before merge."
+    },
+    {
+      "id": "R03",
+      "title": "Complete five-club release and SMS evidence",
+      "status": "partially_verified",
+      "evidence": "Five original main Android manifests passed source permission checks; regression tests passed. Full source trees, merged release manifests, binaries and device journeys were not checked.",
+      "next_required_action": "Run all-club source and merged-manifest checks; inspect signed Android/iOS artifacts, installed runtimes and each club store/privacy disclosure."
+    },
+    {
+      "id": "R04",
+      "title": "Predict/FET economic approval",
+      "status": "unresolved",
+      "evidence": "Historical 100-FET entry and pooled distribution conflict with the free-entry policy. No new commercial/legal approval was invented.",
+      "next_required_action": "Obtain a versioned accountable product/legal/payment/release decision, then align actual client and server/ledger behavior. Preserve historical records."
+    },
+    {
+      "id": "R05",
+      "title": "Public publishing integration",
+      "status": "operator_service_implemented_locally_not_deployed",
+      "evidence": "Runtime Access identity gateway, live club grants, expiring immutable review, atomic authorized publication, idempotent receipt, typed client and disabled deployment templates implemented. 98 new local regressions passed. No workerd/live Access/D1/R2 or PWA UI integration run.",
+      "next_required_action": "Integrate the typed client into reviewed operator UI; verify standalone Access ingress and private service binding, enroll real authorized operators, apply forward schema in verified staging, obtain fresh approved content and run real runtime/authorization/concurrency tests before enablement."
+    },
+    {
+      "id": "R06",
+      "title": "Migration object disposition decisions",
+      "status": "unresolved",
+      "evidence": "The saved-inventory register contains 1,960 catalog entries; all require approved disposition evidence. It is not a list of objects already migrated.",
+      "next_required_action": "Review every object, resolve overloaded RPC behavior and dependencies, compare the 18 recovered deployed functions, and approve migrate/replace/archive/retire decisions with contracts."
+    },
+    {
+      "id": "R07",
+      "title": "Identity/session and authorization migration",
+      "status": "not_implemented",
+      "evidence": "No replacement supporter identity/session service or full authorization migration was built in this patch. Batch 2 supplies ONLY a public-content operator identity/API subset; supporter identity and complete native/web/admin migration remain unfinished.",
+      "next_required_action": "Implement and verify stable user identity mapping, OTP/provider delivery, rotation/revocation, deletion, staff roles, ownership and negative cross-club tests."
+    },
+    {
+      "id": "R08",
+      "title": "Transactional domains on real D1",
+      "status": "not_implemented",
+      "evidence": "No payment, membership, contribution, stock, ticket or approved FET transaction domain was ported to a new authoritative backend.",
+      "next_required_action": "Implement atomic command/ledger/outbox boundaries, idempotency, reconciliation, concurrency and injected-failure proofs, then load/cost/capacity tests on real D1."
+    },
+    {
+      "id": "R09",
+      "title": "Edge Functions, schedules and providers",
+      "status": "not_implemented",
+      "evidence": "Catalog mapping is available; production Edge Functions, cron jobs, Queues, notifications, Wallet and other integrations have not been ported.",
+      "next_required_action": "Port approved functions and six scheduled jobs with provider authenticity, retries, dead-letter handling and behavior parity. Resolve live-only and local-only entrypoints."
+    },
+    {
+      "id": "R10",
+      "title": "Complete typed API and client cutover",
+      "status": "not_implemented",
+      "evidence": "Feature composition was hardened, but all native/web/admin repositories and direct Supabase callers remain to be migrated. Batch 2 supplies ONLY a public-content operator identity/API subset; supporter identity and complete native/web/admin migration remain unfinished.",
+      "next_required_action": "Implement versioned contracts and typed adapters, preserve deep-link/server enforcement and old-client compatibility/minimum versions, and trace all remaining runtime dependencies."
+    },
+    {
+      "id": "R11",
+      "title": "Final consistent backup and eight AFRICLUB originals",
+      "status": "not_reverified_live",
+      "evidence": "Dated records report a restored but not final-consistent archive and eight inaccessible AFRICLUB originals. The separate 11 public-source originals are not those eight.",
+      "next_required_action": "Revalidate source access, recover all originals with hashes, take a consistent final database/auth snapshot, and prove restore and complete reconciliation. No billing setting was changed."
+    },
+    {
+      "id": "R12",
+      "title": "Whole-repository dead code and dependency pruning",
+      "status": "partially_addressed",
+      "evidence": "Five supported shells were retained; focused source boundaries were strengthened. No full-tree unused-dependency audit, unrelated scaffold deletion or prior revised-copy cleanup was performed.",
+      "next_required_action": "Use complete caller/import/build/test evidence to remove only proven retired code. Preserve opponent data, fixture venues, active predictions, backend ingestion and retention evidence."
+    },
+    {
+      "id": "R13",
+      "title": "Design and CSS acceptance",
+      "status": "partially_verified",
+      "evidence": "Authority wording and five-club scope were corrected. Nine adjacent duplicate CSS rules were merged with ordered AST equivalence; no visual approval was granted.",
+      "next_required_action": "Run pinned web build/budgets and responsive/accessibility/browser/native visual reviews against the actual private design references. Review broader semantic-component duplication separately."
+    },
+    {
+      "id": "R14",
+      "title": "Production cutover",
+      "status": "blocked",
+      "evidence": "The 18-gate candidate/evidence validator is implemented and tested. No production writer or client was switched.",
+      "next_required_action": "Satisfy and verify all gates, freeze/drain writes, reconcile final deltas, approve the candidate, and perform monitored one-writer cutover."
+    },
+    {
+      "id": "R15",
+      "title": "Supabase retirement",
+      "status": "blocked",
+      "evidence": "The 22-gate retirement validator is implemented and tested. No keys, jobs, data or services were revoked/deleted/retired.",
+      "next_required_action": "After approved observation, prove no runtime dependency, retained/restorable archives and reconciliation before governed shutdown. After target financial writes, use forward recovery rather than an unreconciled traffic rollback."
+    }
+  ],
+  "cumulative_patch_files": 69,
+  "source_files_added_to_drive_this_batch": 24,
+  "batch2_new_tests_passed": 98
+}

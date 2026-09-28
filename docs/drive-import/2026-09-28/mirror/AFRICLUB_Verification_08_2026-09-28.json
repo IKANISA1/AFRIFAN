@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-09-28",
+  "scope": "416-file scoped candidate; no complete repository/application or live acceptance",
+  "runtime": {
+    "node": "22.16.0",
+    "repositoryNodePin": "22.23.2",
+    "nodePinMatched": false,
+    "python": "3.13.5",
+    "typescript": "5.8.3"
+  },
+  "tests": {
+    "node": {
+      "passed": 2201,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0,
+      "newThisDelivery": 81,
+      "log": "evidence/all-node.log"
+    },
+    "python": {
+      "passed": 236,
+      "failed": 0,
+      "newThisDelivery": 2,
+      "log": "evidence/python-source.log"
+    },
+    "installer": {
+      "passed": 39,
+      "failed": 0,
+      "runs": [
+        17,
+        16,
+        6
+      ]
+    },
+    "portableKotlin": {
+      "passed": 69,
+      "hostVerified": false
+    },
+    "portableSwift": {
+      "passed": 68,
+      "hostVerified": false
+    },
+    "uniquePassingTotal": 2613,
+    "newTestCases": 83
+  },
+  "additionalChecks": {
+    "syntaxAndParseChecks": 266,
+    "syntaxFailures": 0,
+    "strictReviewClientCompilation": "passed inside client-config.test.mjs",
+    "disabledTemplates": "passed",
+    "sensitiveSourceScan": {
+      "schemaVersion": 1,
+      "sourceFilesRead": 416,
+      "issues": [],
+      "passed": true,
+      "matchedValuesIncluded": false,
+      "drivePermissionsVerified": false
+    },
+    "sourceMigrationLineage": "passed; not hosted history"
+  },
+  "source": {
+    "priorCandidateFiles": 394,
+    "newFiles": 22,
+    "modifiedFiles": 3,
+    "changedPaths": 25,
+    "unchangedPrerequisites": 391,
+    "packagedCandidateFiles": 416,
+    "existingSqlFilesUnchanged": 18,
+    "newMigrations": 2
+  },
+  "strictVerifier": {
+    "status": "blocked",
+    "nodePinMismatch": true,
+    "dartFlutterAbsent": true
+  },
+  "notExecuted": [
+    "Cloudflare workerd/RPC/D1 and real Access/binding acceptance",
+    "Full Next.js/Flutter builds or rendered browser acceptance",
+    "Android/iOS hosts, signing and physical devices",
+    "Payment provider, notification sender or authentic settlement journeys",
+    "Independent security, production-shaped load and actual backup/cutover",
+    "Named human operational, retention, club or release approval"
+  ],
+  "controls": {
+    "productionReady": false,
+    "productionDeployed": false,
+    "remoteMigrations": 0,
+    "realPayments": 0,
+    "messagesSent": 0,
+    "permissionsChanged": false,
+    "originalDriveSourceOverwritten": false
+  },
+  "testRunNotes": [
+    "All counted suites completed. Repeated targeted and strict-verifier reruns are not counted twice.",
+    "Five new races use independent SQLite connections in worker threads. Receiver and source databases are separate local SQLite instances, not hosted D1.",
+    "No UI source changed in this increment; no screenshots or browser claims.",
+    "One redundant legacy-fixture case was removed before the final runs; it is not counted.",
+    "No provider/API credentials or live personal data used."
+  ]
+}

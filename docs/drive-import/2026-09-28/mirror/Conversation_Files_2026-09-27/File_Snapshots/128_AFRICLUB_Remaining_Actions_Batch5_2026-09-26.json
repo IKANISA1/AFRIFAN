@@ -1,0 +1,125 @@
+{
+  "as_of_utc": "2026-09-26T13:13:21.951605+00:00",
+  "whole_requested_migration_completed": false,
+  "delivery_basis": "Current canonical Drive source, not historical cumulative v4",
+  "batch5_source_changes": 17,
+  "batch5_new_files": 16,
+  "batch5_existing_files_modified_locally": 1,
+  "batch5_original_source_files_replaced_in_drive": 0,
+  "all_batch5_deliverables_to_be_saved_to_drive": true,
+  "production_deployments": 0,
+  "items": [
+    {
+      "id": "R01",
+      "title": "Original Drive source integration",
+      "status": "deliverables_uploaded_existing_integration_edit_blocked",
+      "evidence": "v3 and v4 all eight deliverables verified in Drive. Batch5 sixteen source additions created at exact paths; one current-source replacement saved but connector file-reference schema mismatch prevented installation.",
+      "next_required_action": "Use the Batch5 exact-current-source incremental patch only against its observed baseline, or repair connector file-reference support. Do not overwrite newer auth with v4."
+    },
+    {
+      "id": "R02",
+      "title": "Full checkout and Dart/Flutter verification",
+      "status": "not_executed",
+      "evidence": "Dart/Flutter SDKs and the complete mounted checkout were unavailable. New Dart policy and router tests are unexecuted.",
+      "next_required_action": "Run pinned toolchains, the new Melos verify_refactor command, existing analysis/tests and the new Flutter router test; resolve regressions before merge."
+    },
+    {
+      "id": "R03",
+      "title": "Complete five-club release and SMS evidence",
+      "status": "partially_verified",
+      "evidence": "Five original main Android manifests passed source permission checks; regression tests passed. Full source trees, merged release manifests, binaries and device journeys were not checked.",
+      "next_required_action": "Run all-club source and merged-manifest checks; inspect signed Android/iOS artifacts, installed runtimes and each club store/privacy disclosure."
+    },
+    {
+      "id": "R04",
+      "title": "Predict/FET economic approval",
+      "status": "unresolved",
+      "evidence": "Historical 100-FET entry and pooled distribution conflict with the free-entry policy. No new commercial/legal approval was invented.",
+      "next_required_action": "Obtain a versioned accountable product/legal/payment/release decision, then align actual client and server/ledger behavior. Preserve historical records."
+    },
+    {
+      "id": "R05",
+      "title": "Public publishing integration",
+      "status": "operator_ui_and_service_implemented_locally_not_deployed",
+      "evidence": "Same-origin operator UI, inspection/recovery reads, scoped candidate index, safe operation persistence, explicit confirmation and read-only recovery are implemented. Source/API tests pass; browser navigation is blocked by administrator policy. UI/API/publisher flags remain false.",
+      "next_required_action": "Install all source edits, verify in an allowed browser environment and real Cloudflare staging, configure direct Access-protected same-origin ingress and real grants. Integrate a reviewed link into the existing Next admin PWA only after domain and authorization approval."
+    },
+    {
+      "id": "R06",
+      "title": "Migration object disposition decisions",
+      "status": "unresolved",
+      "evidence": "The saved-inventory register contains 1,960 catalog entries; all require approved disposition evidence. It is not a list of objects already migrated.",
+      "next_required_action": "Review every object, resolve overloaded RPC behavior and dependencies, compare the 18 recovered deployed functions, and approve migrate/replace/archive/retire decisions with contracts."
+    },
+    {
+      "id": "R07",
+      "title": "Identity/session and authorization migration",
+      "status": "newer_current_drive_identity_candidate_preserved_not_deployed",
+      "evidence": "Current Drive contains queued auth, secure-refresh coordination and erasure-request code beyond historical v4. Inspected current identity/delivery/HTTP subset: 77 unchanged baseline tests pass. No complete full-journey or provider/deployment approval.",
+      "next_required_action": "Complete and verify anonymous/linking, phone change/recovery, native storage, browser session transport and current source parity; approve real staging import and roles separately."
+    },
+    {
+      "id": "R08",
+      "title": "Transactional domains on real D1",
+      "status": "not_implemented",
+      "evidence": "No payment, membership, contribution, stock, ticket or approved FET transaction domain was ported to a new authoritative backend.",
+      "next_required_action": "Implement atomic command/ledger/outbox boundaries, idempotency, reconciliation, concurrency and injected-failure proofs, then load/cost/capacity tests on real D1."
+    },
+    {
+      "id": "R09",
+      "title": "Edge Functions, schedules and providers",
+      "status": "private_whatsapp_transport_implemented_and_uploaded_not_enabled",
+      "evidence": "New opt-in private WhatsApp sender preserves current queue. Durable dispatch claims prevent repeated external attempt after ambiguity; 124 new local Node tests pass. No real send, live template/account verification, jobs migration or source activation.",
+      "next_required_action": "Install current delivery integration edit; provision separate dispatch D1 and approved private bindings/secrets in staging; verify sender/template/consent and real failure/retry behavior. Remaining providers/functions/jobs still require ports."
+    },
+    {
+      "id": "R10",
+      "title": "Complete typed API and client cutover",
+      "status": "partial_reference_adapters_not_client_cutover",
+      "evidence": "Feature composition was hardened, but all native/web/admin repositories and direct Supabase callers remain to be migrated. Batch 2 supplies ONLY a public-content operator identity/API subset; supporter identity and complete native/web/admin migration remain unfinished. The operator API now includes typed inspection and recovery methods and OpenAPI 1.1.0; that is not the complete supporter/native/web/admin migration. Batch 4 adds a strictly compiled TypeScript bearer reference adapter for five auth operations. No Dart/Flutter, Next.js, browser-cookie or original Supabase auth caller was switched.",
+      "next_required_action": "Implement versioned contracts and typed adapters, preserve deep-link/server enforcement and old-client compatibility/minimum versions, and trace all remaining runtime dependencies."
+    },
+    {
+      "id": "R11",
+      "title": "Final consistent backup and eight AFRICLUB originals",
+      "status": "not_reverified_live",
+      "evidence": "Dated records report a restored but not final-consistent archive and eight inaccessible AFRICLUB originals. The separate 11 public-source originals are not those eight. No live auth-user export or public-content replay was performed in batch 4.",
+      "next_required_action": "Revalidate source access, recover all originals with hashes, take a consistent final database/auth snapshot, and prove restore and complete reconciliation. No billing setting was changed."
+    },
+    {
+      "id": "R12",
+      "title": "Whole-repository dead code and dependency pruning",
+      "status": "partially_addressed",
+      "evidence": "Five supported shells were retained; focused source boundaries were strengthened. No full-tree unused-dependency audit, unrelated scaffold deletion or prior revised-copy cleanup was performed.",
+      "next_required_action": "Use complete caller/import/build/test evidence to remove only proven retired code. Preserve opponent data, fixture venues, active predictions, backend ingestion and retention evidence."
+    },
+    {
+      "id": "R13",
+      "title": "Design and CSS acceptance",
+      "status": "partially_verified",
+      "evidence": "Authority wording and five-club scope were corrected. Nine adjacent duplicate CSS rules were merged with ordered AST equivalence; no visual approval was granted. New operator UI uses the existing token bytes; only source/semantic checks passed. No rendered/fidelity/accessibility approval was obtained.",
+      "next_required_action": "Run pinned web build/budgets and responsive/accessibility/browser/native visual reviews against the actual private design references. Review broader semantic-component duplication separately."
+    },
+    {
+      "id": "R14",
+      "title": "Production cutover",
+      "status": "blocked",
+      "evidence": "The 18-gate candidate/evidence validator is implemented and tested. No production writer or client was switched. No operator UI or gateway production route was enabled. New supporter authentication templates also remain disabled with a placeholder isolated database ID.",
+      "next_required_action": "Satisfy and verify all gates, freeze/drain writes, reconcile final deltas, approve the candidate, and perform monitored one-writer cutover."
+    },
+    {
+      "id": "R15",
+      "title": "Supabase retirement",
+      "status": "blocked",
+      "evidence": "The 22-gate retirement validator is implemented and tested. No keys, jobs, data or services were revoked/deleted/retired.",
+      "next_required_action": "After approved observation, prove no runtime dependency, retained/restorable archives and reconciliation before governed shutdown. After target financial writes, use forward recovery rather than an unreconciled traffic rollback."
+    },
+    {
+      "id": "R16",
+      "title": "Current source versus historical cumulative archive reconciliation",
+      "status": "incremental_current_drive_patch_delivered",
+      "evidence": "Canonical supporter-auth schema/API/lifetimes differ from v4; no stale cumulative v5 replacement was produced. The newer current code and source baseline are retained.",
+      "next_required_action": "For subsequent changes re-read current Drive files and apply narrow reviewed deltas. Historical v1-v4 bundles are preservation artifacts, not authority to downgrade newer files."
+    }
+  ]
+}

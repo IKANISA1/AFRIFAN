@@ -1,0 +1,241 @@
+{
+  "manifest_sha256": "ce702003c01a42dc91e5a01fb2fdfd0c541eb0f191566caa9aabf77a4273b25b",
+  "sourceChanges": 17,
+  "nodeVersion": "v22.16.0",
+  "pythonVersion": "3.13.5",
+  "remoteOperations": 0,
+  "actualProviderMessagesSent": 0,
+  "deploymentPerformed": false,
+  "nodeTests": {
+    "tests": 201,
+    "pass": 201,
+    "fail": 0,
+    "skipped": 0
+  },
+  "syntaxAndJsonChecks": 14,
+  "installerTestsPassed": 33,
+  "installationTrials": [
+    {
+      "startingState": "current-drive-baseline",
+      "changed": 17,
+      "rollbackRestoredExactStartingBytes": true
+    },
+    {
+      "startingState": "new-source-already-uploaded",
+      "changed": 1,
+      "rollbackRestoredExactStartingBytes": true
+    }
+  ],
+  "totalTargetedTestsPassed": 234,
+  "actualCloudflareRuntimeVerified": false,
+  "source_drive_readback": {
+    "as_of_utc": "2026-09-26T13:13:21.948683+00:00",
+    "new_source_files_created": 16,
+    "existing_source_files_updated": 0,
+    "all_17_proposed_source_payloads_saved_and_hash_verified": true,
+    "canonical_delivery_file_unchanged": true,
+    "blocked_update_reason": "Connector schema accepts string file_uri but action requires object; object rejected by schema. Neither attempted source update executed.",
+    "source_files": [
+      {
+        "relative_path": "cloudflare/auth-code-delivery/README.md",
+        "drive_file_id": "1QxtShiuJnRHW5k72-T2hClK7030Tcj3H",
+        "drive_path": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/README.md",
+        "sha256": "217b290092da31bf73c54dcfc8fddf9ddf620f256c4fd1ee2b8f619b4327c2b8",
+        "readback_matched": true,
+        "state": "new_source_created"
+      },
+      {
+        "relative_path": "cloudflare/auth-code-delivery/wrangler.staging.jsonc",
+        "drive_file_id": "1DrVeVMIRjDG0QE5NV5fMwy1OnE6lRlg6",
+        "drive_path": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/wrangler.staging.jsonc",
+        "sha256": "2faba4b9384948fe17d94b825c02f14fd100bb230b4592664a43a502222e73dc",
+        "readback_matched": true,
+        "state": "new_source_created"
+      },
+      {
+        "relative_path": "cloudflare/auth-code-delivery/src/policy.mjs",
+        "drive_file_id": "1TyJxnVPeC2GQGjPS4u7SbFNPzjiUWvCx",
+        "drive_path": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/src/policy.mjs",
+        "sha256": "3467e6e9045dccc2d37430ac1678fab9dcdd4de75413e2919fce87c3337779f7",
+        "readback_matched": true,
+        "state": "new_source_created"
+      },
+      {
+        "relative_path": "cloudflare/auth-code-delivery/src/graph.mjs",
+        "drive_file_id": "1QS5DV08sW1PKMveVnpPrGpwv7O4AhxPO",
+        "drive_path": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/src/graph.mjs",
+        "sha256": "dd6cd151ddf8699b06998ae3c9084c69c5e219f00a7b9fc34db73e1bfc97985f",
+        "readback_matched": true,
+        "state": "new_source_created"
+      },
+      {
+        "relative_path": "cloudflare/auth-code-delivery/src/service.mjs",
+        "drive_file_id": "1g34VLVcYK2-owWKXOyi1Fmncf-jmXdth",
+        "drive_path": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/src/service.mjs",
+        "sha256": "880ddf1c7a73f5ca32b7a5ba5a475ceca5f489ad24b443ac2359ecae965363c3",
+        "readback_matched": true,
+        "state": "new_source_created"
+      },
+      {
+        "relative_path": "cloudflare/auth-code-delivery/src/worker.mjs",
+        "drive_file_id": "1ZE3o67FU_yCYXPUjBMm-T103jRlXL37u",
+        "drive_path": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/src/worker.mjs",
+        "sha256": "58de482b8ba170bc23af255c4bf4ab5f216de147ea0dbedf95099f3f6a5756b5",
+        "readback_matched": true,
+        "state": "new_source_created"
+      },
+      {
+        "relative_path": "cloudflare/auth-code-delivery/migrations/0001_dispatch_claims.sql",
+        "drive_file_id": "156GXDpTy53Y5N4Slmqluj_4hj3rjOEkW",
+        "drive_path": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/migrations/0001_dispatch_claims.sql",
+        "sha256": "5f7a90a483402695ac5d1956ff7c436c7fde141141d887125ce5bfd733e614e4",
+        "readback_matched": true,
+        "state": "new_source_created"
+      },
+      {
+        "relative_path": "cloudflare/auth-code-delivery/contracts/private-rpc.json",
+        "drive_file_id": "1oStsz7kXuka24XNqPt66e0gpwyvJJM50",
+        "drive_path": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/contracts/private-rpc.json",
+        "sha256": "ac3f1d86f4faf75611d7dd4c5b6e1fe5cf91d9a50a82d11c9f9581011230aed4",
+        "readback_matched": true,
+        "state": "new_source_created"
+      },
+      {
+        "relative_path": "cloudflare/auth-code-delivery/scripts/check-deployment.mjs",
+        "drive_file_id": "1H3_e9Can6jjzRslL1vuCKCJRdskb5gfA",
+        "drive_path": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/scripts/check-deployment.mjs",
+        "sha256": "70c0b2920991e87b784e4cc911649a4e224e7c31a0c03d52ef76888de0ebea46",
+        "readback_matched": true,
+        "state": "new_source_created"
+      },
+      {
+        "relative_path": "cloudflare/auth-code-delivery/scripts/inspect-provider.mjs",
+        "drive_file_id": "10gzv6jZjFGwCEvfGeaCG_TVI4hd9UNdG",
+        "drive_path": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/scripts/inspect-provider.mjs",
+        "sha256": "8eebeec70e70535b510ae4aeeb5f9c374a1339be383455784a33adb3d06f4016",
+        "readback_matched": true,
+        "state": "new_source_created"
+      },
+      {
+        "relative_path": "cloudflare/auth-code-delivery/tests/current-queue.test.mjs",
+        "drive_file_id": "1GmLoUBVB3ThxdUN_kzoOGUdXsGQR070y",
+        "drive_path": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/tests/current-queue.test.mjs",
+        "sha256": "60a503d8c5782c423d3da848741997b615e0ca1c0a10b821a38d5f60f706a8ac",
+        "readback_matched": true,
+        "state": "new_source_created"
+      },
+      {
+        "relative_path": "cloudflare/auth-code-delivery/tests/delivery.test.mjs",
+        "drive_file_id": "1GlTXB6KxopqFMQ7GlsnQW6d9gLJnFkaZ",
+        "drive_path": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/tests/delivery.test.mjs",
+        "sha256": "a332b876e034713a2f23ef183c3d43285e2c1d1662dbdf40d5b435414ed9f3b7",
+        "readback_matched": true,
+        "state": "new_source_created"
+      },
+      {
+        "relative_path": "cloudflare/auth-code-delivery/tests/fixture.mjs",
+        "drive_file_id": "1Kw3tc5eZ5dsAtfy6CTp68-Nc0d0rffGS",
+        "drive_path": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/tests/fixture.mjs",
+        "sha256": "6fd2f0d09ed44ba2fb78a24f79745c0f53becb49f65c8b25118c170b643c779f",
+        "readback_matched": true,
+        "state": "new_source_created"
+      },
+      {
+        "relative_path": "cloudflare/auth-code-delivery/tests/tooling.test.mjs",
+        "drive_file_id": "1dWcIjolTLddIzaGrvpoffzg0ALd2_Ow4",
+        "drive_path": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/tests/tooling.test.mjs",
+        "sha256": "42d0e28b1eae1fc4d1fce8ae33b49c06161a040ac7922089ddaf8003db735234",
+        "readback_matched": true,
+        "state": "new_source_created"
+      },
+      {
+        "relative_path": "cloudflare/supporter-auth/src/private-delivery-sender.mjs",
+        "drive_file_id": "1A2CJNAkVAF27vpDalB4IM83dDq0N1cCH",
+        "drive_path": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/src/private-delivery-sender.mjs",
+        "sha256": "275b8da3dbeeca4c547656aff20b9b9016f75deec67c78b6af8e6be5044dbf06",
+        "readback_matched": true,
+        "state": "new_source_created"
+      },
+      {
+        "relative_path": "cloudflare/supporter-auth/PRIVATE_DELIVERY_INTEGRATION.md",
+        "drive_file_id": "15bE9pY1spOgUb2wI_i64D2hdjx3WdbCi",
+        "drive_path": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/PRIVATE_DELIVERY_INTEGRATION.md",
+        "sha256": "61366abc8630ee290eaa89bbbcfab8dceb8aa84daf038006c9d739e903f9feed",
+        "readback_matched": true,
+        "state": "new_source_created"
+      },
+      {
+        "relative_path": "cloudflare/supporter-auth/src/delivery.mjs",
+        "drive_file_id": "1ZpHYiYT_YnQyd5vrKfHbFv--DdwH4IiN",
+        "canonical_drive_file_id": "1g57kNjdwxPjyGc5zEWXMrniFPHI3wQrt",
+        "sha256": "29439e44d9efc0b54f4c8b058e70eb2b2f20205ceaeaa8502d6c013079b3196d",
+        "readback_matched": true,
+        "state": "proposed_replacement_saved_in_output_not_installed"
+      }
+    ],
+    "downloaded_source_tests_passed": 201,
+    "production_deployments": 0,
+    "database_migrations_executed": 0,
+    "actual_provider_messages_sent": 0
+  },
+  "historical_deliverables_readback": {
+    "verified": [
+      {
+        "file": "AFRICLUB_Remaining_Actions_v3_2026-09-26.json",
+        "bytes": 9028,
+        "sha256": "4b0f5cad94c31d0544eacb4848d374cf47c5e13d4952baa2cd5278c532ede55c",
+        "drive_readback_match": true
+      },
+      {
+        "file": "AFRICLUB_Batch3_Verification_2026-09-26.json",
+        "bytes": 3601,
+        "sha256": "10aae3f3f7f9321f3461e26f071f7b4a50df93164fd1294a6dad3551396d1c2d",
+        "drive_readback_match": true
+      },
+      {
+        "file": "AFRICLUB_Remaining_Actions_v4_2026-09-26.json",
+        "bytes": 10473,
+        "sha256": "fbaab753f56580663480b50172289b7f6bfc78da4b39c847d0f31c58908fcd9f",
+        "drive_readback_match": true
+      },
+      {
+        "file": "AFRICLUB_Batch3_Implementation_Report_2026-09-26.md",
+        "bytes": 12831,
+        "sha256": "a630b5bd8fe8af72e372112055d84b97e3a9fedba2e20c644aad65f8b8b47305",
+        "drive_readback_match": true
+      },
+      {
+        "file": "AFRICLUB_Batch4_Verification_2026-09-26.json",
+        "bytes": 4129,
+        "sha256": "f844c4075502a18c467a029fdfe0b319ad1f274170a81408d4c0707ada818420",
+        "drive_readback_match": true
+      },
+      {
+        "file": "AFRICLUB_Batch4_Implementation_Report_2026-09-26.md",
+        "bytes": 13585,
+        "sha256": "443a3775bb28105eb8bb05edeb9ecf4e1c33f494d0d0574cc4323d751b2b69dc",
+        "drive_readback_match": true
+      },
+      {
+        "file": "AFRICLUB_Cumulative_Source_Patch_v3_2026-09-26.zip",
+        "bytes": 497871,
+        "sha256": "343e267a8738166a57d572fa4fafb59ba68e0a519437edd55f44737f371cf547",
+        "drive_readback_match": true
+      },
+      {
+        "file": "AFRICLUB_Cumulative_Source_Patch_v4_2026-09-26.zip",
+        "bytes": 609779,
+        "sha256": "e660191cad670983811c83f668f54edc849e3aed6b5e8de862b56b3fcb6249fe",
+        "drive_readback_match": true
+      }
+    ]
+  },
+  "cumulative_v4_test_count_not_added": 453,
+  "incremental_source_changes": 17,
+  "current_drive_node_regressions_preserved": 77,
+  "new_node_tests_passed": 124,
+  "reused_installer_tests_passed": 33,
+  "uploaded_source_files": 16,
+  "current_file_update_successful": false,
+  "test_environment": "Node 22.16.0, Python 3.13.5, genuine local SQLite and Web Crypto; simulated Meta responses; no workerd, live provider, real D1 or handset tests."
+}

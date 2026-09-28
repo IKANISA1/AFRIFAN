@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-09-28",
+  "scope": "394-file scoped candidate; not a full monorepo or production release",
+  "runtime": {
+    "node": "22.16.0",
+    "repositoryNodePin": "22.23.2",
+    "nodePinMatched": false,
+    "python": "3.13.5",
+    "typescript": "5.8.3"
+  },
+  "tests": {
+    "node": {
+      "passed": 2120,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0,
+      "files": 80,
+      "newThisDelivery": 127,
+      "log": "evidence/all-node-final.log"
+    },
+    "python": {
+      "passed": 234,
+      "failed": 0,
+      "newThisDelivery": 3,
+      "log": "evidence/strict-gate/python-source-gates.log"
+    },
+    "installer": {
+      "passed": 39,
+      "failed": 0,
+      "logs": [
+        "evidence/installer-core-part1.log",
+        "evidence/installer-core-part2.log",
+        "evidence/installer-delivery.log"
+      ]
+    },
+    "portableKotlin": {
+      "passed": 69,
+      "actualAndroidHost": false,
+      "log": "evidence/strict-gate/portable-kotlin/android-recovery-verification.json"
+    },
+    "portableSwift": {
+      "passed": 68,
+      "actualIosHost": false,
+      "log": "evidence/strict-gate/portable-swift/ios-recovery-verification.json"
+    },
+    "uniquePassingTotal": 2530,
+    "newExecutedCases": 130,
+    "authoredDartHistoryChecks": 11,
+    "dartHistoryChecksExecuted": 0
+  },
+  "additionalChecks": {
+    "syntaxAndParse": 282,
+    "syntaxFailures": 0,
+    "typescriptClientControllerCompilation": "Passed inside actual compiled client and portal test fixtures",
+    "reactNextSemanticBuild": false,
+    "configurationChecks": 11,
+    "sourceSensitiveScan": {
+      "schemaVersion": 1,
+      "sourceFilesRead": 394,
+      "issues": [],
+      "passed": true,
+      "matchedValuesIncluded": false,
+      "drivePermissionsVerified": false
+    },
+    "priorSqlFiles": 17,
+    "priorSqlFilesChanged": 0,
+    "newIndexMigration": 1
+  },
+  "source": {
+    "prior": 384,
+    "newAuthored": 10,
+    "modified": 25,
+    "authoredChanges": 35,
+    "candidate": 394,
+    "unchangedPrerequisites": 359
+  },
+  "strictGate": {
+    "status": "blocked",
+    "exitCode": 2,
+    "reasons": [
+      "Node runtime does not match repository pin",
+      "Dart/Flutter unavailable"
+    ]
+  },
+  "notExecuted": [
+    "Full React/Next/OpenNext semantic build, lint, rendered browser or accessibility acceptance",
+    "Actual Cloudflare workerd/D1/Access and binding tests",
+    "New Dart history harness, Flutter integration or signed Android/iOS physical devices",
+    "Real payment evidence, external settlement, refund or provider test",
+    "Independent security, game-day load, historical database reconciliation, restore and cutover",
+    "Human privacy, brand, commercial, country and store approvals"
+  ],
+  "controls": {
+    "driveUploaded": false,
+    "deploymentActions": 0,
+    "remoteMigrations": 0,
+    "realPayments": 0,
+    "permissionsChanged": false,
+    "productionReady": false,
+    "canonicalGitMerge": false
+  },
+  "notes": [
+    "All results counted once from completed runs. Prior Implementation06 totals are not added.",
+    "Initial local history fixture used an unsupported order-kind name; it was corrected to the existing contribution enum.",
+    "An authorization-denial test identified a generic503 mapping; the trusted private read error now maps to403, allowing the portal to clear presentation.",
+    "Two full-regression failures were stale endpoint-count assertions; counts and explicit GET-only authenticated-history checks were updated.",
+    "The initial syntax harness used a plain JSON parser on JSONC and an incorrect installed TypeScript path. Appropriate compiler discovery/parsers passed; valid source was not changed to satisfy a wrong parser.",
+    "Tests execute genuine local SQLite and service classes; notification tests execute the real worker script in a VM. They do not establish rendered browser, provider or target-runtime acceptance.",
+    "The current Drive connection exposes29 read actions and no upload/create/update action. Directory search found only the already installed connection; no remote write is claimed."
+  ]
+}

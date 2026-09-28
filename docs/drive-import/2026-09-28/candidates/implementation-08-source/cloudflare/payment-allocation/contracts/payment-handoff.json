@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "service": "existing MembershipCheckout / MembershipCheckoutReader",
+  "environment": "isolated-staging",
+  "enabledByDefault": false,
+  "database": "same allocation database; never a device-local source of authority",
+  "methods": {
+    "reserveHandoff": {
+      "capability": "prepare",
+      "fields": [
+        "clubId",
+        "userId",
+        "orderId",
+        "requestId"
+      ],
+      "mayOpenDialer": false
+    },
+    "claimHandoff": {
+      "capability": "prepare",
+      "fields": [
+        "clubId",
+        "userId",
+        "handoffId",
+        "requestId"
+      ],
+      "grant": "at most one first response; every replay/status false"
+    },
+    "currentHandoff": {
+      "capability": "read",
+      "fields": [
+        "clubId",
+        "userId"
+      ],
+      "mayOpenDialer": false
+    }
+  },
+  "noFinancialEffects": [
+    "payment execution",
+    "allocation",
+    "membership activation",
+    "ticket issuance",
+    "provider refund"
+  ],
+  "requiredMigration": "0003_payment_handoff_journal.sql",
+  "releaseBlocks": [
+    "real Workers/D1 acceptance",
+    "native secure credentials and SDK acceptance",
+    "legacy-client cutoff",
+    "historical in-flight payment reconciliation",
+    "unknown/late payment support workflow",
+    "cross-database authorization acceptance",
+    "read-only local-store-loss acceptance"
+  ],
+  "releaseUnclaimed": {
+    "requestFields": [
+      "clubId",
+      "userId",
+      "handoffId",
+      "requestId"
+    ],
+    "separateRuntimeFlag": "HANDOFF_RELEASE_ENABLED",
+    "separateDatabaseControl": "pa_handoff_release_settings",
+    "mayOpenDialer": false,
+    "eligibility": "Owned current reservation has no immutable claim and no allocation. Release-vs-claim serialized in same database.",
+    "effect": "Immutable never_claimed release record only. No order cancellation, refund, claim deletion or payment assertion.",
+    "recovery": "Repeat the same release key. Reference coordinator uses handoffId as requestId.",
+    "migration": "0004_release_unclaimed_handoff.sql"
+  }
+}

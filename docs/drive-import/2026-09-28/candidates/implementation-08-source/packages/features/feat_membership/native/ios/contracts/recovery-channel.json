@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "channel": "africlub/native-checkout-recovery/v1",
+  "scope": "africlub-(membership|payment-handoff)-v1:<clubId>:<canonical-user-UUID>",
+  "enabledByDefault": false,
+  "platform": "iOS opt-in host candidate; unregistered and not Apple-compiled",
+  "methods": {
+    "tryAcquire": {
+      "requestFields": [
+        "scope",
+        "acquisitionId"
+      ],
+      "responseFields": [
+        "version",
+        "busy",
+        "lease"
+      ],
+      "semantics": "fixed host owner; one global OS/process lock; same acquisition can recover its token; busy means no granted token"
+    },
+    "load": {
+      "requestFields": [
+        "scope",
+        "lease"
+      ],
+      "responseFields": [
+        "version",
+        "value"
+      ],
+      "semantics": "matching engine, scope and current token required"
+    },
+    "compareAndSet": {
+      "requestFields": [
+        "scope",
+        "lease",
+        "expected",
+        "value"
+      ],
+      "responseFields": [
+        "version",
+        "updated"
+      ],
+      "semantics": "Exact UTF-8 expected-value match; Keychain item replacement plus exact readback. An error may follow a committed update; never reset or assume absence."
+    },
+    "release": {
+      "requestFields": [
+        "scope",
+        "acquisitionId"
+      ],
+      "responseFields": [
+        "version",
+        "released"
+      ],
+      "semantics": "original acquisition key releases only its own live lock; no record deletion"
+    }
+  },
+  "limits": {
+    "scopes": 64,
+    "valueUtf8Bytes": 2048,
+    "plaintextBytes": 160000,
+    "nativeQueuedCalls": 32,
+    "snapshotBytes": 160000
+  },
+  "noOperations": [
+    "delete",
+    "clear",
+    "reset",
+    "rotateKey",
+    "dial",
+    "pay",
+    "credentialImport"
+  ],
+  "writeUnknown": "An error after a write may mean it committed. Preserve the original recovery operation; do not infer absence or reset the store.",
+  "nativeAcceptance": {
+    "portableSwiftCompiled": true,
+    "portableSwiftTestsPassed": 68,
+    "appleHostCompiled": false,
+    "keychainTested": false,
+    "dartExecuted": false,
+    "flutterCompiled": false,
+    "deviceTested": false,
+    "appsRegistered": 0
+  },
+  "storage": {
+    "keychainAccessibility": "kSecAttrAccessibleWhenUnlockedThisDeviceOnly",
+    "synchronizable": false,
+    "explicitAccessGroup": false,
+    "plaintextRecoveryFile": false,
+    "applicationEncryptedFile": false,
+    "installationAnchor": "fixed app-private no-backup file; identifier bound inside item",
+    "deviceVerified": false
+  }
+}

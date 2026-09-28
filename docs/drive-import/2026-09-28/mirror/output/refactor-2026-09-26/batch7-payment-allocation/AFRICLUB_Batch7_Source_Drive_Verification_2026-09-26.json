@@ -1,0 +1,176 @@
+{
+  "verifiedAtUtc": "2026-09-26T14:47:22.704574+00:00",
+  "sourceFiles": [
+    {
+      "path": "cloudflare/payment-allocation/README.md",
+      "driveFileId": "11c2iijJkMgVqUIhC9JivYi8vxb5prAsr",
+      "sha256": "07bc909bff55bc89e18292226ce891df16aeb5cdbb0e0252443f484b428e13a1",
+      "bytes": 11203,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/contracts/private-rpc.json",
+      "driveFileId": "1OPxogQXCmVEgHC210SuQ8ItsYMr3wD1S",
+      "sha256": "6518dfea38f22dd1559f71d95f7a39fb391851cb2a8035a8410a1b66d8d7fec2",
+      "bytes": 4601,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/docs/source-map.md",
+      "driveFileId": "1pJirKOmc7x2SPsTq036YfCvz6N9LNxhv",
+      "sha256": "1a40d0dd5f391afc4f0d70d233a4a5f72bc7c2918fdd910a72c0e4652b2c0a5c",
+      "bytes": 4410,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/docs/source-provenance.json",
+      "driveFileId": "11E1GmqUjnrsfh8XQim8lO7i5vSq-L-Pc",
+      "sha256": "61256ab359972c0714beb53a82efedf599ce2d701dbe1f84d79d9316d783a909",
+      "bytes": 2056,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/migrations/0001_payment_allocation.sql",
+      "driveFileId": "15-aZXxl-RXuEC8ui3gtpYWonYxi-toll",
+      "sha256": "67bd55d0e2d115d0f0e67d3d80ee1805fece303863d1d9bf42c9e1fa4fb68489",
+      "bytes": 25515,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/check-deployment.mjs",
+      "driveFileId": "1AUpEiWEFp8PvUNJWX5BC5FzqBV6NO4ln",
+      "sha256": "8ebf33a15e921322fed12e4a2242fcefe1ac36a13c111062b149417efcde32e4",
+      "bytes": 2451,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/check-sql-runtime.sql",
+      "driveFileId": "1GhU-cvNOcz1A-DyD0hJU6tc7SOb176G2",
+      "sha256": "21bce04fa3b65f173e5bbd8f139c249d21d572842032b6b32295fab60049bc27",
+      "bytes": 414,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/prepare-staging-import.mjs",
+      "driveFileId": "1tE4MSmdQllGcPsyjmiiEZdjjO9dZxiy4",
+      "sha256": "368e057d140213d96e0abfd50ccd966783cf18549e3cb68c86d3cb947311218b",
+      "bytes": 6408,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/outbox.mjs",
+      "driveFileId": "1zdiXj-5eax0M4aOkOPkroFUqyZUyxRfk",
+      "sha256": "7ea1130aaea885e3c9b8c006c4b0cc006a89d25fdbe0f013d88fe3c5e66d4bc7",
+      "bytes": 3210,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/policy.mjs",
+      "driveFileId": "1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ",
+      "sha256": "97f33ffb61f5ccf97d130f32fa724671b27d7f51c5c0c21b5fd34077ff0c40c0",
+      "bytes": 4939,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/service.mjs",
+      "driveFileId": "1cpCkpbugLJhfNBkE2aPYmFQhawKvTHdb",
+      "sha256": "cc1571645eb15f841eb9f9ab34aeb5f632eaa84e62768fd51e3d8625849f4f24",
+      "bytes": 6858,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/worker.mjs",
+      "driveFileId": "1JuaM5iFAfZQRVowTgFzAPJCIPsZ2TAi8",
+      "sha256": "057eb01288151f81322be25ce9cc70fdb8c298e4f62c632d60c68098af5d9041",
+      "bytes": 1354,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/allocation.test.mjs",
+      "driveFileId": "1tG39b_Z-UFzK0a5U62OtmAgnUzem6jxn",
+      "sha256": "27b11d991d86bcc8cc62b1d0da1fcf9749283a46103613dc7b6d362ff348b3bf",
+      "bytes": 8947,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/concurrency.test.mjs",
+      "driveFileId": "1aXQ6Lf7cpHxd-5jUSx7IWhxR0ket3mNn",
+      "sha256": "fc931954ca06af7fc48586c91a2582663faf9ec1284abd50b57ebb4c8b430b06",
+      "bytes": 2738,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/concurrent-worker.mjs",
+      "driveFileId": "1qRkCaIU4L0IOrbxF_UQDHwvEskDIwLDY",
+      "sha256": "2d3753e39db2377033abea64016619eb317c45fc1c535e028f73e645260ab381",
+      "bytes": 1642,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/contract.test.mjs",
+      "driveFileId": "1JrxI_2qQjsZFuOBtalSHge-p0bkOYCsc",
+      "sha256": "908b976d2b44b9f631a8425d41d88cacd009fc29a3ec87d8c0b2b7fa758e2150",
+      "bytes": 3152,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/evidence.test.mjs",
+      "driveFileId": "1lZw5vwm7-uH0G4wejU0hdu7nghRcyRbR",
+      "sha256": "0d263fc7664135a29e85b279fe53e0d100ac632e179cde50171dfcc5d4059c6d",
+      "bytes": 5573,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/fixture.mjs",
+      "driveFileId": "1u25GDmvl8nnEZzVJslPRAG8GxIzPm1jr",
+      "sha256": "7e7f5c78f34fe5913eb22a5bdcc69850c130d110cd23f4b97815723af1c4316e",
+      "bytes": 6127,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/import-config.test.mjs",
+      "driveFileId": "1yZacDJ0JDAstCS6Hx0moJXOVq_qQ1WG-",
+      "sha256": "448d894ca55ad8a4baa6b5d2b5a96d8be5f4b9e0e050e3ade5693e7f08f3ebfc",
+      "bytes": 7706,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/outbox.test.mjs",
+      "driveFileId": "1ojZHmwPSuV1J1CbHakxVjAWuti38_koN",
+      "sha256": "701a17793c7e37b7b79152a992e30c8827212207b6a930e16045cc42c03cc3e6",
+      "bytes": 6681,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/security.test.mjs",
+      "driveFileId": "1yAMH4y7H1oxopo2d-uUQIfJybaV0VH9o",
+      "sha256": "f1632d55e2d619b35de3b693a36da8c91462cfda238d82a26d98a67eb1f3b42e",
+      "bytes": 9207,
+      "readbackMatched": true
+    },
+    {
+      "path": "cloudflare/payment-allocation/wrangler.staging.jsonc",
+      "driveFileId": "1xTf5V9SLBV-CroyyDpahOmkMaibA04rF",
+      "sha256": "594af5b1157c0e22fd578532d58e92050d70b2ae357440096ccf6322f0afccfd",
+      "bytes": 672,
+      "readbackMatched": true
+    }
+  ],
+  "sourceFilesSaved": 22,
+  "originalFilesOverwritten": 0,
+  "readbackTests": {
+    "tests": 202,
+    "pass": 202,
+    "fail": 0,
+    "skipped": 0
+  },
+  "backup": {
+    "name": "AFRICLUB_Batch7_Source_Reference_Backup_2026-09-26.zip",
+    "driveFileId": "183hISz9CxrxPPynf8akNpRz0OixX7TaI",
+    "sha256": "cfed48fdd91ad50b78cd3998cc8414c3b2f1b81803bbf7403028e030d87c208f",
+    "readbackMatched": true
+  },
+  "deploymentPerformed": false,
+  "remoteMigrationPerformed": false,
+  "productionPayment": false
+}

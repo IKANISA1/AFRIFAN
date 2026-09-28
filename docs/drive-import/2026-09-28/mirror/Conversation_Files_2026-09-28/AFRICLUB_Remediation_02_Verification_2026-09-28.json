@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "createdAtUtc": "2026-09-28T06:15:53.721216+00:00",
+  "scope": "301-file scoped source candidate; not full monorepo",
+  "sourceChanges": {
+    "schemaVersion": 1,
+    "candidateSourcePaths": 301,
+    "cumulativeOverlayPaths": 194,
+    "unchangedPrerequisites": 107,
+    "deltaPathsFromPreviousCandidate": 50,
+    "newlyAuthoredFiles": 18,
+    "modifiedPriorCandidateFiles": 31,
+    "existingDriveIndexIncludedUnchanged": 1
+  },
+  "testGroups": {
+    "node": 1556,
+    "python": 156,
+    "kotlin": 69,
+    "swift": 68,
+    "installer": 33
+  },
+  "targetedTestsPassed": 1882,
+  "newNodeTestsAdded": 178,
+  "testFailures": 0,
+  "skippedCountedTests": 0,
+  "syntaxChecksPassed": 188,
+  "installerTrials": [
+    {
+      "scenario": "selected-known-hash-baseline",
+      "sourceFilesChanged": 185,
+      "startingBytesRestored": true
+    },
+    {
+      "scenario": "alternating-changes-already-present",
+      "sourceFilesChanged": 93,
+      "startingBytesRestored": true
+    },
+    {
+      "scenario": "all-source-already-matching",
+      "sourceFilesChanged": 0,
+      "startingBytesRestored": true
+    },
+    {
+      "scenario": "previous-282-file-candidate",
+      "startingSourceFiles": 282,
+      "sourceFilesChanged": 50,
+      "allAfterHashesMatched": true,
+      "repeatWroteNothing": true,
+      "rollbackRestoredEveryStartingByte": true
+    },
+    {
+      "scenario": "previous-candidate-with-existing-Drive-index",
+      "startingSourceFiles": 283,
+      "sourceFilesChanged": 49,
+      "allAfterHashesMatched": true,
+      "repeatWroteNothing": true,
+      "rollbackRestoredEveryStartingByte": true
+    }
+  ],
+  "blockedGates": [
+    {
+      "gate": "node-pin",
+      "expected": "22.23.2",
+      "actual": "22.16.0"
+    },
+    {
+      "gate": "dart",
+      "reason": "required SDK absent"
+    }
+  ],
+  "nodeEvidenceNonPinned": true,
+  "dartNewCasesAuthoredNotExecuted": 3,
+  "dartExecuted": false,
+  "platformHostCompiled": false,
+  "fullFlutterNextBuild": false,
+  "actualCloudflareD1Tested": false,
+  "realProviderCalls": 0,
+  "deviceDialerCalls": 0,
+  "browserTestsExecutedThisTurn": false,
+  "nativePortableOnly": true,
+  "sourceSensitiveScan": {
+    "schemaVersion": 1,
+    "sourceFilesRead": 301,
+    "issues": [],
+    "passed": true,
+    "matchedValuesIncluded": false,
+    "drivePermissionsVerified": false
+  },
+  "taskStatusCounts": {
+    "Open": 104,
+    "In progress": 26
+  },
+  "acceptedTasks": 0,
+  "driveUploads": 0,
+  "remoteMigrations": 0,
+  "productionReady": false,
+  "manualOrOlderClientPaymentsOutsideHandoffProof": true,
+  "repeatExecutionsNotDoubleCounted": true
+}

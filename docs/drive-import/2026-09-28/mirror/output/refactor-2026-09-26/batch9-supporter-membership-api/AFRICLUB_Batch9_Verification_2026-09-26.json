@@ -1,0 +1,58 @@
+{
+  "sourcePaths": 20,
+  "newSourceFiles": 10,
+  "modifiedExistingFiles": 2,
+  "unchangedRecoveredFiles": 8,
+  "testGroups": {
+    "new-gateway": 160,
+    "payment-regressions": 432,
+    "auth-regressions": 77,
+    "installer": 33
+  },
+  "targetedTestsPassed": 702,
+  "failures": 0,
+  "skipped": 0,
+  "installerTrials": [
+    {
+      "scenario": "partial-drive-baseline",
+      "sourceChanges": 12,
+      "alreadyMatching": 8,
+      "reapply": "already_applied",
+      "rollback": "passed"
+    },
+    {
+      "scenario": "some-new-files-already-saved",
+      "sourceChanges": 6,
+      "alreadyMatching": 14,
+      "reapply": "already_applied",
+      "rollback": "passed"
+    },
+    {
+      "scenario": "all-matching",
+      "sourceChanges": 0,
+      "alreadyMatching": 20,
+      "reapply": "already_applied",
+      "rollback": "no_mutation"
+    }
+  ],
+  "syntaxAndJsonChecks": 17,
+  "verificationExecution": "Source trials and all test groups completed; long combined invocations exceeded tool timeout, so final installer groups were executed separately without weakening assertions.",
+  "productionDeployments": 0,
+  "remoteMigrations": 0,
+  "liveProviderCalls": 0,
+  "runtimeEnabled": false,
+  "verifiedAtUtc": "2026-09-26T22:03:39.662561+00:00",
+  "sourceReadbackMatches": 20,
+  "readbackCodeTestsPassed": 669,
+  "readbackGroupCounts": {
+    "gateway": 160,
+    "payment": 432,
+    "authentication": 77
+  },
+  "currentDriveSourcePreflightChanges": 0,
+  "currentDriveSourcePreflightAlreadyMatching": 20,
+  "realCloudflareRuntime": false,
+  "nativeOsStorageImplemented": false,
+  "existingFlutterClientsSwitched": 0,
+  "wholeRequestedMigrationCompleted": false
+}

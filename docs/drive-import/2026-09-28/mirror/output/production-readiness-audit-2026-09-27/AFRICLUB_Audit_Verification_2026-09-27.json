@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "createdAtUtc": "2026-09-27T11:33:00.470760+00:00",
+  "reportPages": 35,
+  "renderedPages": 35,
+  "outOfPageTextBlocks": [],
+  "tasks": 148,
+  "workstreams": 14,
+  "findings": 20,
+  "originalQAChecklist": 37,
+  "sourceCheckedQA": 3,
+  "sourceUncheckedQA": 34,
+  "evidenceEntries": 63,
+  "externalPrimaryReferences": 24,
+  "spreadsheetFormulaErrorsObserved": 0,
+  "runtimeProbeScenarios": 7,
+  "fullApplicationBuildExecuted": false,
+  "liveProviderCalls": 0,
+  "sourceOrPermissionChanges": 0
+}

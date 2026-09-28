@@ -1,0 +1,81 @@
+name: Promote verified AFRICLUB web artifact
+# No independent push/manual trigger. Only the completed parent CI may call this.
+on:
+  workflow_call:
+    inputs:
+      candidate_sha:
+        required: true
+        type: string
+      artifact_sha256:
+        required: true
+        type: string
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: africlub-web-production-promotion
+  cancel-in-progress: false
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main' && vars.AFRICLUB_RELEASE_PROMOTION_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # Configure named reviewers/no-self-review and protected branches in GitHub.
+    # A YAML name alone does not configure or prove that protection.
+    environment: africlub-production
+    steps:
+      - name: Validate immutable input and originating candidate
+        env:
+          EXPECTED_SHA: ${{ inputs.candidate_sha }}
+          EXPECTED_ARTIFACT: ${{ inputs.artifact_sha256 }}
+        run: |
+          python3 - <<'PYCODE'
+          import os,re
+          assert re.fullmatch('[0-9a-f]{40}',os.environ['EXPECTED_SHA'])
+          assert os.environ['EXPECTED_SHA']==os.environ['GITHUB_SHA']
+          assert re.fullmatch('[0-9a-f]{64}',os.environ['EXPECTED_ARTIFACT'])
+          PYCODE
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ inputs.candidate_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+      - name: Resolve locked deployment tools (no deployment credentials)
+        working-directory: apps/rayon_sports/web
+        run: corepack npm ci
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: africlub-web-${{ inputs.candidate_sha }}
+          path: ${{ runner.temp }}/sealed-release
+      - name: Verify digest, run, controls and every byte before extraction
+        env:
+          EXPECTED_SHA: ${{ inputs.candidate_sha }}
+          EXPECTED_ARTIFACT: ${{ inputs.artifact_sha256 }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python3 tools/scripts/release_artifact.py verify \
+            --archive "$RUNNER_TEMP/sealed-release/africlub-web-release.zip" \
+            --sha256 "$EXPECTED_ARTIFACT" --candidate "$EXPECTED_SHA" --run-id "$RUN_ID" \
+            --extract-to apps/rayon_sports/web
+      - name: Require candidate-specific operational acceptance
+        env:
+          RELEASE_ACCEPTANCE_JSON: ${{ vars.AFRICLUB_RELEASE_ACCEPTANCE_JSON }}
+          EXPECTED_SHA: ${{ inputs.candidate_sha }}
+          EXPECTED_ARTIFACT: ${{ inputs.artifact_sha256 }}
+        run: python3 tools/scripts/release_evidence.py
+      - name: Deploy prebuilt output only
+        working-directory: apps/rayon_sports/web
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: corepack npm exec -- opennextjs-cloudflare deploy
+      - name: Preserve the exact submitted manifest
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: submitted-candidate-${{ github.sha }}
+          path: ${{ runner.temp }}/sealed-release/africlub-web-release.zip
+          if-no-files-found: error
+          retention-days: 30

@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-09-28",
+  "scope": "342-file scoped source candidate; not full monorepo or accepted release",
+  "runtime": {
+    "node": "22.16.0",
+    "repositoryNodePin": "22.23.2",
+    "nodePinMatched": false,
+    "python": "3.13.5",
+    "typescript": "5.8.3"
+  },
+  "tests": {
+    "node": {
+      "passed": 1761,
+      "failed": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "todo": 0,
+      "newThisDelivery": 91,
+      "log": "evidence/all-node-final.log"
+    },
+    "pythonSource": {
+      "passed": 227,
+      "failed": 0,
+      "newThisDelivery": 59,
+      "log": "evidence/all-python-final.log"
+    },
+    "installer": {
+      "passed": 39,
+      "failed": 0,
+      "logs": [
+        "evidence/installer-core-part1.log",
+        "evidence/installer-core-part2.log",
+        "evidence/installer-delivery.log"
+      ]
+    },
+    "portableKotlin": {
+      "passed": 69,
+      "androidHostVerified": false,
+      "log": "evidence/strict-gate/portable-kotlin/android-recovery-verification.json"
+    },
+    "portableSwift": {
+      "passed": 68,
+      "iosHostVerified": false,
+      "log": "evidence/strict-gate/portable-swift/ios-recovery-verification.json"
+    },
+    "uniquePassingTotal": 2164,
+    "newTestCases": 150
+  },
+  "additionalChecks": {
+    "syntaxParsePassed": 225,
+    "syntaxFailures": 0,
+    "strictClientCompilation": true,
+    "assetSourceParity": true,
+    "disabledConfigurationsChecked": true,
+    "limitedSensitiveScan": {
+      "sourceFilesRead": 342,
+      "detectedIssues": 0,
+      "scope": "Selected pattern/path checks only, not proof no secrets exist."
+    },
+    "sourceMigrationLineageGuard": "passed on scoped candidate; hosted histories not reconciled"
+  },
+  "source": {
+    "baselineFiles": 322,
+    "newPaths": 20,
+    "modifiedPaths": 26,
+    "changedPaths": 46,
+    "unchangedPrerequisites": 296,
+    "candidateFiles": 342,
+    "sqlMigrationsChanged": 0
+  },
+  "browser": {
+    "status": "blocked",
+    "reason": "ERR_BLOCKED_BY_ADMINISTRATOR before first rendering",
+    "navigationAttempted": true,
+    "alternateTransportAttempted": false,
+    "passed": 0,
+    "screenshots": 0,
+    "visualApproval": false,
+    "evidence": "evidence/browser/browser-results.json"
+  },
+  "releaseGate": {
+    "status": "blocked",
+    "nodePinMatched": false,
+    "dartFlutterAvailable": false,
+    "realCloudflareD1AccessVerified": false,
+    "fullNextBuildVerified": false,
+    "physicalDeviceVerified": false
+  },
+  "controls": {
+    "drivePermissionsChanged": false,
+    "remoteGitChanges": 0,
+    "remoteDatabaseMigrations": 0,
+    "realPayments": 0,
+    "productionDeployed": false,
+    "releaseAcceptedTasks": 0,
+    "productionReady": false
+  },
+  "delivery": "ZIP/source artifacts uploaded and read back separately; see Implementation 04 upload receipt.",
+  "testNotes": [
+    "Only the final full Node and Python runs are counted. Repeated development runs and prior Implementation03 totals are excluded.",
+    "The first combined installer run timed out and is not counted. Complete replacement 17+16+6 test runs passed. A streaming exec attempt was unavailable; no test result is attributed to it.",
+    "The post-read revocation test was corrected from an unavailable method to the real revoke API with an explicit revoked:true assertion before the final passing run.",
+    "Portable Kotlin/Swift tests were recompiled afresh this turn but do not validate Android Keystore, Apple Keychain or the Flutter hosts.",
+    "All identities, monetary records and Access fixtures in executed application tests are synthetic. Real SQLite is used, not actual hosted D1/workerd."
+  ]
+}

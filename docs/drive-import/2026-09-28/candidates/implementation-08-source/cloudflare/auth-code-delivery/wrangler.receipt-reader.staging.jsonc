@@ -1,0 +1,28 @@
+{
+  "compatibility_date": "2026-09-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [],
+  "d1_databases": [
+    {
+      "binding": "DELIVERY_DB",
+      "database_name": "africlub-auth-delivery-staging",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "services": [],
+  "triggers": {
+    "crons": []
+  },
+  "observability": {
+    "enabled": false
+  },
+  "name": "africlub-auth-delivery-receipts-reader-staging",
+  "main": "src/receipt-reader-worker.mjs",
+  "vars": {
+    "RECEIPT_READ_ENABLED": "false",
+    "RECEIPT_ROUTES_JSON": "[]",
+    "RECEIPT_KEY_VERSION": "1"
+  }
+}

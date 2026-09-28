@@ -1,0 +1,20 @@
+{
+  "name": "africlub-payment-exceptions-staging",
+  "main": "src/worker.mjs",
+  "compatibility_date": "2026-09-28",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [],
+  "vars": {
+    "PAYMENT_CASES_ENABLED": "false",
+    "PAYMENT_CASES_ENVIRONMENT": "isolated-staging"
+  },
+  "d1_databases": [
+    {
+      "binding": "PAYMENT_CASE_DB",
+      "database_name": "africlub-payment-exceptions-staging",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

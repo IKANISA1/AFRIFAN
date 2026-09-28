@@ -1,0 +1,150 @@
+{
+  "folder": "/Google Drive/AFRICLUB/Conversation_Files_2026-09-28",
+  "files": [
+    {
+      "name": "AFRICLUB_Exception_Continuation_Report_2026-09-28.md",
+      "bytes": 2178,
+      "sha256": "343071b329df18315b7f59b15ec5acd50b1b56a94e74f9fb2bb3e7e3c740a453",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Exception_Continuation_Source_Inventory_2026-09-28.json",
+      "bytes": 226,
+      "sha256": "1d132bb3dfcd36bfbd9ad5121a2b1928e2c33a10addf5001548191835a40d349",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Exception_Continuation_Verification_2026-09-28.json",
+      "bytes": 848,
+      "sha256": "fffe0ab2f1f0ccc50c293c4084b8856ab1e0e53efbeef8fa9c153e99a4b4e1fb",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Payment_Exception_Continuation_2026-09-28.zip",
+      "bytes": 2824,
+      "sha256": "c88eb9d63a8e7c0dd256d5d6a20878a7a1c1cb6c64169a187ceab01bcdea8d13",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Production_Audit_Evidence_2026-09-27.zip",
+      "bytes": 421355,
+      "sha256": "398ec29787b56379d34fd97b2143236d0b300afb2852dd2c35d78f5d231fc28f",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Production_Readiness_Complete_Pack_2026-09-27.zip",
+      "bytes": 607811,
+      "sha256": "560fc6c81888d31a33f9745e9b3b61217f81fcfe203974206fe1f304cf5f034a",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Production_Readiness_Report_2026-09-27.pdf",
+      "bytes": 112021,
+      "sha256": "f6620e623a5091ed7e5cf5284fff92d4ba2a4295660a1d27e823ea9ccb2c6041",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Production_Readiness_Tasks_2026-09-27.xlsx",
+      "bytes": 71290,
+      "sha256": "d7c49e3339cf1365921ee9d054d7ed9a80b000e4a16d30ccb1854109838f586f",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Baseline_2026-09-28.zip",
+      "bytes": 563289,
+      "sha256": "ff05c8ff3adb85af8a31fb189471e6c9ad5c87dfa4806eaafc8578a7b877b604",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Evidence_2026-09-28.zip",
+      "bytes": 167473,
+      "sha256": "23de15cca5d4b622a9648ecf450f9cb7edcf209defe8649ac079225383407209",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Report_2026-09-28.md",
+      "bytes": 18363,
+      "sha256": "8742e8a7fce1b9ad6b336cb8f9307ce716f20c1102fa4adb799051ec347e5f4f",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Source_2026-09-28.zip",
+      "bytes": 3146553,
+      "sha256": "3fb8c5e47767582234c46bb80423894ec18da62daf52e4208d9a0ebde5e13e41",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Upload_Pending_2026-09-28.json",
+      "bytes": 151550,
+      "sha256": "b6b449fbd2b38d98c5ea560737b48ae37f889bff17e6c18bb3081e6a69181825",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Verification_2026-09-28.json",
+      "bytes": 3354,
+      "sha256": "88a874554b6ab09bf72e31b593e2b5dd16284bf5c390b1eda9bce69fe32ed703",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Production_Task_Register_Updated_2026-09-28.json",
+      "bytes": 190564,
+      "sha256": "19d37532e3e3a554828f1f922f56486549a59dd29525d1eeb984f82d7449a320",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Baseline_2026-09-28.zip",
+      "bytes": 752657,
+      "sha256": "2d93a17c6a36b96890f6277e4e374fe6d9501fd24ec7e174fbafd01739f56b9b",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Evidence_2026-09-28.zip",
+      "bytes": 378222,
+      "sha256": "4f41398ea65d575b37ce0480ed6efa434152ab8070f979b83df935a4e70e744b",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Local_Delivery_Receipt_2026-09-28.json",
+      "bytes": 2817,
+      "sha256": "cb57a584dba23e1c4b96f906353616b0537ca2968ccd480b1da3c322eb773ece",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Report_2026-09-28.md",
+      "bytes": 14821,
+      "sha256": "29e7137b5aee6bbe6cabc8053334b44c8aaf077ce055253b0e57387180f02172",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Source_2026-09-28.zip",
+      "bytes": 7897483,
+      "sha256": "dd5d6888408eedc10a66d4413f4851f10c644e846632c8f6574e59a2496c76a2",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Task_Register_2026-09-28.json",
+      "bytes": 194981,
+      "sha256": "05714315b230bf1a5454e8f2e8f2ed4bc85564e53ec74e02913cec7fe88fe642",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Upload_Pending_2026-09-28.json",
+      "bytes": 91981,
+      "sha256": "99a51452f5abd9e7f0b89b3bf8b42960b0f2b369cad7bb99ea7b1f563b1cb7d8",
+      "match": true
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Verification_2026-09-28.json",
+      "bytes": 2621,
+      "sha256": "a9cd52331e65fdb6bed2614c1b40cf90c5052aa73be96fa0d44a6d2f7a27ec9b",
+      "match": true
+    },
+    {
+      "name": "DELIVERY_CHECKSUM.json",
+      "bytes": 220,
+      "sha256": "74714a75ed631f2a3521b45ca516b8f118301dcae588ce459650a673c22b6bcb",
+      "match": true
+    }
+  ],
+  "all_match": true
+}

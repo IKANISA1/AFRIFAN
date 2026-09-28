@@ -1,0 +1,27 @@
+{
+  "name": "africlub-supporter-browser-api-staging",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-09-28",
+  "account_id": "",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [],
+  "observability": {"enabled": false},
+  "services": [
+    {"binding": "BROWSER_IDENTITY", "service": "africlub-browser-identity-staging", "entrypoint": "BrowserIdentity"},
+    {"binding": "CHECKOUT", "service": "africlub-membership-checkout-staging", "entrypoint": "MembershipCheckout"},
+    {"binding": "CHECKOUT_READER", "service": "africlub-membership-checkout-staging", "entrypoint": "MembershipCheckoutReader"},
+    {"binding": "PAYMENT_RECEIPTS", "service": "africlub-payment-allocation-staging", "entrypoint": "PaymentReceiptReader"}
+  ],
+  "ratelimits": [
+    {"name": "EDGE_LIMIT", "namespace_id": "REPLACE_WITH_REVIEWED_BROWSER_EDGE_NAMESPACE", "simple": {"limit": 60, "period": 60}},
+    {"name": "SUBJECT_LIMIT", "namespace_id": "REPLACE_WITH_REVIEWED_BROWSER_SUBJECT_NAMESPACE", "simple": {"limit": 60, "period": 60}}
+  ],
+  "vars": {
+    "BROWSER_API_ENABLED": "false",
+    "BROWSER_MEMBERSHIP_ENABLED": "false",
+    "BROWSER_CHECKOUT_ENABLED": "false",
+    "BROWSER_ORIGIN": "",
+    "BROWSER_CLUB_ID": ""
+  }
+}

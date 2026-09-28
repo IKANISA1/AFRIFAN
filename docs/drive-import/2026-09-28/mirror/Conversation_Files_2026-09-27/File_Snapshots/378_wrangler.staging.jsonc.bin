@@ -1,0 +1,24 @@
+{
+  "name": "africlub-payment-allocation-staging",
+  "main": "src/worker.mjs",
+  "compatibility_date": "2026-09-26",
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": { "enabled": false },
+  "vars": {
+    "PAYMENT_ALLOCATION_ENABLED": "false",
+    "ALLOCATION_ENVIRONMENT": "isolated-staging",
+    "INGEST_PRINCIPAL_ID": "",
+    "ALLOCATE_PRINCIPAL_ID": "",
+    "READ_PRINCIPAL_ID": "",
+    "OUTBOX_PRINCIPAL_ID": ""
+  },
+  "d1_databases": [
+    {
+      "binding": "ALLOCATION_DB",
+      "database_name": "africlub-payment-allocation-staging",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ]
+}

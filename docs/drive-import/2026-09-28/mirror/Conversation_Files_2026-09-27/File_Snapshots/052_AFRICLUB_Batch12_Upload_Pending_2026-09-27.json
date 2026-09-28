@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "status": "blocked_no_write_action_exposed",
+  "createdAtUtc": "2026-09-27T03:05:44.327830+00:00",
+  "rootFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+  "plannedDeliveryDirectory": "/Google Drive/AFRICLUB/output/refactor-2026-09-27/batch12-ios-recovery",
+  "directoryCreated": false,
+  "sourceFilesUploaded": 0,
+  "deliverablesUploaded": 0,
+  "uploadAttempted": false,
+  "uploadVerified": false,
+  "reason": "Google Drive action discovery exposed reads only and upload query returned no action; Files manage/write action not exposed. Plugin discovery confirmed Drive installed but provided no missing action.",
+  "sourceFiles": [
+    {
+      "relativePath": "packages/features/feat_membership/lib/native_membership_storage_ios.dart",
+      "destination": "/Google Drive/AFRICLUB/packages/features/feat_membership/lib/native_membership_storage_ios.dart",
+      "sha256": "84ca2d6380ba1f526bb0315f737be071a7fa6f8ecbb92db10304cdfdec8e7a5e",
+      "status": "pending"
+    },
+    {
+      "relativePath": "packages/features/feat_membership/native/ios/README.md",
+      "destination": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/README.md",
+      "sha256": "1dde8cfe8416c1e3b308b6727d6bca0d434b70ce4f76abd3eff3de23e8a42733",
+      "status": "pending"
+    },
+    {
+      "relativePath": "packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryHost.swift",
+      "destination": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryHost.swift",
+      "sha256": "b1bb78b315f2781307449b5ff09c2ee41b880ccf52787265f3057b5f12067dd2",
+      "status": "pending"
+    },
+    {
+      "relativePath": "packages/features/feat_membership/native/ios/Sources/KeychainRecoveryBlob.swift",
+      "destination": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/Sources/KeychainRecoveryBlob.swift",
+      "sha256": "6f87df0aaee43ebdfd4cd14bf48e3be073671922a47d8389bd2dfca6bce3f7a7",
+      "status": "pending"
+    },
+    {
+      "relativePath": "packages/features/feat_membership/native/ios/Sources/RecoveryDispatcher.swift",
+      "destination": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryDispatcher.swift",
+      "sha256": "7c014a35685aae1ef1045bd9cd194b084344d364cbce9a82aefa9a276a418e15",
+      "status": "pending"
+    },
+    {
+      "relativePath": "packages/features/feat_membership/native/ios/Sources/RecoveryFiles.swift",
+      "destination": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryFiles.swift",
+      "sha256": "b4d7d7b2216862fbfc0605c99aeb0ed5f714635dc4f0e0e389dc2f9e634abbf8",
+      "status": "pending"
+    },
+    {
+      "relativePath": "packages/features/feat_membership/native/ios/Sources/RecoveryProtocol.swift",
+      "destination": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryProtocol.swift",
+      "sha256": "92619396de3ac90eb4f013da5ea3f1210da5fabfd13a241550f7c246bacedf31",
+      "status": "pending"
+    },
+    {
+      "relativePath": "packages/features/feat_membership/native/ios/Sources/RecoveryStore.swift",
+      "destination": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryStore.swift",
+      "sha256": "e5aac7f3a830be11a1813ee999dad6ec82e83d42a46e4df0ef757ce3ea798fb5",
+      "status": "pending"
+    },
+    {
+      "relativePath": "packages/features/feat_membership/native/ios/Tests/KeychainRecoveryIntegrationTests.swift",
+      "destination": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/Tests/KeychainRecoveryIntegrationTests.swift",
+      "sha256": "589b652140c9a4020e49d2af182e0e79a345eb2c1ed4968a472fd916e393db1c",
+      "status": "pending"
+    },
+    {
+      "relativePath": "packages/features/feat_membership/native/ios/Tests/RecoveryHarness.swift",
+      "destination": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/Tests/RecoveryHarness.swift",
+      "sha256": "bdc4581e368d6dc410301780640bc398e6f3012c3c1c783f95b45ecce05c2b49",
+      "status": "pending"
+    },
+    {
+      "relativePath": "packages/features/feat_membership/native/ios/contracts/recovery-channel.json",
+      "destination": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/contracts/recovery-channel.json",
+      "sha256": "875422b65061edbae1eb7c024b58ced17d7ab28596a7d736ef42794a6d007864",
+      "status": "pending"
+    },
+    {
+      "relativePath": "packages/features/feat_membership/native/ios/contracts/source-provenance.json",
+      "destination": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/contracts/source-provenance.json",
+      "sha256": "fc663df23f4c1d09309596b79c3132ccf0b42279c48ac1fdca65ded6a3b58f98",
+      "status": "pending"
+    },
+    {
+      "relativePath": "tools/scripts/verify_ios_recovery.py",
+      "destination": "/Google Drive/AFRICLUB/tools/scripts/verify_ios_recovery.py",
+      "sha256": "c81f4656fea8b878c22f9d74ed085cd80bc682a8565c7f0f712ed6bf8027c035",
+      "status": "pending"
+    }
+  ],
+  "deliverables": [
+    {
+      "name": "AFRICLUB_Batch12_Current_Source_Patch_2026-09-27.zip",
+      "destination": "/Google Drive/AFRICLUB/output/refactor-2026-09-27/batch12-ios-recovery/AFRICLUB_Batch12_Current_Source_Patch_2026-09-27.zip",
+      "status": "pending",
+      "sha256": "577c7581ca0afdd2f851c62551d3bdb9e7b06ea5de3fd5db658db9018d1d765d"
+    },
+    {
+      "name": "AFRICLUB_Batch12_Implementation_Report_2026-09-27.md",
+      "destination": "/Google Drive/AFRICLUB/output/refactor-2026-09-27/batch12-ios-recovery/AFRICLUB_Batch12_Implementation_Report_2026-09-27.md",
+      "status": "pending",
+      "sha256": "98849839469599e7ae5ba60172cce1b9158b8425ed2f2f5c73e7f876fa830003"
+    },
+    {
+      "name": "AFRICLUB_Batch12_Verification_2026-09-27.json",
+      "destination": "/Google Drive/AFRICLUB/output/refactor-2026-09-27/batch12-ios-recovery/AFRICLUB_Batch12_Verification_2026-09-27.json",
+      "status": "pending",
+      "sha256": "10545e1bff78d146fb733d1762722b65d3da98a5bc68f6744547765ba0db85d4"
+    },
+    {
+      "name": "AFRICLUB_Remaining_Actions_Batch12_2026-09-27.json",
+      "destination": "/Google Drive/AFRICLUB/output/refactor-2026-09-27/batch12-ios-recovery/AFRICLUB_Remaining_Actions_Batch12_2026-09-27.json",
+      "status": "pending",
+      "sha256": "1a8d4fcc6a3485cfd1d36fbbd3dec64ea42994a45ac8309a751101f3b9dbb446"
+    },
+    {
+      "name": "AFRICLUB_Batch12_Source_Reference_Backup_2026-09-27.zip",
+      "destination": "/Google Drive/AFRICLUB/output/refactor-2026-09-27/batch12-ios-recovery/AFRICLUB_Batch12_Source_Reference_Backup_2026-09-27.zip",
+      "status": "pending",
+      "sha256": "074a9a5c1c5e34898bbe997b3617f3bd51802e85360e695304304c3daaec9f7c"
+    }
+  ],
+  "safety": "Preserve existing IDs. Stop on conflicts. This is not an upload receipt and grants no new production authority.",
+  "additionalLocalVerification": {
+    "name": "AFRICLUB_Batch12_Local_Delivery_Verification_2026-09-27.json",
+    "destination": "/Google Drive/AFRICLUB/output/refactor-2026-09-27/batch12-ios-recovery/AFRICLUB_Batch12_Local_Delivery_Verification_2026-09-27.json",
+    "status": "pending"
+  }
+}

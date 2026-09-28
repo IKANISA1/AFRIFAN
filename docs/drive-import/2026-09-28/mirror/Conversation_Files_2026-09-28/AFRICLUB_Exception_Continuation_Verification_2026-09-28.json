@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-09-28",
+  "scope": "Resumed interrupted payment-exception source; not a whole-repository release validation",
+  "sourceRoot": "/mnt/data/africlub_exception_continuation_2026-09-28",
+  "sourceFilesCaptured": 0,
+  "steps": [
+    {
+      "name": "node-tests",
+      "completed": false,
+      "reason": "runtime_or_source_unavailable"
+    }
+  ],
+  "driveUploaded": false,
+  "deployments": 0,
+  "remoteMigrations": 0,
+  "realPayments": 0,
+  "productionReady": false,
+  "staleRevisionFixIndependentlyReviewed": false,
+  "verificationBoundary": "This preserves current source and machine test output. No success claim is made for unexecuted native, browser, Cloudflare or provider journeys.",
+  "completedTestRuns": 0,
+  "reportedPasses": 0,
+  "reportedFailures": 0,
+  "targetedTestsStatus": "not_fully_verified"
+}

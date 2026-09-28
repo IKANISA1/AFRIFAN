@@ -1,0 +1,18 @@
+{
+  "name": "africlub-operator-publication-staging",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-09-26",
+  "workers_dev": false,
+  "preview_urls": false,
+  "vars": {
+    "OPERATOR_API_ENABLED": "false",
+    "OPERATOR_API_ORIGIN": "",
+    "ACCESS_AUD": "",
+    "ACCESS_ACCOUNT_ID": ""
+  },
+  "services": [{
+    "binding": "PUBLIC_SOURCE_PUBLISHER",
+    "service": "africlub-rayon-authorized-publisher-staging",
+    "entrypoint": "AuthorizedPublicSourcePublisher"
+  }]
+}

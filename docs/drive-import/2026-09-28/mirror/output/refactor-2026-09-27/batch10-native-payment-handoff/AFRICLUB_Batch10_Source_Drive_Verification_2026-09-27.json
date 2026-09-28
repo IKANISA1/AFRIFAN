@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "localDate": "2026-09-27",
+  "sourceChangesSaved": 21,
+  "newFilesCreated": 20,
+  "existingFilesUpdated": 1,
+  "records": [
+    {
+      "path": "cloudflare/supporter-membership-api/NATIVE_PAYMENT_HANDOFF.md",
+      "driveFileId": "194wpJ-UdgzvdBF1O-Jqsr55JlLkxMHsi",
+      "sha256": "7c10d79e2ee7f2cd295219dca3b455fe9ffab4648f4f7fcc5486ebd0b53db95f",
+      "bytes": 9183,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/README.md",
+      "driveFileId": "1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h",
+      "sha256": "3a610d5e28af910cc0ba4645f34a7513f82add7c536e735cbb57c1e08c118be5",
+      "bytes": 11721,
+      "readbackMatched": true,
+      "operation": "updated_preserving_id"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/docs/native-source-provenance.json",
+      "driveFileId": "1D72FT3jnmuG-BOQHZ4MqPhVuh6SUHYmm",
+      "sha256": "d968a7c0270f0b81bddbd17b11898fab1b73ab2a2e1f257f5745149f98520034",
+      "bytes": 1204,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/payment-handoff.ts",
+      "driveFileId": "1uborz61Dlo7riHx0H4di8koibTkKdC8_",
+      "sha256": "61a31e5e91f575c8684daf3c76ac2cece216936eaaddaecbfa0e0360ed47634b",
+      "bytes": 10854,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/scripts/compile-handoff.mjs",
+      "driveFileId": "1YMj4mTQS6ReaqtaHLVFnfcJtM-BWbqtO",
+      "sha256": "13a5e49994c1a24abb33995a5e49236ba8f49ec0b2e451ea4c1629579d687efe",
+      "bytes": 1071,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/scripts/generate-native-vectors.mjs",
+      "driveFileId": "1sz5XuiA2Sx2dO4DJDqIz9xMJpnSUvatf",
+      "sha256": "8a5402143ce559e8d62884abd8f561be2c0bcdd78205d89bdea30bf2ebcb7be4",
+      "bytes": 2788,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/native-wire-vectors.test.mjs",
+      "driveFileId": "1VN1Zr1EjRrxWB4utvbT9mTz9_76YQLu8",
+      "sha256": "f6488c206120af82939ad91a2150a7856a122b166fb46756adccd9cb34a73c1b",
+      "bytes": 1116,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/payment-handoff-integration.test.mjs",
+      "driveFileId": "1bQ2LerQNfcjg4DyFYngMtbhF80PjR9oV",
+      "sha256": "eb75451c2914e6b0a33a6627e7c437dbe4048983e79c81df8cca83da260465cc",
+      "bytes": 3782,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/payment-handoff.test.mjs",
+      "driveFileId": "16oESg9pcVZDEtMSueCVXTmGkzDSb9qe8",
+      "sha256": "cd6c5a1ac9532e171c92e5e1ed44fdbd6913cbdab6264ee5f1f908b776d24624",
+      "bytes": 11585,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "packages/features/feat_membership/NATIVE_CHECKOUT.md",
+      "driveFileId": "1x8ByAohMf_r7jwlCfNR6-RPesnH704io",
+      "sha256": "6736b8346e5fa469a105b64b0f712490694900ebfc38eddc5f20dcbb566a962e",
+      "bytes": 2177,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/native_membership.dart",
+      "driveFileId": "178rhGN134UZTJImBPxAAPzR5T0KiOhvK",
+      "sha256": "596da591f7667db463004d30a90b4177f9e8508ecd26158a7d953a27453d0278",
+      "bytes": 363,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/native_membership_flutter.dart",
+      "driveFileId": "1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri",
+      "sha256": "0ffe1884149489fb0ba52be7a9c21c121de5592c8c2444800ff23af95668c862",
+      "bytes": 1029,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/client.dart",
+      "driveFileId": "1Ysja0Fk2S5392Dt_8d9Q2JtbWvs0_HZ-",
+      "sha256": "86bace9c17301cb654f093cf6ff4200cc0d80ace20841fd877301087ba20d80a",
+      "bytes": 5101,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/io_transport.dart",
+      "driveFileId": "1SnKWEDbd8A1kM5JPlvgu61tjjqo-N3TK",
+      "sha256": "4b2eb261aecd4e814a95338305ee36d475e48cd30cd0d98d9850268e3c206c33",
+      "bytes": 2354,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/models.dart",
+      "driveFileId": "16pIUv8F2dxXdIUlf--NNhGek6Gx9DFHl",
+      "sha256": "70a0cf63f44a7e36ce70dd0962c4295eed589d61d746921623cfce5394523af2",
+      "bytes": 7664,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/payment_handoff.dart",
+      "driveFileId": "1PPbc7_wh5I7oa21GtNjiRpDQb7EX4KyQ",
+      "sha256": "1307a3edb57c7d175f2a57fdfecab2c6e817f82dd2c3e1cdb44119375f96dd79",
+      "bytes": 6993,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/ports.dart",
+      "driveFileId": "19_p0UyZVFtYDu6MbaKPWcv1qGiybf-fs",
+      "sha256": "547b5cbe852074193aa089b6f41a05826faac714749803ef43009bb0df7cba34",
+      "bytes": 1623,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/recovery.dart",
+      "driveFileId": "1k2-N-zEmtbqyIfYhVVNaDli2zDFkm9iX",
+      "sha256": "1b6ee975a8056422eb121d1b5dae21d6fe1fa01479e5cb3fdf057df5583fd2c5",
+      "bytes": 4194,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "packages/features/feat_membership/test/native_checkout/contract_harness.dart",
+      "driveFileId": "1NOVOfdGQ-cVE8EINYUqnWe3i-lTFdneV",
+      "sha256": "5d4ca2a2a66d8f1dbc2ee1435e4a6fb43b8c3e63b147325ae20021ca450d92f2",
+      "bytes": 6726,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "packages/features/feat_membership/test/native_checkout/wire-vectors.json",
+      "driveFileId": "1bZWju6SnjIycsR8LypVyyUMb2607P3iA",
+      "sha256": "100f306fa9d694dfdc4abc3890f8c5a8f6db4f5160927b899dfbd42f2c093dce",
+      "bytes": 31476,
+      "readbackMatched": true,
+      "operation": "created"
+    },
+    {
+      "path": "tools/scripts/verify_native_membership.py",
+      "driveFileId": "1OP1Y6_5i4VOTcu6Q6RbIAP-zpLy84tPk",
+      "sha256": "262e838a3e8f3acfb29c8381ef9174d473f44ddd8a070b038daf52806349a75c",
+      "bytes": 4400,
+      "readbackMatched": true,
+      "operation": "created"
+    }
+  ]
+}

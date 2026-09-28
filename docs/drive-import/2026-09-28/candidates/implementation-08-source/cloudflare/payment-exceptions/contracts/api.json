@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "service": "AFRICLUB payment-exception case review",
+  "apiVersion": "v1",
+  "financialEffect": "none",
+  "referencesVerified": false,
+  "authentication": "Existing gateway ctx.access human identity; private RPC trusts this configured gateway; case-database ACL rechecked on writes",
+  "basePath": "/v1/admin/clubs/{clubId}/payment-exceptions",
+  "writeBodyMaximumBytes": 4096,
+  "writeHeaders": [
+    "Content-Type: application/json",
+    "X-Africlub-Action: payment-case-review",
+    "Idempotency-Key: <lower-case UUID>",
+    "Origin: <exact configured HTTPS origin>"
+  ],
+  "routes": [
+    {
+      "method": "GET",
+      "suffix": "",
+      "rpc": "list",
+      "query": [
+        "after",
+        "state",
+        "limit"
+      ]
+    },
+    {
+      "method": "GET",
+      "suffix": "/{caseId}",
+      "rpc": "get",
+      "query": []
+    },
+    {
+      "method": "GET",
+      "suffix": "/{caseId}/history",
+      "rpc": "history",
+      "query": [
+        "after",
+        "limit"
+      ]
+    },
+    {
+      "method": "POST",
+      "suffix": "/{caseId}/commands",
+      "rpc": "command",
+      "query": []
+    },
+    {
+      "method": "GET",
+      "suffix": "/session",
+      "rpc": "access",
+      "query": []
+    },
+    {
+      "method": "GET",
+      "suffix": "/operations/{operationId}",
+      "rpc": "operation",
+      "query": []
+    }
+  ],
+  "limits": {
+    "maximumPageSize": 50,
+    "maximumExpectedRevision": 2147483646
+  },
+  "enums": {
+    "actions": [
+      "open",
+      "triage",
+      "propose",
+      "approve",
+      "reject",
+      "close",
+      "reopen"
+    ],
+    "states": [
+      "open",
+      "investigating",
+      "awaiting_review",
+      "reviewed",
+      "closed"
+    ],
+    "categories": [
+      "late",
+      "partial",
+      "duplicate",
+      "ambiguous",
+      "missing_reference",
+      "cancelled_order",
+      "refund_request"
+    ],
+    "dispositions": [
+      "no_financial_change",
+      "refer_reconciliation",
+      "refer_refund_review"
+    ],
+    "reasons": [
+      "support_request",
+      "evidence_received",
+      "needs_investigation",
+      "review_complete",
+      "insufficient_evidence",
+      "external_referral",
+      "new_evidence"
+    ]
+  },
+  "body": {
+    "exactKeys": [
+      "expectedRevision",
+      "action",
+      "detail"
+    ],
+    "detailAlwaysRequired": [
+      "reasonCode",
+      "evidenceDigest"
+    ],
+    "openAdditional": [
+      "category",
+      "orderId",
+      "evidenceId"
+    ],
+    "proposeAdditional": [
+      "disposition"
+    ],
+    "requireNonNullDigest": [
+      "propose",
+      "close"
+    ],
+    "unknownKeys": "rejected"
+  },
+  "idempotency": {
+    "scope": [
+      "clubId",
+      "actorSubject",
+      "operationId"
+    ],
+    "payload": "canonical SHA-256 of validated input including identity",
+    "changedPayload": "409 idempotency_conflict",
+    "replay": "original event outcome plus current head; revisions may differ"
+  },
+  "release": {
+    "enabledByDefault": false,
+    "deployed": false,
+    "financialDatabaseChanges": false
+  },
+  "recovery": {
+    "lookup": "Original actor and club only; read-only.",
+    "notFound": "Not observed, not proof that an in-flight command cannot commit.",
+    "retry": "Explicit original operation and exact payload only."
+  }
+}

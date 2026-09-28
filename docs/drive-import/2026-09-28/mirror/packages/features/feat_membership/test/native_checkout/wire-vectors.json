@@ -1,0 +1,1101 @@
+{
+  "schemaVersion": 1,
+  "fixtureOnly": true,
+  "source": "Actual gateway + current identity and checkout/allocation services, synthetic SQLite fixtures",
+  "expected": {
+    "clubId": 24,
+    "userId": "20000000-0000-4000-8000-000000000001",
+    "sessionId": "8cb07a70-8a52-448f-b217-0f8eb0b0f87e",
+    "requestId": "2fda6a8d-0257-4045-b9ca-90a937768f6e",
+    "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+    "tier": "gold"
+  },
+  "vectors": [
+    {
+      "name": "session:valid",
+      "kind": "session",
+      "accept": true,
+      "body": {
+        "schemaVersion": 1,
+        "userId": "20000000-0000-4000-8000-000000000001",
+        "clubId": 24,
+        "sessionId": "8cb07a70-8a52-448f-b217-0f8eb0b0f87e"
+      }
+    },
+    {
+      "name": "session:missing:schemaVersion",
+      "kind": "session",
+      "accept": false,
+      "body": {
+        "userId": "20000000-0000-4000-8000-000000000001",
+        "clubId": 24,
+        "sessionId": "8cb07a70-8a52-448f-b217-0f8eb0b0f87e"
+      }
+    },
+    {
+      "name": "session:missing:userId",
+      "kind": "session",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "sessionId": "8cb07a70-8a52-448f-b217-0f8eb0b0f87e"
+      }
+    },
+    {
+      "name": "session:missing:clubId",
+      "kind": "session",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "userId": "20000000-0000-4000-8000-000000000001",
+        "sessionId": "8cb07a70-8a52-448f-b217-0f8eb0b0f87e"
+      }
+    },
+    {
+      "name": "session:missing:sessionId",
+      "kind": "session",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "userId": "20000000-0000-4000-8000-000000000001",
+        "clubId": 24
+      }
+    },
+    {
+      "name": "session:unknown-field",
+      "kind": "session",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "userId": "20000000-0000-4000-8000-000000000001",
+        "clubId": 24,
+        "sessionId": "8cb07a70-8a52-448f-b217-0f8eb0b0f87e",
+        "unexpected": true
+      }
+    },
+    {
+      "name": "session:wrong-club",
+      "kind": "session",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "userId": "20000000-0000-4000-8000-000000000001",
+        "clubId": 25,
+        "sessionId": "8cb07a70-8a52-448f-b217-0f8eb0b0f87e"
+      }
+    },
+    {
+      "name": "prepared:valid",
+      "kind": "prepared",
+      "accept": true,
+      "body": {
+        "schemaVersion": 1,
+        "requestId": "2fda6a8d-0257-4045-b9ca-90a937768f6e",
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "reused": false,
+        "paymentVerified": false,
+        "membershipActivated": false
+      }
+    },
+    {
+      "name": "prepared:missing:schemaVersion",
+      "kind": "prepared",
+      "accept": false,
+      "body": {
+        "requestId": "2fda6a8d-0257-4045-b9ca-90a937768f6e",
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "reused": false,
+        "paymentVerified": false,
+        "membershipActivated": false
+      }
+    },
+    {
+      "name": "prepared:missing:requestId",
+      "kind": "prepared",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "reused": false,
+        "paymentVerified": false,
+        "membershipActivated": false
+      }
+    },
+    {
+      "name": "prepared:missing:clubId",
+      "kind": "prepared",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "requestId": "2fda6a8d-0257-4045-b9ca-90a937768f6e",
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "reused": false,
+        "paymentVerified": false,
+        "membershipActivated": false
+      }
+    },
+    {
+      "name": "prepared:missing:orderId",
+      "kind": "prepared",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "requestId": "2fda6a8d-0257-4045-b9ca-90a937768f6e",
+        "clubId": 24,
+        "tier": "gold",
+        "reused": false,
+        "paymentVerified": false,
+        "membershipActivated": false
+      }
+    },
+    {
+      "name": "prepared:missing:tier",
+      "kind": "prepared",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "requestId": "2fda6a8d-0257-4045-b9ca-90a937768f6e",
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "reused": false,
+        "paymentVerified": false,
+        "membershipActivated": false
+      }
+    },
+    {
+      "name": "prepared:missing:reused",
+      "kind": "prepared",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "requestId": "2fda6a8d-0257-4045-b9ca-90a937768f6e",
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "paymentVerified": false,
+        "membershipActivated": false
+      }
+    },
+    {
+      "name": "prepared:missing:paymentVerified",
+      "kind": "prepared",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "requestId": "2fda6a8d-0257-4045-b9ca-90a937768f6e",
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "reused": false,
+        "membershipActivated": false
+      }
+    },
+    {
+      "name": "prepared:missing:membershipActivated",
+      "kind": "prepared",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "requestId": "2fda6a8d-0257-4045-b9ca-90a937768f6e",
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "reused": false,
+        "paymentVerified": false
+      }
+    },
+    {
+      "name": "prepared:unknown-field",
+      "kind": "prepared",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "requestId": "2fda6a8d-0257-4045-b9ca-90a937768f6e",
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "reused": false,
+        "paymentVerified": false,
+        "membershipActivated": false,
+        "unexpected": true
+      }
+    },
+    {
+      "name": "prepared:wrong-club",
+      "kind": "prepared",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "requestId": "2fda6a8d-0257-4045-b9ca-90a937768f6e",
+        "clubId": 25,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "reused": false,
+        "paymentVerified": false,
+        "membershipActivated": false
+      }
+    },
+    {
+      "name": "status:valid",
+      "kind": "status",
+      "accept": true,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "pending_current",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": {
+          "amount": 10000,
+          "currency": "RWF",
+          "country": "RW",
+          "provider": "mtn_rwanda",
+          "recipient": "123456",
+          "ussdCode": "*182*8*1*123456*10000#"
+        }
+      }
+    },
+    {
+      "name": "status:missing:schemaVersion",
+      "kind": "status",
+      "accept": false,
+      "body": {
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "pending_current",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": {
+          "amount": 10000,
+          "currency": "RWF",
+          "country": "RW",
+          "provider": "mtn_rwanda",
+          "recipient": "123456",
+          "ussdCode": "*182*8*1*123456*10000#"
+        }
+      }
+    },
+    {
+      "name": "status:missing:clubId",
+      "kind": "status",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "pending_current",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": {
+          "amount": 10000,
+          "currency": "RWF",
+          "country": "RW",
+          "provider": "mtn_rwanda",
+          "recipient": "123456",
+          "ussdCode": "*182*8*1*123456*10000#"
+        }
+      }
+    },
+    {
+      "name": "status:missing:orderId",
+      "kind": "status",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "tier": "gold",
+        "status": "pending_current",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": {
+          "amount": 10000,
+          "currency": "RWF",
+          "country": "RW",
+          "provider": "mtn_rwanda",
+          "recipient": "123456",
+          "ussdCode": "*182*8*1*123456*10000#"
+        }
+      }
+    },
+    {
+      "name": "status:missing:tier",
+      "kind": "status",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "status": "pending_current",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": {
+          "amount": 10000,
+          "currency": "RWF",
+          "country": "RW",
+          "provider": "mtn_rwanda",
+          "recipient": "123456",
+          "ussdCode": "*182*8*1*123456*10000#"
+        }
+      }
+    },
+    {
+      "name": "status:missing:status",
+      "kind": "status",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": {
+          "amount": 10000,
+          "currency": "RWF",
+          "country": "RW",
+          "provider": "mtn_rwanda",
+          "recipient": "123456",
+          "ussdCode": "*182*8*1*123456*10000#"
+        }
+      }
+    },
+    {
+      "name": "status:missing:paymentEvidenceAllocated",
+      "kind": "status",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "pending_current",
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": {
+          "amount": 10000,
+          "currency": "RWF",
+          "country": "RW",
+          "provider": "mtn_rwanda",
+          "recipient": "123456",
+          "ussdCode": "*182*8*1*123456*10000#"
+        }
+      }
+    },
+    {
+      "name": "status:missing:observedAt",
+      "kind": "status",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "pending_current",
+        "paymentEvidenceAllocated": false,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": {
+          "amount": 10000,
+          "currency": "RWF",
+          "country": "RW",
+          "provider": "mtn_rwanda",
+          "recipient": "123456",
+          "ussdCode": "*182*8*1*123456*10000#"
+        }
+      }
+    },
+    {
+      "name": "status:missing:expiresAt",
+      "kind": "status",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "pending_current",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "paymentInstruction": {
+          "amount": 10000,
+          "currency": "RWF",
+          "country": "RW",
+          "provider": "mtn_rwanda",
+          "recipient": "123456",
+          "ussdCode": "*182*8*1*123456*10000#"
+        }
+      }
+    },
+    {
+      "name": "status:missing:paymentInstruction",
+      "kind": "status",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "pending_current",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123
+      }
+    },
+    {
+      "name": "status:unknown-field",
+      "kind": "status",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "pending_current",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": {
+          "amount": 10000,
+          "currency": "RWF",
+          "country": "RW",
+          "provider": "mtn_rwanda",
+          "recipient": "123456",
+          "ussdCode": "*182*8*1*123456*10000#"
+        },
+        "unexpected": true
+      }
+    },
+    {
+      "name": "status:wrong-club",
+      "kind": "status",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 25,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "pending_current",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": {
+          "amount": 10000,
+          "currency": "RWF",
+          "country": "RW",
+          "provider": "mtn_rwanda",
+          "recipient": "123456",
+          "ussdCode": "*182*8*1*123456*10000#"
+        }
+      }
+    },
+    {
+      "name": "receipt:valid",
+      "kind": "receipt",
+      "accept": true,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "allocationId": "01f951db-1893-4add-b625-20b6ca88129d",
+        "amount": 10000,
+        "currency": "RWF",
+        "recordedAt": 1790431200123,
+        "allocationPersisted": true,
+        "businessTargetFulfilled": true,
+        "membershipAtAllocation": {
+          "id": "758d2234-14d7-4c46-93db-d097642df490",
+          "tier": "gold",
+          "status": "active",
+          "paymentStatus": "verified",
+          "expiresAt": 1821967200123
+        },
+        "historical": true
+      }
+    },
+    {
+      "name": "receipt:missing:schemaVersion",
+      "kind": "receipt",
+      "accept": false,
+      "body": {
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "allocationId": "01f951db-1893-4add-b625-20b6ca88129d",
+        "amount": 10000,
+        "currency": "RWF",
+        "recordedAt": 1790431200123,
+        "allocationPersisted": true,
+        "businessTargetFulfilled": true,
+        "membershipAtAllocation": {
+          "id": "758d2234-14d7-4c46-93db-d097642df490",
+          "tier": "gold",
+          "status": "active",
+          "paymentStatus": "verified",
+          "expiresAt": 1821967200123
+        },
+        "historical": true
+      }
+    },
+    {
+      "name": "receipt:missing:clubId",
+      "kind": "receipt",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "allocationId": "01f951db-1893-4add-b625-20b6ca88129d",
+        "amount": 10000,
+        "currency": "RWF",
+        "recordedAt": 1790431200123,
+        "allocationPersisted": true,
+        "businessTargetFulfilled": true,
+        "membershipAtAllocation": {
+          "id": "758d2234-14d7-4c46-93db-d097642df490",
+          "tier": "gold",
+          "status": "active",
+          "paymentStatus": "verified",
+          "expiresAt": 1821967200123
+        },
+        "historical": true
+      }
+    },
+    {
+      "name": "receipt:missing:orderId",
+      "kind": "receipt",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "allocationId": "01f951db-1893-4add-b625-20b6ca88129d",
+        "amount": 10000,
+        "currency": "RWF",
+        "recordedAt": 1790431200123,
+        "allocationPersisted": true,
+        "businessTargetFulfilled": true,
+        "membershipAtAllocation": {
+          "id": "758d2234-14d7-4c46-93db-d097642df490",
+          "tier": "gold",
+          "status": "active",
+          "paymentStatus": "verified",
+          "expiresAt": 1821967200123
+        },
+        "historical": true
+      }
+    },
+    {
+      "name": "receipt:missing:allocationId",
+      "kind": "receipt",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "amount": 10000,
+        "currency": "RWF",
+        "recordedAt": 1790431200123,
+        "allocationPersisted": true,
+        "businessTargetFulfilled": true,
+        "membershipAtAllocation": {
+          "id": "758d2234-14d7-4c46-93db-d097642df490",
+          "tier": "gold",
+          "status": "active",
+          "paymentStatus": "verified",
+          "expiresAt": 1821967200123
+        },
+        "historical": true
+      }
+    },
+    {
+      "name": "receipt:missing:amount",
+      "kind": "receipt",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "allocationId": "01f951db-1893-4add-b625-20b6ca88129d",
+        "currency": "RWF",
+        "recordedAt": 1790431200123,
+        "allocationPersisted": true,
+        "businessTargetFulfilled": true,
+        "membershipAtAllocation": {
+          "id": "758d2234-14d7-4c46-93db-d097642df490",
+          "tier": "gold",
+          "status": "active",
+          "paymentStatus": "verified",
+          "expiresAt": 1821967200123
+        },
+        "historical": true
+      }
+    },
+    {
+      "name": "receipt:missing:currency",
+      "kind": "receipt",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "allocationId": "01f951db-1893-4add-b625-20b6ca88129d",
+        "amount": 10000,
+        "recordedAt": 1790431200123,
+        "allocationPersisted": true,
+        "businessTargetFulfilled": true,
+        "membershipAtAllocation": {
+          "id": "758d2234-14d7-4c46-93db-d097642df490",
+          "tier": "gold",
+          "status": "active",
+          "paymentStatus": "verified",
+          "expiresAt": 1821967200123
+        },
+        "historical": true
+      }
+    },
+    {
+      "name": "receipt:missing:recordedAt",
+      "kind": "receipt",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "allocationId": "01f951db-1893-4add-b625-20b6ca88129d",
+        "amount": 10000,
+        "currency": "RWF",
+        "allocationPersisted": true,
+        "businessTargetFulfilled": true,
+        "membershipAtAllocation": {
+          "id": "758d2234-14d7-4c46-93db-d097642df490",
+          "tier": "gold",
+          "status": "active",
+          "paymentStatus": "verified",
+          "expiresAt": 1821967200123
+        },
+        "historical": true
+      }
+    },
+    {
+      "name": "receipt:missing:allocationPersisted",
+      "kind": "receipt",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "allocationId": "01f951db-1893-4add-b625-20b6ca88129d",
+        "amount": 10000,
+        "currency": "RWF",
+        "recordedAt": 1790431200123,
+        "businessTargetFulfilled": true,
+        "membershipAtAllocation": {
+          "id": "758d2234-14d7-4c46-93db-d097642df490",
+          "tier": "gold",
+          "status": "active",
+          "paymentStatus": "verified",
+          "expiresAt": 1821967200123
+        },
+        "historical": true
+      }
+    },
+    {
+      "name": "receipt:missing:businessTargetFulfilled",
+      "kind": "receipt",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "allocationId": "01f951db-1893-4add-b625-20b6ca88129d",
+        "amount": 10000,
+        "currency": "RWF",
+        "recordedAt": 1790431200123,
+        "allocationPersisted": true,
+        "membershipAtAllocation": {
+          "id": "758d2234-14d7-4c46-93db-d097642df490",
+          "tier": "gold",
+          "status": "active",
+          "paymentStatus": "verified",
+          "expiresAt": 1821967200123
+        },
+        "historical": true
+      }
+    },
+    {
+      "name": "receipt:missing:membershipAtAllocation",
+      "kind": "receipt",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "allocationId": "01f951db-1893-4add-b625-20b6ca88129d",
+        "amount": 10000,
+        "currency": "RWF",
+        "recordedAt": 1790431200123,
+        "allocationPersisted": true,
+        "businessTargetFulfilled": true,
+        "historical": true
+      }
+    },
+    {
+      "name": "receipt:missing:historical",
+      "kind": "receipt",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "allocationId": "01f951db-1893-4add-b625-20b6ca88129d",
+        "amount": 10000,
+        "currency": "RWF",
+        "recordedAt": 1790431200123,
+        "allocationPersisted": true,
+        "businessTargetFulfilled": true,
+        "membershipAtAllocation": {
+          "id": "758d2234-14d7-4c46-93db-d097642df490",
+          "tier": "gold",
+          "status": "active",
+          "paymentStatus": "verified",
+          "expiresAt": 1821967200123
+        }
+      }
+    },
+    {
+      "name": "receipt:unknown-field",
+      "kind": "receipt",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "allocationId": "01f951db-1893-4add-b625-20b6ca88129d",
+        "amount": 10000,
+        "currency": "RWF",
+        "recordedAt": 1790431200123,
+        "allocationPersisted": true,
+        "businessTargetFulfilled": true,
+        "membershipAtAllocation": {
+          "id": "758d2234-14d7-4c46-93db-d097642df490",
+          "tier": "gold",
+          "status": "active",
+          "paymentStatus": "verified",
+          "expiresAt": 1821967200123
+        },
+        "historical": true,
+        "unexpected": true
+      }
+    },
+    {
+      "name": "receipt:wrong-club",
+      "kind": "receipt",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 25,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "allocationId": "01f951db-1893-4add-b625-20b6ca88129d",
+        "amount": 10000,
+        "currency": "RWF",
+        "recordedAt": 1790431200123,
+        "allocationPersisted": true,
+        "businessTargetFulfilled": true,
+        "membershipAtAllocation": {
+          "id": "758d2234-14d7-4c46-93db-d097642df490",
+          "tier": "gold",
+          "status": "active",
+          "paymentStatus": "verified",
+          "expiresAt": 1821967200123
+        },
+        "historical": true
+      }
+    },
+    {
+      "name": "status:allocated-valid",
+      "kind": "status",
+      "accept": true,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "allocated",
+        "paymentEvidenceAllocated": true,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": null
+      }
+    },
+    {
+      "name": "status:expired-valid",
+      "kind": "status",
+      "accept": true,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "expired",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": null
+      }
+    },
+    {
+      "name": "status:cancelled-valid",
+      "kind": "status",
+      "accept": true,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "cancelled",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": null
+      }
+    },
+    {
+      "name": "status:configuration_changed-valid",
+      "kind": "status",
+      "accept": true,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "configuration_changed",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": null
+      }
+    },
+    {
+      "name": "status:invalid:amount",
+      "kind": "status",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "pending_current",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": {
+          "amount": 0,
+          "currency": "RWF",
+          "country": "RW",
+          "provider": "mtn_rwanda",
+          "recipient": "123456",
+          "ussdCode": "*182*8*1*123456*10000#"
+        }
+      }
+    },
+    {
+      "name": "status:invalid:currency",
+      "kind": "status",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "pending_current",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": {
+          "amount": 10000,
+          "currency": "Rwf",
+          "country": "RW",
+          "provider": "mtn_rwanda",
+          "recipient": "123456",
+          "ussdCode": "*182*8*1*123456*10000#"
+        }
+      }
+    },
+    {
+      "name": "status:invalid:country",
+      "kind": "status",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "pending_current",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": {
+          "amount": 10000,
+          "currency": "RWF",
+          "country": "RWA",
+          "provider": "mtn_rwanda",
+          "recipient": "123456",
+          "ussdCode": "*182*8*1*123456*10000#"
+        }
+      }
+    },
+    {
+      "name": "status:invalid:provider",
+      "kind": "status",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "pending_current",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": {
+          "amount": 10000,
+          "currency": "RWF",
+          "country": "RW",
+          "provider": "bad provider",
+          "recipient": "123456",
+          "ussdCode": "*182*8*1*123456*10000#"
+        }
+      }
+    },
+    {
+      "name": "status:invalid:recipient",
+      "kind": "status",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "pending_current",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": {
+          "amount": 10000,
+          "currency": "RWF",
+          "country": "RW",
+          "provider": "mtn_rwanda",
+          "recipient": "last-three-123",
+          "ussdCode": "*182*8*1*123456*10000#"
+        }
+      }
+    },
+    {
+      "name": "status:invalid:ussdCode",
+      "kind": "status",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "pending_current",
+        "paymentEvidenceAllocated": false,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": {
+          "amount": 10000,
+          "currency": "RWF",
+          "country": "RW",
+          "provider": "mtn_rwanda",
+          "recipient": "123456",
+          "ussdCode": "https://example.invalid"
+        }
+      }
+    },
+    {
+      "name": "status:paid-with-instructions",
+      "kind": "status",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "tier": "gold",
+        "status": "allocated",
+        "paymentEvidenceAllocated": true,
+        "observedAt": 1790431200123,
+        "expiresAt": 1790517600123,
+        "paymentInstruction": {
+          "amount": 10000,
+          "currency": "RWF",
+          "country": "RW",
+          "provider": "mtn_rwanda",
+          "recipient": "123456",
+          "ussdCode": "*182*8*1*123456*10000#"
+        }
+      }
+    },
+    {
+      "name": "receipt:not-historical",
+      "kind": "receipt",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "allocationId": "01f951db-1893-4add-b625-20b6ca88129d",
+        "amount": 10000,
+        "currency": "RWF",
+        "recordedAt": 1790431200123,
+        "allocationPersisted": true,
+        "businessTargetFulfilled": true,
+        "membershipAtAllocation": {
+          "id": "758d2234-14d7-4c46-93db-d097642df490",
+          "tier": "gold",
+          "status": "active",
+          "paymentStatus": "verified",
+          "expiresAt": 1821967200123
+        },
+        "historical": false
+      }
+    },
+    {
+      "name": "receipt:tier-object",
+      "kind": "receipt",
+      "accept": false,
+      "body": {
+        "schemaVersion": 1,
+        "clubId": 24,
+        "orderId": "5de5e71d-4737-4c98-afc6-c18f2dec8fca",
+        "allocationId": "01f951db-1893-4add-b625-20b6ca88129d",
+        "amount": 10000,
+        "currency": "RWF",
+        "recordedAt": 1790431200123,
+        "allocationPersisted": true,
+        "businessTargetFulfilled": true,
+        "membershipAtAllocation": {
+          "id": "758d2234-14d7-4c46-93db-d097642df490",
+          "tier": {},
+          "status": "active",
+          "paymentStatus": "verified",
+          "expiresAt": 1821967200123
+        },
+        "historical": true
+      }
+    }
+  ]
+}

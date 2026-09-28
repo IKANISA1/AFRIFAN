@@ -1,0 +1,50 @@
+{
+  "manifest_sha256": "76cd6f1854056efa30b0ad634721b68b32e27da47e20bd256ab315f1a2020de0",
+  "sourceChanges": 21,
+  "nodeVersion": "v22.16.0",
+  "pythonVersion": "3.13.5",
+  "remoteOperations": 0,
+  "actualProviderMessagesSent": 0,
+  "deploymentPerformed": false,
+  "nodeTests": {
+    "tests": 329,
+    "pass": 329,
+    "fail": 0,
+    "skipped": 0
+  },
+  "syntaxAndJsonChecks": 18,
+  "installerTestsPassed": 33,
+  "installationTrials": [
+    {
+      "startingState": "before-delivery-integration",
+      "changed": 21,
+      "rollbackRestoredExactStartingBytes": true
+    },
+    {
+      "startingState": "current-drive-integrated",
+      "changed": 20,
+      "rollbackRestoredExactStartingBytes": true
+    },
+    {
+      "startingState": "new-source-already-uploaded",
+      "changed": 1,
+      "rollbackRestoredExactStartingBytes": true
+    }
+  ],
+  "totalTargetedTestsPassed": 362,
+  "actualCloudflareRuntimeVerified": false,
+  "batch": "6",
+  "as_of_utc": "2026-09-26T13:54:30.034178+00:00",
+  "new_source_files": 19,
+  "existing_files_updated_in_drive": 2,
+  "new_tests": 128,
+  "source_readback_verified": 21,
+  "readback_repeated_code_tests": 329,
+  "repeats_double_counted": false,
+  "production_deployments": 0,
+  "remote_database_migrations": 0,
+  "actual_provider_messages_sent": 0,
+  "complete_migration": false,
+  "source_write_status": "All 21 manifest entries installed at correct Drive paths; 19 additions plus 2 ID-preserving updates.",
+  "source_backup_sha256": "32b6ce65a1f01cdc98abbff5acb0c04144076674cbb50fa6b00c452d33867161"
+}

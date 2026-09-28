@@ -1,0 +1,52 @@
+{
+  "verified": [
+    {
+      "file": "AFRICLUB_Remaining_Actions_v3_2026-09-26.json",
+      "bytes": 9028,
+      "sha256": "4b0f5cad94c31d0544eacb4848d374cf47c5e13d4952baa2cd5278c532ede55c",
+      "drive_readback_match": true
+    },
+    {
+      "file": "AFRICLUB_Batch3_Verification_2026-09-26.json",
+      "bytes": 3601,
+      "sha256": "10aae3f3f7f9321f3461e26f071f7b4a50df93164fd1294a6dad3551396d1c2d",
+      "drive_readback_match": true
+    },
+    {
+      "file": "AFRICLUB_Remaining_Actions_v4_2026-09-26.json",
+      "bytes": 10473,
+      "sha256": "fbaab753f56580663480b50172289b7f6bfc78da4b39c847d0f31c58908fcd9f",
+      "drive_readback_match": true
+    },
+    {
+      "file": "AFRICLUB_Batch3_Implementation_Report_2026-09-26.md",
+      "bytes": 12831,
+      "sha256": "a630b5bd8fe8af72e372112055d84b97e3a9fedba2e20c644aad65f8b8b47305",
+      "drive_readback_match": true
+    },
+    {
+      "file": "AFRICLUB_Batch4_Verification_2026-09-26.json",
+      "bytes": 4129,
+      "sha256": "f844c4075502a18c467a029fdfe0b319ad1f274170a81408d4c0707ada818420",
+      "drive_readback_match": true
+    },
+    {
+      "file": "AFRICLUB_Batch4_Implementation_Report_2026-09-26.md",
+      "bytes": 13585,
+      "sha256": "443a3775bb28105eb8bb05edeb9ecf4e1c33f494d0d0574cc4323d751b2b69dc",
+      "drive_readback_match": true
+    },
+    {
+      "file": "AFRICLUB_Cumulative_Source_Patch_v3_2026-09-26.zip",
+      "bytes": 497871,
+      "sha256": "343e267a8738166a57d572fa4fafb59ba68e0a519437edd55f44737f371cf547",
+      "drive_readback_match": true
+    },
+    {
+      "file": "AFRICLUB_Cumulative_Source_Patch_v4_2026-09-26.zip",
+      "bytes": 609779,
+      "sha256": "e660191cad670983811c83f668f54edc849e3aed6b5e8de862b56b3fcb6249fe",
+      "drive_readback_match": true
+    }
+  ]
+}

@@ -1,0 +1,190 @@
+{
+  "verifiedAtUtc": "2026-09-26T22:01:50.015138+00:00",
+  "sourceFiles": 20,
+  "addedThisContinuation": 10,
+  "updatedPreservingId": 2,
+  "existingPreserved": 8,
+  "sourceReadbackMatches": 20,
+  "files": [
+    {
+      "path": "cloudflare/supporter-membership-api/README.md",
+      "driveFileId": "1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h",
+      "sha256": "8feed17fc00c55a45ca95c2f21c72ec6f375118f0967946e9dd40b09d1a0227b",
+      "bytes": 11159,
+      "downloadedSha256": "8feed17fc00c55a45ca95c2f21c72ec6f375118f0967946e9dd40b09d1a0227b",
+      "matched": true,
+      "operation": "updated_preserving_id"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/client.ts",
+      "driveFileId": "1rbTgLIJzrkYEt3LtNahCIijmsEMpoe-j",
+      "sha256": "d056c088b35891479d29dddf4d9b8d3b2445b641e50e005c5801d26aa24c6e4d",
+      "bytes": 12811,
+      "downloadedSha256": "d056c088b35891479d29dddf4d9b8d3b2445b641e50e005c5801d26aa24c6e4d",
+      "matched": true,
+      "operation": "preserved_verified"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/contracts/openapi.json",
+      "driveFileId": "10ba9ATWsC9hE8XzF4UtdH9n7rA62FiPA",
+      "sha256": "6c54d33af48e38e74ec2bfbb9811b543b4d30a3c5f1022982676a518df40f586",
+      "bytes": 30067,
+      "downloadedSha256": "6c54d33af48e38e74ec2bfbb9811b543b4d30a3c5f1022982676a518df40f586",
+      "matched": true,
+      "operation": "preserved_verified"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/docs/continuation-provenance.json",
+      "driveFileId": "1raGQZVNqsSXry7mmZhu9oKEI5_pL3j-0",
+      "sha256": "bf2c4737846e5e8474f40330842825d4fd03a214e7db95b361dffabca0c02f7a",
+      "bytes": 18776,
+      "downloadedSha256": "bf2c4737846e5e8474f40330842825d4fd03a214e7db95b361dffabca0c02f7a",
+      "matched": true,
+      "operation": "created"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/docs/source-map.md",
+      "driveFileId": "1Q_Px0Xfep3Hg8cFGdmvi0qbof2hzezkL",
+      "sha256": "821f90c4b69702c38081273f99e8a027036d712acf5da4f7997fe27aef5db044",
+      "bytes": 2549,
+      "downloadedSha256": "821f90c4b69702c38081273f99e8a027036d712acf5da4f7997fe27aef5db044",
+      "matched": true,
+      "operation": "preserved_verified"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/docs/source-provenance.json",
+      "driveFileId": "11MXMwLL60VYK5UARQqkZkv4P_ClmA82W",
+      "sha256": "632fb246ad0ad494587038fe7000dccbfc69d4d8b5710d7b4a5016591944c46f",
+      "bytes": 3121,
+      "downloadedSha256": "632fb246ad0ad494587038fe7000dccbfc69d4d8b5710d7b4a5016591944c46f",
+      "matched": true,
+      "operation": "preserved_verified"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/scripts/check-deployment.mjs",
+      "driveFileId": "1tcIPEK5bPaG756MmuhdC6-b5zTaf09kB",
+      "sha256": "406834ac80233c82bc5d7b993eca057e7017f9f8107a715a8376ba7f53cd8efd",
+      "bytes": 6010,
+      "downloadedSha256": "406834ac80233c82bc5d7b993eca057e7017f9f8107a715a8376ba7f53cd8efd",
+      "matched": true,
+      "operation": "created"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/scripts/compile-client.mjs",
+      "driveFileId": "1RDveX7A6VKRu7X6ijSBja_0AucNDYvep",
+      "sha256": "0a3884e25831c84b0cdb2569b639c87ee6134d2893c96784ddff33f1b24c73d0",
+      "bytes": 1006,
+      "downloadedSha256": "0a3884e25831c84b0cdb2569b639c87ee6134d2893c96784ddff33f1b24c73d0",
+      "matched": true,
+      "operation": "created"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/http.mjs",
+      "driveFileId": "1aub5WiSxn6mOynBDReexGRYoWmb3TEkc",
+      "sha256": "daf44bbda3bfa166213dab68ef30cbae75a3b9e06f5318a4728b0290b8a78f20",
+      "bytes": 4025,
+      "downloadedSha256": "daf44bbda3bfa166213dab68ef30cbae75a3b9e06f5318a4728b0290b8a78f20",
+      "matched": true,
+      "operation": "preserved_verified"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/index.mjs",
+      "driveFileId": "1VVbSv26mmCiW9Q6k_cMPvUwqIIPMSMyG",
+      "sha256": "0bc89801b23a6b7d72aee168bb53e68f8c05d420018fb54e6e3b6f3ae4837909",
+      "bytes": 4503,
+      "downloadedSha256": "0bc89801b23a6b7d72aee168bb53e68f8c05d420018fb54e6e3b6f3ae4837909",
+      "matched": true,
+      "operation": "preserved_verified"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/policy.mjs",
+      "driveFileId": "1ThYmG6EP3OXuPQfWzfqgnSC4GFK6Tm--",
+      "sha256": "9c5858a978b3c8e139100d047613b6fd8c2d56e1bc07154b76e8e3a08eabd494",
+      "bytes": 3702,
+      "downloadedSha256": "9c5858a978b3c8e139100d047613b6fd8c2d56e1bc07154b76e8e3a08eabd494",
+      "matched": true,
+      "operation": "preserved_verified"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/projection.mjs",
+      "driveFileId": "1NZQdnOEZbqv9NjXptcsOKq8XFdpXAzCF",
+      "sha256": "d5c17f990370c1d6eb1281eb8c5246021b12c23bd57c09d812a93cbaf537b180",
+      "bytes": 4933,
+      "downloadedSha256": "d5c17f990370c1d6eb1281eb8c5246021b12c23bd57c09d812a93cbaf537b180",
+      "matched": true,
+      "operation": "updated_preserving_id"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/client.test.mjs",
+      "driveFileId": "1-cbV4vkg_mpAsVnCP-V0n5aPfD1u4oAy",
+      "sha256": "291bfbea9d49fd5f41ba060ce64a88f749d4296afce4874e5ded26d49d7ce940",
+      "bytes": 7879,
+      "downloadedSha256": "291bfbea9d49fd5f41ba060ce64a88f749d4296afce4874e5ded26d49d7ce940",
+      "matched": true,
+      "operation": "created"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/config.test.mjs",
+      "driveFileId": "1NSEzTNLGnpc294Tk8j4cHdwJMGA-KT2m",
+      "sha256": "6e61837fcebbd87a43c7357c4a0d34c8a171ddc32647b0f0827d65494cbe6e34",
+      "bytes": 4540,
+      "downloadedSha256": "6e61837fcebbd87a43c7357c4a0d34c8a171ddc32647b0f0827d65494cbe6e34",
+      "matched": true,
+      "operation": "created"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/contract.test.mjs",
+      "driveFileId": "1gdLSX_oZoOeOw0naqAJvzfL43uL7RJ_C",
+      "sha256": "9f7f22ce94ff29eb4ec815020fdd075e4b0ed4af61139a8ab4d4c91bcde9051a",
+      "bytes": 1919,
+      "downloadedSha256": "9f7f22ce94ff29eb4ec815020fdd075e4b0ed4af61139a8ab4d4c91bcde9051a",
+      "matched": true,
+      "operation": "created"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/fixture.mjs",
+      "driveFileId": "1_Ruv6IriV3j6ti2AJmCvAWmAI4wOTOSi",
+      "sha256": "82dcac9833e6428e76bfc50f4f11677e412845833a9a49d0215469536154fa4f",
+      "bytes": 3655,
+      "downloadedSha256": "82dcac9833e6428e76bfc50f4f11677e412845833a9a49d0215469536154fa4f",
+      "matched": true,
+      "operation": "created"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/http-security.test.mjs",
+      "driveFileId": "1RN_R-Z6n8S36DnbWQpWF2Rse9LfZDIgp",
+      "sha256": "c39b7f81ce74736f7b7d2ca8ea59fefa9acf3462094420cd6d812e39ab800f63",
+      "bytes": 5366,
+      "downloadedSha256": "c39b7f81ce74736f7b7d2ca8ea59fefa9acf3462094420cd6d812e39ab800f63",
+      "matched": true,
+      "operation": "created"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/integration.test.mjs",
+      "driveFileId": "1TAnFG6rCA33ern3BSkIcUC8maam5fCRV",
+      "sha256": "1f7348e6d14a0a84348ec72057fab72f4948e04821e745b11718b3701360c15b",
+      "bytes": 6514,
+      "downloadedSha256": "1f7348e6d14a0a84348ec72057fab72f4948e04821e745b11718b3701360c15b",
+      "matched": true,
+      "operation": "created"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/projection.test.mjs",
+      "driveFileId": "1z_AZtPwKSqEYu68flVX1iFfC87niSOWv",
+      "sha256": "594cdfd3b86ace30a5acec1c23da8cff1cb6db58745ba92a18897a75ae4f9695",
+      "bytes": 3167,
+      "downloadedSha256": "594cdfd3b86ace30a5acec1c23da8cff1cb6db58745ba92a18897a75ae4f9695",
+      "matched": true,
+      "operation": "created"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/wrangler.staging.jsonc",
+      "driveFileId": "1AETDVu4czZPLBw5yMVdkGEOgCX_X4S05",
+      "sha256": "3da158262da13ae7df7e364ad891d6f660aa0c8b34d14386a4e820b424b69234",
+      "bytes": 1128,
+      "downloadedSha256": "3da158262da13ae7df7e364ad891d6f660aa0c8b34d14386a4e820b424b69234",
+      "matched": true,
+      "operation": "preserved_verified"
+    }
+  ]
+}

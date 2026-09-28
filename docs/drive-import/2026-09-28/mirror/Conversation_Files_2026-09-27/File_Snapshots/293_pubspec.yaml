@@ -1,0 +1,150 @@
+name: africlub_workspace
+publish_to: none
+
+environment:
+  sdk: ">=3.10.0 <4.0.0"
+  flutter: ">=3.38.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_lints: ^5.0.0
+  core_network:
+    path: packages/core/core_network
+  # Include the published club crest in workspace widget-test asset bundles.
+  feat_club:
+    path: packages/features/feat_club
+  melos: 8.1.0
+  yaml: ^3.1.3
+
+# Dart workspaces treat this root manifest as the primary Flutter package.
+# Keep Material icon generation aligned with every AFRICLUB app and core_theme.
+flutter:
+  uses-material-design: true
+
+workspace:
+  # ── Apps ──
+  - apps/rayon_sports
+  - apps/vitalo
+  - apps/as_vita
+  - apps/nkana
+  - apps/costa_do_sol
+  # ── Core packages ──
+  - packages/core/core_app
+  - packages/app_registry
+  - packages/core/core_auth
+  - packages/core/core_network
+  - packages/core/core_l10n
+  - packages/core/core_theme
+  - packages/core/core_router
+  - packages/core/core_utils
+  - packages/core/core_feature_config
+  # ── Feature packages ──
+  - packages/features/feat_admin
+  - packages/features/feat_club
+  - packages/features/feat_home
+  - packages/features/feat_fan_clubs
+  - packages/features/feat_live
+  - packages/features/feat_membership
+  - packages/features/feat_gamification
+  - packages/features/feat_contributions
+  - packages/features/feat_shop
+  - packages/features/feat_settings
+  - packages/features/feat_onboarding
+  - packages/features/feat_ticketing
+  # ── Shared data and test infrastructure ──
+  - packages/data/club_data
+  - packages/testing/test_support
+  # ── Club config packages ──
+  - packages/clubs/club_rayon_sports
+  - packages/clubs/club_vitalo
+  - packages/clubs/club_as_vita
+  - packages/clubs/club_nkana
+  - packages/clubs/club_costa_do_sol
+
+# Melos 8 reads its configuration from the Dart workspace root. Keep package
+# discovery authoritative in `workspace:` above so tooling cannot silently
+# include packages outside the governed white-label inventory.
+melos:
+  command:
+    bootstrap:
+      environment:
+        sdk: ">=3.10.0 <4.0.0"
+        flutter: ">=3.38.0"
+      hooks:
+        # Flutter regenerates its ignored SwiftPM bridge at iOS 13.0. Rayon
+        # targets iOS 15.5, so the governed bootstrap raises the generated
+        # manifest before Xcode resolves packages. Non-macOS hosts skip safely.
+        post: bash tools/scripts/prepare_rayon_ios_swiftpm.sh rayon_sports
+
+  scripts:
+    analyze:
+      run: flutter analyze --no-pub --fatal-infos --fatal-warnings
+      description: Analyze the complete workspace in one analyzer session
+
+    format:
+      exec: dart format .
+      description: Format all packages
+
+    test_changed:
+      exec:
+        command: bash "$MELOS_ROOT_PATH/tools/scripts/run_package_tests.sh"
+        concurrency: 1
+      packageFilters:
+        diff: origin/main...HEAD
+        dirExists: test
+      description: Run tests only on changed packages
+
+    test_all:
+      exec:
+        command: bash "$MELOS_ROOT_PATH/tools/scripts/run_package_tests.sh"
+        concurrency: 1
+      packageFilters:
+        dirExists: test
+      description: Run tests on all packages
+
+    build_club:
+      run: |
+        FLAVOR_FILE="${AFRICLUB_FLAVOR_FILE:-assets/flavors/production.local.json}"
+        if [ ! -f "$FLAVOR_FILE" ]; then
+          FLAVOR_FILE="assets/flavors/production.json"
+        fi
+        flutter build appbundle \
+          --dart-define-from-file="$FLAVOR_FILE"
+      description: Build Play-ready Android App Bundle for a specific club (run from apps/{club}/)
+
+    build_club_apk:
+      run: |
+        FLAVOR_FILE="${AFRICLUB_FLAVOR_FILE:-assets/flavors/production.local.json}"
+        if [ ! -f "$FLAVOR_FILE" ]; then
+          FLAVOR_FILE="assets/flavors/production.json"
+        fi
+        flutter build apk \
+          --dart-define-from-file="$FLAVOR_FILE"
+      description: Build Android APK for local validation (run from apps/{club}/)
+
+    build_club_staging:
+      run: |
+        FLAVOR_FILE="${AFRICLUB_FLAVOR_FILE:-assets/flavors/staging.local.json}"
+        if [ ! -f "$FLAVOR_FILE" ]; then
+          FLAVOR_FILE="assets/flavors/staging.json"
+        fi
+        flutter build appbundle \
+          --dart-define-from-file="$FLAVOR_FILE"
+      description: Build Play-ready Android App Bundle for a specific club (Staging, run from apps/{club}/)
+
+    build_club_apk_staging:
+      run: |
+        FLAVOR_FILE="${AFRICLUB_FLAVOR_FILE:-assets/flavors/staging.local.json}"
+        if [ ! -f "$FLAVOR_FILE" ]; then
+          FLAVOR_FILE="assets/flavors/staging.json"
+        fi
+        flutter build apk \
+          --dart-define-from-file="$FLAVOR_FILE"
+      description: Build Android APK for local validation (Staging, run from apps/{club}/)
+
+    clean:
+      exec: flutter clean
+      description: Clean all packages

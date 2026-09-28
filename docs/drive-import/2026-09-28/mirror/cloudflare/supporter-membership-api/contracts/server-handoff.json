@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "scope": "Native server-backed membership handoff, isolated staging only",
+  "disabledByDefault": true,
+  "privateEntrypoints": {
+    "MembershipHandoffReserve": {
+      "method": "reserve",
+      "principalVariable": "HANDOFF_RESERVE_PRINCIPAL_ID",
+      "capability": "reserve",
+      "requestFields": [
+        "clubId",
+        "userId",
+        "sessionId",
+        "requestId",
+        "orderId",
+        "reviewHash"
+      ]
+    },
+    "MembershipHandoffRecovery": {
+      "method": "active",
+      "principalVariable": "HANDOFF_READ_PRINCIPAL_ID",
+      "capability": "read",
+      "requestFields": [
+        "clubId",
+        "userId"
+      ]
+    }
+  },
+  "http": {
+    "prefix": "/v1/supporter/clubs/{clubId}",
+    "GET /membership/handoffs": {
+      "requires": "verified native bearer and matching X-AFRICLUB-Session",
+      "effect": "read server slot, no launch, no mutation except existing rate counters"
+    },
+    "POST /membership/checkouts/{orderId}/handoff": {
+      "body": {
+        "reviewHash": "SHA-256 lowercase hex of exact reviewed instruction fields"
+      },
+      "idempotencyHeader": "Idempotency-Key: original UUID",
+      "derivation": "userId and sessionId from current identity verifier, never body fields",
+      "unknownResponse": {
+        "schemaVersion": 1,
+        "error": "handoff_outcome_unknown",
+        "outcome": "unknown",
+        "requestId": "original request UUID"
+      }
+    }
+  },
+  "reservationResponseFields": [
+    "schemaVersion",
+    "clubId",
+    "orderId",
+    "requestId",
+    "handoffId",
+    "reviewHash",
+    "firstDelivery",
+    "mayInvokeDialer",
+    "validForMs",
+    "reservedAt"
+  ],
+  "activeResponseFields": [
+    "schemaVersion",
+    "clubId",
+    "blocked",
+    "handoff"
+  ],
+  "activeRecordFields": [
+    "handoffId",
+    "requestId",
+    "orderId",
+    "reservedAt",
+    "resolution"
+  ],
+  "reviewHash": {
+    "purpose": "africlub-handoff-review-v1",
+    "canonical": "recursive JSON with lexicographically sorted object keys; arrays keep order",
+    "fields": [
+      "clubId",
+      "orderId",
+      "tier",
+      "expiresAt",
+      "amount",
+      "currency",
+      "country",
+      "provider",
+      "recipient",
+      "ussdCode"
+    ],
+    "notAuthentication": true
+  },
+  "limits": {
+    "launchGrantMs": 5000,
+    "remainingOrderMs": 20000,
+    "httpBodyBytes": 256,
+    "httpBodyMs": 1500,
+    "privateCallMs": 5000
+  },
+  "recovery": {
+    "requestReplay": "same reservation, firstDelivery=false, mayInvokeDialer=false, validForMs=0",
+    "slot": "one latest reservation per authenticated user and club; all immutable history retained",
+    "resolvedOnlyBy": "existing atomic membership allocation and matching ledger/receipt",
+    "notResolution": [
+      "client not_opened",
+      "expired",
+      "cancelled",
+      "changed offer",
+      "logout",
+      "reinstallation",
+      "elapsed grant",
+      "local marker deletion"
+    ],
+    "claimLimits": "No end-to-end exactly-once carrier action; trusted compliant client only; pre-existing/manual attempts require reconciliation."
+  },
+  "noOperations": [
+    "clear",
+    "reset",
+    "forceRelease",
+    "pay",
+    "dial",
+    "refund",
+    "erase",
+    "approveSettlement"
+  ]
+}

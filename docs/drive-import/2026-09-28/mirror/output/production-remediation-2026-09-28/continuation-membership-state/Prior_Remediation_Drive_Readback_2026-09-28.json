@@ -1,0 +1,58 @@
+{
+  "verifiedAtUtc": "2026-09-28T06:18:36.722347+00:00",
+  "folderId": "1TmPovmzA160yV7GcTqJ6ndc1lr8Z4Ugu",
+  "allSevenByteMatched": true,
+  "priorFilesUploadedByThisTurn": false,
+  "historicalReportsPreservedUnchanged": true,
+  "files": [
+    {
+      "name": "AFRICLUB_Production_Remediation_Baseline_2026-09-28.zip",
+      "bytes": 563289,
+      "sha256": "ff05c8ff3adb85af8a31fb189471e6c9ad5c87dfa4806eaafc8578a7b877b604",
+      "matchesConversationOriginal": true,
+      "driveFileId": "1DHiDd18BBcUnmSp9J0nyK3_klz3zFDXG"
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Evidence_2026-09-28.zip",
+      "bytes": 167473,
+      "sha256": "23de15cca5d4b622a9648ecf450f9cb7edcf209defe8649ac079225383407209",
+      "matchesConversationOriginal": true,
+      "driveFileId": "1CFzZzvLGcTodJl-qdq9SVEq8BalojgzT"
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Report_2026-09-28.md",
+      "bytes": 18363,
+      "sha256": "8742e8a7fce1b9ad6b336cb8f9307ce716f20c1102fa4adb799051ec347e5f4f",
+      "matchesConversationOriginal": true,
+      "driveFileId": "1DGVRsA7AIDZr6ql7RN8O1821E1rO7pjk"
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Source_2026-09-28.zip",
+      "bytes": 3146553,
+      "sha256": "3fb8c5e47767582234c46bb80423894ec18da62daf52e4208d9a0ebde5e13e41",
+      "matchesConversationOriginal": true,
+      "driveFileId": "1p8hMcLG5Trn5LsPIQvVZroEm6Krgp293"
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Upload_Pending_2026-09-28.json",
+      "bytes": 151550,
+      "sha256": "b6b449fbd2b38d98c5ea560737b48ae37f889bff17e6c18bb3081e6a69181825",
+      "matchesConversationOriginal": true,
+      "driveFileId": "1jdzYzHadUnLVXVXSbluyq3wZGnt729GS"
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Verification_2026-09-28.json",
+      "bytes": 3354,
+      "sha256": "88a874554b6ab09bf72e31b593e2b5dd16284bf5c390b1eda9bce69fe32ed703",
+      "matchesConversationOriginal": true,
+      "driveFileId": "1tzNmEThFK53fSaNkAWEgguVCWJRwxCQY"
+    },
+    {
+      "name": "AFRICLUB_Production_Task_Register_Updated_2026-09-28.json",
+      "bytes": 190564,
+      "sha256": "19d37532e3e3a554828f1f922f56486549a59dd29525d1eeb984f82d7449a320",
+      "matchesConversationOriginal": true,
+      "driveFileId": "1MZiGujogHcvt491JZtypnO8642CrNP0a"
+    }
+  ]
+}

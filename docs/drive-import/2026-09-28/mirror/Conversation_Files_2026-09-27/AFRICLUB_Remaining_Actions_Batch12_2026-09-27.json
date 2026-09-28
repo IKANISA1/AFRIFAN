@@ -1,0 +1,204 @@
+{
+  "as_of_utc": "2026-09-27T03:04:20.595541+00:00",
+  "whole_requested_migration_completed": false,
+  "delivery_basis": "Current partially saved Batch9 reconciled; existing source and terminology preserved",
+  "previous_register": "AFRICLUB_Remaining_Actions_Batch10_2026-09-27.json",
+  "previous_register_sha256": "4497c2efbe445f6d845df926e96427efa48b38ecf8bbaaabd028fe2e29db1c84",
+  "inherited_items_note": "Inherited items (including historical duplicate R17 labels) are preserved, not re-audited production facts. Batch11 updates only source/native storage scope.",
+  "batch9_source_paths": 20,
+  "batch9_new_files_this_continuation": 10,
+  "batch9_existing_files_updated_preserving_ids": 2,
+  "batch9_existing_files_preserved": 8,
+  "batch9_downloaded_source_matches": 20,
+  "targeted_tests_passed": 894,
+  "readback_code_tests_passed": 669,
+  "production_deployments": 0,
+  "remote_migrations": 0,
+  "live_provider_calls": 0,
+  "runtime_enabled": false,
+  "items": [
+    {
+      "id": "R01",
+      "title": "Original Drive source integration",
+      "status": "batch11_source_saved_verified",
+      "evidence": "All sixteen Batch11 source paths saved and SHA256-readback verified; three existing IDs preserved. This does not claim older unrelated repository edits were integrated.",
+      "next_required_action": "Use the current Drive source and exact incremental patch only; retain current source and original IDs. Review unrelated historical integration gaps separately."
+    },
+    {
+      "id": "R02",
+      "title": "Full checkout and Dart/Flutter verification",
+      "status": "native_sdk_execution_blocked",
+      "evidence": "Portable Kotlin core/dispatcher compiled and 69 JVM tests passed. Android host, Dart/Flutter, app/device acceptance not executed; inherited source SDK minima unchanged.",
+      "next_required_action": "Run real native analyzer/harness and full Flutter workspace checks under the existing toolchain; correct all failures before app wiring/release."
+    },
+    {
+      "id": "R03",
+      "title": "Complete five-club release and SMS evidence",
+      "status": "partially_verified",
+      "evidence": "Five original main Android manifests passed source permission checks; regression tests passed. Full source trees, merged release manifests, binaries and device journeys were not checked.",
+      "next_required_action": "Run all-club source and merged-manifest checks; inspect signed Android/iOS artifacts, installed runtimes and each club store/privacy disclosure."
+    },
+    {
+      "id": "R04",
+      "title": "Predict/FET economic approval",
+      "status": "unresolved",
+      "evidence": "Historical 100-FET entry and pooled distribution conflict with the free-entry policy. No new commercial/legal approval was invented.",
+      "next_required_action": "Obtain a versioned accountable product/legal/payment/release decision, then align actual client and server/ledger behavior. Preserve historical records."
+    },
+    {
+      "id": "R05",
+      "title": "Public publishing integration",
+      "status": "operator_ui_and_service_implemented_locally_not_deployed",
+      "evidence": "Same-origin operator UI, inspection/recovery reads, scoped candidate index, safe operation persistence, explicit confirmation and read-only recovery are implemented. Source/API tests pass; browser navigation is blocked by administrator policy. UI/API/publisher flags remain false.",
+      "next_required_action": "Install all source edits, verify in an allowed browser environment and real Cloudflare staging, configure direct Access-protected same-origin ingress and real grants. Integrate a reviewed link into the existing Next admin PWA only after domain and authorization approval."
+    },
+    {
+      "id": "R06",
+      "title": "Migration object disposition decisions",
+      "status": "unresolved",
+      "evidence": "The saved-inventory register contains 1,960 catalog entries; all require approved disposition evidence. It is not a list of objects already migrated.",
+      "next_required_action": "Review every object, resolve overloaded RPC behavior and dependencies, compare the 18 recovered deployed functions, and approve migrate/replace/archive/retire decisions with contracts."
+    },
+    {
+      "id": "R07",
+      "title": "Identity/session and authorization migration",
+      "status": "authenticated_membership_gateway_added_cross_database_revocation_unresolved",
+      "evidence": "The native-bearer gateway calls the current identity verifier and derives the user rather than trusting caller identity. Pre/post token checks, owner gating and session-switch protection are tested. A covered cross-database race can still commit a checkout after session revocation; its result is withheld as unknown. No production identity migration.",
+      "next_required_action": "Complete native credential storage, full auth journeys and explicit cross-database revocation semantics; verify real identity/D1 consistency and existing-client parity."
+    },
+    {
+      "id": "R08",
+      "title": "Transactional domains on real D1",
+      "status": "checkout_and_allocation_connected_through_authenticated_staging_gateway",
+      "evidence": "Existing checkout and allocation cores remain unchanged; full native-protocol local sequence through actual IdentityService, checkout, evidence, allocation and historical receipt runs in two local SQLite stores. Gateway has no payment-allocation or evidence-ingestion authority.",
+      "next_required_action": "Verify real catalog/evidence/history and D1 behavior; complete refunds, contribution effects, shop and ticket commands and approve one-writer cutover separately."
+    },
+    {
+      "id": "R09",
+      "title": "Edge Functions, schedules and providers",
+      "status": "private_delivery_and_signed_receipt_candidate_in_drive_not_deployed",
+      "evidence": "Signed callback intake, immutable pre-send bindings, exact recipient/dispatch correlation, private information-only reader and bounded reconciliation implemented. 128 new tests plus prior regression suites pass; real provider and Workers runtime remain unverified.",
+      "next_required_action": "Review existing provider subscription ownership, provision isolated staging with real sender/account bindings and distinct secrets, test authentic callbacks and runtime failures, add authenticated operator/metrics integration, retention/alerts and remaining provider/job ports."
+    },
+    {
+      "id": "R10",
+      "title": "Complete typed API and client cutover",
+      "status": "native_membership_adapter_source_added_not_app_cutover",
+      "evidence": "Current authenticated gateway preserved. Added TypeScript handoff and native Dart adapter source; TypeScript, unit and integration tests pass. No Dart/Flutter execution, OS secure store implementation or client route switch.",
+      "next_required_action": "Verify Dart, implement OS credential/recovery and process-safe lock ports, wire reviewed foreground UI/lifecycle and test actual device USSD semantics; complete remaining APIs and app flows."
+    },
+    {
+      "id": "R11",
+      "title": "Final consistent backup and eight AFRICLUB originals",
+      "status": "not_reverified_live",
+      "evidence": "Dated records report a restored but not final-consistent archive and eight inaccessible AFRICLUB originals. The separate 11 public-source originals are not those eight. No live auth-user export or public-content replay was performed in batch 4. Batch7 preserves eight source-reference files, not a production database backup or recovery of missing media.",
+      "next_required_action": "Revalidate source access, recover all originals with hashes, take a consistent final database/auth snapshot, and prove restore and complete reconciliation. No billing setting was changed."
+    },
+    {
+      "id": "R12",
+      "title": "Whole-repository dead code and dependency pruning",
+      "status": "partially_addressed",
+      "evidence": "Five supported shells were retained; focused source boundaries were strengthened. No full-tree unused-dependency audit, unrelated scaffold deletion or prior revised-copy cleanup was performed.",
+      "next_required_action": "Use complete caller/import/build/test evidence to remove only proven retired code. Preserve opponent data, fixture venues, active predictions, backend ingestion and retention evidence."
+    },
+    {
+      "id": "R13",
+      "title": "Design and CSS acceptance",
+      "status": "partially_verified",
+      "evidence": "Authority wording and five-club scope were corrected. Nine adjacent duplicate CSS rules were merged with ordered AST equivalence; no visual approval was granted. New operator UI uses the existing token bytes; only source/semantic checks passed. No rendered/fidelity/accessibility approval was obtained.",
+      "next_required_action": "Run pinned web build/budgets and responsive/accessibility/browser/native visual reviews against the actual private design references. Review broader semantic-component duplication separately."
+    },
+    {
+      "id": "R14",
+      "title": "Production cutover",
+      "status": "blocked",
+      "evidence": "No gateway route, live binding, account, database, grant, deployment or writer was enabled. Independent auth/financial database revocation remains a demonstrated release gap.",
+      "next_required_action": "Resolve all existing cutover gates plus live binding isolation, native storage, response recovery and cross-database authorization before controlled one-writer cutover."
+    },
+    {
+      "id": "R15",
+      "title": "Supabase retirement",
+      "status": "blocked",
+      "evidence": "The 22-gate retirement validator is implemented and tested. No keys, jobs, data or services were revoked/deleted/retired.",
+      "next_required_action": "After approved observation, prove no runtime dependency, retained/restorable archives and reconciliation before governed shutdown. After target financial writes, use forward recovery rather than an unreconciled traffic rollback."
+    },
+    {
+      "id": "R16",
+      "title": "Current source versus historical cumulative archive reconciliation",
+      "status": "current_drive_extension_preserved",
+      "evidence": "Batch8 adds checkout companions to the existing payment-allocation DB without replacing its allocation code/schema or historical migration files. Exact-hash incremental installer recognizes current source.",
+      "next_required_action": "Continue reading current Drive files before changes; do not apply historical v1-v4 over newer source."
+    },
+    {
+      "id": "R17",
+      "title": "Delivery receipt production acceptance",
+      "status": "source_implemented_and_uploaded_not_enabled",
+      "evidence": "All three receipt configurations disabled. No live provider message/callback, subscription change, secret provision, migration or deployment. Signed unknown metadata is minimized but retained; immutable receipt status never authorizes login/payments.",
+      "next_required_action": "Validate callback batch capacity, shared-sender data minimization, retention/deletion, key rotation, authorized private-reader consumers and real D1/Meta integration. Do not overwrite another product webhook subscription."
+    },
+    {
+      "id": "R17",
+      "title": "Payment allocation staging prerequisites and full business fulfillment",
+      "status": "required_before_enablement",
+      "evidence": "Private core source is present but all runtime/database gates start disabled. Payment authenticity remains with the trusted reconciler; source hashes/attestation labels do not prove settlement. Contribution rewards and referrals remain unperformed.",
+      "next_required_action": "Verify complete historical provider-reference claims across all targets/clubs, import original pending-order/member identities without enabling them, configure reviewed service principals and bindings, resolve cross-database revocation, and run real runtime acceptance. Implement idempotent outbox consumers, contribution finalization and reversal/retention operations separately."
+    },
+    {
+      "id": "R18",
+      "title": "Native payment handoff platform acceptance",
+      "status": "android_recovery_source_added_portable_core_verified_native_blocked",
+      "evidence": "Android encrypted recovery engine and Dart/Flutter bridge source saved. Portable JVM tests pass; real AndroidKeyStore/Dart/Flutter/iOS/engine/device integration remains unverified. Whole-app data loss and authoritative server recovery remain release blockers.",
+      "next_required_action": "Compile/test native host and Dart, implement iOS and credential suppliers, integrate reviewed app engines/lifecycle/UI, and add server-authoritative recovery for reinstall, data loss and unknown payments. Do not activate real payment handoff on portable tests alone."
+    },
+    {
+      "id": "R19",
+      "title": "Native recovery storage device and data-loss acceptance",
+      "status": "portable_core_verified_native_integration_required",
+      "evidence": "New disabled source; no clear/reset/eviction, global process/OS lock, encrypted CAS and original acquisition recovery. Local tests are not native OS assurance.",
+      "next_required_action": "Run Android build/Keystore/lock/reboot/disk/power/lifecycle/backup/reinstall acceptance, specify supported OS versions and storage retention, implement server-authoritative lost-state recovery and iOS equivalent."
+    }
+  ],
+  "local_date": "2026-09-27",
+  "batch10": {
+    "source_changes": 21,
+    "new_files": 20,
+    "existing_readme_updates": 1,
+    "downloaded_source_hash_matches": 21,
+    "node_tests_passed": 792,
+    "installer_tests_passed": 33,
+    "new_tests_passed": 123,
+    "dart_tests_executed": 0,
+    "dart_gate": "blocked_no_sdk",
+    "live_provider_calls": 0,
+    "deployments": 0,
+    "app_routes_switched": 0
+  },
+  "batch11": {
+    "sourcePaths": 16,
+    "newFiles": 13,
+    "existingFilesUpdatedPreservingIds": 3,
+    "readbackMatches": 16,
+    "portableJvmTestsPassed": 69,
+    "androidHostCompiled": false,
+    "dartExecuted": false,
+    "nativeGate": "blocked",
+    "appsRegistered": 0
+  },
+  "batch12_source_changes": 13,
+  "batch12_files_uploaded_to_drive": 0,
+  "continuation_updates": [
+    {
+      "batch": 12,
+      "nativeIOS": "Portable Swift codec/locks/CAS/dispatcher implemented and 68 tests passed; Keychain/Flutter host and 7 Apple tests authored but unexecuted",
+      "delivery": "Local package complete; current tools expose no write action so zero Batch12 files uploaded",
+      "preservation": "13 additions only; no existing app, project, manifest, backend or Drive original changed",
+      "requiredNext": "Expose a compatible authorized Drive upload action; then verify uploads. Build/test Apple host and Dart/Flutter and actual five-club registration; retain server-authoritative lost-state recovery as release blocker."
+    }
+  ],
+  "batch12_limitations": [
+    "No actual Keychain/iOS/Android host or Dart/Flutter compilation",
+    "No native credential store, server-authoritative lost-installation recovery or app UI registration completed",
+    "No refunds, contribution reward/referral, ticket/shop, real provider or production cutover completion implied",
+    "Older action items retained, not freshly audited production facts"
+  ]
+}

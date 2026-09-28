@@ -1,0 +1,151 @@
+{
+  "original_replacements": 0,
+  "original_write_recheck": "HTTP 403 appNotAuthorizedToFile",
+  "created_source_files": 24,
+  "readback_verified_source_files": [
+    {
+      "path": "cloudflare/rayon-public/migrations/0003_immutable_public_snapshots.sql",
+      "drive_file_id": "1Bzyzr6bO2IHwvBLdMGDq0yLjkUIbD3cK",
+      "sha256": "9e2afd4f88d19b23ab12c7e60e649a336504cb413d2ed4255183a34a6c0cec42",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/rayon-public/migrations/0004_operator_publication.sql",
+      "drive_file_id": "1vHncT56cmGikEDyu8iAG7kWjgHvVkcx3",
+      "sha256": "6f01ed1c26ee1fa30e58957befa8dcb5b6fde63f1032c961693559638703cf94",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/rayon-public/src/snapshot-publication.mjs",
+      "drive_file_id": "1DENkFyS-QtKckSM0G1Pt4bCbgqAlCqcH",
+      "sha256": "9239895ecfc8538d7e157e23c3c25f35f131ccd39f9cdb15e9844dd8efa4b69f",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/rayon-public/src/operator-publication.mjs",
+      "drive_file_id": "1AIZt-cdH83_hRYFn4vlbNEjjl3iAO4pf",
+      "sha256": "24c08ca04ee0d6ee23ba46818aa49c3e31958b4886627deba0bccf4457653017",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/rayon-public/src/authorized-publication-worker.mjs",
+      "drive_file_id": "1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH",
+      "sha256": "a1559f55e9dfba8581f90eeda8c07bffe223dad91707eedd1b8491a1fe8889a0",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/rayon-public/wrangler.authorized-publisher.staging.jsonc",
+      "drive_file_id": "1-pq8HFU902eLk8v0JrzGwUEeKSAKtOku",
+      "sha256": "e575deba1e4e8326873c871f1e15ad075cd10bac97788b8edcade8c55a0e714d",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/operator-api/README.md",
+      "drive_file_id": "1cnQw1uaOqVGXEiCh6nYtobclJ0-wk4gG",
+      "sha256": "b4092b51f3716d4b60c9bfcfe49cbfc55b1cb21344bf8ba760a3afa939afc0cd",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/operator-api/client.ts",
+      "drive_file_id": "1MZvHSfMIxEMw9PEc6w50ECQSXsMiVRSJ",
+      "sha256": "f3e2fd382b611059e6229be78074bd1decadb9e6ef807387ffafb619d24ee031",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/operator-api/wrangler.staging.jsonc",
+      "drive_file_id": "1tVqsVNYSBDrUHaBUZB9GjjaT65ss5q83",
+      "sha256": "6680fa9ae9dcabe007b9d869823184a95b9032c6e488fbaae8a82832d2a27179",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/operator-api/src/access-identity.mjs",
+      "drive_file_id": "1LtG2kIA8_psXzwtNjbEUjtwcFYe29aIm",
+      "sha256": "bbeb20a20ade821712c3eefc7a7502e80ad2e90f33ff19090558c799f2ed03c8",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/operator-api/src/index.mjs",
+      "drive_file_id": "1J66OJK__n47gsN7cyFadnfW63WewYmnj",
+      "sha256": "f680aeb4e98325a8ef0913bf87ba3bd33b4ca1bc090a65a1263ee288a91e089b",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/operator-api/src/errors.mjs",
+      "drive_file_id": "1fpdyafxUvcuNXy-TqAkQ06a_H3UyObcK",
+      "sha256": "a8f839dcbb73a4739a4f6234467da513382857a5bb9d7d67fcb1f4a0c8b6fdd6",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/operator-api/src/http.mjs",
+      "drive_file_id": "1L5kUFozsj58fhKe7blbcm4SYZC-Qr_fT",
+      "sha256": "d0795f22010e3ba5c87ab0d638288cc17d4d71c57f3ec2a0981bd44e8a80110f",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/operator-api/contracts/openapi.json",
+      "drive_file_id": "1mjrMamwIAmGjyCro0prJKCquaJidw7iz",
+      "sha256": "85fbbd72d02dfc4d251d1bb6ad86b4207cc62715c58c0debc0106d9a38c7d831",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/operator-api/scripts/check-deployment.mjs",
+      "drive_file_id": "1A4-xz1skoYarvX16mLn2EenNwdS3ymI9",
+      "sha256": "92918a3d2015f69a9d2a7f5f4d5ceba35830acd4d62bb6781f2fc1d130bada71",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/operator-api/scripts/prepare-enrollment.mjs",
+      "drive_file_id": "1H8x7V0BhGjk1i5_-tXVhB7fo1mvXjXyy",
+      "sha256": "d368626c87d3b3c3ed61fd6f2d9172b1f0caeea95e0bb754af8fdec879d94acc",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/operator-api/scripts/compile-client.mjs",
+      "drive_file_id": "1NQ3MEGunrREvaRQqd505y5VjSntZ_9lb",
+      "sha256": "0651865930745900cbd56d4508ef0a4a3ffac59195fb086b60a320c72568470c",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/operator-api/scripts/replay-saved-export.mjs",
+      "drive_file_id": "1qIr0U82p5piG6uwyJszU3-oodzjIi3gB",
+      "sha256": "cc5d73cb45f5ea6494f2c130fdde9e9d457815964c3378f94069e21c4a774fd2",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/operator-api/tests/publication.test.mjs",
+      "drive_file_id": "1IBjCCeP4sj7UuKLKQDpmLF38e6yGXk2u",
+      "sha256": "7c80aabd0deb1155fb932d9429d2d035efac8311d1de3c5c2daf86af9a342693",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/operator-api/tests/deployment.test.mjs",
+      "drive_file_id": "1nqmGUkXHvKsYcFpLObha__G0Z0gcZttC",
+      "sha256": "3fcdb7bf1315d82110359983c12fe804db76b34818bf92ed8492529a1c2b097d",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/operator-api/tests/auth-http.test.mjs",
+      "drive_file_id": "1wtLimxj63p6GWKuXomi4kUlgQNDANpuG",
+      "sha256": "b862b81dcab1ea431fddfc61dc9bbcf769f24976bfa3e0a496326999df3b7c7b",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/operator-api/tests/client.test.mjs",
+      "drive_file_id": "1mNota7Ike8RsJnCQbOCsk4tkAfCar_wv",
+      "sha256": "8a252d76a338300b2f719873986e6f7c9d3b6418713198dd42a5f1e4e1da9c94",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/operator-api/tests/contract.test.mjs",
+      "drive_file_id": "1JGPGNXGTZs6fONwvRn08f6Y4A5lZCelz",
+      "sha256": "d61b0a1f9a0a27352875543fc72403911031f923a1b5af57580060d399247f88",
+      "readback_matches": true
+    },
+    {
+      "path": "cloudflare/operator-api/tests/support/fixture.mjs",
+      "drive_file_id": "1vBqmKiPQlM8v4usuFpHmCBm884QdWOR5",
+      "sha256": "cc2542303fec2ffd790b12a9279e6cc0570e0fa3e42603a2c30a4c42ac83c4b2",
+      "readback_matches": true
+    }
+  ]
+}

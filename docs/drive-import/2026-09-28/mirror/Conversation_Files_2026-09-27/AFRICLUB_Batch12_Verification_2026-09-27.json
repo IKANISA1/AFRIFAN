@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-27",
+  "sourceChanges": 13,
+  "sourceAdditions": 13,
+  "existingFilesChanged": 0,
+  "testGroups": {
+    "gateway-and-handoff": 283,
+    "payment-regressions": 432,
+    "auth-regressions": 77,
+    "installer": 33,
+    "portable-swift": 68,
+    "portable-kotlin": 69
+  },
+  "totalTargetedTestsPassed": 962,
+  "newSwiftTestsPassed": 68,
+  "appleTestsAuthoredNotExecuted": 7,
+  "swift": {
+    "schemaVersion": 1,
+    "swiftExecuted": true,
+    "iosHostCompiled": false,
+    "keychainExecuted": false,
+    "flutterCompiled": false,
+    "deviceVerified": false,
+    "networkRequests": 0,
+    "releaseReady": false,
+    "steps": [
+      {
+        "name": "portable_compile",
+        "exitCode": 0
+      },
+      {
+        "name": "portable_tests",
+        "exitCode": 0
+      }
+    ],
+    "compiler": "Swift version 6.2.1 (swift-6.2.1-RELEASE)\nTarget: x86_64-unknown-linux-gnu",
+    "portableTestsPassed": 68,
+    "status": "passed_portable_only",
+    "reason": "Apple Keychain, iOS host, Dart/Flutter and device checks remain required"
+  },
+  "portableAndroid": {
+    "schemaVersion": 1,
+    "portableJvmCompiled": true,
+    "portableJvmTestsPassed": 69,
+    "androidHostCompiled": false,
+    "androidKeystoreVerified": false,
+    "flutterBridgeVerified": false,
+    "deviceStorageVerified": false,
+    "appsRegistered": 0,
+    "steps": [
+      {
+        "name": "compile",
+        "exitCode": 0
+      },
+      {
+        "name": "contracts",
+        "exitCode": 0
+      }
+    ],
+    "sourceHashes": {
+      "packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/RecoveryProtocol.kt": "173f9ba29baa9994a2bd8c8819b874a7c8f8d1daf8280b0e6ffc549fbac78e68",
+      "packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/EncryptedRecoveryFile.kt": "cb90f7bc88c3d39590ba53e0afbb95c6aa1f44c47b2c901ea484ed4cd5e5eb44",
+      "packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/RecoveryStore.kt": "142ab7064cf6941605712eb29138a587edf8d86d640f81ac3d4a557acd9c2c08",
+      "packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/RecoveryDispatcher.kt": "5ff0c525d5b6833dca1b41098da33dee27c3b4c41aaad3b10d49fb57ccbc061b",
+      "packages/features/feat_membership/native/android/tests/RecoveryContractHarness.kt": "7cd07844aedd436202aa94da305ed874fa693b9a0e53ec7d262dbda27a173261",
+      "packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/AndroidRecoveryHost.kt": "46bcdae7ea5ce747241323573f41af48a919d0d91e85be3af1122b5878bd7f12",
+      "packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/NativeCheckoutRecoveryPlugin.kt": "ad1f467e08f3ad6530a5942a4484f191f348313c27e793eafef67b33cce6dbe3"
+    },
+    "status": "passed_portable_jvm_only",
+    "reason": "Android host, Keystore, Flutter/Dart and device tests are still required"
+  },
+  "pureDart": {
+    "schemaVersion": 1,
+    "dartExecuted": false,
+    "flutterBridgeVerified": false,
+    "secureStorageVerified": false,
+    "deviceDialerVerified": false,
+    "providerRequests": 0,
+    "dependenciesInstalled": false,
+    "steps": [],
+    "status": "blocked",
+    "reason": "Dart >=3.10 SDK not installed"
+  },
+  "installerTrials": [
+    {
+      "scenario": "current-drive-baseline",
+      "filesToChange": 13,
+      "reapplicationNoChanges": true,
+      "rollbackChecksCompleted": true
+    },
+    {
+      "scenario": "some-new-files-already-saved",
+      "filesToChange": 6,
+      "reapplicationNoChanges": true,
+      "rollbackChecksCompleted": true
+    },
+    {
+      "scenario": "all-matching",
+      "filesToChange": 0,
+      "reapplicationNoChanges": true,
+      "rollbackChecksCompleted": true
+    }
+  ],
+  "combinedRunner": "Host timeout after portable suites; all six installer slices subsequently completed and independently checked before aggregation",
+  "originalManifestPreflightFailure": "Root manifest precondition was added; installer checks were not relaxed",
+  "driveUploadStatus": "blocked_no_write_action_exposed",
+  "driveFilesUploaded": 0,
+  "iosHostCompiled": false,
+  "keychainExecuted": false,
+  "androidHostCompiled": false,
+  "flutterCompiled": false,
+  "deviceTested": false,
+  "appsRegistered": 0,
+  "remoteMigrations": 0,
+  "providerCalls": 0,
+  "deployments": 0,
+  "completeImplementation": false,
+  "overallStatus": "native_release_blocked"
+}

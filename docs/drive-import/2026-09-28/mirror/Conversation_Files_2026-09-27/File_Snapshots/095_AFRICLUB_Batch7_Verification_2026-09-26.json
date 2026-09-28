@@ -1,0 +1,48 @@
+{
+  "manifestSha256": "4d608bb89df0e568d28646a10723f10891a5f1fe5e0cb00306da4946cd8e8994",
+  "sourceAdditions": 22,
+  "originalFilesModified": 0,
+  "nodeVersion": "v22.16.0",
+  "pythonVersion": "3.13.5",
+  "runtimeProductionEnabled": false,
+  "liveProviderRequests": 0,
+  "actualCloudflareRuntimeVerified": false,
+  "databaseMigrationsAppliedRemotely": 0,
+  "newModuleTests": {
+    "tests": 202,
+    "pass": 202,
+    "fail": 0,
+    "skipped": 0
+  },
+  "sqliteRuntime": {
+    "sqlite_version": "3.49.1",
+    "current_time_ms": 1790433535179,
+    "leap_day": "2025-02-28",
+    "shape_ok": 1
+  },
+  "syntaxAndJsonChecks": 18,
+  "installerTestsPassed": 33,
+  "sourceInstallationTrials": [
+    {
+      "startingState": "no-additions",
+      "sourceFilesChanged": 22,
+      "repeatChanged": 0,
+      "startingBytesRestored": true
+    },
+    {
+      "startingState": "half-preinstalled",
+      "sourceFilesChanged": 11,
+      "repeatChanged": 0,
+      "startingBytesRestored": true
+    },
+    {
+      "startingState": "all-preinstalled",
+      "sourceFilesChanged": 0,
+      "repeatChanged": 0,
+      "startingBytesRestored": true
+    }
+  ],
+  "targetedTestsPassed": 235,
+  "sourceReadbackPassed": 22,
+  "readbackCodeTestsPassed": 202
+}

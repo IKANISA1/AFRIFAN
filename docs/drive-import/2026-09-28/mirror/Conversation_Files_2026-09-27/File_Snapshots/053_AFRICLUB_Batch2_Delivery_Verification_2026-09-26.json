@@ -1,0 +1,32 @@
+{
+  "verified_at_utc": "2026-09-26T09:35:41.907273+00:00",
+  "source_files_created_and_hash_verified": 24,
+  "original_files_replaced": 0,
+  "production_deployed": false,
+  "deliverables": [
+    {
+      "filename": "AFRICLUB_Batch2_Implementation_Report_2026-09-26.md",
+      "sha256": "ff60db08b59f053c69bcb9b1794532fd5b80b80db68d89794ae270d167af3bc1",
+      "readback_matches": true,
+      "bytes": 12552
+    },
+    {
+      "filename": "AFRICLUB_Batch2_Source_Drive_Verification_2026-09-26.json",
+      "sha256": "67704bdbbdc5d5f55d83ceb34411779eb3bb735d2651d8e1cf8a016f920f421d",
+      "readback_matches": true,
+      "bytes": 6293
+    },
+    {
+      "filename": "AFRICLUB_Cumulative_Source_Patch_v2_2026-09-26.zip",
+      "sha256": "5caae61ff95c79d61e4b7f3f64bad97344d0e39a50113a981b0821a3d76e1222",
+      "readback_matches": true,
+      "bytes": 560045
+    },
+    {
+      "filename": "AFRICLUB_Remaining_Actions_v2_2026-09-26.json",
+      "sha256": "3611cbbc91c87508e7b238c8d277ec581cd5b42d2544e687c87a489229b1e7dd",
+      "readback_matches": true,
+      "bytes": 8319
+    }
+  ]
+}

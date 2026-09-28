@@ -1,0 +1,39 @@
+{
+  "date": "2026-09-27",
+  "sourceFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+  "freshReads": [
+    {
+      "path": "packages/features/feat_membership/native/android/contracts/recovery-channel.json",
+      "driveFileId": "1bhkqrioi0lANbkNlIhNbjrsRUnzn-u-p",
+      "sha256": "cbba5977307e363c6c98c9d9be26f46ab752d7f3e2791ee1a99abb419783b659"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/platform_recovery_store.dart",
+      "driveFileId": "1Qgr0ZSI6uCT4IISBGvbY4IVRW_cSGIEV",
+      "sha256": "e2a50be206cd7cf2fa815b59133eef009bf05e4d32e65ba3cd66b78506250798"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/native_membership_storage_flutter.dart",
+      "driveFileId": "1wiJODUls_swXjHjGwB4eCw2iPgfavceg",
+      "sha256": "fa276b6bd8b4f81779c2cf4a156b9f90cb80a2be94341c94a0f0724b3cfe788f"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/ports.dart",
+      "driveFileId": "19_p0UyZVFtYDu6MbaKPWcv1qGiybf-fs",
+      "sha256": "547b5cbe852074193aa089b6f41a05826faac714749803ef43009bb0df7cba34"
+    },
+    {
+      "path": "pubspec.yaml",
+      "driveFileId": "1NBjccCUL0GExYKlWVsGptSv3TttePFa7",
+      "sha256": "a04a613f1c3a7b4c00dd2aac1495f2b1bb949f64210acf2f669a77149af17d54"
+    }
+  ],
+  "preservedContext": {
+    "archive": "AFRICLUB_Batch11_Current_Drive_Patch_2026-09-27.zip",
+    "sha256": "32df6c24663c71d1be4a7d3f9a695cd8a78322e769a7b28997679ecf9da638b0",
+    "checksummedEntriesVerified": 184
+  },
+  "wholeRepositoryReexported": false,
+  "driveWriteActionAvailable": false,
+  "driveUploadsCompleted": 0
+}

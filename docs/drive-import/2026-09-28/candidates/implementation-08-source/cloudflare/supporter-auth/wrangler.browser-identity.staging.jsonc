@@ -1,0 +1,25 @@
+{
+  "name": "africlub-browser-identity-staging",
+  "main": "src/browser-identity-worker.mjs",
+  "compatibility_date": "2026-09-28",
+  "account_id": "",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [],
+  "triggers": {"crons": []},
+  "observability": {"enabled": false},
+  "d1_databases": [{
+    "binding": "AUTH_DB",
+    "database_name": "africlub-supporter-identity-staging",
+    "database_id": "REPLACE_WITH_REVIEWED_IDENTITY_DATABASE",
+    "migrations_dir": "migrations"
+  }],
+  "vars": {
+    "AUTH_SERVICE_ENABLED": "false",
+    "AUTH_BROWSER_ENABLED": "false",
+    "AUTH_KEY_VERSION": "1",
+    "BROWSER_ORIGIN": "",
+    "BROWSER_CLUB_ID": "",
+    "AUTH_ISSUANCE_POLICY_JSON": ""
+  }
+}

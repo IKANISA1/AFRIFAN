@@ -1,0 +1,78 @@
+{
+  "verifiedAtUtc": "2026-09-26T22:53:04.736092+00:00",
+  "localDate": "2026-09-27",
+  "driveFolderId": "1akbDxe2JwZSej_rMLX5NrsyKo1jErotP",
+  "driveFolderPath": "/Google Drive/AFRICLUB/output/refactor-2026-09-27/batch10-native-payment-handoff",
+  "deliverables": [
+    {
+      "name": "AFRICLUB_Batch10_Current_Drive_Patch_2026-09-27.zip",
+      "driveFileId": "1sLfuaD_C3JbmZzpX7nTiJjQ2R2HcnHYw",
+      "bytes": 319286,
+      "sha256": "150137983c9841befb71529fe9fbc2ed5ec45f862836fdc5b4ae4ea14340193c",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch10_Implementation_Report_2026-09-27.md",
+      "driveFileId": "1qj0DXJYtm11eUonO2g0xUcl61BP_qjOg",
+      "bytes": 12268,
+      "sha256": "d39d42ffc9542a764f525fa9f62e9e7778b28cef64ea1f29ce54796da523a578",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Remaining_Actions_Batch10_2026-09-27.json",
+      "driveFileId": "15xMZsUGlRKlTbM9LycRRJ2MBYv4MXGRS",
+      "bytes": 13222,
+      "sha256": "4497c2efbe445f6d845df926e96427efa48b38ecf8bbaaabd028fe2e29db1c84",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch10_Verification_2026-09-27.json",
+      "driveFileId": "1STz4GPl-9yM8nYlu3TNLG6q7l9JI6Yzb",
+      "bytes": 1528,
+      "sha256": "c74b36e1750e05dc23086124c80baf0d25c8bdbeaf232b5cdcc7a56612b8fbef",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch10_Source_Drive_Verification_2026-09-27.json",
+      "driveFileId": "1Dcin2O7aHMptIy8B6kF_hv33JisylFcc",
+      "bytes": 6883,
+      "sha256": "821d8f5fdf7a4d74877fdc5e40f46dbd39534b6daceb4e77ba430b81d12a38ff",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch10_Prechange_Source_2026-09-27.zip",
+      "driveFileId": "1c6sqFDq5P87b52bNCUZClxVEtbp5JXFA",
+      "bytes": 163905,
+      "sha256": "da1be71ebd8b22c84738cbd817c776a7152996bed7e3477c32a36f78311e60ee",
+      "readbackMatched": true
+    }
+  ],
+  "sourcePathsSaved": 21,
+  "newFiles": 20,
+  "existingFilesUpdatedPreservingId": 1,
+  "sourceReadbackMatches": 21,
+  "nodeTestsPassed": 792,
+  "installerTestsPassed": 33,
+  "totalTargetedTestsPassed": 825,
+  "newTestsPassed": 123,
+  "readbackCodeTestsPassed": 792,
+  "currentDriveSourcePreflightChanges": 0,
+  "dartExecuted": false,
+  "flutterBridgeVerified": false,
+  "osSecureStorageVerified": false,
+  "realDialerCalls": 0,
+  "providerCalls": 0,
+  "remoteMigrations": 0,
+  "deployments": 0,
+  "appsSwitched": 0,
+  "nativeGate": "blocked_Dart_SDK_absent",
+  "wholeMigrationComplete": false,
+  "archiveIntegrity": {
+    "name": "AFRICLUB_Batch10_Current_Drive_Patch_2026-09-27.zip",
+    "entries": 148,
+    "checksummedFiles": 147,
+    "sourceChanges": 21,
+    "sha256": "150137983c9841befb71529fe9fbc2ed5ec45f862836fdc5b4ae4ea14340193c",
+    "bytes": 319286
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "created_at_utc": "2026-09-26T11:17:16.313219+00:00",
+  "delivery": "local sandbox only; no Google Drive write action was exposed",
+  "drive_writes_performed": false,
+  "production_deployments": 0,
+  "cumulative_source_changes": 83,
+  "batch3_source_changes": 28,
+  "tests": {
+    "source_node": 215,
+    "source_python": 60,
+    "installer": 33,
+    "total_passed": 308,
+    "new_since_v2": 74
+  },
+  "browser": {
+    "engine": "Chromium 144.0.7559.96",
+    "passed": 0,
+    "blocked": 13,
+    "reason": "ERR_BLOCKED_BY_ADMINISTRATOR at initial local navigation",
+    "policy_changed_or_bypassed": false
+  },
+  "saved_source_replay": {
+    "passed": true,
+    "scope": "saved source replay on genuine local SQLite, synthetic Access/RPC and file-backed R2",
+    "snapshotId": "6d128c532f92b95131c32e5c26f6e74164d4df265d2e8d5e8cea3d36bbc3ad92",
+    "sourceRows": 2628,
+    "mediaRecords": 11,
+    "mediaServed": 8,
+    "rightsWithheld": 3,
+    "routes": {
+      "fixtures": 15,
+      "news": 30,
+      "squad": 39,
+      "fanclubs": 42,
+      "partners": 3,
+      "shop": 2,
+      "tickets": 15,
+      "membership-tiers": 6,
+      "predict-pools": 15
+    },
+    "candidateAndReviewInspectionPassed": true,
+    "publicPreviewSectionsVerified": 9,
+    "reviewDidNotPublish": true,
+    "explicitConfirmationRequired": true,
+    "idempotentRetry": true,
+    "publicationReceipts": 1,
+    "publicationAuditEvents": 1,
+    "sourceBytesUnchanged": true,
+    "remoteCalls": false,
+    "liveAuthenticationVerified": false,
+    "releaseAuthorized": false
+  },
+  "installation_trials": {
+    "scope": "Disposable local reconstructions, not original Drive files or a complete checkout",
+    "source_files_in_bundle": 83,
+    "trials": [
+      {
+        "state": "original-scoped-baseline",
+        "source_files_changed": 83,
+        "already_matching": 0,
+        "after_hashes_match": true,
+        "reapply_idempotent": true,
+        "rollback_matches_starting_bytes": true,
+        "remote_calls": false
+      },
+      {
+        "state": "v1-applied",
+        "source_files_changed": 38,
+        "already_matching": 45,
+        "after_hashes_match": true,
+        "reapply_idempotent": true,
+        "rollback_matches_starting_bytes": true,
+        "remote_calls": false
+      },
+      {
+        "state": "v2-applied",
+        "source_files_changed": 28,
+        "already_matching": 55,
+        "after_hashes_match": true,
+        "reapply_idempotent": true,
+        "rollback_matches_starting_bytes": true,
+        "remote_calls": false
+      },
+      {
+        "state": "prior-documented-drive-additions",
+        "source_files_changed": 70,
+        "already_matching": 13,
+        "after_hashes_match": true,
+        "reapply_idempotent": true,
+        "rollback_matches_starting_bytes": true,
+        "remote_calls": false
+      }
+    ]
+  },
+  "zip_integrity_passed": true,
+  "bundled_file_hashes_verified": 119,
+  "files": [
+    {
+      "name": "AFRICLUB_Cumulative_Source_Patch_v3_2026-09-26.zip",
+      "bytes": 497871,
+      "sha256": "343e267a8738166a57d572fa4fafb59ba68e0a519437edd55f44737f371cf547"
+    },
+    {
+      "name": "AFRICLUB_Batch3_Implementation_Report_2026-09-26.md",
+      "bytes": 12831,
+      "sha256": "a630b5bd8fe8af72e372112055d84b97e3a9fedba2e20c644aad65f8b8b47305"
+    },
+    {
+      "name": "AFRICLUB_Remaining_Actions_v3_2026-09-26.json",
+      "bytes": 9028,
+      "sha256": "4b0f5cad94c31d0544eacb4848d374cf47c5e13d4952baa2cd5278c532ede55c"
+    }
+  ],
+  "full_checkout_build_verified": false,
+  "real_access_d1_r2_verified": false,
+  "whole_migration_complete": false
+}

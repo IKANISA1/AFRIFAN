@@ -1,0 +1,1175 @@
+id,workstream,priority,gate,title,action,acceptance_evidence,recommended_owner_role,dependencies,status,release_requirement,evidence_ids,source_urls,qa37_mapping,approval_boundary
+SEC01,Security containment,P0,G0 Contain,Restrict public-write access,Replace anyone/writer access with explicit least-privilege collaborators after the owner approves containment; inspect inherited and item-specific permissions.,Root and sampled sensitive children have no anonymous access; authorized collaborators retain required access; before/after ACL evidence.,Security lead + Drive owner,,Open - verify or implement,Required for affected launch scope,"E01,R01,R02,R15","evidence/permission_observations.json
+https://developers.google.com/workspace/drive/api/reference/rest/v3/permissions
+https://docs.github.com/en/actions/reference/security/secure-use
+https://developer.android.com/studio/publish/app-signing",QA-30,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+SEC02,Security containment,P0,G0 Contain,Investigate potential exposure,"Preserve available access/activity records and inspect who could access credential, signing and recovery artifacts; do not equate exposure with proven theft.","Time-bounded incident assessment, affected asset list, log coverage limits and accountable severity decision.",Security lead + Drive owner,SEC01,Open - verify or implement,Required for affected launch scope,"E01,R01,R02,R15","evidence/permission_observations.json
+https://developers.google.com/workspace/drive/api/reference/rest/v3/permissions
+https://docs.github.com/en/actions/reference/security/secure-use
+https://developer.android.com/studio/publish/app-signing",QA-30,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+SEC03,Security containment,P0,G0 Contain,Revoke affected service credentials,Privately determine whether environment files contain live credentials; revoke/rotate those exposed and verify old credentials fail without logging values.,"Credential-owner register and negative old-key checks; no live secrets in report, source or build logs.",Security lead + Drive owner,SEC02,Open - verify or implement,Required for affected launch scope,"E01,R01,R02,R15","evidence/permission_observations.json
+https://developers.google.com/workspace/drive/api/reference/rest/v3/permissions
+https://docs.github.com/en/actions/reference/security/secure-use
+https://developer.android.com/studio/publish/app-signing",QA-30,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+SEC04,Security containment,P0,G0 Contain,Protect signing identity,Inspect certificate fingerprints and Play App Signing configuration; distinguish upload-key reset from app-signing-key migration before any rotation.,"Approved signing incident plan, certificate lineage and successful authorized test signing/install; no secret key distributed.",Security lead + Drive owner,SEC02,Open - verify or implement,Required for affected launch scope,"E01,R01,R02,R15","evidence/permission_observations.json
+https://developers.google.com/workspace/drive/api/reference/rest/v3/permissions
+https://docs.github.com/en/actions/reference/security/secure-use
+https://developer.android.com/studio/publish/app-signing","QA-30,QA-36","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+SEC05,Security containment,P0,G0 Contain,Re-establish trusted source integrity,"Compare the shared Drive source, archives and hashes against a independently trusted Git baseline; investigate unexpected edits before builds execute.",Reviewed commit/diff and signed or independently retained source manifest; unknown changes quarantined rather than assumed valid.,Security lead + Drive owner,"SEC01,SEC02",Open - verify or implement,Required for affected launch scope,"E01,R01,R02,R15","evidence/permission_observations.json
+https://developers.google.com/workspace/drive/api/reference/rest/v3/permissions
+https://docs.github.com/en/actions/reference/security/secure-use
+https://developer.android.com/studio/publish/app-signing",QA-30,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+SEC06,Security containment,P1,G0 Contain,Separate secret and recovery storage,Move active secrets and signing material to approved secret storage; restrict backups and personal-data exports separately from source collaboration.,"Secret-manager inventory, access tests and sanitized backup destinations; sensitive values absent from clean source export.",Security lead + Drive owner,"SEC03,SEC04",Open - verify or implement,Required for affected launch scope,"E01,R01,R02,R15","evidence/permission_observations.json
+https://developers.google.com/workspace/drive/api/reference/rest/v3/permissions
+https://docs.github.com/en/actions/reference/security/secure-use
+https://developer.android.com/studio/publish/app-signing",QA-30,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+SEC07,Security containment,P1,G0 Contain,Scan source and history,"Run secret and dependency scanning on the clean checkout, history and deliverable archives, classifying synthetic fixtures separately from actual credentials.",Triage of every high-confidence hit; no unresolved active secret; documented false-positive controls and scanner versions.,Security lead + Drive owner,"SEC05,SEC06",Open - verify or implement,Required for affected launch scope,"E01,R01,R02,R15","evidence/permission_observations.json
+https://developers.google.com/workspace/drive/api/reference/rest/v3/permissions
+https://docs.github.com/en/actions/reference/security/secure-use
+https://developer.android.com/studio/publish/app-signing",QA-30,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+SEC08,Security containment,P1,G0 Contain,Harden collaborator governance,"Assign source, release and backup access roles; require strong account authentication, access expiry and periodic review, including external contractors.","Named access owners, tested removal and review cadence; no single public-edit archive is a trust anchor.",Security lead + Drive owner,SEC01,Open - verify or implement,Required for affected launch scope,"E01,R01,R02,R15","evidence/permission_observations.json
+https://developers.google.com/workspace/drive/api/reference/rest/v3/permissions
+https://docs.github.com/en/actions/reference/security/secure-use
+https://developer.android.com/studio/publish/app-signing",QA-30,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+SRC01,Source convergence and architecture,P0,G1 Trusted baseline,Create canonical release checkout,"Resolve one trusted Git repository/ref and pin its commit plus working-tree fingerprint; treat Drive as a workspace/evidence store, not a deployment selector.",A clean reproducible checkout with explicit ownership and no ambiguous current branch or archive-selected source.,Technical lead + repository maintainer,SEC05,Open - verify or implement,Required for affected launch scope,"E02,E03,E11,E12,E15,E17,E26,E28,E29,H02","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/1N23TLa4JwiI46dPwiWV3ODcISwmOJBRX/view
+https://drive.google.com/file/d/1Q3q5yo7o0uB4_Dt_6hhBfdITNMBa7c6b/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+/Google Drive/AFRICLUB/cloudflare/operator-api/
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view",QA-01,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+SRC02,Source convergence and architecture,P1,G1 Trusted baseline,Reconcile every delivered patch,"Compare initial review through Batch 12 manifests to canonical paths; classify each change as installed, superseded, archive-only, conflict or intentionally omitted.",File-by-file install/disposition register; no promise of installation derived only from an archive upload.,Technical lead + repository maintainer,SRC01,Open - verify or implement,Required for affected launch scope,"E02,E03,E11,E12,E15,E17,E26,E28,E29,H02","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/1N23TLa4JwiI46dPwiWV3ODcISwmOJBRX/view
+https://drive.google.com/file/d/1Q3q5yo7o0uB4_Dt_6hhBfdITNMBa7c6b/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+/Google Drive/AFRICLUB/cloudflare/operator-api/
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view",QA-30,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+SRC03,Source convergence and architecture,P1,G1 Trusted baseline,Resolve revised-file siblings,Review .revised copies and duplicate source variants; merge accepted behavior into canonical entrypoints without overwriting newer work.,One governed runtime implementation per concern; revision/archive copies excluded from runtime discovery and preserved separately.,Technical lead + repository maintainer,SRC02,Open - verify or implement,Required for affected launch scope,"E02,E03,E11,E12,E15,E17,E26,E28,E29,H02","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/1N23TLa4JwiI46dPwiWV3ODcISwmOJBRX/view
+https://drive.google.com/file/d/1Q3q5yo7o0uB4_Dt_6hhBfdITNMBa7c6b/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+/Google Drive/AFRICLUB/cloudflare/operator-api/
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view",QA-30,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+SRC04,Source convergence and architecture,P1,G1 Trusted baseline,Install the snapshot-reader integration,"Connect the accepted immutable-snapshot reader, import process and publication schema to the actual configured entrypoint.",Configuration-to-import-to-publish-to-read integration passes on exact installed source; legacy tables are not silently authoritative.,Technical lead + repository maintainer,SRC03,Open - verify or implement,Required for affected launch scope,"E02,E03,E11,E12,E15,E17,E26,E28,E29,H02","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/1N23TLa4JwiI46dPwiWV3ODcISwmOJBRX/view
+https://drive.google.com/file/d/1Q3q5yo7o0uB4_Dt_6hhBfdITNMBa7c6b/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+/Google Drive/AFRICLUB/cloudflare/operator-api/
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view",QA-30,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+SRC05,Source convergence and architecture,P1,G1 Trusted baseline,Repair operator console composition,"Reconcile missing console configuration/worker and session RPC mismatch; choose one consistent gateway, publisher and console contract.","The actual configured console bundles, authenticates and calls only existing versioned publisher methods; complete review/confirm flow succeeds.",Technical lead + repository maintainer,SRC03,Open - verify or implement,Required for affected launch scope,"E02,E03,E11,E12,E15,E17,E26,E28,E29,H02","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/1N23TLa4JwiI46dPwiWV3ODcISwmOJBRX/view
+https://drive.google.com/file/d/1Q3q5yo7o0uB4_Dt_6hhBfdITNMBa7c6b/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+/Google Drive/AFRICLUB/cloudflare/operator-api/
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view",QA-30,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+SRC06,Source convergence and architecture,P1,G1 Trusted baseline,Integrate governed boundary exceptions,Keep retired runtime detection while allowing exact approved migration-evidence paths/hashes; do not disable the scanner or exclude all docs.,"Current plan/inventory pass, forbidden runtime fixtures fail, registry expiry/hash mutations fail; canonical CI invokes corrected validator.",Technical lead + repository maintainer,SRC03,Open - verify or implement,Required for affected launch scope,"E02,E03,E11,E12,E15,E17,E26,E28,E29,H02","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/1N23TLa4JwiI46dPwiWV3ODcISwmOJBRX/view
+https://drive.google.com/file/d/1Q3q5yo7o0uB4_Dt_6hhBfdITNMBa7c6b/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+/Google Drive/AFRICLUB/cloudflare/operator-api/
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view",QA-30,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+SRC07,Source convergence and architecture,P1,G1 Trusted baseline,Resolve backend architecture decision,Retain the shared monorepo; compare D1 transactional plan against measured requirements and a Workers-to-PostgreSQL alternative only if needed.,"Approved ADR for each domain, consistency and data-residency boundaries; no implicit Supabase-exit reversal.",Technical lead + repository maintainer,SRC01,Open - verify or implement,Required for affected launch scope,"E02,E03,E11,E12,E15,E17,E26,E28,E29,H02","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/1N23TLa4JwiI46dPwiWV3ODcISwmOJBRX/view
+https://drive.google.com/file/d/1Q3q5yo7o0uB4_Dt_6hhBfdITNMBa7c6b/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+/Google Drive/AFRICLUB/cloudflare/operator-api/
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view",New audit requirement,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+SRC08,Source convergence and architecture,P1,G1 Trusted baseline,Publish contract ownership map,"Map native/public/admin routes to APIs, domain commands, tables, private bindings and owner roles; include compatibility versions.","Every enabled journey has a maintained call graph, writer and authorization owner; no parallel unowned implementation.",Technical lead + repository maintainer,SRC07,Open - verify or implement,Required for affected launch scope,"E02,E03,E11,E12,E15,E17,E26,E28,E29,H02","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/1N23TLa4JwiI46dPwiWV3ODcISwmOJBRX/view
+https://drive.google.com/file/d/1Q3q5yo7o0uB4_Dt_6hhBfdITNMBa7c6b/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+/Google Drive/AFRICLUB/cloudflare/operator-api/
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view",QA-02,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+SRC09,Source convergence and architecture,P1,G1 Trusted baseline,Enforce feature and tenant precedence,"Specify build capability, club configuration, runtime policy and user authorization precedence; test empty/malformed/stale config and direct deep links.",Wrong-club and disabled-feature requests fail at server and route levels; recovery route works with no enabled modules.,Technical lead + repository maintainer,SRC08,Open - verify or implement,Required for affected launch scope,"E02,E03,E11,E12,E15,E17,E26,E28,E29,H02","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/1N23TLa4JwiI46dPwiWV3ODcISwmOJBRX/view
+https://drive.google.com/file/d/1Q3q5yo7o0uB4_Dt_6hhBfdITNMBa7c6b/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+/Google Drive/AFRICLUB/cloudflare/operator-api/
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view",New audit requirement,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+SRC10,Source convergence and architecture,P2,G1 Trusted baseline,Clean only disposable artifacts,"Separate generated caches, environment files, build output and archives from release source; confirm Git tracking before deleting or moving anything.","Clean export is reproducible; no historic financial evidence, backup or active media removed as generic cleanup.",Technical lead + repository maintainer,"SRC02,SEC06",Open - verify or implement,Required for affected launch scope,"E02,E03,E11,E12,E15,E17,E26,E28,E29,H02","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/1N23TLa4JwiI46dPwiWV3ODcISwmOJBRX/view
+https://drive.google.com/file/d/1Q3q5yo7o0uB4_Dt_6hhBfdITNMBa7c6b/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+/Google Drive/AFRICLUB/cloudflare/operator-api/
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view",New audit requirement,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+CI01,Build and supply-chain gates,P1,G3 Integrated source,Restore hosted CI visibility,Resolve the connected repository access/rename/installation issue; inspect current runs and branch protections without triggering deployment.,"Current repo identity and readable run/required-check evidence; 404 cause resolved, not assumed to be billing.",Build/release engineer,SRC01,Open - verify or implement,Required for affected launch scope,"E06,E07,E08,E09,E10,E30,E31,R02,R03,R04","https://drive.google.com/file/d/1vza_RNiaP7bOgavHdtYifYUk4uYBoOXM/view
+https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1P7Dd9dMO4dT35M-va4qQIYwTgLVFUeCy/view
+https://drive.google.com/file/d/1VUEo8hN8J0fs0WNG9JAPTG6O0VDtudWi/view
+.fvmrc; .nvmrc
+https://api.github.com/repos/IKANISA1/AFRIFAN/actions/runs?per_page=5
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript",QA-32,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+CI02,Build and supply-chain gates,P1,G3 Integrated source,Pin the complete toolchain,"Use .fvmrc 3.44.9, .nvmrc 22.23.2 and npm@12.0.2 as current source pins; reconcile all CI/bootstrap wrappers against them.",Clean runner reports exact versions and locked restore; older local test runtimes are labelled rather than called production builds.,Build/release engineer,SRC01,Open - verify or implement,Required for affected launch scope,"E06,E07,E08,E09,E10,E30,E31,R02,R03,R04","https://drive.google.com/file/d/1vza_RNiaP7bOgavHdtYifYUk4uYBoOXM/view
+https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1P7Dd9dMO4dT35M-va4qQIYwTgLVFUeCy/view
+https://drive.google.com/file/d/1VUEo8hN8J0fs0WNG9JAPTG6O0VDtudWi/view
+.fvmrc; .nvmrc
+https://api.github.com/repos/IKANISA1/AFRIFAN/actions/runs?per_page=5
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript",QA-01,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+CI03,Build and supply-chain gates,P1,G3 Integrated source,Gate every deployment path,Make standalone web deployment depend on the exact successful candidate checks and protected environment approval.,"A deliberately failing typecheck/test cannot deploy through push, dispatch or direct workflow path; artifact hash is identical.",Build/release engineer,"CI01,CI02",Open - verify or implement,Required for affected launch scope,"E06,E07,E08,E09,E10,E30,E31,R02,R03,R04","https://drive.google.com/file/d/1vza_RNiaP7bOgavHdtYifYUk4uYBoOXM/view
+https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1P7Dd9dMO4dT35M-va4qQIYwTgLVFUeCy/view
+https://drive.google.com/file/d/1VUEo8hN8J0fs0WNG9JAPTG6O0VDtudWi/view
+.fvmrc; .nvmrc
+https://api.github.com/repos/IKANISA1/AFRIFAN/actions/runs?per_page=5
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript",QA-32,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+CI04,Build and supply-chain gates,P1,G3 Integrated source,Remove implicit typecheck bypass,Either restore build-time TypeScript checking or prove an unavoidable separate typecheck immediately before all release paths.,Bad-type fixture is rejected in each supported build/deploy route; ignoreBuildErrors cannot bypass acceptance.,Build/release engineer,CI03,Open - verify or implement,Required for affected launch scope,"E06,E07,E08,E09,E10,E30,E31,R02,R03,R04","https://drive.google.com/file/d/1vza_RNiaP7bOgavHdtYifYUk4uYBoOXM/view
+https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1P7Dd9dMO4dT35M-va4qQIYwTgLVFUeCy/view
+https://drive.google.com/file/d/1VUEo8hN8J0fs0WNG9JAPTG6O0VDtudWi/view
+.fvmrc; .nvmrc
+https://api.github.com/repos/IKANISA1/AFRIFAN/actions/runs?per_page=5
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript",QA-32,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+CI05,Build and supply-chain gates,P1,G3 Integrated source,Add candidate backend suites to CI,"Run new public snapshot, operator, identity, receipt, allocation, checkout and gateway suites on changes and release candidates.",CI records explicit passed/failed/skipped counts by module and commit; missing module suite blocks its release.,Build/release engineer,"SRC04,SRC05,SRC06,CI02",Open - verify or implement,Required for affected launch scope,"E06,E07,E08,E09,E10,E30,E31,R02,R03,R04","https://drive.google.com/file/d/1vza_RNiaP7bOgavHdtYifYUk4uYBoOXM/view
+https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1P7Dd9dMO4dT35M-va4qQIYwTgLVFUeCy/view
+https://drive.google.com/file/d/1VUEo8hN8J0fs0WNG9JAPTG6O0VDtudWi/view
+.fvmrc; .nvmrc
+https://api.github.com/repos/IKANISA1/AFRIFAN/actions/runs?per_page=5
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript","QA-04,QA-19","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+CI06,Build and supply-chain gates,P1,G3 Integrated source,Build ten club-platform targets,"Create Android/iOS build matrices for five clubs, with unique identity/config checks; separate simulator/debug from signed device artifacts.",Ten current candidate build records or approved disabled-scope decisions; no four-club result reused as Costa acceptance.,Build/release engineer,"CI02,SRC09",Open - verify or implement,Required for affected launch scope,"E06,E07,E08,E09,E10,E30,E31,R02,R03,R04","https://drive.google.com/file/d/1vza_RNiaP7bOgavHdtYifYUk4uYBoOXM/view
+https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1P7Dd9dMO4dT35M-va4qQIYwTgLVFUeCy/view
+https://drive.google.com/file/d/1VUEo8hN8J0fs0WNG9JAPTG6O0VDtudWi/view
+.fvmrc; .nvmrc
+https://api.github.com/repos/IKANISA1/AFRIFAN/actions/runs?per_page=5
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript","QA-04,QA-23","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+CI07,Build and supply-chain gates,P1,G3 Integrated source,Harden workflow dependencies,"Pin external actions to reviewed full SHAs, scope token permissions and isolate untrusted PR execution from release secrets.",Reviewed workflow policy plus a permissions test; no writable default token or release secrets in untrusted jobs.,Build/release engineer,"CI01,SEC06",Open - verify or implement,Required for affected launch scope,"E06,E07,E08,E09,E10,E30,E31,R02,R03,R04","https://drive.google.com/file/d/1vza_RNiaP7bOgavHdtYifYUk4uYBoOXM/view
+https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1P7Dd9dMO4dT35M-va4qQIYwTgLVFUeCy/view
+https://drive.google.com/file/d/1VUEo8hN8J0fs0WNG9JAPTG6O0VDtudWi/view
+.fvmrc; .nvmrc
+https://api.github.com/repos/IKANISA1/AFRIFAN/actions/runs?per_page=5
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript",QA-32,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+CI08,Build and supply-chain gates,P1,G3 Integrated source,Refresh advisories and SBOM,Run locked production/dev dependency scans and produce a software bill of materials; validate relevant upstream advisories against actual resolved versions.,"Timestamped scan, exploitability triage and SBOM for each artifact; historical zero-alert reports not reused as current proof.",Build/release engineer,CI02,Open - verify or implement,Required for affected launch scope,"E06,E07,E08,E09,E10,E30,E31,R02,R03,R04","https://drive.google.com/file/d/1vza_RNiaP7bOgavHdtYifYUk4uYBoOXM/view
+https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1P7Dd9dMO4dT35M-va4qQIYwTgLVFUeCy/view
+https://drive.google.com/file/d/1VUEo8hN8J0fs0WNG9JAPTG6O0VDtudWi/view
+.fvmrc; .nvmrc
+https://api.github.com/repos/IKANISA1/AFRIFAN/actions/runs?per_page=5
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript",QA-04,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+CI09,Build and supply-chain gates,P1,G3 Integrated source,Seal artifact provenance,"Bind commit/worktree, lockfiles, configuration, generated assets, migrations and binary hashes to immutable release evidence.",Signed or independently protected provenance and verification from downloaded release artifacts.,Build/release engineer,"CI05,CI06,CI08",Open - verify or implement,Required for affected launch scope,"E06,E07,E08,E09,E10,E30,E31,R02,R03,R04","https://drive.google.com/file/d/1vza_RNiaP7bOgavHdtYifYUk4uYBoOXM/view
+https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1P7Dd9dMO4dT35M-va4qQIYwTgLVFUeCy/view
+https://drive.google.com/file/d/1VUEo8hN8J0fs0WNG9JAPTG6O0VDtudWi/view
+.fvmrc; .nvmrc
+https://api.github.com/repos/IKANISA1/AFRIFAN/actions/runs?per_page=5
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript",QA-31,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+CI10,Build and supply-chain gates,P1,G3 Integrated source,Verify native and Worker toolchains,"Run actual Dart/Flutter, Android, Apple SDK and workerd/Wrangler builds instead of desktop-language or syntax-only substitutes.","Target runtime logs and native host tests; unavailable tooling remains blocked, not skipped-as-pass.",Build/release engineer,CI02,Open - verify or implement,Required for affected launch scope,"E06,E07,E08,E09,E10,E30,E31,R02,R03,R04","https://drive.google.com/file/d/1vza_RNiaP7bOgavHdtYifYUk4uYBoOXM/view
+https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1P7Dd9dMO4dT35M-va4qQIYwTgLVFUeCy/view
+https://drive.google.com/file/d/1VUEo8hN8J0fs0WNG9JAPTG6O0VDtudWi/view
+.fvmrc; .nvmrc
+https://api.github.com/repos/IKANISA1/AFRIFAN/actions/runs?per_page=5
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript","QA-01,QA-04","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+AUT01,Identity and authorization,P1,G4 Trusted services,Model the identity migration,"Map existing user IDs, verified phones, anonymous accounts and club bindings; define duplicate/ambiguous account handling without auto-merging.",Reconciled one-to-one identity report plus denied ambiguous cases; original ownership preserved.,Identity/security engineer,SRC08,Open - verify or implement,Required for affected launch scope,"E18,E20,E22,E26,R08,R11,R12,R13","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/
+https://owasp.org/www-project-application-security-verification-standard/
+https://mas.owasp.org/MASVS/
+https://pages.nist.gov/800-63-4/sp800-63b.html",QA-09,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+AUT02,Identity and authorization,P1,G4 Trusted services,Implement protected credential storage,"Build token storage separately from checkout marker storage using platform protections, scoped keys and explicit account lifecycle.","Actual Android/iOS tests for locked state, refresh, logout, switch, backup and key invalidation; no tokens in preferences/logs.",Identity/security engineer,CI10,Open - verify or implement,Required for affected launch scope,"E18,E20,E22,E26,R08,R11,R12,R13","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/
+https://owasp.org/www-project-application-security-verification-standard/
+https://mas.owasp.org/MASVS/
+https://pages.nist.gov/800-63-4/sp800-63b.html",QA-09,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+AUT03,Identity and authorization,P1,G4 Trusted services,Complete anonymous and signup flows,"Implement approved guest entry, verified signup and explicit anonymous-account linking while preserving cross-club ownership.","Actual clients exercise guest-to-verified migration, existing phone conflicts and disabled signup without data loss.",Identity/security engineer,AUT01,Open - verify or implement,Required for affected launch scope,"E18,E20,E22,E26,R08,R11,R12,R13","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/
+https://owasp.org/www-project-application-security-verification-standard/
+https://mas.owasp.org/MASVS/
+https://pages.nist.gov/800-63-4/sp800-63b.html",QA-09,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+AUT04,Identity and authorization,P1,G4 Trusted services,Implement phone and lost-phone recovery,"Require a risk-reviewed recovery path for phone change, SIM/account loss and recycled numbers; avoid login-by-name or suffix matching.",Unauthorized takeover tests fail; legitimate recovery has audit evidence and clearly bounded delay/review.,Identity/security engineer,AUT01,Open - verify or implement,Required for affected launch scope,"E18,E20,E22,E26,R08,R11,R12,R13","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/
+https://owasp.org/www-project-application-security-verification-standard/
+https://mas.owasp.org/MASVS/
+https://pages.nist.gov/800-63-4/sp800-63b.html",QA-09,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+AUT05,Identity and authorization,P1,G4 Trusted services,Verify real OTP delivery,"Use approved WhatsApp authentication templates and provider identities; test invalid signature, cooldown, undelivered, duplicate and delayed events.",Authorized test recipients and provider receipts linked to actual challenge IDs; provider acceptance not equated to handset delivery.,Identity/security engineer,"AUT01,OPS03",Open - verify or implement,Required for affected launch scope,"E18,E20,E22,E26,R08,R11,R12,R13","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/
+https://owasp.org/www-project-application-security-verification-standard/
+https://mas.owasp.org/MASVS/
+https://pages.nist.gov/800-63-4/sp800-63b.html","QA-21,QA-34","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+AUT06,Identity and authorization,P1,G4 Trusted services,Eliminate unsafe legacy delivery defaults,Review the remaining default legacy sender route and ensure the selected production path has persistent deduplication and bounded unknown-outcome handling.,Configuration and crash-after-send tests cannot duplicate external messages through fallback or retries.,Identity/security engineer,AUT05,Open - verify or implement,Required for affected launch scope,"E18,E20,E22,E26,R08,R11,R12,R13","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/
+https://owasp.org/www-project-application-security-verification-standard/
+https://mas.owasp.org/MASVS/
+https://pages.nist.gov/800-63-4/sp800-63b.html",QA-21,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+AUT07,Identity and authorization,P1,G4 Trusted services,Specify cross-database revocation semantics,"Choose a documented command boundary, short-lived capability/revision mechanism or shared authority for sensitive writes; model what revocation can and cannot cancel.",Race tests establish the approved semantics; no claim that a post-write identity recheck rolls back an already committed mutation.,Identity/security engineer,"SRC07,AUT01",Open - verify or implement,Required for affected launch scope,"E18,E20,E22,E26,R08,R11,R12,R13","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/
+https://owasp.org/www-project-application-security-verification-standard/
+https://mas.owasp.org/MASVS/
+https://pages.nist.gov/800-63-4/sp800-63b.html",New audit requirement,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+AUT08,Identity and authorization,P1,G4 Trusted services,Complete refresh and logout integration,"Integrate rotating credentials, original-operation replay and account switch across native/web; preserve unknown outcomes after server commit.",Expiry/reuse/revoke/reload/process-death tests on actual clients; stale credentials cannot act as a different user.,Identity/security engineer,"AUT02,AUT07",Open - verify or implement,Required for affected launch scope,"E18,E20,E22,E26,R08,R11,R12,R13","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/
+https://owasp.org/www-project-application-security-verification-standard/
+https://mas.owasp.org/MASVS/
+https://pages.nist.gov/800-63-4/sp800-63b.html","QA-09,QA-11","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+AUT09,Identity and authorization,P1,G4 Trusted services,Implement staff authorization lifecycle,"Define separate staff roles and bounded grants, strong sign-in, approval separation for sensitive money/admin actions and emergency access.","Wrong-role, expired-grant, cross-club and revoke/re-enable tests; emergency use is attributable and reviewed.",Identity/security engineer,"AUT07,SEC08",Open - verify or implement,Required for affected launch scope,"E18,E20,E22,E26,R08,R11,R12,R13","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/
+https://owasp.org/www-project-application-security-verification-standard/
+https://mas.owasp.org/MASVS/
+https://pages.nist.gov/800-63-4/sp800-63b.html",QA-17,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+AUT10,Identity and authorization,P1,G4 Trusted services,Secure browser sessions,Implement a deliberate browser-cookie/session strategy rather than exposing the native bearer gateway to arbitrary origins.,"CSRF, cookie attributes, same-origin, logout, session fixation and replay tests pass for member/admin web.",Identity/security engineer,AUT07,Open - verify or implement,Required for affected launch scope,"E18,E20,E22,E26,R08,R11,R12,R13","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/
+https://owasp.org/www-project-application-security-verification-standard/
+https://mas.owasp.org/MASVS/
+https://pages.nist.gov/800-63-4/sp800-63b.html",QA-09,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+AUT11,Identity and authorization,P1,G4 Trusted services,Complete export and deletion workflows,"Connect deletion requests to actual downstream erasure/retention handling across services, devices, media and backups; expose status honestly.",End-to-end deletion/export evidence and retention exceptions; pending_external_erasure is not shown as completed deletion.,Identity/security engineer,"AUT01,LEG04",Open - verify or implement,Required for affected launch scope,"E18,E20,E22,E26,R08,R11,R12,R13","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/
+https://owasp.org/www-project-application-security-verification-standard/
+https://mas.owasp.org/MASVS/
+https://pages.nist.gov/800-63-4/sp800-63b.html",QA-09,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+AUT12,Identity and authorization,P1,G4 Trusted services,Threat-model all tenant boundaries,"Test forged tenant/role fields, wrong-owner receipt IDs, private bindings, cache keys, object paths and realtime channels.",Selected ASVS/MASVS requirement mapping and negative test evidence for two unrelated tenants on every sensitive surface.,Identity/security engineer,"SRC08,AUT09,AUT10",Open - verify or implement,Required for affected launch scope,"E18,E20,E22,E26,R08,R11,R12,R13","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1kqV4YJGJ6gt1RTaLghwgLalHullsAqaD/view
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/
+https://owasp.org/www-project-application-security-verification-standard/
+https://mas.owasp.org/MASVS/
+https://pages.nist.gov/800-63-4/sp800-63b.html",QA-19,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PAY01,Payment evidence and recovery,P1,G5 End-to-end transactions,Define authentic evidence ingress,"Implement authenticated management-gateway/provider submission with server-bound club, merchant and sender scope; keep SMS collection outside supporter apps.","Forged text, wrong merchant, replay and wrong-club evidence fail; legitimate provider/reconciler evidence is attributable.",Payments engineer + finance control owner,"AUT09,AUT12",Open - verify or implement,Required for affected launch scope,"E18,E19,E20,E21,E22,H01,R06,R09","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/","QA-06,QA-21,QA-34","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PAY02,Payment evidence and recovery,P1,G5 End-to-end transactions,Reconcile historic transaction claims,Import and independently reconcile previously consumed provider transaction references across every affected club and business target.,"No missing or duplicate historic claims; reviewed reconciliation includes posted ledgers, target ownership and source hashes.",Payments engineer + finance control owner,"DAT01,DAT02",Open - verify or implement,Required for affected launch scope,"E18,E19,E20,E21,E22,H01,R06,R09","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/",New audit requirement,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PAY03,Payment evidence and recovery,P1,G5 End-to-end transactions,Approve receiver and catalog mappings,"Verify five-club merchant ownership, currency, country, provider and prices against authorized commercial records.","Signed mapping/register and real sandbox/provider readback; no placeholder, guessed amount or borrowed Rayon routing.",Payments engineer + finance control owner,"LEG01,DAT02",Open - verify or implement,Required for affected launch scope,"E18,E19,E20,E21,E22,H01,R06,R09","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/",QA-06,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PAY04,Payment evidence and recovery,P1,G5 End-to-end transactions,Connect actual checkout clients,Wire the installed native and web clients to approved identity/checkout contracts with exact original request-key persistence.,Tier-to-checkout-to-read journey passes with real isolated services and all supported club mappings; no arbitrary price override.,Payments engineer + finance control owner,"AUT08,AUT10,PAY03,NAT04",Open - verify or implement,Required for affected launch scope,"E18,E19,E20,E21,E22,H01,R06,R09","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/",QA-10,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PAY05,Payment evidence and recovery,P1,G5 End-to-end transactions,Recover lost local operation state,"Add server-authoritative discovery of unresolved checkout/handoff outcomes after uninstall, new device or complete local-state loss.",Cross-device/reinstall tests cannot create a second payment attempt merely because the local marker disappeared.,Payments engineer + finance control owner,"AUT07,PAY04",Open - verify or implement,Required for affected launch scope,"E18,E19,E20,E21,E22,H01,R06,R09","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/",QA-08,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PAY06,Payment evidence and recovery,P1,G5 End-to-end transactions,Resolve late and unknown payments,"Build an operator exception queue for expired/cancelled orders, mismatched amounts, uncertain handoffs and delayed receipts without deleting claims.",Approved maker/checker resolution scenarios preserve source evidence and block double fulfillment.,Payments engineer + finance control owner,"PAY01,PAY05,AUT09",Open - verify or implement,Required for affected launch scope,"E18,E19,E20,E21,E22,H01,R06,R09","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/",QA-06,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PAY07,Payment evidence and recovery,P1,G5 End-to-end transactions,Implement reversals and refunds,"Define compensating financial entries and provider refund confirmation; distinguish cancellation, refund requested and money returned.",Partial/full/repeated/out-of-order refund tests; retained original claim/receipt and reconciled net business outcome.,Payments engineer + finance control owner,"PAY06,LEG02",Open - verify or implement,Required for affected launch scope,"E18,E19,E20,E21,E22,H01,R06,R09","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/","QA-13,QA-14","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PAY08,Payment evidence and recovery,P1,G5 End-to-end transactions,Prove one writer under cutover,"Prevent simultaneous legacy and candidate allocations, and test old-client requests against the transition boundary.",A payment reference cannot be consumed on both systems; explicit write fence and reconciliation evidence.,Payments engineer + finance control owner,"PAY02,DAT07",Open - verify or implement,Required for affected launch scope,"E18,E19,E20,E21,E22,H01,R06,R09","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/",QA-07,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PAY09,Payment evidence and recovery,P1,G5 End-to-end transactions,Integrate durable effect consumers,"Deliver outbox effects through idempotent consumers with retry, poison-event quarantine and accountable replay.","Crash after effect/before acknowledgement does not duplicate membership cards, notifications or rewards.",Payments engineer + finance control owner,"DOM10,OPS03",Open - verify or implement,Required for affected launch scope,"E18,E19,E20,E21,E22,H01,R06,R09","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/",QA-08,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PAY10,Payment evidence and recovery,P1,G5 End-to-end transactions,Run real transactional acceptance,"Exercise source checkout, authentic evidence, exact allocation, renewal, receipts and current entitlement through integrated clients.",Actual target D1/runtime and authorized provider tests; last-slot/duplicate/request-loss cases preserve invariants.,Payments engineer + finance control owner,"PAY01,PAY04,PAY08",Open - verify or implement,Required for affected launch scope,"E18,E19,E20,E21,E22,H01,R06,R09","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/","QA-05,QA-07,QA-19,QA-34","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PAY11,Payment evidence and recovery,P1,G5 End-to-end transactions,Reconcile finance and operations,"Produce daily control totals connecting provider statement, evidence, allocation ledger, target fulfillment, refund and exceptions.",Explained zero-difference reconciliation for test periods with known exceptions and independent finance review.,Payments engineer + finance control owner,"PAY07,PAY09,PAY10",Open - verify or implement,Required for affected launch scope,"E18,E19,E20,E21,E22,H01,R06,R09","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/",New audit requirement,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PAY12,Payment evidence and recovery,P1,G5 End-to-end transactions,Review ledger language and presentation,"Keep allocated debit evidence separate from cash wallet, accounting general ledger and current entitlement; label historic receipts correctly.","API/UI copy and reports reflect actual state; no misleading balance, settlement or activation statement.",Payments engineer + finance control owner,"PAY10,DOM01",Open - verify or implement,Required for affected launch scope,"E18,E19,E20,E21,E22,H01,R06,R09","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1xBC0GmbHRGxECDyg0sSoYLxCLc5B19DJ/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/",New audit requirement,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DOM01,Complete retained business domains,P1,G5 End-to-end transactions,Complete membership product,"Connect current entitlement, card identity, renewals, suspension, statements and supporter-group access beyond the isolated allocation core.",End-to-end membership state matrix with preserved IDs/points and no access inferred solely from a historic receipt.,Domain leads + product owner,"PAY10,AUT12",Open - verify or implement,Required for affected launch scope,"E03,E19,E23,H01,H02","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view","QA-07,QA-10","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DOM02,Complete retained business domains,P1,G5 End-to-end transactions,Complete initiative contributions,"Port contribution confirmation, campaign totals, points and referral effects as one approved business transaction.",Failed or repeated confirmation cannot partially update totals/rewards; businessTargetFulfilled changes only after full completion.,Domain leads + product owner,"PAY01,LEG03",Open - verify or implement,Required for affected launch scope,"E03,E19,E23,H01,H02","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view",QA-07,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DOM03,Complete retained business domains,P1,G5 End-to-end transactions,Complete group contribution flows,"Reconcile group rosters, contribution ownership, member visibility, targets and group-specific receiver rules.","Authorized group-member/staff journeys, totals and negative cross-group cases pass.",Domain leads + product owner,"DOM02,AUT12",Open - verify or implement,Required for affected launch scope,"E03,E19,E23,H01,H02","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view",QA-07,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DOM04,Complete retained business domains,P1,G5 End-to-end transactions,Finish ticket inventory and issuance,"Implement capacity reservations, authoritative prices, issue/expiry/cancel states and ticket ownership with concurrency controls.",Last-seat races produce no oversell; paid evidence cannot issue twice; recovery preserves reservation and issuance facts.,Domain leads + product owner,PAY10,Open - verify or implement,Required for affected launch scope,"E03,E19,E23,H01,H02","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view","QA-07,QA-13","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DOM05,Complete retained business domains,P1,G5 End-to-end transactions,Complete gate redemption,"Implement event/club-scoped scanner roles, replay-resistant single redemption, manual exceptions and offline policy.","Duplicate QR, revoked ticket, wrong-event and disconnected scanner tests; reconciliation prevents multi-gate reuse.",Domain leads + product owner,"DOM04,AUT09",Open - verify or implement,Required for affected launch scope,"E03,E19,E23,H01,H02","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view",QA-13,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DOM06,Complete retained business domains,P1,G5 End-to-end transactions,Complete Wallet pass lifecycle,"Approve issuer accounts and provider contracts; implement pass creation/update/revoke, job retries and installation checks where offered.",Authorized Apple/Google Wallet acceptance for supported platforms; no pass success inferred from queued work.,Domain leads + product owner,"DOM04,OPS03",Open - verify or implement,Required for affected launch scope,"E03,E19,E23,H01,H02","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view","QA-13,QA-21,QA-34","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DOM07,Complete retained business domains,P1,G5 End-to-end transactions,Complete shop transactions,"Implement stock/variant authority, cart repricing, reservation, payment, fulfillment, cancellation and refund state transitions.",Last-item and stale-price tests plus actual isolated client journeys; no oversell or unconfirmed fulfillment.,Domain leads + product owner,"PAY07,PAY10",Open - verify or implement,Required for affected launch scope,"E03,E19,E23,H01,H02","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view","QA-07,QA-14","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DOM08,Complete retained business domains,P1,G5 End-to-end transactions,Reconcile Predict economic contract,"Adopt the approved free-entry contract or obtain an explicit versioned alternative; align clients, ledger, policy and test expectations.",No runtime flag silently enables a debit-based mechanic; signed product/legal decision precedes activation.,Domain leads + product owner,"LEG03,SRC09",Open - verify or implement,Required for affected launch scope,"E03,E19,E23,H01,H02","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view",QA-12,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DOM09,Complete retained business domains,P1,G5 End-to-end transactions,Complete prediction settlement,"Implement authoritative results, eligibility, duplicate entry, cutoff, corrections, void/no-winner and replay-safe settlement.",Corrected/duplicate/out-of-order results yield the approved ledger result; isolated and target runtime regressions pass.,Domain leads + product owner,DOM08,Open - verify or implement,Required for affected launch scope,"E03,E19,E23,H01,H02","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view",QA-12,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DOM10,Complete retained business domains,P1,G5 End-to-end transactions,Define event schemas and consumers,"Version domain events, visibility, deduplication keys and retention; inventory all outbox consumers and compensation obligations.",No orphan consumer or undocumented effect; compatibility and poison-event cases tested.,Domain leads + product owner,SRC08,Open - verify or implement,Required for affected launch scope,"E03,E19,E23,H01,H02","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view",New audit requirement,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DOM11,Complete retained business domains,P1,G5 End-to-end transactions,Verify football content completeness,"Cover history, squads, fixtures, results, standings, search and approved media without reviving retired venue/exact-score products.",Per-club content owner acceptance plus valid/empty/stale/unpublished states and source provenance.,Domain leads + product owner,PUB01,Open - verify or implement,Required for affected launch scope,"E03,E19,E23,H01,H02","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view",QA-16,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DOM12,Complete retained business domains,P2,G5 End-to-end transactions,Retire only classified dead capability,"Trace old callers, routes, tables and jobs; preserve required football modules and retained historical records.","No active caller relies on a retired object; all removals have source disposition, backup and approved retention.",Domain leads + product owner,"DAT03,SRC09",Open - verify or implement,Required for affected launch scope,"E03,E19,E23,H01,H02","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view",New audit requirement,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DAT01,Data migration and recovery,P1,G4 Data authority,Refresh authoritative source inventory,"Read an authorized current snapshot of schema, identities, functions, policies, triggers, grants, media and schedules; do not reuse Sep25 counts as live.","Timestamped complete inventory, source revision and extraction controls; no unexplained partial listing.",Data/platform engineer + backup owner,"SRC01,SEC06",Open - verify or implement,Required for affected launch scope,"H01,H02,H04,E27,R05,R06,R07,R10","https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://drive.google.com/file/d/1PpYe-2H6Ssj1jFJZ3SnL8PFgTq5ewxuU/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://supabase.com/docs/guides/platform/backups",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DAT02,Data migration and recovery,P1,G4 Data authority,Create immutable migration snapshot,Capture a transactionally consistent base and bounded change stream/freeze procedure including identity and money state.,Restore and row/constraint/hash reconciliation on one consistent checkpoint; segmented export limitations resolved.,Data/platform engineer + backup owner,DAT01,Open - verify or implement,Required for affected launch scope,"H01,H02,H04,E27,R05,R06,R07,R10","https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://drive.google.com/file/d/1PpYe-2H6Ssj1jFJZ3SnL8PFgTq5ewxuU/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://supabase.com/docs/guides/platform/backups",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DAT03,Data migration and recovery,P1,G4 Data authority,Expand per-object disposition register,"Replace the seven aggregate rows with an exhaustive map: migrate, replace, retain, archive, retire or unresolved, with caller and test links.","Every inventoried object has an accountable disposition; unresolved means blocked, never safe to delete.",Data/platform engineer + backup owner,"DAT01,SRC08",Open - verify or implement,Required for affected launch scope,"H01,H02,H04,E27,R05,R06,R07,R10","https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://drive.google.com/file/d/1PpYe-2H6Ssj1jFJZ3SnL8PFgTq5ewxuU/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://supabase.com/docs/guides/platform/backups","QA-02,QA-37","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DAT04,Data migration and recovery,P1,G4 Data authority,Port the deployed function set,Reconcile 18 local versus 18 deployed entrypoints by actual names and behavior; retain live-only bodies and decide local-only Wallet scope.,Versioned caller/behavior matrix and replacement evidence; bundling hash changes not mistaken for logic equivalence.,Data/platform engineer + backup owner,DAT03,Open - verify or implement,Required for affected launch scope,"H01,H02,H04,E27,R05,R06,R07,R10","https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://drive.google.com/file/d/1PpYe-2H6Ssj1jFJZ3SnL8PFgTq5ewxuU/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://supabase.com/docs/guides/platform/backups",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DAT05,Data migration and recovery,P1,G4 Data authority,Port or retire scheduled jobs,"Map every active scheduled task to target ownership, overlap prevention, timezone, retry and safe manual recovery.",All six dated jobs refreshed and individually dispositioned; target tests include skipped/late/duplicate schedules.,Data/platform engineer + backup owner,"DAT03,OPS03",Open - verify or implement,Required for affected launch scope,"H01,H02,H04,E27,R05,R06,R07,R10","https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://drive.google.com/file/d/1PpYe-2H6Ssj1jFJZ3SnL8PFgTq5ewxuU/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://supabase.com/docs/guides/platform/backups",QA-20,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DAT06,Data migration and recovery,P1,G4 Data authority,Translate security contracts,"Map PostgreSQL RLS, grants, security-definer/invoker functions and triggers to explicit target authorization/invariants.",Equivalent positive/negative contract suite with privilege and tenant cases; old pgTAP intent retained.,Data/platform engineer + backup owner,"DAT03,AUT12",Open - verify or implement,Required for affected launch scope,"H01,H02,H04,E27,R05,R06,R07,R10","https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://drive.google.com/file/d/1PpYe-2H6Ssj1jFJZ3SnL8PFgTq5ewxuU/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://supabase.com/docs/guides/platform/backups",QA-05,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DAT07,Data migration and recovery,P1,G4 Data authority,Prove target database fit,"Run actual D1 schema/trigger/date/JSON/batch tests and representative load; measure size, query time, parameters and growth.",Measured capacity margins and documented global claim strategy; no unsupported production environment toggle.,Data/platform engineer + backup owner,"SRC07,DAT06",Open - verify or implement,Required for affected launch scope,"H01,H02,H04,E27,R05,R06,R07,R10","https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://drive.google.com/file/d/1PpYe-2H6Ssj1jFJZ3SnL8PFgTq5ewxuU/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://supabase.com/docs/guides/platform/backups",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DAT08,Data migration and recovery,P1,G4 Data authority,Recover all original media,Resolve the eight documented missing AFRICLUB originals or approve a lawful explicit loss disposition; independently verify every required object.,"Complete original-byte, rights, hash and destination manifest; public 11-object replay not substituted for unrelated missing media.",Data/platform engineer + backup owner,"DAT01,SEC06",Open - verify or implement,Required for affected launch scope,"H01,H02,H04,E27,R05,R06,R07,R10","https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://drive.google.com/file/d/1PpYe-2H6Ssj1jFJZ3SnL8PFgTq5ewxuU/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://supabase.com/docs/guides/platform/backups",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DAT09,Data migration and recovery,P1,G4 Data authority,Automate backup and restore drills,"Protect database exports, object bytes, schema/configuration, keys and event checkpoints in an access-controlled recovery process.",Measured restore time/data loss against approved RTO/RPO; actual restore opens and validates critical journeys.,Data/platform engineer + backup owner,"DAT02,DAT08",Open - verify or implement,Required for affected launch scope,"H01,H02,H04,E27,R05,R06,R07,R10","https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://drive.google.com/file/d/1PpYe-2H6Ssj1jFJZ3SnL8PFgTq5ewxuU/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://supabase.com/docs/guides/platform/backups","QA-29,QA-37","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DAT10,Data migration and recovery,P1,G4 Data authority,Reconcile identifiers and accounting units,"Preserve original IDs, intent links, tenant slugs and provider references; define currencies, whole/minor-unit rules and UTC/calendar semantics.",Row-level reconciliation and leap-day/timezone tests; no silent decimal/currency conversion or regenerated ownership IDs.,Data/platform engineer + backup owner,"DAT02,PAY03",Open - verify or implement,Required for affected launch scope,"H01,H02,H04,E27,R05,R06,R07,R10","https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://drive.google.com/file/d/1PpYe-2H6Ssj1jFJZ3SnL8PFgTq5ewxuU/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://supabase.com/docs/guides/platform/backups",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DAT11,Data migration and recovery,P1,G4 Data authority,Design privacy-aware archival retention,"Separate immutable business evidence from deletable personal attributes; define retention, legal holds and deletion tombstone propagation.",Approved retention matrix and selective erasure tests preserve required reconciliation without claiming indefinite storage approval.,Data/platform engineer + backup owner,"LEG04,DAT09",Open - verify or implement,Required for affected launch scope,"H01,H02,H04,E27,R05,R06,R07,R10","https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://drive.google.com/file/d/1PpYe-2H6Ssj1jFJZ3SnL8PFgTq5ewxuU/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://supabase.com/docs/guides/platform/backups",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+DAT12,Data migration and recovery,P1,G4 Data authority,Prove rollback after new writes,"Define point of no return, compatibility floor and forward compensation; test accepted writes during failure and recovery.",Recovery reconciles every accepted write; no blind switch to an unreconciled legacy database.,Data/platform engineer + backup owner,"PAY08,DAT09",Open - verify or implement,Required for affected launch scope,"H01,H02,H04,E27,R05,R06,R07,R10","https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1qvzgD7D9aBc4NVM3ycZQF-l4sDPBjttu/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://drive.google.com/file/d/1PpYe-2H6Ssj1jFJZ3SnL8PFgTq5ewxuU/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://supabase.com/docs/guides/platform/backups","QA-29,QA-37","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PUB01,Public content and publishing,P1,G3 Integrated source,Bind content to approved sources,"Verify club facts, current season, fixture/result authority, roster and media rights with explicit editorial owners.",Approved source/rights manifest; missing facts display honestly rather than synthetic or stale claims.,Content-platform engineer + editorial owner,SRC08,Open - verify or implement,Required for affected launch scope,"E13,E14,E15,E16,E17,E24,R06,R08","https://drive.google.com/file/d/11HjHNGCFck0SiQGNHOWljw4Q-nxeMIPw/view
+https://drive.google.com/file/d/1H03mwkVQ6Rb8GQPIYMzFwSAcoVHNfLe2/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/",QA-16,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PUB02,Public content and publishing,P1,G3 Integrated source,Publish complete immutable snapshots,"Validate complete required tables, source hashes, tenant and media, then atomically switch an approved active snapshot.",Partial imports cannot appear fresh; all rows in a response belong to one approved snapshot.,Content-platform engineer + editorial owner,"SRC04,PUB01",Open - verify or implement,Required for affected launch scope,"E13,E14,E15,E16,E17,E24,R06,R08","https://drive.google.com/file/d/11HjHNGCFck0SiQGNHOWljw4Q-nxeMIPw/view
+https://drive.google.com/file/d/1H03mwkVQ6Rb8GQPIYMzFwSAcoVHNfLe2/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/",New audit requirement,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PUB03,Public content and publishing,P1,G3 Integrated source,Verify media bytes and policy,Use content-addressed keys or verify served-byte hash as well as metadata and size; bind rights checks to approved state.,Wrong same-length object and revoked/unapproved media denied; expected originals serve correctly.,Content-platform engineer + editorial owner,PUB02,Open - verify or implement,Required for affected launch scope,"E13,E14,E15,E16,E17,E24,R06,R08","https://drive.google.com/file/d/11HjHNGCFck0SiQGNHOWljw4Q-nxeMIPw/view
+https://drive.google.com/file/d/1H03mwkVQ6Rb8GQPIYMzFwSAcoVHNfLe2/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/",QA-20,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PUB04,Public content and publishing,P1,G3 Integrated source,Define freshness and withdrawal,"Set per-content freshness, stale presentation, cache TTL and emergency rights withdrawal behavior; avoid hidden media exemptions.",Old/mixed snapshots and cache revocation tests pass; operator can withdraw content with attributable evidence.,Content-platform engineer + editorial owner,"PUB02,PUB03",Open - verify or implement,Required for affected launch scope,"E13,E14,E15,E16,E17,E24,R06,R08","https://drive.google.com/file/d/11HjHNGCFck0SiQGNHOWljw4Q-nxeMIPw/view
+https://drive.google.com/file/d/1H03mwkVQ6Rb8GQPIYMzFwSAcoVHNfLe2/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/",New audit requirement,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PUB05,Public content and publishing,P1,G3 Integrated source,Complete operator API and UI integration,Deliver a consistent console shell/configuration/session RPC contract with fixed direct Access ingress and private publisher binding.,"Browser-to-Access-to-publisher-to-reader journey works on actual staging, not just offline DOM mocks.",Content-platform engineer + editorial owner,"SRC05,AUT09",Open - verify or implement,Required for affected launch scope,"E13,E14,E15,E16,E17,E24,R06,R08","https://drive.google.com/file/d/11HjHNGCFck0SiQGNHOWljw4Q-nxeMIPw/view
+https://drive.google.com/file/d/1H03mwkVQ6Rb8GQPIYMzFwSAcoVHNfLe2/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/",QA-17,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PUB06,Public content and publishing,P1,G3 Integrated source,Verify editorial confirmation and recovery,"Require review of exact content/hash and explicit publication, with original-key recovery for unknown results.",Lost reply/reload/tab-loss support cases reconcile without duplicate publication or invented review approval.,Content-platform engineer + editorial owner,PUB05,Open - verify or implement,Required for affected launch scope,"E13,E14,E15,E16,E17,E24,R06,R08","https://drive.google.com/file/d/11HjHNGCFck0SiQGNHOWljw4Q-nxeMIPw/view
+https://drive.google.com/file/d/1H03mwkVQ6Rb8GQPIYMzFwSAcoVHNfLe2/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/",New audit requirement,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PUB07,Public content and publishing,P2,G3 Integrated source,Scale read queries and pagination,"Replace unbounded whole-table scans and repeated media-map loads with indexed projections, paging and bounded payloads as required by measured data.",Representative dataset/peak reads meet latency and cost budgets with stable sorting and consistent snapshots.,Content-platform engineer + editorial owner,"DAT07,PUB02",Open - verify or implement,Required for affected launch scope,"E13,E14,E15,E16,E17,E24,R06,R08","https://drive.google.com/file/d/11HjHNGCFck0SiQGNHOWljw4Q-nxeMIPw/view
+https://drive.google.com/file/d/1H03mwkVQ6Rb8GQPIYMzFwSAcoVHNfLe2/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/",QA-28,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PUB08,Public content and publishing,P1,G3 Integrated source,Prove all-club public routing,"Configure verified host-to-club mappings, branded metadata, sitemap/canonical/robots behavior and unknown-host rejection.","Five-club host tests; no other club inherits Rayon canonical URLs, content or credentials.",Content-platform engineer + editorial owner,"SRC09,LEG01",Open - verify or implement,Required for affected launch scope,"E13,E14,E15,E16,E17,E24,R06,R08","https://drive.google.com/file/d/11HjHNGCFck0SiQGNHOWljw4Q-nxeMIPw/view
+https://drive.google.com/file/d/1H03mwkVQ6Rb8GQPIYMzFwSAcoVHNfLe2/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/",QA-15,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PUB09,Public content and publishing,P1,G3 Integrated source,Complete public web acceptance,"Verify discovery, pages, responsive states, legal/support/deletion links, app links and image failure modes across declared browsers.",All enabled route/state/club cases mapped and current; no screenshot count presented as coverage.,Content-platform engineer + editorial owner,"PUB08,UX01,WEB01",Open - verify or implement,Required for affected launch scope,"E13,E14,E15,E16,E17,E24,R06,R08","https://drive.google.com/file/d/11HjHNGCFck0SiQGNHOWljw4Q-nxeMIPw/view
+https://drive.google.com/file/d/1H03mwkVQ6Rb8GQPIYMzFwSAcoVHNfLe2/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/",QA-15,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+PUB10,Public content and publishing,P1,G3 Integrated source,Review content ingestion and AI boundaries,"Treat feeds and generated copy/media as untrusted evidence; constrain fetches, uploads and AI output to review-before-publication.",Prompt injection or malformed feed cannot approve publication or create financial authority; generated rights status remains explicit.,Content-platform engineer + editorial owner,"PUB01,AUT09",Open - verify or implement,Required for affected launch scope,"E13,E14,E15,E16,E17,E24,R06,R08","https://drive.google.com/file/d/11HjHNGCFck0SiQGNHOWljw4Q-nxeMIPw/view
+https://drive.google.com/file/d/1H03mwkVQ6Rb8GQPIYMzFwSAcoVHNfLe2/view
+https://drive.google.com/file/d/1N64ubm9zvPe9X06KkhPKXlbD7gD3uPCH/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1fgnPtcoK0sc6T5JVQxg8vAonL1QkuwAJ/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://developers.cloudflare.com/d1/worker-api/d1-database/
+https://developers.cloudflare.com/workers/configuration/cloudflare-access/",QA-21,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+NAT01,Native apps and platform completion,P1,G5 Integrated native clients,Install reviewed native candidate source,Resolve archive-only iOS files and reconcile Android/Dart additions into the canonical shared package without duplicating across shells.,Accepted source is at actual build paths with explicit version and provenance; no missing or stale bridge entrypoint.,Flutter + Android + iOS leads,"SRC02,SRC03",Open - verify or implement,Required for affected launch scope,"E02,E21,E22,E28,E30,R12,R14,R24","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+.fvmrc; .nvmrc
+https://mas.owasp.org/MASVS/
+https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/PhoneLinks/PhoneLinks.html
+https://developer.android.com/privacy-and-security/keystore",QA-22,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+NAT02,Native apps and platform completion,P1,G5 Integrated native clients,Compile real native hosts,Build Dart/Flutter adapters and Android/Apple host code using the actual platform SDKs; run host integration tests.,"Analyzer, compiler and platform tests pass; portable JVM/Swift results are not substituted.",Flutter + Android + iOS leads,"NAT01,CI10",Open - verify or implement,Required for affected launch scope,"E02,E21,E22,E28,E30,R12,R14,R24","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+.fvmrc; .nvmrc
+https://mas.owasp.org/MASVS/
+https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/PhoneLinks/PhoneLinks.html
+https://developer.android.com/privacy-and-security/keystore",QA-22,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+NAT03,Native apps and platform completion,P1,G5 Integrated native clients,Validate encrypted recovery on devices,"Exercise Keychain/Keystore, locked device, process/isolate death, corrupt state, interrupted writes, low disk and key invalidation.",Device evidence confirms state is not silently reset or double-submitted; acknowledged writes survive approved failure scenarios.,Flutter + Android + iOS leads,NAT02,Open - verify or implement,Required for affected launch scope,"E02,E21,E22,E28,E30,R12,R14,R24","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+.fvmrc; .nvmrc
+https://mas.owasp.org/MASVS/
+https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/PhoneLinks/PhoneLinks.html
+https://developer.android.com/privacy-and-security/keystore",QA-33,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+NAT04,Native apps and platform completion,P1,G5 Integrated native clients,Register shared native components,"Wire one shared plugin/channel composition per app engine, credential supplier and recovery ports under reviewed runtime flags.","Actual five-club app builds use correct shared implementation, no plaintext or in-memory production fallback.",Flutter + Android + iOS leads,"NAT03,AUT02",Open - verify or implement,Required for affected launch scope,"E02,E21,E22,E28,E30,R12,R14,R24","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+.fvmrc; .nvmrc
+https://mas.owasp.org/MASVS/
+https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/PhoneLinks/PhoneLinks.html
+https://developer.android.com/privacy-and-security/keystore",QA-24,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+NAT05,Native apps and platform completion,P1,G5 Integrated native clients,Design and test iOS payment fallback,Do not assume tel star/hash USSD works on iOS; verify supported carrier/provider flow and provide an explicit safe alternative where unsupported.,Physical iPhone and carrier results; truthful unsupported state/manual or approved provider path with separate confirmation.,Flutter + Android + iOS leads,"NAT04,PAY03",Open - verify or implement,Required for affected launch scope,"E02,E21,E22,E28,E30,R12,R14,R24","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+.fvmrc; .nvmrc
+https://mas.owasp.org/MASVS/
+https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/PhoneLinks/PhoneLinks.html
+https://developer.android.com/privacy-and-security/keystore","QA-24,QA-33","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+NAT06,Native apps and platform completion,P1,G5 Integrated native clients,Test Android carrier and SIM behavior,"Verify external dialer invocation, dual-SIM choice, denied/missing handlers, foreground return and operator-specific USSD behavior.",Physical devices and test accounts show one explicit handoff; opened dialog is never payment success.,Flutter + Android + iOS leads,"NAT04,PAY03",Open - verify or implement,Required for affected launch scope,"E02,E21,E22,E28,E30,R12,R14,R24","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+.fvmrc; .nvmrc
+https://mas.owasp.org/MASVS/
+https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/PhoneLinks/PhoneLinks.html
+https://developer.android.com/privacy-and-security/keystore","QA-24,QA-33","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+NAT07,Native apps and platform completion,P1,G5 Integrated native clients,Wire accessible review and lifecycle,"Display exact approved payment fields and a separate confirmation action; invalidate review on background, logout, switch and route exit.",Reader/keyboard/large-text tests and interruption races show stale instructions cannot be confirmed.,Flutter + Android + iOS leads,"NAT04,UX02",Open - verify or implement,Required for affected launch scope,"E02,E21,E22,E28,E30,R12,R14,R24","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+.fvmrc; .nvmrc
+https://mas.owasp.org/MASVS/
+https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/PhoneLinks/PhoneLinks.html
+https://developer.android.com/privacy-and-security/keystore","QA-24,QA-27","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+NAT08,Native apps and platform completion,P1,G5 Integrated native clients,Handle update and reinstall recovery,"Test application upgrades, backup restoration, reinstall/new device and cross-device unresolved operations against server recovery.",No double attempt because encrypted local state or installation identifier changed; support path remains usable.,Flutter + Android + iOS leads,"PAY05,NAT03",Open - verify or implement,Required for affected launch scope,"E02,E21,E22,E28,E30,R12,R14,R24","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+.fvmrc; .nvmrc
+https://mas.owasp.org/MASVS/
+https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/PhoneLinks/PhoneLinks.html
+https://developer.android.com/privacy-and-security/keystore","QA-24,QA-33","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+NAT09,Native apps and platform completion,P1,G5 Integrated native clients,Prove ten signed identities,"Validate unique package/bundle IDs, entitlements, icons, signing lineage, associated domains and release config for five clubs.",Signed install/readback matrix per club/platform; placeholder Costa identifiers/assets resolved.,Flutter + Android + iOS leads,"CI06,SEC04,LEG01",Open - verify or implement,Required for affected launch scope,"E02,E21,E22,E28,E30,R12,R14,R24","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+.fvmrc; .nvmrc
+https://mas.owasp.org/MASVS/
+https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/PhoneLinks/PhoneLinks.html
+https://developer.android.com/privacy-and-security/keystore","QA-22,QA-23,QA-36","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+NAT10,Native apps and platform completion,P1,G5 Integrated native clients,Verify native permissions and deep links,Inspect merged manifests/entitlements and dependencies; keep all supporter SMS collectors absent; validate incoming links without silent privileged actions.,Ten artifact-level permission/deep-link checks; no unintended SMS/background collector or cross-club route access.,Flutter + Android + iOS leads,"NAT09,AUT12",Open - verify or implement,Required for affected launch scope,"E02,E21,E22,E28,E30,R12,R14,R24","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+.fvmrc; .nvmrc
+https://mas.owasp.org/MASVS/
+https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/PhoneLinks/PhoneLinks.html
+https://developer.android.com/privacy-and-security/keystore","QA-33,QA-36","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+NAT11,Native apps and platform completion,P2,G5 Integrated native clients,Measure native performance,"Measure cold/warm start, memory, frame stalls, network/data usage and background behavior on representative low/mid-range devices.",Approved device/network budgets and traces; no desktop benchmark used as mobile acceptance.,Flutter + Android + iOS leads,"NAT04,OPS02",Open - verify or implement,Required for affected launch scope,"E02,E21,E22,E28,E30,R12,R14,R24","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+.fvmrc; .nvmrc
+https://mas.owasp.org/MASVS/
+https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/PhoneLinks/PhoneLinks.html
+https://developer.android.com/privacy-and-security/keystore",QA-28,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+NAT12,Native apps and platform completion,P1,G5 Integrated native clients,Complete authenticated device journeys,"Run actual supporter flows including login, browsing, membership, failed/unknown payment, contribution, ticket and shop for enabled features.","Current installed builds, persisted server state and provider evidence per declared release matrix; synthetic-only results labelled.",Flutter + Android + iOS leads,"NAT05,NAT06,NAT07,PAY10,DOM01",Open - verify or implement,Required for affected launch scope,"E02,E21,E22,E28,E30,R12,R14,R24","https://drive.google.com/file/d/1NBjccCUL0GExYKlWVsGptSv3TttePFa7/view
+https://drive.google.com/file/d/1ttCHtZXH3pzDt9s7yAr6ks_D_gNMAGri/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+/Google Drive/AFRICLUB/packages/features/feat_membership/native
+.fvmrc; .nvmrc
+https://mas.owasp.org/MASVS/
+https://developer.apple.com/library/archive/featuredarticles/iPhoneURLScheme_Reference/PhoneLinks/PhoneLinks.html
+https://developer.android.com/privacy-and-security/keystore","QA-10,QA-24,QA-33","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+WEB01,Web and admin PWA,P1,G5 Integrated web clients,Reconcile public/member/admin route matrix,"Enumerate current routes, roles, states, hostnames and feature flags rather than copying old four-club page counts.",One current case map with applicability and disabled-route decisions; no unexplained route gap.,Web lead + operator product owner,SRC08,Open - verify or implement,Required for affected launch scope,"E07,E08,E16,E18,E24,R04,R11,R19","https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript
+https://owasp.org/www-project-application-security-verification-standard/
+https://www.w3.org/TR/WCAG22/","QA-02,QA-15","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+WEB02,Web and admin PWA,P1,G5 Integrated web clients,Complete admin business operations,"Verify every retained module: scope selection, search/filter/sort/paging, edit conflict, bulk partial failure and audit.",Actual persisted wrong-role/wrong-club failures and operator task results across configured clubs.,Web lead + operator product owner,"AUT09,WEB01",Open - verify or implement,Required for affected launch scope,"E07,E08,E16,E18,E24,R04,R11,R19","https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript
+https://owasp.org/www-project-application-security-verification-standard/
+https://www.w3.org/TR/WCAG22/",QA-17,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+WEB03,Web and admin PWA,P1,G5 Integrated web clients,Secure public/member caching,Keep private data and credentials out of shared cache/service-worker storage; partition permissible cached records by verified tenant/account.,Logout/account switch and offline cache tests cannot display another user or club data.,Web lead + operator product owner,"AUT10,WEB01",Open - verify or implement,Required for affected launch scope,"E07,E08,E16,E18,E24,R04,R11,R19","https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript
+https://owasp.org/www-project-application-security-verification-standard/
+https://www.w3.org/TR/WCAG22/","QA-11,QA-25","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+WEB04,Web and admin PWA,P1,G5 Integrated web clients,Handle PWA version and draft lifecycle,"Test tab/installed mode, update prompts, old tabs, offline drafts, quota/denial and safe reconnect; prohibit automatic legacy money-queue replay.",Explicit supported mixed-version recovery and preserved drafts; unknown mutations keep original keys.,Web lead + operator product owner,WEB03,Open - verify or implement,Required for affected launch scope,"E07,E08,E16,E18,E24,R04,R11,R19","https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript
+https://owasp.org/www-project-application-security-verification-standard/
+https://www.w3.org/TR/WCAG22/","QA-11,QA-25","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+WEB05,Web and admin PWA,P2,G5 Integrated web clients,Tighten CSP safely,Review inline script requirements; adopt tested nonces/hashes and a reporting rollout without breaking hydration or framework behavior.,No unjustified production unsafe-inline script allowance; route and third-party integration tests pass.,Web lead + operator product owner,"CI04,WEB01",Open - verify or implement,Required for affected launch scope,"E07,E08,E16,E18,E24,R04,R11,R19","https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript
+https://owasp.org/www-project-application-security-verification-standard/
+https://www.w3.org/TR/WCAG22/",New audit requirement,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+WEB06,Web and admin PWA,P1,G5 Integrated web clients,Complete server error and conflict UX,"Map denied, expired, invalid, throttled and uncertain responses to actionable states, preserving operation IDs and ownership.",No timeout rendered as success or definitive failure after possible commit; retry and support actions tested.,Web lead + operator product owner,"PAY04,AUT10",Open - verify or implement,Required for affected launch scope,"E07,E08,E16,E18,E24,R04,R11,R19","https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript
+https://owasp.org/www-project-application-security-verification-standard/
+https://www.w3.org/TR/WCAG22/",QA-11,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+WEB07,Web and admin PWA,P1,G5 Integrated web clients,Verify uploads and exports,"Constrain image/document MIME, size, filename/path and content processing; protect CSV/formula injection and export access.","Hostile-file, traversal, unauthorized export and large-payload cases rejected without leaked data.",Web lead + operator product owner,AUT12,Open - verify or implement,Required for affected launch scope,"E07,E08,E16,E18,E24,R04,R11,R19","https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript
+https://owasp.org/www-project-application-security-verification-standard/
+https://www.w3.org/TR/WCAG22/",QA-20,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+WEB08,Web and admin PWA,P1,G5 Integrated web clients,Verify responsive operator workspaces,"Test dense lists/forms/dialogs on keyboard, small screens, zoom and reader navigation without forcing consumer layouts.",Human operator tasks complete with visible focus and no obscured controls or accidental destructive actions.,Web lead + operator product owner,"WEB02,UX02",Open - verify or implement,Required for affected launch scope,"E07,E08,E16,E18,E24,R04,R11,R19","https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript
+https://owasp.org/www-project-application-security-verification-standard/
+https://www.w3.org/TR/WCAG22/","QA-18,QA-27","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+WEB09,Web and admin PWA,P1,G5 Integrated web clients,Run real Cloudflare web runtime,"Build and exercise the actual OpenNext/workerd artifact, not only Next dev or Node mocks, with exact private bindings and cache config.","Deployed isolated artifact readback, hydration/network/error evidence and runtime-specific regression results.",Web lead + operator product owner,"CI03,CI09,WEB01",Open - verify or implement,Required for affected launch scope,"E07,E08,E16,E18,E24,R04,R11,R19","https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript
+https://owasp.org/www-project-application-security-verification-standard/
+https://www.w3.org/TR/WCAG22/",QA-19,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+WEB10,Web and admin PWA,P1,G5 Integrated web clients,Approve browser support and installed PWA,Record supported Safari/Firefox/Chromium versions and installed-mode limitations; test rather than extrapolate desktop Chromium.,Supported matrix has actual current results or explicit user-visible exclusions and product approval.,Web lead + operator product owner,"WEB04,WEB08,WEB09",Open - verify or implement,Required for affected launch scope,"E07,E08,E16,E18,E24,R04,R11,R19","https://drive.google.com/file/d/1JriJdKI5Zl66Zb0tcrD49U8vIXdk9_su/view
+https://drive.google.com/file/d/1ylTZbAFeURan9Rk_8oJwsqd1YOKJDtAM/view
+https://drive.google.com/file/d/1xZTMg97Hq6fVXwtOgwZZghB8x38wPeCA/view
+https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://nextjs.org/docs/app/api-reference/config/next-config-js/typescript
+https://owasp.org/www-project-application-security-verification-standard/
+https://www.w3.org/TR/WCAG22/",QA-25,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+UX01,"Design, content and accessibility",P1,G7 Acceptance,Unify design authority and adapters,Keep revolut-design as the chosen authority; reconcile older DESIGN/blueprint claims and bind implementation-specific adaptations.,No conflicting authority statements; references identified by platform/theme/state and immutable hashes.,Design lead + accessibility reviewer,SRC03,Open - verify or implement,Required for affected launch scope,"E03,E04,E24,E25,R19,R20","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/1GcYfaSWxQqQBw2OMLoX1Q_qZCWPd5-wT/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://drive.google.com/file/d/1XJd-1UsYp-8CKMsBKpW5Cqs_h875Ur2T/view
+https://www.w3.org/TR/WCAG22/
+https://web.dev/articles/vitals","QA-03,QA-26","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+UX02,"Design, content and accessibility",P1,G7 Acceptance,Run independent accessibility tasks,Apply WCAG 2.2 AA where applicable plus native reader/large-text/reduced-motion testing; do not rely solely on automated axe.,"Human keyboard/VoiceOver/TalkBack task evidence, contrast/focus/reflow results and fixed critical barriers.",Design lead + accessibility reviewer,UX01,Open - verify or implement,Required for affected launch scope,"E03,E04,E24,E25,R19,R20","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/1GcYfaSWxQqQBw2OMLoX1Q_qZCWPd5-wT/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://drive.google.com/file/d/1XJd-1UsYp-8CKMsBKpW5Cqs_h875Ur2T/view
+https://www.w3.org/TR/WCAG22/
+https://web.dev/articles/vitals","QA-18,QA-27","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+UX03,"Design, content and accessibility",P1,G7 Acceptance,Refresh visual source comparisons,Compare final rendered screens with the selected reference cohort; retain club identity and document justified differences.,"Current implementer, independent reviewer and owner decisions; September20 gallery approval not reused for different artifacts.",Design lead + accessibility reviewer,"UX01,NAT04,WEB01",Open - verify or implement,Required for affected launch scope,"E03,E04,E24,E25,R19,R20","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/1GcYfaSWxQqQBw2OMLoX1Q_qZCWPd5-wT/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://drive.google.com/file/d/1XJd-1UsYp-8CKMsBKpW5Cqs_h875Ur2T/view
+https://www.w3.org/TR/WCAG22/
+https://web.dev/articles/vitals","QA-03,QA-26,QA-35","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+UX04,"Design, content and accessibility",P1,G7 Acceptance,Validate state and recovery copy,"Review empty/stale/denied/processing/unknown/completed states, currency/date wording and help paths for each important journey.",No misleading payment/delivery/entitlement statement; user tests recover without guessing the next action.,Design lead + accessibility reviewer,"PAY12,WEB06",Open - verify or implement,Required for affected launch scope,"E03,E04,E24,E25,R19,R20","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/1GcYfaSWxQqQBw2OMLoX1Q_qZCWPd5-wT/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://drive.google.com/file/d/1XJd-1UsYp-8CKMsBKpW5Cqs_h875Ur2T/view
+https://www.w3.org/TR/WCAG22/
+https://web.dev/articles/vitals",QA-27,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+UX05,"Design, content and accessibility",P2,G7 Acceptance,Decide locale and market support,"Honor the currently approved language scope; explicitly decide additions and test supported currencies, dates, names and content lengths.",Versioned locale/support policy and native/web checks; no invented locale support or mandatory new translation scope.,Design lead + accessibility reviewer,"LEG01,UX04",Open - verify or implement,Required for affected launch scope,"E03,E04,E24,E25,R19,R20","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/1GcYfaSWxQqQBw2OMLoX1Q_qZCWPd5-wT/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://drive.google.com/file/d/1XJd-1UsYp-8CKMsBKpW5Cqs_h875Ur2T/view
+https://www.w3.org/TR/WCAG22/
+https://web.dev/articles/vitals",QA-27,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+UX06,"Design, content and accessibility",P2,G7 Acceptance,Test usability with representative supporters,"Run consented low-bandwidth, low-device-capability and operator tasks with a small diverse sample; distinguish research limits from population claims.",Observed unassisted completion/error/recovery results and remediation of high-impact failures.,Design lead + accessibility reviewer,"UX02,NAT12,WEB10",Open - verify or implement,Required for affected launch scope,"E03,E04,E24,E25,R19,R20","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/1GcYfaSWxQqQBw2OMLoX1Q_qZCWPd5-wT/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://drive.google.com/file/d/1XJd-1UsYp-8CKMsBKpW5Cqs_h875Ur2T/view
+https://www.w3.org/TR/WCAG22/
+https://web.dev/articles/vitals","QA-27,QA-35","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+UX07,"Design, content and accessibility",P1,G7 Acceptance,Reconcile evidence registers,Populate route/state/build-bundle registries from final candidate evidence; preserve other output archives and mark stale/NA explicitly.,Every enabled route and critical state has a traceable evidence or blocker; empty authoritative registers resolved.,Design lead + accessibility reviewer,"UX03,CI09",Open - verify or implement,Required for affected launch scope,"E03,E04,E24,E25,R19,R20","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/1GcYfaSWxQqQBw2OMLoX1Q_qZCWPd5-wT/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://drive.google.com/file/d/1XJd-1UsYp-8CKMsBKpW5Cqs_h875Ur2T/view
+https://www.w3.org/TR/WCAG22/
+https://web.dev/articles/vitals","QA-02,QA-26,QA-31","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+UX08,"Design, content and accessibility",P1,G7 Acceptance,Verify media and brand rights,"Validate crests, photography, video/feed reuse, sponsorship marks and generated assets for each distribution channel.","Rights owner, scope, expiry and takedown process documented; unverified assets withheld rather than treated as copyrighted ownership proof.",Design lead + accessibility reviewer,"PUB01,LEG01",Open - verify or implement,Required for affected launch scope,"E03,E04,E24,E25,R19,R20","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/1GcYfaSWxQqQBw2OMLoX1Q_qZCWPd5-wT/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://drive.google.com/file/d/1XJd-1UsYp-8CKMsBKpW5Cqs_h875Ur2T/view
+https://www.w3.org/TR/WCAG22/
+https://web.dev/articles/vitals","QA-16,QA-35","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+LEG01,"Country, commercial and platform compliance",P1,G2 Scope approval,Approve five-club operating entities,"Document club authority, contracts, legal operator, merchant owner, customer support, publication rights and distribution responsibility per country.",Complete Rwanda/Burundi/Zambia/DRC/Mozambique entity and responsibility matrix; no blanket Africa-wide approval.,Local counsel + privacy/product owners,SEC02,Open - verify or implement,Required for affected launch scope,"E03,E23,H01,R07,R15,R16,R17,R18,R21,R22","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developer.android.com/studio/publish/app-signing
+https://developer.apple.com/app-store/review/guidelines/
+https://developer.apple.com/support/offering-account-deletion-in-your-app
+https://support.google.com/googleplay/android-developer/answer/9877032/
+https://dpo.gov.rw/news-and-updates/news/article/cloud-storage-under-rwandas-data-protection-law-what-you-need-to-know
+https://www.dataprotection.gov.zm/registration/",QA-22,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+LEG02,"Country, commercial and platform compliance",P1,G2 Scope approval,Classify each payment product,"Review membership benefits, physical tickets/goods, digital services, contributions and provider funds flow; determine applicable billing/tax/refund requirements.","Counsel/provider/platform decisions tied to actual benefits and money flow, not only product labels.",Local counsel + privacy/product owners,LEG01,Open - verify or implement,Required for affected launch scope,"E03,E23,H01,R07,R15,R16,R17,R18,R21,R22","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developer.android.com/studio/publish/app-signing
+https://developer.apple.com/app-store/review/guidelines/
+https://developer.apple.com/support/offering-account-deletion-in-your-app
+https://support.google.com/googleplay/android-developer/answer/9877032/
+https://dpo.gov.rw/news-and-updates/news/article/cloud-storage-under-rwandas-data-protection-law-what-you-need-to-know
+https://www.dataprotection.gov.zm/registration/",New audit requirement,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+LEG03,"Country, commercial and platform compliance",P1,G2 Scope approval,Approve FET and prediction rules,Resolve free entry/rewards versus historic debits/pools; review prize/value/minor access and platform requirements in each offered market.,Versioned approved contract and release restrictions; no inference that closed-loop points automatically remove all regulatory concerns.,Local counsel + privacy/product owners,LEG02,Open - verify or implement,Required for affected launch scope,"E03,E23,H01,R07,R15,R16,R17,R18,R21,R22","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developer.android.com/studio/publish/app-signing
+https://developer.apple.com/app-store/review/guidelines/
+https://developer.apple.com/support/offering-account-deletion-in-your-app
+https://support.google.com/googleplay/android-developer/answer/9877032/
+https://dpo.gov.rw/news-and-updates/news/article/cloud-storage-under-rwandas-data-protection-law-what-you-need-to-know
+https://www.dataprotection.gov.zm/registration/",QA-12,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+LEG04,"Country, commercial and platform compliance",P1,G2 Scope approval,Approve privacy roles and retention,"Define controller/processor roles, lawful basis, notices, records, rights requests, retention and breach response across all services.","Role-specific contracts, records and approval; immutable IDs/hashes treated as potentially linkable data.",Local counsel + privacy/product owners,LEG01,Open - verify or implement,Required for affected launch scope,"E03,E23,H01,R07,R15,R16,R17,R18,R21,R22","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developer.android.com/studio/publish/app-signing
+https://developer.apple.com/app-store/review/guidelines/
+https://developer.apple.com/support/offering-account-deletion-in-your-app
+https://support.google.com/googleplay/android-developer/answer/9877032/
+https://dpo.gov.rw/news-and-updates/news/article/cloud-storage-under-rwandas-data-protection-law-what-you-need-to-know
+https://www.dataprotection.gov.zm/registration/",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+LEG05,"Country, commercial and platform compliance",P1,G2 Scope approval,Resolve Rwanda offshore storage,Map actual personal-data hosting/processing/backups and obtain applicable NCSA authorization and safeguards before candidate hosting.,Reviewed authorization/registration evidence or approved compliant alternative; Cloudflare location hints not used as legal proof.,Local counsel + privacy/product owners,"LEG04,SRC07",Open - verify or implement,Required for affected launch scope,"E03,E23,H01,R07,R15,R16,R17,R18,R21,R22","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developer.android.com/studio/publish/app-signing
+https://developer.apple.com/app-store/review/guidelines/
+https://developer.apple.com/support/offering-account-deletion-in-your-app
+https://support.google.com/googleplay/android-developer/answer/9877032/
+https://dpo.gov.rw/news-and-updates/news/article/cloud-storage-under-rwandas-data-protection-law-what-you-need-to-know
+https://www.dataprotection.gov.zm/registration/",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+LEG06,"Country, commercial and platform compliance",P1,G2 Scope approval,Complete Zambia compliance review,"Use official DPC materials to assess registration, local processing/transfer conditions and applicable obligations for Nkana.",Country-specific written determination and required filings/contracts; no assertion of exemption without analysis.,Local counsel + privacy/product owners,LEG04,Open - verify or implement,Required for affected launch scope,"E03,E23,H01,R07,R15,R16,R17,R18,R21,R22","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developer.android.com/studio/publish/app-signing
+https://developer.apple.com/app-store/review/guidelines/
+https://developer.apple.com/support/offering-account-deletion-in-your-app
+https://support.google.com/googleplay/android-developer/answer/9877032/
+https://dpo.gov.rw/news-and-updates/news/article/cloud-storage-under-rwandas-data-protection-law-what-you-need-to-know
+https://www.dataprotection.gov.zm/registration/",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+LEG07,"Country, commercial and platform compliance",P1,G2 Scope approval,Complete Burundi compliance review,"Obtain current authoritative local advice for privacy, consumer terms, payments, rewards and supporter content before VitalO launch.","Primary-law references and signed applicability decision, including unresolved items; not inferred from Rwanda rules.",Local counsel + privacy/product owners,LEG04,Open - verify or implement,Required for affected launch scope,"E03,E23,H01,R07,R15,R16,R17,R18,R21,R22","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developer.android.com/studio/publish/app-signing
+https://developer.apple.com/app-store/review/guidelines/
+https://developer.apple.com/support/offering-account-deletion-in-your-app
+https://support.google.com/googleplay/android-developer/answer/9877032/
+https://dpo.gov.rw/news-and-updates/news/article/cloud-storage-under-rwandas-data-protection-law-what-you-need-to-know
+https://www.dataprotection.gov.zm/registration/",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+LEG08,"Country, commercial and platform compliance",P1,G2 Scope approval,Complete DRC compliance review,"Obtain current authoritative local advice for AS Vita data, e-commerce, payments and reward mechanics, including cross-border service arrangements.",Country-specific source-backed decision and implementation checklist with accountable owner.,Local counsel + privacy/product owners,LEG04,Open - verify or implement,Required for affected launch scope,"E03,E23,H01,R07,R15,R16,R17,R18,R21,R22","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developer.android.com/studio/publish/app-signing
+https://developer.apple.com/app-store/review/guidelines/
+https://developer.apple.com/support/offering-account-deletion-in-your-app
+https://support.google.com/googleplay/android-developer/answer/9877032/
+https://dpo.gov.rw/news-and-updates/news/article/cloud-storage-under-rwandas-data-protection-law-what-you-need-to-know
+https://www.dataprotection.gov.zm/registration/",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+LEG09,"Country, commercial and platform compliance",P1,G2 Scope approval,Complete Mozambique compliance review,"Review Costa do Sol privacy/consumer/payment obligations, publisher/merchant contracts and local customer communication.","Country-specific primary-source/legal decision and launch restrictions, alongside verified club release inputs.",Local counsel + privacy/product owners,LEG04,Open - verify or implement,Required for affected launch scope,"E03,E23,H01,R07,R15,R16,R17,R18,R21,R22","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developer.android.com/studio/publish/app-signing
+https://developer.apple.com/app-store/review/guidelines/
+https://developer.apple.com/support/offering-account-deletion-in-your-app
+https://support.google.com/googleplay/android-developer/answer/9877032/
+https://dpo.gov.rw/news-and-updates/news/article/cloud-storage-under-rwandas-data-protection-law-what-you-need-to-know
+https://www.dataprotection.gov.zm/registration/",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+LEG10,"Country, commercial and platform compliance",P1,G2 Scope approval,Approve white-label store submission model,Assess Apple template/content-provider rules and Google Play policies; identify approved publisher accounts and unique club functionality.,Per-club store-owner authority and submission strategy; no automatic assumption a shared template is approved or prohibited.,Local counsel + privacy/product owners,"LEG01,UX08",Open - verify or implement,Required for affected launch scope,"E03,E23,H01,R07,R15,R16,R17,R18,R21,R22","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developer.android.com/studio/publish/app-signing
+https://developer.apple.com/app-store/review/guidelines/
+https://developer.apple.com/support/offering-account-deletion-in-your-app
+https://support.google.com/googleplay/android-developer/answer/9877032/
+https://dpo.gov.rw/news-and-updates/news/article/cloud-storage-under-rwandas-data-protection-law-what-you-need-to-know
+https://www.dataprotection.gov.zm/registration/",QA-36,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+LEG11,"Country, commercial and platform compliance",P1,G2 Scope approval,Complete store privacy and deletion declarations,"Match Data Safety/privacy labels, in-app rights routes, age/content ratings and SDK disclosures to actual compiled behavior.","Signed artifact-to-declaration reconciliation, functioning deletion initiation/status and legally retained-data explanation.",Local counsel + privacy/product owners,"AUT11,NAT10,LEG04",Open - verify or implement,Required for affected launch scope,"E03,E23,H01,R07,R15,R16,R17,R18,R21,R22","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developer.android.com/studio/publish/app-signing
+https://developer.apple.com/app-store/review/guidelines/
+https://developer.apple.com/support/offering-account-deletion-in-your-app
+https://support.google.com/googleplay/android-developer/answer/9877032/
+https://dpo.gov.rw/news-and-updates/news/article/cloud-storage-under-rwandas-data-protection-law-what-you-need-to-know
+https://www.dataprotection.gov.zm/registration/",QA-36,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+LEG12,"Country, commercial and platform compliance",P1,G2 Scope approval,Approve provider and content contracts,"Review WhatsApp templates/consent, payment reconciliation, feed/media licences, subprocessors and incident responsibilities.","Current approvals, scopes and provider test authorization; no successful mock treated as a provider contract.",Local counsel + privacy/product owners,"LEG01,LEG02",Open - verify or implement,Required for affected launch scope,"E03,E23,H01,R07,R15,R16,R17,R18,R21,R22","https://drive.google.com/file/d/1W-wB0714GR2PtTb01XldFYbQcFhL_1AC/view
+https://drive.google.com/file/d/17ycbTO5tfhGoKOFEnqrDMmIud2MmIQWJ/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developer.android.com/studio/publish/app-signing
+https://developer.apple.com/app-store/review/guidelines/
+https://developer.apple.com/support/offering-account-deletion-in-your-app
+https://support.google.com/googleplay/android-developer/answer/9877032/
+https://dpo.gov.rw/news-and-updates/news/article/cloud-storage-under-rwandas-data-protection-law-what-you-need-to-know
+https://www.dataprotection.gov.zm/registration/",QA-34,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+OPS01,Reliability and operational readiness,P1,G6 Operational staging,Assign operational service ownership,"Define on-call, incident commander, escalation, business support and vendor contacts for each service and club.","Named, reachable owners and a tested incident drill; no unowned queue or financial exception.",SRE/platform lead + service owners,"SRC08,LEG01",Open - verify or implement,Required for affected launch scope,"E18,E19,E22,H01,H04,R05,R07,R09,R20","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/
+https://web.dev/articles/vitals",New audit requirement,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+OPS02,Reliability and operational readiness,P1,G6 Operational staging,Approve measurable SLOs and capacity,"Set product-specific availability, freshness, latency, payment confirmation and support objectives, using representative workloads.","Signed budgets and measured baseline; error budgets, RTO/RPO and failure-mode tolerances distinct.",SRE/platform lead + service owners,SRC07,Open - verify or implement,Required for affected launch scope,"E18,E19,E22,H01,H04,R05,R07,R09,R20","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/
+https://web.dev/articles/vitals",QA-28,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+OPS03,Reliability and operational readiness,P1,G6 Operational staging,Implement privacy-safe telemetry,"Add redacted structured events, correlation IDs, metrics and actionable alerts; avoid raw OTP/phone/token/provider body logs.",Test incidents produce useful alerts with no sensitive data; disabled observability configs deliberately resolved.,SRE/platform lead + service owners,"LEG04,OPS01",Open - verify or implement,Required for affected launch scope,"E18,E19,E22,H01,H04,R05,R07,R09,R20","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/
+https://web.dev/articles/vitals",QA-29,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+OPS04,Reliability and operational readiness,P1,G6 Operational staging,Operate retries and dead letters,"Configure bounded retries, leases, poison-event queues, dashboards and auditable manual replay for all outbound effects.","Duplicate, partial-effect and stuck-job tests recover without double execution or silent loss.",SRE/platform lead + service owners,"OPS03,DOM10",Open - verify or implement,Required for affected launch scope,"E18,E19,E22,H01,H04,R05,R07,R09,R20","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/
+https://web.dev/articles/vitals","QA-08,QA-21,QA-29","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+OPS05,Reliability and operational readiness,P1,G6 Operational staging,Measure match-day peak behavior,"Load test login bursts, fixtures, publication, payments, ticket gates and admin reports at approved realistic sizes.",p95/p99 latency/error/cost evidence on target resources with planned safety margin; no invented throughput claims.,SRE/platform lead + service owners,"DAT07,OPS02",Open - verify or implement,Required for affected launch scope,"E18,E19,E22,H01,H04,R05,R07,R09,R20","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/
+https://web.dev/articles/vitals",QA-28,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+OPS06,Reliability and operational readiness,P2,G6 Operational staging,Model operating costs and quotas,"Estimate and measure Workers/D1/R2/Queue/provider/CI costs under normal, peak and abusive traffic, with cost caps and quota alerts.","Traceable units and scenario model, owner thresholds and tested quota failure UX; historical storage-quota failure not assumed current.",SRE/platform lead + service owners,"OPS05,AUT05",Open - verify or implement,Required for affected launch scope,"E18,E19,E22,H01,H04,R05,R07,R09,R20","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/
+https://web.dev/articles/vitals",New audit requirement,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+OPS07,Reliability and operational readiness,P1,G6 Operational staging,Exercise disaster recovery,Run service/database/media/key loss scenarios using protected backups and reconcile restored events and entitlements.,Measured RTO/RPO and verified critical journeys on restored resources; no reliance solely on backup-file presence.,SRE/platform lead + service owners,"DAT09,OPS03",Open - verify or implement,Required for affected launch scope,"E18,E19,E22,H01,H04,R05,R07,R09,R20","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/
+https://web.dev/articles/vitals",QA-29,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+OPS08,Reliability and operational readiness,P1,G6 Operational staging,Harden production configuration,"Define approved isolated resource IDs, service-binding exclusivity, domains/TLS/WAF/CORS/caches/secrets and environment drift checks.","Config and actual-resource readback agree; no placeholder, dev Access bypass or unintended public private Worker.",SRE/platform lead + service owners,"SRC08,CI07,LEG05",Open - verify or implement,Required for affected launch scope,"E18,E19,E22,H01,H04,R05,R07,R09,R20","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/
+https://web.dev/articles/vitals",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+OPS09,Reliability and operational readiness,P1,G6 Operational staging,Run application security assessment,Perform an authorized independent threat-based review and targeted penetration tests on the assembled candidate.,No unresolved exploitable critical/high finding in release scope; evidence is current and remediation retested.,SRE/platform lead + service owners,"AUT12,WEB09,NAT12,OPS08",Open - verify or implement,Required for affected launch scope,"E18,E19,E22,H01,H04,R05,R07,R09,R20","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/
+https://web.dev/articles/vitals",New audit requirement,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+OPS10,Reliability and operational readiness,P1,G6 Operational staging,Rehearse operator and customer support,"Test unknown payment, locked account, missing ticket, media withdrawal and recovery requests with visible audit/escalation paths.","Support staff resolve scenarios without direct ledger deletion, identity spoofing or unapproved refunds.",SRE/platform lead + service owners,"PAY06,OPS01,DOM05",Open - verify or implement,Required for affected launch scope,"E18,E19,E22,H01,H04,R05,R07,R09,R20","https://drive.google.com/file/d/1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h/view
+https://drive.google.com/file/d/11c2iijJkMgVqUIhC9JivYi8vxb5prAsr/view
+https://drive.google.com/file/d/1_kbo1JLlGEprI6QYIqdV0arMm2xJVSlG/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://developers.cloudflare.com/d1/platform/limits/
+https://developers.cloudflare.com/d1/configuration/data-location/
+https://developers.cloudflare.com/queues/reference/delivery-guarantees/
+https://web.dev/articles/vitals",QA-29,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+REL01,Release acceptance and cutover,P1,G8/G9 Release and retirement,Choose a minimal release scope,Approve one club and a coherent initial feature set; keep unfinished money/Predict/shop/ticket capabilities unavailable at API and UI.,Named scope/host/platform/features with consistent guards; feature postponement explicitly approved rather than called full completion.,Release owner + independent approvers,"LEG01,SRC09",Open - verify or implement,Required for affected launch scope,"E04,E05,E24,E25,H01,H04,R02,R03","https://drive.google.com/file/d/1GcYfaSWxQqQBw2OMLoX1Q_qZCWPd5-wT/view
+https://drive.google.com/file/d/1tMWvEOR1NtOKeLcOzacrMepubzmxr_If/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://drive.google.com/file/d/1XJd-1UsYp-8CKMsBKpW5Cqs_h875Ur2T/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+REL02,Release acceptance and cutover,P1,G8/G9 Release and retirement,Freeze the final candidate,"Freeze a reviewed commit, configurations and migrations and invalidate evidence whenever material input hashes change.",One release manifest links every deployed/installed artifact to required test evidence.,Release owner + independent approvers,"CI09,UX07",Open - verify or implement,Required for affected launch scope,"E04,E05,E24,E25,H01,H04,R02,R03","https://drive.google.com/file/d/1GcYfaSWxQqQBw2OMLoX1Q_qZCWPd5-wT/view
+https://drive.google.com/file/d/1tMWvEOR1NtOKeLcOzacrMepubzmxr_If/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://drive.google.com/file/d/1XJd-1UsYp-8CKMsBKpW5Cqs_h875Ur2T/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments","QA-04,QA-31","Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+REL03,Release acceptance and cutover,P1,G8/G9 Release and retirement,Close the original QA checklist,Revalidate applicable original 37 tasks on the final candidate; map expanded tasks and documented exclusions without losing historical closures.,No unexplained unchecked item; three historical checked tasks have appropriate current regression evidence.,Release owner + independent approvers,REL02,Open - verify or implement,Required for affected launch scope,"E04,E05,E24,E25,H01,H04,R02,R03","https://drive.google.com/file/d/1GcYfaSWxQqQBw2OMLoX1Q_qZCWPd5-wT/view
+https://drive.google.com/file/d/1tMWvEOR1NtOKeLcOzacrMepubzmxr_If/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://drive.google.com/file/d/1XJd-1UsYp-8CKMsBKpW5Cqs_h875Ur2T/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments",QA-31,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+REL04,Release acceptance and cutover,P1,G8/G9 Release and retirement,Complete independent go/no-go review,"Populate the real release sign-off with accountable security, finance, data, product, operations and platform decisions.",Approvers review actual evidence and remaining risks; no self-certification based on aggregate test totals.,Release owner + independent approvers,"OPS09,OPS10,REL03",Open - verify or implement,Required for affected launch scope,"E04,E05,E24,E25,H01,H04,R02,R03","https://drive.google.com/file/d/1GcYfaSWxQqQBw2OMLoX1Q_qZCWPd5-wT/view
+https://drive.google.com/file/d/1tMWvEOR1NtOKeLcOzacrMepubzmxr_If/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://drive.google.com/file/d/1XJd-1UsYp-8CKMsBKpW5Cqs_h875Ur2T/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+REL05,Release acceptance and cutover,P1,G8/G9 Release and retirement,Run controlled production rehearsal,"Rehearse cutover on an isolated restored snapshot: fence writes, import/delta, reconcile, smoke-test and rollback boundaries.","Reproducible rehearsal meets RTO/RPO, no lost/duplicated payment effects and exact configuration/artifact match.",Release owner + independent approvers,"DAT12,PAY11,REL02",Open - verify or implement,Required for affected launch scope,"E04,E05,E24,E25,H01,H04,R02,R03","https://drive.google.com/file/d/1GcYfaSWxQqQBw2OMLoX1Q_qZCWPd5-wT/view
+https://drive.google.com/file/d/1tMWvEOR1NtOKeLcOzacrMepubzmxr_If/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://drive.google.com/file/d/1XJd-1UsYp-8CKMsBKpW5Cqs_h875Ur2T/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+REL06,Release acceptance and cutover,P1,G8/G9 Release and retirement,Approve and execute single-writer cutover,"Only after separate authorization, switch the authoritative writer with controlled traffic and old-client handling.","Actual change receipt, pre/post balances/claims/entitlements and immediate smoke/monitoring results.",Release owner + independent approvers,"REL04,REL05",Open - verify or implement,Required for affected launch scope,"E04,E05,E24,E25,H01,H04,R02,R03","https://drive.google.com/file/d/1GcYfaSWxQqQBw2OMLoX1Q_qZCWPd5-wT/view
+https://drive.google.com/file/d/1tMWvEOR1NtOKeLcOzacrMepubzmxr_If/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://drive.google.com/file/d/1XJd-1UsYp-8CKMsBKpW5Cqs_h875Ur2T/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+REL07,Release acceptance and cutover,P1,G8/G9 Release and retirement,Observe and prove stability,Run an approved observation window covering real match-day/renewal/job activity and customer support without hidden rollback divergence.,"SLOs, reconciliation, incidents and exception queues reviewed; no unresolved critical/high release defect.",Release owner + independent approvers,REL06,Open - verify or implement,Required for affected launch scope,"E04,E05,E24,E25,H01,H04,R02,R03","https://drive.google.com/file/d/1GcYfaSWxQqQBw2OMLoX1Q_qZCWPd5-wT/view
+https://drive.google.com/file/d/1tMWvEOR1NtOKeLcOzacrMepubzmxr_If/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://drive.google.com/file/d/1XJd-1UsYp-8CKMsBKpW5Cqs_h875Ur2T/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+REL08,Release acceptance and cutover,P1,G8/G9 Release and retirement,Release each additional club independently,"Apply the accepted baseline but verify each club publisher, identity, merchant, content, platform and legal differences.",Per-club sign-off and native/public/admin acceptance; shared tests reused only for proven invariant scope.,Release owner + independent approvers,"REL07,NAT09,LEG06,LEG07,LEG08,LEG09",Open - verify or implement,Required for affected launch scope,"E04,E05,E24,E25,H01,H04,R02,R03","https://drive.google.com/file/d/1GcYfaSWxQqQBw2OMLoX1Q_qZCWPd5-wT/view
+https://drive.google.com/file/d/1tMWvEOR1NtOKeLcOzacrMepubzmxr_If/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://drive.google.com/file/d/1XJd-1UsYp-8CKMsBKpW5Cqs_h875Ur2T/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+REL09,Release acceptance and cutover,P1,G8/G9 Release and retirement,Retire legacy services deliberately,"Revoke old runtime credentials/jobs/functions only after consumers and retained records are reconciled, backups restorable and approval recorded.",No remaining required legacy caller or pending effect; protected archives and approved disposal receipt.,Release owner + independent approvers,"REL07,DAT03,DAT09",Open - verify or implement,Required for affected launch scope,"E04,E05,E24,E25,H01,H04,R02,R03","https://drive.google.com/file/d/1GcYfaSWxQqQBw2OMLoX1Q_qZCWPd5-wT/view
+https://drive.google.com/file/d/1tMWvEOR1NtOKeLcOzacrMepubzmxr_If/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://drive.google.com/file/d/1XJd-1UsYp-8CKMsBKpW5Cqs_h875Ur2T/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."
+REL10,Release acceptance and cutover,P2,G8/G9 Release and retirement,Maintain post-release control cadence,"Schedule owner-driven dependency review, access recertification, restore drills, provider/policy checks and regression releases.","Documented frequencies, accountable owners and evidence retention; this task register itself does not schedule automations.",Release owner + independent approvers,REL07,Open - verify or implement,Required for affected launch scope,"E04,E05,E24,E25,H01,H04,R02,R03","https://drive.google.com/file/d/1GcYfaSWxQqQBw2OMLoX1Q_qZCWPd5-wT/view
+https://drive.google.com/file/d/1tMWvEOR1NtOKeLcOzacrMepubzmxr_If/view
+https://drive.google.com/file/d/1KkJEsNxovRx5wc2t8-4lAop2kWgtyKCy/view
+https://drive.google.com/file/d/1XJd-1UsYp-8CKMsBKpW5Cqs_h875Ur2T/view
+https://drive.google.com/file/d/1-7B4JcFcWG3OrLUhBamPvNLURFKqU5Kl/view
+https://drive.google.com/file/d/1HCfvyfWCOdyLeLqE2nbIi-19k25Ztfeq/view
+https://docs.github.com/en/actions/reference/security/secure-use
+https://docs.github.com/en/actions/reference/workflows-and-actions/deployments-and-environments",QA-37,"Source/isolated QA only; production, sharing, credentials and commercial approvals require accountable authorization."

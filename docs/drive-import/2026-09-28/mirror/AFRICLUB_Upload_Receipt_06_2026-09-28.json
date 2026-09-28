@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-09-28",
+  "recordedAtUTC": "2026-09-28T12:20:45.631429+00:00",
+  "destinationFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+  "artifacts": [
+    {
+      "name": "AFRICLUB_Implementation_06_2026-09-28.zip",
+      "driveId": "1_dv2p5eFgI7zfWC7N_41OUHg7qU4Bdk1",
+      "url": "https://drive.google.com/file/d/1_dv2p5eFgI7zfWC7N_41OUHg7qU4Bdk1/view?usp=drivesdk",
+      "bytes": 1368465,
+      "localSha256": "db9e6e31786e86649c66d78a3bcbb34e5c2d9c93b55b0d42e0cecf15a6c6d475",
+      "uploadSuccess": true,
+      "parentVerified": true,
+      "readback": "raw download + exact SHA256 +493 checksums"
+    },
+    {
+      "name": "AFRICLUB_Implementation_06_Report_2026-09-28.md",
+      "driveId": "11BMsh33BBmpcZ4Ai5VLBWlGII0oL7zv6",
+      "url": "https://drive.google.com/file/d/11BMsh33BBmpcZ4Ai5VLBWlGII0oL7zv6/view?usp=drivesdk",
+      "bytes": 13726,
+      "localSha256": "7a314d6fb3347401bd972f8bdd471e9106058e0b9ce9533623e7806c74ce0d2a",
+      "uploadSuccess": true,
+      "parentVerified": true,
+      "readback": "readable report + parent readback"
+    },
+    {
+      "name": "AFRICLUB_Task_Register_06_2026-09-28.json",
+      "driveId": "1UNzSzQjbUQKqmsHuCUgQ776NouPNrx90",
+      "url": "https://drive.google.com/file/d/1UNzSzQjbUQKqmsHuCUgQ776NouPNrx90/view?usp=drivesdk",
+      "bytes": 227189,
+      "localSha256": "2267512e3790cea47739e734a9f8bb217b881d6e83a601a5d42e15fb850af38f",
+      "uploadSuccess": true,
+      "parentVerified": true,
+      "readback": "metadata: name, size and parent"
+    },
+    {
+      "name": "AFRICLUB_Execution_Plan_06_2026-09-28.json",
+      "driveId": "1USGVxLjMxoz01M_7DHCH5Ncp5VToxQaq",
+      "url": "https://drive.google.com/file/d/1USGVxLjMxoz01M_7DHCH5Ncp5VToxQaq/view?usp=drivesdk",
+      "bytes": 88910,
+      "localSha256": "4901d75869d51869a407ad55b0d21cf35257f268be0616a68e4a862353b1c0ed",
+      "uploadSuccess": true,
+      "parentVerified": true,
+      "readback": "metadata: name, size and parent"
+    },
+    {
+      "name": "AFRICLUB_All_Remaining_Tasks_06_2026-09-28.md",
+      "driveId": "1DZ_l0iNfykcDebbU9w6M02FFDXfRb88E",
+      "url": "https://drive.google.com/file/d/1DZ_l0iNfykcDebbU9w6M02FFDXfRb88E/view?usp=drivesdk",
+      "bytes": 18529,
+      "localSha256": "cde697fddc1a9f5a25e356fd5b3cc7513518d1b68f8eb4e1df3df38ebb90a18c",
+      "uploadSuccess": true,
+      "parentVerified": true,
+      "readback": "metadata: name, size and parent"
+    },
+    {
+      "name": "AFRICLUB_Verification_06_2026-09-28.json",
+      "driveId": "1NuQdgdfvBtijUdliiHUN7Zd6SeIBbSoQ",
+      "url": "https://drive.google.com/file/d/1NuQdgdfvBtijUdliiHUN7Zd6SeIBbSoQ/view?usp=drivesdk",
+      "bytes": 5105,
+      "localSha256": "2e2cf2c9e8a24620a007b5b64880799398d32886d4e7057d20d2f0d8fefa2b2f",
+      "uploadSuccess": true,
+      "parentVerified": true,
+      "readback": "metadata: name, size and parent"
+    },
+    {
+      "name": "AFRICLUB_Artifact_Checksums_06_2026-09-28.json",
+      "driveId": "1kqYqjybRtATE1ITNj3RILRHTcBB0BRk1",
+      "url": "https://drive.google.com/file/d/1kqYqjybRtATE1ITNj3RILRHTcBB0BRk1/view?usp=drivesdk",
+      "bytes": 1207,
+      "localSha256": "2baacd1ffa71d1c4902bf299b922580cfb173f4a390851684fed27b23a6f8bce",
+      "uploadSuccess": true,
+      "parentVerified": true,
+      "readback": "metadata: name, size and parent"
+    }
+  ],
+  "archiveRoundTrip": {
+    "driveId": "1_dv2p5eFgI7zfWC7N_41OUHg7qU4Bdk1",
+    "bytes": 1368465,
+    "sha256": "db9e6e31786e86649c66d78a3bcbb34e5c2d9c93b55b0d42e0cecf15a6c6d475",
+    "roundTripMatches": true,
+    "internalChecksumsVerified": 493,
+    "internalFailures": 0
+  },
+  "receiptUploadedSeparately": true,
+  "fileCountExcludingThisReceipt": 7,
+  "scope": "versioned source/report delivery, not a deployment or in-place rewrite of original Drive source",
+  "productionReady": false,
+  "remoteMigrations": 0,
+  "realPayments": 0,
+  "permissionsChanged": false
+}

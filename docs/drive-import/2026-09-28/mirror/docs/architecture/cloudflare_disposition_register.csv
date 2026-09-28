@@ -1,0 +1,8 @@
+source_authority,object_class,object_name,current_state,target_disposition,cloudflare_target,evidence_required,retirement_gate
+Supabase,edge_function,game-session-action,deployed-live,reconcile-before-retire,TBD,caller/data/behavior comparison,approved disposition and no required caller
+Supabase,edge_function,generate-question-drafts,deployed-live,reconcile-before-retire,TBD,caller/data/behavior comparison,approved disposition and no required caller
+Repository,edge_function,google-wallet-ticket-pass,local-not-deployed,decide-future-scope,TBD,product/release decision,explicit retain or retire decision
+Repository,edge_function,sync-google-wallet-ticket-state,local-not-deployed,decide-future-scope,TBD,product/release decision,explicit retain or retire decision
+Supabase,storage,product-images:8 objects,metadata-restored-originals-blocked,preserve-and-export,R2,byte hashes and rights metadata,all originals exported and verified
+Supabase,auth,supporter identities,live,migrate-or-remap,Identity Worker/D1,one-to-one identity/session mapping,revocation and upgrade tests pass
+Supabase,cron,6 active jobs,live,port-or-retire,Workers Cron/Workflows,per-job behavior and retry evidence,approved disposition for every job

@@ -1,0 +1,67 @@
+{
+  "verified_at_utc": "2026-09-26T14:00:09.164170+00:00",
+  "drive_folder_id": "1SSVvEUgRQj7AeE7fPpD0VqJa0CrjWCvh",
+  "drive_folder_path": "/Google Drive/AFRICLUB/output/refactor-2026-09-26/batch6-delivery-receipts",
+  "deliverables": [
+    {
+      "name": "AFRICLUB_Batch6_Current_Drive_Patch_2026-09-26.zip",
+      "drive_file_id": "1RoDS657KD7PwC0GEldqyJULnuyAD0gBR",
+      "bytes": 216653,
+      "sha256": "7bc0852b614a9306b9206fd9f8c21661165c41ecda2104ade07d444ba9acd39d",
+      "readback_matched": true
+    },
+    {
+      "name": "AFRICLUB_Batch6_Implementation_Report_2026-09-26.md",
+      "drive_file_id": "1rToxdFsF20uSXszUpIb8g5sF1c5KojBQ",
+      "bytes": 9165,
+      "sha256": "e8a39ebf2fde643336f0b32a5d45e0da0173bb831fd961b90a51876b66062232",
+      "readback_matched": true
+    },
+    {
+      "name": "AFRICLUB_Remaining_Actions_Batch6_2026-09-26.json",
+      "drive_file_id": "1wU9Lwl-kQTm6RizakqTU6pjwpcRaQXc4",
+      "bytes": 11046,
+      "sha256": "465316f88afb930ee31245792c3c96657529c043e35d6049f980c275d26d0920",
+      "readback_matched": true
+    },
+    {
+      "name": "AFRICLUB_Batch6_Verification_2026-09-26.json",
+      "drive_file_id": "1htyOTa3NPY8y2TSYQkeiiCtc0_0YPAix",
+      "bytes": 1548,
+      "sha256": "fcccbc86ad91b9ba80b9b459d6b685c4a873ccb8cc166e510c160fb9e03a61c2",
+      "readback_matched": true
+    },
+    {
+      "name": "AFRICLUB_Batch6_Source_Drive_Verification_2026-09-26.json",
+      "drive_file_id": "1S2rOHjm7abM5bl_vyxowdYPCoeHZUKWN",
+      "bytes": 6974,
+      "sha256": "68b5ce0132b6082b5284a39147cf3b2d2d0b6332c5e3e17f2bd4e562f5c1afe0",
+      "readback_matched": true
+    },
+    {
+      "name": "AFRICLUB_Batch6_Prechange_Source_2026-09-26.zip",
+      "drive_file_id": "1rQxZHabpnlQOArGCdChhCjYXnMWGstjn",
+      "bytes": 60263,
+      "sha256": "32b6ce65a1f01cdc98abbff5acb0c04144076674cbb50fa6b00c452d33867161",
+      "readback_matched": true
+    }
+  ],
+  "all_source_paths_saved": 21,
+  "source_additions_saved": 19,
+  "existing_files_updated_preserving_ids": 2,
+  "source_readback_matches": 21,
+  "targeted_tests_passed": 362,
+  "new_tests_passed": 128,
+  "readback_code_tests_passed": 329,
+  "actual_provider_messages_sent": 0,
+  "remote_migrations": 0,
+  "production_deployments": 0,
+  "complete_migration": false,
+  "runtime_templates_enabled": false,
+  "archive_integrity": {
+    "archive_bytes": 216653,
+    "entries": 105,
+    "checksummed_files": 104,
+    "sha256": "7bc0852b614a9306b9206fd9f8c21661165c41ecda2104ade07d444ba9acd39d"
+  }
+}

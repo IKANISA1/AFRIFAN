@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "transport": "private-worker-rpc",
+  "runtimeEnabledByDefault": false,
+  "environment": "isolated-staging",
+  "authority": "The entrypoint principal comes from deployment variables and current database grants, never caller-selected fields. Binding owners must authenticate service callers and validate evidence upstream.",
+  "entrypoints": {
+    "PaymentEvidenceIngestor": {
+      "principalVariable": "INGEST_PRINCIPAL_ID",
+      "capability": "ingest",
+      "methods": {
+        "ingest": {
+          "requestFields": [
+            "requestId",
+            "raw",
+            "parsed",
+            "attestationRef"
+          ],
+          "rawFields": [
+            "id",
+            "userId",
+            "clubId",
+            "country",
+            "provider",
+            "sha256",
+            "receivedAt",
+            "isMock"
+          ],
+          "parsedFields": [
+            "id",
+            "rawId",
+            "userId",
+            "clubId",
+            "country",
+            "providerReference",
+            "amount",
+            "currency",
+            "recipient",
+            "direction",
+            "parseStatus",
+            "isMock",
+            "transactionAt"
+          ],
+          "responseFields": [
+            "schemaVersion",
+            "evidenceId",
+            "clubId",
+            "recorded"
+          ]
+        }
+      }
+    },
+    "PaymentAllocator": {
+      "principalVariable": "ALLOCATE_PRINCIPAL_ID",
+      "capability": "allocate",
+      "methods": {
+        "allocate": {
+          "requestFields": [
+            "requestId",
+            "clubId",
+            "orderId",
+            "evidenceId"
+          ],
+          "responseType": "AllocationReceipt"
+        }
+      }
+    },
+    "PaymentReceiptReader": {
+      "principalVariable": "READ_PRINCIPAL_ID",
+      "capability": "read",
+      "methods": {
+        "readReceipt": {
+          "requestFields": [
+            "clubId",
+            "orderId"
+          ],
+          "responseType": "AllocationReceipt"
+        }
+      }
+    },
+    "PaymentAllocationOutbox": {
+      "principalVariable": "OUTBOX_PRINCIPAL_ID",
+      "capability": "outbox",
+      "methods": {
+        "claim": {
+          "requestFields": [
+            "clubId",
+            "limit"
+          ],
+          "responseFields": [
+            "schemaVersion",
+            "clubId",
+            "events"
+          ],
+          "eventFields": [
+            "eventId",
+            "leaseId",
+            "leaseUntil",
+            "eventType",
+            "payload"
+          ]
+        },
+        "acknowledge": {
+          "requestFields": [
+            "clubId",
+            "eventId",
+            "leaseId"
+          ],
+          "responseFields": [
+            "schemaVersion",
+            "eventId",
+            "acknowledged"
+          ]
+        }
+      }
+    }
+  },
+  "receiptFields": [
+    "schemaVersion",
+    "allocationId",
+    "clubId",
+    "orderId",
+    "sourceIntentId",
+    "evidenceId",
+    "userId",
+    "kind",
+    "amount",
+    "currency",
+    "recordedAt",
+    "allocationPersisted",
+    "businessTargetFulfilled",
+    "membership"
+  ],
+  "membershipFields": [
+    "id",
+    "tier",
+    "status",
+    "paymentStatus",
+    "expiresAt"
+  ],
+  "grammar": {
+    "identifiers": "lowercase UUID; versions 1\u20138",
+    "clubId": "positive safe integer",
+    "amount": "positive whole currency units; <= 2147483647; contribution additionally RWF 100..5000000",
+    "timestamp": "UTC Unix milliseconds",
+    "currency": "3 uppercase ASCII letters after canonicalization",
+    "rawBodyStored": false,
+    "paymentProviderAttestation": "The evidence reference and raw digest are provenance, not a provider signature or proof of payment."
+  },
+  "semantics": {
+    "ingestCreatesEntitlements": false,
+    "allocationReceiptMeansMoneySent": false,
+    "membershipFulfillment": "atomic with evidence allocation in this isolated database; one UTC calendar year; preserve suspension and existing member identity/points",
+    "contributionFulfillment": false,
+    "contributionExplanation": "Only payment evidence is allocated. Campaign totals, rewards and referrals are not ported and remain unperformed.",
+    "outboxExternalDelivery": false,
+    "outboxExactlyOnceExternalEffects": false,
+    "historicalReceiptIsCurrentEntitlement": false
+  },
+  "limits": {
+    "outboxClaimMaximum": 20,
+    "outboxLeaseMilliseconds": 60000,
+    "importBytesMaximum": 16777216,
+    "importRowsPerSectionMaximum": 10000,
+    "importClubsMaximum": 5
+  },
+  "noPublicHttp": true,
+  "productionReleaseAuthorized": false
+}

@@ -1,0 +1,65 @@
+{
+  "verifiedAtUtc": "2026-09-26T14:52:15.223792+00:00",
+  "driveFolderId": "1JROPV2SYf1QXJYza1VLTb8Q1eip0bPbl",
+  "driveFolderPath": "/Google Drive/AFRICLUB/output/refactor-2026-09-26/batch7-payment-allocation",
+  "deliverables": [
+    {
+      "name": "AFRICLUB_Batch7_Current_Drive_Patch_2026-09-26.zip",
+      "driveFileId": "1_bV_XlFRJCsau9H_znn-_rQ4aL6lmpfx",
+      "sha256": "58e5c0bf5bf605fedcebb9d708d7bb5a0b19b1b9b2aa69bc6a49361af3cece72",
+      "bytes": 195356,
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch7_Implementation_Report_2026-09-26.md",
+      "driveFileId": "11P1CJHMaKrs29XeBOjQ2dLxFzk8uV0XG",
+      "sha256": "c33f45de96b8b66ddf39feeb2e0ee94b65ef2d7243eaa624d530c9f8c8f5a761",
+      "bytes": 12519,
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Remaining_Actions_Batch7_2026-09-26.json",
+      "driveFileId": "1Ux7S56jqWC7PJfcXtpF1RnJmSerSxgNI",
+      "sha256": "ca6e961d5245c35f8f9593f33b081947e735e4d17011d4edf7caa9cc32f1b96b",
+      "bytes": 12973,
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch7_Verification_2026-09-26.json",
+      "driveFileId": "1T11NuxhHEVQW9wFnjwpzK6JZphb8g3hj",
+      "sha256": "dce339af43de3cf6d09e34624c9e823379ad511414575a25ca50ae028a5e5a46",
+      "bytes": 1229,
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch7_Source_Drive_Verification_2026-09-26.json",
+      "driveFileId": "1GwLTFhvPoglBuHE123UwFHsjSx9tfhkS",
+      "sha256": "652f21727082b76eac3f253aa5811b6276d94d8fdf90498d5214c6f86b750708",
+      "bytes": 6676,
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch7_Source_Reference_Backup_2026-09-26.zip",
+      "driveFileId": "183hISz9CxrxPPynf8akNpRz0OixX7TaI",
+      "sha256": "cfed48fdd91ad50b78cd3998cc8414c3b2f1b81803bbf7403028e030d87c208f",
+      "bytes": 29028,
+      "readbackMatched": true
+    }
+  ],
+  "sourceFilesSaved": 22,
+  "sourceReadbackMatches": 22,
+  "originalFilesOverwritten": 0,
+  "targetedTestsPassed": 235,
+  "moduleTestsPassed": 202,
+  "installerTestsPassed": 33,
+  "independentSqliteConcurrencyCasesPassed": 3,
+  "readbackModuleTestsPassed": 202,
+  "currentDriveSourcePreflightChanges": 0,
+  "archiveEntries": 85,
+  "checksummedArchiveFiles": 84,
+  "liveProviderRequests": 0,
+  "remoteMigrations": 0,
+  "productionDeployments": 0,
+  "runtimeEnabled": false,
+  "wholeMigrationCompleted": false
+}

@@ -1,0 +1,27 @@
+{
+  "name": "africlub-membership-handoff-staging",
+  "main": "src/handoff-worker.mjs",
+  "compatibility_date": "2026-09-27",
+  "account_id": "",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [],
+  "observability": {
+    "enabled": false
+  },
+  "d1_databases": [
+    {
+      "binding": "ALLOCATION_DB",
+      "database_name": "africlub-payment-allocation-staging",
+      "database_id": "REPLACE_WITH_SHARED_ALLOCATION_STAGING_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "SERVER_HANDOFF_ENABLED": "false",
+    "PAYMENT_ALLOCATION_ENABLED": "false",
+    "ALLOCATION_ENVIRONMENT": "isolated-staging",
+    "HANDOFF_RESERVE_PRINCIPAL_ID": "",
+    "HANDOFF_READ_PRINCIPAL_ID": ""
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "verified_at_utc": "2026-09-26T13:17:44.765638+00:00",
+  "drive_folder_id": "1sbG2BcB9bx8QVlanpx9vYvxCGASG4zuN",
+  "drive_folder_path": "/Google Drive/AFRICLUB/output/refactor-2026-09-26/batch5-whatsapp-delivery",
+  "primary_deliverables": [
+    {
+      "file_name": "AFRICLUB_Batch5_Current_Drive_Patch_2026-09-26.zip",
+      "drive_file_id": "1oX4V9UlPy00BOiUfuYuHDcRKxIT3l9jE",
+      "sha256": "77c324f1173245d5532721e131759bdd1f286bf566c84de87a71a3a4438d4498",
+      "bytes": 164190,
+      "readback_matched": true
+    },
+    {
+      "file_name": "AFRICLUB_Batch5_Implementation_Report_2026-09-26.md",
+      "drive_file_id": "1F1kMLO0jdGQ_cv4rdJ2yKyBo6zE1c30k",
+      "sha256": "9d561451662a3ef8cc1c7971d4112a3f59b96651acd6838ca007de993570d640",
+      "bytes": 11871,
+      "readback_matched": true
+    },
+    {
+      "file_name": "AFRICLUB_Remaining_Actions_Batch5_2026-09-26.json",
+      "drive_file_id": "1UCfO5JmBOosm3h0XvyBES0_sSA_rmbWN",
+      "sha256": "d172f2d8aa633a4038078a3af45507cac6f6327ae4cf9221dac49c9ce670efd2",
+      "bytes": 10068,
+      "readback_matched": true
+    },
+    {
+      "file_name": "AFRICLUB_Batch5_Verification_2026-09-26.json",
+      "drive_file_id": "10GscPfygeIlweB_kjIxyekdymbPSsarR",
+      "sha256": "74366dacade4bcb596a79d7a60ca9aa9b5cfc1801eecb40f2854238c0f1bacda",
+      "bytes": 10894,
+      "readback_matched": true
+    },
+    {
+      "file_name": "AFRICLUB_Batch5_Source_Drive_Verification_2026-09-26.json",
+      "drive_file_id": "199DjKRSjziqxepYMMh1JkUGHj7dwOd2O",
+      "sha256": "f89572bd58c1ad107c6dac158c089a8ac06e4b38e999c39da461b1b886e2c834",
+      "bytes": 7413,
+      "readback_matched": true
+    }
+  ],
+  "archive_entries": 78,
+  "verified_new_direct_source_files": 16,
+  "verified_proposed_existing_replacement_saved_not_installed": true,
+  "historical_v3_v4_deliverables_hash_verified": 8,
+  "source_backup_and_backfill_receipt_hash_verified": true,
+  "actual_existing_source_files_updated": 0,
+  "actual_provider_messages_sent": 0,
+  "deployments": 0,
+  "source_update_blocker": "connector file_uri argument-type mismatch",
+  "historical_packages_are_not_authority_to_downgrade_current_drive": true,
+  "initial_review_evidence_backfilled": {
+    "file_name": "AFRICLUB_Refactor_Review_Evidence_2026-09-26.zip",
+    "drive_file_id": "13FnX2gG4e4PGdUH5DwWEWPOqYL_LZhcn",
+    "sha256": "f6590c28eedef0b085ce9aa35cc7d2c4838e676f1c88d86b47100cfdc59ba302",
+    "readback_matched": true
+  }
+}

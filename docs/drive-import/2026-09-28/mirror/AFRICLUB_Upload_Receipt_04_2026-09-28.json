@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "asOf": "2026-09-28",
+  "verifiedAtUtc": "2026-09-28T10:35:44.210832+00:00",
+  "destinationFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+  "artifacts": [
+    {
+      "fileName": "AFRICLUB_Implementation_04_2026-09-28.zip",
+      "driveFileId": "1aZs3yFXitN_uZ1UzPwS5vCQld6o-unR6",
+      "parentFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+      "uploadSucceeded": true,
+      "readbackVerification": "full_byte_sha256_readback",
+      "localBytes": 1416327,
+      "localSha256": "edf91c31797fd4e93c9927945e41e06c8ce485071d9f6244f5c5929a0de9cd46",
+      "remoteByteHashVerified": true
+    },
+    {
+      "fileName": "AFRICLUB_Implementation_04_Report_2026-09-28.md",
+      "driveFileId": "1HiHTz96qU783BWRSLNRCZCddk-DbN8PT",
+      "parentFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+      "uploadSucceeded": true,
+      "readbackVerification": "text_content_and_parent_readback",
+      "localBytes": 12481,
+      "localSha256": "76a30601163c8e62cb71d858b9f8ac653470bb8756abc5b9de779914a220c312",
+      "remoteByteHashVerified": false
+    },
+    {
+      "fileName": "AFRICLUB_Task_Register_04_2026-09-28.json",
+      "driveFileId": "1dsH9mAy3ICXLt5z67tFFgq0WCTYla914",
+      "parentFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+      "uploadSucceeded": true,
+      "readbackVerification": "metadata_size_and_parent_readback",
+      "localBytes": 212331,
+      "localSha256": "6d764039bf3231e7297cb0098ef8615fee776c4b84dcfadd1d623c050d9e9c9f",
+      "remoteByteHashVerified": false
+    },
+    {
+      "fileName": "AFRICLUB_Execution_Plan_04_2026-09-28.json",
+      "driveFileId": "1U6RRIvvij_G-h3Ds0GLf8izykwCXN81g",
+      "parentFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+      "uploadSucceeded": true,
+      "readbackVerification": "metadata_size_and_parent_readback",
+      "localBytes": 88878,
+      "localSha256": "f1a8906678da943bb01fe37ac31c11a6ba2b071c763d86e09214794ccb41f333",
+      "remoteByteHashVerified": false
+    },
+    {
+      "fileName": "AFRICLUB_All_Remaining_Tasks_04_2026-09-28.md",
+      "driveFileId": "1rymdOTUk2ttdtxppVWUvqZFB5iBNiPt6",
+      "parentFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+      "uploadSucceeded": true,
+      "readbackVerification": "metadata_size_and_parent_readback",
+      "localBytes": 15014,
+      "localSha256": "dc0e5f5ec83472e9bb39cf39fa07f187c71cc614fcf9223f3ea968df6e5d285e",
+      "remoteByteHashVerified": false
+    },
+    {
+      "fileName": "AFRICLUB_Verification_04_2026-09-28.json",
+      "driveFileId": "13e3W039H0Zqtyhv3dmMfF2r9RNzSYq-M",
+      "parentFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+      "uploadSucceeded": true,
+      "readbackVerification": "metadata_size_and_parent_readback",
+      "localBytes": 3646,
+      "localSha256": "515089d49773aaf60b09c91dd3cf18d49a299a60a15f64e5fcb03bb2428047e8",
+      "remoteByteHashVerified": false
+    },
+    {
+      "fileName": "AFRICLUB_Artifact_Checksums_04_2026-09-28.json",
+      "driveFileId": "18dV9uFUZD3ZeXjhCrmTVK-Fc3P5MsBH3",
+      "parentFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+      "uploadSucceeded": true,
+      "readbackVerification": "metadata_size_and_parent_readback",
+      "localBytes": 1120,
+      "localSha256": "618005f0ba7377d85dfafc505c0ab8e614fb1e35a7fe426e6ad7ed7287f174b8",
+      "remoteByteHashVerified": false
+    }
+  ],
+  "zipReadbackSha256": "edf91c31797fd4e93c9927945e41e06c8ce485071d9f6244f5c5929a0de9cd46",
+  "zipSha256Matched": true,
+  "bundleInternalHashesVerified": 479,
+  "existingDriveSourceReplaced": false,
+  "permissionsChanged": false,
+  "productionDeployed": false,
+  "scope": "Seven artifacts uploaded. ZIP bytes downloaded again and verified, internal hashes checked; report text and remaining artifact metadata/parent/size read back. No claim of full-byte readback for separate companion files. This receipt is separate from the sealed ZIP."
+}

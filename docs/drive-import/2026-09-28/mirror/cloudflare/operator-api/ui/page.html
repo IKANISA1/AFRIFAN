@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark"><meta name="referrer" content="no-referrer">
+<title>Content publication · AFRICLUB</title>
+<link rel="stylesheet" href="/operator/assets/styles.css">
+<script type="module" src="/operator/assets/app.js"></script>
+</head>
+<body data-club-id="__CLUB_ID__">
+<a class="skip-link" href="#main">Skip to publication workspace</a>
+<header class="topbar"><span class="brand">AFRICLUB</span><span>Club operations</span><span class="chip">Public content only</span></header>
+<main id="main" class="workspace">
+<div class="intro"><div><p class="eyebrow">Content operations</p><h1>Review. Then publish.</h1><p class="muted">Inspect the exact source snapshot before it becomes public.</p></div><button id="reload" type="button" class="secondary">Refresh access</button></div>
+<div class="context"><p id="club-context">Checking operator access…</p><p id="permission-context" class="muted"></p></div>
+<div id="status" role="status" aria-live="polite" class="status"></div>
+<div id="error" role="alert" class="notice" hidden></div>
+<noscript><p class="notice">JavaScript is required for verified review and explicit publication. No change has been sent.</p></noscript>
+<div class="layout">
+<aside class="panel current"><h2>Currently published</h2><div id="head-details"></div><p class="muted small">A receipt proves a publication occurred. It does not prove that version is still current.</p></aside>
+<div class="flow">
+<section id="select-section" class="panel" hidden><p class="eyebrow">Step 1 · Inspect</p><h2>Available snapshots</h2><p class="muted small">Newest 20 imports. Nothing is published by opening a candidate.</p><div id="candidates" class="candidate-list"></div><p id="more" class="muted small" hidden>More imports exist. Use an exact snapshot ID from the import record.</p><form id="inspect-form"><label for="snapshot-input">Exact snapshot ID</label><input id="snapshot-input" name="snapshot" autocomplete="off" spellcheck="false" minlength="64" maxlength="64" pattern="[a-f0-9]{64}" placeholder="64-character source hash" required><button id="inspect" type="submit" class="secondary">Inspect snapshot</button></form></section>
+<section id="candidate-section" class="panel" hidden><p class="eyebrow">Selected source</p><h2 id="candidate-heading" tabindex="-1">Snapshot details</h2><div id="candidate-details"></div><div id="table-counts"></div>
+<form id="review-form"><label for="evidence">Editorial and image-rights review reference</label><input id="evidence" autocomplete="off" spellcheck="false" maxlength="160" required pattern="[A-Za-z0-9_.:\/\-]{3,160}" placeholder="For example: editorial:2026-09-26-01"><p class="muted small">Reference your actual editorial and rights review. Entering a reference does not perform that review.</p><button id="review" type="submit">Verify and create review</button></form></section>
+<section id="review-section" class="panel" hidden><p class="eyebrow">Step 2 · Review</p><h2 id="review-heading" tabindex="-1">Verified review</h2><div id="review-details"></div><p id="countdown" class="muted"></p>
+<div id="preview-controls"><label for="preview-route">Public content preview</label><div class="row"><select id="preview-route"><option value="news">News</option><option value="fixtures">Fixtures</option><option value="squad">Squad</option><option value="fanclubs">Supporter groups</option><option value="partners">Partners</option><option value="shop">Shop</option><option value="tickets">Tickets</option><option value="membership-tiers">Membership tiers</option><option value="predict-pools">Prediction previews</option></select><button id="preview-load" type="button" class="secondary">Load preview</button></div><p class="muted small">Uses the public reader's field and eligibility rules at preview time. Images are not fetched here; image-rights review remains part of your external evidence.</p></div>
+<div id="preview" class="preview"></div><button id="preview-next" type="button" class="secondary" hidden>Next 25 records</button>
+</section>
+<section id="confirm-section" class="panel" hidden><p class="eyebrow">Step 3 · Publish</p><h2>Explicit confirmation</h2><p id="recovery-note" class="notice" hidden>Publication outcome is not yet verified. Do not start another publication. Check the result; any retry uses the original review and request key.</p><form id="confirm-form"><label class="check"><input id="acknowledge" type="checkbox"><span>I reviewed this exact snapshot and its editorial and image-rights evidence. I intend to replace the displayed previous version for this club.</span></label><label for="confirmation">Type <strong id="confirmation-phrase"></strong> to confirm</label><input id="confirmation" autocomplete="off" spellcheck="false"><button id="publish" type="submit" disabled>Publish reviewed snapshot</button></form><div class="row actions"><button id="check-result" type="button" class="secondary">Check result</button><button id="reset" type="button" class="quiet">Leave this review</button></div><p class="muted small">No automatic retries. Closing this page does not cancel an in-flight publication. Recovery identifiers are retained on this browser for the same operator and club.</p></section>
+<section id="receipt-section" class="panel" hidden><p class="eyebrow">Publication receipt</p><h2 id="receipt-heading" tabindex="-1">Publication confirmed</h2><div id="receipt-details"></div><button id="next-review" type="button" class="secondary">Review another snapshot</button></section>
+</div></div>
+<footer>Publication changes only approved public content. It does not activate supporter payments, tickets, memberships, or prediction entry.</footer>
+</main></body></html>

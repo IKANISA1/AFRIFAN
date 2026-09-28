@@ -1,0 +1,1851 @@
+{
+  "schemaVersion": 1,
+  "createdAtUtc": "2026-09-28T06:15:53.721216+00:00",
+  "targetFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+  "intendedDeliveryFolder": "/Google Drive/AFRICLUB/output/production-remediation-2026-09-28/continuation-02-reliable-delivery-handoff",
+  "folderCreated": false,
+  "uploadCompleted": false,
+  "driveWrites": 0,
+  "sourcePaths": [
+    {
+      "path": ".github/workflows/ci.yaml",
+      "bundlePath": "files/.github/workflows/ci.yaml",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/.github/workflows/ci.yaml",
+      "knownDriveFileId": null,
+      "bytes": 24340,
+      "sha256": "33d8914daa368d5e6e4419ed7cbcee18bd0b81c46fe7345e1cbe800941ee03a9",
+      "status": "pending_upload"
+    },
+    {
+      "path": ".github/workflows/deploy-gikundiro-web.yml",
+      "bundlePath": "files/.github/workflows/deploy-gikundiro-web.yml",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/.github/workflows/deploy-gikundiro-web.yml",
+      "knownDriveFileId": null,
+      "bytes": 3475,
+      "sha256": "09e4c624436b8617d7c0fd50308ad7d6bdd2ce13c363ce0bd9810aa6c1b4c6fc",
+      "status": "pending_upload"
+    },
+    {
+      "path": "DESIGN.md",
+      "bundlePath": "files/DESIGN.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/DESIGN.md",
+      "knownDriveFileId": null,
+      "bytes": 23722,
+      "sha256": "316cf1f8e7b2693b763a02606320e6c6424e83ecdde98359e1bb3b7c758a5f5c",
+      "status": "pending_upload"
+    },
+    {
+      "path": "apps/rayon_sports/web/next.config.ts",
+      "bundlePath": "files/apps/rayon_sports/web/next.config.ts",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/apps/rayon_sports/web/next.config.ts",
+      "knownDriveFileId": null,
+      "bytes": 4884,
+      "sha256": "0acb040ed5c88a27aa02a23bff77a481171e93ea38116c4ee62a1ffa4fca0dfd",
+      "status": "pending_upload"
+    },
+    {
+      "path": "apps/rayon_sports/web/src/ui-kit/admin.css",
+      "bundlePath": "files/apps/rayon_sports/web/src/ui-kit/admin.css",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/apps/rayon_sports/web/src/ui-kit/admin.css",
+      "knownDriveFileId": null,
+      "bytes": 40064,
+      "sha256": "c1417e4342f840897bcd8bcfc371de0f2210e8d929f314906c1d18e1cb3522d8",
+      "status": "pending_upload"
+    },
+    {
+      "path": "apps/rayon_sports/web/src/ui-kit/theme.css",
+      "bundlePath": "files/apps/rayon_sports/web/src/ui-kit/theme.css",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/apps/rayon_sports/web/src/ui-kit/theme.css",
+      "knownDriveFileId": null,
+      "bytes": 162029,
+      "sha256": "ca0742b4f586fe5ee9f3070e20dc5c310eb666ddbbea798d6716e67b2f1179b6",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/DELIVERY_RECEIPTS.md",
+      "bundlePath": "files/cloudflare/auth-code-delivery/DELIVERY_RECEIPTS.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/DELIVERY_RECEIPTS.md",
+      "knownDriveFileId": null,
+      "bytes": 12525,
+      "sha256": "43bdbe035cd752e5c7cccaf2fa3e17fece53129bb817bd6158ae4e9af8837c17",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/README.md",
+      "bundlePath": "files/cloudflare/auth-code-delivery/README.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/README.md",
+      "knownDriveFileId": null,
+      "bytes": 8842,
+      "sha256": "211badf9dc72f96eabbb7d7011ab0b727f739c51c2df9bdb83df181eec84bca9",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/contracts/delivery-receipts.json",
+      "bundlePath": "files/cloudflare/auth-code-delivery/contracts/delivery-receipts.json",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/contracts/delivery-receipts.json",
+      "knownDriveFileId": null,
+      "bytes": 2275,
+      "sha256": "8e3c488739bf42846f09630412452306e3ef81e98ab509450f9d4594d7e80e08",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/migrations/0002_delivery_status_receipts.sql",
+      "bundlePath": "files/cloudflare/auth-code-delivery/migrations/0002_delivery_status_receipts.sql",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/migrations/0002_delivery_status_receipts.sql",
+      "knownDriveFileId": null,
+      "bytes": 3495,
+      "sha256": "724411afebc9c81e7975b15444d59b49be474830f645253d32013fff82a86f61",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/scripts/check-receipts-deployment.mjs",
+      "bundlePath": "files/cloudflare/auth-code-delivery/scripts/check-receipts-deployment.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/scripts/check-receipts-deployment.mjs",
+      "knownDriveFileId": null,
+      "bytes": 6598,
+      "sha256": "c40192bf655108402f34ef6e892f55ce032bf8345c0b7606fbeb40d5c66830b8",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipt-http.mjs",
+      "bundlePath": "files/cloudflare/auth-code-delivery/src/receipt-http.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/src/receipt-http.mjs",
+      "knownDriveFileId": null,
+      "bytes": 7265,
+      "sha256": "6099650d404e09db6f296518438edb94cf9d55b681ac8a66ef1420c27f2177f3",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipt-reader-worker.mjs",
+      "bundlePath": "files/cloudflare/auth-code-delivery/src/receipt-reader-worker.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/src/receipt-reader-worker.mjs",
+      "knownDriveFileId": null,
+      "bytes": 488,
+      "sha256": "b4d3aa095744d075699b40a20cca8a61c4bb1d879c2157a78fe19c8148371937",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipt-store.mjs",
+      "bundlePath": "files/cloudflare/auth-code-delivery/src/receipt-store.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/src/receipt-store.mjs",
+      "knownDriveFileId": null,
+      "bytes": 5436,
+      "sha256": "f575777f7bfb2780951f3fa2009196a29d02a0533f68087a39ecbf9f4fd02a6f",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipts-policy.mjs",
+      "bundlePath": "files/cloudflare/auth-code-delivery/src/receipts-policy.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/src/receipts-policy.mjs",
+      "knownDriveFileId": null,
+      "bytes": 4587,
+      "sha256": "b8254634216301a9e30656bb1b2ec8ec79f9e2a3d3e8241432dd1f75a8436f83",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipts-webhook-worker.mjs",
+      "bundlePath": "files/cloudflare/auth-code-delivery/src/receipts-webhook-worker.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/src/receipts-webhook-worker.mjs",
+      "knownDriveFileId": null,
+      "bytes": 425,
+      "sha256": "f2204db70d38aa364f662625475f1374ceed82ebec2e435e6d334d3f6ddf8bc8",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/status-aware-service.mjs",
+      "bundlePath": "files/cloudflare/auth-code-delivery/src/status-aware-service.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/src/status-aware-service.mjs",
+      "knownDriveFileId": null,
+      "bytes": 2972,
+      "sha256": "77d4711499a1026242627e60eecd564b5bd108ae719f647b887f2220fb41272a",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/status-aware-worker.mjs",
+      "bundlePath": "files/cloudflare/auth-code-delivery/src/status-aware-worker.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/src/status-aware-worker.mjs",
+      "knownDriveFileId": null,
+      "bytes": 691,
+      "sha256": "dc8d69a5fc5d7e23494e27f2622165f6c4a3d03db6994aea89a8d92d1ba3309d",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/current-queue.test.mjs",
+      "bundlePath": "files/cloudflare/auth-code-delivery/tests/current-queue.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/tests/current-queue.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 8194,
+      "sha256": "81d9cdea418d3563e98f4e5ce7ba1563f656af83e8ece314411acda543bfbfab",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/receipts-config.test.mjs",
+      "bundlePath": "files/cloudflare/auth-code-delivery/tests/receipts-config.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/tests/receipts-config.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 4299,
+      "sha256": "29983d7560075bf0c03dd61586df015afb899eaa5afc54fee4d19bcc30470510",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/receipts-fixture.mjs",
+      "bundlePath": "files/cloudflare/auth-code-delivery/tests/receipts-fixture.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/tests/receipts-fixture.mjs",
+      "knownDriveFileId": null,
+      "bytes": 3314,
+      "sha256": "4201225649a90713223f40ee828eb67816956383a67192b1f6a9aa9a07fad272",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/receipts-http.test.mjs",
+      "bundlePath": "files/cloudflare/auth-code-delivery/tests/receipts-http.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/tests/receipts-http.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 8642,
+      "sha256": "a5520701937129d658f94cec95967e93dbd14db666aa50f14a2ff5fcb94ba0b8",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/receipts-integration.test.mjs",
+      "bundlePath": "files/cloudflare/auth-code-delivery/tests/receipts-integration.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/tests/receipts-integration.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 6836,
+      "sha256": "1cc504ae93aafa63995ea242e4631f2540c3495b12f447c3768ab4137dc0378a",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/receipts-store.test.mjs",
+      "bundlePath": "files/cloudflare/auth-code-delivery/tests/receipts-store.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/tests/receipts-store.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 9313,
+      "sha256": "aa4f5f8ded6080b5cece53ca39e483aa0bdf86a8b53c70804abaf4d9010b436c",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/wrangler.receipt-reader.staging.jsonc",
+      "bundlePath": "files/cloudflare/auth-code-delivery/wrangler.receipt-reader.staging.jsonc",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/wrangler.receipt-reader.staging.jsonc",
+      "knownDriveFileId": null,
+      "bytes": 653,
+      "sha256": "ea9c04ceac8f2bef07947604d1a0047d308960168d04576a93dc023d60b68817",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/wrangler.receipts-webhook.staging.jsonc",
+      "bundlePath": "files/cloudflare/auth-code-delivery/wrangler.receipts-webhook.staging.jsonc",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/wrangler.receipts-webhook.staging.jsonc",
+      "knownDriveFileId": null,
+      "bytes": 886,
+      "sha256": "9a8c96eef3f47224e984529b26cc81e37cb9795c8182306c5327d74cb78f120d",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/wrangler.status-aware.staging.jsonc",
+      "bundlePath": "files/cloudflare/auth-code-delivery/wrangler.status-aware.staging.jsonc",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/auth-code-delivery/wrangler.status-aware.staging.jsonc",
+      "knownDriveFileId": null,
+      "bytes": 746,
+      "sha256": "a484717b4f9d6ab5b70e3d7fac454d1e0d7a33c523cb2136bf2ee9a197fea296",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/CONSOLE.md",
+      "bundlePath": "files/cloudflare/operator-api/CONSOLE.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/CONSOLE.md",
+      "knownDriveFileId": null,
+      "bytes": 1590,
+      "sha256": "e44a8577d6fa64ea510d9eed154a049012fc752b4873c21fd1887c6fb9308995",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/README.md",
+      "bundlePath": "files/cloudflare/operator-api/README.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/README.md",
+      "knownDriveFileId": null,
+      "bytes": 13953,
+      "sha256": "3d147edaaf77635d31f64b4d1ebfe2b0123c30f801218c3baf102478b43f5868",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/client.ts",
+      "bundlePath": "files/cloudflare/operator-api/client.ts",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/client.ts",
+      "knownDriveFileId": null,
+      "bytes": 10692,
+      "sha256": "8ef7b2e22f4f53b28027608926b86a89f1dd2a6dcd124c6a77e2b0e5491c47df",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/contracts/openapi.json",
+      "bundlePath": "files/cloudflare/operator-api/contracts/openapi.json",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/contracts/openapi.json",
+      "knownDriveFileId": null,
+      "bytes": 79565,
+      "sha256": "eb844623047ac2c0d06ab816982e4778994af69f455b524e6388513245a00de3",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/scripts/build-ui.mjs",
+      "bundlePath": "files/cloudflare/operator-api/scripts/build-ui.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/scripts/build-ui.mjs",
+      "knownDriveFileId": null,
+      "bytes": 2337,
+      "sha256": "467cc619478a0439a575a9798785c19438fe690fc1da8b063023a8e7024d57e8",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/scripts/check-deployment.mjs",
+      "bundlePath": "files/cloudflare/operator-api/scripts/check-deployment.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/scripts/check-deployment.mjs",
+      "knownDriveFileId": null,
+      "bytes": 4973,
+      "sha256": "2c270ca42355aa76ac7ec5fee55de8478ebb3ffa8cf9f6bfe01cf2a784402372",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/scripts/compile-client.mjs",
+      "bundlePath": "files/cloudflare/operator-api/scripts/compile-client.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/scripts/compile-client.mjs",
+      "knownDriveFileId": null,
+      "bytes": 847,
+      "sha256": "0651865930745900cbd56d4508ef0a4a3ffac59195fb086b60a320c72568470c",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/scripts/prepare-enrollment.mjs",
+      "bundlePath": "files/cloudflare/operator-api/scripts/prepare-enrollment.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/scripts/prepare-enrollment.mjs",
+      "knownDriveFileId": null,
+      "bytes": 2719,
+      "sha256": "d368626c87d3b3c3ed61fd6f2d9172b1f0caeea95e0bb754af8fdec879d94acc",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/scripts/replay-saved-export.mjs",
+      "bundlePath": "files/cloudflare/operator-api/scripts/replay-saved-export.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/scripts/replay-saved-export.mjs",
+      "knownDriveFileId": null,
+      "bytes": 6141,
+      "sha256": "cea18a20fe7b6cb0d78ae8b6e18a9d60bae4101ec8c420a212b61e428591f631",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/src/access-identity.mjs",
+      "bundlePath": "files/cloudflare/operator-api/src/access-identity.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/src/access-identity.mjs",
+      "knownDriveFileId": null,
+      "bytes": 1200,
+      "sha256": "bbeb20a20ade821712c3eefc7a7502e80ad2e90f33ff19090558c799f2ed03c8",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/src/errors.mjs",
+      "bundlePath": "files/cloudflare/operator-api/src/errors.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/src/errors.mjs",
+      "knownDriveFileId": null,
+      "bytes": 871,
+      "sha256": "a8f839dcbb73a4739a4f6234467da513382857a5bb9d7d67fcb1f4a0c8b6fdd6",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/src/http.mjs",
+      "bundlePath": "files/cloudflare/operator-api/src/http.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/src/http.mjs",
+      "knownDriveFileId": null,
+      "bytes": 2904,
+      "sha256": "d0795f22010e3ba5c87ab0d638288cc17d4d71c57f3ec2a0981bd44e8a80110f",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/src/index.mjs",
+      "bundlePath": "files/cloudflare/operator-api/src/index.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/src/index.mjs",
+      "knownDriveFileId": null,
+      "bytes": 5073,
+      "sha256": "042b090532c14a5ce703b0c18b0a6e9292168fd1c1e5722f76d4f0dbd315a519",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/src/ui-assets.mjs",
+      "bundlePath": "files/cloudflare/operator-api/src/ui-assets.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/src/ui-assets.mjs",
+      "knownDriveFileId": null,
+      "bytes": 47671,
+      "sha256": "cdfd966d5fc0d0ba343c7936d51183ac11369f17d4966c7bc8bbeed38db928bd",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/src/ui-response.mjs",
+      "bundlePath": "files/cloudflare/operator-api/src/ui-response.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/src/ui-response.mjs",
+      "knownDriveFileId": null,
+      "bytes": 963,
+      "sha256": "50fa5caba3ddc2321661ecee0ef6fb38a190ad8397e8d9e90910490c72e526d5",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/auth-http.test.mjs",
+      "bundlePath": "files/cloudflare/operator-api/tests/auth-http.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/tests/auth-http.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 6966,
+      "sha256": "b862b81dcab1ea431fddfc61dc9bbcf769f24976bfa3e0a496326999df3b7c7b",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/browser/run_browser.py",
+      "bundlePath": "files/cloudflare/operator-api/tests/browser/run_browser.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/tests/browser/run_browser.py",
+      "knownDriveFileId": null,
+      "bytes": 10450,
+      "sha256": "d073304ad8ca48b4b9ab50398fc4a5cb63965dc6ea53192cc6feef92c0328b3f",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/browser/server.mjs",
+      "bundlePath": "files/cloudflare/operator-api/tests/browser/server.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/tests/browser/server.mjs",
+      "knownDriveFileId": null,
+      "bytes": 3418,
+      "sha256": "183abd931f5b6b9854425c306dc1e822642b7c16d3153646e733ca4004a8a579",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/client.test.mjs",
+      "bundlePath": "files/cloudflare/operator-api/tests/client.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/tests/client.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 4851,
+      "sha256": "8a252d76a338300b2f719873986e6f7c9d3b6418713198dd42a5f1e4e1da9c94",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/contract.test.mjs",
+      "bundlePath": "files/cloudflare/operator-api/tests/contract.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/tests/contract.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 4032,
+      "sha256": "f9083c7d51bae4048363615723ce5b5e0372fa8337c9e235261eaa6bc00139e3",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/deployment.test.mjs",
+      "bundlePath": "files/cloudflare/operator-api/tests/deployment.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/tests/deployment.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 3881,
+      "sha256": "736f3cd33f3f510b76c8b5e6100300852b2ae32eda6abf7241334247498ce9d8",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/inspection.test.mjs",
+      "bundlePath": "files/cloudflare/operator-api/tests/inspection.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/tests/inspection.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 8221,
+      "sha256": "5c63630fb2a2ac48b7bfbe8e8e9c47d89f8a36ad4222d3c5684dfa01c3f10484",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/publication.test.mjs",
+      "bundlePath": "files/cloudflare/operator-api/tests/publication.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/tests/publication.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 10955,
+      "sha256": "7c80aabd0deb1155fb932d9429d2d035efac8311d1de3c5c2daf86af9a342693",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/support/fixture.mjs",
+      "bundlePath": "files/cloudflare/operator-api/tests/support/fixture.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/tests/support/fixture.mjs",
+      "knownDriveFileId": null,
+      "bytes": 7151,
+      "sha256": "4988991fd6c914c237dc3309f9d25cc6e447158642bc5cd42e1270758be0bf48",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/ui-controller.test.mjs",
+      "bundlePath": "files/cloudflare/operator-api/tests/ui-controller.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/tests/ui-controller.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 11750,
+      "sha256": "ac454ea118e31007df25965f694a21c28911433bbc119d98979d4f8477fe243b",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/tests/ui-static.test.mjs",
+      "bundlePath": "files/cloudflare/operator-api/tests/ui-static.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/tests/ui-static.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 2778,
+      "sha256": "72df2b0227ca8033c4da8d7b3bef1fb529853aecc820c7cdef3ec59a78948761",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/ui/README.md",
+      "bundlePath": "files/cloudflare/operator-api/ui/README.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/ui/README.md",
+      "knownDriveFileId": null,
+      "bytes": 5662,
+      "sha256": "4b4d75bd3066a0fa69c018ad414148ee403a64fb666e381c0fb91da2ea9bbd81",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/ui/app.mjs",
+      "bundlePath": "files/cloudflare/operator-api/ui/app.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/ui/app.mjs",
+      "knownDriveFileId": null,
+      "bytes": 12157,
+      "sha256": "33ba38b8a1b7ff402afa4b754db73715982e787c514867e05580c2d35484ae52",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/ui/controller.mjs",
+      "bundlePath": "files/cloudflare/operator-api/ui/controller.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/ui/controller.mjs",
+      "knownDriveFileId": null,
+      "bytes": 10542,
+      "sha256": "c2d6d4afa65087c548155f2853111e12c83f212b3c2088657080b5d203cb297e",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/ui/page.html",
+      "bundlePath": "files/cloudflare/operator-api/ui/page.html",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/ui/page.html",
+      "knownDriveFileId": null,
+      "bytes": 5822,
+      "sha256": "974c55ad43f05cccbca710dc46f819dc72ccf761cd29c363a0b45fddf4aab145",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/ui/styles.css",
+      "bundlePath": "files/cloudflare/operator-api/ui/styles.css",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/ui/styles.css",
+      "knownDriveFileId": null,
+      "bytes": 5724,
+      "sha256": "dd8424312e3397b9539dd79f23318dc321cbe22b19d3e7d7dee152c8e01f3264",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/operator-api/wrangler.staging.jsonc",
+      "bundlePath": "files/cloudflare/operator-api/wrangler.staging.jsonc",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/operator-api/wrangler.staging.jsonc",
+      "knownDriveFileId": null,
+      "bytes": 534,
+      "sha256": "a8bdb4f6982ce576f4ef3c67c29f340bd085e026d3c7b6753ce0b4ab662d7031",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/payment-allocation/PAYMENT_HANDOFF_JOURNAL.md",
+      "bundlePath": "files/cloudflare/payment-allocation/PAYMENT_HANDOFF_JOURNAL.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/payment-allocation/PAYMENT_HANDOFF_JOURNAL.md",
+      "knownDriveFileId": null,
+      "bytes": 5328,
+      "sha256": "3900189de94e93c9fd346e3fbfbcd77412a2a86afd58a8618e764ef936208bd7",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/payment-allocation/README.md",
+      "bundlePath": "files/cloudflare/payment-allocation/README.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/payment-allocation/README.md",
+      "knownDriveFileId": null,
+      "bytes": 12023,
+      "sha256": "19e19d42e1c61f0016890bed78ba90a191222e185ff4c9754f059425d0abe3a4",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/payment-allocation/UNCLAIMED_HANDOFF_RELEASE.md",
+      "bundlePath": "files/cloudflare/payment-allocation/UNCLAIMED_HANDOFF_RELEASE.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/payment-allocation/UNCLAIMED_HANDOFF_RELEASE.md",
+      "knownDriveFileId": null,
+      "bytes": 4785,
+      "sha256": "ef8230bfa4f976afa0b119ec869640605595040c2f45c1402d0b89c91e14406b",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/payment-allocation/contracts/payment-handoff.json",
+      "bundlePath": "files/cloudflare/payment-allocation/contracts/payment-handoff.json",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/payment-allocation/contracts/payment-handoff.json",
+      "knownDriveFileId": null,
+      "bytes": 2068,
+      "sha256": "8310245dc640cc6cfb9db54cbe1a4b66250b1d9ebb5cd1c8a486f97ee3c2822b",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/payment-allocation/migrations/0003_payment_handoff_journal.sql",
+      "bundlePath": "files/cloudflare/payment-allocation/migrations/0003_payment_handoff_journal.sql",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/payment-allocation/migrations/0003_payment_handoff_journal.sql",
+      "knownDriveFileId": null,
+      "bytes": 5314,
+      "sha256": "9d9996f474dce1e46d12b7995c61ace2a3bc11a93c36a31b0f4c5a51fae43ff9",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/payment-allocation/migrations/0004_release_unclaimed_handoff.sql",
+      "bundlePath": "files/cloudflare/payment-allocation/migrations/0004_release_unclaimed_handoff.sql",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/payment-allocation/migrations/0004_release_unclaimed_handoff.sql",
+      "knownDriveFileId": null,
+      "bytes": 2870,
+      "sha256": "fd5f7d53cbc1f1ce6c9e293cd8b01f7641e3ab24c3c07e4c6e4533c614fb2131",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/check-checkout-deployment.mjs",
+      "bundlePath": "files/cloudflare/payment-allocation/scripts/check-checkout-deployment.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/payment-allocation/scripts/check-checkout-deployment.mjs",
+      "knownDriveFileId": null,
+      "bytes": 3153,
+      "sha256": "84814dea4eb43c997792228f829bd2a69fd44c4c424eded73fc9e266e8c9f137",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "bundlePath": "files/cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "knownDriveFileId": null,
+      "bytes": 1279,
+      "sha256": "1f62e58968605e555e24d4dd74e44492d1f9ff888785e765764465c36e01c437",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/handoff-service.mjs",
+      "bundlePath": "files/cloudflare/payment-allocation/src/handoff-service.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/payment-allocation/src/handoff-service.mjs",
+      "knownDriveFileId": null,
+      "bytes": 10076,
+      "sha256": "b097d1cd29fa377eb333aa025106428c1c1da00cb89438dd6a9cd9478b14c610",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/handoff-concurrency.test.mjs",
+      "bundlePath": "files/cloudflare/payment-allocation/tests/handoff-concurrency.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/payment-allocation/tests/handoff-concurrency.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 5888,
+      "sha256": "996276cefa36e9e7c512cd02f5f5efb8b0bb19af628d260858c9a148e913f93d",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/handoff-concurrent-worker.mjs",
+      "bundlePath": "files/cloudflare/payment-allocation/tests/handoff-concurrent-worker.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/payment-allocation/tests/handoff-concurrent-worker.mjs",
+      "knownDriveFileId": null,
+      "bytes": 2138,
+      "sha256": "2dee9e9006feef5c30fcae115b7e2e6364f8dad21c4a3e7cef701c49884f8b74",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/handoff-journal.test.mjs",
+      "bundlePath": "files/cloudflare/payment-allocation/tests/handoff-journal.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/payment-allocation/tests/handoff-journal.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 11625,
+      "sha256": "995fdcecac8e76a233d0d5f5c8f3a95e9fc228eec3fa5f94907852782c6c78c4",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/handoff-release.test.mjs",
+      "bundlePath": "files/cloudflare/payment-allocation/tests/handoff-release.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/payment-allocation/tests/handoff-release.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 8775,
+      "sha256": "e68936ebf7075c8441e331bdb4549bfba049e330d9b6fe1348452eeaefd26d86",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/payment-allocation/wrangler.checkout.staging.jsonc",
+      "bundlePath": "files/cloudflare/payment-allocation/wrangler.checkout.staging.jsonc",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/payment-allocation/wrangler.checkout.staging.jsonc",
+      "knownDriveFileId": null,
+      "bytes": 724,
+      "sha256": "537cb4e8aff2470cd18fca3c2cdf92cd644da6317ef93e49d6871c37448bcd00",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/rayon-public/README.md",
+      "bundlePath": "files/cloudflare/rayon-public/README.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/rayon-public/README.md",
+      "knownDriveFileId": null,
+      "bytes": 5107,
+      "sha256": "0a3f0c4ff07ce9910cf97219ae2ee8cc7c8a06ec214c643c82364ed6b056f9d2",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/rayon-public/migrations/0003_immutable_public_snapshots.sql",
+      "bundlePath": "files/cloudflare/rayon-public/migrations/0003_immutable_public_snapshots.sql",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/rayon-public/migrations/0003_immutable_public_snapshots.sql",
+      "knownDriveFileId": null,
+      "bytes": 5917,
+      "sha256": "9e2afd4f88d19b23ab12c7e60e649a336504cb413d2ed4255183a34a6c0cec42",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/rayon-public/migrations/0004_operator_publication.sql",
+      "bundlePath": "files/cloudflare/rayon-public/migrations/0004_operator_publication.sql",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/rayon-public/migrations/0004_operator_publication.sql",
+      "knownDriveFileId": null,
+      "bytes": 6696,
+      "sha256": "6f01ed1c26ee1fa30e58957befa8dcb5b6fde63f1032c961693559638703cf94",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/rayon-public/migrations/0005_operator_candidate_index.sql",
+      "bundlePath": "files/cloudflare/rayon-public/migrations/0005_operator_candidate_index.sql",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/rayon-public/migrations/0005_operator_candidate_index.sql",
+      "knownDriveFileId": null,
+      "bytes": 347,
+      "sha256": "1404b8173f68331326dc6c91b8dab7a22e2fc99ad94e862b7d219aad4f1fbe23",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/authorized-publication-worker.mjs",
+      "bundlePath": "files/cloudflare/rayon-public/src/authorized-publication-worker.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/rayon-public/src/authorized-publication-worker.mjs",
+      "knownDriveFileId": null,
+      "bytes": 1560,
+      "sha256": "d890e839cf25cb8d0bbacbd9c5e873e3cb418c6c7ff20e77c212351106f0c855",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/index.mjs",
+      "bundlePath": "files/cloudflare/rayon-public/src/index.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/rayon-public/src/index.mjs",
+      "knownDriveFileId": null,
+      "bytes": 14956,
+      "sha256": "fb9700694ffbb2821c97a4bd1074e522565d846d7604cd0525e99b73e27f061d",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/operator-publication.mjs",
+      "bundlePath": "files/cloudflare/rayon-public/src/operator-publication.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/rayon-public/src/operator-publication.mjs",
+      "knownDriveFileId": null,
+      "bytes": 22046,
+      "sha256": "7e3f7a27401e529ea7bd62f86a97310dec52f8dd980ba8e29b1ad5087c447a44",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/publication-worker.mjs",
+      "bundlePath": "files/cloudflare/rayon-public/src/publication-worker.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/rayon-public/src/publication-worker.mjs",
+      "knownDriveFileId": null,
+      "bytes": 1221,
+      "sha256": "88fa0c475f490884e76ddfb847d8f11af7da4bcd5213ab2f4165f51940ad7e3f",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/snapshot-publication.mjs",
+      "bundlePath": "files/cloudflare/rayon-public/src/snapshot-publication.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/rayon-public/src/snapshot-publication.mjs",
+      "knownDriveFileId": null,
+      "bytes": 10153,
+      "sha256": "9239895ecfc8538d7e157e23c3c25f35f131ccd39f9cdb15e9844dd8efa4b69f",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/rayon-public/tests/response-boundary.test.mjs",
+      "bundlePath": "files/cloudflare/rayon-public/tests/response-boundary.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/rayon-public/tests/response-boundary.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 1964,
+      "sha256": "a50c13c9189352e41b30303c278b1f6762902312d4dd444832b0e9fb4c3cb907",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/rayon-public/tests/snapshot.test.mjs",
+      "bundlePath": "files/cloudflare/rayon-public/tests/snapshot.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/rayon-public/tests/snapshot.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 13498,
+      "sha256": "02ee93824056c2e34a702b7a3748f5bce721dbeb3ef4a7ea0ded14a62aeba584",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/rayon-public/tests/support/d1-sqlite-adapter.mjs",
+      "bundlePath": "files/cloudflare/rayon-public/tests/support/d1-sqlite-adapter.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/rayon-public/tests/support/d1-sqlite-adapter.mjs",
+      "knownDriveFileId": null,
+      "bytes": 1524,
+      "sha256": "24441631e0e727562fe8daeadf133b75630eff49e049411957fffaedb860134f",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/rayon-public/wrangler.authorized-publisher.staging.jsonc",
+      "bundlePath": "files/cloudflare/rayon-public/wrangler.authorized-publisher.staging.jsonc",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/rayon-public/wrangler.authorized-publisher.staging.jsonc",
+      "knownDriveFileId": null,
+      "bytes": 657,
+      "sha256": "e575deba1e4e8326873c871f1e15ad075cd10bac97788b8edcade8c55a0e714d",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/rayon-public/wrangler.publisher.staging.jsonc",
+      "bundlePath": "files/cloudflare/rayon-public/wrangler.publisher.staging.jsonc",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/rayon-public/wrangler.publisher.staging.jsonc",
+      "knownDriveFileId": null,
+      "bytes": 557,
+      "sha256": "22c9ccf6c0e063599f702dd152d2920d0cb21148a54f156540399a804814a954",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/ISSUANCE_LIMITS.md",
+      "bundlePath": "files/cloudflare/supporter-auth/ISSUANCE_LIMITS.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/ISSUANCE_LIMITS.md",
+      "knownDriveFileId": null,
+      "bytes": 1463,
+      "sha256": "58c182b4f2598a33fa3d7abae79f5abb6735da722656e20caa91e8ddb0dbe4cc",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/PRIVATE_DELIVERY_INTEGRATION.md",
+      "bundlePath": "files/cloudflare/supporter-auth/PRIVATE_DELIVERY_INTEGRATION.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/PRIVATE_DELIVERY_INTEGRATION.md",
+      "knownDriveFileId": null,
+      "bytes": 2836,
+      "sha256": "45ffb6705c435b21d9f0f6edf174a280e8bb020437918f605e35f8069e6c1d67",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/README.md",
+      "bundlePath": "files/cloudflare/supporter-auth/README.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/README.md",
+      "knownDriveFileId": null,
+      "bytes": 15337,
+      "sha256": "9f78b9fd8b7344b22bea675f7b52466b0bb7225d6abd5682e7c136f8063a52de",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/RELIABLE_DELIVERY.md",
+      "bundlePath": "files/cloudflare/supporter-auth/RELIABLE_DELIVERY.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/RELIABLE_DELIVERY.md",
+      "knownDriveFileId": null,
+      "bytes": 6387,
+      "sha256": "36ba211a4dfe87ba922736413eb8481f53979f30b75baab1dde6679daca4af2b",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/contracts/reliable-delivery.json",
+      "bundlePath": "files/cloudflare/supporter-auth/contracts/reliable-delivery.json",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/contracts/reliable-delivery.json",
+      "knownDriveFileId": null,
+      "bytes": 1033,
+      "sha256": "894ebe12ae917cd6bb837b2cef537145dc79b38db3a0ae57650dbfa06ae93e0b",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/migrations/0002_club_delivery_index.sql",
+      "bundlePath": "files/cloudflare/supporter-auth/migrations/0002_club_delivery_index.sql",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/migrations/0002_club_delivery_index.sql",
+      "knownDriveFileId": "1_XAH8R5f-Ql4kNCIX2Amj1B4kiolkjrF",
+      "bytes": 328,
+      "sha256": "7813579941b5e67dadb7562550dd95c9a51729ab10f301a1ac234742b113ef76",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/migrations/0003_reliable_delivery_control.sql",
+      "bundlePath": "files/cloudflare/supporter-auth/migrations/0003_reliable_delivery_control.sql",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/migrations/0003_reliable_delivery_control.sql",
+      "knownDriveFileId": null,
+      "bytes": 3821,
+      "sha256": "d1c9553d04c706ffd7d0aec26026006178a6994e1fd07940de170ae2ecdcafde",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/scripts/check-reliable-delivery.mjs",
+      "bundlePath": "files/cloudflare/supporter-auth/scripts/check-reliable-delivery.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/scripts/check-reliable-delivery.mjs",
+      "knownDriveFileId": null,
+      "bytes": 1711,
+      "sha256": "e619158b0c3a93020e077c6a20ce8d5e209ea18c9dd4c5829a9064aa331c19d5",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/delivery-health-worker.mjs",
+      "bundlePath": "files/cloudflare/supporter-auth/src/delivery-health-worker.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/src/delivery-health-worker.mjs",
+      "knownDriveFileId": null,
+      "bytes": 403,
+      "sha256": "07c8a10db1f5bf3243988488aeb9385b3c84fab26df2bf8eb82d4b8e533b24ce",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/delivery-health.mjs",
+      "bundlePath": "files/cloudflare/supporter-auth/src/delivery-health.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/src/delivery-health.mjs",
+      "knownDriveFileId": null,
+      "bytes": 614,
+      "sha256": "4c91004ddf1d6d4fc45ae225d3a1fc49afbafcebdd7b74b85b73a94bf23a51d4",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/delivery-policy.mjs",
+      "bundlePath": "files/cloudflare/supporter-auth/src/delivery-policy.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/src/delivery-policy.mjs",
+      "knownDriveFileId": null,
+      "bytes": 2226,
+      "sha256": "3d7f76ca4a6db1b8704565eb4e6945ecb14c66f86f893ba300ab51db9d084341",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/delivery.mjs",
+      "bundlePath": "files/cloudflare/supporter-auth/src/delivery.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/src/delivery.mjs",
+      "knownDriveFileId": "1g57kNjdwxPjyGc5zEWXMrniFPHI3wQrt",
+      "bytes": 1838,
+      "sha256": "b5cf5fd70ca10d752edad67ad5d8f1d31fb3ae6a7ca72ddebb5397e86564aed4",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/identity-service.mjs",
+      "bundlePath": "files/cloudflare/supporter-auth/src/identity-service.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/src/identity-service.mjs",
+      "knownDriveFileId": null,
+      "bytes": 17909,
+      "sha256": "7887dcfeb8bd015bf508b24d37e0a338de03edfafb51da9029e01c5be58cd299",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/index.mjs",
+      "bundlePath": "files/cloudflare/supporter-auth/src/index.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/src/index.mjs",
+      "knownDriveFileId": "1Gr0ZvQ5D0UAQfNF9HjHOm_cpW7a1Qdc_",
+      "bytes": 2087,
+      "sha256": "6e1dcd928f09158b2a4b600bf83690155bda65a429e444ba0a7f987676363844",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/issuance-policy.mjs",
+      "bundlePath": "files/cloudflare/supporter-auth/src/issuance-policy.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/src/issuance-policy.mjs",
+      "knownDriveFileId": null,
+      "bytes": 2259,
+      "sha256": "8ae94d1559053ac7d124fc1cbafce53c818c09e1770fc2a6c12148c2fbbc2fd6",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/maintenance.mjs",
+      "bundlePath": "files/cloudflare/supporter-auth/src/maintenance.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/src/maintenance.mjs",
+      "knownDriveFileId": null,
+      "bytes": 1025,
+      "sha256": "9de45e90cc1caefb78a3fc24167968dcdbac788bcf1583ba0c6a1844cf0c6f45",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/private-delivery-sender.mjs",
+      "bundlePath": "files/cloudflare/supporter-auth/src/private-delivery-sender.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/src/private-delivery-sender.mjs",
+      "knownDriveFileId": "1A2CJNAkVAF27vpDalB4IM83dDq0N1cCH",
+      "bytes": 1375,
+      "sha256": "0d8c21d87466dcc6dbbb07ebac28448daabc87b9b96a63cb0916ba675d5537a0",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/reliable-delivery.mjs",
+      "bundlePath": "files/cloudflare/supporter-auth/src/reliable-delivery.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/src/reliable-delivery.mjs",
+      "knownDriveFileId": null,
+      "bytes": 12701,
+      "sha256": "4c1bfe3ed292999e84e1e59032ceaf4793e30e668e273986e6b2c86acfc3c0bb",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/delivery.test.mjs",
+      "bundlePath": "files/cloudflare/supporter-auth/tests/delivery.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/tests/delivery.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 6901,
+      "sha256": "0762b1c32a9bcbaeb54a3acae1d793fde476995ea5bf27f935938265e7c339aa",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/issuance-policy.test.mjs",
+      "bundlePath": "files/cloudflare/supporter-auth/tests/issuance-policy.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/tests/issuance-policy.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 4077,
+      "sha256": "fab7960a48ec456aa7f236567996f487e69d2a0d914f122156fa651bf49ac892",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/maintenance-health.test.mjs",
+      "bundlePath": "files/cloudflare/supporter-auth/tests/maintenance-health.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/tests/maintenance-health.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 5640,
+      "sha256": "2ceecefd05a5ef97f23e28344c42acbe463fd5e2a83c7b2755e82314169e3519",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/queue-concurrency.test.mjs",
+      "bundlePath": "files/cloudflare/supporter-auth/tests/queue-concurrency.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/tests/queue-concurrency.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 2855,
+      "sha256": "2177f1b15e00e9149405d946ca3e853df287678bb02f3919598b0f4f38304967",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/queue-concurrent-worker.mjs",
+      "bundlePath": "files/cloudflare/supporter-auth/tests/queue-concurrent-worker.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/tests/queue-concurrent-worker.mjs",
+      "knownDriveFileId": null,
+      "bytes": 921,
+      "sha256": "923537ba789219b56f6bbdb16c1853c5be97614dfe30c45cef82fb2321665fe2",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/reliable-delivery.test.mjs",
+      "bundlePath": "files/cloudflare/supporter-auth/tests/reliable-delivery.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/tests/reliable-delivery.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 14117,
+      "sha256": "83bf80908ffc0aabf81dc7193b4e232b033e7042e3a794def29ea8ca29a37fc9",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/support/fixture.mjs",
+      "bundlePath": "files/cloudflare/supporter-auth/tests/support/fixture.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/tests/support/fixture.mjs",
+      "knownDriveFileId": null,
+      "bytes": 6203,
+      "sha256": "eaa2f856e17d33a39db1b71cd115abc55ad5074d3ffac977ab0695e5ecc9d8e1",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-auth/wrangler.delivery-health.staging.jsonc",
+      "bundlePath": "files/cloudflare/supporter-auth/wrangler.delivery-health.staging.jsonc",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-auth/wrangler.delivery-health.staging.jsonc",
+      "knownDriveFileId": null,
+      "bytes": 602,
+      "sha256": "47e2168520dcd3f904a9976d806e85bb91e744678dc5d18ff3d4489a21247402",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/NATIVE_PAYMENT_HANDOFF.md",
+      "bundlePath": "files/cloudflare/supporter-membership-api/NATIVE_PAYMENT_HANDOFF.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-membership-api/NATIVE_PAYMENT_HANDOFF.md",
+      "knownDriveFileId": null,
+      "bytes": 5657,
+      "sha256": "13f18864fda48c22bae397afbbc760c9141110de1d39e43cdec54da56f6a37ff",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/README.md",
+      "bundlePath": "files/cloudflare/supporter-membership-api/README.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-membership-api/README.md",
+      "knownDriveFileId": null,
+      "bytes": 12965,
+      "sha256": "73cec0ee2ff95f78a81fc642df6af7cd6fe663e8b8dd1f9b2d8d6b8738a79170",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/client.ts",
+      "bundlePath": "files/cloudflare/supporter-membership-api/client.ts",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-membership-api/client.ts",
+      "knownDriveFileId": null,
+      "bytes": 16108,
+      "sha256": "c583a6475e8fc629a9f0cc247db3236242ef6da69858d97c142a3e797a24f2ed",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/contracts/openapi.json",
+      "bundlePath": "files/cloudflare/supporter-membership-api/contracts/openapi.json",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-membership-api/contracts/openapi.json",
+      "knownDriveFileId": null,
+      "bytes": 52316,
+      "sha256": "9e233e371cac971be4016c49cb28c5ac695acd22c117021f4abb35aee5f103c3",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/payment-handoff.ts",
+      "bundlePath": "files/cloudflare/supporter-membership-api/payment-handoff.ts",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-membership-api/payment-handoff.ts",
+      "knownDriveFileId": null,
+      "bytes": 15169,
+      "sha256": "26d169df24763a8e7ba443fc0ce4ed8630c6bfab1c3a7f0af22c56fbed782355",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/scripts/check-deployment.mjs",
+      "bundlePath": "files/cloudflare/supporter-membership-api/scripts/check-deployment.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-membership-api/scripts/check-deployment.mjs",
+      "knownDriveFileId": null,
+      "bytes": 6429,
+      "sha256": "d116f897816947ae3a5be4b3ed2e93f58bd98a1c992d0ecfa6f52b2ee552d3b0",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/handoff-projection.mjs",
+      "bundlePath": "files/cloudflare/supporter-membership-api/src/handoff-projection.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-membership-api/src/handoff-projection.mjs",
+      "knownDriveFileId": null,
+      "bytes": 2165,
+      "sha256": "ef9879cf3af81cdc5dbf827b248ed5b10d752dfccd96313c0368ab77b77e218c",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/http.mjs",
+      "bundlePath": "files/cloudflare/supporter-membership-api/src/http.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-membership-api/src/http.mjs",
+      "knownDriveFileId": null,
+      "bytes": 4865,
+      "sha256": "b06cbcd2e39c4ba87d914d0e374c5f300f8071675dd66fb6b0fd76222cc7bc6a",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/index.mjs",
+      "bundlePath": "files/cloudflare/supporter-membership-api/src/index.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-membership-api/src/index.mjs",
+      "knownDriveFileId": null,
+      "bytes": 6577,
+      "sha256": "aae2457d27c9d4160a97246ab8c9c69ae3ff91c14feb5f79187a9f86c15d6563",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/contract.test.mjs",
+      "bundlePath": "files/cloudflare/supporter-membership-api/tests/contract.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-membership-api/tests/contract.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 2431,
+      "sha256": "e157467351f51f9b350fe3baaba139ac54de764473c8220e71ee1513033b2f63",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/handoff-http.test.mjs",
+      "bundlePath": "files/cloudflare/supporter-membership-api/tests/handoff-http.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-membership-api/tests/handoff-http.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 5741,
+      "sha256": "d1142ca8484345bb85af279af6b943f8e0d449ae103a073f8294505a83c4b982",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/handoff-release-integration.test.mjs",
+      "bundlePath": "files/cloudflare/supporter-membership-api/tests/handoff-release-integration.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-membership-api/tests/handoff-release-integration.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 10057,
+      "sha256": "65cca8347888dec27a7ea1891aed126cd1f2637a572fd9d862e47f979b5ef264",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/payment-handoff-integration.test.mjs",
+      "bundlePath": "files/cloudflare/supporter-membership-api/tests/payment-handoff-integration.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-membership-api/tests/payment-handoff-integration.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 5423,
+      "sha256": "c62535bfaba431df5f247300d0fccbff9a381520d5d1172c6a10123e2bfc8a14",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/payment-handoff.test.mjs",
+      "bundlePath": "files/cloudflare/supporter-membership-api/tests/payment-handoff.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-membership-api/tests/payment-handoff.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 13619,
+      "sha256": "1186f2216f6156a4e8783e46985e0c8ed1038d233da3126f8e006a41f0b45a5b",
+      "status": "pending_upload"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/wrangler.staging.jsonc",
+      "bundlePath": "files/cloudflare/supporter-membership-api/wrangler.staging.jsonc",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/cloudflare/supporter-membership-api/wrangler.staging.jsonc",
+      "knownDriveFileId": null,
+      "bytes": 1454,
+      "sha256": "7ecd32671167f8f87a5750efb48b988d5e1537bfbe97592ef3b8ad22baa92c8d",
+      "status": "pending_upload"
+    },
+    {
+      "path": "docs/architecture/predict-migration.md",
+      "bundlePath": "files/docs/architecture/predict-migration.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/docs/architecture/predict-migration.md",
+      "knownDriveFileId": null,
+      "bytes": 6830,
+      "sha256": "512c9138cd1d8b89546069f80c0fb92d628b47d8e055b157959b2371b7119bb4",
+      "status": "pending_upload"
+    },
+    {
+      "path": "docs/architecture/refactor-integration-2026-09-26.md",
+      "bundlePath": "files/docs/architecture/refactor-integration-2026-09-26.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/docs/architecture/refactor-integration-2026-09-26.md",
+      "knownDriveFileId": null,
+      "bytes": 4045,
+      "sha256": "992e462cd806927ca904a64fd44dd22a85c6e5d17ac36cf889925314e9e5b1d1",
+      "status": "pending_upload"
+    },
+    {
+      "path": "docs/blueprint.md",
+      "bundlePath": "files/docs/blueprint.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/docs/blueprint.md",
+      "knownDriveFileId": null,
+      "bytes": 11290,
+      "sha256": "7dd4aac4af73a2ed1a8b28660abbc68d40ebdf5fdd6b3aecf085d913dae31b42",
+      "status": "pending_upload"
+    },
+    {
+      "path": "docs/fet_ledger_and_rewards_policy.md",
+      "bundlePath": "files/docs/fet_ledger_and_rewards_policy.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/docs/fet_ledger_and_rewards_policy.md",
+      "knownDriveFileId": null,
+      "bytes": 2437,
+      "sha256": "bedb46d5f3f7d9c28ab9b4ab517f598e6f4e723f9f17b46da963ef3fd9815cff",
+      "status": "pending_upload"
+    },
+    {
+      "path": "docs/governance/design-exceptions.json",
+      "bundlePath": "files/docs/governance/design-exceptions.json",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/docs/governance/design-exceptions.json",
+      "knownDriveFileId": null,
+      "bytes": 3957,
+      "sha256": "a3e08e5c1f3d8f0e947bd8b34933fc644241fee6ba7fe50a0acc036d2fe14049",
+      "status": "pending_upload"
+    },
+    {
+      "path": "docs/governance/legacy-reference-exceptions.json",
+      "bundlePath": "files/docs/governance/legacy-reference-exceptions.json",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/docs/governance/legacy-reference-exceptions.json",
+      "knownDriveFileId": null,
+      "bytes": 1147,
+      "sha256": "61be9ae44cd57f40dd4e1d860e1ceefd33a286dd37c46455b650d9fd43a2595e",
+      "status": "pending_upload"
+    },
+    {
+      "path": "docs/governance/predict-economics.json",
+      "bundlePath": "files/docs/governance/predict-economics.json",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/docs/governance/predict-economics.json",
+      "knownDriveFileId": null,
+      "bytes": 576,
+      "sha256": "0c78ed7fa242e37b230361d43eae38d949e8ddc96046fa95c32e7c6ce280834c",
+      "status": "pending_upload"
+    },
+    {
+      "path": "docs/governance/predict_economics_decision.md",
+      "bundlePath": "files/docs/governance/predict_economics_decision.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/docs/governance/predict_economics_decision.md",
+      "knownDriveFileId": null,
+      "bytes": 1684,
+      "sha256": "57a1805c2925e30e5e6f6d540e68065814ba94bda2847e0d410f223d111b7379",
+      "status": "pending_upload"
+    },
+    {
+      "path": "docs/operations/release-promotion.md",
+      "bundlePath": "files/docs/operations/release-promotion.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/docs/operations/release-promotion.md",
+      "knownDriveFileId": null,
+      "bytes": 1940,
+      "sha256": "cab1c2a0abdc768d062b89026a826791be51f1c03c142e81e6259073068d0d00",
+      "status": "pending_upload"
+    },
+    {
+      "path": "docs/operations/remediation-candidate-2026-09-28.md",
+      "bundlePath": "files/docs/operations/remediation-candidate-2026-09-28.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/docs/operations/remediation-candidate-2026-09-28.md",
+      "knownDriveFileId": null,
+      "bytes": 3161,
+      "sha256": "6221d43f3033d3481fc0a430dcba530604ee2e03b69808b857007d93d4f7c96d",
+      "status": "pending_upload"
+    },
+    {
+      "path": "docs/operations/source-security-containment.md",
+      "bundlePath": "files/docs/operations/source-security-containment.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/docs/operations/source-security-containment.md",
+      "knownDriveFileId": null,
+      "bytes": 1444,
+      "sha256": "a5e98203f4f82a02692360fa459a70a431b142988fe690fbc723c3f17a57f8fb",
+      "status": "pending_upload"
+    },
+    {
+      "path": "docs/release-cutover-evidence.template.json",
+      "bundlePath": "files/docs/release-cutover-evidence.template.json",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/docs/release-cutover-evidence.template.json",
+      "knownDriveFileId": null,
+      "bytes": 3428,
+      "sha256": "174cd00232859a6eb85e9797010788641c207c5923281505fd26434edae1a9fe",
+      "status": "pending_upload"
+    },
+    {
+      "path": "docs/release-retirement-evidence.template.json",
+      "bundlePath": "files/docs/release-retirement-evidence.template.json",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/docs/release-retirement-evidence.template.json",
+      "knownDriveFileId": null,
+      "bytes": 4157,
+      "sha256": "3cda20458e62c48735084bebf100d06897e9967c08952a6828e0a2ec8bba53d3",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/app_registry/lib/src/module_registry.dart",
+      "bundlePath": "files/packages/app_registry/lib/src/module_registry.dart",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/app_registry/lib/src/module_registry.dart",
+      "knownDriveFileId": null,
+      "bytes": 3200,
+      "sha256": "72e215f15259d98161c2bc370ef2b6d7dea53353547414cb9749b4306686eb77",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/core/core_router/lib/src/app_router.dart",
+      "bundlePath": "files/packages/core/core_router/lib/src/app_router.dart",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/core/core_router/lib/src/app_router.dart",
+      "knownDriveFileId": null,
+      "bytes": 5727,
+      "sha256": "565a9b74cd83ffeafb991c10517b53846b1d1ef33556b6f7532774b8a4e27293",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/core/core_router/lib/src/feature_availability_policy.dart",
+      "bundlePath": "files/packages/core/core_router/lib/src/feature_availability_policy.dart",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/core/core_router/lib/src/feature_availability_policy.dart",
+      "knownDriveFileId": null,
+      "bytes": 2213,
+      "sha256": "88d32350b84e968e8d6214cc48c978c4cdd2d1d35b19396eb7e08048b2964497",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/core/core_router/lib/src/feature_module.dart",
+      "bundlePath": "files/packages/core/core_router/lib/src/feature_module.dart",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/core/core_router/lib/src/feature_module.dart",
+      "knownDriveFileId": null,
+      "bytes": 5952,
+      "sha256": "f3711b2308853cfec24f9877d528210f23ea31d54f1266d9f6a6e9fec09394e9",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/core/core_router/test/empty_modules_recovery_test.dart",
+      "bundlePath": "files/packages/core/core_router/test/empty_modules_recovery_test.dart",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/core/core_router/test/empty_modules_recovery_test.dart",
+      "knownDriveFileId": null,
+      "bytes": 585,
+      "sha256": "1288c89fb9e536a0a574ff9343dbf8cf57a8a5e007ae328146f1aeddefe9f8a6",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/features/feat_membership/NATIVE_CHECKOUT.md",
+      "bundlePath": "files/packages/features/feat_membership/NATIVE_CHECKOUT.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/features/feat_membership/NATIVE_CHECKOUT.md",
+      "knownDriveFileId": null,
+      "bytes": 3177,
+      "sha256": "5488c26167cce572f9fd3396fcedb3c1c658300de4a3fd9fbfc57a9ad7c29a93",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/native_membership_storage_ios.dart",
+      "bundlePath": "files/packages/features/feat_membership/lib/native_membership_storage_ios.dart",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/features/feat_membership/lib/native_membership_storage_ios.dart",
+      "knownDriveFileId": null,
+      "bytes": 1085,
+      "sha256": "84ca2d6380ba1f526bb0315f737be071a7fa6f8ecbb92db10304cdfdec8e7a5e",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/client.dart",
+      "bundlePath": "files/packages/features/feat_membership/lib/src/native_checkout/client.dart",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/features/feat_membership/lib/src/native_checkout/client.dart",
+      "knownDriveFileId": null,
+      "bytes": 7308,
+      "sha256": "429bd62a250059ae01b2c4969f2017337f716f8e399b1cd0e31751842b296eab",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/models.dart",
+      "bundlePath": "files/packages/features/feat_membership/lib/src/native_checkout/models.dart",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/features/feat_membership/lib/src/native_checkout/models.dart",
+      "knownDriveFileId": null,
+      "bytes": 10091,
+      "sha256": "c53fa5a645a656250a012963474e682a0b5a54e352c75e9a45fd77ea0a5f71e7",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/payment_handoff.dart",
+      "bundlePath": "files/packages/features/feat_membership/lib/src/native_checkout/payment_handoff.dart",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/features/feat_membership/lib/src/native_checkout/payment_handoff.dart",
+      "knownDriveFileId": null,
+      "bytes": 10169,
+      "sha256": "5edb06a15f2111eabf312634495fab1f6a051016b836da4cad038e140a194943",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/ports.dart",
+      "bundlePath": "files/packages/features/feat_membership/lib/src/native_checkout/ports.dart",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/features/feat_membership/lib/src/native_checkout/ports.dart",
+      "knownDriveFileId": null,
+      "bytes": 2005,
+      "sha256": "3fa0673cb00c72c3ca162b24879b3e22013b4976db262b0e0a155e9f32a261f8",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/README.md",
+      "bundlePath": "files/packages/features/feat_membership/native/ios/README.md",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/README.md",
+      "knownDriveFileId": null,
+      "bytes": 8899,
+      "sha256": "1dde8cfe8416c1e3b308b6727d6bca0d434b70ce4f76abd3eff3de23e8a42733",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryHost.swift",
+      "bundlePath": "files/packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryHost.swift",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryHost.swift",
+      "knownDriveFileId": null,
+      "bytes": 7169,
+      "sha256": "b1bb78b315f2781307449b5ff09c2ee41b880ccf52787265f3057b5f12067dd2",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/KeychainRecoveryBlob.swift",
+      "bundlePath": "files/packages/features/feat_membership/native/ios/Sources/KeychainRecoveryBlob.swift",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/Sources/KeychainRecoveryBlob.swift",
+      "knownDriveFileId": null,
+      "bytes": 3070,
+      "sha256": "6f87df0aaee43ebdfd4cd14bf48e3be073671922a47d8389bd2dfca6bce3f7a7",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/RecoveryDispatcher.swift",
+      "bundlePath": "files/packages/features/feat_membership/native/ios/Sources/RecoveryDispatcher.swift",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryDispatcher.swift",
+      "knownDriveFileId": null,
+      "bytes": 2684,
+      "sha256": "7c014a35685aae1ef1045bd9cd194b084344d364cbce9a82aefa9a276a418e15",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/RecoveryFiles.swift",
+      "bundlePath": "files/packages/features/feat_membership/native/ios/Sources/RecoveryFiles.swift",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryFiles.swift",
+      "knownDriveFileId": null,
+      "bytes": 4141,
+      "sha256": "b4d7d7b2216862fbfc0605c99aeb0ed5f714635dc4f0e0e389dc2f9e634abbf8",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/RecoveryProtocol.swift",
+      "bundlePath": "files/packages/features/feat_membership/native/ios/Sources/RecoveryProtocol.swift",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryProtocol.swift",
+      "knownDriveFileId": null,
+      "bytes": 5135,
+      "sha256": "92619396de3ac90eb4f013da5ea3f1210da5fabfd13a241550f7c246bacedf31",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/RecoveryStore.swift",
+      "bundlePath": "files/packages/features/feat_membership/native/ios/Sources/RecoveryStore.swift",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryStore.swift",
+      "knownDriveFileId": null,
+      "bytes": 7868,
+      "sha256": "e5aac7f3a830be11a1813ee999dad6ec82e83d42a46e4df0ef757ce3ea798fb5",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Tests/KeychainRecoveryIntegrationTests.swift",
+      "bundlePath": "files/packages/features/feat_membership/native/ios/Tests/KeychainRecoveryIntegrationTests.swift",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/Tests/KeychainRecoveryIntegrationTests.swift",
+      "knownDriveFileId": null,
+      "bytes": 5088,
+      "sha256": "589b652140c9a4020e49d2af182e0e79a345eb2c1ed4968a472fd916e393db1c",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Tests/RecoveryHarness.swift",
+      "bundlePath": "files/packages/features/feat_membership/native/ios/Tests/RecoveryHarness.swift",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/Tests/RecoveryHarness.swift",
+      "knownDriveFileId": null,
+      "bytes": 23618,
+      "sha256": "bdc4581e368d6dc410301780640bc398e6f3012c3c1c783f95b45ecce05c2b49",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/contracts/recovery-channel.json",
+      "bundlePath": "files/packages/features/feat_membership/native/ios/contracts/recovery-channel.json",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/contracts/recovery-channel.json",
+      "knownDriveFileId": null,
+      "bytes": 2547,
+      "sha256": "875422b65061edbae1eb7c024b58ced17d7ab28596a7d736ef42794a6d007864",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/contracts/source-provenance.json",
+      "bundlePath": "files/packages/features/feat_membership/native/ios/contracts/source-provenance.json",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/features/feat_membership/native/ios/contracts/source-provenance.json",
+      "knownDriveFileId": null,
+      "bytes": 1613,
+      "sha256": "fc663df23f4c1d09309596b79c3132ccf0b42279c48ac1fdca65ded6a3b58f98",
+      "status": "pending_upload"
+    },
+    {
+      "path": "packages/features/feat_membership/test/native_checkout/contract_harness.dart",
+      "bundlePath": "files/packages/features/feat_membership/test/native_checkout/contract_harness.dart",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/packages/features/feat_membership/test/native_checkout/contract_harness.dart",
+      "knownDriveFileId": null,
+      "bytes": 11753,
+      "sha256": "3106809698b4f11ff871efff1e6d621315aa0141525477056ae8d9349d7c85b4",
+      "status": "pending_upload"
+    },
+    {
+      "path": "pubspec.yaml",
+      "bundlePath": "files/pubspec.yaml",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/pubspec.yaml",
+      "knownDriveFileId": null,
+      "bytes": 5081,
+      "sha256": "0125f4e553262ac12a8daa6dee0731c5acbdf311ad40d19c9e03818e399b5baa",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/build_migration_dispositions.py",
+      "bundlePath": "files/tools/scripts/build_migration_dispositions.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/build_migration_dispositions.py",
+      "knownDriveFileId": null,
+      "bytes": 7391,
+      "sha256": "8524e20040dcc73f95feda97c0b6633536d6d486afc70d498d2420014b4dd6bf",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/check_sensitive_source.py",
+      "bundlePath": "files/tools/scripts/check_sensitive_source.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/check_sensitive_source.py",
+      "knownDriveFileId": null,
+      "bytes": 3711,
+      "sha256": "8f9605e6d3977aed4e6fe817566e7cd04ff8f0ef455557bfda3dc5f4ada5151f",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/release_artifact.py",
+      "bundlePath": "files/tools/scripts/release_artifact.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/release_artifact.py",
+      "knownDriveFileId": null,
+      "bytes": 7815,
+      "sha256": "6e0cc172200f955a0a7f58dad8092254a8811fb0abb1102eae344465c15bd147",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/release_evidence.py",
+      "bundlePath": "files/tools/scripts/release_evidence.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/release_evidence.py",
+      "knownDriveFileId": null,
+      "bytes": 2709,
+      "sha256": "5fec4d71c6dbb7fb851db151a0717b67a233c6ae56b0aa1b7d934323e5c7626c",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/replay_public_snapshot_export.mjs",
+      "bundlePath": "files/tools/scripts/replay_public_snapshot_export.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/replay_public_snapshot_export.mjs",
+      "knownDriveFileId": null,
+      "bytes": 4873,
+      "sha256": "b8fda9a7340083dc0786dff9cf3b1738b38ba0eb589e22c985a6d50cf132ae42",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/run_refactor_checks.sh",
+      "bundlePath": "files/tools/scripts/run_refactor_checks.sh",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/run_refactor_checks.sh",
+      "knownDriveFileId": null,
+      "bytes": 1537,
+      "sha256": "018e6f4625939c7e5a93a27af15543ab84ebfe06e1c6e451cdaad3addb4e2591",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/seed_rayon_public_d1_local.py",
+      "bundlePath": "files/tools/scripts/seed_rayon_public_d1_local.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/seed_rayon_public_d1_local.py",
+      "knownDriveFileId": null,
+      "bytes": 10541,
+      "sha256": "c16a871d02d5dc8a7fdac6c3d9203fda353ce94f5eea23a8e9d6b69242b55b45",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/snapshot_gikundiro_public_for_cloudflare.py",
+      "bundlePath": "files/tools/scripts/snapshot_gikundiro_public_for_cloudflare.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/snapshot_gikundiro_public_for_cloudflare.py",
+      "knownDriveFileId": null,
+      "bytes": 4751,
+      "sha256": "abece0387309f9f184b6144e479502f6e7f01b2f953bfae4bf01cdcf8cbb2335",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/stage_rayon_public_media_r2.py",
+      "bundlePath": "files/tools/scripts/stage_rayon_public_media_r2.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/stage_rayon_public_media_r2.py",
+      "knownDriveFileId": null,
+      "bytes": 4050,
+      "sha256": "55f4936bd2b97ff81602fac47e0a318fadef0948fcf4c46afc7fd48a45182d51",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/test_ci_contract.py",
+      "bundlePath": "files/tools/scripts/test_ci_contract.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/test_ci_contract.py",
+      "knownDriveFileId": null,
+      "bytes": 2970,
+      "sha256": "82b38e792e118ddf35c517d4272e59dcc7f122aded050359c0dc1fcac64e6d1d",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/test_feature_availability_policy.dart",
+      "bundlePath": "files/tools/scripts/test_feature_availability_policy.dart",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/test_feature_availability_policy.dart",
+      "knownDriveFileId": null,
+      "bytes": 2432,
+      "sha256": "507e78949aeff5fd7dece8728d74eac8940fd8cd2877566d2a624ba90b09af64",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/test_migration_release.py",
+      "bundlePath": "files/tools/scripts/test_migration_release.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/test_migration_release.py",
+      "knownDriveFileId": null,
+      "bytes": 5737,
+      "sha256": "10a5316616e95bb9cbb56558445001848d158ee0f6fb0d80659ae137d2d37135",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/test_public_snapshot_import.py",
+      "bundlePath": "files/tools/scripts/test_public_snapshot_import.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/test_public_snapshot_import.py",
+      "knownDriveFileId": null,
+      "bytes": 6873,
+      "sha256": "66815203aad06300e7e5167df1eccedf734ff5af64f9152e483451c2e3d1a461",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/test_release_artifact.py",
+      "bundlePath": "files/tools/scripts/test_release_artifact.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/test_release_artifact.py",
+      "knownDriveFileId": null,
+      "bytes": 4877,
+      "sha256": "d9ec6f783a00f3364400a19d28e9661ccd7c22a805cad342d24d0e1b0902fe2f",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/test_release_evidence.py",
+      "bundlePath": "files/tools/scripts/test_release_evidence.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/test_release_evidence.py",
+      "knownDriveFileId": null,
+      "bytes": 2336,
+      "sha256": "7efc62e757024ee574eaf7466ba5fb546c62a5a3ab3ed3201409e48564e87b69",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/test_sensitive_source.py",
+      "bundlePath": "files/tools/scripts/test_sensitive_source.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/test_sensitive_source.py",
+      "knownDriveFileId": null,
+      "bytes": 2850,
+      "sha256": "e37732a41765d40f6487224cb9e0e2fdc2b547b8cf09dd7c3b520dd6196bb014",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/test_supporter_sms_boundary.py",
+      "bundlePath": "files/tools/scripts/test_supporter_sms_boundary.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/test_supporter_sms_boundary.py",
+      "knownDriveFileId": null,
+      "bytes": 4887,
+      "sha256": "08192663b206b2d6a9445e580cdf360c0e900351a3fe11569717690ca8d5b412",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/validate_migration_release.py",
+      "bundlePath": "files/tools/scripts/validate_migration_release.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/validate_migration_release.py",
+      "knownDriveFileId": null,
+      "bytes": 6874,
+      "sha256": "90d90c6b8fe08142b6518c9d26c25f21d87a16fa3efcd86db82951e381f4f1ee",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/validate_predict_economics_contract.mjs",
+      "bundlePath": "files/tools/scripts/validate_predict_economics_contract.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/validate_predict_economics_contract.mjs",
+      "knownDriveFileId": null,
+      "bytes": 2883,
+      "sha256": "d788a0758a913893ea927a2ae96414e5160cfaa7107d254e486a3c445ecb4cdb",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/validate_predict_economics_contract.test.mjs",
+      "bundlePath": "files/tools/scripts/validate_predict_economics_contract.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/validate_predict_economics_contract.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 1777,
+      "sha256": "d34cac9efb72ea373df563b1c3c205d023db80baa2d0f1735707782a64d4074f",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/validate_repository_boundary.mjs",
+      "bundlePath": "files/tools/scripts/validate_repository_boundary.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/validate_repository_boundary.mjs",
+      "knownDriveFileId": null,
+      "bytes": 8664,
+      "sha256": "86777b350a39256797e2bb3da4278b59983e24ab59b807b3d4a0168e92b188e9",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/validate_repository_boundary.test.mjs",
+      "bundlePath": "files/tools/scripts/validate_repository_boundary.test.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/validate_repository_boundary.test.mjs",
+      "knownDriveFileId": null,
+      "bytes": 8049,
+      "sha256": "162ad45fa97c6452cb740461c391dea78f754c16a08796319e91ab07bd1cb738",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/validate_store_privacy_contract.sh",
+      "bundlePath": "files/tools/scripts/validate_store_privacy_contract.sh",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/validate_store_privacy_contract.sh",
+      "knownDriveFileId": null,
+      "bytes": 4804,
+      "sha256": "ec8937bcde03b4ad87ae04920265ee631ec5c5b0e4c16c7e1f85e20441a7f050",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/validate_supporter_sms_boundary.mjs",
+      "bundlePath": "files/tools/scripts/validate_supporter_sms_boundary.mjs",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/validate_supporter_sms_boundary.mjs",
+      "knownDriveFileId": null,
+      "bytes": 544,
+      "sha256": "b6c220b069ce045520422b74c4b9de5126e92be5d1e472e36eef4460ea5536c2",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/validate_supporter_sms_boundary.py",
+      "bundlePath": "files/tools/scripts/validate_supporter_sms_boundary.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/validate_supporter_sms_boundary.py",
+      "knownDriveFileId": null,
+      "bytes": 9095,
+      "sha256": "7b307e89a73bc7f4f3c2ea73559b71b82a6d81fc73e24ad245a4cf85a1e879b7",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/verify_converged_source.py",
+      "bundlePath": "files/tools/scripts/verify_converged_source.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/verify_converged_source.py",
+      "knownDriveFileId": null,
+      "bytes": 4347,
+      "sha256": "d3fc10ee719ef92082bd75cdb9ba8c8ef78e7ef2cff58d93b668a330d9e4a9b7",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/verify_ios_recovery.py",
+      "bundlePath": "files/tools/scripts/verify_ios_recovery.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/verify_ios_recovery.py",
+      "knownDriveFileId": null,
+      "bytes": 4009,
+      "sha256": "c81f4656fea8b878c22f9d74ed085cd80bc682a8565c7f0f712ed6bf8027c035",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/verify_rayon_public_api_local.py",
+      "bundlePath": "files/tools/scripts/verify_rayon_public_api_local.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/verify_rayon_public_api_local.py",
+      "knownDriveFileId": null,
+      "bytes": 6333,
+      "sha256": "48eadbdec68f870b8f69cc715e8a35ac3031c0d7da8677a2a88b1aa424258ba5",
+      "status": "pending_upload"
+    },
+    {
+      "path": "tools/scripts/verify_rayon_public_d1_local.py",
+      "bundlePath": "files/tools/scripts/verify_rayon_public_d1_local.py",
+      "intendedCanonicalPath": "/Google Drive/AFRICLUB/tools/scripts/verify_rayon_public_d1_local.py",
+      "knownDriveFileId": null,
+      "bytes": 5500,
+      "sha256": "2742999e79c1fb5c186f189415b76c5e125562e47d9d519935e4697c0ca33928",
+      "status": "pending_upload"
+    }
+  ],
+  "priorPendingDeliverablesIncluded": [
+    {
+      "name": "AFRICLUB_Production_Remediation_Baseline_2026-09-28.zip",
+      "bundlePath": "prior_delivery/AFRICLUB_Production_Remediation_Baseline_2026-09-28.zip",
+      "bytes": 563289,
+      "sha256": "ff05c8ff3adb85af8a31fb189471e6c9ad5c87dfa4806eaafc8578a7b877b604",
+      "status": "included_unchanged_pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Evidence_2026-09-28.zip",
+      "bundlePath": "prior_delivery/AFRICLUB_Production_Remediation_Evidence_2026-09-28.zip",
+      "bytes": 167473,
+      "sha256": "23de15cca5d4b622a9648ecf450f9cb7edcf209defe8649ac079225383407209",
+      "status": "included_unchanged_pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Report_2026-09-28.md",
+      "bundlePath": "prior_delivery/AFRICLUB_Production_Remediation_Report_2026-09-28.md",
+      "bytes": 18363,
+      "sha256": "8742e8a7fce1b9ad6b336cb8f9307ce716f20c1102fa4adb799051ec347e5f4f",
+      "status": "included_unchanged_pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Source_2026-09-28.zip",
+      "bundlePath": "prior_delivery/AFRICLUB_Production_Remediation_Source_2026-09-28.zip",
+      "bytes": 3146553,
+      "sha256": "3fb8c5e47767582234c46bb80423894ec18da62daf52e4208d9a0ebde5e13e41",
+      "status": "included_unchanged_pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Upload_Pending_2026-09-28.json",
+      "bundlePath": "prior_delivery/AFRICLUB_Production_Remediation_Upload_Pending_2026-09-28.json",
+      "bytes": 151550,
+      "sha256": "b6b449fbd2b38d98c5ea560737b48ae37f889bff17e6c18bb3081e6a69181825",
+      "status": "included_unchanged_pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Production_Remediation_Verification_2026-09-28.json",
+      "bundlePath": "prior_delivery/AFRICLUB_Production_Remediation_Verification_2026-09-28.json",
+      "bytes": 3354,
+      "sha256": "88a874554b6ab09bf72e31b593e2b5dd16284bf5c390b1eda9bce69fe32ed703",
+      "status": "included_unchanged_pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Production_Task_Register_Updated_2026-09-28.json",
+      "bundlePath": "prior_delivery/AFRICLUB_Production_Task_Register_Updated_2026-09-28.json",
+      "bytes": 190564,
+      "sha256": "19d37532e3e3a554828f1f922f56486549a59dd29525d1eeb984f82d7449a320",
+      "status": "included_unchanged_pending_upload"
+    }
+  ],
+  "warning": "Destinations and known IDs are a plan only, not write receipts. Preserve separate versioned source and backups; reconcile current hashes before replacing canonical files.",
+  "currentDeliverables": [
+    {
+      "name": "AFRICLUB_Remediation_02_Source_2026-09-28.zip",
+      "intendedPath": "/Google Drive/AFRICLUB/output/production-remediation-2026-09-28/continuation-02-reliable-delivery-handoff/AFRICLUB_Remediation_02_Source_2026-09-28.zip",
+      "status": "pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Report_2026-09-28.md",
+      "intendedPath": "/Google Drive/AFRICLUB/output/production-remediation-2026-09-28/continuation-02-reliable-delivery-handoff/AFRICLUB_Remediation_02_Report_2026-09-28.md",
+      "status": "pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Task_Register_2026-09-28.json",
+      "intendedPath": "/Google Drive/AFRICLUB/output/production-remediation-2026-09-28/continuation-02-reliable-delivery-handoff/AFRICLUB_Remediation_02_Task_Register_2026-09-28.json",
+      "status": "pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Verification_2026-09-28.json",
+      "intendedPath": "/Google Drive/AFRICLUB/output/production-remediation-2026-09-28/continuation-02-reliable-delivery-handoff/AFRICLUB_Remediation_02_Verification_2026-09-28.json",
+      "status": "pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Upload_Pending_2026-09-28.json",
+      "intendedPath": "/Google Drive/AFRICLUB/output/production-remediation-2026-09-28/continuation-02-reliable-delivery-handoff/AFRICLUB_Remediation_02_Upload_Pending_2026-09-28.json",
+      "status": "pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Baseline_2026-09-28.zip",
+      "intendedPath": "/Google Drive/AFRICLUB/output/production-remediation-2026-09-28/continuation-02-reliable-delivery-handoff/AFRICLUB_Remediation_02_Baseline_2026-09-28.zip",
+      "status": "pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Evidence_2026-09-28.zip",
+      "intendedPath": "/Google Drive/AFRICLUB/output/production-remediation-2026-09-28/continuation-02-reliable-delivery-handoff/AFRICLUB_Remediation_02_Evidence_2026-09-28.zip",
+      "status": "pending_upload"
+    },
+    {
+      "name": "AFRICLUB_Remediation_02_Local_Delivery_Receipt_2026-09-28.json",
+      "intendedPath": "/Google Drive/AFRICLUB/output/production-remediation-2026-09-28/continuation-02-reliable-delivery-handoff/AFRICLUB_Remediation_02_Local_Delivery_Receipt_2026-09-28.json",
+      "status": "pending_upload"
+    }
+  ]
+}

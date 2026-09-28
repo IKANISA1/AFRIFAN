@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "verifiedAtUtc": "2026-09-27T11:41:09.433677+00:00",
+  "targetFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+  "auditFolderId": "1_WSjTrKaAT14itFHy49JJ0u41Zn_QcEt",
+  "auditFolderPath": "/Google Drive/AFRICLUB/output/production-readiness-audit-2026-09-27",
+  "auditDeliverablesUploaded": 8,
+  "auditDeliverablesByteVerified": 8,
+  "newFilesOnly": true,
+  "existingSourceFilesModified": 0,
+  "permissionChanges": 0,
+  "secretContentsRead": false,
+  "providerOrProductionChanges": 0,
+  "evidenceZipCrcPassed": true,
+  "evidenceManifestHashesPassed": true,
+  "evidenceManifestFileCount": 31,
+  "reportPages": 35,
+  "taskCount": 148,
+  "findingCount": 20,
+  "originalQATasksPreserved": 37,
+  "deliverables": [
+    {
+      "name": "AFRICLUB_Production_Readiness_Report_2026-09-27.pdf",
+      "driveFileId": "10eRpV7FTx9l2B8lmv8aG5rz3f4zCw0sm",
+      "bytes": 139347,
+      "sha256": "2a633be14d76afe2657b75032da417c55d0c1f1e94fe03221efe1df4a61b1bed",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Production_Readiness_Report_2026-09-27.md",
+      "driveFileId": "15Gz4oe6INvmzk8mudwpZkMGw0iTbdW6B",
+      "bytes": 69641,
+      "sha256": "fff2586370926397015ca30844cbaaf4d74c700546972170027b73546e61dcbc",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Production_Task_Register_2026-09-27.xlsx",
+      "driveFileId": "1HNF5596Q96NLDJf1agamIriAh41GmcST",
+      "bytes": 75661,
+      "sha256": "48f88f7859aa24c13f85451d34c582c26148c3c7e7c6ce9444b21fad9b8e1d99",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Production_Task_Register_2026-09-27.json",
+      "driveFileId": "1FgJYFNpFyMkIZZUeWnJEg1mR9L3CXkcv",
+      "bytes": 225237,
+      "sha256": "2e3e9e01a8fe4381e08ef44cc17e9edf7b252c497c4a399c0a02c85f9f206fd7",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Production_Task_Register_2026-09-27.csv",
+      "driveFileId": "1MUR7zG7JdxiIbG4iP5plicZrdlxcRqh2",
+      "bytes": 170675,
+      "sha256": "63ac17fa2f16319865838d74d48790377c9f9d3c5628e84ab860ac5cf9b07bcb",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Production_Audit_Evidence_2026-09-27.zip",
+      "driveFileId": "1LdEA1wstKw6WW8HNzouziN4csaNzpSk8",
+      "bytes": 237839,
+      "sha256": "0798cd213d50bd233ca9bafcaab771d7c8e499b8465797ae21580e89f1098ac3",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Audit_Verification_2026-09-27.json",
+      "driveFileId": "1IuPo4eLKdckUDp1Jb6jJuPZOTMK0C-2H",
+      "bytes": 519,
+      "sha256": "43542141695849b532a545a3ef7bf3be6f95abb1804616f7ca261a3fdae63cda",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Security_Permission_Observations_2026-09-27.json",
+      "driveFileId": "1mr8DsVMQMcLl-6mE2KI5kqF6i1Y8uOCD",
+      "bytes": 1571,
+      "sha256": "3e53ac7a30735d90b055a3fd7305b7fafcb0c704b4c646d3588c08e9f82498c8",
+      "readbackMatched": true
+    }
+  ],
+  "scope": "This receipt verifies these audit deliverables, not deployment, full source reconciliation, live repository integrity, or completion of the 148 tasks. The root anyone/writer permission remains a critical unresolved audit finding."
+}

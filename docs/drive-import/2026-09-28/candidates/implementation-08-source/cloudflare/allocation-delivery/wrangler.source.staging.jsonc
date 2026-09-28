@@ -1,0 +1,24 @@
+{
+  "compatibility_date": "2026-09-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [],
+  "name": "africlub-allocation-delivery-source-staging",
+  "main": "src/source-worker.mjs",
+  "vars": {
+    "PAYMENT_ALLOCATION_ENABLED": "false",
+    "ALLOCATION_DELIVERY_ENABLED": "false",
+    "ALLOCATION_ENVIRONMENT": "isolated-staging",
+    "DELIVERY_PRINCIPAL_ID": "REVIEW_REQUIRED",
+    "DELIVERY_REVIEW_PRINCIPAL_ID": "REVIEW_REQUIRED",
+    "DELIVERY_CONSUMER_ID": "REVIEW_REQUIRED"
+  },
+  "d1_databases": [
+    {
+      "binding": "ALLOCATION_DB",
+      "database_name": "EXISTING_REVIEWED_ALLOCATION_DB",
+      "database_id": "REVIEW_REQUIRED",
+      "migrations_dir": "../payment-allocation/migrations"
+    }
+  ]
+}

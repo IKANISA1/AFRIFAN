@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "path": "docs/architecture/cloudflare-backend-migration-plan-2026-09-24.md",
+      "sha256": "9f6cbd153b77ce312a8a0c81dd84baacc3033f13c95cade508f9a3aff456ced4",
+      "owner": "AFRICLUB migration maintainers",
+      "reason": "Read-only inventory and disposition evidence; does not authorize retired runtime capabilities.",
+      "reviewBy": "2026-12-31"
+    },
+    {
+      "path": "docs/architecture/cloudflare-stage0-live-inventory-2026-09-24.md",
+      "sha256": "a9e01fe1642392ddd1d1e1ae1f43f6e77d5ebef794f7f57567a6fac9856c2898",
+      "owner": "AFRICLUB migration maintainers",
+      "reason": "Read-only inventory and disposition evidence; does not authorize retired runtime capabilities.",
+      "reviewBy": "2026-12-31"
+    },
+    {
+      "path": "tools/scripts/inventory_cloudflare_migration.py",
+      "sha256": "33cad14805f545962f7bb05bdf104ead7d98a276306abd33df27fd970b57a520",
+      "owner": "AFRICLUB migration maintainers",
+      "reason": "Read-only inventory and disposition evidence; does not authorize retired runtime capabilities.",
+      "reviewBy": "2026-12-31"
+    }
+  ]
+}

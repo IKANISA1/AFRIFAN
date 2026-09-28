@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "verified_at_utc": "2026-09-26T12:27:17.926123+00:00",
+  "scope": "local cumulative source payload and executed targeted regressions; not deployment or Drive verification",
+  "cumulative_source_files": 103,
+  "original_file_modifications": 24,
+  "source_additions": 79,
+  "batch4_added_files": 20,
+  "batch4_modified_files": 1,
+  "tests": {
+    "node-regressions": 52,
+    "operator-regressions": 163,
+    "supporter-auth-regressions": 145,
+    "python-regressions": 60,
+    "installer-regressions": 33,
+    "total": 453
+  },
+  "extra_syntax_checks_passed": 19,
+  "reference_typescript_compilation_passed": true,
+  "disabled_deployment_configuration_passed": true,
+  "manifest_sha256": "d399ef6f11fd339d24513c9b6713ef62504a53bd0003d9a2ccd6ca6c38b51330",
+  "all_source_payload_hashes_match": true,
+  "all_context_hashes_match": true,
+  "installation_trials": [
+    {
+      "baseline": "original",
+      "dry_run": true,
+      "files_changed": 103,
+      "already_matching": 0,
+      "all_after_hashes_match": true,
+      "reapplication_changed_files": 0,
+      "rollback_restored_all_starting_hashes": true,
+      "existing_flutter_auth_source_unchanged": true,
+      "remote_source_changed": false
+    },
+    {
+      "baseline": "v1",
+      "dry_run": true,
+      "files_changed": 58,
+      "already_matching": 45,
+      "all_after_hashes_match": true,
+      "reapplication_changed_files": 0,
+      "rollback_restored_all_starting_hashes": true,
+      "existing_flutter_auth_source_unchanged": true,
+      "remote_source_changed": false
+    },
+    {
+      "baseline": "v2",
+      "dry_run": true,
+      "files_changed": 48,
+      "already_matching": 55,
+      "all_after_hashes_match": true,
+      "reapplication_changed_files": 0,
+      "rollback_restored_all_starting_hashes": true,
+      "existing_flutter_auth_source_unchanged": true,
+      "remote_source_changed": false
+    },
+    {
+      "baseline": "v3",
+      "dry_run": true,
+      "files_changed": 21,
+      "already_matching": 82,
+      "all_after_hashes_match": true,
+      "reapplication_changed_files": 0,
+      "rollback_restored_all_starting_hashes": true,
+      "existing_flutter_auth_source_unchanged": true,
+      "remote_source_changed": false
+    }
+  ],
+  "environment": {
+    "node": "v22.16.0",
+    "python": "3.13.5",
+    "typescript": "Version 5.8.3"
+  },
+  "source_inputs": {
+    "v3_archive_sha256": "343e267a8738166a57d572fa4fafb59ba68e0a519437edd55f44737f371cf547",
+    "scoped_original_archive_sha256": "1403a0cb08888ca452711db4495c99e3409a14e3ce5280187311b2853ed0171b",
+    "original_flutter_auth_sha256": "122ca544d026c085f553f3b76fdf33d251c470cf6ee20cf14268ae402dadc357"
+  },
+  "real_provider_adapter_implemented": false,
+  "real_provider_messages_sent": 0,
+  "actual_identities_imported": 0,
+  "existing_flutter_auth_switched": false,
+  "actual_cloudflare_runtime_executed": false,
+  "real_d1_concurrency_load_proven": false,
+  "full_flutter_or_next_build": false,
+  "browser_attempted_this_batch": false,
+  "prior_browser_blocked_cases": 13,
+  "remote_migrations_applied": 0,
+  "production_deployments": 0,
+  "financial_backend_migrated": false,
+  "full_auth_migration_completed": false,
+  "drive_files_written": 0,
+  "drive_originals_replaced": 0,
+  "drive_write_status": "No write action exposed in current Google Drive/Files tools; no authorized write route discovered. v3/v4 not uploaded.",
+  "release_authorized": false,
+  "supabase_retired": false,
+  "archive_readback_passed": true,
+  "checksummed_bundle_files": 163,
+  "artifacts": [
+    {
+      "name": "AFRICLUB_Cumulative_Source_Patch_v4_2026-09-26.zip",
+      "size_bytes": 609779,
+      "sha256": "e660191cad670983811c83f668f54edc849e3aed6b5e8de862b56b3fcb6249fe"
+    },
+    {
+      "name": "AFRICLUB_Batch4_Implementation_Report_2026-09-26.md",
+      "size_bytes": 13585,
+      "sha256": "443a3775bb28105eb8bb05edeb9ecf4e1c33f494d0d0574cc4323d751b2b69dc"
+    },
+    {
+      "name": "AFRICLUB_Remaining_Actions_v4_2026-09-26.json",
+      "size_bytes": 10473,
+      "sha256": "fbaab753f56580663480b50172289b7f6bfc78da4b39c847d0f31c58908fcd9f"
+    }
+  ]
+}

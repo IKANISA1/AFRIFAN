@@ -1,0 +1,2405 @@
+{
+  "edge_functions": [
+    "admin-send-notification",
+    "admin-settle-fixture",
+    "admin-upload-image",
+    "delete-account",
+    "dispatch-scheduled-notifications",
+    "football-sync",
+    "generate-admin-image",
+    "generate-product-image",
+    "get-platform-config",
+    "google-wallet-ticket-pass",
+    "livescore-openai-sync",
+    "parse-momo-sms",
+    "record-operational-health",
+    "send-notification",
+    "send-sms",
+    "settle-prediction-notifications",
+    "sms-ingest",
+    "sync-google-wallet-ticket-state"
+  ],
+  "literal_calls": [
+    {
+      "kind": "table_or_view",
+      "line": 55,
+      "name": "contribution_groups",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 83,
+      "name": "fan_memberships",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 121,
+      "name": "fan_memberships",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 167,
+      "name": "fan_clubs",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 207,
+      "name": "unified_matches",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 258,
+      "name": "tickets",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 297,
+      "name": "shop_products",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 373,
+      "name": "shop_orders",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 419,
+      "name": "contribution_groups",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 556,
+      "name": "group_contributions",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 581,
+      "name": "group_contributions",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 596,
+      "name": "tickets",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 655,
+      "name": "group_members",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 705,
+      "name": "fet_events",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 720,
+      "name": "partner_payment_routes",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "rpc",
+      "line": 224,
+      "name": "purchase_club_tickets",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "rpc",
+      "line": 268,
+      "name": "cancel_ticket_if_unchanged",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "rpc",
+      "line": 338,
+      "name": "create_shop_order",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "rpc",
+      "line": 387,
+      "name": "cancel_shop_order_if_unchanged",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "rpc",
+      "line": 498,
+      "name": "create_pending_group_contribution",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "rpc",
+      "line": 540,
+      "name": "cancel_pending_group_contribution_payment_launch",
+      "path": "packages/data/club_data/lib/src/repositories/club_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 18,
+      "name": "home_banners",
+      "path": "packages/data/club_data/lib/src/repositories/published_project_images.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 40,
+      "name": "unified_matches",
+      "path": "packages/data/club_data/lib/src/repositories/public_match_window.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 47,
+      "name": "unified_matches",
+      "path": "packages/data/club_data/lib/src/repositories/public_match_window.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 62,
+      "name": "unified_matches",
+      "path": "packages/data/club_data/lib/src/repositories/public_match_window.dart"
+    },
+    {
+      "kind": "rpc",
+      "line": 50,
+      "name": "predict_dashboard",
+      "path": "packages/features/feat_gamification/lib/src/predict/predict_repository.dart"
+    },
+    {
+      "kind": "rpc",
+      "line": 72,
+      "name": "predict_place",
+      "path": "packages/features/feat_gamification/lib/src/predict/predict_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 80,
+      "name": "unified_matches",
+      "path": "packages/features/feat_ticketing/lib/src/ticketing_providers.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 105,
+      "name": "tickets",
+      "path": "packages/features/feat_ticketing/lib/src/ticketing_providers.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 12,
+      "name": "prediction_fixture_community",
+      "path": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_community_picks.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 34,
+      "name": "prediction_fixture_community",
+      "path": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_community_picks.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 17,
+      "name": "prediction_notifications_feed",
+      "path": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_notifications.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 57,
+      "name": "football_standings_catalog",
+      "path": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_competitions.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 77,
+      "name": "football_teams_catalog",
+      "path": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_competitions.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 99,
+      "name": "football_roster_catalog",
+      "path": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_competitions.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 37,
+      "name": "prediction_markets_catalog",
+      "path": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_markets.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 101,
+      "name": "prediction_leaderboard",
+      "path": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_markets.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 20,
+      "name": "football_roster_catalog",
+      "path": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_lineups.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 37,
+      "name": "football_roster_catalog",
+      "path": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_lineups.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 26,
+      "name": "profiles",
+      "path": "packages/features/feat_gamification/lib/src/repositories/prediction_repo_profile.dart"
+    },
+    {
+      "kind": "edge_function",
+      "line": 106,
+      "name": "google-wallet-ticket-pass",
+      "path": "packages/features/feat_ticketing/lib/src/providers/google_wallet_provider.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 99,
+      "name": "tickets",
+      "path": "packages/features/feat_ticketing/lib/src/providers/e_ticket_provider.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 24,
+      "name": "club_partner_publications",
+      "path": "packages/features/feat_club/lib/src/screens/club_partners_screen.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 253,
+      "name": "platform_feature_channels",
+      "path": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 257,
+      "name": "platform_feature_channels",
+      "path": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 286,
+      "name": "platform_feature_rules",
+      "path": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 290,
+      "name": "platform_feature_rules",
+      "path": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 304,
+      "name": "platform_content_blocks",
+      "path": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 336,
+      "name": "platform_content_blocks",
+      "path": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 357,
+      "name": "platform_features",
+      "path": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 370,
+      "name": "platform_features",
+      "path": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 470,
+      "name": "platform_features",
+      "path": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 519,
+      "name": "platform_features",
+      "path": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 530,
+      "name": "platform_features",
+      "path": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 552,
+      "name": "platform_feature_channels",
+      "path": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 576,
+      "name": "platform_feature_rules",
+      "path": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 595,
+      "name": "platform_feature_channels",
+      "path": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 618,
+      "name": "platform_feature_rules",
+      "path": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 641,
+      "name": "platform_content_blocks",
+      "path": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 659,
+      "name": "platform_content_blocks",
+      "path": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 670,
+      "name": "platform_content_blocks",
+      "path": "packages/features/feat_admin/lib/src/repositories/feature_management_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 64,
+      "name": "admin_role_assignments",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 95,
+      "name": "admin_role_assignments",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 124,
+      "name": "profiles",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 129,
+      "name": "contribution_groups",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 159,
+      "name": "contribution_groups",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 176,
+      "name": "group_contributions",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 187,
+      "name": "tickets",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 204,
+      "name": "matches",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 219,
+      "name": "matches",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 226,
+      "name": "matches",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 233,
+      "name": "contribution_groups",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 238,
+      "name": "notifications",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 269,
+      "name": "fixtures",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 355,
+      "name": "contribution_groups",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 374,
+      "name": "group_contributions",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 397,
+      "name": "group_contributions",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 415,
+      "name": "news_articles",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 438,
+      "name": "news_articles",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 469,
+      "name": "news_articles",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 480,
+      "name": "quick_actions",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 500,
+      "name": "quick_actions",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 521,
+      "name": "quick_actions",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 526,
+      "name": "partners",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 547,
+      "name": "partners",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 569,
+      "name": "partners",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 576,
+      "name": "partner_services",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 599,
+      "name": "partner_services",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 623,
+      "name": "partner_services",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 630,
+      "name": "football_competitions_catalog",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 644,
+      "name": "competitions",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 661,
+      "name": "seasons",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 674,
+      "name": "competitions",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 683,
+      "name": "competitions",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 689,
+      "name": "seasons",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 698,
+      "name": "seasons",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 707,
+      "name": "prediction_supported_competitions_catalog",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 722,
+      "name": "prediction_supported_competitions",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 739,
+      "name": "prediction_supported_competitions",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 765,
+      "name": "platform_content_blocks",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 805,
+      "name": "platform_content_blocks",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 847,
+      "name": "platform_content_blocks",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 859,
+      "name": "platform_feature_audit_logs",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 916,
+      "name": "platform_content_blocks",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 938,
+      "name": "platform_content_blocks",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 949,
+      "name": "platform_content_blocks",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1048,
+      "name": "admin_audit_log",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1064,
+      "name": "news_articles",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "rpc",
+      "line": 106,
+      "name": "is_super_admin",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "rpc",
+      "line": 1030,
+      "name": "admin_get_shop_products",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "edge_function",
+      "line": 1082,
+      "name": "admin-send-notification",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "edge_function",
+      "line": 1106,
+      "name": "admin-settle-fixture",
+      "path": "packages/features/feat_admin/lib/src/repositories/admin_repository.dart"
+    },
+    {
+      "kind": "rpc",
+      "line": 79,
+      "name": "predict_admin_dashboard",
+      "path": "packages/features/feat_admin/lib/src/admin_predict_controller.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 9,
+      "name": "partners",
+      "path": "packages/features/feat_club/lib/src/repositories/gikundiro_public_partners.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 27,
+      "name": "media_assets",
+      "path": "packages/features/feat_club/lib/src/repositories/gikundiro_public_partners.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 43,
+      "name": "squad_players",
+      "path": "packages/features/feat_club/lib/src/repositories/club_content_gateway.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 58,
+      "name": "news_articles",
+      "path": "packages/features/feat_club/lib/src/repositories/club_content_gateway.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 94,
+      "name": "news_articles",
+      "path": "packages/features/feat_club/lib/src/repositories/club_content_gateway.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 114,
+      "name": "squad_players",
+      "path": "packages/features/feat_club/lib/src/repositories/club_content_gateway.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 136,
+      "name": "standings",
+      "path": "packages/features/feat_club/lib/src/repositories/club_content_gateway.dart"
+    },
+    {
+      "kind": "rpc",
+      "line": 81,
+      "name": "club_public_overview",
+      "path": "packages/features/feat_club/lib/src/repositories/club_content_gateway.dart"
+    },
+    {
+      "kind": "rpc",
+      "line": 151,
+      "name": "club_public_history",
+      "path": "packages/features/feat_club/lib/src/repositories/club_content_gateway.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 26,
+      "name": "clubs",
+      "path": "packages/features/feat_club/lib/src/repositories/gikundiro_public_club_gateway.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 61,
+      "name": "news_posts",
+      "path": "packages/features/feat_club/lib/src/repositories/gikundiro_public_club_gateway.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 90,
+      "name": "players",
+      "path": "packages/features/feat_club/lib/src/repositories/gikundiro_public_club_gateway.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 109,
+      "name": "media_assets",
+      "path": "packages/features/feat_club/lib/src/repositories/gikundiro_public_club_gateway.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 144,
+      "name": "prediction_teams",
+      "path": "packages/features/feat_club/lib/src/repositories/gikundiro_public_club_gateway.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 149,
+      "name": "prediction_competitions",
+      "path": "packages/features/feat_club/lib/src/repositories/gikundiro_public_club_gateway.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 155,
+      "name": "prediction_fixtures",
+      "path": "packages/features/feat_club/lib/src/repositories/gikundiro_public_club_gateway.dart"
+    },
+    {
+      "kind": "rpc",
+      "line": 10,
+      "name": "resolve_club_public_link_v1",
+      "path": "packages/features/feat_club/lib/src/providers/club_public_link_provider.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 260,
+      "name": "african_football_clubs",
+      "path": "apps/rayon_sports/web/scripts/seed_wallet_qa_uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 278,
+      "name": "fet_wallet_ledger_entries",
+      "path": "apps/rayon_sports/web/scripts/seed_wallet_qa_uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 320,
+      "name": "users",
+      "path": "apps/rayon_sports/web/scripts/seed_wallet_qa_uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 327,
+      "name": "profiles",
+      "path": "apps/rayon_sports/web/scripts/seed_wallet_qa_uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 344,
+      "name": "admin_role_assignments",
+      "path": "apps/rayon_sports/web/scripts/seed_wallet_qa_uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 353,
+      "name": "admin_role_assignments",
+      "path": "apps/rayon_sports/web/scripts/seed_wallet_qa_uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 397,
+      "name": "fet_wallet_ledger_entries",
+      "path": "apps/rayon_sports/web/scripts/seed_wallet_qa_uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 402,
+      "name": "cool_events",
+      "path": "apps/rayon_sports/web/scripts/seed_wallet_qa_uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 408,
+      "name": "fan_memberships",
+      "path": "apps/rayon_sports/web/scripts/seed_wallet_qa_uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 444,
+      "name": "fan_memberships",
+      "path": "apps/rayon_sports/web/scripts/seed_wallet_qa_uat.mjs"
+    },
+    {
+      "kind": "rpc",
+      "line": 377,
+      "name": "refresh_admin_phone_access_for_user",
+      "path": "apps/rayon_sports/web/scripts/seed_wallet_qa_uat.mjs"
+    },
+    {
+      "kind": "rpc",
+      "line": 422,
+      "name": "add_fan_points",
+      "path": "apps/rayon_sports/web/scripts/seed_wallet_qa_uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 171,
+      "name": "users",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 183,
+      "name": "profiles",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 205,
+      "name": "tickets",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 229,
+      "name": "membership_applications",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 252,
+      "name": "fan_memberships",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 278,
+      "name": "fan_memberships",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 303,
+      "name": "notifications",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 326,
+      "name": "fet_wallet_ledger_entries",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 381,
+      "name": "fan_clubs",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 402,
+      "name": "contribution_groups",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 423,
+      "name": "ai_content",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 480,
+      "name": "platform_features",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 499,
+      "name": "platform_feature_channels",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 544,
+      "name": "platform_features",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 571,
+      "name": "platform_feature_channels",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 583,
+      "name": "platform_features",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 592,
+      "name": "platform_feature_channels",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 754,
+      "name": "admin_role_assignments",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 791,
+      "name": "matches",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 804,
+      "name": "matches",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 822,
+      "name": "tickets",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 843,
+      "name": "membership_applications",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 866,
+      "name": "platform_features",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 884,
+      "name": "platform_feature_channels",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 945,
+      "name": "platform_features",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 958,
+      "name": "platform_features",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 968,
+      "name": "platform_feature_audit_logs",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 997,
+      "name": "platform_content_blocks",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1012,
+      "name": "platform_content_blocks",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1024,
+      "name": "platform_feature_audit_logs",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1130,
+      "name": "notifications",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1218,
+      "name": "fet_wallet_ledger_entries",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1384,
+      "name": "fan_clubs",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1481,
+      "name": "contribution_groups",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1570,
+      "name": "ai_content",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1755,
+      "name": "platform_content_blocks",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1759,
+      "name": "ai_content",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1764,
+      "name": "contribution_groups",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1770,
+      "name": "fan_clubs",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1782,
+      "name": "notifications",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1787,
+      "name": "membership_applications",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1793,
+      "name": "tickets",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1798,
+      "name": "fan_memberships",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1804,
+      "name": "profiles",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1808,
+      "name": "platform_features",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1813,
+      "name": "admin_role_assignments",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "rpc",
+      "line": 458,
+      "name": "get_feature_access_state",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "rpc",
+      "line": 776,
+      "name": "add_fan_points",
+      "path": "apps/rayon_sports/web/scripts/run-admin-live-uat.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 171,
+      "name": "admin_phone_access",
+      "path": "apps/rayon_sports/web/scripts/verify-supabase-env.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 186,
+      "name": "platform_features",
+      "path": "apps/rayon_sports/web/scripts/verify-supabase-env.mjs"
+    },
+    {
+      "kind": "rpc",
+      "line": 89,
+      "name": "check_triggers_exist",
+      "path": "apps/rayon_sports/web/scripts/verify-supabase-env.mjs"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 10,
+      "name": "marketplace_products",
+      "path": "packages/features/feat_shop/lib/src/gikundiro_public_shop.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 22,
+      "name": "marketplace_categories",
+      "path": "packages/features/feat_shop/lib/src/gikundiro_public_shop.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 38,
+      "name": "media_assets",
+      "path": "packages/features/feat_shop/lib/src/gikundiro_public_shop.dart"
+    },
+    {
+      "kind": "rpc",
+      "line": 16,
+      "name": "prepare_membership_payment_for_club",
+      "path": "apps/rayon_sports/web/src/lib/membership-payment.ts"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 13,
+      "name": "getUser",
+      "path": "apps/rayon_sports/web/src/lib/membership-payment.ts"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 27,
+      "name": "getUser",
+      "path": "apps/rayon_sports/web/src/lib/membership-payment.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 24,
+      "name": "fan_clubs",
+      "path": "packages/features/feat_fan_clubs/lib/src/screens/fan_clubs_list_screen.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 10,
+      "name": "fanclubs",
+      "path": "packages/features/feat_fan_clubs/lib/src/gikundiro_public_fanclubs.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 80,
+      "name": "unified_matches",
+      "path": "apps/rayon_sports/web/src/lib/data/public/matches.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 103,
+      "name": "unified_matches",
+      "path": "apps/rayon_sports/web/src/lib/data/public/matches.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 88,
+      "name": "african_football_clubs",
+      "path": "apps/rayon_sports/web/src/lib/data/public/club.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 98,
+      "name": "home_banners",
+      "path": "apps/rayon_sports/web/src/lib/data/public/cms.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 122,
+      "name": "ai_content",
+      "path": "apps/rayon_sports/web/src/lib/data/public/cms.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 77,
+      "name": "get_runtime_app_config",
+      "path": "apps/rayon_sports/web/src/lib/data/public/cms.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 174,
+      "name": "membership_tiers",
+      "path": "apps/rayon_sports/web/src/lib/data/public/community.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 212,
+      "name": "fan_clubs",
+      "path": "apps/rayon_sports/web/src/lib/data/public/community.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 248,
+      "name": "contribution_groups",
+      "path": "apps/rayon_sports/web/src/lib/data/public/community.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 271,
+      "name": "home_banners",
+      "path": "apps/rayon_sports/web/src/lib/data/public/community.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 313,
+      "name": "standings",
+      "path": "apps/rayon_sports/web/src/lib/data/public/community.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 348,
+      "name": "squad_players",
+      "path": "apps/rayon_sports/web/src/lib/data/public/community.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 65,
+      "name": "news_articles",
+      "path": "apps/rayon_sports/web/src/lib/data/public/news.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 26,
+      "name": "user_privacy_settings",
+      "path": "packages/features/feat_settings/lib/src/settings_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 59,
+      "name": "user_privacy_settings",
+      "path": "packages/features/feat_settings/lib/src/settings_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 72,
+      "name": "user_privacy_settings",
+      "path": "packages/features/feat_settings/lib/src/settings_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 85,
+      "name": "user_notification_settings",
+      "path": "packages/features/feat_settings/lib/src/settings_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 118,
+      "name": "user_notification_settings",
+      "path": "packages/features/feat_settings/lib/src/settings_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 131,
+      "name": "user_notification_settings",
+      "path": "packages/features/feat_settings/lib/src/settings_repository.dart"
+    },
+    {
+      "kind": "rpc",
+      "line": 37,
+      "name": "get_admin_dashboard_actions",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/dashboard-actions.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 127,
+      "name": "unified_standings",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/standings.ts"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 91,
+      "name": "getSession",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/bootstrap.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 306,
+      "name": "tickets",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/tickets.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 382,
+      "name": "admin_bulk_update_ticket_status_if_unchanged",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/tickets.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 434,
+      "name": "admin_bulk_update_ticket_status_if_unchanged",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/tickets.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 628,
+      "name": "prediction_markets",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/predictions.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 657,
+      "name": "competitions",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/predictions.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 684,
+      "name": "football_seasons_catalog",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/predictions.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 708,
+      "name": "football_fixtures_catalog",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/predictions.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 341,
+      "name": "matches",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/matches.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 355,
+      "name": "matches",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/matches.ts"
+    },
+    {
+      "kind": "edge_function",
+      "line": 120,
+      "name": "admin-upload-image",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/media.ts"
+    },
+    {
+      "kind": "edge_function",
+      "line": 162,
+      "name": "generate-admin-image",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/media.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 177,
+      "name": "home_banners",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/cms-content.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 237,
+      "name": "home_banners",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/cms-content.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 441,
+      "name": "ai_content",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/cms-content.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 506,
+      "name": "ai_content",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/cms-content.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 609,
+      "name": "club_app_config",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/cms-content.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 418,
+      "name": "get_platform_content_types",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/cms-content.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 47,
+      "name": "admin_audit_log",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/audit.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 389,
+      "name": "livescore_competition_sources",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/football-sync.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 421,
+      "name": "football_sync_log",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/football-sync.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 460,
+      "name": "livescore_competition_sources",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/football-sync.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 463,
+      "name": "livescore_competition_sources",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/football-sync.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 468,
+      "name": "fixtures",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/football-sync.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 473,
+      "name": "fixtures",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/football-sync.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 479,
+      "name": "fixtures",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/football-sync.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 485,
+      "name": "fixtures",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/football-sync.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 491,
+      "name": "teams",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/football-sync.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 495,
+      "name": "football_sync_log",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/football-sync.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 501,
+      "name": "football_sync_log",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/football-sync.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 657,
+      "name": "livescore_competition_sources",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/football-sync.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 226,
+      "name": "admin_role_assignments",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/access.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 356,
+      "name": "partners",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/partner-pools.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 375,
+      "name": "partner_prediction_pool_feed",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/partner-pools.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 433,
+      "name": "partner_prediction_pool_create",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/partner-pools.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 471,
+      "name": "partner_prediction_pool_settle",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/partner-pools.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 389,
+      "name": "platform_features",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/features.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 594,
+      "name": "admin_update_platform_feature_if_unchanged",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/features.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 115,
+      "name": "admin_role_assignments",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/access-management.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 143,
+      "name": "users",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/access-management.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 149,
+      "name": "african_football_clubs",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/access-management.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 154,
+      "name": "partners",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/access-management.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 234,
+      "name": "users",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/access-management.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 217,
+      "name": "find_auth_user_by_phone_or_email",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/access-management.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 286,
+      "name": "assign_admin_role",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/access-management.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 319,
+      "name": "revoke_admin_role",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/access-management.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 174,
+      "name": "fan_memberships",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/membership-ops.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 335,
+      "name": "fet_partner_offers",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/offers.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 344,
+      "name": "fan_engagement_token_catalog",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/offers.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 352,
+      "name": "partners",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/offers.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 473,
+      "name": "fet_partner_offers",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/offers.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 167,
+      "name": "unified_roster",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/squad.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 67,
+      "name": "contribution_groups",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/dashboard.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 74,
+      "name": "tickets",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/dashboard.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 81,
+      "name": "admin_audit_log",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/dashboard.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 64,
+      "name": "get_club_fan_analytics",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/dashboard.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 311,
+      "name": "fet_admin_get_wallet_overview",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/fet-wallet.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 317,
+      "name": "fet_admin_get_wallet_ledger",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/fet-wallet.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 381,
+      "name": "fet_admin_adjust_balance",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/fet-wallet.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 204,
+      "name": "contribution_groups",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/notifications.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 211,
+      "name": "notifications",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/notifications.ts"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 243,
+      "name": "getSession",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/notifications.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 348,
+      "name": "contributions",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/contributions.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 267,
+      "name": "platform_content_blocks",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/content-blocks.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 303,
+      "name": "platform_content_blocks",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/content-blocks.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 359,
+      "name": "platform_content_blocks",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/content-blocks.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 449,
+      "name": "platform_content_blocks",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/content-blocks.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 401,
+      "name": "momo_sms_sync_runs",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/sms.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 481,
+      "name": "payment_intents",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/sms.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 515,
+      "name": "users",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/sms.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 452,
+      "name": "get_momo_sms_manual_review_queue",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/sms.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 585,
+      "name": "allocate_momo_manual_review",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/sms.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 611,
+      "name": "admin_reject_momo_sms_manual_review",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/sms.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 381,
+      "name": "partners",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/helpers.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 399,
+      "name": "partners",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/helpers.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 302,
+      "name": "admin_delete_mutable_record_if_unchanged",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/helpers.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 742,
+      "name": "platform_option_values",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/runtime-registries.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1201,
+      "name": "platform_option_sets",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/runtime-registries.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 1291,
+      "name": "platform_option_values",
+      "path": "apps/rayon_sports/web/src/lib/data/admin/runtime-registries.ts"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 161,
+      "name": "getUser",
+      "path": "apps/rayon_sports/web/src/lib/admin-api-handler.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 172,
+      "name": "consume_request_rate_limit",
+      "path": "apps/rayon_sports/web/src/lib/security.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 125,
+      "name": "get_feature_access_state",
+      "path": "apps/rayon_sports/web/src/lib/server-feature-guard.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 109,
+      "name": "african_football_clubs",
+      "path": "apps/rayon_sports/web/src/lib/club-context.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 128,
+      "name": "african_football_clubs",
+      "path": "apps/rayon_sports/web/src/lib/club-context.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 644,
+      "name": "get_platform_config",
+      "path": "apps/rayon_sports/web/src/lib/feature-config.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 14,
+      "name": "admin_phone_access",
+      "path": "apps/rayon_sports/web/src/lib/admin-phone-access.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 179,
+      "name": "contribution_groups",
+      "path": "packages/features/feat_contributions/lib/src/controllers/statement_controller.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 187,
+      "name": "group_contributions",
+      "path": "packages/features/feat_contributions/lib/src/controllers/statement_controller.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 213,
+      "name": "profiles",
+      "path": "packages/features/feat_contributions/lib/src/controllers/statement_controller.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 117,
+      "name": "contribution_groups",
+      "path": "packages/features/feat_contributions/lib/src/controllers/group_detail_controller.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 129,
+      "name": "group_contributions",
+      "path": "packages/features/feat_contributions/lib/src/controllers/group_detail_controller.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 144,
+      "name": "profiles",
+      "path": "packages/features/feat_contributions/lib/src/controllers/group_detail_controller.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 247,
+      "name": "fan_memberships",
+      "path": "apps/rayon_sports/web/src/components/member-portal.tsx"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 279,
+      "name": "initiatives",
+      "path": "apps/rayon_sports/web/src/components/member-portal.tsx"
+    },
+    {
+      "kind": "rpc",
+      "line": 286,
+      "name": "member_contribution_history",
+      "path": "apps/rayon_sports/web/src/components/member-portal.tsx"
+    },
+    {
+      "kind": "rpc",
+      "line": 360,
+      "name": "member_contribution_history",
+      "path": "apps/rayon_sports/web/src/components/member-portal.tsx"
+    },
+    {
+      "kind": "rpc",
+      "line": 472,
+      "name": "create_member_contribution_intent",
+      "path": "apps/rayon_sports/web/src/components/member-portal.tsx"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 234,
+      "name": "getUser",
+      "path": "apps/rayon_sports/web/src/components/member-portal.tsx"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 322,
+      "name": "onAuthStateChange",
+      "path": "apps/rayon_sports/web/src/components/member-portal.tsx"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 402,
+      "name": "signInWithOtp",
+      "path": "apps/rayon_sports/web/src/components/member-portal.tsx"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 434,
+      "name": "verifyOtp",
+      "path": "apps/rayon_sports/web/src/components/member-portal.tsx"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 513,
+      "name": "signOut",
+      "path": "apps/rayon_sports/web/src/components/member-portal.tsx"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 150,
+      "name": "fan_memberships",
+      "path": "packages/features/feat_membership/lib/src/providers/membership_provider.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 218,
+      "name": "membership_tiers",
+      "path": "packages/features/feat_membership/lib/src/providers/membership_provider.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 234,
+      "name": "initiative_contributions",
+      "path": "packages/features/feat_membership/lib/src/providers/membership_provider.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 255,
+      "name": "initiatives",
+      "path": "packages/features/feat_membership/lib/src/providers/membership_provider.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 208,
+      "name": "membership_tiers",
+      "path": "packages/features/feat_membership/lib/src/providers/tier_detail_provider.dart"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 108,
+      "name": "setSession",
+      "path": "apps/rayon_sports/web/src/components/admin/admin-portal-provider.tsx"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 209,
+      "name": "getSession",
+      "path": "apps/rayon_sports/web/src/components/admin/admin-portal-provider.tsx"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 339,
+      "name": "verifyOtp",
+      "path": "apps/rayon_sports/web/src/components/admin/admin-portal-provider.tsx"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 395,
+      "name": "signOut",
+      "path": "apps/rayon_sports/web/src/components/admin/admin-portal-provider.tsx"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 432,
+      "name": "onAuthStateChange",
+      "path": "apps/rayon_sports/web/src/components/admin/admin-portal-provider.tsx"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 184,
+      "name": "african_football_clubs",
+      "path": "packages/features/feat_home/lib/src/search/federated_discovery_search_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 222,
+      "name": "news_articles",
+      "path": "packages/features/feat_home/lib/src/search/federated_discovery_search_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 259,
+      "name": "squad_players",
+      "path": "packages/features/feat_home/lib/src/search/federated_discovery_search_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 295,
+      "name": "ai_content",
+      "path": "packages/features/feat_home/lib/src/search/federated_discovery_search_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 330,
+      "name": "contribution_groups",
+      "path": "packages/features/feat_home/lib/src/search/federated_discovery_search_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 377,
+      "name": "fan_memberships",
+      "path": "packages/features/feat_home/lib/src/search/federated_discovery_search_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 420,
+      "name": "unified_matches",
+      "path": "packages/features/feat_home/lib/src/search/federated_discovery_search_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 479,
+      "name": "shop_products",
+      "path": "packages/features/feat_home/lib/src/search/federated_discovery_search_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 452,
+      "name": "quick_actions",
+      "path": "packages/features/feat_home/lib/src/repositories/home_content_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 488,
+      "name": "fan_memberships",
+      "path": "packages/features/feat_home/lib/src/repositories/home_content_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 634,
+      "name": "fan_memberships",
+      "path": "packages/features/feat_home/lib/src/repositories/home_content_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 648,
+      "name": "fan_memberships",
+      "path": "packages/features/feat_home/lib/src/repositories/home_content_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 681,
+      "name": "profiles",
+      "path": "packages/features/feat_home/lib/src/repositories/home_content_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 712,
+      "name": "profiles",
+      "path": "packages/features/feat_home/lib/src/repositories/home_content_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 903,
+      "name": "news_articles",
+      "path": "packages/features/feat_home/lib/src/repositories/home_content_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 89,
+      "name": "club_partner_publications",
+      "path": "packages/features/feat_home/lib/src/repositories/home_discovery_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 98,
+      "name": "fan_clubs",
+      "path": "packages/features/feat_home/lib/src/repositories/home_discovery_repository.dart"
+    },
+    {
+      "kind": "rpc",
+      "line": 83,
+      "name": "predict_public_preview",
+      "path": "packages/features/feat_home/lib/src/repositories/home_discovery_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 163,
+      "name": "pwa_engagement_events",
+      "path": "apps/rayon_sports/web/src/app/api/pwa/events/route.ts"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 146,
+      "name": "getUser",
+      "path": "apps/rayon_sports/web/src/app/api/pwa/events/route.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 156,
+      "name": "web_push_subscriptions",
+      "path": "apps/rayon_sports/web/src/app/api/pwa/push/route.ts"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 163,
+      "name": "getUser",
+      "path": "apps/rayon_sports/web/src/app/api/pwa/push/route.ts"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 149,
+      "name": "getUser",
+      "path": "apps/rayon_sports/web/src/app/api/admin/[resource]/route.ts"
+    },
+    {
+      "kind": "rpc",
+      "line": 37,
+      "name": "get_runtime_app_config",
+      "path": "packages/core/core_network/lib/src/app_config_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 93,
+      "name": "african_football_clubs",
+      "path": "packages/core/core_network/lib/src/club_scope.dart"
+    },
+    {
+      "kind": "edge_function",
+      "line": 98,
+      "name": "record-operational-health",
+      "path": "packages/core/core_network/lib/src/operational_health_service.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 31,
+      "name": "clubs",
+      "path": "packages/core/core_network/lib/src/gikundiro_public_source.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 198,
+      "name": "user_fcm_tokens",
+      "path": "packages/core/core_network/lib/src/push_notification_service.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 304,
+      "name": "user_notification_settings",
+      "path": "packages/core/core_network/lib/src/push_notification_service.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 405,
+      "name": "user_fcm_tokens",
+      "path": "packages/core/core_network/lib/src/push_notification_service.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 43,
+      "name": "countries",
+      "path": "packages/core/core_network/lib/src/country_repository.dart"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 102,
+      "name": "exchangeCodeForSession",
+      "path": "apps/rayon_sports/web/src/app/auth/callback/route.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 45,
+      "name": "news_articles",
+      "path": "apps/rayon_sports/web/src/app/sitemap.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 52,
+      "name": "shop_products",
+      "path": "apps/rayon_sports/web/src/app/sitemap.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 58,
+      "name": "matches",
+      "path": "apps/rayon_sports/web/src/app/sitemap.ts"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 198,
+      "name": "profiles",
+      "path": "packages/core/core_auth/lib/src/auth_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 308,
+      "name": "profiles",
+      "path": "packages/core/core_auth/lib/src/auth_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 324,
+      "name": "user_private_contacts",
+      "path": "packages/core/core_auth/lib/src/auth_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 373,
+      "name": "user_private_contacts",
+      "path": "packages/core/core_auth/lib/src/auth_repository.dart"
+    },
+    {
+      "kind": "rpc",
+      "line": 389,
+      "name": "bootstrap_supporter_profile",
+      "path": "packages/core/core_auth/lib/src/auth_repository.dart"
+    },
+    {
+      "kind": "edge_function",
+      "line": 236,
+      "name": "delete-account",
+      "path": "packages/core/core_auth/lib/src/auth_repository.dart"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 57,
+      "name": "signInAnonymously",
+      "path": "packages/core/core_auth/lib/src/auth_repository.dart"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 83,
+      "name": "signInWithOtp",
+      "path": "packages/core/core_auth/lib/src/auth_repository.dart"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 100,
+      "name": "verifyOTP",
+      "path": "packages/core/core_auth/lib/src/auth_repository.dart"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 124,
+      "name": "updateUser",
+      "path": "packages/core/core_auth/lib/src/auth_repository.dart"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 135,
+      "name": "verifyOTP",
+      "path": "packages/core/core_auth/lib/src/auth_repository.dart"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 269,
+      "name": "signOut",
+      "path": "packages/core/core_auth/lib/src/auth_repository.dart"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 275,
+      "name": "signOut",
+      "path": "packages/core/core_auth/lib/src/auth_repository.dart"
+    },
+    {
+      "kind": "table_or_view",
+      "line": 70,
+      "name": "admin_role_assignments",
+      "path": "packages/core/core_auth/lib/src/rbac_resolver.dart"
+    },
+    {
+      "kind": "auth_operation",
+      "line": 50,
+      "name": "signInWithOtp",
+      "path": "apps/rayon_sports/web/src/app/api/admin/auth/eligible/route.ts"
+    }
+  ],
+  "migrations": [
+    "20260820080202_football_only_baseline.sql",
+    "20260823061851_member_portal_and_contribution_intents.sql",
+    "20260906082522_simplified_predict.sql",
+    "20260906090100_gikundiro_club_identity.sql",
+    "20260906150000_english_only_product.sql",
+    "20260906153000_public_content_and_membership_contract.sql",
+    "20260906154500_commerce_capability.sql",
+    "20260914170000_replay_client_acl_boundary.sql",
+    "20260914173000_replay_service_entrypoint_boundary.sql",
+    "20260914191700_sync_verified_supporter_user.sql",
+    "20260915012812_serialize_ticket_redemption_retry.sql",
+    "20260915171257_recheck_ticket_admission_deadlines.sql",
+    "20260916005143_bind_ticket_replays_and_recheck_event_access.sql",
+    "20260916071423_grant_venue_portal_identity_reads.sql",
+    "20260916085609_align_ticket_admission_lock_order.sql",
+    "20260916184248_grant_member_campaign_ordering.sql",
+    "20260916185609_member_contribution_history_and_route_validation.sql",
+    "20260919164057_atomic_initiative_confirmation.sql",
+    "20260919183057_retire_partner_venue_product.sql",
+    "20260919193500_manual_sms_allocation_contract.sql",
+    "20260919221000_member_club_activation_guard.sql",
+    "20260919224000_live_match_realtime_publication.sql",
+    "20260919232000_atomic_payment_intent_allocation.sql",
+    "20260920014600_atomic_commerce_confirmation.sql",
+    "20260920022000_momo_parser_claim_recovery.sql",
+    "20260920120000_predict_only_surface.sql",
+    "20260920121000_fanclub_display_labels.sql",
+    "20260920123000_automatic_paid_membership.sql",
+    "20260920150000_revised_product_enforcement.sql",
+    "20260920164901_matched_membership_reconciliation.sql",
+    "20260920165224_membership_payment_lock_order.sql",
+    "20260920165540_membership_payment_evidence_binding.sql",
+    "20260923101604_preserve_paid_membership_restrictions_and_receipt_recovery.sql",
+    "20260923102734_serialize_momo_evidence_before_row_locks.sql",
+    "20260923220000_public_discovery_photography.sql",
+    "20260923223000_add_costa_do_sol_club.sql"
+  ],
+  "sql_contracts": [
+    "club_identity_contract.sql",
+    "commerce_confirmation_atomic_contract.sql",
+    "contribution_sms_reconciliation_contract.sql",
+    "custom_access_token_hook_contract.sql",
+    "english_public_membership_contract.sql",
+    "google_wallet_ticketing_contract.sql",
+    "initiative_confirmation_atomic_contract.sql",
+    "live_match_realtime_contract.sql",
+    "manual_sms_allocation_contract.sql",
+    "member_club_activation_contract.sql",
+    "member_contribution_history_contract.sql",
+    "member_contribution_receipt_privacy_contract.sql",
+    "member_portal_read_contract.sql",
+    "membership_activation_boundary_contract.sql",
+    "mobile_rpc_acl_contract.sql",
+    "momo_parser_claim_contract.sql",
+    "paid_membership_lifecycle_contract.sql",
+    "payment_intent_atomic_contract.sql",
+    "predict_contract.sql",
+    "predict_only_surface_contract.sql",
+    "profile_private_settings_contract.sql",
+    "public_catalog_privacy_contract.sql",
+    "replay_default_acl_contract.sql",
+    "repository_boundary_contract.sql",
+    "retired_venue_product_contract.sql",
+    "runtime_function_volatility_contract.sql",
+    "runtime_policy_cleanup_contract.sql",
+    "runtime_read_models_contract.sql",
+    "security_definer_execution_contract.sql",
+    "seed_club_catalog_contract.sql",
+    "shop_order_authoritative_pricing_contract.sql",
+    "shop_order_stock_contract.sql",
+    "shop_order_tenant_boundary_contract.sql",
+    "storage_and_scheduled_jobs_contract.sql",
+    "store_release_security_boundary_contract.sql",
+    "ticket_purchase_boundary_contract.sql",
+    "verified_supporter_user_bootstrap_contract.sql"
+  ]
+}

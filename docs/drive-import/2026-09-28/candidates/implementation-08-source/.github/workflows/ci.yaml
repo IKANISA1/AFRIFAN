@@ -1,0 +1,600 @@
+name: CI — Analysis & Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions:
+  contents: read
+
+jobs:
+  paid-membership-ci:
+    name: Automatic paid membership contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:17.6
+        env:
+          POSTGRES_PASSWORD: isolated-membership-contract
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      PGHOST: 127.0.0.1
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: isolated-membership-contract
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare isolated API roles
+        run: |
+          psql -v ON_ERROR_STOP=1 -d postgres <<'SQL'
+          create role anon nologin;
+          create role authenticated nologin;
+          create role service_role nologin bypassrls;
+          SQL
+      - name: Test authoritative payment, activation and tier preservation
+        run: python3 tools/tests/automatic_paid_membership_contract.py
+
+  database-ci:
+    name: Isolated database replay and race checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare the pinned disposable database and vendor images
+        run: |
+          docker pull public.ecr.aws/supabase/postgres:17.6.1.158
+          docker pull public.ecr.aws/supabase/gotrue:v2.195.0
+          docker pull public.ecr.aws/supabase/storage-api:v1.68.10
+
+      - name: Replay all SQL contracts and financial concurrency boundaries
+        run: python3 tools/scripts/test_predict_database.py
+
+  # ──────────────────────────────────────────────
+  # Flutter: Analyze + Test
+  # ──────────────────────────────────────────────
+  flutter-ci:
+    name: Flutter Analysis & Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Validate English-only product policy
+        run: node tools/scripts/validate_english_only.mjs
+
+      - name: Validate localization inventory controls
+        run: node --test tools/scripts/generate_dynamic_copy_inventory.test.mjs
+
+      - name: Validate static and dynamic localization source inventories
+        run: |
+          mkdir -p "${{ runner.temp }}/africlub-localization-inventory"
+          node tools/scripts/generate_flutter_copy_inventory.mjs \
+            --json "${{ runner.temp }}/africlub-localization-inventory/flutter-copy-inventory.json" \
+            --markdown "${{ runner.temp }}/africlub-localization-inventory/flutter-copy-inventory.md"
+          node tools/scripts/generate_dynamic_copy_inventory.mjs \
+            --json "${{ runner.temp }}/africlub-localization-inventory/dynamic-copy-inventory.json" \
+            --markdown "${{ runner.temp }}/africlub-localization-inventory/dynamic-copy-inventory.md"
+          jq -e '.summary.pending_candidate_literals == 0' \
+            "${{ runner.temp }}/africlub-localization-inventory/flutter-copy-inventory.json"
+          jq -e '.summary.pending_dynamic_copy_candidates == 0' \
+            "${{ runner.temp }}/africlub-localization-inventory/dynamic-copy-inventory.json"
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Prepare pinned Android bundle inspector
+        run: python3 tools/scripts/prepare_bundletool.py "${{ runner.temp }}/africlub-tools/bundletool.jar"
+
+      - name: Test repository and evidence validation
+        env:
+          BUNDLETOOL_JAR: ${{ runner.temp }}/africlub-tools/bundletool.jar
+        run: >-
+          node --test tools/scripts/validate_repository_boundary.test.mjs
+          tools/scripts/validate_evidence_provenance.test.mjs
+          tools/scripts/validate_supabase_local_only_migrations.test.mjs
+          tools/scripts/validate_design_authority.test.mjs
+          tools/scripts/design_registered_media.test.mjs
+          tools/scripts/android_release_contract.test.mjs
+          tools/scripts/native_qa_isolation.test.mjs
+          tools/scripts/route_inventory_provenance.test.mjs
+
+      - name: Enforce football-only repository boundary
+        run: node tools/scripts/validate_repository_boundary.mjs
+
+      - name: Enforce revised product routes and membership boundaries
+        run: python3 tools/scripts/validate_revised_product_contract.py
+
+      - name: Validate local-only Supabase migration security controls
+        run: node tools/scripts/validate_supabase_local_only_migrations.mjs
+
+      - name: Validate governed Supabase Edge Function contracts
+        run: node tools/scripts/validate_supabase_edge_contract.mjs
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Type-check and test all governed Supabase Edge Functions
+        run: |
+          deno check $(find supabase/functions -mindepth 2 -maxdepth 2 -name index.ts -print | sort)
+          deno test --allow-env --allow-net --allow-read \
+            $(find supabase/functions -type f \( -name '*_test.ts' -o -name '*test.ts' \) -print | sort)
+
+      - name: Validate iOS SwiftPM deployment-target synchronization
+        run: python3 -m unittest tools/scripts/sync_ios_swiftpm_deployment_target_test.py
+
+      - name: Validate controlled Flutter runtime configuration
+        run: bash tools/scripts/validate_flutter_runtime_pins.sh
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: .fvmrc
+          channel: stable
+          cache: true
+
+      - name: Verify active Flutter runtime
+        run: bash tools/scripts/validate_flutter_runtime_pins.sh --runtime
+
+      - name: Resolve workspace tooling
+        run: flutter pub get --enforce-lockfile
+
+      - name: Bootstrap workspace
+        run: dart run melos bootstrap
+
+      - name: Verify pure-Dart native journal and storage contracts
+        run: python3 tools/scripts/verify_native_membership.py --results "${{ runner.temp }}/native-dart-contracts"
+
+      - name: Enforce workspace architecture
+        run: |
+          dart run tools/scripts/validate_workspace_architecture_test.dart
+          dart run tools/scripts/validate_workspace_architecture.dart
+
+      - name: Generate route inventory and validate design source compliance
+        env:
+          # Provision the selected skill package on the runner. Missing or
+          # changed authority bytes fail verification; the repo is no substitute.
+          REVOLUT_DESIGN_ROOT: ${{ vars.REVOLUT_DESIGN_ROOT }}
+          EXCEPTIONS_REGISTER: ${{ github.workspace }}/docs/governance/design-exceptions.json
+          ROUTE_INVENTORY_JSON: ${{ runner.temp }}/africlub-governance/route/route-inventory.json
+          ROUTE_STATE_CLOSURE_JSON: ${{ runner.temp }}/africlub-governance/route/route-state-closure.json
+          SCREEN_ARCHETYPE_COVERAGE_JSON: ${{ runner.temp }}/africlub-governance/route/screen-archetype-coverage.json
+          COMPONENT_INVENTORY_JSON: ${{ runner.temp }}/africlub-governance/component/universal-component-inventory.json
+          OUT_DIR: ${{ runner.temp }}/africlub-governance/route
+        run: |
+          bash tools/scripts/generate_route_inventory.sh
+          OUT_DIR="${{ runner.temp }}/africlub-governance/component" \
+            bash tools/scripts/generate_component_inventory.sh
+          dart run tools/scripts/generate_status_accessibility_inventory.dart \
+            "${{ runner.temp }}/africlub-governance/accessibility"
+          jq -e '
+            .summary.contract_complete == true and
+            .summary.review_required == 0 and
+            .summary.semantic_color_occurrences > 0 and
+            .summary.status_component_occurrences > 0 and
+            (.color_vision_simulations | length) == 8
+          ' "${{ runner.temp }}/africlub-governance/accessibility/status-inventory.json"
+          OUT_DIR="${{ runner.temp }}/africlub-governance/design" \
+            bash tools/scripts/design_compliance_report.sh
+          jq -e '
+            .status == "pass" and
+            .design_complete == false and
+            .route_evidence_complete == false and
+            .route_inventory_status == "pass" and
+            .route_state_closure_status == "pass" and
+            .screen_archetype_coverage_status == "pass" and
+            .component_inventory_status == "pass" and
+            .design_exceptions_schema_status == "pass"
+          ' "${{ runner.temp }}/africlub-governance/design/VALIDATION.json"
+
+      - name: Upload design governance evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: design-governance-evidence
+          path: ${{ runner.temp }}/africlub-governance
+          retention-days: 30
+
+      - name: Validate Rayon release contract
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+          FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          FIREBASE_SERVER_VALIDATION_MODE: ${{ github.event_name == 'pull_request' && 'auto' || 'strict' }}
+        run: bash tools/scripts/validate_club_release.sh rayon_sports
+
+      - name: Analyze (fatal infos + warnings)
+        run: dart run melos run analyze --no-select
+
+      - name: Run unit & widget tests with coverage
+        run: >-
+          dart run melos exec --concurrency=1 --dir-exists="test" --
+          bash "$MELOS_ROOT_PATH/tools/scripts/run_package_tests.sh" --coverage
+
+      - name: Run release-readiness host smoke journeys
+        run: flutter test apps/rayon_sports/integration_test/release_readiness_smoke_test.dart
+
+      - name: Validate isolated iOS QA identity
+        run: |
+          node tools/scripts/validate_ios_qa_isolation.mjs
+          node tools/scripts/validate_mobile_qa_isolation.mjs
+
+      - name: Validate governed golden baselines
+        run: bash tools/scripts/validate_golden_contract.sh
+
+      - name: Scan governed evidence for private or secret material
+        env:
+          EVIDENCE_ROOT: ${{ runner.temp }}/africlub-governance
+          REPORT: ${{ runner.temp }}/africlub-governance/evidence-privacy-validation.json
+        run: bash tools/scripts/validate_evidence_privacy.sh
+
+      - name: Upload golden baselines and failure diffs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-golden-evidence
+          path: |
+            packages/features/feat_settings/test/goldens
+            packages/features/feat_settings/test/failures
+            docs/governance/golden-baselines.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Run white-label app shell smoke tests
+        run: |
+          smoke_tests=$(find apps -path '*/test/app_shell_smoke_test.dart' ! -path 'apps/rayon_sports/*' | sort)
+          if [ -z "$smoke_tests" ]; then
+            echo "❌ No white-label app shell smoke tests found."
+            exit 1
+          fi
+          while IFS= read -r smoke_test; do
+            app_dir="${smoke_test%/test/app_shell_smoke_test.dart}"
+            flavor_file="$app_dir/assets/flavors/production.json"
+            if [ ! -f "$flavor_file" ]; then
+              echo "❌ Missing flavor contract: $flavor_file"
+              exit 1
+            fi
+            echo "Testing $smoke_test with $flavor_file"
+            flutter test "$smoke_test" --dart-define-from-file="$flavor_file"
+          done <<< "$smoke_tests"
+
+      - name: Run Rayon integration smoke tests
+        run: flutter test apps/rayon_sports/integration_test
+
+      - name: Validate no secrets in source
+        run: bash tools/scripts/validate_source_secrets.sh
+
+  # ──────────────────────────────────────────────
+  # Web: TypeCheck + Build
+  # ──────────────────────────────────────────────
+  web-ci:
+    name: Web TypeCheck & Build
+    outputs:
+      release_sha256: ${{ steps.seal.outputs.sha256 }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: apps/rayon_sports/web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+          cache-dependency-path: apps/rayon_sports/web/package-lock.json
+
+      - name: Install dependencies
+        run: corepack npm ci
+
+      - name: Validate dependency graph and advisories
+        run: corepack npm run check:dependencies
+
+      - name: Validate production build provenance
+        run: corepack npm run test:build-provenance
+
+      - name: Validate unreviewed browser evidence staging
+        run: node --test ../../../tools/scripts/register_web_route_state_evidence.test.mjs
+
+      - name: Lint
+        run: corepack npm run lint
+
+      - name: Unit tests
+        run: corepack npm test
+
+      - name: Validate deterministic Admin collection and audit guardrails
+        env:
+          ADMIN_PERFORMANCE_OUTPUT_PATH: ${{ runner.temp }}/admin-high-volume-performance.json
+        run: corepack npm run qa:admin-performance
+
+      - name: TypeScript check
+        run: corepack npm run typecheck
+
+      - name: Build
+        run: corepack npm run build
+
+      - name: Bundle budget
+        run: corepack npm run size
+
+      - name: Lighthouse CI
+        run: corepack npm run test:lighthouse
+
+      - name: Build the deployment adapter from the checked Next output
+        if: github.ref == 'refs/heads/main'
+        run: |
+          corepack npm exec -- opennextjs-cloudflare build --skipNextBuild
+          node scripts/fix-route-group-manifests.mjs --open-next
+      - name: Seal exact OpenNext candidate and configuration
+        if: github.ref == 'refs/heads/main'
+        id: seal
+        env:
+          CANDIDATE_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python3 ../../../tools/scripts/release_artifact.py seal --web . \
+            --output "${{ runner.temp }}/africlub-web-release.zip" \
+            --candidate "$CANDIDATE_SHA" --run-id "$RUN_ID" > "${{ runner.temp }}/release-summary.json"
+          python3 -c 'import json,os; r=json.load(open(os.environ["RUNNER_TEMP"]+"/release-summary.json")); open(os.environ["GITHUB_OUTPUT"],"a").write("sha256="+r["sha256"]+"\n")'
+      - name: Preserve sealed deployment candidate
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: africlub-web-${{ github.sha }}
+          path: ${{ runner.temp }}/africlub-web-release.zip
+          if-no-files-found: error
+          retention-days: 7
+
+  web-e2e:
+    name: Web E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: apps/rayon_sports/web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+          cache-dependency-path: apps/rayon_sports/web/package-lock.json
+
+      - name: Install dependencies
+        run: corepack npm ci
+
+      - name: Install Playwright browsers
+        run: corepack npm exec -- playwright install --with-deps chromium firefox webkit
+
+      - name: Build
+        env:
+          AFRICLUB_ALLOW_HTTP_PREVIEW: "1"
+        run: corepack npm run build
+
+      - name: Run E2E
+        env:
+          AFRICLUB_ALLOW_HTTP_PREVIEW: "1"
+          AFRICLUB_CONTROLLED_ADMIN_EVIDENCE: "1"
+          AFRICLUB_CONTROLLED_ROUTE_EVIDENCE: "1"
+        run: corepack npm run test:e2e:ci
+
+  # ──────────────────────────────────────────────
+  # Android: Debug Build (PR gate — catch compile errors early)
+  # ──────────────────────────────────────────────
+  android-debug:
+    name: Android Debug Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    if: github.event_name == 'pull_request'
+    needs: [flutter-ci]
+    defaults:
+      run:
+        working-directory: apps/rayon_sports
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: .fvmrc
+          channel: stable
+          cache: true
+
+      - name: Install Melos & Bootstrap
+        run: |
+          flutter pub get
+          cd ../..
+          dart run melos bootstrap
+
+      - name: Generate stub flavor overrides
+        run: |
+          jq '. + {"SUPABASE_URL": "https://stub.supabase.co", "SUPABASE_ANON_KEY": "stub-anon-key"}' \
+            assets/flavors/production.json > assets/flavors/production.local.json
+
+      - name: Build debug APK
+        run: flutter build apk --debug --dart-define-from-file=assets/flavors/production.local.json
+
+  # ──────────────────────────────────────────────
+  # Android: Release Build (on main only)
+  # ──────────────────────────────────────────────
+  android-build:
+    name: Android Release Build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: github.ref == 'refs/heads/main'
+    needs: [flutter-ci]
+    defaults:
+      run:
+        working-directory: apps/rayon_sports
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: .fvmrc
+          channel: stable
+          cache: true
+
+      - name: Install Melos & Bootstrap
+        run: |
+          flutter pub get
+          cd ../..
+          dart run melos bootstrap
+
+      - name: Decode signing keystore
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > android/upload-keystore.jks
+          echo "storeFile=upload-keystore.jks" > android/keystore.properties
+          echo "storePassword=$ANDROID_KEYSTORE_PASSWORD" >> android/keystore.properties
+          echo "keyAlias=$ANDROID_KEY_ALIAS" >> android/keystore.properties
+          echo "keyPassword=$ANDROID_KEY_PASSWORD" >> android/keystore.properties
+
+      - name: Generate production flavor overrides
+        env:
+          SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_ANON_KEY"
+          jq \
+            --arg supabase_url "$SUPABASE_URL" \
+            --arg supabase_anon_key "$SUPABASE_ANON_KEY" \
+            '.SUPABASE_URL = $supabase_url | .SUPABASE_ANON_KEY = $supabase_anon_key' \
+            assets/flavors/production.json > assets/flavors/production.local.json
+
+      - name: Build AAB
+        run: flutter build appbundle --dart-define-from-file=assets/flavors/production.local.json
+
+      - name: Upload AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: rayon-sports-release-aab
+          path: apps/rayon_sports/build/app/outputs/bundle/release/app-release.aab
+          retention-days: 30
+
+  # ──────────────────────────────────────────────
+  # iOS: Release Build (on main only)
+  # ──────────────────────────────────────────────
+  ios-build:
+    name: iOS Release Build
+    runs-on: macos-latest
+    timeout-minutes: 60
+    if: github.ref == 'refs/heads/main'
+    needs: [flutter-ci]
+    defaults:
+      run:
+        working-directory: apps/rayon_sports
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: .fvmrc
+          channel: stable
+          cache: true
+
+      - name: Install Melos & Bootstrap
+        run: |
+          flutter pub get
+          cd ../..
+          dart run melos bootstrap
+
+      - name: Generate production flavor overrides
+        env:
+          SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          test -n "$SUPABASE_URL"
+          test -n "$SUPABASE_ANON_KEY"
+          jq \
+            --arg supabase_url "$SUPABASE_URL" \
+            --arg supabase_anon_key "$SUPABASE_ANON_KEY" \
+            '.SUPABASE_URL = $supabase_url | .SUPABASE_ANON_KEY = $supabase_anon_key' \
+            assets/flavors/production.json > assets/flavors/production.local.json
+
+      - name: Generate and validate iOS build configuration
+        run: |
+          flutter build ios --config-only --release --no-codesign --dart-define-from-file=assets/flavors/production.local.json
+          bash ../../tools/scripts/prepare_rayon_ios_swiftpm.sh rayon_sports
+          bash ../../tools/scripts/validate_ios_release_contract.sh rayon_sports
+          dart run tool/validate_ios_dart_defines.dart ios/Flutter/Generated.xcconfig assets/flavors/production.local.json
+
+      - name: Verify portable Swift recovery contracts
+        run: python3 ../../tools/scripts/verify_ios_recovery.py --results "${{ runner.temp }}/portable-swift-contracts"
+
+      - name: Build iOS Framework
+        run: flutter build ios --release --no-codesign --no-pub --dart-define-from-file=assets/flavors/production.local.json
+
+
+  cloudflare-source-ci:
+    name: Converged Cloudflare contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+      - name: Resolve the existing locked web toolchain
+        working-directory: apps/rayon_sports/web
+        run: corepack npm ci
+      - name: Reject privileged configuration and signing material in Git source
+        run: python3 tools/scripts/check_sensitive_source.py --report "$RUNNER_TEMP/sensitive-source.json"
+      - name: Run required backend and migration contracts
+        run: |
+          export PATH="$GITHUB_WORKSPACE/apps/rayon_sports/web/node_modules/.bin:$PATH"
+          python3 tools/scripts/verify_converged_source.py --profile backend --results "$RUNNER_TEMP/converged-source"
+      - name: Preserve checks even on a failed gate
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: converged-source-evidence
+          path: ${{ runner.temp }}/converged-source
+          if-no-files-found: error
+          retention-days: 30
+
+  promote-web:
+    name: Promote only the checked web candidate
+    needs: [paid-membership-ci, database-ci, flutter-ci, web-ci, web-e2e, android-build, ios-build, cloudflare-source-ci]
+    if: github.ref == 'refs/heads/main' && vars.AFRICLUB_RELEASE_PROMOTION_ENABLED == 'true'
+    uses: ./.github/workflows/deploy-gikundiro-web.yml
+    with:
+      candidate_sha: ${{ github.sha }}
+      artifact_sha256: ${{ needs.web-ci.outputs.release_sha256 }}

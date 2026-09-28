@@ -1,0 +1,58 @@
+{
+  "sourcePaths": 21,
+  "testGroups": {
+    "gateway-and-handoff": 283,
+    "payment-regressions": 432,
+    "auth-regressions": 77,
+    "installer": 33
+  },
+  "targetedTestsPassed": 825,
+  "syntaxAndJsonChecks": 7,
+  "installerTrials": [
+    {
+      "scenario": "current-drive-baseline",
+      "changes": 21,
+      "rollback_restored_starting_bytes": true
+    },
+    {
+      "scenario": "some-new-files-already-saved",
+      "changes": 10,
+      "rollback_restored_starting_bytes": true
+    },
+    {
+      "scenario": "all-matching",
+      "changes": 0,
+      "rollback_restored_starting_bytes": true
+    }
+  ],
+  "realCloudflareRuntime": false,
+  "fullFlutterBuild": false,
+  "liveProviderCalls": 0,
+  "nativeVerification": {
+    "schemaVersion": 1,
+    "dartExecuted": false,
+    "flutterBridgeVerified": false,
+    "secureStorageVerified": false,
+    "deviceDialerVerified": false,
+    "providerRequests": 0,
+    "dependenciesInstalled": false,
+    "steps": [],
+    "status": "blocked",
+    "reason": "Dart >=3.10 SDK not installed"
+  },
+  "overallStatus": "native_blocked",
+  "newTestsPassed": 123,
+  "downloadedSourceMatches": 21,
+  "readbackCodeTestsPassed": 792,
+  "sourcePreflight": {
+    "status": "dry_run",
+    "source_files_to_change": 0,
+    "already_matching": 21,
+    "paths": [],
+    "source_files_changed": 0
+  },
+  "dartHarnessCasesAuthoredNotExecuted": 66,
+  "allAppsUnchanged": true,
+  "sourceBackupFiles": 81,
+  "packageManifestSha256": "42d7408e89e95bfed602fd66afd57a2df551f4e57b9b1a4f66d91e276b74fc04"
+}

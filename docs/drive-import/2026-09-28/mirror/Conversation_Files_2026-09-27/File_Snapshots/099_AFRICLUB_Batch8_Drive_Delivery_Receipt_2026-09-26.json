@@ -1,0 +1,71 @@
+{
+  "verifiedAtUtc": "2026-09-26T18:06:20.801265+00:00",
+  "driveFolderId": "1MRTsykSUyCo2CmpdXsnKuphenCm2oJGO",
+  "driveFolderPath": "/Google Drive/AFRICLUB/output/refactor-2026-09-26/batch8-membership-checkout",
+  "deliverables": [
+    {
+      "name": "AFRICLUB_Batch8_Current_Drive_Patch_2026-09-26.zip",
+      "driveFileId": "16Udlml-bIEwHbPfFyVeK7DL-Mi4mtDbc",
+      "sha256": "5f06cf144d9275a4d9344fb80358efef196c7fd7f8bf0dbef079d0355a7d894e",
+      "bytes": 249462,
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch8_Implementation_Report_2026-09-26.md",
+      "driveFileId": "1i8GzW1mowwRhvLs9pYYlvN1xbtluut9D",
+      "sha256": "9d4d5c105a1b0a7bdedd642a0dda1556d405a2fa1c11e8cb6c794067257b1f8f",
+      "bytes": 13825,
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Remaining_Actions_Batch8_2026-09-26.json",
+      "driveFileId": "1jW8dQFAj6k9HLL5qtHU5wHShxXbCGsiD",
+      "sha256": "c2e7eaf0c5c7b661ba3d186a8a825ee178ee0ccbe87d343c9d0e72d828840505",
+      "bytes": 12384,
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch8_Verification_2026-09-26.json",
+      "driveFileId": "1tEgNjSlTJ9QtOKtX_4TsRU4Z3_Uq4GyK",
+      "sha256": "1cba231cf7fe6b2ec2bec1a969e67bd0602a3be0f697ba50fddb81f6a18a89e7",
+      "bytes": 1554,
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch8_Source_Drive_Verification_2026-09-26.json",
+      "driveFileId": "1hXIPcPDGXb-AC9TaGLz6XbAo0PWuAVWi",
+      "sha256": "af687d23f9d39688ec66975eca3e4525056dc464b58f2c94242b3e0e0f9163d1",
+      "bytes": 7380,
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch8_Prechange_Source_2026-09-26.zip",
+      "driveFileId": "17aZlY-rDazW1n2Bd4h7tJfgNHDH5Ut9B",
+      "sha256": "31200757283fb660d246634fa102248bc46427f18f17a50e62647ced7c26fa1c",
+      "bytes": 75484,
+      "readbackMatched": true
+    }
+  ],
+  "sourceFilesSaved": 22,
+  "sourceAdditions": 21,
+  "existingFilesUpdatedPreservingId": 1,
+  "sourceReadbackMatches": 22,
+  "targetedTestsPassed": 465,
+  "newCheckoutTestsPassed": 230,
+  "preservedPaymentTestsPassed": 202,
+  "installerTestsPassed": 33,
+  "readbackCodeTestsPassed": 432,
+  "newIndependentSqliteConcurrencyCasesPassed": 4,
+  "currentDriveSourcePreflightChanges": 0,
+  "liveProviderRequests": 0,
+  "remoteMigrations": 0,
+  "productionDeployments": 0,
+  "runtimeEnabled": false,
+  "wholeMigrationCompleted": false,
+  "archiveIntegrity": {
+    "archiveEntries": 109,
+    "checksummedFiles": 108,
+    "bytes": 249462,
+    "sha256": "5f06cf144d9275a4d9344fb80358efef196c7fd7f8bf0dbef079d0355a7d894e"
+  }
+}

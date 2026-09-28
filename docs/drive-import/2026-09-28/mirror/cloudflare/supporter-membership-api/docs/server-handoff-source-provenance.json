@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "localDate": "2026-09-27",
+  "authoritativeFolderId": "1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+  "baselineArchive": {
+    "name": "AFRICLUB_Batch11_Current_Drive_Patch_2026-09-27.zip",
+    "sha256": "32df6c24663c71d1be4a7d3f9a695cd8a78322e769a7b28997679ecf9da638b0",
+    "checksummedFilesVerified": 184
+  },
+  "freshlyMaterializedAndMatched": [
+    {
+      "path": "cloudflare/supporter-membership-api/README.md",
+      "driveFileId": "1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h",
+      "bytes": 11721,
+      "sha256": "3a610d5e28af910cc0ba4645f34a7513f82add7c536e735cbb57c1e08c118be5"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/client.ts",
+      "driveFileId": "1rbTgLIJzrkYEt3LtNahCIijmsEMpoe-j",
+      "bytes": 12811,
+      "sha256": "d056c088b35891479d29dddf4d9b8d3b2445b641e50e005c5801d26aa24c6e4d"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/payment-handoff.ts",
+      "driveFileId": "1uborz61Dlo7riHx0H4di8koibTkKdC8_",
+      "bytes": 10854,
+      "sha256": "61a31e5e91f575c8684daf3c76ac2cece216936eaaddaecbfa0e0360ed47634b"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/index.mjs",
+      "driveFileId": "1VVbSv26mmCiW9Q6k_cMPvUwqIIPMSMyG",
+      "bytes": 4503,
+      "sha256": "0bc89801b23a6b7d72aee168bb53e68f8c05d420018fb54e6e3b6f3ae4837909"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/policy.mjs",
+      "driveFileId": "1ThYmG6EP3OXuPQfWzfqgnSC4GFK6Tm--",
+      "bytes": 3702,
+      "sha256": "9c5858a978b3c8e139100d047613b6fd8c2d56e1bc07154b76e8e3a08eabd494"
+    },
+    {
+      "path": "cloudflare/payment-allocation/migrations/0002_membership_checkout.sql",
+      "driveFileId": "15C04FF7xO6TUqDg_M-9U9aFLDr82i8JE",
+      "bytes": 19081,
+      "sha256": "924269edcc59d9e7f90d72f102c7e977404d77cbdad30c13fdd3ffd124d8d7a7"
+    }
+  ],
+  "context": "Other unchanged context is the verified Batch 11 scoped archive, not a fresh full monorepo export. Existing runtime and migrations are preserved."
+}

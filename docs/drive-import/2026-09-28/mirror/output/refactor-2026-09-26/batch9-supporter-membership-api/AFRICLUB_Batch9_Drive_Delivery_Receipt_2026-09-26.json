@@ -1,0 +1,74 @@
+{
+  "verifiedAtUtc": "2026-09-26T22:05:33.304913+00:00",
+  "driveFolderId": "19pHeHJRatgIbKjBheq--TKywDSC4_YcM",
+  "driveFolderPath": "/Google Drive/AFRICLUB/output/refactor-2026-09-26/batch9-supporter-membership-api",
+  "sourceFolderId": "1jrbq9EB2EQuIIFIs4wqGFrzxixTG711d",
+  "sourceFilesSaved": 20,
+  "sourceFilesCreatedThisContinuation": 10,
+  "existingFilesUpdatedPreservingIds": 2,
+  "existingFilesPreserved": 8,
+  "sourceReadbackMatches": 20,
+  "targetedTestsPassed": 702,
+  "gatewayTestsPassed": 160,
+  "paymentRegressionTestsPassed": 432,
+  "authRegressionTestsPassed": 77,
+  "installerTestsPassed": 33,
+  "readbackCodeTestsPassed": 669,
+  "sourcePreflightChanges": 0,
+  "sourcePreflightAlreadyMatching": 20,
+  "deliverables": [
+    {
+      "name": "AFRICLUB_Batch9_Current_Drive_Patch_2026-09-26.zip",
+      "driveFileId": "1JD4nFjuimlnBgxQtEdNj4zijXQTUShRD",
+      "bytes": 328707,
+      "sha256": "aecc1576a784caddd2bbf8cd1b387998b1c3e70d2e12f4eeeb4d9dcff5d09aa3",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch9_Implementation_Report_2026-09-26.md",
+      "driveFileId": "1iNAY605b-ivgV29RUyR8UeZw1i7ZtNWR",
+      "bytes": 12428,
+      "sha256": "31763decd1d9adf796f2f19ddff2a18b05fd8ec48206b36edd730b77347a3f0c",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Remaining_Actions_Batch9_2026-09-26.json",
+      "driveFileId": "1LQeWguQGk2SrDTy9_TQnblf2cXd1mC4g",
+      "bytes": 12222,
+      "sha256": "b20f23ecc9ef781af13f6b1d9b9b349b5cacc1da5f456f34ce2fba34a12b0427",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch9_Verification_2026-09-26.json",
+      "driveFileId": "1mtsz2bbg3sXwVtedgVUF87EmS-GYe4R6",
+      "bytes": 1664,
+      "sha256": "c0d030bc1662b8f319d4c9bebdf87c80f190b3858368cbd0be678d6dd5b75418",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch9_Source_Drive_Verification_2026-09-26.json",
+      "driveFileId": "1d2IvZE3bXrrUQlGlj6eKpiR3Mxr9Zf0k",
+      "bytes": 8264,
+      "sha256": "798044f5fb4dfcddb5fa6e825620116608f6bd46055a810170a7b46b7082e718",
+      "readbackMatched": true
+    },
+    {
+      "name": "AFRICLUB_Batch9_Prechange_Source_2026-09-26.zip",
+      "driveFileId": "1tMIU4tRmBvS5NoBUzDiYrrjMOMU_GsN8",
+      "bytes": 143972,
+      "sha256": "2159e15b497518d04efdefa252e174de899f6e6a09b335f9c4852ac81fba2448",
+      "readbackMatched": true
+    }
+  ],
+  "archiveEntries": 154,
+  "checksummedArchiveFiles": 153,
+  "actualProviderCalls": 0,
+  "remoteMigrations": 0,
+  "productionDeployments": 0,
+  "runtimeEnabled": false,
+  "nativeOsStorageImplemented": false,
+  "existingAppClientsSwitched": 0,
+  "wholeMigrationCompleted": false,
+  "verificationExecution": "All source trials and test groups completed; constrained long executions were split rather than claimed successful.",
+  "authorizationLimit": "Pre/post reads do not atomically coordinate identity revocation with checkout database commit; covered race remains a release gap."
+}
