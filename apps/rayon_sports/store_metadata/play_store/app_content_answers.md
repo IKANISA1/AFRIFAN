@@ -148,8 +148,8 @@ the portal declaration itself remains external.
 - Source permissions: Internet and optional notifications.
 - Source explicitly removes audio recording, external storage, location, and
   phone-state permissions.
-- Production define disables Android SMS auto-read; the inspected release
-  output has no SMS/Call Log permission.
+- SMS collection and upload code is absent from the supporter app. Validate
+  that the final merged artifact contains no SMS/Call Log permissions.
 - Deep links and tel/HTTPS queries are declared.
 - `BLOCKING`: inspect the final merged manifest and App Bundle Explorer; submit
   restricted-permission declarations only if the final AAB actually includes a

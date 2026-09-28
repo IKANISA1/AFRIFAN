@@ -38,12 +38,11 @@ void main() {
           .map((r) => r.path)
           .toList();
 
-      expect(subPaths, hasLength(9));
+      expect(subPaths, hasLength(8));
       expect(subPaths, contains('cms'));
       expect(subPaths, contains('matches'));
       expect(subPaths, contains('contributions'));
       expect(subPaths, contains('notifications'));
-      expect(subPaths, contains('sms-monitor'));
       expect(subPaths, contains('settle'));
       expect(subPaths, contains('predict'));
       expect(subPaths, contains('competitions'));

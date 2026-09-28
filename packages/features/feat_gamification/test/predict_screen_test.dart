@@ -12,6 +12,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
 import 'package:test_support/predict_fixture_images.dart';
+import 'package:test_support/tab_shell_fixture.dart';
 import 'predict_controller_test.dart' show Gateway, fixture;
 
 class ScreenController extends PredictController {
@@ -194,7 +195,10 @@ void main() {
             path: '/predict',
             builder: (_, __) => const RepaintBoundary(
               key: ValueKey('predict-golden'),
-              child: PredictScreen(),
+              child: TabShellFixture(
+                index: 2,
+                child: PredictScreen(embedded: true),
+              ),
             ),
           ),
           GoRoute(

@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../gikundiro_public_shop.dart';
 import '../shop_cart_provider.dart';
 import '../widgets/checkout_bar.dart';
 import '../widgets/product_card.dart';
@@ -186,6 +187,8 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
   }
 
   Future<List<Map<String, dynamic>>> _fetchProducts() async {
+    final publicSource = ref.read(gikundiroPublicClientProvider);
+    if (publicSource != null) return loadGikundiroPublicShop(publicSource);
     final client = ref.read(supabaseClientProvider);
     final user = ref.read(currentUserProvider);
     final resolver = ClubScopeResolver(client: client);
@@ -460,6 +463,7 @@ class ShopCatalogSlivers extends StatelessWidget {
         SliverToBoxAdapter(
           child: AfriSectionHeader(
             title: l10n.shopClubStore,
+            isPageTitle: true,
             subtitle: l10n.shopItemsAvailable(filteredProducts.length),
             padding: const EdgeInsets.fromLTRB(
               SpacingTokens.spacing4,

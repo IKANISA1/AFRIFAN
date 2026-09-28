@@ -59,7 +59,9 @@ class ShopCartNotifier extends StateNotifier<List<CartItem>> {
 
     final updated = [...state];
     final existing = updated[index];
-    updated[index] = existing.copyWith(
+    updated[index] = CartItem(
+      product: product,
+      selectedVariant: existing.selectedVariant,
       quantity: (existing.quantity + quantity).clamp(1, maxQuantity),
     );
     state = updated;
@@ -150,6 +152,8 @@ class ShopCartNotifier extends StateNotifier<List<CartItem>> {
       isActive: rawProduct['is_active'] as bool? ?? true,
       isNew: rawProduct['is_new'] as bool? ?? false,
       imageUrl: rawProduct['image_url']?.toString(),
+      imageRightsApproved: rawProduct['image_rights_approved'] == true,
+      imageProvenanceId: rawProduct['image_provenance_id']?.toString(),
       availableSizes: sizes,
       badgeLabel: rawProduct['badge_label']?.toString(),
       collection: rawProduct['collection']?.toString(),

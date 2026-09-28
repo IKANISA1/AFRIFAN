@@ -178,18 +178,6 @@ class FirebaseAnalyticsService {
     parameters: <String, Object>{'action': action},
   );
 
-  /// MoMo SMS parsed successfully.
-  static Future<void> logMomoSmsParsed({
-    required String provider,
-    required int amount,
-  }) => logEvent(
-    'momo_sms_parsed',
-    parameters: <String, Object>{
-      'provider': provider,
-      'value_bucket': PrivacySafeAnalyticsPolicy.valueBucket(amount),
-    },
-  );
-
   /// Feature flag check — logs when a disabled feature is accessed.
   static Future<void> logFeatureGated({required String featureKey}) => logEvent(
     'feature_gated',

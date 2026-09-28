@@ -33,16 +33,21 @@ class DigitalMembershipCardFull extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: ShapeTokens.cardRadius,
         gradient: ColorTokens.membershipCardGradient(),
+        border: BorderTokens.all(
+          color: ColorTokens.onDark.withValues(alpha: .24),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
+              AfriTeamCrest(name: clubName, size: 44),
+              const SizedBox(width: SpacingTokens.spacing3),
               Expanded(
                 child: Text(
-                  clubName,
-                  style: TypographyTokens.bodyLarge(ColorTokens.onDark),
+                  teamInitials(clubName),
+                  style: TypographyTokens.titleLarge(ColorTokens.onDark),
                 ),
               ),
               if (onShare != null)
@@ -60,7 +65,7 @@ class DigitalMembershipCardFull extends StatelessWidget {
               style: TypographyTokens.bodySmall(ColorTokens.onDark),
             ),
           ],
-          const SizedBox(height: SpacingTokens.spacing10),
+          const SizedBox(height: SpacingTokens.spacing8),
           Text(
             fanId,
             style: TypographyTokens.headlineLarge(
@@ -89,8 +94,6 @@ class DigitalMembershipCardFull extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: SpacingTokens.spacing4),
-              const AfriBrandMark(size: 40),
             ],
           ),
         ],

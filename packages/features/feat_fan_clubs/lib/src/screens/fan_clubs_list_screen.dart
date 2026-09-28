@@ -7,11 +7,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../gikundiro_public_fanclubs.dart';
 import '../official_fanclub_register.dart';
 import '../widgets/fan_club_cards.dart';
 
 final fanClubsLoaderProvider =
     Provider<Future<List<Map<String, dynamic>>> Function()>((ref) {
+      final publicSource = ref.watch(gikundiroPublicClientProvider);
+      if (publicSource != null) {
+        return () => loadGikundiroPublicFanclubs(publicSource);
+      }
       final client = ref.watch(supabaseClientProvider);
       return () async {
         final scope = await ClubScopeResolver(client: client).requireResolved();
@@ -19,11 +24,12 @@ final fanClubsLoaderProvider =
             .from('fan_clubs')
             .select(
               'id,partner_id,club_id,name,region,description,member_count,'
-              'event_count,rating,banner_emoji,is_active,created_at,updated_at,is_featured',
+              'event_count,rating,banner_image_url:published_image_url,is_active,created_at,updated_at,is_featured',
             )
             .eq('club_id', scope.requiredClubId)
             .eq('is_active', true)
-            .order('member_count', ascending: false);
+            .order('member_count', ascending: false)
+            .timeout(const Duration(seconds: 12));
         return List<Map<String, dynamic>>.from(
           rows,
         ).map(normalizeFanclubRow).toList(growable: false);
@@ -31,7 +37,8 @@ final fanClubsLoaderProvider =
     });
 
 class FanClubsListScreen extends ConsumerStatefulWidget {
-  const FanClubsListScreen({super.key});
+  const FanClubsListScreen({super.key, this.clubId});
+  final String? clubId;
 
   @override
   ConsumerState<FanClubsListScreen> createState() => _FanClubsListScreenState();
@@ -69,7 +76,14 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
       final clubs = await ref.read(fanClubsLoaderProvider)();
 
       if (!mounted) return;
-      final loadedClubs = clubs;
+      final loadedClubs = [...clubs];
+      if (widget.clubId != null) {
+        loadedClubs.sort(
+          (a, b) => (a['id']?.toString() == widget.clubId ? 0 : 1).compareTo(
+            b['id']?.toString() == widget.clubId ? 0 : 1,
+          ),
+        );
+      }
       final availableFilters = _buildFilters(loadedClubs);
       setState(() {
         _clubs = loadedClubs;
@@ -85,13 +99,6 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
         _error = context.afriL10n.fanClubsLoadError;
       });
     }
-  }
-
-  Future<void> _openClub(Map<String, dynamic> club) async {
-    final clubId = club['id']?.toString();
-    if (clubId == null || clubId.isEmpty) return;
-    await context.push('/fan-clubs/${Uri.encodeComponent(clubId)}');
-    if (mounted) await _loadClubs();
   }
 
   List<String> _buildFilters(List<Map<String, dynamic>> clubs) {
@@ -203,7 +210,9 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                   padding: const EdgeInsets.all(SpacingTokens.screenPadding),
                   child: AfriInputField(
                     controller: _searchController,
-                    hint: context.afriL10n.fanClubsSearchHint,
+                    hint: MediaQuery.textScalerOf(context).scale(1) >= 1.5
+                        ? context.afriL10n.searchTitle
+                        : context.afriL10n.fanClubsSearchHint,
                     prefixIcon: AfriIcons.search,
                     onChanged: (_) => setState(() {}),
                   ),
@@ -265,7 +274,6 @@ class _FanClubsListScreenState extends ConsumerState<FanClubsListScreen> {
                 error: _error,
                 visibleClubs: visibleClubs,
                 onRetry: () => unawaited(_loadClubs()),
-                onOpenClub: (clubId) => unawaited(_openClub({'id': clubId})),
               ),
             ],
           ),
@@ -282,14 +290,12 @@ class FanClubsResultsSliver extends StatelessWidget {
     required this.error,
     required this.visibleClubs,
     required this.onRetry,
-    required this.onOpenClub,
   });
 
   final bool isLoading;
   final String? error;
   final List<Map<String, dynamic>> visibleClubs;
   final VoidCallback onRetry;
-  final ValueChanged<String> onOpenClub;
 
   @override
   Widget build(BuildContext context) {
@@ -326,7 +332,6 @@ class FanClubsResultsSliver extends StatelessWidget {
     return SliverList(
       delegate: SliverChildBuilderDelegate((context, index) {
         final club = visibleClubs[index];
-        final clubId = club['id']?.toString() ?? '';
 
         return Padding(
           padding: EdgeInsets.fromLTRB(
@@ -337,7 +342,7 @@ class FanClubsResultsSliver extends StatelessWidget {
                 ? SpacingTokens.spacing20
                 : SpacingTokens.spacing3,
           ),
-          child: FanClubCard(club: club, onTap: () => onOpenClub(clubId)),
+          child: FanClubCard(club: club),
         );
       }, childCount: visibleClubs.length),
     );

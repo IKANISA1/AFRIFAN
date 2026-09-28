@@ -85,7 +85,9 @@ class _DiscoverySearchScreenState extends ConsumerState<DiscoverySearchScreen> {
           AfriInputField(
             key: const ValueKey<String>('discovery-search-input'),
             controller: _controller,
-            hint: l10n.searchHint,
+            hint: MediaQuery.textScalerOf(context).scale(1) >= 1.5
+                ? l10n.searchTitle
+                : l10n.searchHint,
             prefixIcon: AfriIcons.search,
             suffixIcon: _controller.text.isEmpty
                 ? null

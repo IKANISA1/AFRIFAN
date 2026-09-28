@@ -60,8 +60,8 @@ required portal values remain pending.
 Before any upload, bind every answer to the exact signed AAB/IPA and final
 production feature configuration. In particular:
 
-- confirm `ENABLE_ANDROID_MOMO_SMS_AUTOREAD=false` and that the merged Android
-  manifest has no SMS/Call Log permissions;
+- confirm the merged Android manifest has no SMS/Call Log permissions and no
+  message collector is present in the app dependency graph;
 - confirm whether Firebase observability and App Check were enabled in the
   actual release build;
 - confirm the production feature registry keeps stake/challenge and any

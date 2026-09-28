@@ -5,6 +5,7 @@ import '../tokens/border_tokens.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/component_size_tokens.dart';
 import '../tokens/icon_tokens.dart';
+import '../tokens/responsive_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
@@ -229,6 +230,70 @@ class AfriSwitchListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (MediaQuery.textScalerOf(context).scale(1) >= 1.5) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth >= AfriResponsive.mobileContentMax) {
+            return _standardTile();
+          }
+          return MergeSemantics(
+            child: Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                onTap: onChanged == null ? null : () => onChanged!(!value),
+                borderRadius: ShapeTokens.cardRadius,
+                child: Padding(
+                  padding:
+                      contentPadding ??
+                      const EdgeInsets.all(SpacingTokens.spacing2),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (secondary != null) ...[
+                        Align(
+                          alignment: AlignmentDirectional.centerStart,
+                          child: secondary!,
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing2),
+                      ],
+                      DefaultTextStyle.merge(
+                        style: TypographyTokens.bodyLarge(),
+                        child: title,
+                      ),
+                      if (subtitle != null) ...[
+                        const SizedBox(height: SpacingTokens.spacing1),
+                        DefaultTextStyle.merge(
+                          style: TypographyTokens.bodySmall(
+                            ColorTokens.onSurfaceVariant,
+                          ),
+                          child: subtitle!,
+                        ),
+                      ],
+                      Align(
+                        alignment: AlignmentDirectional.centerEnd,
+                        child: ExcludeFocus(
+                          child: Switch.adaptive(
+                            value: value,
+                            onChanged: onChanged,
+                            activeThumbColor:
+                                activeThumbColor ?? ColorTokens.onDark,
+                            activeTrackColor: ColorTokens.primary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
+    return _standardTile();
+  }
+
+  Widget _standardTile() {
     return Material(
       type: MaterialType.transparency,
       child: SwitchListTile.adaptive(

@@ -269,7 +269,19 @@ void main() {
       scrollable.axisDirection,
       anyOf(AxisDirection.down, AxisDirection.up),
     );
+    final users = find.text('Total users');
+    final groups = find.text('Active groups');
+    final transactions = find.text('Transactions today');
+    expect(
+      tester.getTopLeft(groups).dy,
+      greaterThan(tester.getBottomLeft(users).dy),
+    );
+    expect(tester.getSize(transactions).width, greaterThan(280));
     await _expectStateGolden(tester, 'large_text');
+    await tester.ensureVisible(find.text('Manage CMS'));
+    await tester.tap(find.text('Manage CMS'));
+    await tester.pumpAndSettle();
+    expect(find.text('CMS destination'), findsOneWidget);
   });
 
   testWidgets('respects reduced motion', (tester) async {

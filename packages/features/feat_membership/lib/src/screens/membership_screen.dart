@@ -272,7 +272,6 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen>
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
       showAppBar: false,
-      bottomNavigationAware: true,
       scrollable: false,
       bodyWrapper: (child) =>
           GradientBackground(routePath: '/membership', child: child),
@@ -598,8 +597,10 @@ class _MembershipScreenState extends ConsumerState<MembershipScreen>
                   ),
                 ),
 
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: SpacingTokens.spacing20),
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: AfriClubBottomNav.contentBottomInset(context),
+                  ),
                 ),
               ],
             ),
@@ -770,16 +771,12 @@ class _MembershipPackageTile extends StatelessWidget {
     final tierId = (pkg['tier'] ?? 'bronze').toString().toLowerCase();
     final isJoiningTier = isCurrentJoiningTier(tierId);
     final isCurrent = isCurrentTier(tierId);
-    final useLargeTextLayout = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
     final tierLabel = packageLabel(pkg['tier']?.toString() ?? '');
-    final statusChip = AfriStatusChip(
-      label: isCurrent ? l10n.membershipCurrentStatus(tierLabel) : tierLabel,
-      tone: isCurrent ? AfriStatusTone.success : AfriStatusTone.info,
-    );
     final action = ConnectivityBuilder(
       builder: (context, isOnline) => AfriButton(
         key: ValueKey<String>('membership-action-$tierId'),
         autofocus: autofocus,
+        labelMaxLines: 3,
         label: changesBlocked
             ? l10n.membershipRefreshRequired
             : !isOnline
@@ -809,67 +806,44 @@ class _MembershipPackageTile extends StatelessWidget {
                 packageLabel(pkg['tier']?.toString() ?? ''),
               )
             : null,
-        child: AfriSurfaceCard(
-          onTap: () => onActivatePackage(pkg),
+        child: AfriEditorialCard(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (useLargeTextLayout) ...[
-                Text(
-                  (pkg['title'] ??
-                          pkg['tier'] ??
-                          l10n.membershipPackageFallback)
-                      .toString(),
-                  maxLines: 2,
-                  style: TypographyTokens.titleMedium(),
-                ),
-                const SizedBox(height: SpacingTokens.spacing3),
-                Align(alignment: Alignment.centerLeft, child: statusChip),
-              ] else
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        (pkg['title'] ??
-                                pkg['tier'] ??
-                                l10n.membershipPackageFallback)
-                            .toString(),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TypographyTokens.titleMedium(),
-                      ),
-                    ),
-                    const SizedBox(width: SpacingTokens.spacing3),
-                    statusChip,
-                  ],
-                ),
-              if (pkg['description'] != null) ...[
-                const SizedBox(height: SpacingTokens.spacing2),
-                Text(
-                  pkg['description'].toString(),
-                  style: TypographyTokens.bodySmall(
-                    ColorTokens.onSurfaceVariant,
-                  ),
-                  maxLines: useLargeTextLayout ? 5 : 2,
-                  overflow: useLargeTextLayout
-                      ? TextOverflow.visible
-                      : TextOverflow.ellipsis,
-                ),
-              ],
-              const SizedBox(height: SpacingTokens.spacing4),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    packagePriceLabel(pkg),
-                    style: TypographyTokens.titleMedium(ColorTokens.onSurface),
+                  Expanded(
+                    child: Text(
+                      isCurrent
+                          ? l10n.membershipCurrentStatus(tierLabel)
+                          : tierLabel,
+                      style: TypographyTokens.titleLarge(),
+                    ),
                   ),
-                  if (user != null) ...[
-                    const SizedBox(height: SpacingTokens.spacing3),
-                    action,
-                  ],
+                  const SizedBox(width: SpacingTokens.spacing3),
+                  AfriTeamCrest(
+                    name: RuntimeBranding.displayHomeTeamName,
+                    size: 36,
+                  ),
                 ],
               ),
+              const SizedBox(height: SpacingTokens.spacing4),
+              Text(
+                packagePriceLabel(pkg),
+                style: TypographyTokens.headlineMedium(),
+              ),
+              if ((pkg['description']?.toString().trim() ?? '').isNotEmpty) ...[
+                const SizedBox(height: SpacingTokens.spacing3),
+                Text(
+                  pkg['description'].toString(),
+                  style: TypographyTokens.bodyMedium(),
+                ),
+              ],
+              if (user != null) ...[
+                const SizedBox(height: SpacingTokens.spacing5),
+                action,
+              ],
             ],
           ),
         ),

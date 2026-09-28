@@ -6,10 +6,11 @@ insert into qa_expected_clubs values
   (6, 'CDF', 'AS Vita Club', 'CD', '#006400', '#000000', '#FFD700'),
   (26, 'ZMW', 'Nkana FC', 'ZM', '#CC0000', '#D1D5DB', '#000000'),
   (24, 'RWF', 'Gikundiro', 'RW', '#0038A8', '#001742', '#D9B24C'),
-  (44, 'BIF', 'Vital''O', 'BI', '#7B2D8E', '#D1D5DB', '#FFD700');
-select is((select count(*)::integer from public.african_football_clubs),4,
-  'fresh supported-club catalog contains only the four retained products');
-select is((select count(*)::integer from public.african_football_clubs c join qa_expected_clubs e using(id) where c.is_active),4,
+  (44, 'BIF', 'Vital''O', 'BI', '#7B2D8E', '#D1D5DB', '#FFD700'),
+  (1001, 'MZN', 'Os Canarinhos', 'MZ', '#F6C400', '#144B8B', '#122F5C');
+select is((select count(*)::integer from public.african_football_clubs),5,
+  'fresh supported-club catalog contains the five products');
+select is((select count(*)::integer from public.african_football_clubs c join qa_expected_clubs e using(id) where c.is_active),5,
   'every configured club is available in a clean local catalog');
 select is((select count(*)::integer from public.african_football_clubs c join qa_expected_clubs e using(id) where c.currency_code is distinct from e.currency),0,
   'club currencies match the app configurations');
@@ -18,18 +19,18 @@ select is((select count(*)::integer from public.admin_role_assignments a left jo
 select ok((select last_value >= (select max(id) from public.african_football_clubs) from public.african_football_clubs_id_seq),
   'new club identities cannot collide with the seeded catalog');
 select is((select count(*)::integer from public.african_football_clubs c join qa_expected_clubs e using(id)
-  where c.nickname_brand_identity is not distinct from e.nickname),4,
+  where c.nickname_brand_identity is not distinct from e.nickname),5,
   'all configured club display identities are usable by the admin selector');
 select is((select count(*)::integer from public.african_football_clubs c join qa_expected_clubs e using(id)
-  where c.country_iso_code is not distinct from e.country_code),4,
+  where c.country_iso_code is not distinct from e.country_code),5,
   'all configured club country codes support strict settings validation');
 select is((select count(*)::integer from public.african_football_clubs c join qa_expected_clubs e using(id)
   where c.primary_color_hex is not distinct from e.primary_color
     and c.secondary_color_hex is not distinct from e.secondary_color
-    and c.accent_color_hex is not distinct from e.accent_color),4,
+    and c.accent_color_hex is not distinct from e.accent_color),5,
   'all configured club palettes match their existing app identity');
 select is((select count(distinct country.id)::integer from public.countries country
-  join qa_expected_clubs expected on expected.country_code = country.id),4,
+  join qa_expected_clubs expected on expected.country_code = country.id),5,
   'all configured club countries have required parent records');
 select ok(not exists(select 1 from public.countries country
   join qa_expected_clubs expected on expected.country_code = country.id

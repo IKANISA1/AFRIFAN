@@ -11,7 +11,6 @@ import 'screens/feature_manager_screen.dart';
 import 'screens/match_manager_screen.dart';
 import 'screens/predict_ops_screen.dart';
 import 'screens/push_notifications_screen.dart';
-import 'screens/sms_sync_monitor_screen.dart';
 
 class AdminModule extends FeatureModule {
   @override
@@ -56,11 +55,6 @@ class AdminModule extends FeatureModule {
           path: 'notifications',
           builder: (context, state) =>
               const AdminRouteGuard(child: PushNotificationsScreen()),
-        ),
-        GoRoute(
-          path: 'sms-monitor',
-          builder: (context, state) =>
-              const AdminRouteGuard(child: SmsSyncMonitorScreen()),
         ),
         GoRoute(path: 'settle', redirect: (_, __) => '/admin/predict'),
         GoRoute(
@@ -123,12 +117,6 @@ class AdminModule extends FeatureModule {
       presentation: RoutePresentation.internalOnly,
       recommendation: 'hide from supporter app',
       rationale: 'Push notification composition is internal tooling.',
-    ),
-    RoutePresentationDecision(
-      path: '/admin/sms-monitor',
-      presentation: RoutePresentation.internalOnly,
-      recommendation: 'hide from supporter app',
-      rationale: 'SMS sync monitoring is internal tooling.',
     ),
     RoutePresentationDecision(
       path: '/admin/settle',

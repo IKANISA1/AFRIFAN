@@ -86,12 +86,8 @@ class RayonSportsConfig implements ClubConfig {
   bool get hasChat => true;
 
   @override
-  bool get hasSmsLedger => true;
-
-  @override
   MomoConfig get momo => const MomoConfig(
     ussdTemplate: '*182*8*1*{amount}*{momo}#',
-    senderName: 'MTN MoMo',
     countryCode: 'RW',
   );
 
@@ -106,6 +102,5 @@ class RayonSportsConfig implements ClubConfig {
     'ticketing': hasTicketing,
     'google_wallet_tickets': true,
     'chat': hasChat,
-    'sms_ledger': hasSmsLedger,
   };
 }

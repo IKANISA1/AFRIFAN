@@ -40,6 +40,7 @@ export 'src/widgets/afri_deep_link_recovery.dart';
 export 'src/widgets/afri_dialog.dart';
 export 'src/widgets/afri_divider.dart';
 export 'src/widgets/afri_dropdown_field.dart';
+export 'src/widgets/afri_editorial_card.dart';
 export 'src/widgets/afri_empty_view.dart';
 export 'src/widgets/afri_error_boundary.dart';
 export 'src/widgets/afri_error_view.dart';

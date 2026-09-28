@@ -190,15 +190,11 @@ class _FakeClubConfig implements ClubConfig {
   bool get hasChat => false;
 
   @override
-  bool get hasSmsLedger => false;
-
-  @override
   Map<String, bool> get features => <String, bool>{
     'fan_clubs': hasFanClubs,
     'shop': hasShop,
     'ticketing': hasTicketing,
     'chat': hasChat,
-    'sms_ledger': hasSmsLedger,
   };
 
   @override
@@ -210,7 +206,6 @@ class _FakeClubConfig implements ClubConfig {
   @override
   MomoConfig get momo => const MomoConfig(
     ussdTemplate: '*182*8*1*{amount}*{momo}#',
-    senderName: 'MTN MoMo',
     countryCode: 'RW',
   );
 

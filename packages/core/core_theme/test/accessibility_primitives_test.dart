@@ -6,6 +6,57 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  for (final subtitle in [
+    null,
+    'Supporting information wraps at large text.',
+  ]) {
+    testWidgets('section header preserves usable large text with $subtitle', (
+      tester,
+    ) async {
+      tester.view.physicalSize = const Size(320, 720);
+      tester.view.devicePixelRatio = 1;
+      tester.platformDispatcher.textScaleFactorTestValue = 2;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: AfriSectionHeader(
+                title: 'Active predictions',
+                subtitle: subtitle,
+                trailing: AfriButton(
+                  label: 'Show all',
+                  fullWidth: false,
+                  variant: AfriButtonVariant.ghost,
+                  onTap: () {},
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      final title = tester.getRect(find.text('Active predictions'));
+      final action = tester.getRect(find.byType(AfriButton));
+      expect(title.width, greaterThan(250));
+      expect(action.top, greaterThanOrEqualTo(title.bottom));
+      expect(action.height, greaterThanOrEqualTo(44));
+      expect(action.right, lessThanOrEqualTo(320));
+      if (subtitle != null) {
+        expect(
+          action.top,
+          greaterThan(tester.getRect(find.text(subtitle)).bottom),
+        );
+        expect(
+          tester.getTopLeft(find.text(subtitle)).dy,
+          greaterThan(title.bottom),
+        );
+      }
+      expect(tester.takeException(), isNull);
+    });
+  }
+
   testWidgets('reduced-motion media settings resolve shared motion to zero', (
     tester,
   ) async {

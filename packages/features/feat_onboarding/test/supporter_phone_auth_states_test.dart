@@ -479,7 +479,7 @@ class _GoldenAuthRepository extends AuthRepository {
   @override
   Future<void> requestPhoneSignInOtp({
     required String phone,
-    supabase.OtpChannel channel = supabase.OtpChannel.sms,
+    supabase.OtpChannel channel = supabase.OtpChannel.whatsapp,
     bool shouldCreateUser = true,
   }) async {
     if (requestGate case final gate?) await gate.future;

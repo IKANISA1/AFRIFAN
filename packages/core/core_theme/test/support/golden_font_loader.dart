@@ -9,7 +9,11 @@ bool _loaded = false;
 Future<void> loadCoreThemeGoldenFonts() async {
   if (_loaded) return;
   await _load('MaterialIcons', 'MaterialIcons-Regular.otf');
-  await _load('GoldenRoboto', 'Roboto-Regular.ttf');
+  final textLoader = FontLoader('GoldenRoboto');
+  for (final face in ['Regular', 'Medium', 'Bold', 'Black']) {
+    textLoader.addFont(_fontBytes('Roboto-$face.ttf'));
+  }
+  await textLoader.load();
   _loaded = true;
 }
 

@@ -1,11 +1,12 @@
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import 'providers/club_public_link_provider.dart';
 import 'screens/club_collection_screens.dart';
 import 'screens/club_hub_screen.dart';
 import 'screens/club_partners_screen.dart';
-import 'screens/club_public_link_screen.dart';
 
 /// Official club information module.
 ///
@@ -39,22 +40,34 @@ class ClubModule extends FeatureModule {
     GoRoute(
       path: 'partners',
       name: 'club-partners',
-      builder: (context, state) => const ClubPartnersScreen(),
+      builder: (context, state) =>
+          ClubPartnersScreen(partnerId: state.uri.queryParameters['partner']),
       routes: [
         GoRoute(
           path: ':partnerId',
           name: 'club-partner-detail',
-          builder: (context, state) =>
-              ClubPartnersScreen(partnerId: state.pathParameters['partnerId']),
+          redirect: (_, state) => Uri(
+            path: '/club/partners',
+            queryParameters: {'partner': state.pathParameters['partnerId']!},
+          ).toString(),
         ),
       ],
     ),
     GoRoute(
       path: 'open-web',
       name: 'club-public-link',
-      builder: (context, state) => ClubPublicLinkScreen(
-        sourcePath: state.uri.queryParameters['path'] ?? '',
-      ),
+      redirect: (context, state) async {
+        final path = state.uri.queryParameters['path'] ?? '';
+        try {
+          final destination = await ProviderScope.containerOf(
+            context,
+          ).read(clubPublicLinkProvider(path).future);
+          if (destination != null) return destination;
+        } catch (_) {
+          // The native collection owns its load/retry experience.
+        }
+        return nativeCollectionForPublicPath(path);
+      },
     ),
     GoRoute(
       path: 'team',
@@ -144,18 +157,19 @@ class ClubModule extends FeatureModule {
     ),
     RoutePresentationDecision(
       path: '/club/partners/:partnerId',
-      presentation: RoutePresentation.fullScreen,
-      recommendation: 'keep',
-      rationale: 'Partner description and external website.',
-      renderedStateContract: 'controlled_club_information_surface',
+      presentation: RoutePresentation.redirect,
+      targetPath: '/club/partners',
+      recommendation: 'merge',
+      rationale:
+          'Partner photographs and published details share one directory.',
     ),
     RoutePresentationDecision(
       path: '/club/open-web',
-      presentation: RoutePresentation.fullScreen,
-      recommendation: 'keep',
+      presentation: RoutePresentation.redirect,
+      targetPath: '/club',
+      recommendation: 'delete screen',
       rationale:
-          'Resolve website records safely with an original-page fallback.',
-      renderedStateContract: 'controlled_club_information_surface',
+          'Resolve to native content or its native collection; no web hand-off.',
     ),
     RoutePresentationDecision(
       path: '/club/team/:playerId',

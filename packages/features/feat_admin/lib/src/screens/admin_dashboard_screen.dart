@@ -149,37 +149,50 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
   }
 
   Widget _buildMetrics(AdminDashboardSnapshot snapshot) {
+    final cards = [
+      _MetricCard(
+        label: context.afriL10n.adminTotalUsers,
+        value: '${snapshot.metrics.totalUsers}',
+        icon: AfriIcons.people,
+      ),
+      _MetricCard(
+        label: context.afriL10n.adminActiveGroups,
+        value: '${snapshot.metrics.activeGroups}',
+        icon: AfriIcons.groups,
+      ),
+      _MetricCard(
+        label: context.afriL10n.adminTransactionsToday,
+        value: '${snapshot.metrics.transactionsToday}',
+        icon: AfriIcons.myPicks,
+      ),
+      _MetricCard(
+        label: context.afriL10n.adminTicketsSold,
+        value: '${snapshot.metrics.ticketsSold}',
+        icon: AfriIcons.tickets,
+      ),
+    ];
+    if (MediaQuery.textScalerOf(context).scale(1) >= 1.5) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: SpacingTokens.spacing3,
+        children: cards,
+      );
+    }
     return Column(
       children: [
         Row(
           children: [
-            _MetricCard(
-              label: context.afriL10n.adminTotalUsers,
-              value: '${snapshot.metrics.totalUsers}',
-              icon: AfriIcons.people,
-            ),
+            Expanded(child: cards[0]),
             const SizedBox(width: SpacingTokens.spacing3),
-            _MetricCard(
-              label: context.afriL10n.adminActiveGroups,
-              value: '${snapshot.metrics.activeGroups}',
-              icon: AfriIcons.groups,
-            ),
+            Expanded(child: cards[1]),
           ],
         ),
         const SizedBox(height: SpacingTokens.spacing3),
         Row(
           children: [
-            _MetricCard(
-              label: context.afriL10n.adminTransactionsToday,
-              value: '${snapshot.metrics.transactionsToday}',
-              icon: AfriIcons.myPicks,
-            ),
+            Expanded(child: cards[2]),
             const SizedBox(width: SpacingTokens.spacing3),
-            _MetricCard(
-              label: context.afriL10n.adminTicketsSold,
-              value: '${snapshot.metrics.ticketsSold}',
-              icon: AfriIcons.tickets,
-            ),
+            Expanded(child: cards[3]),
           ],
         ),
       ],
@@ -254,17 +267,6 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                   ref.watch(adminDashboardSelectedActionProvider) ==
                   '/admin/competitions',
               onTap: () => _openAdminRoute('/admin/competitions'),
-            ),
-            _AdminActionTile(
-              route: '/admin/sms-monitor',
-              title: context.afriL10n.adminSmsSyncMonitor,
-              subtitle: context.afriL10n.adminSmsSyncMonitorDescription,
-              icon: AfriIcons.sms,
-              enabled: enabled,
-              selected:
-                  ref.watch(adminDashboardSelectedActionProvider) ==
-                  '/admin/sms-monitor',
-              onTap: () => _openAdminRoute('/admin/sms-monitor'),
             ),
             _AdminActionTile(
               route: '/admin/features',
@@ -444,35 +446,28 @@ class _MetricCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: GlassCard(
-        animate: false,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icon, size: 18, color: ColorTokens.onSurfaceVariant),
-                const SizedBox(width: SpacingTokens.spacing2),
-                Expanded(
-                  child: Text(
-                    label,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TypographyTokens.labelSmall(),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: SpacingTokens.spacing2),
-            Text(
-              value,
-              style: TypographyTokens.headlineLarge().copyWith(
-                color: ColorTokens.onSurface,
+    return GlassCard(
+      animate: false,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 18, color: ColorTokens.onSurfaceVariant),
+              const SizedBox(width: SpacingTokens.spacing2),
+              Expanded(
+                child: Text(label, style: TypographyTokens.labelSmall()),
               ),
+            ],
+          ),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Text(
+            value,
+            style: TypographyTokens.headlineLarge().copyWith(
+              color: ColorTokens.onSurface,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

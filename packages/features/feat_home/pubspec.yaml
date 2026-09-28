@@ -10,6 +10,10 @@ environment:
 dependencies:
   club_data:
     path: ../../data/club_data
+  feat_club:
+    path: ../feat_club
+  feat_fan_clubs:
+    path: ../feat_fan_clubs
   flutter:
     sdk: flutter
   core_theme:

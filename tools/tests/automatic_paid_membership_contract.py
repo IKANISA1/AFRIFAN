@@ -101,6 +101,12 @@ insert into payment_receiver_accounts values('99660000-0000-4000-8000-0000000000
  sql((ROOT/'supabase/migrations/20260920164901_matched_membership_reconciliation.sql').read_text())
  sql((ROOT/'supabase/migrations/20260920165224_membership_payment_lock_order.sql').read_text())
  sql((ROOT/'supabase/migrations/20260920165540_membership_payment_evidence_binding.sql').read_text())
+ sql((ROOT/'supabase/migrations/20260923101604_preserve_paid_membership_restrictions_and_receipt_recovery.sql').read_text())
+ # This minimal fixture has no commerce/operator/parser schemas. Replay its
+ # allocation definition here; the complete seven-function migration is covered
+ # by tools/scripts/test_predict_database.py against the real vendor schemas.
+ evidence_locks=(ROOT/'supabase/migrations/20260923102734_serialize_momo_evidence_before_row_locks.sql').read_text()
+ sql(re.search(r'create or replace function public.allocate_momo_payment_intent\([\s\S]*?\n\$\$;',evidence_locks).group())
  sql('''grant usage on schema auth,public to service_role;
  grant select,insert,update on public.payment_intents,public.payment_receiver_accounts,
  public.momo_sms_raw,public.momo_sms_parsed,public.momo_ledger_entries,

@@ -8,9 +8,9 @@ insert into public.african_football_clubs(id,club_name,country_name,club_slug) o
 insert into public.partners(id,name,slug,is_active) values
  ('99460000-0000-4000-8000-000000000100','Predict Test Club','predict-test-club',true),
  ('99460000-0000-4000-8000-000000000101','Predict Other Club','predict-other-club',true);
-insert into public.membership_packages(partner_id,club_id,tier,title,subtitle) values
- ('99460000-0000-4000-8000-000000000100',9946001,'fan','Test package','Test only'),
- ('99460000-0000-4000-8000-000000000101',9946002,'fan','Other test package','Test only');
+insert into public.membership_packages(partner_id,club_id,tier,title,subtitle,annual_price) values
+ ('99460000-0000-4000-8000-000000000100',9946001,'fan','Test package','Test only',1000),
+ ('99460000-0000-4000-8000-000000000101',9946002,'fan','Other test package','Test only',1000);
 insert into auth.users(id,aud,role,phone_confirmed_at,is_anonymous)
  select ('99460000-0000-4000-8000-'||lpad(n::text,12,'0'))::uuid,'authenticated','authenticated',
  case when n <> 7 then now() end,n=8 from generate_series(1,8) n;
@@ -30,6 +30,33 @@ insert into football.fixtures(id,competition_id,season_id,home_team_id,away_team
  select ('99460000-0000-4000-8000-'||lpad(n::text,12,'0'))::uuid,'99460000-0000-4000-8000-000000000200',
  '99460000-0000-4000-8000-000000000201','99460000-0000-4000-8000-000000000210','99460000-0000-4000-8000-000000000211',now()+make_interval(days=>n-300) from generate_series(301,308)n;
 
+-- The public fixture projection must preserve the existing media gate.
+insert into public.matches(id,partner_id,club_id,fixture_id,home_team,away_team,
+ competition,venue,match_date,kickoff_time,image_url) values
+ ('99460000-0000-4000-8000-000000000400','99460000-0000-4000-8000-000000000100',9946001,
+ '99460000-0000-4000-8000-000000000301','Home Test','Away Test','Test League','Test Stadium',
+ current_date+1,'18:00','https://example.com/fixture.webp');
+set local role anon;
+select is((select image_rights_approved from public.unified_matches where id='99460000-0000-4000-8000-000000000400'),false,
+ 'unreviewed fixture photo is marked unavailable in the public feed');
+select ok(not has_column_privilege('authenticated','public.matches','image_rights_approved','UPDATE'),
+ 'supporter cannot approve fixture photography');
+reset role;
+update public.matches set image_rights_approved=true,image_provenance_id='isolated-fixture-only',
+ image_rights_approved_at=now(),image_rights_approved_by='99460000-0000-4000-8000-000000000005'
+ where id='99460000-0000-4000-8000-000000000400';
+set local role anon;
+select is((select image_provenance_id from public.unified_matches where id='99460000-0000-4000-8000-000000000400'),
+ 'isolated-fixture-only','public fixture feed carries approved-photo provenance');
+select is((select image_rights_approved from public.unified_matches where id='99460000-0000-4000-8000-000000000400'),true,
+ 'approved fixture photograph can be displayed by Home and Club');
+reset role;
+update public.matches set image_rights_approved=false where id='99460000-0000-4000-8000-000000000400';
+set local role anon;
+select is((select image_rights_approved from public.unified_matches where id='99460000-0000-4000-8000-000000000400'),false,
+ 'withdrawn approval immediately hides the photograph in clients');
+reset role;
+
 -- Helper is transaction-local test setup, never part of the deployed API.
 create function pg_temp.actor(n int) returns void language plpgsql as $$ begin
  perform set_config('request.jwt.claim.sub','99460000-0000-4000-8000-'||lpad(n::text,12,'0'),true);
@@ -45,7 +72,25 @@ select is((select count(*) from football.predict_pools)::int,8,'one pool per fix
 select public.predict_admin_prepare(9946001,'99460000-0000-4000-8000-000000000301','https://example.com/fixture');
 select is((select count(*) from football.predict_pools)::int,8,'preparation retries are idempotent');
 select throws_ok($$select public.predict_admin_settings(9946002,true,100)$$,'42501','PREDICT_ADMIN_REQUIRED','club admin cannot change another club');
+-- Anonymous Home previews are bounded, published, scoped and side-effect free.
+set local role anon;
+select is((select count(*)::int from public.predict_public_preview(9946001)),3,'public Home limits upcoming active predictions to three');
+select is((select count(*)::int from public.predict_public_preview(9946002)),0,'Home cannot leak another club pool');
+reset role;
+select is((select count(*)::int from public.fan_memberships where club_id=9946001),0,'public discovery never creates a wallet');
+update football.predict_settings set enabled=false where club_id=9946001;
+select is((select count(*)::int from public.predict_public_preview(9946001)),0,'disabled Predict has no public entries');
+update football.predict_settings set enabled=true where club_id=9946001;
+update football.teams set is_active=false where id='99460000-0000-4000-8000-000000000210';
+select is((select count(*)::int from public.predict_public_preview(9946001)),0,'withdrawn teams cannot appear in active predictions');
+update football.teams set is_active=true where id='99460000-0000-4000-8000-000000000210';
+update football.predict_pools set opens_at=now()-interval '2 days',locks_at=now()-interval '1 day'
+ where fixture_id='99460000-0000-4000-8000-000000000301';
+select ok(not exists(select 1 from public.predict_public_preview(9946001) where id='99460000-0000-4000-8000-000000000301'),'locked fixture disappears from Home');
+update football.predict_pools set locks_at=now()+interval '1 day' where fixture_id='99460000-0000-4000-8000-000000000301';
 select pg_temp.actor(1);
+select is((select count(*)::int from public.predict_public_preview(9946001)),3,'signed-in Home uses the same read-only preview');
+select is((select count(*)::int from public.fan_memberships where user_id=auth.uid()),0,'signed-in preview does not grant welcome FET');
 select is((public.predict_dashboard(9946001)->'wallet'->>'balance_fet')::int,500,'verified session receives 500 welcome FET');
 select is((public.predict_dashboard(9946001)->'wallet'->>'balance_fet')::int,500,'refresh does not repeat welcome grant');
 select throws_ok($$select public.predict_dashboard(9946002)$$,'P0001','Requested club does not match the authenticated club context.','private dashboard rejects foreign tenant');

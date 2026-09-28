@@ -145,11 +145,7 @@ bool _allows(_Package source, _Package target) {
     'core' => target.layer == 'core',
     'data' => {'core', 'data'}.contains(target.layer),
     'club' => target.layer == 'core',
-    'feature' =>
-      {'core', 'data'}.contains(target.layer) ||
-          // Settings and contributions use the shared SMS receipt capability.
-          (target.name == 'feat_sms_ledger' &&
-              {'feat_settings', 'feat_contributions'}.contains(source.name)),
+    'feature' => {'core', 'data'}.contains(target.layer),
     'composition' => {'core', 'data', 'feature'}.contains(target.layer),
     'app' =>
       target.name == 'core_app' ||

@@ -168,7 +168,7 @@ void main() {
       value: const AsyncData<ShareCardRouteState>(_readyState),
       check: (tester) async {
         final selector = find.byKey(
-          const ValueKey<String>('share-card-prediction-prediction-2'),
+          const ValueKey<String>('share-card-share-action'),
         );
         await tester.ensureVisible(selector);
         await tester.pumpAndSettle();
@@ -201,13 +201,9 @@ void main() {
         ShareCardRouteState(history: _history, selectedId: 'prediction-2'),
       ),
       check: (_) async {
-        expect(
-          find.byWidgetPredicate(
-            (widget) =>
-                widget is Semantics && widget.properties.selected == true,
-          ),
-          findsOneWidget,
-        );
+        expect(find.text('Over 2.5'), findsOneWidget);
+        expect(find.text('Potential'), findsOneWidget);
+        expect(find.text('+140 FET'), findsOneWidget);
         expect(find.text('POL'), findsWidgets);
         expect(find.text('RAY'), findsWidgets);
       },
@@ -397,10 +393,7 @@ Future<void> _pumpRoute(
     routes: [
       GoRoute(
         path: '/predict/share',
-        builder: (_, _) => RepaintBoundary(
-          key: const ValueKey<String>('share-card-state-golden'),
-          child: PredictShareScreen(shareFocusNode: shareFocusNode),
-        ),
+        builder: (_, _) => PredictShareScreen(shareFocusNode: shareFocusNode),
       ),
       GoRoute(path: '/predict', builder: (_, _) => const SizedBox.shrink()),
     ],
@@ -408,24 +401,28 @@ Future<void> _pumpRoute(
   addTearDown(router.dispose);
 
   await tester.pumpWidget(
-    ProviderScope(
-      overrides: [
-        shareCardControllerProvider.overrideWith((ref) => controller),
-        shareCardActionsEnabledProvider.overrideWithValue(accessEnabled),
-      ],
-      child: MaterialApp.router(
-        builder: (context, child) {
-          final media = MediaQuery.of(context);
-          return MediaQuery(
-            data: media.copyWith(
-              disableAnimations: reducedMotion,
-              accessibleNavigation: reducedMotion,
-            ),
-            child: child ?? const SizedBox.shrink(),
-          );
-        },
-        theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
-        routerConfig: router,
+    RepaintBoundary(
+      key: const ValueKey<String>('share-card-state-golden'),
+      child: ProviderScope(
+        overrides: [
+          shareCardControllerProvider.overrideWith((ref) => controller),
+          shareCardActionsEnabledProvider.overrideWithValue(accessEnabled),
+        ],
+        child: MaterialApp.router(
+          debugShowCheckedModeBanner: false,
+          builder: (context, child) {
+            final media = MediaQuery.of(context);
+            return MediaQuery(
+              data: media.copyWith(
+                disableAnimations: reducedMotion,
+                accessibleNavigation: reducedMotion,
+              ),
+              child: child ?? const SizedBox.shrink(),
+            );
+          },
+          theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
+          routerConfig: router,
+        ),
       ),
     ),
   );

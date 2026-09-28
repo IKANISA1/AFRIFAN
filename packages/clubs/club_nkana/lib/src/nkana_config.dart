@@ -71,12 +71,8 @@ class NkanaConfig implements ClubConfig {
   bool get hasChat => true;
 
   @override
-  bool get hasSmsLedger => true;
-
-  @override
   MomoConfig get momo => const MomoConfig(
     ussdTemplate: '*303*{amount}*{momo}#',
-    senderName: 'Airtel Money',
     countryCode: 'ZM',
   );
 
@@ -90,6 +86,5 @@ class NkanaConfig implements ClubConfig {
     'shop': hasShop,
     'ticketing': hasTicketing,
     'chat': hasChat,
-    'sms_ledger': hasSmsLedger,
   };
 }

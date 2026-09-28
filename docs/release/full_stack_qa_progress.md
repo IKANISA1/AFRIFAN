@@ -1,5 +1,14 @@
 # AFRICLUB full-stack QA progress
 
+## Fifth-club scope amendment — 23 September 2026
+
+CD Costa do Sol / Os Canarinhos is now in the source portfolio as tenant 1001.
+The existing four-club approval, test counts and release evidence below do not
+certify its Android/iOS builds, website, backend tenant, providers or artwork.
+Its release identifiers, approved crest and palette, backend credentials, Mozambique payment
+configuration, hosted migration and owner review remain open. The QA plan now
+includes the fifth club and ten native platform targets.
+
 ## Frontend approval and implementation resumed — 20 September 2026
 
 The owner approved all presented screens and instructed continued implementation. The reviewed gallery and image hashes are bound by `output/qa/full-stack-20260914/frontend-owner-approval-20260920.json`; the existing native reference map records this decision. The corresponding UI is implemented in the shared production modules. Work now continues on actual backend/API outcomes, automatic paid memberships, integration and native build/device checks. Technical, provider, hosted-CI, signing and release acceptance remain separate. No production deployment or provider messages are authorized by this approval.

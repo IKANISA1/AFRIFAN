@@ -39,7 +39,16 @@ target 'Runner' do
 end
 
 post_install do |installer|
+  minimum_ios_version = installer.podfile.target_definitions['Runner'].platform.deployment_target.to_s
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    # CocoaPods otherwise leaves Flutter and transitive targets below the app's
+    # minimum, which fails when their Swift modules use iOS 15.5 dependencies.
+    target.build_configurations.each do |configuration|
+      declared = configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET']
+      if declared.nil? || Gem::Version.new(declared) < Gem::Version.new(minimum_ios_version)
+        configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = minimum_ios_version
+      end
+    end
   end
 end

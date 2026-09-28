@@ -1,8 +1,59 @@
-import 'package:feat_club/src/models/club_content_models.dart';
-import 'package:feat_club/src/screens/club_public_link_screen.dart';
+import 'package:feat_club/feat_club.dart';
+import 'package:feat_club/src/providers/club_public_link_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
+  for (final resolved in [null, '/club/team/player-1', 'error']) {
+    testWidgets('public content resolves natively: $resolved', (tester) async {
+      final redirect = ClubModule().routes.whereType<GoRoute>().firstWhere(
+        (r) => r.path == 'open-web',
+      );
+      final router = GoRouter(
+        initialLocation: '/club/open-web?path=%2Fsquad%2Fplayer%2Fmissing',
+        routes: [
+          GoRoute(
+            path: '/club',
+            builder: (_, __) => const Text('Club'),
+            routes: [redirect],
+          ),
+          GoRoute(
+            path: '/club/team',
+            builder: (_, __) => const Text('Native squad'),
+          ),
+          GoRoute(
+            path: '/club/team/:id',
+            builder: (_, __) => const Text('Native player'),
+          ),
+        ],
+      );
+      addTearDown(router.dispose);
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            clubPublicLinkProvider.overrideWith((_, __) async {
+              if (resolved == 'error') throw StateError('unavailable');
+              return resolved;
+            }),
+          ],
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        find.text(
+          resolved == null || resolved == 'error'
+              ? 'Native squad'
+              : 'Native player',
+        ),
+        findsOneWidget,
+      );
+      expect(find.text('Open website'), findsNothing);
+    });
+  }
+
   test('publisher identity strips tracking and rejects unsafe links', () {
     ClubNewsItem article(String url) => ClubNewsItem.fromJson({
       'id': 'one',

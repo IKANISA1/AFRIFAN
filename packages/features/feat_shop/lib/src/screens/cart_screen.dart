@@ -13,6 +13,7 @@ import 'package:go_router/go_router.dart';
 
 import '../shop_cart_provider.dart';
 import '../widgets/cart_item_card.dart';
+import '../widgets/shop_product_image.dart';
 
 typedef CartPaymentRouteLoader =
     Future<PartnerPaymentRoute?> Function(String clubId);
@@ -291,7 +292,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             children: [
               Text(
                 context.afriL10n.shopReviewOrder,
-                style: TypographyTokens.headlineSmall(),
+                style: TypographyTokens.headlineMedium(),
               ),
               const SizedBox(height: SpacingTokens.spacing4),
               AfriSurfaceCard(
@@ -305,13 +306,56 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                             padding: const EdgeInsets.only(
                               bottom: SpacingTokens.spacing3,
                             ),
-                            child: _CartSummaryRow(
-                              label: context.afriL10n.shopItemQuantitySummary(
-                                item.product.name,
-                                item.quantity,
-                              ),
-                              value: currency.format(item.lineTotal),
-                              valueStyle: TypographyTokens.titleSmall(),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                if (ShopProductImage.isPublished(
+                                  item.product.imageUrl,
+                                  item.product.imageRightsApproved,
+                                  item.product.imageProvenanceId,
+                                )) ...[
+                                  ShopProductImage(
+                                    url: item.product.imageUrl,
+                                    name: item.product.name,
+                                    rightsApproved:
+                                        item.product.imageRightsApproved,
+                                    provenanceId:
+                                        item.product.imageProvenanceId,
+                                    width: 56,
+                                    height: 72,
+                                  ),
+                                  const SizedBox(width: SpacingTokens.spacing3),
+                                ],
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        context.afriL10n
+                                            .shopItemQuantitySummary(
+                                              item.product.name,
+                                              item.quantity,
+                                            ),
+                                        style: TypographyTokens.titleMedium(),
+                                      ),
+                                      if (item.selectedVariant?.isNotEmpty ??
+                                          false)
+                                        Text(
+                                          item.selectedVariant!,
+                                          style: TypographyTokens.bodyMedium(),
+                                        ),
+                                      const SizedBox(
+                                        height: SpacingTokens.spacing2,
+                                      ),
+                                      Text(
+                                        currency.format(item.lineTotal),
+                                        style: TypographyTokens.bodyLarge(),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),

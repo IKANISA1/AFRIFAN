@@ -12,10 +12,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test_support/app_font_loader.dart';
+import 'package:test_support/shop_fixture_images.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadAppFonts);
+  useShopFixtureImages();
   setUp(() => ConnectivityService.setOnlineForTest(true));
   testWidgets('empty cart uses the responsive scaffold on tablet', (
     tester,
@@ -527,6 +529,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(tester.takeException(), isNull);
+      await settleShopFixtureImages(tester);
       await expectLater(
         find.byKey(const ValueKey<String>('shop-checkout-golden')),
         matchesGoldenFile('goldens/shop_checkout_${profile.id}.png'),
@@ -601,6 +604,9 @@ class _SeededCartNotifier extends ShopCartNotifier {
     addRawProduct(const <String, dynamic>{
       'id': 'shirt-1',
       'name': 'Home shirt',
+      'image_url': shopHomePhoto,
+      'image_rights_approved': true,
+      'image_provenance_id': shopPhotoProvenance,
       'category': 'jersey',
       'price': 25000,
       'stock': 5,

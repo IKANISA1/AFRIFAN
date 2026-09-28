@@ -26,7 +26,8 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        expect(find.text('Rayon Sports FC'), findsOneWidget);
+        expect(find.text('RAY'), findsOneWidget);
+        expect(find.text('Rayon Sports FC'), findsNothing);
         expect(find.byTooltip(l10n.shareMembershipCard), findsOneWidget);
         expect(find.text(l10n.membershipSince('2026')), findsOneWidget);
         expect(find.bySemanticsLabel(l10n.shareMembershipCard), findsOneWidget);

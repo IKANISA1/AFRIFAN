@@ -9,10 +9,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
+import 'package:test_support/shop_fixture_images.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadAppFonts);
+  useShopFixtureImages();
   setUp(() {
     ConnectivityService.setOnlineForTest(true);
     FocusManager.instance.primaryFocus?.unfocus(
@@ -416,6 +418,7 @@ Future<void> _pumpProductDetailGolden(
     await tester.pump();
   }
 
+  if (settle) await settleShopFixtureImages(tester);
   await afterPump?.call(tester);
 
   expect(tester.takeException(), isNull);
@@ -526,7 +529,9 @@ const _product = <String, dynamic>{
   'available_sizes': <String>['S', 'M', 'L', 'XL'],
   'inventory_count': 47,
   'in_stock': true,
-  'image_url': '',
+  'image_url': shopHomePhoto,
+  'image_rights_approved': true,
+  'image_provenance_id': shopPhotoProvenance,
 };
 
 const _outOfStockProduct = <String, dynamic>{
@@ -538,5 +543,7 @@ const _outOfStockProduct = <String, dynamic>{
   'available_sizes': <String>['S', 'M', 'L', 'XL'],
   'inventory_count': 0,
   'in_stock': false,
-  'image_url': '',
+  'image_url': shopHomePhoto,
+  'image_rights_approved': true,
+  'image_provenance_id': shopPhotoProvenance,
 };

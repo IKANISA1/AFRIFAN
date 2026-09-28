@@ -21,15 +21,14 @@ void main() {
   }
 
   group('LatestIntelSection', () {
-    testWidgets('renders SizedBox.shrink() when there is no news', (
-      tester,
-    ) async {
+    testWidgets('hides news labels when nothing is published', (tester) async {
       await tester.pumpWidget(createSubject());
       await tester.pumpAndSettle();
 
       expect(find.byType(SizedBox), findsWidgets);
       expect(find.text('News'), findsNothing);
-      expect(find.text('Latest club updates'), findsNothing);
+      expect(find.text('Club updates will appear here'), findsNothing);
+      expect(find.text('Show all'), findsNothing);
     });
   });
 }

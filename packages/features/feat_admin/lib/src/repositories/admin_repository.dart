@@ -282,33 +282,6 @@ class AdminRepository {
     );
   }
 
-  Future<Map<String, List<Map<String, dynamic>>>>
-  getAdminSmsMonitorWorkspace() async {
-    final results = await Future.wait<dynamic>(<Future<dynamic>>[
-      _client.rpc('get_momo_sms_operational_summary'),
-      _client
-          .from('momo_sms_sync_runs')
-          .select(
-            'id, status, trigger, scanned_messages, uploaded_messages, '
-            'duplicate_messages, scan_started_at, scan_completed_at',
-          )
-          .order('scan_started_at', ascending: false)
-          .limit(50),
-    ]);
-    return <String, List<Map<String, dynamic>>>{
-      'metrics': List<Map<String, dynamic>>.from(
-        (results[0] as List).map(
-          (row) => Map<String, dynamic>.from(row as Map),
-        ),
-      ),
-      'runs': List<Map<String, dynamic>>.from(
-        (results[1] as List).map(
-          (row) => Map<String, dynamic>.from(row as Map),
-        ),
-      ),
-    };
-  }
-
   bool _assignmentMatchesClub(Map<String, dynamic> row, int? currentClubId) {
     final role = _normalizeRole(row['role']);
     final assignmentClubId = _asInt(row['club_id']);

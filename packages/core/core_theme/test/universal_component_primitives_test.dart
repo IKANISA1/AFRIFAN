@@ -14,6 +14,72 @@ Widget _app(Widget child, {Size size = const Size(800, 900)}) {
 }
 
 void main() {
+  testWidgets(
+    'large-text switch gives its label full width and preserves toggle behavior',
+    (tester) async {
+      var value = false;
+      final nextFocus = FocusNode();
+      addTearDown(nextFocus.dispose);
+      await tester.pumpWidget(
+        MaterialApp(
+          home: MediaQuery(
+            data: const MediaQueryData(textScaler: TextScaler.linear(2)),
+            child: Scaffold(
+              body: Align(
+                alignment: Alignment.topLeft,
+                child: SizedBox(
+                  width: 280,
+                  child: StatefulBuilder(
+                    builder: (context, setState) => Column(
+                      children: [
+                        AfriSwitchListTile(
+                          value: value,
+                          onChanged: (next) => setState(() => value = next),
+                          title: const Text(
+                            'Share anonymous usage analytics',
+                            key: ValueKey('switch-title'),
+                          ),
+                          subtitle: const Text('Help improve app journeys.'),
+                        ),
+                        TextButton(
+                          focusNode: nextFocus,
+                          onPressed: () {},
+                          child: const Text('Next setting'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+      final title = find.byKey(const ValueKey('switch-title'));
+      final control = find.byType(Switch);
+      expect(tester.getRect(title).width, greaterThanOrEqualTo(260));
+      expect(
+        tester.getRect(control).top,
+        greaterThan(tester.getRect(title).bottom),
+      );
+      await tester.tap(title);
+      await tester.pumpAndSettle();
+      expect(value, isTrue);
+      await tester.tap(control);
+      await tester.pumpAndSettle();
+      expect(value, isFalse);
+      FocusManager.instance.primaryFocus?.unfocus();
+      await tester.pump();
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      await tester.sendKeyEvent(LogicalKeyboardKey.space);
+      await tester.pumpAndSettle();
+      expect(value, isTrue);
+      await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+      expect(nextFocus.hasFocus, isTrue);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
   test('numeric formatter bounds sign and decimal precision', () {
     final formatter = AfriNumericInputFormatter(
       allowDecimal: true,

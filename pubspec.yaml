@@ -30,6 +30,7 @@ workspace:
   - apps/vitalo
   - apps/as_vita
   - apps/nkana
+  - apps/costa_do_sol
   # ── Core packages ──
   - packages/core/core_app
   - packages/app_registry
@@ -50,7 +51,6 @@ workspace:
   - packages/features/feat_gamification
   - packages/features/feat_contributions
   - packages/features/feat_shop
-  - packages/features/feat_sms_ledger
   - packages/features/feat_settings
   - packages/features/feat_onboarding
   - packages/features/feat_ticketing
@@ -62,6 +62,7 @@ workspace:
   - packages/clubs/club_vitalo
   - packages/clubs/club_as_vita
   - packages/clubs/club_nkana
+  - packages/clubs/club_costa_do_sol
 
 # Melos 8 reads its configuration from the Dart workspace root. Keep package
 # discovery authoritative in `workspace:` above so tooling cannot silently

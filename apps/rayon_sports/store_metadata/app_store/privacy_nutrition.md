@@ -42,8 +42,7 @@ when the signed archive privacy report is generated.
 - No contacts, microphone audio, camera capture, or photo-library reads are
   requested. iOS photo-library add access is used only when the supporter
   explicitly exports a QR image.
-- Optional SMS auto-read is disabled in the production configuration and is
-  not available on iOS.
+- The supporter app contains no SMS collection or upload capability.
 - Crash reporting never receives the Supabase account/profile identifier.
 
 ## Submission evidence still required

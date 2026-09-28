@@ -33,13 +33,7 @@ class SettingsScreen extends ConsumerWidget {
 
     return AfriScreenScaffold(
       backgroundColor: ColorTokens.background,
-      appBar: AfriAppBar(
-        backgroundColor: ColorTokens.transparent,
-        title: Text(
-          l10n.settingsTitle,
-          style: TypographyTokens.headlineSmall(),
-        ),
-      ),
+      appBar: const AfriAppBar(backgroundColor: ColorTokens.transparent),
       scrollable: false,
       constrainContent: true,
       bottomNavigationAware: true,
@@ -52,6 +46,12 @@ class SettingsScreen extends ConsumerWidget {
           SpacingTokens.spacing20,
         ),
         children: [
+          AfriSectionHeader(
+            title: l10n.settingsTitle,
+            isPageTitle: true,
+            padding: EdgeInsets.zero,
+          ),
+          const SizedBox(height: SpacingTokens.spacing6),
           if (_buildRouteStateBanner(
                 asyncContent,
                 l10n: l10n,

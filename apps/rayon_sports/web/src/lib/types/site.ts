@@ -75,6 +75,7 @@ export interface NewsArticle {
   coverImageUrl?: string | null;
   publishedAt: string;
   author: string;
+  sourceUrl?: string | null;
 }
 
 export interface ShopProduct {

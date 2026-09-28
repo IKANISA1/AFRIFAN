@@ -304,8 +304,6 @@ class _GoldenClubConfig implements ClubConfig {
   @override
   bool get hasShop => true;
   @override
-  bool get hasSmsLedger => false;
-  @override
   bool get hasTicketing => true;
   @override
   String get language => 'en';
@@ -314,7 +312,6 @@ class _GoldenClubConfig implements ClubConfig {
   @override
   MomoConfig get momo => const MomoConfig(
     ussdTemplate: '*182*{amount}*{momo}#',
-    senderName: 'MTN MoMo',
     countryCode: 'RW',
   );
   @override

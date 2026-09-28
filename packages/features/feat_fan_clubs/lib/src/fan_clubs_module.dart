@@ -1,7 +1,6 @@
 import 'package:core_router/core_router.dart';
 import 'package:go_router/go_router.dart';
 
-import 'screens/fan_club_detail_screen.dart';
 import 'screens/fan_clubs_list_screen.dart';
 
 class FanClubsModule extends FeatureModule {
@@ -15,18 +14,18 @@ class FanClubsModule extends FeatureModule {
   List<RouteBase> get routes => [
     GoRoute(
       path: '/fan-clubs',
-      pageBuilder: (context, state) =>
-          afriSheetPage(state, const FanClubsListScreen(), fullHeight: true),
+      pageBuilder: (context, state) => afriSheetPage(
+        state,
+        FanClubsListScreen(clubId: state.uri.queryParameters['club']),
+        fullHeight: true,
+      ),
       routes: [
         GoRoute(
           path: ':clubId',
-          pageBuilder: (context, state) => afriSheetPage(
-            state,
-            FanClubDetailScreen(
-              clubId: state.pathParameters['clubId'] ?? 'kigali-blue-army',
-            ),
-            fullHeight: true,
-          ),
+          redirect: (_, state) => Uri(
+            path: '/fan-clubs',
+            queryParameters: {'club': state.pathParameters['clubId']!},
+          ).toString(),
         ),
       ],
     ),
@@ -43,10 +42,11 @@ class FanClubsModule extends FeatureModule {
     ),
     RoutePresentationDecision(
       path: '/fan-clubs/:clubId',
-      presentation: RoutePresentation.fullHeightSheet,
-      recommendation: 'convert to sheet',
+      presentation: RoutePresentation.redirect,
+      recommendation: 'delete duplicate',
       targetPath: '/fan-clubs',
-      rationale: 'Fan club detail is preview/join context.',
+      rationale:
+          'One image-led directory contains the published community information.',
     ),
   ];
 }

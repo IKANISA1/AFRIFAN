@@ -409,33 +409,47 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             ],
             GlassCard(
               animate: false,
-              child: Row(
-                children: [
-                  AfriAvatar(
+              child: Builder(
+                builder: (context) {
+                  final avatar = AfriAvatar(
                     semanticLabel: alias,
                     initials: l10n.settingsRoleSupporter,
                     size: SizeTokens.avatarLg,
-                  ),
-                  const SizedBox(width: SpacingTokens.spacing4),
-                  Expanded(
-                    child: Column(
+                  );
+                  final identity = Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        l10n.editProfileAlias(alias),
+                        style: TypographyTokens.headlineSmall(),
+                      ),
+                      const SizedBox(height: SpacingTokens.spacing1),
+                      Text(
+                        languageLabel,
+                        style: TypographyTokens.bodySmall(
+                          ColorTokens.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  );
+                  if (MediaQuery.textScalerOf(context).scale(1) >= 1.5) {
+                    return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          l10n.editProfileAlias(alias),
-                          style: TypographyTokens.headlineSmall(),
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing1),
-                        Text(
-                          languageLabel,
-                          style: TypographyTokens.bodySmall(
-                            ColorTokens.onSurfaceVariant,
-                          ),
-                        ),
+                        avatar,
+                        const SizedBox(height: SpacingTokens.spacing4),
+                        identity,
                       ],
-                    ),
-                  ),
-                ],
+                    );
+                  }
+                  return Row(
+                    children: [
+                      avatar,
+                      const SizedBox(width: SpacingTokens.spacing4),
+                      Expanded(child: identity),
+                    ],
+                  );
+                },
               ),
             ),
             const SizedBox(height: SpacingTokens.spacing4),

@@ -76,7 +76,7 @@ describe("news surface state helpers", () => {
     ).toEqual([
       articles[0],
       { ...articles[0], id: "unsafe-image" },
-      ...oversized.slice(0, 22),
+      ...oversized,
     ]);
   });
 
@@ -155,6 +155,24 @@ describe("NewsSurface", () => {
       "data-news-interaction",
       "selected",
     );
+  });
+
+  it("links external feed coverage to its source without a generic story image", async () => {
+    vi.spyOn(globalThis, "fetch").mockImplementation(() => response(200, {
+      code: "PUBLIC_NEWS_READY",
+      items: [{
+        ...articles[0],
+        coverImageUrl: "",
+        author: "Example News",
+        sourceUrl: "https://example.org/rayon-story",
+      }],
+    }));
+
+    const { container } = renderNews();
+    await screen.findByRole("heading", { name: "Opening day" });
+    expect(screen.getByRole("link", { name: /read on example news/i })).toHaveAttribute("href", "https://example.org/rayon-story");
+    expect(screen.getByRole("link", { name: /read on example news/i })).toHaveAttribute("rel", "noopener noreferrer");
+    expect(container.querySelector(".news-featured--imageless .news-image")).toBeNull();
   });
 
   it("renders an explicit confirmed empty state", async () => {

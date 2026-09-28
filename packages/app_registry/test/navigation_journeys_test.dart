@@ -141,7 +141,6 @@ void main() {
           'matches',
           'contributions',
           'notifications',
-          'sms-monitor',
         }),
       );
     });
@@ -316,8 +315,6 @@ void main() {
           '/club/team',
           '/club/team/:playerId',
           '/club/partners',
-          '/club/partners/:partnerId',
-          '/club/open-web',
           '/club/news',
           '/club/news/:articleId',
           '/club/fixtures',
@@ -385,20 +382,16 @@ class _AllFeaturesConfig implements ClubConfig {
   @override
   bool get hasChat => true;
   @override
-  bool get hasSmsLedger => true;
-  @override
   Map<String, bool> get features => <String, bool>{
     'fan_clubs': true,
     'shop': true,
     'ticketing': true,
     'chat': true,
-    'sms_ledger': true,
     'mobile_admin': mobileAdmin,
   };
   @override
   MomoConfig get momo => const MomoConfig(
     ussdTemplate: '*182*{amount}*{momo}#',
-    senderName: 'Test',
     countryCode: 'RW',
   );
   @override

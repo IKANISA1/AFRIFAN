@@ -1,11 +1,61 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets('bounded decoding preserves the photograph aspect ratio', (
+    tester,
+  ) async {
+    final bytes = await tester.runAsync(() async {
+      final recorder = ui.PictureRecorder();
+      ui.Canvas(recorder).drawRect(
+        const ui.Rect.fromLTWH(0, 0, 200, 100),
+        ui.Paint()..color = Colors.blue,
+      );
+      final picture = recorder.endRecording();
+      final source = await picture.toImage(200, 100);
+      final encoded = await source.toByteData(format: ui.ImageByteFormat.png);
+      source.dispose();
+      picture.dispose();
+      return encoded!.buffer.asUint8List();
+    });
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Center(
+          child: AfriGovernedImage(
+            image: MemoryImage(bytes!),
+            width: 80,
+            height: 80,
+            cacheWidth: 80,
+            cacheHeight: 80,
+            semanticLabel: 'Rectangular photograph',
+            provenanceId: 'test-generated-shape',
+            rightsApproved: true,
+          ),
+        ),
+      ),
+    );
+    ui.Image? decoded;
+    for (var attempt = 0; decoded == null && attempt < 100; attempt += 1) {
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 5)),
+      );
+      await tester.pump();
+      decoded = tester.widget<RawImage>(find.byType(RawImage)).image;
+    }
+    expect(decoded, isNotNull);
+    expect(decoded!.width / decoded.height, 2);
+    expect(decoded.width, lessThanOrEqualTo(80));
+    expect(decoded.height, lessThanOrEqualTo(80));
+    expect(
+      tester.getSize(find.byKey(const ValueKey('afri-governed-image-surface'))),
+      const Size(80, 80),
+    );
+  });
   final onePixelPng = Uint8List.fromList(
     base64Decode(
       'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=',

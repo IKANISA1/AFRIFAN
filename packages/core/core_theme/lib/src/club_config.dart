@@ -20,14 +20,9 @@ class ClubColors {
 /// MOMO mobile money configuration per club.
 class MomoConfig {
   final String ussdTemplate;
-  final String senderName;
   final String countryCode;
 
-  const MomoConfig({
-    required this.ussdTemplate,
-    required this.senderName,
-    required this.countryCode,
-  });
+  const MomoConfig({required this.ussdTemplate, required this.countryCode});
 }
 
 /// Abstract interface that every club config package must implement.
@@ -79,7 +74,6 @@ abstract class ClubConfig {
   bool get hasShop;
   bool get hasTicketing;
   bool get hasChat;
-  bool get hasSmsLedger;
 
   /// MOMO config
   MomoConfig get momo;
@@ -93,7 +87,6 @@ abstract class ClubConfig {
     'shop': hasShop,
     'ticketing': hasTicketing,
     'chat': hasChat,
-    'sms_ledger': hasSmsLedger,
   };
 
   /// Minimal shared fallback used in widget tests and empty-state previews.
@@ -170,12 +163,8 @@ class _FallbackClubConfig extends ClubConfig {
   bool get hasChat => true;
 
   @override
-  bool get hasSmsLedger => true;
-
-  @override
   MomoConfig get momo => const MomoConfig(
     ussdTemplate: '*182*8*1*{amount}*{momo}#',
-    senderName: 'MTN MoMo',
     countryCode: 'RW',
   );
 

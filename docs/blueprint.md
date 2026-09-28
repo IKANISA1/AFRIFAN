@@ -3,9 +3,10 @@
 Status: authoritative repository boundary and architecture contract.
 
 The supported club products are Vital'O (Burundi), Rayon Sports (Rwanda),
-Nkana (Zambia), and AS Vita (DR Congo). Their app directories are `vitalo`,
-`rayon_sports`, `nkana`, and `as_vita`; club configuration packages match those
-names. The root workspace is limited to these four shells and 28 packages.
+Nkana (Zambia), AS Vita (DR Congo), and CD Costa do Sol / Os Canarinhos
+(Mozambique). Their app directories are `vitalo`, `rayon_sports`, `nkana`,
+`as_vita`, and `costa_do_sol`; club configuration packages match those names.
+The root workspace contains five shells and five club configuration packages.
 
 ## Product Boundary
 
@@ -65,9 +66,10 @@ shells select identity, configuration, and allowed feature composition.
   the club repository, and its providers. It depends on core infrastructure.
   `feat_club` owns official club content and screens; commerce and membership
   features import the shared data package directly.
-- Features depend on core and data packages. The two explicit cross-feature
-  dependencies are settings and contributions using `feat_sms_ledger` for
-  receipt handling. New feature coupling requires an explicit boundary change.
+- Features depend on core and data packages. Cross-feature runtime dependencies
+  are not permitted. SMS collection belongs to a separate club-management
+  gateway; supporter apps display server-confirmed payment outcomes and contain
+  no message collector, upload queue, consent control or monitoring route.
 - `packages/testing/test_support` contains shared test harnesses. Production
   packages may reference it only in `dev_dependencies`.
 - Cross-package production imports use public library entry points. Runtime
@@ -108,7 +110,7 @@ slug, and club configuration. It provides club discovery and links to the
 native app. The implemented `/membership` surface also supports WhatsApp
 authentication, explicit membership activation, private member details, and
 pending contribution intents. Server-side identity and tenant checks protect
-these operations; only provider/SMS reconciliation can confirm a contribution.
+these operations; only server receipt reconciliation can confirm a contribution. Device-message collection belongs to the separate future club-management gateway, never to a supporter app.
 
 ### Club Administration
 

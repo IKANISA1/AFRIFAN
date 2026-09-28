@@ -20,6 +20,18 @@ import 'package:test_support/app_font_loader.dart';
 
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  const captureSystem = bool.fromEnvironment('AFRICLUB_CAPTURE_SYSTEM');
+  Future<void> captureHome(String name) async {
+    if (captureSystem) {
+      // Each caller has already pumped to a settled frame. Waiting for a new
+      // endOfFrame here can stall the native test binding's frame policy.
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+      // The host captures the unmodified Android/iOS compositor surface.
+      // ignore: avoid_print
+      print('AFRICLUB_HOME_CAPTURE $name');
+      await Future<void>.delayed(const Duration(seconds: 3));
+    }
+  }
 
   setUpAll(() async {
     await loadAppFonts();
@@ -69,6 +81,15 @@ void main() {
           homeFeedRepositoryProvider.overrideWithValue(
             const _FakeHomeFeedRepository(
               snapshot: HomeFeedSnapshot(
+                quickActions: [
+                  ...homeFeedLocalFallbackActions,
+                  HomeQuickAction(
+                    actionKey: 'fixtures',
+                    title: 'Fixtures',
+                    route: '/club/fixtures',
+                    iconKey: 'league',
+                  ),
+                ],
                 heroSlides: [
                   MatchSlide(
                     homeTeam: 'RAYON SPORTS',
@@ -125,6 +146,59 @@ void main() {
     expect(find.byType(QuickActionsGrid), findsOneWidget);
     expect(find.text('Tickets'), findsAtLeastNWidgets(1));
     expect(find.text('Predict'), findsAtLeastNWidgets(1));
+
+    addTearDown(binding.platformDispatcher.clearTextScaleFactorTestValue);
+    for (final scale in [1.0, 2.0]) {
+      binding.platformDispatcher.textScaleFactorTestValue = scale;
+      await tester.pumpAndSettle();
+      final toggle = find.byKey(
+        const ValueKey<String>('home-secondary-actions-toggle'),
+      );
+      await tester.ensureVisible(toggle);
+      await tester.pumpAndSettle();
+      final homeViewport = find.ancestor(
+        of: toggle,
+        matching: find.byType(CustomScrollView),
+      );
+      final nativeTopInset =
+          tester.view.padding.top / tester.view.devicePixelRatio;
+      expect(nativeTopInset, greaterThan(0));
+      expect(
+        tester.getTopLeft(homeViewport).dy,
+        greaterThanOrEqualTo(nativeTopInset),
+      );
+      final title = tester.getRect(find.text('Shortcuts'));
+      final action = tester.getRect(toggle);
+      final primaryBottom = find
+          .byType(AfriQuickAction)
+          .evaluate()
+          .map(
+            (element) => tester.getBottomLeft(find.byWidget(element.widget)).dy,
+          )
+          .reduce((a, b) => a > b ? a : b);
+      expect(title.center.dy, closeTo(action.center.dy, 1));
+      expect(action.top - primaryBottom, greaterThanOrEqualTo(16));
+      expect(action.height, greaterThanOrEqualTo(44));
+      await captureHome('home-shortcuts-${scale.toInt()}x-collapsed');
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+      expect(find.text('Fixtures'), findsOneWidget);
+      expect(find.text('More shortcuts'), findsNothing);
+      await tester.ensureVisible(find.text('Fixtures'));
+      await tester.pumpAndSettle();
+      await captureHome('home-shortcuts-${scale.toInt()}x-expanded');
+      await tester.ensureVisible(toggle);
+      await tester.tap(toggle);
+      await tester.pumpAndSettle();
+      expect(find.text('Fixtures'), findsNothing);
+      expect(tester.takeException(), isNull);
+    }
+    await tester.ensureVisible(
+      find.text('First-team preparations continue this week.'),
+    );
+    await tester.pumpAndSettle();
+    await captureHome('home-news-2x');
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets(
@@ -495,7 +569,7 @@ class _FakeAuthRepository extends AuthRepository {
   @override
   Future<void> requestPhoneSignInOtp({
     required String phone,
-    supabase.OtpChannel channel = supabase.OtpChannel.sms,
+    supabase.OtpChannel channel = supabase.OtpChannel.whatsapp,
     bool shouldCreateUser = true,
   }) async {
     expect(phone, _smokePhoneNumber);

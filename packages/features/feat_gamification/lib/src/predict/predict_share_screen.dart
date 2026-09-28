@@ -10,7 +10,6 @@ import 'package:go_router/go_router.dart';
 import '../controllers/share_card_controller.dart';
 import '../models/prediction_models.dart';
 import '../prediction_providers.dart';
-import '../widgets/prediction_selection.dart';
 import '../widgets/prediction_share_card.dart';
 
 class PredictShareScreen extends ConsumerStatefulWidget {
@@ -198,7 +197,6 @@ class _PredictShareScreenState extends ConsumerState<PredictShareScreen> {
         !routeState.uncertainMutation;
 
     return ShareCardGeneratorContent(
-      history: routeState.history,
       selected: selected,
       status: _statusFor(routeState, online: isOnline),
       actionsEnabled: actionsEnabled,
@@ -206,8 +204,6 @@ class _PredictShareScreenState extends ConsumerState<PredictShareScreen> {
       sharing: routeState.mutation == ShareCardMutation.sharing,
       copying: routeState.mutation == ShareCardMutation.copying,
       onRefresh: () => ref.read(shareCardControllerProvider.notifier).refresh(),
-      onSelected: (prediction) =>
-          ref.read(shareCardControllerProvider.notifier).select(prediction.id),
       onShare: (_) => _share(),
       onCopy: (_) => _copy(),
     );
@@ -276,10 +272,8 @@ class _PredictShareScreenState extends ConsumerState<PredictShareScreen> {
 class ShareCardGeneratorContent extends StatelessWidget {
   const ShareCardGeneratorContent({
     super.key,
-    required this.history,
     required this.selected,
     required this.onRefresh,
-    required this.onSelected,
     required this.onShare,
     required this.onCopy,
     this.status,
@@ -289,10 +283,8 @@ class ShareCardGeneratorContent extends StatelessWidget {
     this.shareFocusNode,
   });
 
-  final List<UserPrediction> history;
   final UserPrediction? selected;
   final Future<void> Function() onRefresh;
-  final ValueChanged<UserPrediction> onSelected;
   final Future<void> Function(UserPrediction) onShare;
   final Future<void> Function(UserPrediction) onCopy;
   final Widget? status;
@@ -327,13 +319,17 @@ class ShareCardGeneratorContent extends StatelessWidget {
         focusNode: shareFocusNode,
         onTap: () => unawaited(onShare(selectedPrediction)),
         label: l10n.gameShareUpper,
+        icon: AfriIcons.share,
+        labelMaxLines: 2,
         enabled: actionsEnabled,
         isLoading: sharing,
       ),
       AfriButton(
         key: const ValueKey<String>('share-card-copy-action'),
         onTap: () => unawaited(onCopy(selectedPrediction)),
-        label: l10n.gameCopyUpper,
+        label: l10n.gameShareCopyText,
+        icon: AfriIcons.copy,
+        labelMaxLines: 2,
         enabled: actionsEnabled,
         isLoading: copying,
         variant: AfriButtonVariant.secondary,
@@ -373,129 +369,14 @@ class ShareCardGeneratorContent extends StatelessWidget {
                 Expanded(child: actions.last),
               ],
             ),
-          const SizedBox(height: SpacingTokens.spacing4),
-          AfriSurfaceCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(l10n.gameChoosePick, style: TypographyTokens.titleLarge()),
-                const SizedBox(height: SpacingTokens.spacing3),
-                ...history.map((prediction) {
-                  final selectedCard = prediction.id == selectedPrediction.id;
-                  return Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: SpacingTokens.spacing3,
-                    ),
-                    child: AfriPressFeedback(
-                      key: ValueKey<String>(
-                        'share-card-prediction-${prediction.id}',
-                      ),
-                      onTap: () => onSelected(prediction),
-                      selected: selectedCard,
-                      semanticsLabel: l10n.gameSharePredictionSemantics(
-                        prediction.homeTeamShort,
-                        prediction.awayTeamShort,
-                        prediction.marketName,
-                        prediction.selectedOutcome,
-                      ),
-                      semanticsHint: selectedCard
-                          ? l10n.gameCurrentlySelectedShareCard
-                          : l10n.gameSelectThisShareCard,
-                      builder: (context, pressState) => GlassCard(
-                        animate: false,
-                        borderColor: pressState.isFocused
-                            ? context.afriSemanticColors.accent
-                            : null,
-                        child: largeText
-                            ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _PredictionLabel(prediction: prediction),
-                                  const SizedBox(
-                                    height: SpacingTokens.spacing3,
-                                  ),
-                                  _SelectionChip(selected: selectedCard),
-                                ],
-                              )
-                            : Row(
-                                children: [
-                                  Expanded(
-                                    child: _PredictionLabel(
-                                      prediction: prediction,
-                                    ),
-                                  ),
-                                  const SizedBox(width: SpacingTokens.spacing3),
-                                  _SelectionChip(selected: selectedCard),
-                                ],
-                              ),
-                      ),
-                    ),
-                  );
-                }),
-              ],
-            ),
+          const SizedBox(height: SpacingTokens.spacing3),
+          Text(
+            l10n.gameShareTextPreview,
+            textAlign: TextAlign.center,
+            style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
           ),
           const SizedBox(height: SpacingTokens.spacing10),
         ],
-      ),
-    );
-  }
-}
-
-class _PredictionLabel extends StatelessWidget {
-  const _PredictionLabel({required this.prediction});
-
-  final UserPrediction prediction;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AfriFixtureTeams(
-          homeTeam: prediction.homeTeam,
-          awayTeam: prediction.awayTeam,
-        ),
-        const SizedBox(height: SpacingTokens.spacing2),
-        Text(prediction.marketName, style: TypographyTokens.bodySmall()),
-        const SizedBox(height: SpacingTokens.spacing1),
-        PredictionSelection(
-          selection: prediction.selectedOutcome,
-          homeTeam: prediction.homeTeam,
-          awayTeam: prediction.awayTeam,
-          style: TypographyTokens.bodySmall(),
-        ),
-      ],
-    );
-  }
-}
-
-class _SelectionChip extends StatelessWidget {
-  const _SelectionChip({required this.selected});
-
-  final bool selected;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = context.afriL10n;
-    final accent = context.afriSemanticColors.accent;
-    final accessibleAccent = ColorTokens.accessibleMetricColor(accent);
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: SpacingTokens.spacing2,
-        vertical: SpacingTokens.spacing1,
-      ),
-      decoration: BoxDecoration(
-        color: selected
-            ? accent.withValues(alpha: 0.16)
-            : ColorTokens.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
-      ),
-      child: Text(
-        selected ? l10n.gameSelected : l10n.gameOpen,
-        style: TypographyTokens.labelSmall(
-          selected ? accessibleAccent : ColorTokens.onSurfaceVariant,
-        ),
       ),
     );
   }

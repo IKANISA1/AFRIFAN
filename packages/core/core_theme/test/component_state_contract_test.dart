@@ -11,6 +11,47 @@ Widget _app(Widget child) {
 }
 
 void main() {
+  testWidgets(
+    'narrow large-text search keeps its accessible action without clipped text',
+    (tester) async {
+      var searches = 0;
+      final semantics = tester.ensureSemantics();
+      await tester.pumpWidget(
+        _app(
+          MediaQuery(
+            data: const MediaQueryData(textScaler: TextScaler.linear(2)),
+            child: SizedBox(
+              width: 280,
+              child: AfriTopCommandBar(
+                avatarIcon: AfriIcons.profile,
+                searchHint: 'Search',
+                searchSemanticsLabel: 'Search the club',
+                onSearchTap: () => searches += 1,
+                actions: [
+                  AfriTopCommandAction(
+                    icon: AfriIcons.notifications,
+                    label: 'Notifications',
+                    onTap: () {},
+                  ),
+                  AfriTopCommandAction(
+                    icon: AfriIcons.wallet,
+                    label: 'Wallet',
+                    onTap: () {},
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      expect(find.text('Search'), findsNothing);
+      expect(find.bySemanticsLabel('Search the club'), findsWidgets);
+      await tester.tap(find.byIcon(AfriIcons.search));
+      expect(searches, 1);
+      expect(tester.takeException(), isNull);
+      semantics.dispose();
+    },
+  );
   testWidgets('search field exposes bounded clear and disabled behavior', (
     tester,
   ) async {

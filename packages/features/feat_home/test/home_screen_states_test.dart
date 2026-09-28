@@ -7,18 +7,23 @@ import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_home/src/providers/home_feed_provider.dart';
 import 'package:feat_home/src/repositories/home_content_repository.dart';
+import 'package:feat_home/src/repositories/home_discovery_repository.dart';
 import 'package:feat_home/src/screens/home_screen.dart';
 import 'package:feat_home/src/widgets/contributor_leaderboard.dart';
+import 'package:feat_home/src/widgets/home_discovery_section.dart';
 import 'package:feat_home/src/widgets/latest_intel_section.dart';
 import 'package:feat_home/src/widgets/match_card.dart';
 import 'package:feat_home/src/widgets/quick_actions_grid.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'package:test_support/app_font_loader.dart';
+import 'package:test_support/predict_fixture_images.dart';
+import 'package:test_support/tab_shell_fixture.dart';
 import 'package:test_support/touch_target_audit.dart';
 
 void main() {
@@ -33,6 +38,52 @@ void main() {
   tearDown(RuntimeBranding.resetForTest);
 
   group('HomeScreen states', () {
+    testWidgets('scrolling Home keeps content below native status controls', (
+      tester,
+    ) async {
+      _setGoldenSurface(tester, const Size(402, 874));
+      tester.view.padding = const FakeViewPadding(top: 62, bottom: 34);
+      tester.view.viewPadding = const FakeViewPadding(top: 62, bottom: 34);
+      addTearDown(tester.view.resetPadding);
+      addTearDown(tester.view.resetViewPadding);
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      TypographyTokens.debugUseFallbackFonts = true;
+      addTearDown(() => TypographyTokens.debugUseFallbackFonts = false);
+      await tester.pumpWidget(
+        _buildApp(
+          homeRepository: const _FakeHomeFeedRepository(
+            snapshot: HomeFeedSnapshot(
+              status: HomeFeedStatus.success,
+              quickActions: homeFeedLocalFallbackActions,
+            ),
+          ),
+          latestIntelRepository: const _FakeLatestIntelRepository(
+            LatestIntelSnapshot(status: LatestIntelStatus.empty),
+          ),
+          child: const HomeScreen(),
+        ),
+      );
+      await tester.pumpAndSettle();
+      final viewport = find.byType(CustomScrollView);
+      ScrollPosition position() => tester
+          .state<ScrollableState>(
+            find
+                .descendant(of: viewport, matching: find.byType(Scrollable))
+                .first,
+          )
+          .position;
+      for (final scale in [1.0, 2.0]) {
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        await tester.pumpAndSettle();
+        for (final offset in [0.0, position().maxScrollExtent]) {
+          position().jumpTo(offset);
+          await tester.pumpAndSettle();
+          expect(tester.getTopLeft(viewport).dy, greaterThanOrEqualTo(62));
+          expect(tester.takeException(), isNull);
+        }
+      }
+    });
+
     for (final appName in [
       "Vital'O",
       'Gikundiro',
@@ -40,7 +91,13 @@ void main() {
       'AS Vita Club',
     ]) {
       testWidgets('$appName names its own membership action', (tester) async {
-        RuntimeBranding.configure(appName: appName, clubName: appName);
+        final clubName = {
+          'Gikundiro': 'Rayon Sports FC',
+          "Vital'O": "Vital'O FC",
+          'Nkana FC': 'Nkana FC',
+          'AS Vita Club': 'AS Vita Club',
+        }[appName]!;
+        RuntimeBranding.configure(appName: appName, clubName: clubName);
         final clubId = {
           "Vital'O": 'vitalo',
           'Gikundiro': 'rayon_sports',
@@ -50,8 +107,20 @@ void main() {
         await _pumpHomeStateGolden(
           tester,
           id: 'club_$clubId',
-          homeRepository: const _FakeHomeFeedRepository(
-            snapshot: HomeFeedSnapshot(status: HomeFeedStatus.empty),
+          homeRepository: _FakeHomeFeedRepository(
+            snapshot: HomeFeedSnapshot(
+              status: HomeFeedStatus.success,
+              quickActions: homeFeedLocalFallbackActions,
+              heroSlides: [
+                MatchSlide(
+                  homeTeam: clubName,
+                  awayTeam: 'APR FC',
+                  status: 'Upcoming',
+                  dateInfo: 'Saturday · 18:00',
+                  route: '/club/fixtures',
+                ),
+              ],
+            ),
           ),
         );
         expect(find.text('Join $appName'), findsWidgets);
@@ -135,18 +204,13 @@ void main() {
           ),
         );
         await tester.pumpAndSettle();
-        expect(find.text('Matchday'), findsOneWidget);
+        expect(find.text('Matchday'), findsNothing);
+        expect(find.text('Open Predict'), findsNothing);
         expect(
-          find.text('Open Predict'),
-          scenario.available ? findsOneWidget : findsNothing,
+          find.byKey(const ValueKey<String>('home-hero-state-compact')),
+          findsNothing,
         );
-        final state = tester.widget<AfriStateView>(
-          find.descendant(
-            of: find.byKey(const ValueKey<String>('home-hero-state-compact')),
-            matching: find.byType(AfriStateView),
-          ),
-        );
-        expect(state.onAction, scenario.available ? isNotNull : isNull);
+        expect(find.byType(HomeDiscoverySection), findsWidgets);
       });
     }
 
@@ -297,7 +361,7 @@ void main() {
           ),
           findsOneWidget,
         );
-        expect(find.text('Matchday'), findsOneWidget);
+        expect(find.text('Matchday'), findsNothing);
         expect(find.text('Open Predict'), findsNothing);
         await _scrollHomeTo(tester, find.text('Tickets'));
         expect(find.text('Tickets'), findsOneWidget);
@@ -396,7 +460,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(HomeScreen), findsOneWidget);
-      expect(find.text('Open matchday'), findsOneWidget);
+      expect(find.byType(MatchScoreCard), findsOneWidget);
       expect(find.text('Fans'), findsNothing);
       expect(find.text('Support'), findsNothing);
       expect(find.text('Live'), findsNothing);
@@ -518,11 +582,7 @@ void main() {
       final compactHero = find.byKey(
         const ValueKey<String>('home-hero-state-compact'),
       );
-      expect(compactHero, findsOneWidget);
-      expect(
-        tester.getSize(compactHero).height,
-        lessThan(homeHeroHeight(tester.element(compactHero))),
-      );
+      expect(compactHero, findsNothing);
       await _scrollHomeTo(tester, find.text('Tickets'));
       expect(find.text('Tickets'), findsOneWidget);
     });
@@ -610,7 +670,7 @@ void main() {
           await tester.pumpAndSettle();
 
           expect(find.byType(MatchScoreCard), findsOneWidget);
-          final primary = find.text('Open matchday');
+          final primary = find.byType(MatchScoreCard);
           final findCommand = find.text('Find');
           await tester.ensureVisible(findCommand);
           await tester.scrollUntilVisible(
@@ -627,9 +687,60 @@ void main() {
   });
 
   group('LatestIntelSection states', () {
-    testWidgets('stays hidden when no published articles exist', (
+    testWidgets('news cards reflow after native-sized text enlargement', (
       tester,
     ) async {
+      _setGoldenSurface(tester, const Size(412, 915));
+      addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      TypographyTokens.debugUseFallbackFonts = true;
+      addTearDown(() => TypographyTokens.debugUseFallbackFonts = false);
+      await tester.pumpWidget(
+        _buildApp(
+          homeRepository: const _FakeHomeFeedRepository(),
+          latestIntelRepository: const _FakeLatestIntelRepository(
+            LatestIntelSnapshot(
+              status: LatestIntelStatus.ready,
+              articles: [
+                {
+                  'id': 'training',
+                  'title': 'Training ground update',
+                  'subtitle': 'First-team preparations continue this week.',
+                },
+              ],
+            ),
+          ),
+          child: const Scaffold(
+            body: SingleChildScrollView(child: LatestIntelSection()),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      for (final scale in [1.0, 2.0, 3.0]) {
+        tester.platformDispatcher.textScaleFactorTestValue = scale;
+        await tester.pumpAndSettle();
+        expect(find.text('Training ground update'), findsOneWidget);
+        expect(
+          find.text('First-team preparations continue this week.'),
+          findsOneWidget,
+        );
+        if (scale > 1.3) {
+          for (final text in [
+            'Training ground update',
+            'First-team preparations continue this week.',
+          ]) {
+            expect(
+              tester
+                  .renderObject<RenderParagraph>(find.text(text))
+                  .didExceedMaxLines,
+              isFalse,
+            );
+          }
+        }
+        expect(tester.takeException(), isNull);
+      }
+    });
+
+    testWidgets('hides unpublished Home news', (tester) async {
       await tester.pumpWidget(
         _buildApp(
           homeRepository: const _FakeHomeFeedRepository(),
@@ -677,6 +788,141 @@ void main() {
     });
   });
 
+  for (final brightness in [Brightness.dark, Brightness.light]) {
+    for (final largeText in [false, true]) {
+      for (final expanded in [false, true]) {
+        final state = expanded ? 'expanded' : 'collapsed';
+        final text = largeText ? 'large_text' : 'normal_text';
+        testWidgets('golden Home shortcuts $state $text ${brightness.name}', (
+          tester,
+        ) async {
+          await _pumpHomeStateGolden(
+            tester,
+            id: 'shortcuts_${state}_$text',
+            brightness: brightness,
+            preserveScrollForCapture: true,
+            size: largeText ? const Size(320, 720) : const Size(390, 844),
+            textScale: largeText ? 2 : 1,
+            homeRepository: const _FakeHomeFeedRepository(
+              snapshot: HomeFeedSnapshot(
+                status: HomeFeedStatus.success,
+                quickActions: [
+                  ...homeFeedLocalFallbackActions,
+                  HomeQuickAction(
+                    actionKey: 'fixtures',
+                    title: 'Fixtures',
+                    route: '/club/fixtures',
+                    iconKey: 'league',
+                  ),
+                ],
+              ),
+            ),
+            beforeCapture: (tester) async {
+              final toggle = find.byKey(
+                const ValueKey<String>('home-secondary-actions-toggle'),
+              );
+              await tester.ensureVisible(toggle);
+              await tester.pumpAndSettle();
+              if (expanded) {
+                await tester.tap(toggle);
+                await tester.pumpAndSettle();
+                expect(find.text('Fixtures'), findsOneWidget);
+                await tester.ensureVisible(find.text('Fixtures'));
+                await tester.pumpAndSettle();
+              }
+              expect(find.text('Shortcuts'), findsOneWidget);
+              expect(find.text('More shortcuts'), findsNothing);
+            },
+          );
+        });
+      }
+    }
+  }
+
+  for (final brightness in [Brightness.dark, Brightness.light]) {
+    for (final section in [
+      'Active predictions',
+      'News',
+      'Partners',
+      'Fan clubs',
+    ]) {
+      for (final large in [false, true]) {
+        testWidgets(
+          'golden Home discovery $section ${brightness.name} large=$large',
+          (tester) async {
+            await installPredictFixtureImages();
+            try {
+              await _pumpHomeStateGolden(
+                tester,
+                id: 'discovery_${section.toLowerCase().replaceAll(' ', '_')}${large ? '_large_text' : ''}',
+                brightness: brightness,
+                textScale: large ? 2 : 1,
+                size: large ? const Size(320, 720) : const Size(390, 844),
+                preserveScrollForCapture: true,
+                homeRepository: const _FakeHomeFeedRepository(
+                  snapshot: HomeFeedSnapshot(
+                    status: HomeFeedStatus.success,
+                    quickActions: homeFeedLocalFallbackActions,
+                  ),
+                ),
+                latestIntelRepository: const _FakeLatestIntelRepository(
+                  LatestIntelSnapshot(
+                    status: LatestIntelStatus.ready,
+                    articles: [
+                      {
+                        'id': 'preview-news',
+                        'title': 'Ready for matchday',
+                        'subtitle':
+                            'Inside the club: preparation, players and supporters.',
+                        'image_url': 'https://fixture.test/fixture.webp',
+                        'image_rights_approved': true,
+                        'image_provenance_id':
+                            'review-only-existing-club-photography',
+                      },
+                    ],
+                  ),
+                ),
+                overrides: [
+                  homeDiscoveryRepositoryProvider.overrideWithValue(
+                    _HomeDiscoveryFixture(photos: true),
+                  ),
+                ],
+                beforeCapture: (tester) async {
+                  final target = find.text(section);
+                  await tester.scrollUntilVisible(
+                    target,
+                    400,
+                    scrollable: find
+                        .descendant(
+                          of: find.byType(CustomScrollView),
+                          matching: find.byType(Scrollable),
+                        )
+                        .first,
+                  );
+                  await tester.ensureVisible(target);
+                  await tester.pumpAndSettle();
+                  await tester.runAsync(() async {
+                    final context = tester.element(find.byType(HomeScreen));
+                    await Future.wait(
+                      tester
+                          .widgetList<Image>(find.byType(Image))
+                          .map((i) => precacheImage(i.image, context)),
+                    );
+                  });
+                  await tester.pumpAndSettle();
+                },
+              );
+            } finally {
+              await tester.pumpWidget(const SizedBox.shrink());
+              await tester.pump();
+              debugNetworkImageHttpClientProvider = null;
+            }
+          },
+        );
+      }
+    }
+  }
+
   testWidgets('golden Home populated football overview', (tester) async {
     await _pumpHomeStateGolden(
       tester,
@@ -701,9 +947,8 @@ void main() {
           membershipPaymentStatus: 'confirmed',
         ),
       ),
-      featureConfigSnapshot: const PlatformConfigSnapshot(),
       beforeCapture: (tester) async {
-        final match = find.byType(AfriFixtureTeams);
+        final match = find.byType(AfriFixtureTeams).first;
         expect(
           find.descendant(of: match, matching: find.text('RAY')),
           findsOneWidget,
@@ -740,7 +985,7 @@ void main() {
           brightness: profile.brightness,
           child: const RepaintBoundary(
             key: ValueKey<String>('home-route-golden'),
-            child: HomeScreen(),
+            child: TabShellFixture(index: 0, child: HomeScreen()),
           ),
         ),
       );
@@ -856,7 +1101,7 @@ void main() {
       ),
       featureConfigSnapshot: _disabledHomeFeatureConfigSnapshot,
       beforeCapture: (tester) async {
-        expect(find.text('Matchday unavailable'), findsOneWidget);
+        expect(find.text('Matchday unavailable'), findsNothing);
         expect(find.text('Predict\nUnavailable'), findsOneWidget);
         final predictAction = tester.widget<AfriQuickAction>(
           find.descendant(
@@ -957,7 +1202,7 @@ void main() {
         unawaited(container.read(homeFeedProvider.notifier).refresh());
         await tester.pump();
         expect(find.text('Refreshing Home'), findsOneWidget);
-        expect(find.text('Open matchday'), findsOneWidget);
+        expect(find.byType(MatchScoreCard), findsOneWidget);
         expect(find.text('Tickets'), findsOneWidget);
       },
       afterCapture: (tester) async {
@@ -1018,7 +1263,7 @@ void main() {
         highContrast: true,
         child: const RepaintBoundary(
           key: ValueKey<String>('home-high-contrast-golden'),
-          child: HomeScreen(),
+          child: TabShellFixture(index: 0, child: HomeScreen()),
         ),
       ),
     );
@@ -1086,34 +1331,44 @@ Future<void> _pumpHomeStateGolden(
   required HomeFeedRepository homeRepository,
   Size size = const Size(390, 844),
   double textScale = 1,
+  Brightness brightness = Brightness.dark,
+  bool preserveScrollForCapture = false,
   bool settle = true,
   bool online = true,
   List<Override> overrides = const [],
   Future<void> Function(WidgetTester tester)? beforeCapture,
   Future<void> Function(WidgetTester tester)? afterCapture,
   PlatformConfigSnapshot featureConfigSnapshot = _testFeatureConfigSnapshot,
+  LatestIntelRepository latestIntelRepository =
+      const _FakeLatestIntelRepository(
+        LatestIntelSnapshot(status: LatestIntelStatus.empty),
+      ),
 }) async {
   _setGoldenSurface(tester, size);
   tester.platformDispatcher.textScaleFactorTestValue = textScale;
   addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
   TypographyTokens.debugUseFallbackFonts = true;
   addTearDown(() => TypographyTokens.debugUseFallbackFonts = false);
-  ColorTokens.setBrightness(Brightness.dark);
+  ColorTokens.setBrightness(brightness);
   addTearDown(() => ColorTokens.setBrightness(Brightness.dark));
   ConnectivityService.setOnlineForTest(online);
   addTearDown(() => ConnectivityService.setOnlineForTest(true));
 
   await tester.pumpWidget(
     _buildApp(
+      brightness: brightness,
       homeRepository: homeRepository,
-      latestIntelRepository: const _FakeLatestIntelRepository(
-        LatestIntelSnapshot(status: LatestIntelStatus.empty),
-      ),
+      latestIntelRepository: latestIntelRepository,
       featureConfigSnapshot: featureConfigSnapshot,
-      overrides: overrides,
+      overrides: [
+        storeReleasePolicyProvider.overrideWithValue(
+          const StoreReleasePolicy.unenforced(),
+        ),
+        ...overrides,
+      ],
       child: const RepaintBoundary(
         key: ValueKey<String>('home-state-golden'),
-        child: HomeScreen(),
+        child: TabShellFixture(index: 0, child: HomeScreen()),
       ),
     ),
   );
@@ -1129,29 +1384,29 @@ Future<void> _pumpHomeStateGolden(
     await Future.wait(
       tester
           .widgetList<Image>(find.byType(Image))
-          .where((image) => image.image is AssetImage)
           .map((image) => precacheImage(image.image, context)),
     );
   });
   await tester.pump();
-
-  await beforeCapture?.call(tester);
 
   final topChrome = find.byKey(const ValueKey<String>('home-top-chrome'));
   final homeScrollable = find
       .ancestor(of: topChrome, matching: find.byType(Scrollable))
       .first;
   final homePosition = tester.state<ScrollableState>(homeScrollable).position;
-  homePosition.jumpTo(homePosition.minScrollExtent);
-  await tester.pumpAndSettle();
-  homePosition.jumpTo(homePosition.minScrollExtent);
-  await tester.pump();
+  await beforeCapture?.call(tester);
+  if (!preserveScrollForCapture) {
+    homePosition.jumpTo(homePosition.minScrollExtent);
+    await tester.pumpAndSettle();
+    homePosition.jumpTo(homePosition.minScrollExtent);
+    await tester.pump();
+  }
 
   expect(tester.takeException(), isNull);
   await expectLater(
     find.byKey(const ValueKey<String>('home-state-golden')),
     matchesGoldenFile(
-      'goldens/home_state_${id}_dark_${size.width.toInt()}x${size.height.toInt()}.png',
+      'goldens/home_state_${id}_${brightness.name}_${size.width.toInt()}x${size.height.toInt()}.png',
     ),
   );
   await afterCapture?.call(tester);
@@ -1171,6 +1426,9 @@ Widget _buildApp({
     key: UniqueKey(),
     overrides: [
       homeFeedRepositoryProvider.overrideWithValue(homeRepository),
+      homeDiscoveryRepositoryProvider.overrideWithValue(
+        _HomeDiscoveryFixture(),
+      ),
       latestIntelRepositoryProvider.overrideWithValue(latestIntelRepository),
       authRepositoryProvider.overrideWithValue(_FakeAuthRepository()),
       initialFeatureConfigSnapshotProvider.overrideWithValue(
@@ -1507,4 +1765,41 @@ class _FakeAuthRepository extends AuthRepository {
   @override
   Stream<supabase.AuthState> get authStateChanges =>
       const Stream<supabase.AuthState>.empty();
+}
+
+class _HomeDiscoveryFixture implements HomeDiscoveryRepository {
+  _HomeDiscoveryFixture({this.photos = false});
+  final bool photos;
+  @override
+  Future<List<Map<String, dynamic>>> load(HomeDiscoveryKind kind) async =>
+      switch (kind) {
+        HomeDiscoveryKind.predictions => [
+          {
+            'id': 'preview-match',
+            'home_team': RuntimeBranding.displayHomeTeamName,
+            'away_team': 'APR FC',
+            'competition': 'Matchday',
+            'kickoff_at': '2030-08-08T16:00:00Z',
+          },
+        ],
+        HomeDiscoveryKind.partners => [
+          {
+            'id': 'preview-partner',
+            'name': 'Community partnership',
+            'category': 'Supporting club activities',
+            if (photos) 'image_url': 'https://fixture.test/partner.webp',
+            'image_rights_approved': photos,
+            'image_provenance_id': 'review-only-existing-club-photography',
+          },
+        ],
+        HomeDiscoveryKind.fanClubs => [
+          {
+            'id': 'preview-community',
+            'name': 'City supporters',
+            'region': 'Local community',
+            'member_count': 42,
+            if (photos) 'banner_image_url': 'https://fixture.test/fanclub.webp',
+          },
+        ],
+      };
 }

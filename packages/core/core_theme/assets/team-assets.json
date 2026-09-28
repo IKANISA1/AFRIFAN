@@ -44,7 +44,7 @@
       ],
       "asset": "premier-league-official-manchester-city.svg",
       "source": "https://resources.premierleague.com/premierleague25/badges-alt/43.svg",
-      "sha256": "5992dc73d3a29ef6d1e028a1658207b0b77e5afe9221fd14add86b03e3f54c42"
+      "sha256": "fe5fb0689e8bbdcc4db8bcb46f3eecc7b9c8ba239320b54ea3e87ca4eac12f0d"
     },
     {
       "id": "806bfda4-cf6c-4d38-8d21-ee2f5c12530e",
@@ -3835,7 +3835,7 @@
       ],
       "asset": "premier-league-official-coventry-city.svg",
       "source": "https://resources.premierleague.com/premierleague25/badges-alt/9.svg",
-      "sha256": "24a0fdc400f20bb7a2c3b67742b4c72e81b67b24602a69b10b18a10edc03a733"
+      "sha256": "080e20fe75e0d03f3c788940546f92815bc830b5dee398500b0abb1b0eccc6a7"
     },
     {
       "id": "premier-league-official:ipswich-town",
@@ -4382,6 +4382,19 @@
       "asset": "uefa-europa-league-official-52953.png",
       "source": "https://img.uefa.com/imgml/TP/teams/logos/70x70/52953.png",
       "sha256": "394ae37519fb52e5fb33153eceb245785afbc81bba39dfa0b0331ed722cf09a3"
+    },
+    {
+      "id": "africlub-club:1001",
+      "slug": "costa-do-sol",
+      "name": "CD Costa do Sol",
+      "initials": "CDS",
+      "aliases": [
+        "Costa do Sol",
+        "Os Canarinhos",
+        "costa_do_sol_mz"
+      ],
+      "asset": null,
+      "source": "https://cdcostadosol.s1.emjogo.pt/pt/"
     }
   ],
   "provenance": "Existing official competition library with SHA-256 validation, plus federation/club-published crest files retrieved 20 September 2026. Unmapped records have no invented crest."

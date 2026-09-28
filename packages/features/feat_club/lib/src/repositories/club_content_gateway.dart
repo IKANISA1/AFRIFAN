@@ -42,7 +42,7 @@ class SupabaseClubContentGateway
     final row = await _client
         .from('squad_players')
         .select(
-          'id, name, position, shirt_number, nationality, bio, image_url, photo_url, squad_group',
+          'id, name, position, shirt_number, nationality, bio, image_url:published_image_url, squad_group',
         )
         .eq('club_id', clubId)
         .eq('is_active', true)
@@ -113,7 +113,7 @@ class SupabaseClubContentGateway
     final rows = await _client
         .from('squad_players')
         .select(
-          'id, name, position, shirt_number, nationality, bio, image_url, photo_url, squad_group',
+          'id, name, position, shirt_number, nationality, bio, image_url:published_image_url, squad_group',
         )
         .eq('club_id', clubId)
         .eq('is_active', true)

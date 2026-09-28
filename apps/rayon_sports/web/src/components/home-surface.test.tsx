@@ -138,6 +138,7 @@ describe("HomeSurface", () => {
     [24, "Rayon Sports", "RWF"],
     [26, "Nkana", "ZMW"],
     [6, "AS Vita", "CDF"],
+    [1001, "Costa do Sol", "MZN"],
   ])("uses club %s identity and currency without asserting an unverified result", async (clubId, clubShortName, currencyCode) => {
     vi.spyOn(globalThis, "fetch").mockImplementation(readyHome);
     const { container } = render(

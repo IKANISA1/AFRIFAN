@@ -2,7 +2,9 @@
 
 This is the native execution guide for QA-04 in [the full-stack QA plan](full_stack_qa_plan.md). Source configuration, resolved Xcode/Gradle settings, compiled artifacts, installed apps, physical-device performance, provider checks and store release acceptance require separate evidence.
 
-All four club shells now expose these native identities:
+All five club shells expose separate native identities. Costa do Sol's current
+`mz.ikanisa.costadosol` identifiers are provisional local build identifiers;
+approved release registration is pending.
 
 | Platform | QA selection | Identity and behavior |
 | --- | --- | --- |

@@ -337,9 +337,10 @@ class TypographyTokens {
 
   // ── Semantic  ──
 
-  /// Section title — medium-weight heading for card and list sections.
+  /// Section heading, distinct from a 16-point list-row title.
+  /// Measured native hierarchy; the source does not publish native tokens.
   static TextStyle sectionTitle([Color? color]) => utilityFont(
-    fontSize: semanticSizes['titleMedium'],
+    fontSize: semanticSizes['headlineSmall'],
     fontWeight: FontWeight.w600,
     color: color ?? ColorTokens.onSurface,
     height: 1.24,
@@ -366,11 +367,11 @@ class TypographyTokens {
 
   /// Inline action text ("See all", "Open", "More").
   static TextStyle inlineAction([Color? color]) => utilityFont(
-    fontSize: semanticSizes['labelMedium'],
-    fontWeight: FontWeight.w600,
+    fontSize: semanticSizes['bodyMedium'],
+    fontWeight: FontWeight.w500,
     color: color ?? ColorTokens.primaryContainer,
     height: 1.15,
-    letterSpacing: 0.2,
+    letterSpacing: 0,
   );
 
   /// Compact label used by shared floating bottom navigation.

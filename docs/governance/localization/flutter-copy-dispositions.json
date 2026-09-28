@@ -147,38 +147,11 @@
       "reviewed_at": "2026-08-21"
     },
     {
-      "file": "packages/features/feat_admin/lib/src/screens/sms_sync_monitor_screen.dart",
-      "field": "text",
-      "value": "$value",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
       "file": "packages/features/feat_admin/lib/src/widgets/notification_widgets.dart",
       "field": "text",
       "value": "$statusLabel$datePart$metrics",
       "disposition": "runtime_value_without_translatable_literal",
       "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
-      "file": "packages/data/club_data/lib/src/repositories/club_repository.dart",
-      "field": "message",
-      "value": "Fan membership created",
-      "disposition": "internal_operational_diagnostic",
-      "rationale": "This message is recorded in the governed operational-health or retry telemetry path and is not rendered as supporter interface copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
-      "file": "packages/data/club_data/lib/src/repositories/club_repository.dart",
-      "field": "message",
-      "value": "Fan membership activated",
-      "disposition": "internal_operational_diagnostic",
-      "rationale": "This message is recorded in the governed operational-health or retry telemetry path and is not rendered as supporter interface copy.",
       "review_authority": "AFRICLUB code and localization governance",
       "reviewed_at": "2026-08-21"
     },
@@ -197,15 +170,6 @@
       "value": "$value",
       "disposition": "runtime_value_without_translatable_literal",
       "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
-      "file": "packages/features/feat_gamification/lib/src/fanzone_module.dart",
-      "field": "label",
-      "value": "Predict",
-      "disposition": "localized_primary_navigation_fallback",
-      "rationale": "Internal tab fallback name; the shared shell renders the localized Predict title.",
       "review_authority": "AFRICLUB code and localization governance",
       "reviewed_at": "2026-08-21"
     },
@@ -363,51 +327,6 @@
       "reviewed_at": "2026-08-21"
     },
     {
-      "file": "packages/features/feat_gamification/lib/src/screens/fet_wallet_screen.dart",
-      "field": "text",
-      "value": "${transactions.length}",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
-      "file": "packages/features/feat_gamification/lib/src/widgets/animated_fet_counter.dart",
-      "field": "text",
-      "value": "${widget.prefix}$displayValue${widget.suffix}",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
-      "file": "packages/features/feat_gamification/lib/src/widgets/community_prediction_bar.dart",
-      "field": "text",
-      "value": "${pick.pickPercentage.toStringAsFixed(0)}%",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
-      "file": "packages/features/feat_gamification/lib/src/widgets/top_scorers_section.dart",
-      "field": "text",
-      "value": "${scorer.rank}",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
-      "file": "packages/features/feat_gamification/lib/src/widgets/top_scorers_section.dart",
-      "field": "text",
-      "value": "${scorer.goals}",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "This candidate is a runtime number, identifier, currency value, percentage, or composed status value and contains no fixed supporter-facing lexical copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
       "file": "packages/features/feat_home/lib/src/home_module.dart",
       "field": "label",
       "value": "Home",
@@ -453,51 +372,6 @@
       "reviewed_at": "2026-08-21"
     },
     {
-      "file": "packages/features/feat_sms_ledger/lib/src/services/momo_sms_autoread_service.dart",
-      "field": "message",
-      "value": "SMS retry queue drain failed before all captures could retry.",
-      "disposition": "internal_operational_diagnostic",
-      "rationale": "This message is recorded in the governed operational-health or retry telemetry path and is not rendered as supporter interface copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
-      "file": "packages/features/feat_sms_ledger/lib/src/services/momo_sms_background_processor.dart",
-      "field": "message",
-      "value": "SMS retry queue has pending captures awaiting retry.",
-      "disposition": "internal_operational_diagnostic",
-      "rationale": "This message is recorded in the governed operational-health or retry telemetry path and is not rendered as supporter interface copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
-      "file": "packages/features/feat_sms_ledger/lib/src/services/momo_sms_telemetry.dart",
-      "field": "message",
-      "value": "M-Money pattern matched from unapproved sender.",
-      "disposition": "internal_operational_diagnostic",
-      "rationale": "This message is recorded in the governed operational-health or retry telemetry path and is not rendered as supporter interface copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
-      "file": "packages/features/feat_sms_ledger/lib/src/services/momo_sms_telemetry.dart",
-      "field": "message",
-      "value": "SMS retry queue has pending captures awaiting retry.",
-      "disposition": "internal_operational_diagnostic",
-      "rationale": "This message is recorded in the governed operational-health or retry telemetry path and is not rendered as supporter interface copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
-      "file": "packages/features/feat_sms_ledger/lib/src/services/momo_sms_telemetry.dart",
-      "field": "message",
-      "value": "SMS retry queue is full; new capture was dropped.",
-      "disposition": "internal_operational_diagnostic",
-      "rationale": "This message is recorded in the governed operational-health or retry telemetry path and is not rendered as supporter interface copy.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-08-21"
-    },
-    {
       "file": "packages/features/feat_ticketing/lib/src/widgets/ticket_configure_step.dart",
       "field": "text",
       "value": "$quantity",
@@ -507,54 +381,9 @@
       "reviewed_at": "2026-08-21"
     },
     {
-      "file": "packages/features/feat_home/lib/src/screens/home_screen.dart",
-      "field": "semanticLabel",
-      "value": "${slide.homeTeam} · ${slide.awayTeam}",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "Backend-authored team names or numeric scores separated by punctuation; no fixed lexical UI copy is embedded in this composition.",
-      "review_authority": "Implementation review against the selected native design contract",
-      "reviewed_at": "2026-09-05"
-    },
-    {
-      "file": "packages/features/feat_home/lib/src/widgets/match_card.dart",
-      "field": "text",
-      "value": "${slide.homeScore} : ${slide.awayScore}",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "Backend-authored team names or numeric scores separated by punctuation; no fixed lexical UI copy is embedded in this composition.",
-      "review_authority": "Implementation review against the selected native design contract",
-      "reviewed_at": "2026-09-05"
-    },
-    {
-      "file": "packages/features/feat_home/lib/src/widgets/match_card.dart",
-      "field": "text",
-      "value": "${slide.homeTeam} · ${slide.awayTeam}",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "Backend-authored team names or numeric scores separated by punctuation; no fixed lexical UI copy is embedded in this composition.",
-      "review_authority": "Implementation review against the selected native design contract",
-      "reviewed_at": "2026-09-05"
-    },
-    {
-      "file": "packages/features/feat_home/lib/src/widgets/match_card.dart",
-      "field": "text",
-      "value": "${slide.homeTeam} ${slide.awayTeam}",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "Backend-authored team names or numeric scores separated by punctuation; no fixed lexical UI copy is embedded in this composition.",
-      "review_authority": "Implementation review against the selected native design contract",
-      "reviewed_at": "2026-09-05"
-    },
-    {
-      "file": "packages/features/feat_admin/lib/src/screens/predict_ops_screen.dart",
-      "field": "title",
-      "value": "${row.home} · ${row.away}",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "Composes existing localized labels with governed team/competition/country names, numeric scores, FET amounts, or locale-formatted dates; FET and vs are fixed football/token notation, not untranslated interface prose.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-09-06"
-    },
-    {
       "file": "packages/features/feat_admin/lib/src/screens/predict_ops_screen.dart",
       "field": "text",
-      "value": "${row.competition} · ${labels[row.status] ?? l.predictUnavailable}",
+      "value": "${row.competition} \u00b7 ${labels[row.status] ?? l.predictUnavailable}",
       "disposition": "runtime_value_without_translatable_literal",
       "rationale": "Composes existing localized labels with governed team/competition/country names, numeric scores, FET amounts, or locale-formatted dates; FET and vs are fixed football/token notation, not untranslated interface prose.",
       "review_authority": "AFRICLUB code and localization governance",
@@ -571,35 +400,8 @@
     },
     {
       "file": "packages/features/feat_admin/lib/src/screens/predict_ops_screen.dart",
-      "field": "label",
-      "value": "${l.predictAdminConfirm} · ${row.homeScore}–${row.awayScore}",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "Composes existing localized labels with governed team/competition/country names, numeric scores, FET amounts, or locale-formatted dates; FET and vs are fixed football/token notation, not untranslated interface prose.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-09-06"
-    },
-    {
-      "file": "packages/features/feat_admin/lib/src/screens/predict_ops_screen.dart",
-      "field": "text",
-      "value": "${fixture.home} · ${fixture.away}",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "Composes existing localized labels with governed team/competition/country names, numeric scores, FET amounts, or locale-formatted dates; FET and vs are fixed football/token notation, not untranslated interface prose.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-09-06"
-    },
-    {
-      "file": "packages/features/feat_admin/lib/src/screens/predict_ops_screen.dart",
       "field": "text",
       "value": "${widget.data.entryFet} FET",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "Composes existing localized labels with governed team/competition/country names, numeric scores, FET amounts, or locale-formatted dates; FET and vs are fixed football/token notation, not untranslated interface prose.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-09-06"
-    },
-    {
-      "file": "packages/features/feat_admin/lib/src/screens/predict_ops_screen.dart",
-      "field": "text",
-      "value": "${l.predictAdminConfirmBody} ${widget.fixture!.homeScore}–${widget.fixture!.awayScore}",
       "disposition": "runtime_value_without_translatable_literal",
       "rationale": "Composes existing localized labels with governed team/competition/country names, numeric scores, FET amounts, or locale-formatted dates; FET and vs are fixed football/token notation, not untranslated interface prose.",
       "review_authority": "AFRICLUB code and localization governance",
@@ -626,16 +428,7 @@
     {
       "file": "packages/features/feat_gamification/lib/src/predict/predict_fixture_card.dart",
       "field": "text",
-      "value": "${material.formatMediumDate(local)} · ${material.formatTimeOfDay(TimeOfDay.fromDateTime(local), alwaysUse24HourFormat: true)}",
-      "disposition": "runtime_value_without_translatable_literal",
-      "rationale": "Composes existing localized labels with governed team/competition/country names, numeric scores, FET amounts, or locale-formatted dates; FET and vs are fixed football/token notation, not untranslated interface prose.",
-      "review_authority": "AFRICLUB code and localization governance",
-      "reviewed_at": "2026-09-06"
-    },
-    {
-      "file": "packages/features/feat_gamification/lib/src/predict/predict_fixture_card.dart",
-      "field": "text",
-      "value": "vs",
+      "value": "${material.formatMediumDate(local)} \u00b7 ${material.formatTimeOfDay(TimeOfDay.fromDateTime(local), alwaysUse24HourFormat: true)}",
       "disposition": "runtime_value_without_translatable_literal",
       "rationale": "Composes existing localized labels with governed team/competition/country names, numeric scores, FET amounts, or locale-formatted dates; FET and vs are fixed football/token notation, not untranslated interface prose.",
       "review_authority": "AFRICLUB code and localization governance",

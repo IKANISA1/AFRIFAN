@@ -39,7 +39,7 @@ class _FakeAuthRepository extends AuthRepository {
   @override
   Future<void> requestPhoneSignInOtp({
     required String phone,
-    supabase.OtpChannel channel = supabase.OtpChannel.sms,
+    supabase.OtpChannel channel = supabase.OtpChannel.whatsapp,
     bool shouldCreateUser = true,
   }) async {
     requestCount += 1;
@@ -139,6 +139,9 @@ void main() {
       const ValueKey<String>('supporter-send-otp-button'),
     );
     final input = find.byKey(const ValueKey<String>('supporter-phone-input'));
+    final entry = tester.widget<AfriInputField>(input);
+    expect(entry.hint, matches(RegExp(r'^\+?[0-9]+$')));
+    expect(entry.label, contains('WhatsApp'));
     expect(tester.getRect(submit).bottom, closeTo(828, 1));
     tester.view.viewInsets = const FakeViewPadding(bottom: 300);
     addTearDown(tester.view.resetViewInsets);

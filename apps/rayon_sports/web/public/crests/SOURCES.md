@@ -19,7 +19,7 @@ Rights review required for release; publication provenance is recorded, not owne
 
 - Identity: Manchester City
 - source: `https://resources.premierleague.com/premierleague25/badges-alt/43.svg`
-- SHA-256: `5992dc73d3a29ef6d1e028a1658207b0b77e5afe9221fd14add86b03e3f54c42`
+- SHA-256: `fe5fb0689e8bbdcc4db8bcb46f3eecc7b9c8ba239320b54ea3e87ca4eac12f0d`
 
 ## `laliga-official-4.png`
 
@@ -1003,7 +1003,7 @@ Rights review required for release; publication provenance is recorded, not owne
 
 - Identity: Coventry City
 - source: `https://resources.premierleague.com/premierleague25/badges-alt/9.svg`
-- SHA-256: `24a0fdc400f20bb7a2c3b67742b4c72e81b67b24602a69b10b18a10edc03a733`
+- SHA-256: `080e20fe75e0d03f3c788940546f92815bc830b5dee398500b0abb1b0eccc6a7`
 
 ## `premier-league-official-ipswich-town.svg`
 

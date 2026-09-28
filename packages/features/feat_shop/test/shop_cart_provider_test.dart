@@ -1,8 +1,46 @@
+import 'package:club_data/club_data.dart';
 import 'package:feat_shop/src/shop_cart_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  test(
+    'product media metadata survives cart and serialization, including revocation',
+    () {
+      final notifier = ShopCartNotifier();
+      addTearDown(notifier.dispose);
+      final product = <String, dynamic>{
+        'id': 'published-kit',
+        'name': 'Home kit',
+        'price': 25000,
+        'stock': 5,
+        'image_url': 'https://media.example.invalid/home.jpg',
+        'image_rights_approved': true,
+        'image_provenance_id': 'fixture-publication-record',
+      };
+      notifier.addRawProduct(product, partnerId: 'club', selectedVariant: 'M');
+      final item = notifier.state.single;
+      expect(item.selectedVariant, 'M');
+      expect(item.product.imageUrl, product['image_url']);
+      expect(item.product.imageRightsApproved, isTrue);
+      final restored = ClubProduct.fromJson(item.product.toJson());
+      expect(restored.imageProvenanceId, product['image_provenance_id']);
+      expect(restored.imageRightsApproved, isTrue);
+      notifier.addRawProduct(
+        {...product, 'image_rights_approved': false},
+        partnerId: 'club',
+        selectedVariant: 'M',
+      );
+      expect(notifier.state.single.product.imageRightsApproved, isFalse);
+      expect(notifier.state.single.product, isNot(item.product));
+      expect(notifier.state.single.quantity, 2);
+      expect(notifier.state.single.lineTotal, 50000);
+      expect(
+        ClubProduct.fromJson({'id': 'legacy'}).imageRightsApproved,
+        isFalse,
+      );
+    },
+  );
   test('enquiry products never enter the payable cart', () {
     final cart = ShopCartNotifier();
     addTearDown(cart.dispose);

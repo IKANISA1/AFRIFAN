@@ -3,20 +3,27 @@ import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../repositories/gikundiro_public_partners.dart';
 import 'club_collection_screens.dart';
 
 /// An explicit club publication, independent from reward/redemption eligibility.
 final clubPartnersProvider = FutureProvider.autoDispose
     .family<List<Map<String, dynamic>>, String?>((ref, id) async {
+      final publicSource = ref.watch(gikundiroPublicClientProvider);
+      if (publicSource != null) {
+        final rows = await loadGikundiroPublicPartners(publicSource);
+        return id == null
+            ? rows
+            : rows.where((row) => row['id'] == id).toList(growable: false);
+      }
       final client = ref.watch(supabaseClientProvider);
       final scope = await ClubScopeResolver(client: client).requireResolved();
       var query = client
           .from('club_partner_publications')
           .select(
-            'id,name,category,description,logo_url,image_rights_approved,image_provenance_id,website_url',
+            'id,name,category,description,logo_url,image_url,image_rights_approved,image_provenance_id,website_url',
           )
           .eq('club_id', scope.requiredClubId);
       if (id != null) query = query.eq('id', id);
@@ -40,60 +47,49 @@ class ClubPartnersScreen extends ConsumerWidget {
       emptyTitle: l.clubPartnersEmpty,
       emptyMessage: l.clubPartnersIntro,
       onRetry: () => ref.invalidate(clubPartnersProvider(partnerId)),
-      header: state.valueOrNull?.isNotEmpty == true
-          ? Padding(
-              padding: const EdgeInsets.only(bottom: SpacingTokens.sectionGap),
-              child: Text(
-                l.clubPartnersIntro,
-                style: TypographyTokens.bodyLarge(),
-              ),
-            )
-          : null,
-      itemBuilder: (context, row) => AfriSectionCard(
-        title: row['name'].toString(),
+      itemBuilder: (context, row) => AfriEditorialCard(
+        imageRightsApproved: row['image_rights_approved'] == true,
+        imageProvenanceId: row['image_provenance_id']?.toString(),
+        imageUrl:
+            row['image_rights_approved'] == true &&
+                row['image_provenance_id']?.toString().trim().isNotEmpty == true
+            ? (_https(row['image_url']) ?? _https(row['logo_url']))?.toString()
+            : null,
+        imageLabel: row['name'].toString(),
+        imageFit: _https(row['image_url']) != null
+            ? BoxFit.cover
+            : BoxFit.contain,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (row['image_rights_approved'] == true &&
-                row['image_provenance_id'] != null &&
-                _https(row['logo_url']) != null)
-              Image.network(
-                row['logo_url'].toString(),
-                height: 72,
-                fit: BoxFit.contain,
-                semanticLabel: row['name'].toString(),
-                errorBuilder: (_, error, stack) => const SizedBox.shrink(),
-              ),
             Text(
-              row['category'].toString(),
+              row['category']?.toString() ?? '',
               style: TypographyTokens.labelMedium(ColorTokens.onSurfaceVariant),
             ),
-            if (partnerId != null) ...[
-              const SizedBox(height: SpacingTokens.spacing3),
-              Text(
-                row['description'].toString(),
-                style: TypographyTokens.bodyLarge(),
-              ),
-              const SizedBox(height: SpacingTokens.spacing3),
-              if (_https(row['website_url']) != null)
-                AfriButton(
-                  label: l.clubPartnerWebsite,
-                  onTap: () async {
-                    final opened = await launchUrl(
-                      _https(row['website_url'])!,
-                      mode: LaunchMode.externalApplication,
-                    );
-                    if (!opened && context.mounted) {
-                      AfriToast.error(context, l.genericError);
-                    }
-                  },
-                ),
-            ] else ...[
-              const SizedBox(height: SpacingTokens.spacing3),
+            const SizedBox(height: SpacingTokens.spacing2),
+            Text(
+              row['name'].toString(),
+              style: TypographyTokens.headlineMedium(),
+            ),
+            const SizedBox(height: SpacingTokens.spacing3),
+            Text(
+              row['description']?.toString() ?? '',
+              style: TypographyTokens.bodyLarge(),
+            ),
+            if (_https(row['website_url']) != null) ...[
+              const SizedBox(height: SpacingTokens.spacing4),
               AfriButton(
-                label: l.clubPartnerDetails,
+                label: l.clubPartnerWebsite,
                 variant: AfriButtonVariant.secondary,
-                onTap: () => context.push('/club/partners/${row['id']}'),
+                onTap: () async {
+                  final opened = await launchUrl(
+                    _https(row['website_url'])!,
+                    mode: LaunchMode.externalApplication,
+                  );
+                  if (!opened && context.mounted) {
+                    AfriToast.error(context, l.genericError);
+                  }
+                },
               ),
             ],
           ],

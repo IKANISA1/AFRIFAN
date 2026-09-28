@@ -11,5 +11,4 @@ export 'src/admin_module.dart';
 export 'src/admin_notifications_controller.dart';
 export 'src/admin_predict_controller.dart';
 export 'src/admin_settlement_controller.dart';
-export 'src/admin_sms_monitor_controller.dart';
 export 'src/repositories/admin_repository.dart';

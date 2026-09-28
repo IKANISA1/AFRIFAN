@@ -1278,12 +1278,33 @@ List<String> _findStoredVisualAssets(Directory repoRoot) {
       if (_isGovernedRuntimeMedia(repoRoot, entity)) continue;
       if (_isGovernedStoreReleaseMedia(repoRoot, entity)) continue;
       if (_isGovernedGoldenEvidence(repoRoot, entity)) continue;
+      if (_isGovernedReviewFixtureMedia(repoRoot, entity)) continue;
       violations.add(normalizedPath);
     }
   }
 
   violations.sort();
   return violations;
+}
+
+bool _isGovernedReviewFixtureMedia(Directory root, File file) {
+  const directory = 'packages/testing/test_support/assets/shop/';
+  final relative = file.path.substring(root.path.length + 1);
+  if (!relative.startsWith(directory)) return false;
+  final manifest = File('${root.path}/${directory}sources.json');
+  if (!manifest.existsSync()) return false;
+  final metadata =
+      jsonDecode(manifest.readAsStringSync()) as Map<String, dynamic>;
+  if (metadata['runtime_bundled'] != false) return false;
+  final assets = metadata['assets'] as List<dynamic>;
+  return assets.whereType<Map<String, dynamic>>().any(
+    (asset) =>
+        asset['path'] == relative &&
+        '${asset['url']}'.startsWith('https://') &&
+        RegExp(r'^[0-9a-f]{64}$').hasMatch('${asset['sha256']}') &&
+        asset['use'] ==
+            'Local design review fixture only; not a runtime asset or production media approval.',
+  );
 }
 
 bool _isGovernedStoreReleaseMedia(Directory repoRoot, File mediaFile) {
@@ -1467,7 +1488,9 @@ List<String> _findForbiddenStaticDesignReferences(Directory repoRoot) {
                   '/packages/core/core_theme/lib/src/team_assets.g.dart',
                 ) ||
                 path.endsWith('/packages/core/core_theme/pubspec.yaml') ||
-                path.endsWith('/packages/testing/test_support/lib/predict_fixture_images.dart') ||
+                path.endsWith(
+                  '/packages/testing/test_support/lib/predict_fixture_images.dart',
+                ) ||
                 path.endsWith(
                   '/packages/core/core_theme/test/team_identity_test.dart',
                 )) &&

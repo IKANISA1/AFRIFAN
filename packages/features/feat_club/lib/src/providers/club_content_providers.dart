@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/club_content_models.dart';
 import '../repositories/club_content_gateway.dart';
+import '../repositories/gikundiro_public_club_gateway.dart';
 
 enum ClubContentFailureKind {
   offline,
@@ -46,9 +47,14 @@ class ClubContentFailure implements Exception {
   String toString() => 'ClubContentFailure(${kind.name})';
 }
 
-final clubContentGatewayProvider = Provider<ClubContentGateway>(
-  (ref) => SupabaseClubContentGateway(ref.watch(supabaseClientProvider)),
-);
+final clubContentGatewayProvider = Provider<ClubContentGateway>((ref) {
+  final mainGateway = SupabaseClubContentGateway(
+    ref.watch(supabaseClientProvider),
+  );
+  final source = ref.watch(gikundiroPublicClientProvider);
+  if (source == null) return mainGateway;
+  return GikundiroPublicClubGateway(source, mainGateway);
+});
 
 /// Maximum time a Club projection may remain in its loading state.
 ///

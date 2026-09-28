@@ -126,7 +126,6 @@ class AfriIcons {
   static const IconData public = Icons.public_rounded;
   static const IconData article = Icons.article_outlined;
   static const IconData score = Icons.sports_score_rounded;
-  static const IconData sms = Icons.sms_rounded;
   static const IconData people = Icons.people_alt_rounded;
   static const IconData business = Icons.business_rounded;
   static const IconData category = Icons.category_rounded;

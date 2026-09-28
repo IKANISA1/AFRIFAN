@@ -80,7 +80,16 @@ class AfriGovernedImage extends StatelessWidget {
         AfriSkeleton(width: width, height: height, borderRadius: borderRadius);
     final child = switch (effectiveState) {
       AfriGovernedImageState.ready => Image(
-        image: ResizeImage.resizeIfNeeded(cacheWidth, cacheHeight, image!),
+        // Bound decoding without stretching the original pixels. BoxFit then
+        // crops the intact photograph to the card's display geometry.
+        image: cacheWidth == null && cacheHeight == null
+            ? image!
+            : ResizeImage(
+                image!,
+                width: cacheWidth,
+                height: cacheHeight,
+                policy: ResizeImagePolicy.fit,
+              ),
         width: width,
         height: height,
         fit: fit,

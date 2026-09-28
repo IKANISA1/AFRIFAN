@@ -1,5 +1,6 @@
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
 
 import '../models/partner_pool_models.dart';
@@ -12,128 +13,89 @@ class HubPartnerPoolRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.afriL10n;
+    final ink = ColorTokens.discoveryInk;
+    final secondary = ink.withValues(alpha: 0.76);
     final viewerEntry = pool.viewerEntry;
-    final usesAccessibleTextLayout =
-        MediaQuery.textScalerOf(context).scale(14) > 18;
+    final points = CurrencyFormatter(
+      currencyCode: 'FET',
+      currencySymbol: l10n.gameFet,
+    ).formatPlain(pool.partnerStakeFet);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return AfriEditorialCard(
+      lightSurface: true,
+      child: Padding(
+        padding: const EdgeInsets.all(SpacingTokens.spacing1),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              width: SpacingTokens.spacing9,
-              height: SpacingTokens.spacing9,
-              decoration: BoxDecoration(
-                color: ColorTokens.primaryContainer.withValues(alpha: 0.18),
-                borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
-              ),
-              alignment: Alignment.center,
-              child: Icon(
-                AfriIcons.predict,
-                size: SpacingTokens.spacing5,
-                color: ColorTokens.primaryContainer,
-              ),
+            Text(
+              pool.partnerName,
+              style: TypographyTokens.bodyMedium(secondary),
             ),
-            const SizedBox(width: SpacingTokens.listItemGap),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(pool.title, style: TypographyTokens.titleSmall()),
-                  const SizedBox(height: SpacingTokens.spacing1),
-                  Text(
-                    context.afriL10n.gamePair(
-                      pool.partnerName,
-                      partnerPoolEligibilityLabel(
-                        context.afriL10n,
-                        pool.eligibilityMode,
-                      ),
-                    ),
-                    style: TypographyTokens.bodySmall(
-                      context.afriSemanticColors.secondaryText,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
+            const SizedBox(height: SpacingTokens.spacing2),
+            Text(pool.title, style: TypographyTokens.headlineMedium(ink)),
+            const SizedBox(height: SpacingTokens.spacing5),
+            Text(
+              l10n.gamePartnerPoolFundingLabel,
+              style: TypographyTokens.bodySmall(secondary),
             ),
-            if (!usesAccessibleTextLayout)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    pool.partnerStakeFet.toString(),
-                    style: TypographyTokens.titleMedium(
-                      ColorTokens.primaryContainer,
-                    ).copyWith(fontWeight: FontWeight.w600),
-                  ),
-                  Text(
-                    context.afriL10n.gamePointsRoundLabel,
-                    style: TypographyTokens.labelSmall(),
-                  ),
-                ],
-              ),
-          ],
-        ),
-        if (usesAccessibleTextLayout) ...[
-          const SizedBox(height: SpacingTokens.spacing2),
-          Text(
-            context.afriL10n.gamePointsRound(pool.partnerStakeFet),
-            style: TypographyTokens.titleMedium(
-              ColorTokens.primaryContainer,
-            ).copyWith(fontWeight: FontWeight.w600),
-          ),
-        ],
-        const SizedBox(height: SpacingTokens.spacing3),
-        Wrap(
-          spacing: SpacingTokens.spacing2,
-          runSpacing: SpacingTokens.spacing2,
-          crossAxisAlignment: WrapCrossAlignment.center,
-          children: [
-            AfriInfoChip(
-              label: context.afriL10n.gamePointEntry(pool.fanEntryFet),
-              color: ColorTokens.info,
+            const SizedBox(height: SpacingTokens.spacing1),
+            Text(
+              '$points ${l10n.gameFet}',
+              style: TypographyTokens.headlineLarge(
+                ink,
+              ).copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
             ),
-            AfriInfoChip(
-              label: context.afriL10n.gameFansCount(pool.totalEntries),
-              color: context.afriSemanticColors.secondaryText,
-            ),
-            if (viewerEntry != null)
-              AfriInfoChip(
-                label: partnerPoolOutcomeLabel(
-                  context.afriL10n,
-                  viewerEntry.selectedOutcome,
+            const SizedBox(height: SpacingTokens.spacing4),
+            Wrap(
+              spacing: SpacingTokens.spacing4,
+              runSpacing: SpacingTokens.spacing2,
+              children: [
+                Text(
+                  l10n.gamePointEntry(pool.fanEntryFet),
+                  style: TypographyTokens.bodyMedium(ink),
                 ),
-                icon: AfriIcons.check,
-                color: ColorTokens.success,
-              )
-            else if (pool.isOpen)
-              AfriInfoChip(
-                label: context.afriL10n.gameChooseWdw,
-                icon: AfriIcons.forward,
-                color: ColorTokens.primaryContainer,
-                onTap: onJoin,
-              )
-            else
-              AfriInfoChip(
-                label: pool.status,
-                color: context.afriSemanticColors.secondaryText,
+                Text(
+                  l10n.gameFansCount(pool.totalEntries),
+                  style: TypographyTokens.bodyMedium(secondary),
+                ),
+              ],
+            ),
+            const SizedBox(height: SpacingTokens.spacing2),
+            Text(
+              partnerPoolEligibilityLabel(l10n, pool.eligibilityMode),
+              style: TypographyTokens.bodySmall(secondary),
+            ),
+            if (viewerEntry != null) ...[
+              const SizedBox(height: SpacingTokens.spacing4),
+              Row(
+                children: [
+                  Icon(AfriIcons.check, color: ink, size: SizeTokens.iconSm),
+                  const SizedBox(width: SpacingTokens.spacing2),
+                  Expanded(
+                    child: Text(
+                      l10n.gameSelectedOutcome(
+                        partnerPoolOutcomeLabel(
+                          l10n,
+                          viewerEntry.selectedOutcome,
+                        ),
+                      ),
+                      style: TypographyTokens.titleMedium(ink),
+                    ),
+                  ),
+                ],
               ),
+            ] else if (!pool.isOpen) ...[
+              const SizedBox(height: SpacingTokens.spacing4),
+              Text(pool.status, style: TypographyTokens.titleMedium(ink)),
+            ] else if (onJoin != null) ...[
+              const SizedBox(height: SpacingTokens.spacing5),
+              AfriButton(label: l10n.gameJoinRound, onTap: onJoin!),
+            ],
           ],
         ),
-        if (!pool.hasJoined && pool.isOpen && onJoin != null) ...[
-          const SizedBox(height: SpacingTokens.spacing3),
-          AfriButton(
-            label: context.afriL10n.gameJoinRound,
-            icon: AfriIcons.predict,
-            variant: AfriButtonVariant.secondary,
-            onTap: onJoin!,
-          ),
-        ],
-      ],
+      ),
     );
   }
 }

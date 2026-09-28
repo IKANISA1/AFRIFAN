@@ -14,7 +14,6 @@ void main() {
             error: null,
             visibleClubs: const [],
             onRetry: () {},
-            onOpenClub: (_) {},
           ),
         ),
       );
@@ -36,7 +35,6 @@ void main() {
         },
       ];
 
-      String? opened;
       await tester.pumpWidget(
         _ResultsHarness(
           sliver: FanClubsResultsSliver(
@@ -44,13 +42,10 @@ void main() {
             error: null,
             visibleClubs: clubs,
             onRetry: () {},
-            onOpenClub: (id) => opened = id,
           ),
         ),
       );
 
-      await tester.tap(find.text('Ikipe Yacu Nyarugenge'));
-      expect(opened, 'ikipe-yacu-nyarugenge');
       expect(find.text('Ikipe Yacu Nyarugenge'), findsOneWidget);
       expect(find.text('Kigali • 42 members'), findsOneWidget);
       expect(find.text('View joining options'), findsNothing);

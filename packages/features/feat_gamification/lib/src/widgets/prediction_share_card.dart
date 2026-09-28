@@ -142,7 +142,7 @@ class PredictionShareService {
     );
     if (data.status == PredictionStatus.won) {
       buffer.writeln(l10n.gameEarnedShare(data.fetEarned));
-    } else {
+    } else if (data.status == PredictionStatus.pending) {
       buffer.writeln(l10n.gamePotentialShare(data.fetPotential));
     }
     buffer.writeln();
@@ -167,234 +167,146 @@ class PredictionShareService {
   }
 }
 
+/// A single, read-only preview of the text summary sent to the share sheet.
 class PredictionShareCard extends StatelessWidget {
   const PredictionShareCard({super.key, required this.data});
 
   final PredictionShareData data;
 
-  Color _statusColor(BuildContext context) {
-    return switch (data.status) {
-      PredictionStatus.won => ColorTokens.success,
-      PredictionStatus.lost => ColorTokens.error,
-      _ => context.afriSemanticColors.accent,
-    };
-  }
-
-  String _statusLabel(BuildContext context) {
-    return switch (data.status) {
-      PredictionStatus.won => context.afriL10n.gameWon,
-      PredictionStatus.lost => context.afriL10n.gameLost,
-      PredictionStatus.cancelled => context.afriL10n.gameCancelled,
-      PredictionStatus.void_ => context.afriL10n.gameVoid,
-      _ => context.afriL10n.gamePendingUpper,
-    };
-  }
+  String _statusLabel(BuildContext context) => switch (data.status) {
+    PredictionStatus.won => context.afriL10n.gameWon,
+    PredictionStatus.lost => context.afriL10n.gameLost,
+    PredictionStatus.cancelled => context.afriL10n.gameCancelled,
+    PredictionStatus.void_ => context.afriL10n.gameVoid,
+    _ => context.afriL10n.gamePendingUpper,
+  };
 
   @override
   Widget build(BuildContext context) {
-    final color = _statusColor(context);
-    final accent = context.afriSemanticColors.accent;
-    final accessibleAccent = ColorTokens.accessibleMetricColor(accent);
+    final l10n = context.afriL10n;
     final largeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
+    final statusColor = switch (data.status) {
+      PredictionStatus.won => ColorTokens.success,
+      PredictionStatus.lost => ColorTokens.error,
+      _ => ColorTokens.onSurfaceVariant,
+    };
+    final selection = predictionSelectionLabel(
+      selection: data.selectedOutcome,
+      homeTeam: data.homeTeam,
+      awayTeam: data.awayTeam,
+    );
+    final pointsLabel = data.status == PredictionStatus.won
+        ? l10n.gameEarnedUpper
+        : l10n.gamePotentialUpper;
+    final points = data.status == PredictionStatus.won
+        ? data.fetEarned
+        : data.fetPotential;
+    final showPoints =
+        data.status == PredictionStatus.won ||
+        data.status == PredictionStatus.pending;
 
     return Container(
+      key: const ValueKey<String>('prediction-share-preview'),
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
       decoration: BoxDecoration(
-        gradient: ColorTokens.universalSurfaceGradient(
-          from: ColorTokens.surfaceContainerLow,
-          to: color.withValues(alpha: 0.06),
-        ),
-        borderRadius: BorderRadius.circular(ShapeTokens.radiusLg),
-        border: BorderTokens.all(
-          color: color.withValues(alpha: 0.2),
-          width: BorderTokens.strong,
-        ),
+        color: ColorTokens.surfaceContainerLow,
+        borderRadius: ShapeTokens.cardRadius,
       ),
-      padding: const EdgeInsets.all(SpacingTokens.spacing5),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Wrap(
-            alignment: WrapAlignment.spaceBetween,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            spacing: SpacingTokens.spacing3,
-            runSpacing: SpacingTokens.spacing2,
+          if (data.competitionName.trim().isNotEmpty) ...[
+            Text(
+              data.competitionName,
+              textAlign: TextAlign.center,
+              style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
+            ),
+            const SizedBox(height: SpacingTokens.spacing5),
+          ],
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
+              Expanded(child: _ShareTeam(name: data.homeTeam)),
+              Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: SpacingTokens.spacing3,
-                  vertical: SpacingTokens.spacing1,
-                ),
-                decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
                 ),
                 child: Text(
-                  data.competitionName,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: TypographyTokens.labelSmall(accessibleAccent).copyWith(
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: TypographyTokens.trackingNone,
-                  ),
+                  data.homeScore != null && data.awayScore != null
+                      ? '${data.homeScore}–${data.awayScore}'
+                      : l10n.gameVsUpper,
+                  style: largeText
+                      ? TypographyTokens.titleLarge()
+                      : TypographyTokens.headlineMedium(),
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingTokens.spacing3,
-                  vertical: SpacingTokens.spacing1,
-                ),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.14),
-                  borderRadius: BorderRadius.circular(ShapeTokens.radiusFull),
-                ),
-                child: Text(
-                  _statusLabel(context),
-                  style: TypographyTokens.labelSmall(color).copyWith(
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: TypographyTokens.trackingNone,
-                  ),
-                ),
-              ),
+              Expanded(child: _ShareTeam(name: data.awayTeam)),
             ],
           ),
           const SizedBox(height: SpacingTokens.spacing4),
-          AfriFixtureTeams(
-            homeTeam: data.homeTeam,
-            awayTeam: data.awayTeam,
-            score: data.homeScore != null && data.awayScore != null
-                ? '${data.homeScore}–${data.awayScore}'
-                : null,
+          Text(
+            _statusLabel(context),
+            textAlign: TextAlign.center,
+            style: TypographyTokens.labelMedium(statusColor),
           ),
-          const SizedBox(height: SpacingTokens.spacing4),
-          if (largeText)
-            Column(
+          const SizedBox(height: SpacingTokens.spacing5),
+          AfriDivider(color: ColorTokens.outlineVariant),
+          const SizedBox(height: SpacingTokens.spacing5),
+          Text(
+            l10n.gameShareYourPick,
+            style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
+          ),
+          const SizedBox(height: SpacingTokens.spacing1),
+          Text(selection, style: TypographyTokens.headlineMedium()),
+          if (data.marketName.trim().isNotEmpty) ...[
+            const SizedBox(height: SpacingTokens.spacing1),
+            Text(
+              data.marketName,
+              style: TypographyTokens.bodyMedium(ColorTokens.onSurfaceVariant),
+            ),
+          ],
+          if (showPoints) ...[
+            const SizedBox(height: SpacingTokens.spacing5),
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: SpacingTokens.spacing3,
+              runSpacing: SpacingTokens.spacing2,
               children: [
-                _ShareMetric(
-                  label: context.afriL10n.gameMarketUpper,
-                  value: data.marketName,
-                ),
-                const SizedBox(height: SpacingTokens.spacing3),
-                _ShareMetric(
-                  label: context.afriL10n.gamePickUpper,
-                  value: data.selectedOutcome,
-                  valueWidget: PredictionSelection(
-                    selection: data.selectedOutcome,
-                    homeTeam: data.homeTeam,
-                    awayTeam: data.awayTeam,
-                  ),
-                  accent: true,
-                ),
-                const SizedBox(height: SpacingTokens.spacing3),
-                _ShareMetric(
-                  label: data.status == PredictionStatus.won
-                      ? context.afriL10n.gameEarnedUpper
-                      : context.afriL10n.gamePotentialUpper,
-                  value: data.status == PredictionStatus.won
-                      ? '+${data.fetEarned}'
-                      : '+${data.fetPotential}',
-                  accent: data.status == PredictionStatus.won,
-                ),
-              ],
-            )
-          else
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: _ShareMetric(
-                    label: context.afriL10n.gameMarketUpper,
-                    value: data.marketName,
-                  ),
-                ),
-                const SizedBox(width: SpacingTokens.spacing3),
-                Expanded(
-                  child: _ShareMetric(
-                    label: context.afriL10n.gamePickUpper,
-                    value: data.selectedOutcome,
-                    valueWidget: PredictionSelection(
-                      selection: data.selectedOutcome,
-                      homeTeam: data.homeTeam,
-                      awayTeam: data.awayTeam,
-                    ),
-                    accent: true,
-                  ),
-                ),
-                const SizedBox(width: SpacingTokens.spacing3),
-                Expanded(
-                  child: _ShareMetric(
-                    label: data.status == PredictionStatus.won
-                        ? context.afriL10n.gameEarnedUpper
-                        : context.afriL10n.gamePotentialUpper,
-                    value: data.status == PredictionStatus.won
-                        ? '+${data.fetEarned}'
-                        : '+${data.fetPotential}',
-                    accent: data.status == PredictionStatus.won,
-                  ),
+                Text(pointsLabel, style: TypographyTokens.bodyMedium()),
+                Text(
+                  '+$points ${l10n.gameFet}',
+                  style: TypographyTokens.titleLarge(),
                 ),
               ],
             ),
-          const SizedBox(height: SpacingTokens.spacing4),
-          Center(
-            child: Text(
-              context.afriL10n.gameShareTagline(RuntimeBranding.displayAppName),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant)
-                  .copyWith(
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: TypographyTokens.trackingNone,
-                  ),
-            ),
-          ),
+          ],
         ],
       ),
     );
   }
 }
 
-class _ShareMetric extends StatelessWidget {
-  const _ShareMetric({
-    required this.label,
-    required this.value,
-    this.accent = false,
-    this.valueWidget,
-  });
+class _ShareTeam extends StatelessWidget {
+  const _ShareTeam({required this.name});
 
-  final Widget? valueWidget;
-  final String label;
-  final String value;
-  final bool accent;
+  final String name;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Semantics(
+    label: name,
+    excludeSemantics: true,
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        valueWidget ??
-            Text(
-              value,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              textAlign: TextAlign.center,
-              style: TypographyTokens.titleSmall(
-                accent
-                    ? ColorTokens.accessibleMetricColor(
-                        context.afriSemanticColors.accent,
-                      )
-                    : ColorTokens.onSurface,
-              ).copyWith(fontWeight: FontWeight.w600),
-            ),
-        const SizedBox(height: SpacingTokens.spacing1),
+        AfriTeamCrest(name: name, size: SizeTokens.iconXl),
+        const SizedBox(height: SpacingTokens.spacing2),
         Text(
-          label,
+          teamInitials(name),
           textAlign: TextAlign.center,
-          style: TypographyTokens.labelSmall(ColorTokens.onSurfaceVariant)
-              .copyWith(
-                fontWeight: FontWeight.w600,
-                letterSpacing: TypographyTokens.trackingNone,
-              ),
+          style: TypographyTokens.titleLarge(),
         ),
       ],
-    );
-  }
+    ),
+  );
 }

@@ -50,6 +50,7 @@ export type PublicHomeNews = {
   category: string;
   publishedAt: string;
   author: string;
+  sourceUrl?: string;
 };
 
 export type PublicHomeProduct = {
@@ -263,7 +264,18 @@ export function normalizeHomeSnapshot(value: unknown): PublicHomeSnapshot {
           publishedAt: boundedString(row.publishedAt, 100),
           author: boundedString(row.author, 160),
         };
-        return Object.values(item).every(Boolean) ? item : null;
+        let sourceUrl = "";
+        if (typeof row.sourceUrl === "string") {
+          try {
+            const parsed = new URL(row.sourceUrl);
+            if (parsed.protocol === "https:") sourceUrl = parsed.href;
+          } catch {
+            sourceUrl = "";
+          }
+        }
+        return Object.values(item).every(Boolean)
+          ? { ...item, ...(sourceUrl ? { sourceUrl } : {}) }
+          : null;
       })
       .filter((item): item is PublicHomeNews => item != null),
     3,
@@ -711,9 +723,15 @@ export function HomeSurface({
                       <span>{article.category}</span>
                       <h3>{article.title}</h3>
                       <p>{article.excerpt}</p>
-                      <Link href={`/news/${encodeURIComponent(article.id)}`}>
-                        {copy.latestNews} <ArrowRight aria-hidden="true" />
-                      </Link>
+                      {article.sourceUrl ? (
+                        <a href={article.sourceUrl} target="_blank" rel="noopener noreferrer">
+                          Read on {article.author} <ArrowRight aria-hidden="true" />
+                        </a>
+                      ) : (
+                        <Link href={`/news/${encodeURIComponent(article.id)}`}>
+                          {copy.latestNews} <ArrowRight aria-hidden="true" />
+                        </Link>
+                      )}
                     </article>
                   ))}
                 </div>

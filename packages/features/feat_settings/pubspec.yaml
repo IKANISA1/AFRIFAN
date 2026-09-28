@@ -22,8 +22,6 @@ dependencies:
     path: ../../core/core_auth
   core_utils:
     path: ../../core/core_utils
-  feat_sms_ledger:
-    path: ../feat_sms_ledger
   go_router: ^14.8.1
   supabase_flutter: ^2.12.2
   flutter_riverpod: ^2.6.1

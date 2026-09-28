@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
+import 'package:test_support/predict_fixture_images.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -24,6 +25,7 @@ void main() {
     testWidgets('community discovery $state and safe direct-entry back', (
       tester,
     ) async {
+      await installPredictFixtureImages();
       final large = state == 'large_text';
       final brightness = state == 'light' ? Brightness.light : Brightness.dark;
       tester.view.physicalSize = large
@@ -70,6 +72,8 @@ void main() {
                           'description':
                               'A community for matchday and club activities.',
                           'member_count': 42,
+                          'banner_image_url':
+                              'https://fixture.test/fanclub.webp',
                           'is_active': true,
                           'is_official': true,
                           'is_featured': true,
@@ -99,6 +103,12 @@ void main() {
       );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
+      await tester.runAsync(() async {
+        for (final element in find.byType(Image).evaluate()) {
+          await precacheImage((element.widget as Image).image, element);
+        }
+      });
+      await tester.pump();
       expect(router.routeInformationProvider.value.uri.path, '/fan-clubs');
       expect(find.textContaining('private query details'), findsNothing);
       expect(tester.takeException(), isNull);
@@ -111,6 +121,8 @@ void main() {
       await tester.tap(find.byTooltip('Back'));
       await tester.pumpAndSettle();
       expect(find.text('Membership destination'), findsOneWidget);
+      await tester.pumpWidget(const SizedBox.shrink());
+      debugNetworkImageHttpClientProvider = null;
     });
   }
 }

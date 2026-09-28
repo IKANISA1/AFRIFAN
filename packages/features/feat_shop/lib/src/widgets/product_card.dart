@@ -1,8 +1,9 @@
 import 'package:core_l10n/core_l10n.dart';
-import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:flutter/material.dart';
+
+import 'shop_product_image.dart';
 
 /// Full-width discovery card. Product media, category and copy share one
 /// continuous surface; the add action remains independently accessible.
@@ -52,12 +53,11 @@ class ArmouryProductCard extends StatelessWidget {
     final category = product['category']?.toString() ?? '';
     final usesLargeTextLayout =
         MediaQuery.textScalerOf(context).scale(1) >= 1.5;
-    final image = Uri.tryParse(imageUrl ?? '');
-    final hasApprovedImage =
-        imageRightsApproved &&
-        image?.scheme == 'https' &&
-        image!.host.isNotEmpty &&
-        image.userInfo.isEmpty;
+    final hasApprovedImage = ShopProductImage.isPublished(
+      imageUrl,
+      imageRightsApproved,
+      imageProvenanceId,
+    );
     final foreground = hasApprovedImage
         ? ColorTokens.shopEditorialText
         : ColorTokens.onSurface;
@@ -86,13 +86,12 @@ class ArmouryProductCard extends StatelessWidget {
                   children: [
                     if (hasApprovedImage)
                       Positioned.fill(
-                        child: _ProductImage(
-                          imageUrl: imageUrl,
-                          semanticLabel: l10n.shopProductImageSemantic(name),
-                          provenanceId: imageProvenanceId.isEmpty
-                              ? 'shop:${product['id'] ?? 'unknown'}:unapproved'
-                              : imageProvenanceId,
+                        child: ShopProductImage(
+                          url: imageUrl,
+                          name: name,
+                          provenanceId: imageProvenanceId,
                           rightsApproved: imageRightsApproved,
+                          borderRadius: ShapeTokens.radiusNone,
                         ),
                       ),
                     if (hasApprovedImage)
@@ -101,8 +100,8 @@ class ArmouryProductCard extends StatelessWidget {
                           decoration: BoxDecoration(
                             gradient: ColorTokens.imageScrimGradient(
                               color: ColorTokens.inkBase,
-                              alphas: const [0.38, 0.0, 0.15, 0.88, 0.98],
-                              stops: const [0.0, 0.24, 0.45, 0.78, 1.0],
+                              alphas: const [0.62, 0.56, 0.06, 0.86, 0.96],
+                              stops: const [0.0, 0.18, 0.42, 0.75, 1.0],
                             ),
                           ),
                         ),
@@ -187,19 +186,15 @@ class ArmouryProductCard extends StatelessWidget {
                             children: [
                               Text(
                                 name,
-                                style:
-                                    TypographyTokens.headlineSmall(
-                                      foreground,
-                                    ).copyWith(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.w600,
-                                    ),
+                                style: TypographyTokens.headlineMedium(
+                                  foreground,
+                                ),
                               ),
                               if (subtitle.isNotEmpty) ...[
                                 const SizedBox(height: SpacingTokens.spacing1),
                                 Text(
                                   subtitle,
-                                  style: TypographyTokens.bodyMedium(secondary),
+                                  style: TypographyTokens.bodyLarge(secondary),
                                 ),
                               ],
                               const SizedBox(height: SpacingTokens.spacing1),
@@ -238,58 +233,6 @@ class ArmouryProductCard extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-}
-
-class _ProductImage extends StatelessWidget {
-  const _ProductImage({
-    required this.imageUrl,
-    required this.semanticLabel,
-    required this.provenanceId,
-    required this.rightsApproved,
-  });
-
-  final String? imageUrl;
-  final String semanticLabel;
-  final String provenanceId;
-  final bool rightsApproved;
-
-  @override
-  Widget build(BuildContext context) {
-    final gradient = ColorTokens.universalGradient(
-      colors: [
-        ColorTokens.referencePaymentsPurpleMid,
-        ColorTokens.shopEditorialSurface,
-      ],
-    );
-
-    if (imageUrl != null && imageUrl!.isNotEmpty) {
-      return AfriGovernedCachedImage(
-        imageUrl: imageUrl!,
-        semanticLabel: semanticLabel,
-        provenanceId: provenanceId,
-        rightsApproved: rightsApproved,
-        fit: BoxFit.cover,
-        borderRadius: ShapeTokens.radiusNone,
-        placeholder: _fallback(gradient),
-        errorFallback: _fallback(gradient),
-      );
-    }
-    return _fallback(gradient);
-  }
-
-  Widget _fallback(Gradient gradient) {
-    return DecoratedBox(
-      decoration: BoxDecoration(gradient: gradient),
-      child: Align(
-        alignment: const Alignment(0, -0.3),
-        child: Icon(
-          AfriIcons.shop,
-          size: SizeTokens.iconHero,
-          color: ColorTokens.shopEditorialSecondaryText.withValues(alpha: 0.7),
-        ),
-      ),
     );
   }
 }

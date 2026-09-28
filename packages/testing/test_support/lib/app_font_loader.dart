@@ -40,10 +40,16 @@ Future<ByteData> _loadMaterialIconsFont() async {
 Future<void> _preloadGoldenRoboto() async {
   try {
     final loader = FontLoader('GoldenRoboto');
-    loader.addFont(_loadFlutterArtifactFont('Roboto-Regular.ttf'));
+    // Load real weight faces: a regular-only fixture synthesizes bold text and
+    // cannot represent the production Android type hierarchy.
+    for (final face in ['Regular', 'Medium', 'Bold', 'Black']) {
+      loader.addFont(_loadFlutterArtifactFont('Roboto-$face.ttf'));
+    }
     await loader.load();
   } on Object {
-    // Non-golden tests may run in device environments without host SDK files.
+    // Golden capture must fail if its declared font cannot be rendered.
+    if (Platform.environment['FLUTTER_TEST'] == 'true') rethrow;
+    // Device integration tests use the installed platform font.
   }
 }
 

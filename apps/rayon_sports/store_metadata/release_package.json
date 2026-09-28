@@ -26,7 +26,6 @@
     "account_creation_available": true,
     "in_app_account_deletion_available": true,
     "notifications_permission_optional": true,
-    "android_sms_autoread_release_define": false,
     "android_source_requests_sms_or_call_log_permissions": false,
     "ads_sdk_found": false,
     "in_app_purchase_sdk_found": false,

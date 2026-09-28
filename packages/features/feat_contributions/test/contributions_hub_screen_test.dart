@@ -216,6 +216,10 @@ void main() {
     ) async {
       await installPredictFixtureImages();
       _setGoldenSurface(tester, profile.size);
+      if (profile.id.startsWith('large_text')) {
+        tester.platformDispatcher.textScaleFactorTestValue = 2;
+        addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+      }
       TypographyTokens.debugUseFallbackFonts = true;
       addTearDown(() => TypographyTokens.debugUseFallbackFonts = false);
       ColorTokens.setBrightness(profile.brightness);
@@ -314,6 +318,11 @@ const _compactGoldenProfiles =
       (
         id: 'standard_dark_390x844',
         size: Size(390, 844),
+        brightness: Brightness.dark,
+      ),
+      (
+        id: 'large_text_dark_320x720',
+        size: Size(320, 720),
         brightness: Brightness.dark,
       ),
       (

@@ -8,7 +8,12 @@ import 'afri_team_card.dart';
 
 /// The configured club's published crest. No generated replacement artwork.
 class AfriBrandMark extends StatelessWidget {
-  const AfriBrandMark({super.key, this.label, this.size = AfriChromeTokens.commandControlSize, this.semanticLabel});
+  const AfriBrandMark({
+    super.key,
+    this.label,
+    this.size = AfriChromeTokens.commandControlSize,
+    this.semanticLabel,
+  });
   final String? label;
   final double size;
   final String? semanticLabel;
@@ -16,6 +21,12 @@ class AfriBrandMark extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Semantics(
     label: semanticLabel,
-    child: AfriTeamCrest(name: teamAssetFor(label ?? '') != null ? label! : ClubConfigScope.maybeOf(context)?.clubName ?? RuntimeBranding.displayHomeTeamName, size: size),
+    child: AfriTeamCrest(
+      name: teamAssetFor(label ?? '') != null
+          ? label!
+          : ClubConfigScope.maybeOf(context)?.clubName ??
+                RuntimeBranding.displayHomeTeamName,
+      size: size,
+    ),
   );
 }

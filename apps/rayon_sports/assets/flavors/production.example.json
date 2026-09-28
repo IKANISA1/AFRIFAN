@@ -7,7 +7,6 @@
   "RIVAL_TEAM_NAME": "Rayon Sports FC",
   "PRIMARY_COMPETITION_NAME": "Rwanda Premier League",
   "COUNTRY_CODE": "RW",
-  "ENABLE_ANDROID_MOMO_SMS_AUTOREAD": false,
   "APP_SUPPORT_EMAIL": "support@example.com",
   "APP_WEBSITE_URL": "https://example.com",
   "APP_DEEP_LINK_SCHEME": "exampleapp",
@@ -16,5 +15,7 @@
   "APP_TERMS_URL": "https://example.com/terms",
   "SUPABASE_URL": "https://your-project.supabase.co",
   "SUPABASE_ANON_KEY": "your-anon-key",
+  "GIKUNDIRO_PUBLIC_SUPABASE_URL": "https://your-gikundiro-project.supabase.co",
+  "GIKUNDIRO_PUBLIC_SUPABASE_ANON_KEY": "your-public-anon-key",
   "ENVIRONMENT": "production"
 }

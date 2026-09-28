@@ -1,0 +1,18 @@
+{
+  "article": "https://laune.rw/rayon-sports-devoile-ses-nouveaux-maillots-avant-son-rendez-vous-continental-au-cameroun/",
+  "assets": [
+    {
+      "path": "packages/testing/test_support/assets/shop/kit-a.jpg",
+      "url": "https://laune.rw/wp-content/uploads/2026/09/HRJeMT8XUAEUv7M-683x1024.jpeg",
+      "sha256": "c6d373b25d36e81e20166362ccf45907d426eba1f9f662126af3c5575289c089",
+      "use": "Local design review fixture only; not a runtime asset or production media approval."
+    },
+    {
+      "path": "packages/testing/test_support/assets/shop/kit-b.jpg",
+      "url": "https://laune.rw/wp-content/uploads/2026/09/HRJeMUJXYAANhi4-819x1024.jpeg",
+      "sha256": "9934824bd6fcda0024acbda31156041de45c879aa58cd126ce86e5a22bd2eb8e",
+      "use": "Local design review fixture only; not a runtime asset or production media approval."
+    }
+  ],
+  "runtime_bundled": false
+}

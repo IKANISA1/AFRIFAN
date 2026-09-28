@@ -33,9 +33,10 @@ export type PublicNewsArticle = {
   title: string;
   excerpt: string;
   category: string;
-  coverImageUrl: string;
+  coverImageUrl: string | null;
   publishedAt: string;
   author: string;
+  sourceUrl?: string;
 };
 
 type NewsStateCopy = {
@@ -149,7 +150,7 @@ export function normalizeNewsArticles(value: unknown): PublicNewsArticle[] {
   const articles: PublicNewsArticle[] = [];
   for (const candidate of value) {
     if (!isRecord(candidate)) continue;
-    const { id, title, excerpt, category, coverImageUrl, publishedAt, author } =
+    const { id, title, excerpt, category, coverImageUrl, publishedAt, author, sourceUrl } =
       candidate;
     if (
       typeof id !== "string" ||
@@ -171,6 +172,15 @@ export function normalizeNewsArticles(value: unknown): PublicNewsArticle[] {
     }
 
     const normalizedId = id.trim();
+    let externalSource = "";
+    if (typeof sourceUrl === "string") {
+      try {
+        const parsed = new URL(sourceUrl);
+        if (parsed.protocol === "https:") externalSource = parsed.href;
+      } catch {
+        externalSource = "";
+      }
+    }
     seen.add(normalizedId);
     articles.push({
       id: normalizedId,
@@ -180,12 +190,13 @@ export function normalizeNewsArticles(value: unknown): PublicNewsArticle[] {
       coverImageUrl:
         typeof coverImageUrl === "string" && isSafeMediaUrl(coverImageUrl)
           ? coverImageUrl
-          : FALLBACK_IMAGE,
+          : externalSource ? null : FALLBACK_IMAGE,
       publishedAt: publishedAt.trim(),
       author: author.trim(),
+      ...(externalSource ? { sourceUrl: externalSource } : {}),
     });
   }
-  return articles.slice(0, 24);
+  return articles.slice(0, 100);
 }
 
 export function resolveNewsFailureStatus(
@@ -408,8 +419,8 @@ export function NewsSurface({ locale, identity, copy }: NewsSurfaceProps) {
         <section className="news-content" aria-busy={isBusy}>
           {articles.length > 0 && selectedArticle ? (
             <>
-              <article className="news-featured">
-                <div className="news-image">
+              <article className={`news-featured${selectedArticle.coverImageUrl ? "" : " news-featured--imageless"}`}>
+                {selectedArticle.coverImageUrl ? <div className="news-image">
                   <Image
                     src={selectedArticle.coverImageUrl}
                     alt=""
@@ -417,7 +428,7 @@ export function NewsSurface({ locale, identity, copy }: NewsSurfaceProps) {
                     priority
                     sizes="(min-width: 960px) 56vw, calc(100vw - 2rem)"
                   />
-                </div>
+                </div> : null}
                 <div className="news-featured-copy">
                   <p className="news-eyebrow">{localized.featuredStory}</p>
                   <p className="news-meta">
@@ -428,12 +439,15 @@ export function NewsSurface({ locale, identity, copy }: NewsSurfaceProps) {
                   </p>
                   <h2>{selectedArticle.title}</h2>
                   <p>{selectedArticle.excerpt}</p>
-                  <Link
-                    href={`/news/${encodeURIComponent(selectedArticle.id)}`}
-                    className="news-action news-action-primary"
-                  >
-                    {localized.readStory} <ArrowRight aria-hidden="true" />
-                  </Link>
+                  {selectedArticle.sourceUrl ? (
+                    <a className="news-action news-action-primary" href={selectedArticle.sourceUrl} target="_blank" rel="noopener noreferrer">
+                      Read on {selectedArticle.author} <ArrowRight aria-hidden="true" />
+                    </a>
+                  ) : (
+                    <Link href={`/news/${encodeURIComponent(selectedArticle.id)}`} className="news-action news-action-primary">
+                      {localized.readStory} <ArrowRight aria-hidden="true" />
+                    </Link>
+                  )}
                 </div>
               </article>
 

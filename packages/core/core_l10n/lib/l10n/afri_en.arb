@@ -507,7 +507,7 @@
       }
     }
   },
-  "clubViewAvailableTickets": "View available tickets",
+  "clubViewAvailableTickets": "View tickets",
   "clubStandingsTitle": "Standings",
   "clubStandingsSubtitle": "Current published league table",
   "clubStandingsEmptyTitle": "No standings published",
@@ -1723,23 +1723,6 @@
   },
   "contributionsConnectToLoad": "Connect to load contribution initiatives.",
   "contributionsInitiativesUnavailableMessage": "Contribution initiatives are temporarily unavailable.",
-  "contributionsSmsEnabled": "MoMo SMS sync enabled for this device.",
-  "contributionsSmsPermissionDenied": "SMS access was not granted. Sync remains off.",
-  "contributionsSmsEnableFailed": "Could not enable SMS sync. Check your permissions and try again.",
-  "contributionsSmsDisabled": "MoMo SMS sync disabled.",
-  "contributionsConnectBeforeSmsSync": "Connect before syncing MoMo messages.",
-  "contributionsSmsSyncComplete": "SMS sync complete: {uploaded} uploaded, {duplicates} duplicates.",
-  "@contributionsSmsSyncComplete": {
-    "placeholders": {
-      "uploaded": {
-        "type": "int"
-      },
-      "duplicates": {
-        "type": "int"
-      }
-    }
-  },
-  "contributionsSmsSyncFailed": "SMS sync failed. Check your connection and try again.",
   "contributionsHubTitle": "Contribute",
   "contributionsRefreshingTitle": "Refreshing contributions",
   "contributionsRefreshingMessage": "Current totals and initiatives are being checked.",
@@ -1785,14 +1768,12 @@
   "contributionsCommunityUpper": "Community",
   "contributionsFanClubsChapters": "Local FanClubs.",
   "contributionsLive": "LIVE",
-  "contributionsMomoSmsSync": "MoMo SMS sync",
   "contributionsUnavailableBuild": "Unavailable in this build.",
   "contributionsActiveUpper": "Active",
   "contributionsSyncing": "Syncing…",
   "contributionsSyncNow": "Sync now",
   "contributionsDisable": "Disable",
   "contributionsEnabling": "Enabling…",
-  "contributionsEnableSmsSync": "Enable SMS sync",
   "contributionsLiveCampaigns": "Live campaigns",
   "contributionsGroupsUnavailableTitle": "Groups unavailable",
   "contributionsGroupFallback": "Group",
@@ -2081,16 +2062,6 @@
   "contributionsVerifiedUpper": "Verified",
   "contributionsDone": "Done",
   "contributionsBackToGroup": "Back to group",
-  "contributionsEnableMomoSmsTitle": "Enable MoMo SMS sync",
-  "contributionsSmsPrivacyMessage": "{app} reads only MoMo confirmations to auto-log receipts. Other messages are not accessed.",
-  "@contributionsSmsPrivacyMessage": {
-    "placeholders": {
-      "app": {
-        "type": "String"
-      }
-    }
-  },
-  "contributionsAllowSmsReading": "Allow SMS reading",
   "contributionsEnable": "Enable",
   "contributionsNotNowUpper": "Not now",
   "settingsTitle": "Settings",
@@ -2296,9 +2267,6 @@
   "privacySettingsSessionsSignedOut": "Other sessions were signed out.",
   "privacySettingsSessionsSignOutFailed": "Could not sign out other devices. Try again.",
   "privacySettingsSessionSecurityTimeout": "Session security check timed out. Try again.",
-  "privacySettingsSmsAccessRequired": "SMS sync stays off until you grant Android SMS access for MoMo verification.",
-  "privacySettingsEnableMomoSmsTitle": "Enable MoMo SMS sync",
-  "privacySettingsMomoSmsDisclosure": "The app reads only approved Mobile Money verification SMS on this device to match contribution payments. It cannot access other messages.",
   "privacySettingsNotNow": "Not now",
   "privacySettingsContinue": "Continue",
   "privacySettingsLoadingTitle": "Loading privacy settings",
@@ -2333,8 +2301,6 @@
   "privacySettingsTitle": "Privacy",
   "privacySettingsControls": "Privacy controls",
   "privacySettingsControlsDescription": "Choose whether to share coarse, anonymous task events. Queries, contacts, account IDs, codes, messages, and exact payment values are never included.",
-  "privacySettingsMomoSmsSync": "MoMo SMS sync",
-  "privacySettingsMomoSmsSyncDescription": "Match approved Mobile Money verification SMS for faster contribution checks.",
   "privacySettingsShareAnalytics": "Share anonymous usage analytics",
   "privacySettingsShareAnalyticsDescription": "Help improve search, tickets, contributions, Predict, and recovery flows.",
   "privacySettingsAnalyticsFailClosed": "Usage sharing is optional and stays off until you enable it.",
@@ -2389,8 +2355,6 @@
   "adminSettleFixturesDescription": "Enter results and grade prediction markets",
   "adminManageCompetitions": "Manage competitions",
   "adminManageCompetitionsDescription": "Add, edit, and toggle supported leagues and cups",
-  "adminSmsSyncMonitor": "SMS sync monitor",
-  "adminSmsSyncMonitorDescription": "MoMo SMS ingestion pipeline health",
   "adminFeatureManager": "Feature manager",
   "adminFeatureManagerDashboardDescription": "Toggle features, visibility, and scheduling",
   "adminRecentActivity": "Recent activity",
@@ -3178,86 +3142,6 @@
     "placeholders": {
       "date": {
         "type": "String"
-      }
-    }
-  },
-  "adminSmsTitle": "SMS operations",
-  "adminSmsLoading": "Loading SMS operations",
-  "adminSmsLoadingMessage": "Checking controlled pipeline health information.",
-  "adminSmsNoHistory": "No SMS operations history",
-  "adminSmsNoHistoryMessage": "No controlled health signals or synchronization runs are available yet.",
-  "adminSmsControlledHealth": "Controlled health view",
-  "adminSmsControlledHealthMessage": "Review device synchronization, message checks, contribution matching, sender drift, retries, and privacy cleanup without displaying message bodies or supporter identifiers.",
-  "adminSmsPipelineHealth": "Pipeline health",
-  "adminSmsRecentSync": "Recent device synchronization",
-  "adminSmsNoRecentRuns": "No recent synchronization runs",
-  "adminSmsNoRecentRunsMessage": "The health summary remains available above.",
-  "adminSmsMetricSemantics": "{label}, {status}",
-  "@adminSmsMetricSemantics": {
-    "placeholders": {
-      "label": {
-        "type": "String"
-      },
-      "status": {
-        "type": "String"
-      }
-    }
-  },
-  "adminSmsCollapseDetails": "Collapse health details",
-  "adminSmsExpandDetails": "Expand health details",
-  "adminSmsLastSignal": "Last confirmed signal {date}",
-  "@adminSmsLastSignal": {
-    "placeholders": {
-      "date": {
-        "type": "String"
-      }
-    }
-  },
-  "adminSmsUnavailable": "SMS operations unavailable",
-  "adminSmsDisabled": "SMS operations monitoring is disabled for this build.",
-  "adminSmsOffline": "SMS operations offline",
-  "adminSmsOfflineMessage": "Reconnect before loading private operational information.",
-  "adminSmsAccessUnavailable": "SMS operations access unavailable",
-  "adminSmsAccessMessage": "Platform administrator access is required for this view.",
-  "adminSmsChanged": "SMS operations changed",
-  "adminSmsChangedMessage": "Refresh before using this operational information.",
-  "adminSmsSecurityMessage": "No operational information was shown. Check your connection.",
-  "adminSmsHiddenMessage": "Private operational information remains hidden. Try again.",
-  "adminSmsChecking": "Checking SMS operations",
-  "adminSmsCheckingMessage": "Showing the last confirmed state while current data is checked.",
-  "adminSmsLastConfirmed": "Last confirmed operational information remains visible. Controls are paused.",
-  "adminSmsStatusHealthy": "Healthy",
-  "adminSmsStatusSucceeded": "Succeeded",
-  "adminSmsStatusDegraded": "Degraded",
-  "adminSmsStatusRunning": "Running",
-  "adminSmsStatusRateLimited": "Rate limited",
-  "adminSmsStatusFailing": "Failing",
-  "adminSmsStatusFailed": "Failed",
-  "adminSmsTriggerInitial": "Initial history",
-  "adminSmsTriggerManual": "Manual",
-  "adminSmsTriggerControlled": "Controlled",
-  "adminSmsRunTitle": "{status} • {trigger}",
-  "@adminSmsRunTitle": {
-    "placeholders": {
-      "status": {
-        "type": "String"
-      },
-      "trigger": {
-        "type": "String"
-      }
-    }
-  },
-  "adminSmsRunMetrics": "{scanned} scanned • {uploaded} uploaded • {duplicates} duplicates",
-  "@adminSmsRunMetrics": {
-    "placeholders": {
-      "scanned": {
-        "type": "int"
-      },
-      "uploaded": {
-        "type": "int"
-      },
-      "duplicates": {
-        "type": "int"
       }
     }
   },
@@ -4711,7 +4595,7 @@
   "gameRedeemRewardsDescription": "Use points for rewards and partner offers",
   "gameAchievements": "Achievements",
   "gameAchievementsDescription": "Badges and streak status",
-  "gameShareCard": "Share card",
+  "gameShareCard": "Share prediction",
   "gameShareCardDescription": "Create a supporter card to share",
   "gameConnectBeforeJoiningRound": "Connect before joining this round.",
   "gamePoolEntryFailed": "Pool entry could not be recorded.",
@@ -4838,7 +4722,11 @@
   "gameUsingSavedPredictionHistory": "Using saved prediction history",
   "gameUsingSavedPredictionHistoryDescription": "Refresh the route before opening another platform share action.",
   "gameBackToPicks": "Back to picks",
-  "gameChoosePick": "Choose pick",
+  "gameChoosePick": "Choose a prediction",
+  "gameChangeSharePick": "Change pick",
+  "gameShareYourPick": "Your pick",
+  "gameShareCopyText": "Copy text",
+  "gameShareTextPreview": "Share a text summary of this prediction.",
   "gameSharePredictionSemantics": "{home} versus {away}, {market}, {outcome}",
   "@gameSharePredictionSemantics": {
     "placeholders": {
@@ -5097,7 +4985,8 @@
   "gameMatchSecurityTimeoutDescription": "No pool entry was confirmed. Refresh before trying again.",
   "gameMatchUnavailable": "Match unavailable",
   "gameMatchUnavailableDescription": "The latest match details could not be confirmed. Refresh to try again.",
-  "gamePartnerWdwPools": "Partner WDW Pools",
+  "gamePartnerWdwPools": "Partner pools",
+  "gamePartnerPoolFundingLabel": "Partner-funded pool",
   "gameNoPartnerPool": "No partner pool for this match",
   "gameNoPartnerPoolDescription": "Football predictions open only when a partner creates a fixed-entry WDW pool for this fixture.",
   "gamePartnerPoolsOnly": "{home} vs {away} uses partner-funded WDW pools only.",
@@ -5206,15 +5095,11 @@
   "predictNoRedemptions": "Partner recognition does not create a FET offer. Only published, eligible offers can be redeemed.",
   "searchPartialTitle": "Some results are unavailable",
   "searchPartialMessage": "Available results are shown. Refresh to try the remaining sources.",
-  "clubLinkUnavailable": "Continue on the club website",
-  "clubLinkUnavailableBody": "This website record is not available in the app yet. You can open the original page or browse the club.",
-  "clubOpenWebsite": "Open website",
   "clubLinkLoading": "Opening club content",
   "clubLinkRetry": "Try again",
   "clubPartnersTitle": "Partners",
   "clubPartnersIntro": "The organisations supporting our club. Partner recognition does not include a FET reward or redemption offer.",
   "clubPartnersUnavailable": "Partner details are temporarily unavailable.",
-  "clubPartnerDetails": "View partner",
   "clubFootballNow": "Football now",
   "clubFootballUpcoming": "Next fixture",
   "clubFootballRecent": "Latest result",
@@ -5268,5 +5153,12 @@
   "shopEnquiryOptions": "View enquiry options",
   "commonTryAgain": "Try again",
   "fanClubsEmptyTitle": "No fan clubs found",
-  "fanClubsEmptyMessage": "Try another name or location."
+  "fanClubsEmptyMessage": "Try another name or location.",
+  "homeActivePredictions": "Active predictions",
+  "homePredictionsEmpty": "New predictions will appear here",
+  "homePartnersEmpty": "Meet the club’s partners",
+  "homeFanClubsEmpty": "Find your supporter community",
+  "homeDiscoveryUnavailable": "Could not refresh this section",
+  "homeNewsEmpty": "Club updates will appear here",
+  "homeViewMatch": "View match"
 }

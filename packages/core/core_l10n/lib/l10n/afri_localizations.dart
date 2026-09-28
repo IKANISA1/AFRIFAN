@@ -1542,7 +1542,7 @@ abstract class AfriLocalizations {
   /// No description provided for @clubViewAvailableTickets.
   ///
   /// In en, this message translates to:
-  /// **'View available tickets'**
+  /// **'View tickets'**
   String get clubViewAvailableTickets;
 
   /// No description provided for @clubStandingsTitle.
@@ -5596,48 +5596,6 @@ abstract class AfriLocalizations {
   /// **'Contribution initiatives are temporarily unavailable.'**
   String get contributionsInitiativesUnavailableMessage;
 
-  /// No description provided for @contributionsSmsEnabled.
-  ///
-  /// In en, this message translates to:
-  /// **'MoMo SMS sync enabled for this device.'**
-  String get contributionsSmsEnabled;
-
-  /// No description provided for @contributionsSmsPermissionDenied.
-  ///
-  /// In en, this message translates to:
-  /// **'SMS access was not granted. Sync remains off.'**
-  String get contributionsSmsPermissionDenied;
-
-  /// No description provided for @contributionsSmsEnableFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Could not enable SMS sync. Check your permissions and try again.'**
-  String get contributionsSmsEnableFailed;
-
-  /// No description provided for @contributionsSmsDisabled.
-  ///
-  /// In en, this message translates to:
-  /// **'MoMo SMS sync disabled.'**
-  String get contributionsSmsDisabled;
-
-  /// No description provided for @contributionsConnectBeforeSmsSync.
-  ///
-  /// In en, this message translates to:
-  /// **'Connect before syncing MoMo messages.'**
-  String get contributionsConnectBeforeSmsSync;
-
-  /// No description provided for @contributionsSmsSyncComplete.
-  ///
-  /// In en, this message translates to:
-  /// **'SMS sync complete: {uploaded} uploaded, {duplicates} duplicates.'**
-  String contributionsSmsSyncComplete(int uploaded, int duplicates);
-
-  /// No description provided for @contributionsSmsSyncFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'SMS sync failed. Check your connection and try again.'**
-  String get contributionsSmsSyncFailed;
-
   /// No description provided for @contributionsHubTitle.
   ///
   /// In en, this message translates to:
@@ -5722,12 +5680,6 @@ abstract class AfriLocalizations {
   /// **'LIVE'**
   String get contributionsLive;
 
-  /// No description provided for @contributionsMomoSmsSync.
-  ///
-  /// In en, this message translates to:
-  /// **'MoMo SMS sync'**
-  String get contributionsMomoSmsSync;
-
   /// No description provided for @contributionsUnavailableBuild.
   ///
   /// In en, this message translates to:
@@ -5763,12 +5715,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Enabling…'**
   String get contributionsEnabling;
-
-  /// No description provided for @contributionsEnableSmsSync.
-  ///
-  /// In en, this message translates to:
-  /// **'Enable SMS sync'**
-  String get contributionsEnableSmsSync;
 
   /// No description provided for @contributionsLiveCampaigns.
   ///
@@ -6612,24 +6558,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Back to group'**
   String get contributionsBackToGroup;
-
-  /// No description provided for @contributionsEnableMomoSmsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Enable MoMo SMS sync'**
-  String get contributionsEnableMomoSmsTitle;
-
-  /// No description provided for @contributionsSmsPrivacyMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'{app} reads only MoMo confirmations to auto-log receipts. Other messages are not accessed.'**
-  String contributionsSmsPrivacyMessage(String app);
-
-  /// No description provided for @contributionsAllowSmsReading.
-  ///
-  /// In en, this message translates to:
-  /// **'Allow SMS reading'**
-  String get contributionsAllowSmsReading;
 
   /// No description provided for @contributionsEnable.
   ///
@@ -7735,24 +7663,6 @@ abstract class AfriLocalizations {
   /// **'Session security check timed out. Try again.'**
   String get privacySettingsSessionSecurityTimeout;
 
-  /// No description provided for @privacySettingsSmsAccessRequired.
-  ///
-  /// In en, this message translates to:
-  /// **'SMS sync stays off until you grant Android SMS access for MoMo verification.'**
-  String get privacySettingsSmsAccessRequired;
-
-  /// No description provided for @privacySettingsEnableMomoSmsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Enable MoMo SMS sync'**
-  String get privacySettingsEnableMomoSmsTitle;
-
-  /// No description provided for @privacySettingsMomoSmsDisclosure.
-  ///
-  /// In en, this message translates to:
-  /// **'The app reads only approved Mobile Money verification SMS on this device to match contribution payments. It cannot access other messages.'**
-  String get privacySettingsMomoSmsDisclosure;
-
   /// No description provided for @privacySettingsNotNow.
   ///
   /// In en, this message translates to:
@@ -7956,18 +7866,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Choose whether to share coarse, anonymous task events. Queries, contacts, account IDs, codes, messages, and exact payment values are never included.'**
   String get privacySettingsControlsDescription;
-
-  /// No description provided for @privacySettingsMomoSmsSync.
-  ///
-  /// In en, this message translates to:
-  /// **'MoMo SMS sync'**
-  String get privacySettingsMomoSmsSync;
-
-  /// No description provided for @privacySettingsMomoSmsSyncDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'Match approved Mobile Money verification SMS for faster contribution checks.'**
-  String get privacySettingsMomoSmsSyncDescription;
 
   /// No description provided for @privacySettingsShareAnalytics.
   ///
@@ -8208,18 +8106,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Add, edit, and toggle supported leagues and cups'**
   String get adminManageCompetitionsDescription;
-
-  /// No description provided for @adminSmsSyncMonitor.
-  ///
-  /// In en, this message translates to:
-  /// **'SMS sync monitor'**
-  String get adminSmsSyncMonitor;
-
-  /// No description provided for @adminSmsSyncMonitorDescription.
-  ///
-  /// In en, this message translates to:
-  /// **'MoMo SMS ingestion pipeline health'**
-  String get adminSmsSyncMonitorDescription;
 
   /// No description provided for @adminFeatureManager.
   ///
@@ -10907,246 +10793,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Last activity {date}'**
   String adminContributionsLastActivity(String date);
-
-  /// No description provided for @adminSmsTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'SMS operations'**
-  String get adminSmsTitle;
-
-  /// No description provided for @adminSmsLoading.
-  ///
-  /// In en, this message translates to:
-  /// **'Loading SMS operations'**
-  String get adminSmsLoading;
-
-  /// No description provided for @adminSmsLoadingMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Checking controlled pipeline health information.'**
-  String get adminSmsLoadingMessage;
-
-  /// No description provided for @adminSmsNoHistory.
-  ///
-  /// In en, this message translates to:
-  /// **'No SMS operations history'**
-  String get adminSmsNoHistory;
-
-  /// No description provided for @adminSmsNoHistoryMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'No controlled health signals or synchronization runs are available yet.'**
-  String get adminSmsNoHistoryMessage;
-
-  /// No description provided for @adminSmsControlledHealth.
-  ///
-  /// In en, this message translates to:
-  /// **'Controlled health view'**
-  String get adminSmsControlledHealth;
-
-  /// No description provided for @adminSmsControlledHealthMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Review device synchronization, message checks, contribution matching, sender drift, retries, and privacy cleanup without displaying message bodies or supporter identifiers.'**
-  String get adminSmsControlledHealthMessage;
-
-  /// No description provided for @adminSmsPipelineHealth.
-  ///
-  /// In en, this message translates to:
-  /// **'Pipeline health'**
-  String get adminSmsPipelineHealth;
-
-  /// No description provided for @adminSmsRecentSync.
-  ///
-  /// In en, this message translates to:
-  /// **'Recent device synchronization'**
-  String get adminSmsRecentSync;
-
-  /// No description provided for @adminSmsNoRecentRuns.
-  ///
-  /// In en, this message translates to:
-  /// **'No recent synchronization runs'**
-  String get adminSmsNoRecentRuns;
-
-  /// No description provided for @adminSmsNoRecentRunsMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'The health summary remains available above.'**
-  String get adminSmsNoRecentRunsMessage;
-
-  /// No description provided for @adminSmsMetricSemantics.
-  ///
-  /// In en, this message translates to:
-  /// **'{label}, {status}'**
-  String adminSmsMetricSemantics(String label, String status);
-
-  /// No description provided for @adminSmsCollapseDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'Collapse health details'**
-  String get adminSmsCollapseDetails;
-
-  /// No description provided for @adminSmsExpandDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'Expand health details'**
-  String get adminSmsExpandDetails;
-
-  /// No description provided for @adminSmsLastSignal.
-  ///
-  /// In en, this message translates to:
-  /// **'Last confirmed signal {date}'**
-  String adminSmsLastSignal(String date);
-
-  /// No description provided for @adminSmsUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'SMS operations unavailable'**
-  String get adminSmsUnavailable;
-
-  /// No description provided for @adminSmsDisabled.
-  ///
-  /// In en, this message translates to:
-  /// **'SMS operations monitoring is disabled for this build.'**
-  String get adminSmsDisabled;
-
-  /// No description provided for @adminSmsOffline.
-  ///
-  /// In en, this message translates to:
-  /// **'SMS operations offline'**
-  String get adminSmsOffline;
-
-  /// No description provided for @adminSmsOfflineMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Reconnect before loading private operational information.'**
-  String get adminSmsOfflineMessage;
-
-  /// No description provided for @adminSmsAccessUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'SMS operations access unavailable'**
-  String get adminSmsAccessUnavailable;
-
-  /// No description provided for @adminSmsAccessMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Platform administrator access is required for this view.'**
-  String get adminSmsAccessMessage;
-
-  /// No description provided for @adminSmsChanged.
-  ///
-  /// In en, this message translates to:
-  /// **'SMS operations changed'**
-  String get adminSmsChanged;
-
-  /// No description provided for @adminSmsChangedMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Refresh before using this operational information.'**
-  String get adminSmsChangedMessage;
-
-  /// No description provided for @adminSmsSecurityMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'No operational information was shown. Check your connection.'**
-  String get adminSmsSecurityMessage;
-
-  /// No description provided for @adminSmsHiddenMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Private operational information remains hidden. Try again.'**
-  String get adminSmsHiddenMessage;
-
-  /// No description provided for @adminSmsChecking.
-  ///
-  /// In en, this message translates to:
-  /// **'Checking SMS operations'**
-  String get adminSmsChecking;
-
-  /// No description provided for @adminSmsCheckingMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Showing the last confirmed state while current data is checked.'**
-  String get adminSmsCheckingMessage;
-
-  /// No description provided for @adminSmsLastConfirmed.
-  ///
-  /// In en, this message translates to:
-  /// **'Last confirmed operational information remains visible. Controls are paused.'**
-  String get adminSmsLastConfirmed;
-
-  /// No description provided for @adminSmsStatusHealthy.
-  ///
-  /// In en, this message translates to:
-  /// **'Healthy'**
-  String get adminSmsStatusHealthy;
-
-  /// No description provided for @adminSmsStatusSucceeded.
-  ///
-  /// In en, this message translates to:
-  /// **'Succeeded'**
-  String get adminSmsStatusSucceeded;
-
-  /// No description provided for @adminSmsStatusDegraded.
-  ///
-  /// In en, this message translates to:
-  /// **'Degraded'**
-  String get adminSmsStatusDegraded;
-
-  /// No description provided for @adminSmsStatusRunning.
-  ///
-  /// In en, this message translates to:
-  /// **'Running'**
-  String get adminSmsStatusRunning;
-
-  /// No description provided for @adminSmsStatusRateLimited.
-  ///
-  /// In en, this message translates to:
-  /// **'Rate limited'**
-  String get adminSmsStatusRateLimited;
-
-  /// No description provided for @adminSmsStatusFailing.
-  ///
-  /// In en, this message translates to:
-  /// **'Failing'**
-  String get adminSmsStatusFailing;
-
-  /// No description provided for @adminSmsStatusFailed.
-  ///
-  /// In en, this message translates to:
-  /// **'Failed'**
-  String get adminSmsStatusFailed;
-
-  /// No description provided for @adminSmsTriggerInitial.
-  ///
-  /// In en, this message translates to:
-  /// **'Initial history'**
-  String get adminSmsTriggerInitial;
-
-  /// No description provided for @adminSmsTriggerManual.
-  ///
-  /// In en, this message translates to:
-  /// **'Manual'**
-  String get adminSmsTriggerManual;
-
-  /// No description provided for @adminSmsTriggerControlled.
-  ///
-  /// In en, this message translates to:
-  /// **'Controlled'**
-  String get adminSmsTriggerControlled;
-
-  /// No description provided for @adminSmsRunTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'{status} • {trigger}'**
-  String adminSmsRunTitle(String status, String trigger);
-
-  /// No description provided for @adminSmsRunMetrics.
-  ///
-  /// In en, this message translates to:
-  /// **'{scanned} scanned • {uploaded} uploaded • {duplicates} duplicates'**
-  String adminSmsRunMetrics(int scanned, int uploaded, int duplicates);
 
   /// No description provided for @adminCmsTitle.
   ///
@@ -14816,7 +14462,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameShareCard.
   ///
   /// In en, this message translates to:
-  /// **'Share card'**
+  /// **'Share prediction'**
   String get gameShareCard;
 
   /// No description provided for @gameShareCardDescription.
@@ -15326,8 +14972,32 @@ abstract class AfriLocalizations {
   /// No description provided for @gameChoosePick.
   ///
   /// In en, this message translates to:
-  /// **'Choose pick'**
+  /// **'Choose a prediction'**
   String get gameChoosePick;
+
+  /// No description provided for @gameChangeSharePick.
+  ///
+  /// In en, this message translates to:
+  /// **'Change pick'**
+  String get gameChangeSharePick;
+
+  /// No description provided for @gameShareYourPick.
+  ///
+  /// In en, this message translates to:
+  /// **'Your pick'**
+  String get gameShareYourPick;
+
+  /// No description provided for @gameShareCopyText.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy text'**
+  String get gameShareCopyText;
+
+  /// No description provided for @gameShareTextPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Share a text summary of this prediction.'**
+  String get gameShareTextPreview;
 
   /// No description provided for @gameSharePredictionSemantics.
   ///
@@ -16104,8 +15774,14 @@ abstract class AfriLocalizations {
   /// No description provided for @gamePartnerWdwPools.
   ///
   /// In en, this message translates to:
-  /// **'Partner WDW Pools'**
+  /// **'Partner pools'**
   String get gamePartnerWdwPools;
+
+  /// No description provided for @gamePartnerPoolFundingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Partner-funded pool'**
+  String get gamePartnerPoolFundingLabel;
 
   /// No description provided for @gameNoPartnerPool.
   ///
@@ -16695,24 +16371,6 @@ abstract class AfriLocalizations {
   /// **'Available results are shown. Refresh to try the remaining sources.'**
   String get searchPartialMessage;
 
-  /// No description provided for @clubLinkUnavailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Continue on the club website'**
-  String get clubLinkUnavailable;
-
-  /// No description provided for @clubLinkUnavailableBody.
-  ///
-  /// In en, this message translates to:
-  /// **'This website record is not available in the app yet. You can open the original page or browse the club.'**
-  String get clubLinkUnavailableBody;
-
-  /// No description provided for @clubOpenWebsite.
-  ///
-  /// In en, this message translates to:
-  /// **'Open website'**
-  String get clubOpenWebsite;
-
   /// No description provided for @clubLinkLoading.
   ///
   /// In en, this message translates to:
@@ -16742,12 +16400,6 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Partner details are temporarily unavailable.'**
   String get clubPartnersUnavailable;
-
-  /// No description provided for @clubPartnerDetails.
-  ///
-  /// In en, this message translates to:
-  /// **'View partner'**
-  String get clubPartnerDetails;
 
   /// No description provided for @clubFootballNow.
   ///
@@ -16873,6 +16525,48 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'Try another name or location.'**
   String get fanClubsEmptyMessage;
+
+  /// No description provided for @homeActivePredictions.
+  ///
+  /// In en, this message translates to:
+  /// **'Active predictions'**
+  String get homeActivePredictions;
+
+  /// No description provided for @homePredictionsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'New predictions will appear here'**
+  String get homePredictionsEmpty;
+
+  /// No description provided for @homePartnersEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Meet the club’s partners'**
+  String get homePartnersEmpty;
+
+  /// No description provided for @homeFanClubsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Find your supporter community'**
+  String get homeFanClubsEmpty;
+
+  /// No description provided for @homeDiscoveryUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not refresh this section'**
+  String get homeDiscoveryUnavailable;
+
+  /// No description provided for @homeNewsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Club updates will appear here'**
+  String get homeNewsEmpty;
+
+  /// No description provided for @homeViewMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'View match'**
+  String get homeViewMatch;
 }
 
 class _AfriLocalizationsDelegate

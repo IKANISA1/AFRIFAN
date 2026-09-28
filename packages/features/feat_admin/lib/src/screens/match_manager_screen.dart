@@ -79,7 +79,7 @@ class MatchManagerScreen extends ConsumerWidget {
     final canCreate = controlsEnabled && snapshot.partnerId != null;
     final currency = NumberFormat.decimalPattern(context.afriL10n.localeName);
     final currencySymbol = context.afriCurrencySymbol;
-    final metricColor = ColorTokens.onSurface;
+    final metricColor = context.afriSemanticColors.primaryText;
 
     return AfriRefreshIndicator(
       onRefresh: ref.read(adminMatchesProvider.notifier).refresh,

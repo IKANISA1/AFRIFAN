@@ -13,20 +13,53 @@ void main() {
         'Nkana FC': ['NKA', 'nkana.png'],
         'as_vita': ['VIT', 'as-vita.png'],
         'Vital’O FC': ['VFC', 'vitalo.png'],
+        'CD Costa do Sol': ['CDS', null],
         'Marine FC': ['MAR', 'marine-fc.png'],
         'APR FC': ['APR', 'apr-fc.png'],
       };
       for (final entry in expected.entries) {
         expect(teamInitials(entry.key), entry.value.first, reason: entry.key);
-        expect(
-          teamAssetFor(entry.key)?.asset,
-          endsWith(entry.value.last),
-          reason: entry.key,
-        );
+        if (entry.value.last == null) {
+          expect(teamAssetFor(entry.key)?.asset, isNull, reason: entry.key);
+        } else {
+          expect(
+            teamAssetFor(entry.key)?.asset,
+            endsWith(entry.value.last!),
+            reason: entry.key,
+          );
+        }
       }
       expect(teamAssetFor('Another Rayon Sports'), isNull);
     },
   );
+
+  for (final scale in [1.0, 2.0]) {
+    testWidgets(
+      'team cells stay equal with one unpublished crest at $scale text',
+      (tester) async {
+        await tester.pumpWidget(
+          MaterialApp(
+            home: MediaQuery(
+              data: MediaQueryData(textScaler: TextScaler.linear(scale)),
+              child: const Scaffold(
+                body: SizedBox(
+                  width: 288,
+                  child: AfriFixtureTeams(
+                    homeTeam: 'Rayon Sports FC',
+                    awayTeam: 'Unknown United',
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        final cards = find.byType(AfriTeamCard);
+        expect(tester.getSize(cards.first), tester.getSize(cards.last));
+        expect(tester.takeException(), isNull);
+      },
+    );
+  }
 
   testWidgets('narrow enlarged cards preserve official artwork and side order', (
     tester,

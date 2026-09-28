@@ -22,8 +22,12 @@ dependencies:
     path: ../../core/core_router
   core_theme:
     path: ../../core/core_theme
+  core_network:
+    path: ../../core/core_network
   feat_home:
     path: ../../features/feat_home
   flutter_riverpod: ^2.6.1
+  flutter_cache_manager: ^3.3.1
+  file: ^7.0.1
 
 resolution: workspace

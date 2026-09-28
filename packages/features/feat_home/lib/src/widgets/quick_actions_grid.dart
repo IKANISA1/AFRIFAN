@@ -96,38 +96,28 @@ class _QuickActionsGridState extends ConsumerState<QuickActionsGrid> {
           onTap: (action) => _openAction(context, action, layer: 'primary'),
         ),
         if (secondaryActions.isNotEmpty) ...[
+          const SizedBox(height: SpacingTokens.sectionGap),
           AfriSectionHeader(
             title: l10n.homeShortcutsTitle,
             padding: EdgeInsets.zero,
-            trailing: secondaryActions.isEmpty
-                ? null
-                : AfriButton(
-                    key: const ValueKey<String>(
-                      'home-secondary-actions-toggle',
-                    ),
-                    label: _showSecondaryActions
-                        ? l10n.homeLess
-                        : l10n.homeMore,
-                    semanticsLabel: _showSecondaryActions
-                        ? l10n.homeHideMoreShortcuts
-                        : l10n.homeShowMoreShortcuts,
-                    onTap: () {
-                      setState(() {
-                        _showSecondaryActions = !_showSecondaryActions;
-                      });
-                    },
-                    variant: AfriButtonVariant.ghost,
-                    fullWidth: false,
-                  ),
+            trailing: AfriButton(
+              key: const ValueKey<String>('home-secondary-actions-toggle'),
+              label: _showSecondaryActions ? l10n.homeLess : l10n.homeMore,
+              semanticsLabel: _showSecondaryActions
+                  ? l10n.homeHideMoreShortcuts
+                  : l10n.homeShowMoreShortcuts,
+              onTap: () {
+                setState(() {
+                  _showSecondaryActions = !_showSecondaryActions;
+                });
+              },
+              variant: AfriButtonVariant.ghost,
+              fullWidth: false,
+            ),
           ),
-          const SizedBox(height: SpacingTokens.spacing4),
         ],
         if (_showSecondaryActions && secondaryActions.isNotEmpty) ...[
-          const SizedBox(height: SpacingTokens.spacing6),
-          const AfriDivider(),
-          const SizedBox(height: SpacingTokens.spacing4),
-          Text(l10n.homeMoreShortcuts, style: TypographyTokens.titleSmall()),
-          const SizedBox(height: SpacingTokens.spacing3),
+          const SizedBox(height: SpacingTokens.listItemGap),
           _SecondaryActionGrid(
             actions: secondaryActions,
             resolveIcon: _resolveActionIcon,
@@ -303,13 +293,13 @@ class _SecondaryActionGrid extends StatelessWidget {
                 );
                 return SizedBox(
                   width: tileWidth,
-                  child: AfriActionRow(
+                  child: AfriListRow(
                     icon: resolveIcon(action),
-                    label: available
-                        ? title
-                        : context.afriL10n.homeActionUnavailableInline(title),
-                    enabled: available,
-                    onTap: () => onTap(action),
+                    title: title,
+                    trailing: available
+                        ? const Icon(AfriIcons.chevronRight)
+                        : null,
+                    onTap: available ? () => onTap(action) : null,
                   ),
                 );
               })

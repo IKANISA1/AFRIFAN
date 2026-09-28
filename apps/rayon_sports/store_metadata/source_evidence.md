@@ -6,7 +6,7 @@
 | Authentication | `core_auth`, onboarding phone-auth screen | Anonymous sessions and phone OTP are implemented; restricted paths still need reviewer access |
 | Account deletion | edit-profile screen, typed confirmation overlay, `delete-account` Edge Function invocation | In-app deletion exists; live completion and public web request route still need end-to-end evidence |
 | Android permissions | source and generated release manifest | Notification permission is present; source removes location, audio, storage, and phone-state permissions; inspected release output has no SMS/Call Log permission |
-| SMS behavior | production define and SMS service gates | `ENABLE_ANDROID_MOMO_SMS_AUTOREAD=false` in the tracked production define; do not market SMS auto-read or request restricted-permission approval for this candidate |
+| Device-message collection | current Flutter dependency graph and native source | Collection/upload package, consent controls and native monitor removed; the separate club-management gateway owns payment-message collection |
 | Ads | package inventory and merged manifest | No ads SDK or ad placement found; Firebase dependencies introduce advertising-ID-related manifest entries in the inspected output, so exact-artifact review remains required |
 | Firebase | core-network bootstrap/config | Firebase SDKs are bundled. Analytics, Crashlytics, and Performance require a compile-time observability gate; analytics additionally requires consent. Messaging can initialize after notification permission. App Check has its own compile-time gate |
 | Backend | Supabase packages and repositories | Account/user IDs, profile, membership, ticket, shop, contribution, prediction, and device/session data can be transmitted to Supabase |

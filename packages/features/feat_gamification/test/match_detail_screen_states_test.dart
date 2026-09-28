@@ -264,6 +264,8 @@ void main() {
       value: AsyncData<MatchDetailState>(_readyState()),
       joinFocusNode: focusNode,
       beforeCapture: (tester) async {
+        await tester.ensureVisible(find.text('Join round'));
+        await tester.pumpAndSettle();
         await tester.tap(find.text('Join round'));
         await tester.pumpAndSettle();
         focusNode.requestFocus();
@@ -282,6 +284,8 @@ void main() {
       id: 'pressed',
       value: AsyncData<MatchDetailState>(_readyState()),
       beforeCapture: (tester) async {
+        await tester.ensureVisible(find.text('Join round'));
+        await tester.pumpAndSettle();
         await tester.tap(find.text('Join round'));
         await tester.pumpAndSettle();
         final action = find.byKey(
@@ -300,6 +304,8 @@ void main() {
       id: 'selected',
       value: AsyncData<MatchDetailState>(_readyState()),
       beforeCapture: (tester) async {
+        await tester.ensureVisible(find.text('Join round'));
+        await tester.pumpAndSettle();
         await tester.tap(find.text('Join round'));
         await tester.pumpAndSettle();
         await tester.tap(find.text('Draw'));

@@ -71,12 +71,8 @@ class VitaloConfig implements ClubConfig {
   bool get hasChat => true;
 
   @override
-  bool get hasSmsLedger => true;
-
-  @override
   MomoConfig get momo => const MomoConfig(
     ussdTemplate: '*150*2*{amount}*{momo}#',
-    senderName: 'Lumitel MoMo',
     countryCode: 'BI',
   );
 
@@ -90,6 +86,5 @@ class VitaloConfig implements ClubConfig {
     'shop': hasShop,
     'ticketing': hasTicketing,
     'chat': hasChat,
-    'sms_ledger': hasSmsLedger,
   };
 }

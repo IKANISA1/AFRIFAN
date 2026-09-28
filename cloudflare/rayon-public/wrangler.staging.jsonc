@@ -1,0 +1,19 @@
+{
+  "name": "africlub-rayon-public-staging",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-08-08",
+  "workers_dev": true,
+  "d1_databases": [
+    {
+      "binding": "RAYON_PUBLIC_DB",
+      "database_name": "africlub-rayon-public-staging",
+      "database_id": "18893ae3-e504-457f-a196-bfc075edada6"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "RAYON_PUBLIC_MEDIA",
+      "bucket_name": "africlub-rayon-public-media-staging"
+    }
+  ]
+}

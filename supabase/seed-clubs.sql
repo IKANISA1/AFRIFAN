@@ -1,5 +1,5 @@
 -- Local public catalog only. Identity, IDs, countries and currencies come from
--- the four app flavor files and their matching ClubConfig implementations.
+-- the five app flavor files and their matching ClubConfig implementations.
 -- Non-Rayon seed slugs are local identifiers derived from app folder and country.
 -- No Auth users, operator grants, provider credentials or onboarding approvals.
 begin;
@@ -14,6 +14,7 @@ insert into public.countries
 values
   ('BI', 'Burundi', '+257', 'BIF', '', false),
   ('CD', 'DR Congo', '+243', 'CDF', '', false),
+  ('MZ', 'Mozambique', '+258', 'MZN', '', false),
   ('RW', 'Rwanda', '+250', 'RWF', '', false),
   ('ZM', 'Zambia', '+260', 'ZMW', '', false)
 on conflict (id) do nothing;
@@ -24,11 +25,12 @@ overriding system value values
   (6,'AS Vita Club','DR Congo','as_vita_cd','CDF','FC',null),
   (26,'Nkana FC','Zambia','nkana_zm','ZMW','ZK',null),
   (24,'Rayon Sports FC','Rwanda','rayon_sports_rw','RWF','RWF','Rwanda Premier League'),
-  (44,'Vital''O FC','Burundi','vitalo_bi','BIF','FBu',null)
+  (44,'Vital''O FC','Burundi','vitalo_bi','BIF','FBu',null),
+  (1001,'CD Costa do Sol','Mozambique','costa_do_sol_mz','MZN','MT',null)
 on conflict (id) do nothing;
 
--- Complete the local UI identity from the existing ClubConfig implementations.
--- appName is the local display identity; no new public club nickname is asserted.
+-- Complete the local UI identity from the ClubConfig implementations and
+-- Costa do Sol's published nickname.
 -- Preserve already configured values when the local catalog is reseeded.
 update public.african_football_clubs as club
 set nickname_brand_identity = coalesce(club.nickname_brand_identity, identity.nickname),
@@ -40,7 +42,8 @@ from (values
   (6, 'AS Vita Club', 'CD', '#006400', '#000000', '#FFD700'),
   (26, 'Nkana FC', 'ZM', '#CC0000', '#D1D5DB', '#000000'),
   (24, 'Gikundiro', 'RW', '#0038A8', '#001742', '#D9B24C'),
-  (44, 'Vital''O', 'BI', '#7B2D8E', '#D1D5DB', '#FFD700')
+  (44, 'Vital''O', 'BI', '#7B2D8E', '#D1D5DB', '#FFD700'),
+  (1001, 'Os Canarinhos', 'MZ', '#F6C400', '#144B8B', '#122F5C')
 ) as identity(id, nickname, country_code, primary_color, secondary_color, accent_color)
 where club.id = identity.id
   and (club.nickname_brand_identity is null or club.country_iso_code is null

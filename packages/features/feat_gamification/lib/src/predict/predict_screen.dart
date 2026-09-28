@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:feat_club/feat_club.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +15,10 @@ import 'predict_repository.dart';
 import 'predict_review_sheet.dart';
 
 export 'predict_fixture_card.dart';
+
+final predictPublicFixturePreviewEnabledProvider = Provider<bool>(
+  (_) => gikundiroPublicSourceConfigured,
+);
 
 /// One supporter journey: fixture picks, personal history and FET activity.
 class PredictScreen extends ConsumerStatefulWidget {
@@ -89,6 +94,13 @@ class _PredictScreenState extends ConsumerState<PredictScreen>
 
   void _signIn() => context.push('/auth/phone?from=%2Fpredict');
 
+  Future<void> _refresh() async {
+    if (ref.read(predictPublicFixturePreviewEnabledProvider)) {
+      ref.invalidate(clubMatchesProvider);
+    }
+    await ref.read(predictControllerProvider.notifier).refresh();
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = context.afriL10n;
@@ -101,6 +113,12 @@ class _PredictScreenState extends ConsumerState<PredictScreen>
       'wallet' || 'activity' => 2,
       _ => 0,
     };
+    final publicMatches =
+        ref.watch(predictPublicFixturePreviewEnabledProvider) &&
+            data?.enabled != true &&
+            _section == 0
+        ? ref.watch(clubMatchesProvider)
+        : null;
     _scheduleBoundary(data);
     final competitions = {
       for (final f in data?.fixtures ?? <PredictFixture>[])
@@ -129,7 +147,7 @@ class _PredictScreenState extends ConsumerState<PredictScreen>
             !state.needsReconciliation &&
             data?.enabled == true;
         return AfriRefreshIndicator(
-          onRefresh: controller.refresh,
+          onRefresh: _refresh,
           child: ListView(
             physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.all(SpacingTokens.screenPadding),
@@ -206,9 +224,7 @@ class _PredictScreenState extends ConsumerState<PredictScreen>
                       ? l.predictSignIn
                       : l.predictRefresh,
                   enabled: online && !state.loading,
-                  onTap: failure == PredictFailure.signIn
-                      ? _signIn
-                      : controller.refresh,
+                  onTap: failure == PredictFailure.signIn ? _signIn : _refresh,
                 ),
                 const SizedBox(height: SpacingTokens.spacing6),
               ],
@@ -372,6 +388,39 @@ class _PredictScreenState extends ConsumerState<PredictScreen>
                   ),
                 ),
               ],
+              if (_section == 0 && publicMatches != null) ...[
+                const SizedBox(height: SpacingTokens.spacing4),
+                publicMatches.when(
+                  data: (matches) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (matches.isNotEmpty) ...[
+                        Text(
+                          'Upcoming Rayon Sports fixtures',
+                          style: TypographyTokens.headlineSmall(),
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing2),
+                        Text(
+                          'Confirmed match schedule. Predictions are unavailable here.',
+                          style: TypographyTokens.bodyMedium(
+                            ColorTokens.overviewSecondaryText,
+                          ),
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing4),
+                        for (final match in matches)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: SpacingTokens.spacing3,
+                            ),
+                            child: _PublicFixtureCard(match: match),
+                          ),
+                      ],
+                    ],
+                  ),
+                  error: (_, __) => const SizedBox.shrink(),
+                  loading: () => const AfriLinearProgressIndicator(),
+                ),
+              ],
               SizedBox(
                 height: widget.embedded
                     ? AfriClubBottomNav.contentBottomInset(context)
@@ -415,7 +464,7 @@ class _PredictScreenState extends ConsumerState<PredictScreen>
                             state.pendingFixture != null ||
                             !ConnectivityService.isOnline
                         ? null
-                        : () => unawaited(controller.refresh()),
+                        : () => unawaited(_refresh()),
                   ),
                   AfriTopCommandAction(
                     icon: AfriIcons.wallet,
@@ -439,4 +488,56 @@ class _PredictScreenState extends ConsumerState<PredictScreen>
       style: TypographyTokens.bodyMedium(ColorTokens.overviewSecondaryText),
     ),
   );
+}
+
+class _PublicFixtureCard extends StatelessWidget {
+  const _PublicFixtureCard({required this.match});
+
+  final ClubFixtureItem match;
+
+  @override
+  Widget build(BuildContext context) {
+    final local = match.matchDate?.toLocal();
+    final material = MaterialLocalizations.of(context);
+    return Material(
+      color: Theme.of(context).brightness == Brightness.dark
+          ? ColorTokens.overviewSurfaceForPath('/predict')
+          : ColorTokens.surfaceContainer,
+      borderRadius: ShapeTokens.cardRadius,
+      child: Padding(
+        padding: const EdgeInsets.all(SpacingTokens.spacing4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              match.competition,
+              style: TypographyTokens.labelMedium(
+                ColorTokens.overviewSecondaryText,
+              ),
+            ),
+            const SizedBox(height: SpacingTokens.spacing2),
+            Text(
+              '${match.homeTeam} vs ${match.awayTeam}',
+              style: TypographyTokens.headlineSmall(),
+            ),
+            const SizedBox(height: SpacingTokens.spacing2),
+            if (local != null)
+              Text(
+                '${material.formatMediumDate(local)} · ${material.formatTimeOfDay(TimeOfDay.fromDateTime(local), alwaysUse24HourFormat: true)}',
+                style: TypographyTokens.bodyMedium(ColorTokens.onSurface),
+              ),
+            if (match.venue.trim().isNotEmpty) ...[
+              const SizedBox(height: SpacingTokens.spacing1),
+              Text(
+                match.venue,
+                style: TypographyTokens.bodySmall(
+                  ColorTokens.overviewSecondaryText,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
 }

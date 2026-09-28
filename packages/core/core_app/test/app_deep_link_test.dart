@@ -338,8 +338,6 @@ class _FakeClubConfig implements ClubConfig {
   @override
   bool get hasShop => false;
   @override
-  bool get hasSmsLedger => false;
-  @override
   bool get hasTicketing => false;
   @override
   Map<String, bool> get features => const <String, bool>{
@@ -352,8 +350,7 @@ class _FakeClubConfig implements ClubConfig {
   @override
   String get momoPrefix => '*182*';
   @override
-  MomoConfig get momo =>
-      const MomoConfig(ussdTemplate: '', senderName: '', countryCode: '');
+  MomoConfig get momo => const MomoConfig(ussdTemplate: '', countryCode: '');
   @override
   String get supabaseAnonKey => 'anon';
   @override

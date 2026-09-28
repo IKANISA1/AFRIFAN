@@ -6,10 +6,9 @@ import '../official_fanclub_register.dart';
 
 /// One directory entry, one action. Membership workflow stays server-side.
 class FanClubCard extends StatelessWidget {
-  const FanClubCard({super.key, required this.club, required this.onTap});
+  const FanClubCard({super.key, required this.club});
 
   final Map<String, dynamic> club;
-  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -19,23 +18,26 @@ class FanClubCard extends StatelessWidget {
     final members = fanclubMemberLabel(club);
     final region =
         club['region']?.toString() ?? context.afriL10n.fanClubUnknownRegion;
-    return AfriPanelCard(
-      onTap: onTap,
+    return AfriEditorialCard(
+      imageRightsApproved: club['banner_image_url'] != null,
+      imageProvenanceId: 'published-fan-club:${club["id"]}',
+      imageUrl: club['banner_image_url']?.toString(),
+      imageLabel: name,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Expanded(child: Text(name, style: TypographyTokens.titleLarge())),
-              const SizedBox(width: SpacingTokens.inlineGap),
-              const Icon(AfriIcons.chevronRight, size: SizeTokens.iconMd),
+              Expanded(
+                child: Text(name, style: TypographyTokens.headlineMedium()),
+              ),
             ],
           ),
           if (description.isNotEmpty) ...[
             const SizedBox(height: SpacingTokens.spacing2),
             Text(
               description,
-              style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
+              style: TypographyTokens.bodyLarge(ColorTokens.onSurfaceVariant),
             ),
           ],
           const SizedBox(height: SpacingTokens.spacing4),

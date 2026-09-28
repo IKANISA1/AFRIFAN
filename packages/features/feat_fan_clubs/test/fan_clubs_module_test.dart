@@ -74,10 +74,7 @@ void main() {
         };
 
         expect(decisions['/fan-clubs'], RoutePresentation.fullHeightSheet);
-        expect(
-          decisions['/fan-clubs/:clubId'],
-          RoutePresentation.fullHeightSheet,
-        );
+        expect(decisions['/fan-clubs/:clubId'], RoutePresentation.redirect);
       },
     );
   });

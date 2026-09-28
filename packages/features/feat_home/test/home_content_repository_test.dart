@@ -1,3 +1,4 @@
+import 'package:feat_club/feat_club.dart';
 import 'package:feat_home/src/repositories/home_content_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -134,4 +135,85 @@ void main() {
       expect(snapshot.notice, LatestIntelNotice.unpublished);
     });
   });
+
+  test(
+    'Rayon Home uses sourced fixtures when the main feed is unavailable',
+    () async {
+      final source = _GikundiroClubGateway();
+      final snapshot = await GikundiroHomeFeedRepository(
+        _UnavailableHomeFeedRepository(),
+        source,
+      ).load();
+      expect(snapshot.heroSlides, hasLength(1));
+      expect(snapshot.heroSlides.single.homeTeam, 'Rayon Sports FC');
+      expect(
+        snapshot.heroSlides.single.route,
+        '/club/fixtures/gikundiro-fixture-1',
+      );
+      expect(snapshot.status, HomeFeedStatus.degraded);
+      expect(snapshot.showFixturePlaceholder, isFalse);
+    },
+  );
+
+  test('Rayon Home news links to the same sourced Club story', () async {
+    final snapshot = await GikundiroLatestIntelRepository(
+      _GikundiroClubGateway(),
+    ).loadPublishedArticles();
+    expect(snapshot.status, LatestIntelStatus.ready);
+    expect(snapshot.articles.single['id'], 'gikundiro-story-1');
+    expect(snapshot.articles.single['subtitle'], 'Verified source summary.');
+  });
+}
+
+class _UnavailableHomeFeedRepository implements HomeFeedRepository {
+  @override
+  Future<HomeFeedSnapshot> load() async => const HomeFeedSnapshot(
+    status: HomeFeedStatus.error,
+    showFixturePlaceholder: true,
+  );
+}
+
+class _GikundiroClubGateway implements ClubContentGateway {
+  @override
+  Future<ClubOverview?> loadOverview() async => null;
+
+  @override
+  Future<List<ClubHistoryItem>> loadHistory() async => [];
+
+  @override
+  Future<List<ClubStandingItem>> loadStandings() async => [];
+
+  @override
+  Future<List<ClubSquadMember>> loadSquad() async => [];
+
+  @override
+  Future<List<ClubFixtureItem>> loadMatches() async => [
+    ClubFixtureItem(
+      id: 'gikundiro-fixture-1',
+      homeTeam: 'Rayon Sports FC',
+      awayTeam: 'APR FC',
+      competition: 'Rwanda Premier League',
+      venue: 'Kigali',
+      matchDate: DateTime.utc(2026, 9, 24, 15),
+      kickoffTime: '17:00',
+      status: 'scheduled',
+      homeScore: 0,
+      awayScore: 0,
+      isOnSale: false,
+    ),
+  ];
+
+  @override
+  Future<List<ClubNewsItem>> loadNews() async => [
+    ClubNewsItem(
+      id: 'gikundiro-story-1',
+      title: 'Rayon Sports update',
+      subtitle: '',
+      body: 'Verified source summary.',
+      category: 'Matchday',
+      author: 'Umuseke',
+      publishedAt: DateTime.utc(2026, 9, 23),
+      sourceUrl: 'https://umuseke.rw/story',
+    ),
+  ];
 }

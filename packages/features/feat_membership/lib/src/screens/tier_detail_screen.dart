@@ -177,29 +177,23 @@ class _TierDetailScreenState extends ConsumerState<TierDetailScreen> {
             child: GlassCard(
               animate: false,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Container(
-                    width: SizeTokens.iconXxl * 2,
-                    height: SizeTokens.iconXxl * 2,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: ColorTokens.universalGradient(
-                        colors: [
-                          ColorTokens.primaryContainer.withValues(alpha: 0.9),
-                          ColorTokens.primary,
-                        ],
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          detail.title,
+                          style: TypographyTokens.headlineMedium(),
+                        ),
                       ),
-                    ),
-                    alignment: Alignment.center,
-                    child: Icon(detail.icon, size: SizeTokens.iconXl),
-                  ),
-                  const SizedBox(height: SpacingTokens.spacing4),
-                  Text(
-                    detail.title,
-                    textAlign: TextAlign.center,
-                    style: TypographyTokens.headlineSmall().copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                      if (RuntimeBranding.displayHomeTeamName.isNotEmpty) ...[
+                        const SizedBox(width: SpacingTokens.spacing3),
+                        AfriTeamCrest(
+                          name: RuntimeBranding.displayHomeTeamName,
+                        ),
+                      ],
+                    ],
                   ),
                   const SizedBox(height: SpacingTokens.spacing2),
                   _TierPriceLabel(label: detail.priceLabel),
@@ -207,8 +201,9 @@ class _TierDetailScreenState extends ConsumerState<TierDetailScreen> {
                     const SizedBox(height: SpacingTokens.spacing2),
                     Text(
                       detail.subtitle,
-                      textAlign: TextAlign.center,
-                      style: TypographyTokens.bodyMedium(),
+                      style: TypographyTokens.bodyMedium(
+                        ColorTokens.onSurfaceVariant,
+                      ),
                     ),
                   ],
                 ],
@@ -390,31 +385,21 @@ class _TierPriceLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = TypographyTokens.headlineLarge().copyWith(
-      fontWeight: FontWeight.w600,
-    );
     final parts = label.split(' / ');
-    final usesLargeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
-    if (!usesLargeText || parts.length != 2) {
-      return Text(label, textAlign: TextAlign.center, style: style);
-    }
     return Semantics(
       label: label,
       excludeSemantics: true,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: double.infinity,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(parts.first, maxLines: 1, style: style),
+          Text(parts.first, style: TypographyTokens.headlineMedium()),
+          if (parts.length > 1) ...[
+            const SizedBox(height: SpacingTokens.spacing1),
+            Text(
+              '/ ${parts.skip(1).join(' / ')}',
+              style: TypographyTokens.bodyMedium(ColorTokens.onSurfaceVariant),
             ),
-          ),
-          Text(
-            <String>['/', parts.last].join(' '),
-            textAlign: TextAlign.center,
-            style: style,
-          ),
+          ],
         ],
       ),
     );

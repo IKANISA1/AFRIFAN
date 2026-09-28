@@ -212,6 +212,11 @@ class ColorTokens {
 
   static Color get glassFill =>
       Colors.white.withValues(alpha: isDark ? 0.075 : 0.10);
+  // Owner-selected lighter adaptation of LIVE-026's translucent discovery tiles.
+  static Color get discoverySurface =>
+      Colors.white.withValues(alpha: isDark ? 0.14 : 0.78);
+  static const discoveryInk = Color(0xFF191C1F);
+  static Color get discoveryControl => Colors.white.withValues(alpha: 0.72);
   static Color get ghostBorder =>
       (isDark ? Colors.white : _inkBase).withValues(alpha: 0.12);
 
@@ -272,9 +277,10 @@ class ColorTokens {
   }
 
   static LinearGradient membershipCardGradient() => const LinearGradient(
-    begin: Alignment.bottomLeft,
-    end: Alignment.topRight,
-    colors: [membershipCardViolet, membershipCardVioletLight],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF8D64DF), Color(0xFF6240A5), Color(0xFF35215F)],
+    stops: [0, .48, 1],
   );
 
   /// Resolves an inactive-control foreground that stays visibly unavailable

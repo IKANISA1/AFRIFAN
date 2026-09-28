@@ -26,9 +26,9 @@ void main() {
     test('diagnostic messages reject identifiers and bucket counts', () {
       expect(
         CrashlyticsService.sanitizeDiagnosticMessage(
-          'momo_sms: manual scanned=428 uploaded=12',
+          'upload_queue: retried=428 uploaded=12',
         ),
-        'momo_sms: manual scanned=# uploaded=#',
+        'upload_queue: retried=# uploaded=#',
       );
       expect(
         CrashlyticsService.sanitizeDiagnosticMessage(

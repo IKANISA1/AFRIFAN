@@ -12,10 +12,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:test_support/app_font_loader.dart';
+import 'package:test_support/shop_fixture_images.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadAppFonts);
+  useShopFixtureImages();
   late List<AfriCountry> previousCountries;
   setUp(() {
     ConnectivityService.setOnlineForTest(true);
@@ -193,7 +195,8 @@ void main() {
       },
     );
 
-    expect(find.text('Qty 2'), findsOneWidget);
+    expect(find.text('2'), findsOneWidget);
+    expect(tester.widget<Text>(find.text('2')).semanticsLabel, 'Qty 2');
   });
 
   testWidgets('golden cart pressed checkout state', (tester) async {
@@ -419,6 +422,7 @@ Future<void> _pumpCartGolden(
     await tester.pump();
   }
 
+  if (settle) await settleShopFixtureImages(tester);
   await afterPump?.call(tester);
 
   expect(tester.takeException(), isNull);
@@ -495,6 +499,9 @@ class _SeededCartNotifier extends ShopCartNotifier {
     addRawProduct(const <String, dynamic>{
       'id': 'shirt-1',
       'name': 'Home shirt',
+      'image_url': shopHomePhoto,
+      'image_rights_approved': true,
+      'image_provenance_id': shopPhotoProvenance,
       'category': 'jersey',
       'price': 25000,
       'stock': 5,

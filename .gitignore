@@ -68,6 +68,7 @@ coverage/
 
 # Generated
 *.g.dart
+!packages/core/core_theme/lib/src/team_assets.g.dart
 *.freezed.dart
 *.mocks.dart
 *.config.dart
@@ -97,6 +98,7 @@ node_modules/
 *.apk
 **/release_artifacts/
 apps/rayon_sports/web/.wrangler/
+/.wrangler/
 apps/rayon_sports/web/.lighthouseci/
 apps/rayon_sports/web/tmp/
 supabase/recovery/*

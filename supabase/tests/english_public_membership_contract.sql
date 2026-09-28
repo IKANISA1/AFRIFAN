@@ -74,5 +74,51 @@ set local role anon;
 select is(public.resolve_club_public_link_v1(9947001,'/news/story'),null::text,'revoked publication invalidates the link');
 select is(public.club_public_content_manifest_v1(9947001)->>'language','en','manifest declares English');
 reset role;
+
+-- Discovery media is public only through the existing published row boundary.
+select ok(has_column_privilege('anon','public.fan_clubs','published_image_url','SELECT'),
+  'guest directory can read its published banner');
+select ok(not has_column_privilege('authenticated','public.fan_clubs','published_image_url','UPDATE'),
+  'supporter cannot edit a fan-club banner');
+insert into public.club_partner_publications(id,club_id,name,published_at,image_url,image_rights_approved,image_provenance_id)
+values ('99470000-0000-4000-8000-000000000500',9947001,'Synthetic photo partner',now(),
+ 'https://fixture.test/partner.webp',true,'isolated-fixture-only');
+select throws_ok($$insert into public.club_partner_publications(club_id,name,image_url)
+ values (9947001,'Unapproved','https://fixture.test/unapproved.webp')$$,
+ '23514',null::text,'partner photography requires rights and provenance');
+set local role anon;
+select is((select image_url from public.club_partner_publications where id='99470000-0000-4000-8000-000000000500'),
+ 'https://fixture.test/partner.webp','published approved partner photo is readable');
+reset role;
+update public.club_partner_publications set published_at=null where id='99470000-0000-4000-8000-000000000500';
+set local role anon;
+select is((select count(*)::int from public.club_partner_publications where id='99470000-0000-4000-8000-000000000500'),
+ 0,'unpublishing partner immediately removes its photograph');
+reset role;
+-- New public photographs require explicit publication; legacy fields stay private.
+select ok(not has_column_privilege('anon','public.fan_clubs','banner_image_url','SELECT'),
+ 'unreviewed legacy community banners remain private');
+select ok(not has_column_privilege('anon','public.squad_players','photo_url','SELECT'),
+ 'unreviewed legacy player portraits remain private');
+select throws_ok($$insert into public.squad_players(club_id,name,published_image_url)
+ values (9947001,'Synthetic portrait','https://fixture.test/player.webp')$$,
+ '23514',null::text,'player photograph cannot be published without approval');
+insert into public.squad_players(id,club_id,name,published_image_url,image_rights_approved,image_provenance_id)
+ values ('99470000-0000-4000-8000-000000000600',9947001,'Synthetic portrait','https://fixture.test/player.webp',true,'isolated-only');
+insert into public.fan_clubs(id,club_id,partner_id,name,published_image_url,image_rights_approved,image_provenance_id)
+ values ('99470000-0000-4000-8000-000000000601',9947001,'99470000-0000-4000-8000-000000000100','Synthetic community',
+ 'https://fixture.test/fanclub.webp',true,'isolated-only');
+set local role anon;
+select is((select published_image_url from public.squad_players where id='99470000-0000-4000-8000-000000000600'),
+ 'https://fixture.test/player.webp','approved player photo reaches the public roster');
+select is((select published_image_url from public.fan_clubs where id='99470000-0000-4000-8000-000000000601'),
+ 'https://fixture.test/fanclub.webp','approved community photo reaches discovery');
+reset role;
+update public.squad_players set is_active=false where id='99470000-0000-4000-8000-000000000600';
+update public.fan_clubs set is_active=false where id='99470000-0000-4000-8000-000000000601';
+set local role anon;
+select is((select count(*)::int from public.squad_players where id='99470000-0000-4000-8000-000000000600'),0,'withdrawn player disappears with its image');
+select is((select count(*)::int from public.fan_clubs where id='99470000-0000-4000-8000-000000000601'),0,'withdrawn community disappears with its image');
+reset role;
 select * from finish();
 rollback;

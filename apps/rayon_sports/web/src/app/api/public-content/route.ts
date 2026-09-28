@@ -161,9 +161,10 @@ export async function GET(request: Request) {
           title: article.title.trim().slice(0, 200),
           excerpt: article.excerpt.trim().slice(0, 600),
           category: article.category.trim().slice(0, 100),
-          coverImageUrl: article.coverImageUrl ?? "/brand-surface.svg",
+          coverImageUrl: article.coverImageUrl ?? (article.sourceUrl ? "" : "/brand-surface.svg"),
           publishedAt: article.publishedAt.trim().slice(0, 100),
           author: article.author.trim().slice(0, 160),
+          sourceUrl: article.sourceUrl || undefined,
         }))
         .filter((article) => {
           const valid =
@@ -611,9 +612,10 @@ export async function GET(request: Request) {
           title: article.title,
           excerpt: article.excerpt,
           category: article.category,
-          coverImageUrl: article.coverImageUrl ?? "/brand-surface.svg",
+          coverImageUrl: article.coverImageUrl ?? (article.sourceUrl ? "" : "/brand-surface.svg"),
           publishedAt: article.publishedAt,
           author: article.author,
+          sourceUrl: article.sourceUrl || undefined,
         }))
         .filter(
           (article) =>
@@ -624,7 +626,7 @@ export async function GET(request: Request) {
             article.publishedAt.trim() &&
             article.author.trim(),
         )
-        .slice(0, 24);
+        .slice(0, 100);
 
       return controlledApiJson(
         {

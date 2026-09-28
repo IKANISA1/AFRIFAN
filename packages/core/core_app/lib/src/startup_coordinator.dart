@@ -176,9 +176,6 @@ class AppStartupCoordinator {
 
     final countryRepo = CountryRepository(client: SupabaseClientFactory.client);
     await countryRepo.loadAndInject();
-
-    // Delegate SMS autoread initialization to feature initializer.
-    await options.featureInitializer.onInitializeSmsAutoread?.call();
   }
 
   Future<void> _ensureDeferredBackendInitialized(ClubConfig config) {

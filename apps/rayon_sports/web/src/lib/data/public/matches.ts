@@ -7,6 +7,7 @@ import { getReadOnlySupabase } from "@/lib/supabase/admin";
 import type { MatchItem } from "@/lib/types";
 import { safeNumber, safeString, toIdString } from "@/lib/utils";
 import { sanitizeMediaUrl } from "./helpers";
+import { loadGikundiroPublicSource, mapGikundiroFixtures } from "./gikundiro-source";
 
 function mapMatchRow(
   row: Record<string, unknown>,
@@ -67,8 +68,12 @@ function mapMatchRow(
 }
 
 async function loadMatches() {
-  const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
+  if (activeClub.numericId === 24) {
+    const source = await loadGikundiroPublicSource();
+    if (source) return mapGikundiroFixtures(source.fixtures);
+  }
+  const client = getReadOnlySupabase();
   if (client == null) return [];
 
   const { data, error } = await client
@@ -86,8 +91,12 @@ async function loadMatches() {
 }
 
 async function loadMatchById(matchId: string) {
-  const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
+  if (activeClub.numericId === 24 && matchId.startsWith("gikundiro-")) {
+    const source = await loadGikundiroPublicSource();
+    return mapGikundiroFixtures(source?.fixtures).find((match) => match.id === matchId) ?? null;
+  }
+  const client = getReadOnlySupabase();
   if (client == null) return null;
 
   const { data, error } = await client

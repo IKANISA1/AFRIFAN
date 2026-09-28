@@ -409,7 +409,7 @@ describe("GET /api/public-content", () => {
     expect(response.status).toBe(200);
     expect(response.headers.get("cache-control")).toContain("s-maxage=120");
     expect(body.code).toBe("PUBLIC_NEWS_READY");
-    expect(body.items).toHaveLength(24);
+    expect(body.items).toHaveLength(26);
     expect(body.items[0]).toEqual({
       id: "story-0",
       title: "Story 0",

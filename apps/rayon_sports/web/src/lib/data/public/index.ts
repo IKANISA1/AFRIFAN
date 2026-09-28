@@ -148,7 +148,7 @@ export const getSiteSearchIndex = cache(
         id: `news-${article.id}`,
         title: article.title,
         description: article.excerpt,
-        href: `/news/${article.id}`,
+        href: article.sourceUrl || `/news/${article.id}`,
         category: "News" as const,
         meta: article.category,
       })),

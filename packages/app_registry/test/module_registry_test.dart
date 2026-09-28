@@ -67,63 +67,63 @@ void main() {
       );
     });
 
-    test('Predict shell registration is separate from server action authorization', () {
-      final modules = AppModuleRegistry.build(
-        const _FakeClubConfig(environment: 'production'),
-        configSnapshot: <String, dynamic>{
-          'features': <Map<String, dynamic>>[
-            <String, dynamic>{
-              'feature_key': 'predict',
-              'display_name': 'Predict',
-              'is_enabled': true,
-              'visibility_state': 'visible',
-              'rules': <String, dynamic>{
-                'rollout_rules': <String, dynamic>{
-                  'store_release_authorized': true,
+    test(
+      'Predict shell registration is separate from server action authorization',
+      () {
+        final modules = AppModuleRegistry.build(
+          const _FakeClubConfig(environment: 'production'),
+          configSnapshot: <String, dynamic>{
+            'features': <Map<String, dynamic>>[
+              <String, dynamic>{
+                'feature_key': 'predict',
+                'display_name': 'Predict',
+                'is_enabled': true,
+                'visibility_state': 'visible',
+                'rules': <String, dynamic>{
+                  'rollout_rules': <String, dynamic>{
+                    'store_release_authorized': true,
+                  },
                 },
               },
-            },
-          ],
-        },
-      );
+            ],
+          },
+        );
 
-      expect(
-        modules.map((module) => module.featureKey),
-        contains('predict'),
-      );
-    });
+        expect(modules.map((module) => module.featureKey), contains('predict'));
+      },
+    );
 
-    test('Predict has one shell destination with server-authorized actions', () {
-      final modules = AppModuleRegistry.build(
-        const _FakeClubConfig(environment: 'production'),
-        configSnapshot: <String, dynamic>{
-          'features': <Map<String, dynamic>>[
-            <String, dynamic>{
-              'feature_key': 'predict',
-              'display_name': 'Predict',
-              'is_enabled': true,
-              'visibility_state': 'visible',
-              'rules': <String, dynamic>{
-                'rollout_rules': <String, dynamic>{
-                  'store_release_authorized': true,
-                  'stakes_have_no_real_world_value': true,
-                  'contest_rules_approved': true,
+    test(
+      'Predict has one shell destination with server-authorized actions',
+      () {
+        final modules = AppModuleRegistry.build(
+          const _FakeClubConfig(environment: 'production'),
+          configSnapshot: <String, dynamic>{
+            'features': <Map<String, dynamic>>[
+              <String, dynamic>{
+                'feature_key': 'predict',
+                'display_name': 'Predict',
+                'is_enabled': true,
+                'visibility_state': 'visible',
+                'rules': <String, dynamic>{
+                  'rollout_rules': <String, dynamic>{
+                    'store_release_authorized': true,
+                    'stakes_have_no_real_world_value': true,
+                    'contest_rules_approved': true,
+                  },
                 },
               },
-            },
-          ],
-        },
-      );
+            ],
+          },
+        );
 
-      expect(
-        modules.where((module) => module.tabRoute?.path == '/predict'),
-        hasLength(1),
-      );
-      expect(
-        modules.map((module) => module.featureKey),
-        contains('predict'),
-      );
-    });
+        expect(
+          modules.where((module) => module.tabRoute?.path == '/predict'),
+          hasLength(1),
+        );
+        expect(modules.map((module) => module.featureKey), contains('predict'));
+      },
+    );
   });
 
   group('Tab routes', () {
@@ -230,8 +230,6 @@ void main() {
           '/club/team',
           '/club/team/:playerId',
           '/club/partners',
-          '/club/partners/:partnerId',
-          '/club/open-web',
           '/club/news',
           '/club/news/:articleId',
           '/club/fixtures',
@@ -337,7 +335,6 @@ void main() {
             'matches',
             'contributions',
             'notifications',
-            'sms-monitor',
           }),
         );
       },
@@ -504,14 +501,11 @@ class _FakeClubConfig implements ClubConfig {
   @override
   bool get hasChat => false;
   @override
-  bool get hasSmsLedger => false;
-  @override
   Map<String, bool> get features => <String, bool>{
     'fan_clubs': hasFanClubs,
     'shop': hasShop,
     'ticketing': hasTicketing,
     'chat': hasChat,
-    'sms_ledger': hasSmsLedger,
     'mobile_admin': hasMobileAdmin,
   };
   @override
@@ -519,7 +513,6 @@ class _FakeClubConfig implements ClubConfig {
   @override
   MomoConfig get momo => const MomoConfig(
     ussdTemplate: '*182*{amount}*{momo}#',
-    senderName: 'Test',
     countryCode: 'RW',
   );
   @override

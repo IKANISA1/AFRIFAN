@@ -410,7 +410,16 @@ class _SupporterPhoneAuthScreenState
       controller: _phoneController,
       focusNode: _phoneFocusNode,
       label: largeText ? l10n.authPhoneLabel : l10n.authWhatsAppNumberLabel,
-      hint: largeText ? null : l10n.authPhoneHint,
+      hint:
+          _phoneCountry?.mobileExampleNational ??
+          _phoneCountry?.mobileExampleE164 ??
+          switch (_phoneCountry?.isoCode) {
+            'RW' => '0788123456',
+            'BI' => '79123456',
+            'ZM' => '0971234567',
+            'CD' => '0991234567',
+            _ => '+250788123456',
+          },
       tonal: true,
       contentPadding: const EdgeInsets.symmetric(
         horizontal: SpacingTokens.spacing4,
@@ -965,9 +974,14 @@ class _AuthStepHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: MediaQuery.sizeOf(context).width < 360 && MediaQuery.textScalerOf(context).scale(1) >= 1.5
-            ? TypographyTokens.headlineMedium()
-            : TypographyTokens.headlineLarge()),
+        Text(
+          title,
+          style:
+              MediaQuery.sizeOf(context).width < 360 &&
+                  MediaQuery.textScalerOf(context).scale(1) >= 1.5
+              ? TypographyTokens.headlineMedium()
+              : TypographyTokens.headlineLarge(),
+        ),
         const SizedBox(height: SpacingTokens.spacing3),
         Text(
           body,

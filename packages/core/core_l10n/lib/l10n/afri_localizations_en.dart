@@ -893,7 +893,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   }
 
   @override
-  String get clubViewAvailableTickets => 'View available tickets';
+  String get clubViewAvailableTickets => 'View tickets';
 
   @override
   String get clubStandingsTitle => 'Standings';
@@ -3282,34 +3282,6 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Contribution initiatives are temporarily unavailable.';
 
   @override
-  String get contributionsSmsEnabled =>
-      'MoMo SMS sync enabled for this device.';
-
-  @override
-  String get contributionsSmsPermissionDenied =>
-      'SMS access was not granted. Sync remains off.';
-
-  @override
-  String get contributionsSmsEnableFailed =>
-      'Could not enable SMS sync. Check your permissions and try again.';
-
-  @override
-  String get contributionsSmsDisabled => 'MoMo SMS sync disabled.';
-
-  @override
-  String get contributionsConnectBeforeSmsSync =>
-      'Connect before syncing MoMo messages.';
-
-  @override
-  String contributionsSmsSyncComplete(int uploaded, int duplicates) {
-    return 'SMS sync complete: $uploaded uploaded, $duplicates duplicates.';
-  }
-
-  @override
-  String get contributionsSmsSyncFailed =>
-      'SMS sync failed. Check your connection and try again.';
-
-  @override
   String get contributionsHubTitle => 'Contribute';
 
   @override
@@ -3368,9 +3340,6 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get contributionsLive => 'LIVE';
 
   @override
-  String get contributionsMomoSmsSync => 'MoMo SMS sync';
-
-  @override
   String get contributionsUnavailableBuild => 'Unavailable in this build.';
 
   @override
@@ -3387,9 +3356,6 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get contributionsEnabling => 'Enabling…';
-
-  @override
-  String get contributionsEnableSmsSync => 'Enable SMS sync';
 
   @override
   String get contributionsLiveCampaigns => 'Live campaigns';
@@ -3897,17 +3863,6 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get contributionsBackToGroup => 'Back to group';
-
-  @override
-  String get contributionsEnableMomoSmsTitle => 'Enable MoMo SMS sync';
-
-  @override
-  String contributionsSmsPrivacyMessage(String app) {
-    return '$app reads only MoMo confirmations to auto-log receipts. Other messages are not accessed.';
-  }
-
-  @override
-  String get contributionsAllowSmsReading => 'Allow SMS reading';
 
   @override
   String get contributionsEnable => 'Enable';
@@ -4565,17 +4520,6 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Session security check timed out. Try again.';
 
   @override
-  String get privacySettingsSmsAccessRequired =>
-      'SMS sync stays off until you grant Android SMS access for MoMo verification.';
-
-  @override
-  String get privacySettingsEnableMomoSmsTitle => 'Enable MoMo SMS sync';
-
-  @override
-  String get privacySettingsMomoSmsDisclosure =>
-      'The app reads only approved Mobile Money verification SMS on this device to match contribution payments. It cannot access other messages.';
-
-  @override
   String get privacySettingsNotNow => 'Not now';
 
   @override
@@ -4697,13 +4641,6 @@ class AfriLocalizationsEn extends AfriLocalizations {
   @override
   String get privacySettingsControlsDescription =>
       'Choose whether to share coarse, anonymous task events. Queries, contacts, account IDs, codes, messages, and exact payment values are never included.';
-
-  @override
-  String get privacySettingsMomoSmsSync => 'MoMo SMS sync';
-
-  @override
-  String get privacySettingsMomoSmsSyncDescription =>
-      'Match approved Mobile Money verification SMS for faster contribution checks.';
 
   @override
   String get privacySettingsShareAnalytics => 'Share anonymous usage analytics';
@@ -4840,13 +4777,6 @@ class AfriLocalizationsEn extends AfriLocalizations {
   @override
   String get adminManageCompetitionsDescription =>
       'Add, edit, and toggle supported leagues and cups';
-
-  @override
-  String get adminSmsSyncMonitor => 'SMS sync monitor';
-
-  @override
-  String get adminSmsSyncMonitorDescription =>
-      'MoMo SMS ingestion pipeline health';
 
   @override
   String get adminFeatureManager => 'Feature manager';
@@ -6408,146 +6338,6 @@ class AfriLocalizationsEn extends AfriLocalizations {
   @override
   String adminContributionsLastActivity(String date) {
     return 'Last activity $date';
-  }
-
-  @override
-  String get adminSmsTitle => 'SMS operations';
-
-  @override
-  String get adminSmsLoading => 'Loading SMS operations';
-
-  @override
-  String get adminSmsLoadingMessage =>
-      'Checking controlled pipeline health information.';
-
-  @override
-  String get adminSmsNoHistory => 'No SMS operations history';
-
-  @override
-  String get adminSmsNoHistoryMessage =>
-      'No controlled health signals or synchronization runs are available yet.';
-
-  @override
-  String get adminSmsControlledHealth => 'Controlled health view';
-
-  @override
-  String get adminSmsControlledHealthMessage =>
-      'Review device synchronization, message checks, contribution matching, sender drift, retries, and privacy cleanup without displaying message bodies or supporter identifiers.';
-
-  @override
-  String get adminSmsPipelineHealth => 'Pipeline health';
-
-  @override
-  String get adminSmsRecentSync => 'Recent device synchronization';
-
-  @override
-  String get adminSmsNoRecentRuns => 'No recent synchronization runs';
-
-  @override
-  String get adminSmsNoRecentRunsMessage =>
-      'The health summary remains available above.';
-
-  @override
-  String adminSmsMetricSemantics(String label, String status) {
-    return '$label, $status';
-  }
-
-  @override
-  String get adminSmsCollapseDetails => 'Collapse health details';
-
-  @override
-  String get adminSmsExpandDetails => 'Expand health details';
-
-  @override
-  String adminSmsLastSignal(String date) {
-    return 'Last confirmed signal $date';
-  }
-
-  @override
-  String get adminSmsUnavailable => 'SMS operations unavailable';
-
-  @override
-  String get adminSmsDisabled =>
-      'SMS operations monitoring is disabled for this build.';
-
-  @override
-  String get adminSmsOffline => 'SMS operations offline';
-
-  @override
-  String get adminSmsOfflineMessage =>
-      'Reconnect before loading private operational information.';
-
-  @override
-  String get adminSmsAccessUnavailable => 'SMS operations access unavailable';
-
-  @override
-  String get adminSmsAccessMessage =>
-      'Platform administrator access is required for this view.';
-
-  @override
-  String get adminSmsChanged => 'SMS operations changed';
-
-  @override
-  String get adminSmsChangedMessage =>
-      'Refresh before using this operational information.';
-
-  @override
-  String get adminSmsSecurityMessage =>
-      'No operational information was shown. Check your connection.';
-
-  @override
-  String get adminSmsHiddenMessage =>
-      'Private operational information remains hidden. Try again.';
-
-  @override
-  String get adminSmsChecking => 'Checking SMS operations';
-
-  @override
-  String get adminSmsCheckingMessage =>
-      'Showing the last confirmed state while current data is checked.';
-
-  @override
-  String get adminSmsLastConfirmed =>
-      'Last confirmed operational information remains visible. Controls are paused.';
-
-  @override
-  String get adminSmsStatusHealthy => 'Healthy';
-
-  @override
-  String get adminSmsStatusSucceeded => 'Succeeded';
-
-  @override
-  String get adminSmsStatusDegraded => 'Degraded';
-
-  @override
-  String get adminSmsStatusRunning => 'Running';
-
-  @override
-  String get adminSmsStatusRateLimited => 'Rate limited';
-
-  @override
-  String get adminSmsStatusFailing => 'Failing';
-
-  @override
-  String get adminSmsStatusFailed => 'Failed';
-
-  @override
-  String get adminSmsTriggerInitial => 'Initial history';
-
-  @override
-  String get adminSmsTriggerManual => 'Manual';
-
-  @override
-  String get adminSmsTriggerControlled => 'Controlled';
-
-  @override
-  String adminSmsRunTitle(String status, String trigger) {
-    return '$status • $trigger';
-  }
-
-  @override
-  String adminSmsRunMetrics(int scanned, int uploaded, int duplicates) {
-    return '$scanned scanned • $uploaded uploaded • $duplicates duplicates';
   }
 
   @override
@@ -8741,7 +8531,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameAchievementsDescription => 'Badges and streak status';
 
   @override
-  String get gameShareCard => 'Share card';
+  String get gameShareCard => 'Share prediction';
 
   @override
   String get gameShareCardDescription => 'Create a supporter card to share';
@@ -9041,7 +8831,19 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gameBackToPicks => 'Back to picks';
 
   @override
-  String get gameChoosePick => 'Choose pick';
+  String get gameChoosePick => 'Choose a prediction';
+
+  @override
+  String get gameChangeSharePick => 'Change pick';
+
+  @override
+  String get gameShareYourPick => 'Your pick';
+
+  @override
+  String get gameShareCopyText => 'Copy text';
+
+  @override
+  String get gameShareTextPreview => 'Share a text summary of this prediction.';
 
   @override
   String gameSharePredictionSemantics(
@@ -9492,7 +9294,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'The latest match details could not be confirmed. Refresh to try again.';
 
   @override
-  String get gamePartnerWdwPools => 'Partner WDW Pools';
+  String get gamePartnerWdwPools => 'Partner pools';
+
+  @override
+  String get gamePartnerPoolFundingLabel => 'Partner-funded pool';
 
   @override
   String get gameNoPartnerPool => 'No partner pool for this match';
@@ -9808,16 +9613,6 @@ class AfriLocalizationsEn extends AfriLocalizations {
       'Available results are shown. Refresh to try the remaining sources.';
 
   @override
-  String get clubLinkUnavailable => 'Continue on the club website';
-
-  @override
-  String get clubLinkUnavailableBody =>
-      'This website record is not available in the app yet. You can open the original page or browse the club.';
-
-  @override
-  String get clubOpenWebsite => 'Open website';
-
-  @override
   String get clubLinkLoading => 'Opening club content';
 
   @override
@@ -9833,9 +9628,6 @@ class AfriLocalizationsEn extends AfriLocalizations {
   @override
   String get clubPartnersUnavailable =>
       'Partner details are temporarily unavailable.';
-
-  @override
-  String get clubPartnerDetails => 'View partner';
 
   @override
   String get clubFootballNow => 'Football now';
@@ -9913,4 +9705,25 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get fanClubsEmptyMessage => 'Try another name or location.';
+
+  @override
+  String get homeActivePredictions => 'Active predictions';
+
+  @override
+  String get homePredictionsEmpty => 'New predictions will appear here';
+
+  @override
+  String get homePartnersEmpty => 'Meet the club’s partners';
+
+  @override
+  String get homeFanClubsEmpty => 'Find your supporter community';
+
+  @override
+  String get homeDiscoveryUnavailable => 'Could not refresh this section';
+
+  @override
+  String get homeNewsEmpty => 'Club updates will appear here';
+
+  @override
+  String get homeViewMatch => 'View match';
 }

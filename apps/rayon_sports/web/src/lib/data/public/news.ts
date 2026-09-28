@@ -7,6 +7,7 @@ import { getReadOnlySupabase } from "@/lib/supabase/admin";
 import type { NewsArticle } from "@/lib/types";
 import { safeString, toIdString } from "@/lib/utils";
 import { sanitizeMediaUrl } from "./helpers";
+import { loadGikundiroPublicSource, mapGikundiroNews } from "./gikundiro-source";
 
 const publicNewsProjection =
   "id,club_id,title,subtitle,body,category,image_url,is_published," +
@@ -52,8 +53,12 @@ function mapNewsRow(row: Record<string, unknown>): NewsArticle {
 }
 
 async function loadNewsArticles() {
-  const client = getReadOnlySupabase();
   const activeClub = await getActiveClubReference();
+  if (activeClub.numericId === 24) {
+    const source = await loadGikundiroPublicSource();
+    if (source) return mapGikundiroNews(source.news);
+  }
+  const client = getReadOnlySupabase();
   if (client == null) return [];
 
   const { data, error } = await client
@@ -89,12 +94,12 @@ export const getNewsArticleById = cache(async function getNewsArticleById(
   articleId: string,
 ) {
   const articles = await getNewsArticles();
-  return articles.find((article) => article.id === articleId) ?? null;
+  return articles.find((article) => article.id === articleId && !article.sourceUrl) ?? null;
 });
 
 export const getNewsArticleByIdStrict = cache(
   async function getNewsArticleByIdStrict(articleId: string) {
     const articles = await getNewsArticlesStrict();
-    return articles.find((article) => article.id === articleId) ?? null;
+    return articles.find((article) => article.id === articleId && !article.sourceUrl) ?? null;
   },
 );

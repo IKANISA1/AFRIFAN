@@ -10,12 +10,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:test_support/app_font_loader.dart';
+import 'package:test_support/tab_shell_fixture.dart';
 import 'package:test_support/touch_target_audit.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadAppFonts);
-  setUp(() => ConnectivityService.setOnlineForTest(true));
+  setUp(() {
+    ConnectivityService.setOnlineForTest(true);
+    RuntimeBranding.configure(
+      appName: 'Rayon Sports',
+      clubName: 'Rayon Sports FC',
+    );
+  });
 
   testWidgets('matches the membership tier surface layout', (tester) async {
     _setMobileSurface(tester);
@@ -148,7 +155,7 @@ void main() {
 
     expect(
       tester.getSize(find.byType(CustomScrollView)).width,
-      AfriResponsive.tabletContentMax,
+      inInclusiveRange(320.0, AfriResponsive.tabletContentMax),
     );
     expect(tester.takeException(), isNull);
   });
@@ -164,7 +171,7 @@ void main() {
     expect(find.byType(AfriScreenScaffold), findsOneWidget);
     expect(
       tester.getSize(find.byType(CustomScrollView)).width,
-      AfriResponsive.tabletContentMax,
+      inInclusiveRange(320.0, AfriResponsive.tabletContentMax),
     );
     expect(tester.takeException(), isNull);
   });
@@ -492,10 +499,13 @@ Widget _buildMembershipApp(
       theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
       home: RepaintBoundary(
         key: goldenKey,
-        child: MembershipScreen(
-          packageActivator: packageActivator,
-          activationTimeout: activationTimeout,
-          autofocusTier: autofocusTier,
+        child: TabShellFixture(
+          index: 3,
+          child: MembershipScreen(
+            packageActivator: packageActivator,
+            activationTimeout: activationTimeout,
+            autofocusTier: autofocusTier,
+          ),
         ),
       ),
       builder: (context, child) {

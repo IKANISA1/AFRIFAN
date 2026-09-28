@@ -57,7 +57,8 @@ class _ClubTeamScreenState extends ConsumerState<ClubTeamScreen> {
       emptyMessage: l10n.clubTeamEmptyMessage,
       onRetry: () => ref.invalidate(clubSquadProvider),
       columns:
-          MediaQuery.textScalerOf(context).scale(1) >= 1.5 ||
+          (state.valueOrNull?.length ?? 0) < 2 ||
+              MediaQuery.textScalerOf(context).scale(1) >= 1.5 ||
               MediaQuery.sizeOf(context).width < 360
           ? 1
           : 2,
@@ -126,72 +127,30 @@ class _ClubPortraitCard extends StatelessWidget {
   final ClubSquadMember player;
   final VoidCallback onTap;
   @override
-  Widget build(BuildContext context) => Material(
-    color: ColorTokens.surfaceContainer,
-    borderRadius: ShapeTokens.cardRadius,
-    clipBehavior: Clip.antiAlias,
-    child: AfriPressFeedback(
-      onTap: onTap,
-      semanticsLabel: player.name,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AspectRatio(
-            aspectRatio: 4 / 3,
-            child: _ClubPlayerImage(player: player),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(SpacingTokens.spacing4),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(player.name, style: TypographyTokens.titleMedium()),
-                const SizedBox(height: SpacingTokens.spacing1),
-                Text(
-                  [
-                    player.position,
-                    if (player.shirtNumber > 0) '#${player.shirtNumber}',
-                  ].where((p) => p.isNotEmpty).join(' · '),
-                  style: TypographyTokens.bodySmall(
-                    ColorTokens.onSurfaceVariant,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
+  Widget build(BuildContext context) => AfriEditorialCard(
+    imageUrl: player.imageUrl,
+    imageRightsApproved: player.imageUrl != null,
+    imageProvenanceId: 'published-player:${player.id}',
+    imageLabel: player.name,
+    imageAspectRatio: 4 / 5,
+    imageAlignment: Alignment.center,
+    onTap: onTap,
+    semanticsLabel: player.name,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(player.name, style: TypographyTokens.headlineMedium()),
+        const SizedBox(height: SpacingTokens.spacing2),
+        Text(
+          [
+            player.position,
+            if (player.shirtNumber > 0) '#${player.shirtNumber}',
+          ].where((p) => p.isNotEmpty).join(' · '),
+          style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
+        ),
+      ],
     ),
   );
-}
-
-class _ClubPlayerImage extends StatelessWidget {
-  const _ClubPlayerImage({required this.player});
-  final ClubSquadMember player;
-  @override
-  Widget build(BuildContext context) {
-    final url = player.imageUrl;
-    Widget fallback() => ColoredBox(
-      color: ColorTokens.surfaceContainerHigh,
-      child: Center(
-        child: Text(
-          player.shirtNumber > 0 ? '#${player.shirtNumber}' : '—',
-          style: TypographyTokens.displaySmall(ColorTokens.onSurfaceVariant),
-        ),
-      ),
-    );
-    if (url == null || Uri.tryParse(url)?.scheme != 'https') return fallback();
-    return Image.network(
-      url,
-      fit: BoxFit.cover,
-      alignment: Alignment.topCenter,
-      cacheWidth: 720,
-      semanticLabel: player.name,
-      loadingBuilder: (context, child, progress) =>
-          progress == null ? child : fallback(),
-      errorBuilder: (context, error, stack) => fallback(),
-    );
-  }
 }
 
 class ClubPlayerDetailScreen extends ConsumerWidget {
@@ -211,15 +170,15 @@ class ClubPlayerDetailScreen extends ConsumerWidget {
       builder: (player) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: ShapeTokens.cardRadius,
-            child: AspectRatio(
-              aspectRatio: 4 / 3,
-              child: _ClubPlayerImage(player: player),
-            ),
+          AfriEditorialCard(
+            imageUrl: player.imageUrl,
+            imageRightsApproved: player.imageUrl != null,
+            imageProvenanceId: 'published-player:${player.id}',
+            imageLabel: player.name,
+            imageAspectRatio: 4 / 5,
+            imageAlignment: Alignment.center,
+            child: Text(player.name, style: TypographyTokens.headlineMedium()),
           ),
-          const SizedBox(height: SpacingTokens.sectionGap),
-          Text(player.name, style: TypographyTokens.headlineLarge()),
           const SizedBox(height: SpacingTokens.spacing3),
           Text(
             [
@@ -337,7 +296,7 @@ class ClubNewsDetailScreen extends ConsumerWidget {
             const SizedBox(height: SpacingTokens.spacing3),
             Text(
               article.title,
-              style: TypographyTokens.headlineLarge().copyWith(
+              style: TypographyTokens.headlineMedium().copyWith(
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -435,6 +394,9 @@ class ClubFixturesScreen extends ConsumerWidget {
       itemBuilder: (context, fixture) => AfriFixtureCard(
         homeTeam: fixture.homeTeam,
         awayTeam: fixture.awayTeam,
+        imageUrl: fixture.imageUrl,
+        imageRightsApproved: fixture.imageUrl != null,
+        imageProvenanceId: 'published-fixture:${fixture.id}',
         score: results ? '${fixture.homeScore}–${fixture.awayScore}' : null,
         subtitle: _fixtureSubtitle(context, fixture),
         onTap: fixture.id.isEmpty
@@ -467,8 +429,10 @@ class ClubFixtureDetailScreen extends ConsumerWidget {
       select: (items) => _firstWhereOrNull(items, (item) => item.id == matchId),
       notFoundTitle: l10n.clubMatchUnavailableTitle,
       notFoundMessage: l10n.clubMatchUnavailableMessage,
-      builder: (fixture) => GlassCard(
-        animate: false,
+      builder: (fixture) => AfriEditorialCard(
+        imageUrl: fixture.imageUrl,
+        imageRightsApproved: fixture.imageUrl != null,
+        imageProvenanceId: 'published-fixture:${fixture.id}',
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -484,15 +448,21 @@ class ClubFixtureDetailScreen extends ConsumerWidget {
               _fixtureSubtitle(context, fixture),
               style: TypographyTokens.bodyMedium(ColorTokens.onSurfaceVariant),
             ),
-            if (fixture.isOnSale) ...[
-              const SizedBox(height: SpacingTokens.spacing5),
-              AfriButton(
-                label: l10n.clubViewAvailableTickets,
-                labelMaxLines: 3,
-                fullWidth: true,
-                onTap: () => unawaited(context.push('/tickets/$matchId')),
-              ),
-            ],
+            const SizedBox(height: SpacingTokens.spacing5),
+            AfriButton(
+              label: l10n.clubViewAvailableTickets,
+              labelMaxLines: 3,
+              fullWidth: true,
+              enabled: fixture.isOnSale,
+              onTap: () => unawaited(context.push('/tickets/$matchId')),
+            ),
+            const SizedBox(height: SpacingTokens.spacing2),
+            AfriButton(
+              label: l10n.predictTitle,
+              variant: AfriButtonVariant.secondary,
+              fullWidth: true,
+              onTap: () => context.go('/predict'),
+            ),
           ],
         ),
       ),

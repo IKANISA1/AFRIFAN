@@ -179,8 +179,16 @@ try:
     if not contracts:
         raise RuntimeError('No database contracts were discovered')
     total_assertions = 0
+    failed_contracts = []
     for contract in contracts:
-        result = sql('set search_path=public,extensions;\n' + contract.read_text())
+        try:
+            result = sql('set search_path=public,extensions;\n' + contract.read_text())
+        except RuntimeError as error:
+            # Independent contracts each own their transaction and connection.
+            # Report all failures without hiding later checks behind the first.
+            failed_contracts.append(contract.name)
+            print('FAIL', contract.name, str(error), flush=True)
+            continue
         count = len(re.findall(r'^ok \d+', result.stdout, re.M))
         plans = re.findall(r'^1\.\.(\d+)\s*$', result.stdout, re.M)
         if len(plans) != 1 or count != int(plans[0]) or count == 0:
@@ -189,6 +197,8 @@ try:
             raise RuntimeError('Skipped or TODO database assertion: ' + contract.name)
         total_assertions += count
         print('PASS', contract.stem, count, 'checks', flush=True)
+    if failed_contracts:
+        raise RuntimeError('Failed SQL contracts: ' + ', '.join(failed_contracts))
     print('PASS', len(contracts), 'SQL contracts;', total_assertions, 'assertions; no skips', flush=True)
 
     seed = (ROOT / 'supabase/tests/predict_contract.sql').read_text().split('-- Helper')[0]
@@ -342,6 +352,83 @@ try:
 
     def auto_allocate(number):
         return "set role service_role; select public.allocate_momo_payment_intent('%s','%s');" % (intent_id(300 + number), intent_id(500 + number))
+
+    def allocate_across_new_review(number, second_query, expected_second_error=None):
+        """Observe both sides of a review appearing between lock snapshots."""
+        sql("delete from public.momo_reconciliations where parsed_sms_id='%s';" % intent_id(300 + number))
+        held = subprocess.Popen([DOCKER, 'exec', '-i', NAME, 'psql', '-X', '-qAt',
+                                 '-v', 'ON_ERROR_STOP=1', '-U', 'postgres', '-d', 'postgres'],
+                                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        def wait_for(label, predicate):
+            for _ in range(100):
+                if sql("select count(*) from pg_stat_activity where application_name='%s' and %s;" % (label, predicate)).stdout.strip() == '1':
+                    return
+                time.sleep(.03)
+            raise RuntimeError('Missing observed lock: ' + label)
+        try:
+            # NO KEY UPDATE allows the review's foreign-key check while both
+            # allocators are blocked trying to lock this interpretation.
+            held.stdin.write("set application_name='qa_review_creation_hold'; begin; set local idle_in_transaction_session_timeout='20s'; select id from public.momo_sms_parsed where id='%s' for no key update;\n" % intent_id(300 + number))
+            held.stdin.flush()
+            wait_for('qa_review_creation_hold', "state='idle in transaction'")
+            with concurrent.futures.ThreadPoolExecutor(max_workers=2) as pool:
+                first = pool.submit(sql, "set application_name='qa_review_absent'; set statement_timeout='12s'; " + auto_allocate(number), check=False)
+                second = None
+                try:
+                    wait_for('qa_review_absent', "wait_event_type='Lock'")
+                    sql("insert into public.momo_reconciliations(id,parsed_sms_id,user_id,club_id,country_code,match_status) select '%s',id,user_id,club_id,country_code,'manual_review' from public.momo_sms_parsed where id='%s';" % (intent_id(400 + number), intent_id(300 + number)))
+                    second = pool.submit(sql, "set application_name='qa_review_present'; set statement_timeout='12s'; " + second_query, check=False)
+                    wait_for('qa_review_present', "wait_event_type='Lock'")
+                finally:
+                    held.stdin.write('commit;\n')
+                    held.stdin.flush()
+                responses = [first.result(), second.result()]
+            held_out, held_error = held.communicate(timeout=15)
+            assert held.returncode == 0, held_error
+            assert responses[0].returncode == 0, responses[0].stderr
+            if expected_second_error:
+                assert responses[1].returncode != 0 and expected_second_error in responses[1].stderr, responses[1].stderr
+            else:
+                assert responses[1].returncode == 0, responses[1].stderr
+            assert sql("select count(*) from public.momo_ledger_entries where parsed_sms_id='%s' and ledger_status='posted';" % intent_id(300 + number)).stdout.strip() == '1'
+            return responses
+        finally:
+            if held.poll() is None:
+                held.communicate('rollback;\n', timeout=15)
+
+    allocate_across_new_review(20, auto_allocate(20))
+    print('PASS automatic allocation retries span absent and newly inserted review without deadlock', flush=True)
+    allocate_across_new_review(21, "set request.jwt.claim.sub='%s'; set role authenticated; select * from public.allocate_momo_manual_review('%s','%s','Concurrent receipt');" % (intent_id(3), intent_id(421), intent_id(521)))
+    print('PASS manual allocation shares the same evidence serialization as automatic retry', flush=True)
+    allocate_across_new_review(22, "set request.jwt.claim.sub='%s'; set role authenticated; select * from public.admin_reject_momo_sms_manual_review('%s','Concurrent rejection');" % (intent_id(3), intent_id(422)), 'MANUAL_REVIEW_STATE_CONFLICT')
+    print('PASS concurrent rejection cannot deadlock or overwrite a committed allocation', flush=True)
+    allocate_across_new_review(23, "set role service_role; select public.claim_momo_sms_parse('%s','%s',(select updated_at from public.momo_sms_raw where id='%s'),true);" % (intent_id(223), intent_id(1), intent_id(223)))
+    print('PASS parser claim waits for the same evidence and respects the committed receipt', flush=True)
+    claim = json.loads(sql("set role service_role; select public.claim_momo_sms_parse('%s','%s',(select updated_at from public.momo_sms_raw where id='%s'),true);" % (intent_id(224), intent_id(1), intent_id(224))).stdout.strip().splitlines()[-1])
+    assert claim['status'] == 'claimed', claim
+    allocate_across_new_review(24, "set role service_role; select public.persist_momo_sms_parse('%s','%s','%s','{}');" % (intent_id(224), intent_id(1), claim['token']), 'MOMO_PARSE_EVIDENCE_COMMITTED')
+    print('PASS parser persistence waits and refuses to reinterpret newly committed evidence', flush=True)
+    commerce_receipt = allocate_across_new_review(27, "set role service_role; select public.confirm_club_commerce_payment('shop',array['%s'::uuid],'%s','INTENT-TX-27',1000,9952001,'%s','mtn_rwanda','995200100','RWF','RW','%s');" % (intent_id(627), intent_id(1), intent_id(110), intent_id(327)))
+    assert json.loads(commerce_receipt[1].stdout.strip().splitlines()[-1])['status'] == 'manual_review'
+    print('PASS commerce confirmation cannot deadlock with or repurpose a generic allocation', flush=True)
+
+    # Existing Edge fallbacks write a review/ledger through REST. Their FK
+    # checks must not invert a parsed-row lock held by an allocation RPC.
+    sql("delete from public.momo_reconciliations where parsed_sms_id='%s';" % intent_id(325))
+    responses = operations_after_lock(
+        "select id from public.payment_receiver_accounts where id='%s' for update;" % intent_id(100),
+        [auto_allocate(25)],
+        before_release="insert into public.momo_reconciliations(id,parsed_sms_id,user_id,club_id,country_code,match_status) select '%s',id,user_id,club_id,country_code,'manual_review' from public.momo_sms_parsed where id='%s';" % (intent_id(425), intent_id(325)))
+    assert responses[0].returncode == 0, responses[0].stderr
+    assert sql("select match_status from public.momo_reconciliations where parsed_sms_id='%s';" % intent_id(325)).stdout.strip() == 'matched'
+    print('PASS direct parser review insertion completes its FK check while allocation waits on receiver', flush=True)
+    responses = operations_after_lock(
+        "select id from public.payment_receiver_accounts where id='%s' for update;" % intent_id(100),
+        [auto_allocate(26)],
+        before_release="insert into public.momo_ledger_entries(parsed_sms_id,user_id,club_id,country_code,ledger_scope,ledger_status,entry_type,amount,currency) select id,user_id,club_id,country_code,'wallet','draft','debit',amount,currency from public.momo_sms_parsed where id='%s';" % intent_id(326))
+    assert responses[0].returncode == 0, responses[0].stderr
+    assert sql("select count(*) from public.momo_ledger_entries where parsed_sms_id='%s' and ledger_status='posted';" % intent_id(326)).stdout.strip() == '1'
+    print('PASS direct parser ledger insertion completes its FK check and allocates exactly once', flush=True)
 
     responses = operations_after_lock(
         "select id from public.momo_reconciliations where id='%s' for update;" % intent_id(401),

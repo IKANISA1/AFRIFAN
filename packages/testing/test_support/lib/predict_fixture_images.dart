@@ -20,6 +20,12 @@ Future<void> installPredictFixtureImages() async {
     'away': File(
       '${root.path}/packages/core/core_theme/assets/crests/apr-fc.png',
     ).readAsBytesSync(),
+    'player': File(
+      '${root.path}/apps/rayon_sports/assets/onboarding/rayon_new_signing.webp',
+    ).readAsBytesSync(),
+    'fanclub': File(
+      '${root.path}/apps/rayon_sports/assets/onboarding/rayon_players_celebrating.webp',
+    ).readAsBytesSync(),
     'project': File(
       '${root.path}/apps/rayon_sports/assets/onboarding/rayon_matchday_team.webp',
     ).readAsBytesSync(),
@@ -31,7 +37,13 @@ class _Client implements HttpClient {
   final Map<String, List<int>> images;
   @override
   Future<HttpClientRequest> getUrl(Uri url) async => _Request(
-    images[url.path.contains('project')
+    images[url.path.contains('player')
+        ? 'player'
+        : url.path.contains('fanclub')
+        ? 'fanclub'
+        : url.path.contains('project') ||
+              url.path.contains('fixture') ||
+              url.path.contains('partner')
         ? 'project'
         : url.path.contains('away')
         ? 'away'

@@ -7,7 +7,7 @@ import '../tokens/shape_tokens.dart';
 import '../tokens/size_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
-import 'afri_press_feedback.dart';
+import 'afri_editorial_card.dart';
 
 String? _networkCrest(String? value) {
   final uri = Uri.tryParse(value ?? '');
@@ -94,7 +94,7 @@ class AfriTeamCard extends StatelessWidget {
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
       final initials = teamInitials(name);
-      final style = TypographyTokens.labelLarge(ColorTokens.onSurface);
+      final style = TypographyTokens.labelLarge(ColorTokens.discoveryInk);
       final label = TextPainter(
         text: TextSpan(text: initials, style: style),
         textDirection: Directionality.of(context),
@@ -109,7 +109,7 @@ class AfriTeamCard extends StatelessWidget {
           teamAssetFor(name, crestUrl: crestUrl)?.asset != null ||
           _networkCrest(crestUrl) != null;
       final children = <Widget>[
-        if (hasCrest) ...[
+        if (hasCrest || vertical) ...[
           AfriTeamCrest(name: name, crestUrl: crestUrl, size: crestSize),
           SizedBox(
             width: stack ? SpacingTokens.spacing0 : SpacingTokens.inlineGap,
@@ -124,7 +124,7 @@ class AfriTeamCard extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(SpacingTokens.spacing2),
           decoration: BoxDecoration(
-            color: ColorTokens.surfaceContainer,
+            color: ColorTokens.discoveryControl,
             borderRadius: ShapeTokens.cardRadius,
           ),
           child: stack
@@ -146,7 +146,9 @@ class AfriFixtureTeams extends StatelessWidget {
     this.awayCrest,
     this.score,
     this.crestSize = SizeTokens.iconXlg,
+    this.foreground,
   });
+  final Color? foreground;
   final String homeTeam, awayTeam;
   final String? homeCrest, awayCrest, score;
   final double crestSize;
@@ -169,7 +171,12 @@ class AfriFixtureTeams extends StatelessWidget {
             padding: const EdgeInsets.symmetric(
               horizontal: SpacingTokens.spacing3,
             ),
-            child: Text(score!, style: TypographyTokens.titleMedium()),
+            child: Text(
+              score!,
+              style: TypographyTokens.headlineLarge(
+                foreground,
+              ).copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
+            ),
           )
         else
           const SizedBox(width: SpacingTokens.spacing3),
@@ -189,7 +196,12 @@ class AfriFixtureTeams extends StatelessWidget {
         sides,
         if (score != null && separateScore) ...[
           const SizedBox(height: SpacingTokens.spacing2),
-          Text(score!, style: TypographyTokens.titleMedium()),
+          Text(
+            score!,
+            style: TypographyTokens.headlineLarge(
+              foreground,
+            ).copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
+          ),
         ],
       ],
     );
@@ -205,50 +217,58 @@ class AfriFixtureCard extends StatelessWidget {
     this.awayCrest,
     this.score,
     this.subtitle,
+    this.imageUrl,
+    this.imageProvenanceId,
+    this.imageRightsApproved = false,
+    this.lightSurface = false,
     this.trailing,
     this.onTap,
   });
+  final bool lightSurface, imageRightsApproved;
+  final String? imageProvenanceId;
   final String homeTeam, awayTeam;
-  final String? homeCrest, awayCrest, score, subtitle;
+  final String? homeCrest, awayCrest, score, subtitle, imageUrl;
   final Widget? trailing;
   final VoidCallback? onTap;
 
   @override
-  Widget build(BuildContext context) => AfriPressFeedback(
+  Widget build(BuildContext context) => AfriEditorialCard(
+    imageUrl: imageUrl,
+    imageRightsApproved: imageRightsApproved,
+    imageProvenanceId: imageProvenanceId,
+    lightSurface: lightSurface,
     onTap: onTap,
     semanticsLabel:
         '$homeTeam, $awayTeam${score == null ? '' : ', $score'}${subtitle == null ? '' : ', $subtitle'}',
-    child: Container(
-      padding: const EdgeInsets.all(SpacingTokens.spacing3),
-      decoration: BoxDecoration(
-        color: ColorTokens.surfaceContainerLow,
-        borderRadius: ShapeTokens.cardRadius,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          AfriFixtureTeams(
-            homeTeam: homeTeam,
-            awayTeam: awayTeam,
-            homeCrest: homeCrest,
-            awayCrest: awayCrest,
-            score: score,
-          ),
-          if (subtitle != null || trailing != null) ...[
-            const SizedBox(height: SpacingTokens.spacing2),
-            if (subtitle != null)
-              Text(
-                subtitle!,
-                textAlign: TextAlign.center,
-                style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        AfriFixtureTeams(
+          homeTeam: homeTeam,
+          awayTeam: awayTeam,
+          homeCrest: homeCrest,
+          awayCrest: awayCrest,
+          score: score,
+          foreground: lightSurface ? ColorTokens.discoveryInk : null,
+        ),
+        if (subtitle != null || trailing != null) ...[
+          const SizedBox(height: SpacingTokens.spacing2),
+          if (subtitle != null)
+            Text(
+              subtitle!,
+              textAlign: TextAlign.center,
+              style: TypographyTokens.bodySmall(
+                lightSurface
+                    ? ColorTokens.discoveryInk
+                    : ColorTokens.onSurfaceVariant,
               ),
-            if (trailing != null) ...[
-              const SizedBox(height: SpacingTokens.spacing3),
-              trailing!,
-            ],
+            ),
+          if (trailing != null) ...[
+            const SizedBox(height: SpacingTokens.spacing3),
+            trailing!,
           ],
         ],
-      ),
+      ],
     ),
   );
 }

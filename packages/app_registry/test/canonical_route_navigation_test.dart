@@ -20,7 +20,7 @@ void main() {
   });
 
   test('every canonical Flutter route resolves through the router graph', () {
-    expect(canonicalRoutes.length, 61);
+    expect(canonicalRoutes.length, 60);
     expect(
       canonicalRoutes.keys.any((path) => path.startsWith('/fanzone')),
       isFalse,
@@ -48,6 +48,7 @@ void main() {
       '/challenge/create',
       '/challenge/my',
       '/challenge/pool-1',
+      '/admin/sms-monitor',
     ]) {
       final match = appRouter.router.configuration.findMatch(Uri.parse(path));
       expect(match.isError, isTrue, reason: path);

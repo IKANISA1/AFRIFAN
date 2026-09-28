@@ -1,10 +1,44 @@
+# Frontend feedback implementation — 23 September 2026
+
+## Screen-by-screen follow-up — 23 September 2026
+
+The current typology review covers all **47 rendered native entries**, with **94 representative/enlarged-text images** inspected by the implementer. Onboarding's invented stadium fallback is removed. Prediction sharing now has one preview and an optional compact chooser. The review corrected the news headline hierarchy, membership tier price hierarchy, enlarged settings-switch labels, enlarged admin metrics, and Predict state fixtures' missing tab shell. Contributions now includes a compact 200% text capture.
+
+The [individual screen report](../../output/qa/full-stack-20260914/screen-typology-review-20260923/report.md) records each screen's source pattern and observation. The existing native reference map carries its inspected image hashes; the golden register contains 1,037 baselines at this checkpoint. Changed images await owner/independent acceptance. Current native font identity, pixel equality and physical-device feel remain unverified; this is not a 100% fidelity or release claim.
+
+The checks and counts in the earlier checkpoints below retain their original source and date. They are not promoted to acceptance of the current candidate. Concurrent Costa do Sol source work is preserved and is not certified by the historical four-club evidence.
+
+The current review candidate includes the requested Home discovery sections, lighter translucent match and Predict controls, persistent primary navigation, native match actions, published photography, consolidated Partners and Fan Clubs, and redesigned digital membership and package cards. The selected Revolut Dark · Glow Home and RevPoints patterns remain the design authority. Earlier owner approval applies to the earlier image hashes; these revised captures have not yet received a new owner or independent review.
+
+The current graph contains **47 rendered entries and 15 compatibility redirects**. The website-handoff screen, separate partner detail and separate fan-club detail implementations are deleted. Their URLs resolve directly into native content or the consolidated directory. **44 retired images are removed; 16 Home discovery state captures are added.** The existing baseline register now contains **1,034 images: 738 route images and 296 component variants**. State variants are regression evidence for one journey, not additional product destinations.
+
+Home uses compact match cards with an integrated View match action, aligned crest areas, and compact shortcut rows. Active predictions, news, partners and fan clubs link to their existing full native pages; empty sections have no heading or unavailable teaser. Each section can retry independently. The prediction preview is a read-only public projection and removes entries at their closing deadline. The four retained club identities are preserved.
+
+Membership packages use one tier heading, a prominent price, the official crest, full benefit text and a guarded action that wraps at 200% text size. The digital supporter card uses the selected restrained violet gradient. Offline, in-flight and stale-data conditions continue to prevent payment activation. No backend confirmation or settlement is inferred from visual presentation.
+
+Photographs require explicit publication and approval. Player/community reads use a new approved-publication field, partner imagery uses the existing approval/provenance boundary, and the fixture feed now carries its existing image approval metadata. No media is automatically approved by the migration. Review fixtures use retained, documented club photos and synthetic content; they do not publish new partners, fixtures, players or communities.
+
+Current test receipts, feedback coverage, visual observations and source/artifact hashes are in [the feedback report](../../output/qa/full-stack-20260914/revpoints-feedback-20260923/report.md). The [local review gallery](http://127.0.0.1:8766/) is refreshed from current Flutter images; its web captures retain their original source-bound date. Local visual/regression results, real installed-device checks, independent review, provider validation, hosted CI, deployment and public availability remain separate.
+
+### Concurrent workspace expansion
+
+While final feedback tests ran, another task added Costa do Sol, its configuration, shared identity metadata and a seed migration. Those changes were preserved. The four club visual captures above remain the scope of this feedback review; they do not establish launch, imagery or release acceptance of the added app. The final report separates the full test run during that source transition from a subsequent bounded shared-UI regression and records source stability explicitly.
+
+## Earlier 20 September approval and 23 September collector-removal checkpoint
+
+The following sections are historical evidence. Their counts and claims of current captures predate the browser-feedback revision above.
+
 # Consolidated frontend review — 20 September 2026
 
 Local verification of the consolidated frontend candidate is complete. The owner approved all presented frontend screens on 20 September 2026 and explicitly instructed further implementation. The approval binds the reviewed gallery and image hashes in `output/qa/full-stack-20260914/frontend-owner-approval-20260920.json`. Authorized full-stack engineering resumes; release readiness and independent technical, device and provider acceptance remain separate.
 
 The former gallery's **812 mobile records represent 55 rendered route entries**, not 812 independent screens. Each record has a relevance decision in `output/qa/full-stack-20260914/frontend-screen-relevance-812.json`; the readable route-by-route critique is `output/qa/full-stack-20260914/frontend-screen-relevance.md`.
 
-The final native graph has **39 supporter destinations, 10 internal admin destinations and two recovery screens**: **51 rendered entries and 12 compatibility redirects**. Redirects have no separate screen implementation. There are currently **774 mapped native images** and **296 shared/component variants**. Themes, loading, errors, access denial and accessibility states remain tests of one journey; the gallery opens one overview per route.
+The final native graph has **39 supporter destinations, nine internal admin destinations and two recovery screens**: **50 rendered entries and 12 compatibility redirects**. Redirects have no separate screen implementation. There are currently **758 mapped native images** and **296 shared/component variants**. Themes, loading, errors, access denial and accessibility states remain tests of one journey; the gallery opens one overview per route.
+
+## 23 September mobile scope correction
+
+Owner clarification on 23 September 2026: the four supporter apps have no SMS collection or ingestion responsibility. Remove their collectors, background listeners, upload/retry queues, device-message permissions, consent controls, analytics and native monitoring screens. A separate future club-management SMS gateway will own message collection; its design and implementation are a separate product scope. Preserve WhatsApp OTP login, USSD/payment preparation and server-confirmed financial outcomes. Existing server processing and web administration are separate from the supporter apps. The prior owner decision remains attached to the original image hashes; updated dashboard captures are recorded as requested changes, not a new owner decision.
 
 ## Implemented consolidation
 
@@ -29,13 +63,13 @@ Home now renders the registered RAY/APR identities and decoded official crests i
 
 Predict presents one set of equally sized result choices, with consistent rounded corners and insets. The repeated team cards above those choices are removed. At narrow widths with 200% text, choices stack at full width instead of squeezing labels or changing into uneven pills. The shared outlined-button style now preserves the caller's card shape and padding. Dark, light, selected and enlarged-text images were inspected after regeneration.
 
-## Current local verification
+## Source-bound verification
 
 | Scope | Current result | Evidence |
 | --- | --- | --- |
-| Shared Flutter packages | 2,347 tests passed; analysis reported no issues | `frontend-consolidation-native-verification-20260920.json` |
-| Four retained club shells | 26 navigation and identity tests passed | Same native verification record |
-| Native image register | 1,070 current baselines validated: 774 route images and 296 component variants | Same native verification record |
+| Shared Flutter packages | 2,290 current tests passed; strict analysis reported no issues after collector removal | `goal-update-mobile-sms-packages-final-20260923.json`; `goal-update-mobile-sms-analyze-final-20260923.json` |
+| Four retained club shells | 26 current navigation and identity tests passed with the respective club defines | `mobile-sms-removal-20260923/shell-results.json` |
+| Native image register | 1,054 current baselines: 758 route images and 296 component variants; 16 retired monitor captures removed and two dashboard captures refreshed | `mobile-sms-removal-20260923/report.json` |
 | Website/admin source | 953 unit tests passed; types, lint and local production-format build passed | `frontend-consolidation-web-verification-20260920.json` |
 | Chromium, Firefox and mobile WebKit | 288 distinct cases passed; three live administrator cases skipped | `frontend-consolidation-browser-case-coverage-20260920.json` |
 | Browser capture integrity | 189 complete capture groups, 2,517 state captures and 2,558 PNG files validated against the same sealed build | Web verification record and its three source-bound browser packets |
@@ -319,15 +353,15 @@ native visual refinement has a fresh full-workspace run recorded below.
 | `/club/history` | LIVE-007, LIVE-033, LIVE-051, LIVE-053 | component pattern | [club_history_state_dark_dark_390x844.png](../../packages/features/feat_club/test/goldens/club_history_state_dark_dark_390x844.png) |
 | `/club/news` | LIVE-007, LIVE-033, LIVE-051, LIVE-053 | component pattern | [club_news_state_dark_dark_390x844.png](../../packages/features/feat_club/test/goldens/club_news_state_dark_dark_390x844.png) |
 | `/club/news/:articleId` | LIVE-007, LIVE-033, LIVE-051, LIVE-053 | component pattern | [club_news_detail_state_dark_dark_390x844.png](../../packages/features/feat_club/test/goldens/club_news_detail_state_dark_dark_390x844.png) |
-| `/club/projects` | LIVE-007, LIVE-033, LIVE-051, LIVE-053 | component pattern | [club_projects_state_dark_dark_390x844.png](../../packages/features/feat_club/test/goldens/club_projects_state_dark_dark_390x844.png) |
-| `/club/projects/:projectId` | LIVE-007, LIVE-033, LIVE-051, LIVE-053 | component pattern | [club_project_detail_state_dark_dark_390x844.png](../../packages/features/feat_club/test/goldens/club_project_detail_state_dark_dark_390x844.png) |
+| `/club/projects` | LIVE-007, LIVE-033, LIVE-051, LIVE-053 | component pattern | Retired capture; no current standalone screen |
+| `/club/projects/:projectId` | LIVE-007, LIVE-033, LIVE-051, LIVE-053 | component pattern | Retired capture; no current standalone screen |
 | `/club/results` | LIVE-007, LIVE-033, LIVE-051, LIVE-053 | component pattern | [club_results_state_dark_dark_390x844.png](../../packages/features/feat_club/test/goldens/club_results_state_dark_dark_390x844.png) |
 | `/club/standings` | LIVE-007, LIVE-033, LIVE-051, LIVE-053 | component pattern | [club_standings_state_dark_dark_390x844.png](../../packages/features/feat_club/test/goldens/club_standings_state_dark_dark_390x844.png) |
 | `/club/team` | LIVE-007, LIVE-033, LIVE-051, LIVE-053 | component pattern | [club_team_state_dark_dark_390x844.png](../../packages/features/feat_club/test/goldens/club_team_state_dark_dark_390x844.png) |
 | `/contribute/group/:groupId` | LIVE-053, LIVE-060 | component pattern | [group_detail_state_dark_dark_390x844.png](../../packages/features/feat_contributions/test/goldens/group_detail_state_dark_dark_390x844.png) |
 | `/contribute/group/:groupId/statement` | LIVE-053, LIVE-060 | component pattern | [statement_state_dark_dark_390x844.png](../../packages/features/feat_contributions/test/goldens/statement_state_dark_dark_390x844.png) |
 | `/e-ticket/:id` | LIVE-048 | component pattern | [e_ticket_state_dark_dark_390x844.png](../../packages/features/feat_ticketing/test/goldens/e_ticket_state_dark_dark_390x844.png) |
-| `/fan-clubs/:clubId` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [fan_club_detail_state_dark_dark_390x844.png](../../packages/features/feat_fan_clubs/test/goldens/fan_club_detail_state_dark_dark_390x844.png) |
+| `/fan-clubs/:clubId` | LIVE-007, LIVE-026, LIVE-053 | component pattern | Retired capture; no current standalone screen |
 | `/fanzone` | Shared destination | redirect | `/predict` |
 | `/fanzone/match/:fixtureId` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [match_detail_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/match_detail_state_dark_dark_390x844.png) |
 | `/fanzone/my/:predictionId` | LIVE-007, LIVE-026, LIVE-053 | component pattern | [prediction_detail_state_dark_dark_390x844.png](../../packages/features/feat_gamification/test/goldens/prediction_detail_state_dark_dark_390x844.png) |
@@ -361,8 +395,7 @@ native visual refinement has a fresh full-workspace run recorded below.
 | `/admin/features/:featureKey` | LIVE-007, LIVE-053, LIVE-060 | component pattern | [admin_feature_detail_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_feature_detail_state_dark_390x844.png) |
 | `/admin/matches` | LIVE-007, LIVE-053, LIVE-060 | component pattern | [admin_matches_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_matches_state_dark_390x844.png) |
 | `/admin/notifications` | LIVE-007, LIVE-053, LIVE-060 | component pattern | [admin_notifications_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_notifications_state_dark_390x844.png) |
-| `/admin/settle` | LIVE-007, LIVE-053, LIVE-060 | component pattern | [admin_settlement_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_settlement_state_dark_390x844.png) |
-| `/admin/sms-monitor` | LIVE-007, LIVE-053, LIVE-060 | component pattern | [admin_sms_state_dark_390x844.png](../../packages/features/feat_admin/test/goldens/admin_sms_state_dark_390x844.png) |
+| `/admin/settle` | LIVE-007, LIVE-053, LIVE-060 | component pattern | Retired capture; no current standalone screen |
 
 ## Reproducing the native capture
 
@@ -477,3 +510,9 @@ Final verification includes 76 shared-control, contrast and localization checks,
 journey checks. Static analysis of all 11 affected packages is clean. The final
 rebuilt native iOS Predict journey also passed. Review captures use synthetic fixtures and the test font. They do
 not establish exact source-font equivalence, store approval or live access.
+
+## Home layout remediation — 23 September 2026
+
+The Home secondary section now has explicit spacing and an aligned title/action, with one expanded-section heading. Enlarged News cards reflow without a fixed-height overflow. The scroll viewport stays below native system controls. Eight new Home goldens and nine reviewed Membership heading diffs are registered; full current regression passes 2,332 cases with no skips. Five Home/auth/settings and one Club journey pass on each native platform using synthetic repositories/auth. All four main apps are rebuilt, booted and artifact-checked on both platforms.
+
+The same author inspected the applicable LIVE-020 grouping reference, target variants and the final code delta. This is not independent review or a renewed owner decision. The original approval remains bound to its earlier artifacts. Full source-pixel equivalence, all journeys, human accessibility, physical devices, providers and release gates remain unverified. [Checkpoint evidence](../../output/qa/full-stack-20260914/home-layout-20260923/report.md).

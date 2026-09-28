@@ -12,6 +12,7 @@ insert into expected_anonymous_security_definer_functions (signature) values
   ('public.club_public_overview(p_club_id bigint)'),
   ('public.club_public_history(p_club_id bigint)'),
   ('public.predict_dashboard(p_club_id bigint)'),
+  ('public.predict_public_preview(p_club_id bigint)'),
   ('public.check_feature_enabled(p_feature_key text, p_channel text, p_club_id bigint)'),
   ('public.fet_get_catalog(p_club_id bigint, p_include_inactive boolean)'),
   ('public.fet_resolve_public_club_id(p_club_id bigint)'),
@@ -56,7 +57,7 @@ select is(
 
 select is(
   (select count(*)::integer from actual_anonymous_security_definer_functions),
-  19,
+  20,
   'anonymous execution is limited to the governed endpoint count'
 );
 
@@ -148,6 +149,7 @@ insert into expected_authenticated_security_definer_functions (signature) values
   ('club_public_overview(bigint)'),
   ('club_public_history(bigint)'),
   ('predict_dashboard(bigint)'),
+  ('predict_public_preview(bigint)'),
   ('predict_place(bigint,uuid,text)'),
   ('predict_admin_dashboard(bigint)'),
   ('predict_admin_settings(bigint,boolean,integer)'),
@@ -178,7 +180,7 @@ where p.prosecdef
 
 select is(
   (select count(*)::integer from actual_authenticated_security_definer_functions),
-  66,
+  65,
   'authenticated execution is limited to the governed endpoint count'
 );
 

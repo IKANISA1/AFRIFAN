@@ -33,7 +33,6 @@ class PrivacySafeAnalyticsPolicy {
     'challenge_created': <String>{'value_bucket'},
     'challenge_joined': <String>{},
     'membership_action': <String>{'action'},
-    'momo_sms_parsed': <String>{'provider', 'value_bucket'},
     'feature_gated': <String>{'feature'},
     'home_action_selected': <String>{'action', 'layer'},
     'search_entry': <String>{},

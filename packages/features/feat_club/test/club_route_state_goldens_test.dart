@@ -5,7 +5,6 @@ import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_club/feat_club.dart';
 import 'package:feat_club/src/screens/club_partners_screen.dart';
-import 'package:feat_club/src/screens/club_public_link_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +12,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
+import 'package:test_support/predict_fixture_images.dart';
+import 'package:test_support/tab_shell_fixture.dart';
 
 const _goldenKey = ValueKey<String>('club-route-state-golden');
 
@@ -29,11 +30,62 @@ void main() {
   });
   tearDown(() => ConnectivityService.setOnlineForTest(true));
 
+  testWidgets('match actions retain fixture identity and open Predict', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      _buildClubApp(
+        initialLocation: '/club/fixtures/fixture-1',
+        gateway: _ClubStateGateway(_ClubGatewayMode.data),
+        brightness: Brightness.dark,
+        reducedMotion: true,
+      ),
+    );
+    await tester.pumpAndSettle();
+    final router = GoRouter.of(
+      tester.element(find.byType(ClubFixtureDetailScreen)),
+    );
+    await tester.ensureVisible(find.text('View tickets'));
+    await tester.tap(find.text('View tickets'));
+    await tester.pumpAndSettle();
+    expect(find.text('Tickets: fixture-1'), findsOneWidget);
+    router.pop();
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Predict'));
+    await tester.tap(find.text('Predict'));
+    await tester.pumpAndSettle();
+    expect(find.text('Predict destination'), findsOneWidget);
+  });
+
+  testWidgets('a result keeps ticket sales disabled', (tester) async {
+    await tester.pumpWidget(
+      _buildClubApp(
+        initialLocation: '/club/fixtures/result-1',
+        gateway: _ClubStateGateway(_ClubGatewayMode.data),
+        brightness: Brightness.dark,
+        reducedMotion: true,
+      ),
+    );
+    await tester.pumpAndSettle();
+    final button = tester.widget<AfriButton>(
+      find.widgetWithText(AfriButton, 'View tickets'),
+    );
+    expect(button.enabled, isFalse);
+    expect(find.text('Predict'), findsOneWidget);
+  });
+
   for (final route in _clubRoutes) {
     for (final state in _clubStates) {
       if (state == 'empty' && !route.hasEmptyState) continue;
       testWidgets('golden ${route.pattern} $state state', (tester) async {
-        await _pumpClubRouteState(tester, route: route, state: state);
+        await installPredictFixtureImages();
+        try {
+          await _pumpClubRouteState(tester, route: route, state: state);
+        } finally {
+          await tester.pumpWidget(const SizedBox.shrink());
+          await tester.pump();
+          debugNetworkImageHttpClientProvider = null;
+        }
       });
     }
   }
@@ -61,16 +113,6 @@ const _clubRoutes = <_ClubRouteSpec>[
   _ClubRouteSpec('/club/team', '/club/team', 'team'),
   _ClubRouteSpec('/club/team/:playerId', '/club/team/player-1', 'player'),
   _ClubRouteSpec('/club/partners', '/club/partners', 'partners'),
-  _ClubRouteSpec(
-    '/club/partners/:partnerId',
-    '/club/partners/partner-1',
-    'partner_detail',
-  ),
-  _ClubRouteSpec(
-    '/club/open-web',
-    '/club/open-web?path=%2Fnews%2Fpublished-story',
-    'public_link',
-  ),
   _ClubRouteSpec('/club/news', '/club/news', 'news'),
   _ClubRouteSpec(
     '/club/news/:articleId',
@@ -138,6 +180,13 @@ Future<void> _pumpClubRouteState(
     // or fails in the same microtask turn.
     await tester.pump(const Duration(milliseconds: 500));
   }
+
+  await tester.runAsync(() async {
+    for (final element in find.byType(Image).evaluate()) {
+      await precacheImage((element.widget as Image).image, element);
+    }
+  });
+  await tester.pump();
 
   if (state == 'syncing') {
     await tester.tap(find.byKey(const ValueKey<String>('club-refresh-action')));
@@ -210,7 +259,9 @@ Future<void> _pumpClubRouteState(
       findsOneWidget,
     );
     if (route.slug == 'fixture_detail') {
-      final tickets = find.text('View available tickets');
+      final tickets = find.text('View tickets');
+      await tester.ensureVisible(tickets);
+      await tester.pumpAndSettle();
       expect(tickets.hitTestable(), findsOneWidget);
       expect(tester.getRect(tickets).bottom, lessThan(720));
       expect(
@@ -260,13 +311,19 @@ Widget _buildClubApp({
     routes: <RouteBase>[
       GoRoute(
         path: '/club',
-        builder: (_, __) => const ClubHubScreen(),
+        builder: (_, __) =>
+            const TabShellFixture(index: 1, child: ClubHubScreen()),
         routes: module.routes,
+      ),
+      GoRoute(
+        path: '/predict',
+        builder: (_, __) => const Text('Predict destination'),
       ),
       GoRoute(path: '/tickets', builder: (_, __) => const SizedBox.shrink()),
       GoRoute(
         path: '/tickets/:matchId',
-        builder: (_, __) => const SizedBox.shrink(),
+        builder: (_, state) =>
+            Text('Tickets: ${state.pathParameters['matchId']}'),
       ),
       GoRoute(
         path: '/contribute/group/:projectId',
@@ -279,13 +336,7 @@ Widget _buildClubApp({
   return ProviderScope(
     overrides: <Override>[
       clubContentGatewayProvider.overrideWithValue(gateway),
-      clubPublicWebsiteProvider.overrideWithValue(
-        Uri.parse('https://club.example'),
-      ),
       clubPartnersProvider.overrideWith((ref, id) => gateway.loadPartners(id)),
-      clubPublicLinkProvider.overrideWith(
-        (ref, path) => gateway.loadPublicLink(path),
-      ),
       clubContentLoadTimeoutProvider.overrideWithValue(
         const Duration(seconds: 12),
       ),
@@ -407,12 +458,14 @@ class _ClubStateGateway implements ClubContentGateway {
     data: [
       {
         'id': 'partner-1',
-        'name': 'Synthetic Community Partner',
+        'name': 'Community partnership',
         'category': 'Community partner',
         'description':
-            'Published recognition for a synthetic club partner. No redemption or financial benefit is implied.',
+            'Supporting club activities and bringing supporters together.',
         'website_url': 'https://example.test/club-partner',
-        'image_rights_approved': false,
+        'image_rights_approved': true,
+        'image_provenance_id': 'review-only-existing-club-photography',
+        'image_url': 'https://fixture.test/partner.webp',
       },
     ],
     empty: <Map<String, dynamic>>[],
@@ -480,25 +533,19 @@ final _news = <ClubNewsItem>[
 const _squad = <ClubSquadMember>[
   ClubSquadMember(
     id: 'player-1',
-    name: 'Claude Niyonzima',
+    name: 'First-team player',
+    imageUrl: 'https://fixture.test/player.webp',
     position: 'Midfielder',
     shirtNumber: 8,
     nationality: 'Rwanda',
     bio: 'First-team midfielder.',
-  ),
-  ClubSquadMember(
-    id: 'player-2',
-    name: 'Eric Ngendahimana',
-    position: 'Defender',
-    shirtNumber: 4,
-    nationality: 'Rwanda',
-    bio: 'First-team defender.',
   ),
 ];
 
 final _matches = <ClubFixtureItem>[
   ClubFixtureItem(
     id: 'fixture-1',
+    imageUrl: 'https://fixture.test/fixture.webp',
     homeTeam: 'Rayon Sports FC',
     awayTeam: 'APR FC',
     competition: 'Rwanda Premier League',

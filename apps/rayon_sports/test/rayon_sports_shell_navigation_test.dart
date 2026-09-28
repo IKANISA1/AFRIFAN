@@ -239,9 +239,6 @@ class _FakeClubConfig implements ClubConfig {
   bool get hasShop => false;
 
   @override
-  bool get hasSmsLedger => false;
-
-  @override
   bool get hasTicketing => false;
 
   @override
@@ -260,7 +257,6 @@ class _FakeClubConfig implements ClubConfig {
   @override
   MomoConfig get momo => const MomoConfig(
     ussdTemplate: '*182*8*1*{amount}*{momo}#',
-    senderName: 'MTN MoMo',
     countryCode: 'RW',
   );
 

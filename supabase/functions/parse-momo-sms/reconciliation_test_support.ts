@@ -201,6 +201,7 @@ class FakeQueryBuilder implements PromiseLike<QueryResult> {
   private limitCount: number | null = null;
   private orderColumn: string | null = null;
   private ascending = true;
+  private unexpiredAfter: string | null = null;
   private updatePayload: Record<string, unknown> | null = null;
   private insertPayload: Record<string, unknown>[] = [];
   private insertedRows: TableRow[] | null = null;
@@ -251,6 +252,18 @@ class FakeQueryBuilder implements PromiseLike<QueryResult> {
 
   limit(count: number): this {
     this.limitCount = count;
+    return this;
+  }
+
+  or(filter: string): this {
+    const prefix = "expires_at.is.null,expires_at.gt.";
+    if (
+      !filter.startsWith(prefix) ||
+      !Number.isFinite(Date.parse(filter.slice(prefix.length)))
+    ) {
+      throw new Error(`Unsupported fake query filter: ${filter}`);
+    }
+    this.unexpiredAfter = filter.slice(prefix.length);
     return this;
   }
 
@@ -329,6 +342,10 @@ class FakeQueryBuilder implements PromiseLike<QueryResult> {
   }
 
   private matches(row: TableRow): boolean {
+    if (
+      this.unexpiredAfter && row.expires_at != null &&
+      Date.parse(String(row.expires_at)) <= Date.parse(this.unexpiredAfter)
+    ) return false;
     return this.filters.every((filter) => {
       const value = row[filter.column];
       switch (filter.kind) {

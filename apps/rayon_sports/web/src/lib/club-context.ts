@@ -94,7 +94,7 @@ function mapClubRow(row: ClubLookupRow | null | undefined) {
     numericId: supported.id,
     slug: safeString(row.club_slug, supported.clubSlug),
     name: safeString(row.club_name, supported.clubName),
-    shortName: safeString(row.club_name, supported.shortName),
+    shortName: supported.shortName,
   } satisfies ActiveClubReference;
 }
 

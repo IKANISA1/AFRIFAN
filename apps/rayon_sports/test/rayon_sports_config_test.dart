@@ -72,7 +72,6 @@ void main() {
       expect(features['shop'], config.hasShop);
       expect(features['ticketing'], config.hasTicketing);
       expect(features['chat'], config.hasChat);
-      expect(features['sms_ledger'], config.hasSmsLedger);
     });
 
     test('all feature flags are boolean', () {

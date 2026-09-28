@@ -31,5 +31,7 @@ describe('published team identity', () => {
     expect(teamCrestUrl('Unknown United')).toBeNull();
     expect(teamCrestUrl('Unknown United', 'javascript:alert(1)')).toBeNull();
     expect(teamInitials('Unknown United')).toBe('UU');
+    expect(teamInitials('CD Costa do Sol')).toBe('CDS');
+    expect(teamCrestUrl('CD Costa do Sol')).toBeNull();
   });
 });

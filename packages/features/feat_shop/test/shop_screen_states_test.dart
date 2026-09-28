@@ -9,10 +9,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
+import 'package:test_support/shop_fixture_images.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadAppFonts);
+  useShopFixtureImages();
   setUp(() {
     ConnectivityService.setOnlineForTest(true);
     FocusManager.instance.primaryFocus?.unfocus(
@@ -374,6 +376,7 @@ Future<void> _pumpShopStateGolden(
     await tester.pump();
   }
 
+  if (settle) await settleShopFixtureImages(tester);
   await afterPump?.call(tester);
 
   expect(tester.takeException(), isNull);
@@ -468,10 +471,23 @@ const _products = <Map<String, dynamic>>[
   <String, dynamic>{
     'id': 'jersey-home',
     'name': 'Home Match Jersey',
+    'image_url': shopHomePhoto,
+    'image_rights_approved': true,
+    'image_provenance_id': shopPhotoProvenance,
     'subtitle': 'Official 2026 supporter edition',
     'category': 'Jerseys',
     'price': 25000,
     'badge_label': 'NEW',
+  },
+  <String, dynamic>{
+    'id': 'jersey-away',
+    'name': 'Away Match Jersey',
+    'subtitle': 'White and blue supporter edition',
+    'category': 'Jerseys',
+    'price': 25000,
+    'image_url': shopAwayPhoto,
+    'image_rights_approved': true,
+    'image_provenance_id': shopPhotoProvenance,
   },
   <String, dynamic>{
     'id': 'scarf-blue',
@@ -486,6 +502,9 @@ const _unavailableProducts = <Map<String, dynamic>>[
   <String, dynamic>{
     'id': 'jersey-sold-out',
     'name': 'Home Match Jersey',
+    'image_url': shopHomePhoto,
+    'image_rights_approved': true,
+    'image_provenance_id': shopPhotoProvenance,
     'subtitle': 'Official 2026 supporter edition',
     'category': 'Jerseys',
     'price': 25000,

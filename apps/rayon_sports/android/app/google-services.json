@@ -102,25 +102,6 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1074154147498:android:15152b45f109c7c4dc4ad3",
-        "android_client_info": {
-          "package_name": "com.ikanisa.smsgateway"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBZWg0JT-v2Qpirp63RbsPqzB4JY2onfJw"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:1074154147498:android:4e443d076bcb4160dc4ad3",
         "android_client_info": {
           "package_name": "com.lika.app"

@@ -138,11 +138,11 @@ void main() {
             ),
           ),
           // Stub routes for navigation
+          GoRoute(path: '/club/fixtures', builder: (_, __) => const SizedBox()),
           GoRoute(
-            path: '/club/fixtures',
+            path: '/predict?section=history',
             builder: (_, __) => const SizedBox(),
           ),
-          GoRoute(path: '/predict?section=history', builder: (_, __) => const SizedBox()),
           GoRoute(
             path: '/predict/picks/:predictionId',
             builder: (_, __) => const SizedBox(),
@@ -152,10 +152,7 @@ void main() {
             path: '/club/standings',
             builder: (_, __) => const SizedBox(),
           ),
-          GoRoute(
-            path: '/predict',
-            builder: (_, __) => const SizedBox(),
-          ),
+          GoRoute(path: '/predict', builder: (_, __) => const SizedBox()),
           GoRoute(path: '/tickets', builder: (_, __) => const SizedBox()),
           GoRoute(path: '/membership', builder: (_, __) => const SizedBox()),
           GoRoute(path: '/fan-clubs', builder: (_, __) => const SizedBox()),
@@ -209,7 +206,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('More shortcuts'), findsOneWidget);
+      expect(find.text('Shortcuts'), findsOneWidget);
+      expect(find.text('More shortcuts'), findsNothing);
       expect(find.text('Matchday'), findsOneWidget);
       expect(
         find.byKey(const ValueKey<String>('home-secondary-actions-2col')),
@@ -249,6 +247,48 @@ void main() {
         findsOneWidget,
       );
     });
+
+    for (final width in [320.0, 390.0]) {
+      for (final scale in [1.0, 2.0]) {
+        testWidgets('separates and aligns shortcuts at $width / $scale', (
+          tester,
+        ) async {
+          tester.view.physicalSize = Size(width, 900);
+          tester.view.devicePixelRatio = 1;
+          tester.platformDispatcher.textScaleFactorTestValue = scale;
+          addTearDown(tester.view.resetPhysicalSize);
+          addTearDown(tester.view.resetDevicePixelRatio);
+          addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+
+          await tester.pumpWidget(buildTestApp());
+          await tester.pumpAndSettle();
+
+          final primaryBottom = find
+              .byType(AfriQuickAction)
+              .evaluate()
+              .map(
+                (element) =>
+                    tester.getBottomLeft(find.byWidget(element.widget)).dy,
+              )
+              .reduce((a, b) => a > b ? a : b);
+          final title = tester.getRect(find.text('Shortcuts'));
+          final toggle = tester.getRect(
+            find.byKey(const ValueKey<String>('home-secondary-actions-toggle')),
+          );
+          expect(title.top - primaryBottom, greaterThanOrEqualTo(16));
+          expect(toggle.top - primaryBottom, greaterThanOrEqualTo(16));
+          if (scale >= 1.5) {
+            expect(toggle.top, greaterThanOrEqualTo(title.bottom));
+          } else {
+            expect(title.center.dy, closeTo(toggle.center.dy, 1));
+            expect(title.right, lessThanOrEqualTo(toggle.left));
+          }
+          expect(toggle.height, greaterThanOrEqualTo(44));
+          expect(toggle.right, lessThanOrEqualTo(width));
+          expect(tester.takeException(), isNull);
+        });
+      }
+    }
   });
 
   test('prioritizes core fan jobs ahead of configured secondary actions', () {

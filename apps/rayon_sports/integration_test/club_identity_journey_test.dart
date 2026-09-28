@@ -64,7 +64,7 @@ void main() {
       await binding.convertFlutterSurfaceToImage();
       await tester.pump();
     }
-    expect(find.text('Rayon Sports FC'), findsOneWidget);
+    expect(find.text('RAY'), findsOneWidget);
     expect(find.text('Nyanza, Southern Province, Rwanda'), findsOneWidget);
     expect(find.text('Blue and white'), findsOneWidget);
     expect(find.byType(Image), findsOneWidget);
@@ -82,10 +82,11 @@ void main() {
     await capture('club-native-player');
     router.go('/club');
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('Club history'));
+    final historyLink = find.text('Club history').first;
+    await tester.ensureVisible(historyLink);
     await tester.pumpAndSettle();
     await capture('club-native-details');
-    await tester.tap(find.text('Club history'));
+    await tester.tap(historyLink);
     await tester.pumpAndSettle();
     expect(find.text('Roots in Nyanza'), findsOneWidget);
     expect(find.text('Based in Kigali'), findsOneWidget);

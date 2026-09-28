@@ -770,33 +770,32 @@ class _MatchPartnerPoolsTabBody extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       padding: const EdgeInsets.all(SpacingTokens.spacing6),
       children: [
-        AfriSectionCard(
-          title: l10n.gamePartnerWdwPools,
-          child: pools.isEmpty
-              ? AfriEmptyView(
-                  compact: true,
-                  title: l10n.gameNoPartnerPool,
-                  message: l10n.gameNoPartnerPoolDescription,
-                  icon: AfriIcons.predict,
-                  actionLabel: l10n.homeOpenPredict,
-                  onAction: () => context.go('/predict'),
-                )
-              : Column(
-                  children: pools
-                      .map(
-                        (pool) => Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: SpacingTokens.listItemGap,
-                          ),
-                          child: HubPartnerPoolRow(
-                            pool: pool,
-                            onJoin: onJoin == null ? null : () => onJoin!(pool),
-                          ),
-                        ),
-                      )
-                      .toList(growable: false),
-                ),
+        Semantics(
+          header: true,
+          child: Text(
+            l10n.gamePartnerWdwPools,
+            style: TypographyTokens.sectionTitle(),
+          ),
         ),
+        const SizedBox(height: SpacingTokens.spacing4),
+        if (pools.isEmpty)
+          AfriEmptyView(
+            compact: true,
+            title: l10n.gameNoPartnerPool,
+            message: l10n.gameNoPartnerPoolDescription,
+            icon: AfriIcons.predict,
+            actionLabel: l10n.homeOpenPredict,
+            onAction: () => context.go('/predict'),
+          )
+        else
+          for (final pool in pools)
+            Padding(
+              padding: const EdgeInsets.only(bottom: SpacingTokens.listItemGap),
+              child: HubPartnerPoolRow(
+                pool: pool,
+                onJoin: onJoin == null ? null : () => onJoin!(pool),
+              ),
+            ),
         const SizedBox(height: SpacingTokens.spacing4),
         AfriSurfaceCard(
           child: Row(

@@ -71,12 +71,8 @@ class AsVitaConfig implements ClubConfig {
   bool get hasChat => true;
 
   @override
-  bool get hasSmsLedger => true;
-
-  @override
   MomoConfig get momo => const MomoConfig(
     ussdTemplate: '*126*1*1*{amount}*{momo}#',
-    senderName: 'm-Pesa',
     countryCode: 'CD',
   );
 
@@ -90,6 +86,5 @@ class AsVitaConfig implements ClubConfig {
     'shop': hasShop,
     'ticketing': hasTicketing,
     'chat': hasChat,
-    'sms_ledger': hasSmsLedger,
   };
 }

@@ -16,10 +16,14 @@ The supported club products are:
 | `rayon_sports` | Rayon Sports FC / Gikundiro | Rwanda | 24 |
 | `nkana` | Nkana FC | Zambia | 26 |
 | `as_vita` | AS Vita Club | DR Congo | 6 |
+| `costa_do_sol` | CD Costa do Sol / Os Canarinhos | Mozambique | 1001 |
 
-The workspace contains these four app shells and 28 packages: 24 shared packages
-and four club configurations. Android and iOS acceptance is tracked separately
-for each club, giving eight mobile product/platform targets.
+The workspace contains five app shells and five club configurations. Android and
+iOS acceptance is tracked separately for each club, giving ten mobile
+product/platform targets. The Costa do Sol app is locally configured only;
+approved native IDs, crest artwork and palette, backend keys and Mozambique
+payment routes remain release inputs. Tenant 1001 is reserved in source and
+requires a hosted collision check before migration.
 
 Shared football data still includes opponents used by fixtures and league tables;
 those teams have no dedicated app, club configuration package or supported-club

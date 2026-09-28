@@ -155,7 +155,11 @@ class ClubHubScreen extends ConsumerWidget {
                 AfriListGroup(
                   children: [
                     AfriFixtureCard(
+                      lightSurface: true,
                       homeTeam: currentMatch.homeTeam,
+                      imageUrl: currentMatch.imageUrl,
+                      imageRightsApproved: currentMatch.imageUrl != null,
+                      imageProvenanceId: 'published-fixture:${currentMatch.id}',
                       awayTeam: currentMatch.awayTeam,
                       score: currentMatch.isCompleted
                           ? '${currentMatch.homeScore}–${currentMatch.awayScore}'
@@ -219,7 +223,7 @@ class ClubHubScreen extends ConsumerWidget {
                   _ClubDestination(
                     icon: AfriIcons.business,
                     title: l10n.clubPartnersTitle,
-                    subtitle: l10n.clubPartnerDetails,
+                    subtitle: l10n.clubPartnersIntro,
                     route: '/club/partners',
                   ),
                   _ClubDestination(

@@ -128,9 +128,7 @@ class _CommandAvatar extends StatelessWidget {
             ),
             child: Center(
               child: icon == null
-                  ? const AfriBrandMark(
-                      size: AfriChromeTokens.commandBrandSize,
-                    )
+                  ? const AfriBrandMark(size: AfriChromeTokens.commandBrandSize)
                   : Icon(
                       icon,
                       color: ColorTokens.chromeForeground,
@@ -181,9 +179,23 @@ class _CommandSearchButton extends StatelessWidget {
       tooltip: semanticsLabel,
       builder: (context, state) => LayoutBuilder(
         builder: (context, constraints) {
+          final labelPainter = TextPainter(
+            text: TextSpan(text: label, style: TypographyTokens.bodyLarge()),
+            textDirection: Directionality.of(context),
+            textScaler: MediaQuery.textScalerOf(context),
+            maxLines: 1,
+          )..layout();
+          final labelWidth = labelPainter.width;
+          labelPainter.dispose();
           final showLabel =
+              label.isNotEmpty &&
               constraints.maxWidth >=
-              AfriChromeTokens.commandSearchLabelMinWidth;
+                  AfriChromeTokens.commandSearchLabelMinWidth &&
+              constraints.maxWidth >=
+                  labelWidth +
+                      SpacingTokens.spacing4 * 2 +
+                      SpacingTokens.spacing3 +
+                      AfriChromeTokens.commandSearchIconSize;
           return Container(
             height: AfriChromeTokens.commandControlSize,
             padding: EdgeInsets.symmetric(

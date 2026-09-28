@@ -128,9 +128,8 @@ class PredictFixtureCard extends StatelessWidget {
                                   ).copyWith(
                                     backgroundColor: WidgetStatePropertyAll(
                                       fixture.selection == selection
-                                          ? ColorTokens.primaryContainer
-                                                .withValues(alpha: .16)
-                                          : ColorTokens.surfaceContainerHigh,
+                                          ? ColorTokens.discoveryControl
+                                          : ColorTokens.discoveryControl,
                                     ),
                                   ),
                               child: selection == PredictSelection.draw
@@ -138,7 +137,7 @@ class PredictFixtureCard extends StatelessWidget {
                                       l.predictDraw,
                                       textAlign: TextAlign.center,
                                       style: TypographyTokens.labelLarge(
-                                        ColorTokens.onSurface,
+                                        ColorTokens.discoveryInk,
                                       ),
                                     )
                                   : Flex(
@@ -176,7 +175,7 @@ class PredictFixtureCard extends StatelessWidget {
                                           ),
                                           textAlign: TextAlign.center,
                                           style: TypographyTokens.labelLarge(
-                                            ColorTokens.onSurface,
+                                            ColorTokens.discoveryInk,
                                           ),
                                         ),
                                       ],

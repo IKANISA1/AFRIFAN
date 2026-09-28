@@ -205,6 +205,7 @@ class ClubFixtureItem extends Equatable {
     required this.homeScore,
     required this.awayScore,
     required this.isOnSale,
+    this.imageUrl,
   });
 
   final String id;
@@ -218,6 +219,7 @@ class ClubFixtureItem extends Equatable {
   final int homeScore;
   final int awayScore;
   final bool isOnSale;
+  final String? imageUrl;
 
   bool get isCompleted {
     final normalized = status.toLowerCase();
@@ -240,6 +242,12 @@ class ClubFixtureItem extends Equatable {
       homeScore: _intValue(json['home_score']),
       awayScore: _intValue(json['away_score']),
       isOnSale: json['is_on_sale'] == true,
+      imageUrl:
+          _stringValue(json['image_url']).isEmpty ||
+              json['image_rights_approved'] != true ||
+              _stringValue(json['image_provenance_id']).isEmpty
+          ? null
+          : _stringValue(json['image_url']),
     );
   }
 
@@ -256,6 +264,7 @@ class ClubFixtureItem extends Equatable {
     homeScore,
     awayScore,
     isOnSale,
+    imageUrl,
   ];
 }
 

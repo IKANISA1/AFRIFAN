@@ -80,7 +80,7 @@ async function queueParseIfNeeded(options: {
   return true;
 }
 
-async function handleRequest(request: Request) {
+export async function handleRequest(request: Request) {
   if (request.method === "OPTIONS") {
     return corsPreflightResponse();
   }

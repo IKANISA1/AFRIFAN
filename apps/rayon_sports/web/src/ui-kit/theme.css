@@ -3161,6 +3161,10 @@ textarea:focus-visible,
   border-radius: clamp(1.5rem, 5vw, 2.125rem);
 }
 
+.news-featured--imageless {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .news-image {
   position: relative;
   min-height: clamp(15rem, 58vw, 28rem);
@@ -3520,6 +3524,10 @@ textarea:focus-visible,
 @media (min-width: 960px) {
   .news-featured {
     grid-template-columns: minmax(0, 1.2fr) minmax(20rem, 0.8fr);
+  }
+
+  .news-featured--imageless {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .news-article-hero {

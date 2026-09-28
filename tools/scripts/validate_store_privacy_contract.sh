@@ -11,8 +11,7 @@ python3 - \
   "$APP_DIR/store_metadata/app_store/privacy_nutrition.md" \
   "$APP_DIR/store_metadata/release_policy_assessment.md" \
   "$APP_DIR/android/app/src/main/AndroidManifest.xml" \
-  "$ROOT/packages/core/core_network/lib/src/crashlytics_service.dart" \
-  "$ROOT/packages/features/feat_sms_ledger/lib/src/services/momo_sms_autoread_service.dart" <<'PY'
+  "$ROOT/packages/core/core_network/lib/src/crashlytics_service.dart" <<'PY'
 import pathlib
 import sys
 import xml.etree.ElementTree as ET
@@ -25,7 +24,6 @@ import xml.etree.ElementTree as ET
     assessment_path,
     mobile_manifest_path,
     crashlytics_path,
-    sms_path,
 ) = (pathlib.Path(value) for value in sys.argv[1:])
 
 paths = (
@@ -36,7 +34,6 @@ paths = (
     assessment_path,
     mobile_manifest_path,
     crashlytics_path,
-    sms_path,
 )
 missing_files = [str(path) for path in paths if not path.is_file()]
 if missing_files:
@@ -48,9 +45,9 @@ listing = listing_path.read_text()
 apple_privacy = apple_privacy_path.read_text()
 assessment = assessment_path.read_text()
 crashlytics = crashlytics_path.read_text()
-sms = sms_path.read_text()
 
 checks = {
+    "privacy excludes device-message collection": "does not read, collect or upload your device messages" in privacy,
     "privacy policy deletion anchor": 'id="account-deletion"' in privacy,
     "privacy policy support route": "support@ikanisa.com" in privacy,
     "privacy policy Crashlytics disclosure": "crash" in privacy.lower(),
@@ -70,7 +67,6 @@ checks = {
     "Crashlytics excludes raw Flutter details": "recordFlutterFatalError" not in crashlytics,
     "Crashlytics excludes account identifiers": "setUserIdentifier(userId" not in crashlytics,
     "Crashlytics uses sanitized runtime failure": "runtime_failure:${error.runtimeType}" in crashlytics,
-    "SMS diagnostics exclude account ID": "session.user.id}" not in sms,
 }
 
 expected_apple_categories = {

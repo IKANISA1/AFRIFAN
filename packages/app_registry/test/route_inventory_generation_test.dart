@@ -356,9 +356,7 @@ void main() {
       <String>{
         '/club/team',
         '/club/team/:playerId',
-        '/club/open-web',
         '/club/partners',
-        '/club/partners/:partnerId',
         '/club/news',
         '/club/news/:articleId',
         '/club/fixtures',
@@ -367,6 +365,18 @@ void main() {
         '/club/history',
       },
     );
+    for (final path in <String>[
+      '/club/open-web',
+      '/club/partners/:partnerId',
+      '/fan-clubs/:clubId',
+    ]) {
+      final route = closureRoutes.singleWhere((route) => route['path'] == path);
+      expect(route['kind'], 'redirect');
+      expect(
+        route['rendered_state_contract'],
+        isNot('controlled_club_information_surface'),
+      );
+    }
     const expectedControlledClubHubStates = <String>{
       'loading',
       'error',

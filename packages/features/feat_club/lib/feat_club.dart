@@ -9,6 +9,7 @@ export 'src/models/club_content_models.dart';
 export 'src/providers/club_content_providers.dart';
 // Repositories
 export 'src/repositories/club_content_gateway.dart';
+export 'src/repositories/gikundiro_public_partners.dart';
 // Screens
 export 'src/screens/club_collection_screens.dart';
 export 'src/screens/club_hub_screen.dart';

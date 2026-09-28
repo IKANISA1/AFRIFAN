@@ -10,8 +10,7 @@ void main() {
 
   test('representative product media uses governed shared surfaces', () {
     const governedCachedImageFiles = <String>[
-      'packages/features/feat_home/lib/src/widgets/latest_intel_section.dart',
-      'packages/features/feat_shop/lib/src/widgets/product_card.dart',
+      'packages/features/feat_shop/lib/src/widgets/shop_product_image.dart',
       'packages/features/feat_shop/lib/src/screens/product_detail_screen.dart',
     ];
     for (final path in governedCachedImageFiles) {
@@ -32,6 +31,29 @@ void main() {
         reason: '$path must not construct an ungoverned cache widget.',
       );
     }
+    for (final component in [
+      'product_card',
+      'cart_item_card',
+      'shop_search_sheet',
+    ]) {
+      expect(
+        source('packages/features/feat_shop/lib/src/widgets/$component.dart'),
+        contains('ShopProductImage('),
+        reason:
+            'Catalogue, cart and search must share the governed media boundary.',
+      );
+    }
+
+    final news = source(
+      'packages/features/feat_home/lib/src/widgets/latest_intel_section.dart',
+    );
+    expect(news, contains('AfriEditorialCard('));
+    expect(news, contains('imageRightsApproved: imageRightsApproved'));
+    final editorial = source(
+      'packages/core/core_theme/lib/src/widgets/afri_editorial_card.dart',
+    );
+    expect(editorial, contains('this.imageRightsApproved = false'));
+    expect(editorial, contains('imageProvenanceId?.trim().isNotEmpty'));
 
     expect(
       source('packages/core/core_theme/lib/src/widgets/afri_team_card.dart'),

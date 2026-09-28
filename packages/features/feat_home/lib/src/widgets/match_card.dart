@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 /// Keeps carousel content legible when the user enlarges text.
 double homeHeroHeight(BuildContext context) {
   final scale = MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 2.5);
-  return 252 * scale;
+  return 300 * scale;
 }
 
 /// A single match/event slide — CMS-managed, admin-controlled.
@@ -63,15 +63,12 @@ class _MatchScoreCardState extends State<MatchScoreCard> {
       return Column(
         children: [
           for (final slide in widget.slides)
-            ConstrainedBox(
-              constraints: BoxConstraints(minHeight: homeHeroHeight(context)),
-              child: AfriPressFeedback(
-                onTap: slide.route == null
-                    ? null
-                    : () => context.push(slide.route!),
-                semanticsLabel: context.afriL10n.homeOpenMatchDetails,
-                child: _MatchOverview(slide: slide),
-              ),
+            AfriPressFeedback(
+              onTap: slide.route == null
+                  ? null
+                  : () => context.push(slide.route!),
+              semanticsLabel: context.afriL10n.homeOpenMatchDetails,
+              child: _MatchOverview(slide: slide),
             ),
         ],
       );
@@ -124,43 +121,74 @@ class _MatchOverview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.afriSemanticColors;
     final hasScore = slide.homeScore != null && slide.awayScore != null;
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: SpacingTokens.screenPadding,
-        vertical: SpacingTokens.spacing4,
+      padding: const EdgeInsets.fromLTRB(
+        SpacingTokens.screenPadding,
+        SpacingTokens.spacing3,
+        SpacingTokens.screenPadding,
+        SpacingTokens.spacing5,
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (slide.status.isNotEmpty) ...[
-            Text(
-              slide.status,
-              textAlign: TextAlign.center,
-              style: TypographyTokens.bodyLarge(colors.primaryText),
+      child: AfriEditorialCard(
+        lightSurface: true,
+        imageRightsApproved: slide.imageRightsApproved,
+        imageProvenanceId: slide.imageProvenanceId,
+        imageUrl:
+            slide.imageRightsApproved &&
+                (slide.imageProvenanceId?.trim().isNotEmpty ?? false)
+            ? slide.imageUrl
+            : null,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (slide.status.isNotEmpty) ...[
+              Text(
+                slide.status,
+                style: TypographyTokens.labelLarge(ColorTokens.discoveryInk),
+              ),
+              const SizedBox(height: SpacingTokens.spacing3),
+            ],
+            AfriFixtureTeams(
+              homeTeam: slide.homeTeam,
+              awayTeam: slide.awayTeam,
+              score: hasScore ? '${slide.homeScore}–${slide.awayScore}' : null,
+              foreground: ColorTokens.discoveryInk,
+              crestSize: 40,
             ),
-            const SizedBox(height: SpacingTokens.spacing3),
+            if (slide.dateInfo.isNotEmpty || slide.venue.isNotEmpty) ...[
+              const SizedBox(height: SpacingTokens.spacing3),
+              Text(
+                [
+                  slide.dateInfo,
+                  slide.venue,
+                ].where((s) => s.isNotEmpty).join(' · '),
+                textAlign: TextAlign.center,
+                style: TypographyTokens.bodySmall(ColorTokens.discoveryInk),
+              ),
+            ],
+            if (slide.route != null) ...[
+              const SizedBox(height: SpacingTokens.spacing4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    child: Text(
+                      context.afriL10n.homeViewMatch,
+                      style: TypographyTokens.labelLarge(
+                        ColorTokens.discoveryInk,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: SpacingTokens.spacing2),
+                  const Icon(
+                    AfriIcons.chevronRight,
+                    color: ColorTokens.discoveryInk,
+                  ),
+                ],
+              ),
+            ],
           ],
-          AfriFixtureTeams(homeTeam: slide.homeTeam, awayTeam: slide.awayTeam,
-            score: hasScore ? '${slide.homeScore}–${slide.awayScore}' : null, crestSize: 40),
-          const SizedBox(height: SpacingTokens.spacing3),
-          if (slide.dateInfo.isNotEmpty)
-            Text(
-              slide.dateInfo,
-              textAlign: TextAlign.center,
-              style: TypographyTokens.bodyMedium(colors.primaryText),
-            ),
-          if (slide.venue.isNotEmpty) ...[
-            const SizedBox(height: SpacingTokens.spacing1),
-            Text(
-              slide.venue,
-              textAlign: TextAlign.center,
-              style: TypographyTokens.bodySmall(colors.primaryText),
-            ),
-          ],
-        ],
+        ),
       ),
     );
   }

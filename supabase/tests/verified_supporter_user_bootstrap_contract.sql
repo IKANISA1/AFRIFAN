@@ -5,8 +5,8 @@ insert into public.african_football_clubs(id,club_name,country_name,club_slug)
 overriding system value values(9988001,'Onboarding Contract Club','Rwanda','onboarding-contract-club');
 insert into public.partners(id,name,slug,is_active) values
  ('99880000-0000-4000-8000-000000000100','Onboarding Contract Operator','onboarding-contract-operator',true);
-insert into public.membership_packages(partner_id,club_id,tier,title,subtitle) values
- ('99880000-0000-4000-8000-000000000100',9988001,'fan','Synthetic package','Contract fixture');
+insert into public.membership_packages(partner_id,club_id,tier,title,subtitle,annual_price) values
+ ('99880000-0000-4000-8000-000000000100',9988001,'fan','Synthetic package','Contract fixture',1000);
 insert into auth.users(id,aud,role,is_anonymous,raw_user_meta_data) values
  ('99880000-0000-4000-8000-000000000001','authenticated','authenticated',false,'{"phone":"+250799880099","is_admin":true}');
 select set_config('request.jwt.claim.sub','99880000-0000-4000-8000-000000000001',true);

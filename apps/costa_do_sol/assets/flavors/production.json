@@ -1,0 +1,9 @@
+{
+  "CLUB_ID": "1001",
+  "CLUB_NAME": "CD Costa do Sol",
+  "APP_NAME": "Costa do Sol",
+  "COUNTRY_CODE": "MZ",
+  "SUPABASE_URL": "",
+  "SUPABASE_ANON_KEY": "",
+  "ENVIRONMENT": "production"
+}

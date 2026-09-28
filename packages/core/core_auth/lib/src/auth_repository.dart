@@ -94,6 +94,7 @@ class AuthRepository {
     required String phone,
     required String token,
   }) async {
+    // Supabase uses its phone-verification type for WhatsApp delivery too.
     final response = await _runOperation<AuthResponse>(
       () =>
           _client.auth.verifyOTP(phone: phone, token: token, type: OtpType.sms),

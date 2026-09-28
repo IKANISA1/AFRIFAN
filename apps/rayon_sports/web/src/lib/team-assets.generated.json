@@ -1659,6 +1659,11 @@
       "name": "OFI Crete",
       "initials": "OFI",
       "asset": "uefa-europa-league-official-52953.png"
+    },
+    {
+      "name": "CD Costa do Sol",
+      "initials": "CDS",
+      "asset": null
     }
   ],
   "aliases": {
@@ -3330,6 +3335,12 @@
     "ofi": 331,
     "52953": 331,
     "httpsimguefacomimgmltpteamslogos70x7052953png": 331,
-    "httpsloxcwbfukbqziuxgkfcmsupabasecostoragev1objectpublicgikundiromediafc49b6056eda408dafc646e11bc17710libraryteamcrestsv202608231uefaeuropaleagueofficial52953png": 331
+    "httpsloxcwbfukbqziuxgkfcmsupabasecostoragev1objectpublicgikundiromediafc49b6056eda408dafc646e11bc17710libraryteamcrestsv202608231uefaeuropaleagueofficial52953png": 331,
+    "africlubclub1001": 332,
+    "costadosol": 332,
+    "cdcostadosol": 332,
+    "cds": 332,
+    "oscanarinhos": 332,
+    "costadosolmz": 332
   }
 }

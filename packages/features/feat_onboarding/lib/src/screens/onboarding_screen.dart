@@ -353,7 +353,6 @@ class _WelcomeBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLargeText = MediaQuery.textScalerOf(context).scale(16) >= 24;
     return LayoutBuilder(
       builder: (context, constraints) => AfriGovernedImage(
         image: rightsApproved ? AssetImage(slide.imagePath) : null,
@@ -375,18 +374,7 @@ class _WelcomeBackground extends StatelessWidget {
         cacheHeight:
             (constraints.maxHeight * MediaQuery.devicePixelRatioOf(context))
                 .ceil(),
-        errorFallback: ColoredBox(
-          color: ColorTokens.primary,
-          child: isLargeText
-              ? null
-              : const Center(
-                  child: Icon(
-                    AfriIcons.stadium,
-                    color: ColorTokens.onDark,
-                    size: SizeTokens.iconDisplay,
-                  ),
-                ),
-        ),
+        errorFallback: ColoredBox(color: ColorTokens.primary),
       ),
     );
   }

@@ -167,32 +167,25 @@ class _ContributionsHubScreenState
         child: ListView(
           padding: const EdgeInsets.all(SpacingTokens.spacing6),
           children: [
-            // ── Header: back + title ──
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                AfriIconButton(
-                  icon: AfriIcons.back,
-                  tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-                  onTap: () {
-                    if (context.canPop()) {
-                      context.pop();
-                    } else {
-                      context.go('/home');
-                    }
-                  },
-                ),
-                const SizedBox(width: SpacingTokens.spacing3),
-                Expanded(
-                  child: Text(
-                    l10n.contributionsHubTitle,
-                    style: TypographyTokens.headlineSmall().copyWith(
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: TypographyTokens.trackingNone,
-                    ),
-                  ),
-                ),
-              ],
+            Align(
+              alignment: Alignment.centerLeft,
+              child: AfriIconButton(
+                icon: AfriIcons.back,
+                tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                onTap: () {
+                  if (context.canPop()) {
+                    context.pop();
+                  } else {
+                    context.go('/home');
+                  }
+                },
+              ),
+            ),
+            const SizedBox(height: SpacingTokens.spacing3),
+            AfriSectionHeader(
+              title: l10n.contributionsHubTitle,
+              isPageTitle: true,
+              padding: EdgeInsets.zero,
             ),
             const SizedBox(height: SpacingTokens.spacing6),
             if (_isStale || _isRefreshing) ...[

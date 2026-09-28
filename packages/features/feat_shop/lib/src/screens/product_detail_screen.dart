@@ -14,7 +14,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../gikundiro_public_shop.dart';
 import '../shop_cart_provider.dart';
+import '../widgets/shop_product_image.dart';
 
 typedef ProductDetailLoader =
     Future<Map<String, dynamic>?> Function(String productId);
@@ -282,6 +284,14 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   }
 
   Future<Map<String, dynamic>?> _fetchProduct() async {
+    final publicSource = ref.read(gikundiroPublicClientProvider);
+    if (publicSource != null && widget.productId.startsWith('gikundiro-')) {
+      final products = await loadGikundiroPublicShop(publicSource);
+      for (final product in products) {
+        if (product['id'] == widget.productId) return product;
+      }
+      return null;
+    }
     final client = ref.read(supabaseClientProvider);
     final user = ref.read(currentUserProvider);
     final resolver = ClubScopeResolver(client: client);
@@ -449,9 +459,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     final imageRightsApproved =
         product['image_rights_approved'] == true &&
         imageProvenanceId.isNotEmpty;
-    final hasApprovedImage =
-        imageRightsApproved &&
-        (Uri.tryParse(imageUrl ?? '')?.scheme == 'https');
+    final hasApprovedImage = ShopProductImage.isPublished(
+      imageUrl,
+      imageRightsApproved,
+      imageProvenanceId,
+    );
     final badge = product['badge_label']?.toString();
     final primary = ColorTokens.primaryContainer;
     final sizes = _availableSizes(product);
@@ -483,299 +495,251 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       showAppBar: false,
       showBackButton: false,
       scrollable: false,
-      child: Stack(
+      child: Column(
         children: [
-          CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            slivers: [
-              AfriSliverAppBar(
-                expandedHeight: hasApprovedImage
-                    ? (usesLargeTextLayout ? 220 : 320)
-                    : SizeTokens.buttonMinHeight,
-                pinned: true,
-                backgroundColor: ColorTokens.background,
-                leading: Padding(
-                  padding: const EdgeInsets.all(SpacingTokens.spacing2),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(ShapeTokens.radiusMd),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: ColorTokens.glassFill,
-                          borderRadius: BorderRadius.circular(
-                            ShapeTokens.radiusMd,
-                          ),
-                          border: BorderTokens.ghost(),
-                        ),
-                        child: AfriIconButton(
-                          icon: AfriIcons.back,
-                          tooltip: l10n.shopBack,
-                          onTap: () {
-                            if (context.canPop()) {
-                              context.pop();
-                            } else {
-                              context.go('/shop');
-                            }
-                          },
-                        ),
-                      ),
+          Expanded(
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: [
+                AfriSliverAppBar(
+                  expandedHeight: hasApprovedImage
+                      ? (MediaQuery.sizeOf(context).width *
+                            (usesLargeTextLayout ? 0.8 : 1.1))
+                      : SizeTokens.buttonMinHeight,
+                  pinned: true,
+                  backgroundColor: ColorTokens.background,
+                  leading: Padding(
+                    padding: const EdgeInsets.all(SpacingTokens.spacing1),
+                    child: AfriIconButton(
+                      icon: AfriIcons.back,
+                      filled: true,
+                      tooltip: l10n.shopBack,
+                      onTap: () {
+                        if (context.canPop()) {
+                          context.pop();
+                        } else {
+                          context.go('/shop');
+                        }
+                      },
                     ),
                   ),
-                ),
-                flexibleSpace: hasApprovedImage
-                    ? FlexibleSpaceBar(
-                        background: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            if (hasApprovedImage && imageUrl != null)
-                              AfriGovernedCachedImage(
-                                imageUrl: imageUrl,
-                                semanticLabel: l10n.shopProductImageSemantic(
-                                  name,
-                                ),
-                                provenanceId: imageProvenanceId.isEmpty
-                                    ? 'shop:${widget.productId}:unapproved'
-                                    : imageProvenanceId,
-                                rightsApproved: imageRightsApproved,
-                                fit: BoxFit.cover,
-                                borderRadius: ShapeTokens.radiusNone,
-                                placeholder: Container(
-                                  color: ColorTokens.surfaceContainerLow,
-                                ),
-                                errorFallback: const _ImageFallback(),
-                              )
-                            else
-                              const _ImageFallback(),
-                            if (hasApprovedImage)
-                              Positioned(
-                                bottom: 0,
-                                left: 0,
-                                right: 0,
-                                height: 120,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    gradient: ColorTokens.imageScrimGradient(
-                                      color: ColorTokens.background,
-                                    ),
+                  flexibleSpace: hasApprovedImage
+                      ? FlexibleSpaceBar(
+                          background: Stack(
+                            fit: StackFit.expand,
+                            children: [
+                              if (hasApprovedImage && imageUrl != null)
+                                AfriGovernedCachedImage(
+                                  imageUrl: imageUrl,
+                                  semanticLabel: l10n.shopProductImageSemantic(
+                                    name,
                                   ),
-                                ),
-                              ),
-                            if (badge != null && badge.isNotEmpty)
-                              Positioned(
-                                left: SpacingTokens.spacing6,
-                                bottom: SpacingTokens.spacing4,
-                                child: AfriStatusChip(
-                                  label: badge,
-                                  tone: AfriStatusTone.live,
-                                ),
-                              ).afriAnimate(context).fadeIn(duration: 400.ms),
-                          ],
-                        ),
-                      )
-                    : null,
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(SpacingTokens.spacing6),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (_isRefreshing || _isStale) ...[
-                        AfriStateBanner(
-                          icon: _isRefreshing
-                              ? AfriIcons.refresh
-                              : AfriIcons.statusWarning,
-                          title: _isRefreshing
-                              ? l10n.shopRefreshingProductTitle
-                              : l10n.shopSavedProductTitle,
-                          subtitle: _isRefreshing
-                              ? l10n.shopRefreshingProductMessage
-                              : l10n.shopSavedProductMessage,
-                          tone: _isRefreshing
-                              ? AfriStateBannerTone.info
-                              : AfriStateBannerTone.warning,
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing5),
-                      ],
-                      (usesLargeTextLayout
-                              ? Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      name,
-                                      style: TypographyTokens.headlineLarge(),
-                                    ),
-                                    const SizedBox(
-                                      height: SpacingTokens.spacing3,
-                                    ),
-                                    Text(
-                                      currency.format(price),
-                                      style: TypographyTokens.titleLarge(
-                                        primary,
-                                      ),
-                                    ),
-                                  ],
+                                  provenanceId: imageProvenanceId.isEmpty
+                                      ? 'shop:${widget.productId}:unapproved'
+                                      : imageProvenanceId,
+                                  rightsApproved: imageRightsApproved,
+                                  fit: BoxFit.cover,
+                                  borderRadius: ShapeTokens.radiusNone,
+                                  placeholder: Container(
+                                    color: ColorTokens.surfaceContainerLow,
+                                  ),
+                                  errorFallback: const _ImageFallback(),
                                 )
-                              : Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        name,
-                                        style: TypographyTokens.headlineLarge(),
+                              else
+                                const _ImageFallback(),
+                              if (hasApprovedImage)
+                                Positioned(
+                                  bottom: 0,
+                                  left: 0,
+                                  right: 0,
+                                  height: 120,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      gradient: ColorTokens.imageScrimGradient(
+                                        color: ColorTokens.background,
                                       ),
                                     ),
-                                    const SizedBox(
-                                      width: SpacingTokens.spacing4,
-                                    ),
-                                    Text(
-                                      currency.format(price),
-                                      style: TypographyTokens.titleLarge(
-                                        primary,
-                                      ),
-                                    ),
-                                  ],
-                                ))
-                          .afriAnimate(context)
-                          .fadeIn(duration: 400.ms),
-                      const SizedBox(height: SpacingTokens.spacing4),
-                      Text(
-                            description,
-                            style: TypographyTokens.bodyMedium().copyWith(
-                              color: ColorTokens.onSurfaceVariant,
-                              height: 1.5,
+                                  ),
+                                ),
+                              if (badge != null && badge.isNotEmpty)
+                                Positioned(
+                                  left: SpacingTokens.spacing6,
+                                  bottom: SpacingTokens.spacing4,
+                                  child: AfriStatusChip(
+                                    label: badge,
+                                    tone: AfriStatusTone.live,
+                                  ),
+                                ).afriAnimate(context).fadeIn(duration: 400.ms),
+                            ],
+                          ),
+                        )
+                      : null,
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.all(SpacingTokens.spacing6),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (_isRefreshing || _isStale) ...[
+                          AfriStateBanner(
+                            icon: _isRefreshing
+                                ? AfriIcons.refresh
+                                : AfriIcons.statusWarning,
+                            title: _isRefreshing
+                                ? l10n.shopRefreshingProductTitle
+                                : l10n.shopSavedProductTitle,
+                            subtitle: _isRefreshing
+                                ? l10n.shopRefreshingProductMessage
+                                : l10n.shopSavedProductMessage,
+                            tone: _isRefreshing
+                                ? AfriStateBannerTone.info
+                                : AfriStateBannerTone.warning,
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing5),
+                        ],
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              name,
+                              style: TypographyTokens.headlineMedium(),
                             ),
-                          )
-                          .afriAnimate(context)
-                          .fadeIn(delay: 100.ms, duration: 400.ms),
-                      const SizedBox(height: SpacingTokens.spacing6),
-                      AfriStatusChip(
-                        label: inStock
-                            ? (stockCount != null
-                                  ? l10n.shopStockAvailable(stockCount)
-                                  : l10n.shopInStock)
-                            : l10n.shopOutOfStock,
-                        tone: inStock
-                            ? AfriStatusTone.success
-                            : AfriStatusTone.error,
-                      ),
-                      const SizedBox(height: SpacingTokens.spacing8),
-                      if (sizes.isNotEmpty) ...[
-                        AfriSectionHeader(
-                          title: l10n.shopSelectSize,
-                          padding: EdgeInsets.zero,
-                        ),
-                        const SizedBox(height: SpacingTokens.spacing3),
-                        Wrap(
-                          spacing: SpacingTokens.spacing3,
-                          runSpacing: SpacingTokens.spacing3,
-                          children: sizes.map((size) {
-                            final selected = size == _selectedSize;
-                            return AfriPressFeedback(
-                              key: ValueKey<String>(
-                                'product-detail-size-$size',
+                            const SizedBox(height: SpacingTokens.spacing2),
+                            Text(
+                              currency.format(price),
+                              style: TypographyTokens.headlineSmall(),
+                            ),
+                          ],
+                        ).afriAnimate(context).fadeIn(duration: 400.ms),
+                        const SizedBox(height: SpacingTokens.spacing4),
+                        Text(
+                              description,
+                              style: TypographyTokens.bodyLarge().copyWith(
+                                color: ColorTokens.onSurfaceVariant,
+                                height: 1.5,
                               ),
-                              onTap: () {
-                                setState(() => _selectedSize = size);
-                              },
-                              autofocus: widget.autofocusSize == size,
-                              selected: selected,
-                              tooltip: l10n.shopSizeTooltip(size),
-                              semanticsLabel: l10n.shopSizeTooltip(size),
-                              semanticsHint: selected
-                                  ? l10n.shopSizeSelectedHint
-                                  : l10n.shopSizeAvailableHint,
-                              excludeChildSemantics: true,
-                              builder: (context, state) {
-                                return AnimatedContainer(
-                                  duration: AfriMotion.resolve(
-                                    context,
-                                    AfriMotion.standard,
-                                  ),
-                                  constraints: const BoxConstraints(
-                                    minHeight: SpacingTokens.spacing12,
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: SpacingTokens.spacing5,
-                                    vertical: SpacingTokens.spacing3,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: selected
-                                        ? primary
-                                        : ColorTokens.surfaceContainerLow,
-                                    borderRadius: ShapeTokens.buttonRadius,
-                                    border: state.isFocused
-                                        ? BorderTokens.focusAll(width: 3)
-                                        : BorderTokens.ghost(),
-                                  ),
-                                  child: Text(
-                                    size,
-                                    style: TypographyTokens.labelMedium(
-                                      selected
-                                          ? ColorTokens.onDark
-                                          : ColorTokens.onSurface,
+                            )
+                            .afriAnimate(context)
+                            .fadeIn(delay: 100.ms, duration: 400.ms),
+                        const SizedBox(height: SpacingTokens.spacing6),
+                        AfriStatusChip(
+                          label: inStock
+                              ? (stockCount != null
+                                    ? l10n.shopStockAvailable(stockCount)
+                                    : l10n.shopInStock)
+                              : l10n.shopOutOfStock,
+                          tone: inStock
+                              ? AfriStatusTone.success
+                              : AfriStatusTone.error,
+                        ),
+                        const SizedBox(height: SpacingTokens.spacing8),
+                        if (sizes.isNotEmpty) ...[
+                          AfriSectionHeader(
+                            title: l10n.shopSelectSize,
+                            padding: EdgeInsets.zero,
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing3),
+                          Wrap(
+                            spacing: SpacingTokens.spacing3,
+                            runSpacing: SpacingTokens.spacing3,
+                            children: sizes.map((size) {
+                              final selected = size == _selectedSize;
+                              return AfriPressFeedback(
+                                key: ValueKey<String>(
+                                  'product-detail-size-$size',
+                                ),
+                                onTap: () {
+                                  setState(() => _selectedSize = size);
+                                },
+                                autofocus: widget.autofocusSize == size,
+                                selected: selected,
+                                tooltip: l10n.shopSizeTooltip(size),
+                                semanticsLabel: l10n.shopSizeTooltip(size),
+                                semanticsHint: selected
+                                    ? l10n.shopSizeSelectedHint
+                                    : l10n.shopSizeAvailableHint,
+                                excludeChildSemantics: true,
+                                builder: (context, state) {
+                                  return AnimatedContainer(
+                                    duration: AfriMotion.resolve(
+                                      context,
+                                      AfriMotion.standard,
                                     ),
-                                  ),
-                                );
-                              },
-                            );
-                          }).toList(),
+                                    constraints: const BoxConstraints(
+                                      minHeight: SpacingTokens.spacing12,
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: SpacingTokens.spacing5,
+                                      vertical: SpacingTokens.spacing3,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: selected
+                                          ? primary
+                                          : ColorTokens.surfaceContainerLow,
+                                      borderRadius: ShapeTokens.buttonRadius,
+                                      border: state.isFocused
+                                          ? BorderTokens.focusAll(width: 3)
+                                          : BorderTokens.ghost(),
+                                    ),
+                                    child: Text(
+                                      size,
+                                      style: TypographyTokens.labelMedium(
+                                        selected
+                                            ? ColorTokens.onDark
+                                            : ColorTokens.onSurface,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }).toList(),
+                          ),
+                          const SizedBox(height: SpacingTokens.spacing6),
+                        ],
+                        _buildQuantitySelector(
+                          usesLargeTextLayout: usesLargeTextLayout,
+                          maxQuantity: maxQuantity,
                         ),
                         const SizedBox(height: SpacingTokens.spacing6),
                       ],
-                      _buildQuantitySelector(
-                        usesLargeTextLayout: usesLargeTextLayout,
-                        maxQuantity: maxQuantity,
-                      ),
-                      SizedBox(
-                        height: usesLargeTextLayout
-                            ? SpacingTokens.spacing20 * 3.5
-                            : SpacingTokens.spacing20 * 2.5,
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child:
-                ClipRRect(
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: SpacingTokens.spacing6,
-                            vertical: SpacingTokens.spacing6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: ColorTokens.glassFill,
-                            border: BorderTokens.top(),
-                          ),
-                          child: SafeArea(
-                            top: false,
-                            child: _buildPurchaseActions(
-                              currency: currency,
-                              total: total,
-                              inStock: inStock,
-                              usesLargeTextLayout: usesLargeTextLayout,
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                    .afriAnimate(context)
-                    .slideY(
-                      begin: 1,
-                      end: 0,
-                      duration: 400.ms,
-                      curve: Curves.easeOut,
+          ClipRRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: SpacingTokens.spacing6,
+                      vertical: SpacingTokens.spacing6,
                     ),
-          ),
+                    decoration: BoxDecoration(
+                      color: ColorTokens.glassFill,
+                      border: BorderTokens.top(),
+                    ),
+                    child: SafeArea(
+                      top: false,
+                      child: _buildPurchaseActions(
+                        currency: currency,
+                        total: total,
+                        inStock: inStock,
+                        usesLargeTextLayout: usesLargeTextLayout,
+                      ),
+                    ),
+                  ),
+                ),
+              )
+              .afriAnimate(context)
+              .slideY(
+                begin: 1,
+                end: 0,
+                duration: 400.ms,
+                curve: Curves.easeOut,
+              ),
         ],
       ),
     );
@@ -980,12 +944,6 @@ class _ImageFallback extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                AfriIcons.shop,
-                size: SizeTokens.iconXl,
-                color: ColorTokens.onSurfaceVariant,
-              ),
-              const SizedBox(height: SpacingTokens.spacing4),
               Text(
                 context.afriL10n.shopProductImageUnavailable,
                 textAlign: TextAlign.center,

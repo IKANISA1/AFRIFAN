@@ -13,16 +13,13 @@ function mapClubRow(
   row: Record<string, unknown>,
   fallback: ClubProfile,
 ): ClubProfile {
-  const resolvedShortName = safeString(
-    row.club_name,
-    safeString(row.nickname_brand_identity, fallback.shortName),
-  );
-
   return {
     id: safeNumber(row.id, fallback.id),
     clubName: safeString(row.club_name, fallback.clubName),
     clubSlug: safeString(row.club_slug, fallback.clubSlug),
-    shortName: resolvedShortName,
+    // The registry has a full club name and a nickname, but no short-name field.
+    // Keep the club-specific short label instead of repeating the full name.
+    shortName: fallback.shortName,
     nickname: safeString(
       row.nickname_brand_identity,
       fallback.nickname,
@@ -91,7 +88,9 @@ export const getClubProfile = cache(async function getClubProfile() {
       .from("african_football_clubs")
       .select(
         "id,club_name,club_slug,nickname_brand_identity,country_iso_code," +
-          "league,region,currency_code,currency_symbol,default_language," +
+          "league,region,currency_code,currency_symbol,official_contact," +
+          "facebook_url,x_twitter_url,instagram_url,tiktok_url,official_logo_url," +
+          "default_language," +
           "supported_languages,primary_color_hex,secondary_color_hex," +
           "accent_color_hex,feature_flags",
       )

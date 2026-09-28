@@ -1,0 +1,19 @@
+{
+  // Local staging only. Replace this placeholder binding during infrastructure provisioning.
+  "name": "africlub-rayon-public-local",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-08-08",
+  "d1_databases": [
+    {
+      "binding": "RAYON_PUBLIC_DB",
+      "database_name": "africlub-rayon-public-local",
+      "database_id": "00000000-0000-4000-8000-000000000024"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "RAYON_PUBLIC_MEDIA",
+      "bucket_name": "africlub-rayon-public-media-local"
+    }
+  ]
+}

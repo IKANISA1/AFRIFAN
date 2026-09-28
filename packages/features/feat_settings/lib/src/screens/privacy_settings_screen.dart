@@ -4,10 +4,8 @@ import 'package:core_auth/core_auth.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
-import 'package:feat_sms_ledger/feat_sms_ledger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 import '../models/user_privacy_settings.dart';
 import '../settings_actions.dart';
@@ -149,16 +147,6 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
     });
   }
 
-  void _setMomoSmsAutoread(UserPrivacySettings settings, bool value) {
-    if (_isSaving || _saveBlocked) return;
-    setState(() {
-      _draft = settings.copyWith(momoSmsAutoreadEnabled: value);
-      _draftEdited = true;
-      _operationFailure = null;
-      _localStatusMessage = context.afriL10n.privacySettingsChangeReady;
-    });
-  }
-
   Future<void> _saveSettings(UserPrivacySettings settings) async {
     if (_isSaving || _saveBlocked || !_draftEdited) return;
     if (!ConnectivityService.isOnline) {
@@ -176,11 +164,6 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
           .read(privacySettingsWriterProvider)
           .save(settings)
           .timeout(widget.operationTimeout);
-      if (EnvConfig.enableAndroidMomoSmsAutoread) {
-        await _synchronizeSmsAutoreadConsent(
-          saved,
-        ).timeout(widget.operationTimeout);
-      }
       await FirebaseAnalyticsService.configureConsent(
         enabled: saved.analyticsEnabled,
       ).timeout(widget.operationTimeout);
@@ -297,56 +280,6 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
   void _showMessage(String message) {
     if (!mounted) return;
     AfriToast.info(context, message);
-  }
-
-  Future<void> _synchronizeSmsAutoreadConsent(
-    UserPrivacySettings settings,
-  ) async {
-    final appAccessService = AppAccessService(openBox: openHiveBox<bool>);
-    await appAccessService.setEnabled(
-      AppAccessPermission.sms,
-      settings.momoSmsAutoreadEnabled,
-    );
-
-    final smsService = ref.read(momoSmsAutoreadServiceProvider);
-    if (!settings.momoSmsAutoreadEnabled) {
-      await smsService.stop(resetPermissionPromptState: true);
-      return;
-    }
-
-    await smsService.syncConsentFromServer();
-    final started = await smsService.refresh(
-      forcePermissionRequest: true,
-      onShowRationale: _showMomoSmsConsentDisclosure,
-    );
-    if (!mounted || started) return;
-
-    _showMessage(context.afriL10n.privacySettingsSmsAccessRequired);
-  }
-
-  Future<bool> _showMomoSmsConsentDisclosure() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        final l10n = context.afriL10n;
-        return AfriAlertDialog(
-          title: Text(l10n.privacySettingsEnableMomoSmsTitle),
-          content: Text(l10n.privacySettingsMomoSmsDisclosure),
-          actions: [
-            AfriTextButton(
-              onPressed: () => context.pop(false),
-              child: Text(l10n.privacySettingsNotNow),
-            ),
-            AfriButton(
-              label: l10n.privacySettingsContinue,
-              onTap: () => context.pop(true),
-              fullWidth: false,
-            ),
-          ],
-        );
-      },
-    );
-    return confirmed ?? false;
   }
 
   Widget _buildUnavailableRoute(
@@ -560,28 +493,6 @@ class _PrivacySettingsScreenState extends ConsumerState<PrivacySettingsScreen> {
                             ),
                           ),
                           const SizedBox(height: SpacingTokens.spacing3),
-                          if (EnvConfig.enableAndroidMomoSmsAutoread)
-                            Semantics(
-                              toggled: settings.momoSmsAutoreadEnabled,
-                              child: AfriSwitchListTile(
-                                key: const ValueKey<String>(
-                                  'privacy-sms-toggle',
-                                ),
-                                value: settings.momoSmsAutoreadEnabled,
-                                onChanged:
-                                    isOnline &&
-                                        editingEnabled &&
-                                        !_isSaving &&
-                                        !_saveBlocked
-                                    ? (value) =>
-                                          _setMomoSmsAutoread(settings, value)
-                                    : null,
-                                title: Text(l10n.privacySettingsMomoSmsSync),
-                                subtitle: Text(
-                                  l10n.privacySettingsMomoSmsSyncDescription,
-                                ),
-                              ),
-                            ),
                           Semantics(
                             toggled: settings.analyticsEnabled,
                             child: AfriSwitchListTile(

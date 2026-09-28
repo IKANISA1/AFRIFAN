@@ -8,7 +8,7 @@ class ClubProduct extends Equatable {
   static const String dataApiProjection =
       'id, partner_id, name, description, category, price, stock, '
       'is_active, is_new, image_url, available_sizes, badge_label, '
-      'collection, sort_order';
+      'collection, sort_order, image_rights_approved, image_provenance_id';
 
   const ClubProduct({
     required this.id,
@@ -21,6 +21,8 @@ class ClubProduct extends Equatable {
     required this.isActive,
     required this.isNew,
     this.imageUrl,
+    this.imageRightsApproved = false,
+    this.imageProvenanceId,
     this.availableSizes = const <String>[],
     this.badgeLabel,
     this.collection,
@@ -37,6 +39,8 @@ class ClubProduct extends Equatable {
   final bool isActive;
   final bool isNew;
   final String? imageUrl;
+  final bool imageRightsApproved;
+  final String? imageProvenanceId;
   final List<String> availableSizes;
   final String? badgeLabel;
   final String? collection;
@@ -73,6 +77,8 @@ class ClubProduct extends Equatable {
       isActive: jh.asBool(json['is_active'], fallback: true),
       isNew: jh.asBool(json['is_new']),
       imageUrl: jh.asStringOrNull(json['image_url']),
+      imageRightsApproved: jh.asBool(json['image_rights_approved']),
+      imageProvenanceId: jh.asStringOrNull(json['image_provenance_id']),
       availableSizes: rawSizes
           .map((size) => size.toString().trim())
           .where((size) => size.isNotEmpty)
@@ -94,6 +100,8 @@ class ClubProduct extends Equatable {
     'is_active': isActive,
     'is_new': isNew,
     'image_url': imageUrl,
+    'image_rights_approved': imageRightsApproved,
+    'image_provenance_id': imageProvenanceId,
     'sizes': availableSizes,
     'badge_label': badgeLabel,
     'collection': collection,
@@ -101,7 +109,17 @@ class ClubProduct extends Equatable {
   };
 
   @override
-  List<Object?> get props => [id, partnerId, name, category, price, stock];
+  List<Object?> get props => [
+    id,
+    partnerId,
+    name,
+    category,
+    price,
+    stock,
+    imageUrl,
+    imageRightsApproved,
+    imageProvenanceId,
+  ];
 }
 
 /// A single item in the shopping cart.

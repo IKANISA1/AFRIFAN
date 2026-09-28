@@ -34,8 +34,8 @@ function change(ios, relative, from, to) {
 }
 const gradle = fs.readFileSync(path.join(app, "android/app/build.gradle.kts"), "utf8");
 
-test("workspace and club packages contain only the four retained products", () => {
-  const expected = ["as_vita", "nkana", "rayon_sports", "vitalo"];
+test("workspace and club packages contain the five supported products", () => {
+  const expected = ["as_vita", "costa_do_sol", "nkana", "rayon_sports", "vitalo"];
   const workspace = fs.readFileSync(path.join(root, "pubspec.yaml"), "utf8");
   const appEntries = [...workspace.matchAll(/^  - apps\/([^\s]+)$/gm)].map((match) => match[1]);
   const clubEntries = [...workspace.matchAll(/^  - packages\/clubs\/club_([^\s]+)$/gm)].map((match) => match[1]);
@@ -43,8 +43,8 @@ test("workspace and club packages contain only the four retained products", () =
   assert.deepEqual(appEntries.sort(), expected);
   assert.deepEqual(clubEntries.sort(), expected);
   assert.deepEqual(fs.readdirSync(path.join(root, "packages/clubs")).filter((slug) => fs.statSync(path.join(root, "packages/clubs", slug)).isDirectory()).sort(), expected.map((slug) => `club_${slug}`));
-  const ids = { as_vita: "6", nkana: "26", rayon_sports: "24", vitalo: "44" };
-  const countries = { as_vita: "CD", nkana: "ZM", rayon_sports: "RW", vitalo: "BI" };
+  const ids = { as_vita: "6", costa_do_sol: "1001", nkana: "26", rayon_sports: "24", vitalo: "44" };
+  const countries = { as_vita: "CD", costa_do_sol: "MZ", nkana: "ZM", rayon_sports: "RW", vitalo: "BI" };
   for (const slug of expected) {
     const flavor = JSON.parse(fs.readFileSync(path.join(root, "apps", slug, "assets/flavors/production.json"), "utf8"));
     assert.equal(String(flavor.CLUB_ID), ids[slug], `${slug} retains its tenant identity`);
@@ -54,8 +54,10 @@ test("workspace and club packages contain only the four retained products", () =
 });
 
 test("all configured clubs have unique iOS QA IDs and Android debug/profile isolation", () => {
-  const clubs = fs.readdirSync(path.join(root, "apps")).filter((slug) => fs.existsSync(path.join(root, "apps", slug, "assets/flavors/production.json")));
-  assert.deepEqual(clubs.sort(), ["as_vita", "nkana", "rayon_sports", "vitalo"]);
+  const clubs = fs.readdirSync(path.join(root, "apps")).filter((slug) =>
+    fs.existsSync(path.join(root, "apps", slug, "assets/flavors/production.json")) ||
+    fs.existsSync(path.join(root, "apps", slug, "assets/flavors/production.example.json")));
+  assert.deepEqual(clubs.sort(), ["as_vita", "costa_do_sol", "nkana", "rayon_sports", "vitalo"]);
   const identities = clubs.map((slug) => {
     const directory = path.join(root, "apps", slug);
     validateAndroidQaIsolation(fs.readFileSync(path.join(directory, "android/app/build.gradle.kts"), "utf8"));

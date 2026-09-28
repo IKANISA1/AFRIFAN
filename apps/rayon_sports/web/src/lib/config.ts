@@ -20,11 +20,11 @@ const configuredFanAppUrl = process.env.NEXT_PUBLIC_FAN_APP_URL?.trim() || "";
 export const siteConfig = {
   title:
     process.env.NEXT_PUBLIC_SITE_TITLE?.trim() ||
-    "Gikundiro | Official Rayon Sports website",
+    "Gikundiro | Rayon Sports supporters",
   shortTitle: process.env.NEXT_PUBLIC_SITE_SHORT_TITLE?.trim() || "Gikundiro",
   description:
     process.env.NEXT_PUBLIC_SITE_DESCRIPTION?.trim() ||
-    "Official Rayon Sports website for fixtures, tickets, membership, news, shop, supporter Groups, and fan app journeys.",
+    "Gikundiro brings Rayon Sports supporters together for fixtures, tickets, membership, news, shop, and fan clubs.",
   siteUrl:
     process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://gikundiro.com",
   adminUrl:

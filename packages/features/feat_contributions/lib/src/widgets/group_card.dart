@@ -56,12 +56,7 @@ class GroupCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    name,
-                    style: TypographyTokens.titleLarge().copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  Text(name, style: TypographyTokens.headlineMedium()),
                   const SizedBox(height: SpacingTokens.spacing4),
                   Wrap(
                     spacing: SpacingTokens.spacing5,

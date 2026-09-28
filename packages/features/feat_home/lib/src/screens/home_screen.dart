@@ -8,7 +8,9 @@ import 'package:go_router/go_router.dart';
 
 import '../providers/home_feed_provider.dart';
 import '../repositories/home_content_repository.dart';
+import '../repositories/home_discovery_repository.dart';
 import '../widgets/contributor_leaderboard.dart';
+import '../widgets/home_discovery_section.dart';
 import '../widgets/latest_intel_section.dart';
 import '../widgets/match_card.dart';
 import '../widgets/quick_actions_grid.dart';
@@ -89,17 +91,26 @@ class HomeScreen extends ConsumerWidget {
       showAppBar: false,
       scrollable: false,
       constrainContent: false,
-      bottomNavigationAware: true,
+      // Clearance belongs to the end of the scroll, not its entire viewport.
+      // Reserving it here as well leaves an empty band above the floating bar.
       bodyWrapper: (child) =>
           GradientBackground(routePath: '/home', child: child),
-      child: AfriRefreshIndicator(
-        onRefresh: () => notifier.refresh(),
-        color: ColorTokens.primaryContainer,
-        child: asyncFeed.when(
-          loading: () => _buildLoadingView(context),
-          error: (error, _) => _buildErrorView(context, ref, error),
-          data: (snapshot) =>
-              _buildContent(context, ref, snapshot, asyncFeed.isRefreshing),
+      child: SafeArea(
+        bottom: false,
+        child: AfriRefreshIndicator(
+          onRefresh: () async {
+            for (final kind in HomeDiscoveryKind.values) {
+              ref.invalidate(homeDiscoveryProvider(kind));
+            }
+            await notifier.refresh();
+          },
+          color: ColorTokens.primaryContainer,
+          child: asyncFeed.when(
+            loading: () => _buildLoadingView(context),
+            error: (error, _) => _buildErrorView(context, ref, error),
+            data: (snapshot) =>
+                _buildContent(context, ref, snapshot, asyncFeed.isRefreshing),
+          ),
         ),
       ),
     );
@@ -267,9 +278,36 @@ class HomeScreen extends ConsumerWidget {
           ),
 
         // ── Dynamic Blocks Loop ──
-        ...blocks.map(
-          (block) =>
-              _buildBlockRenderer(context, ref, block, snapshot, refreshKey),
+        ...blocks
+            .where((block) => block.content['widget'] != 'latest_intel_section')
+            .map(
+              (block) => _buildBlockRenderer(
+                context,
+                ref,
+                block,
+                snapshot,
+                refreshKey,
+              ),
+            ),
+        const SliverToBoxAdapter(
+          child: HomeDiscoverySection(kind: HomeDiscoveryKind.predictions),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.only(top: SpacingTokens.sectionGap),
+            child: LatestIntelSection(key: ValueKey<int>(refreshKey)),
+          ),
+        ),
+        const SliverToBoxAdapter(
+          child: HomeDiscoverySection(kind: HomeDiscoveryKind.partners),
+        ),
+        const SliverToBoxAdapter(
+          child: HomeDiscoverySection(kind: HomeDiscoveryKind.fanClubs),
+        ),
+        SliverToBoxAdapter(
+          child: SizedBox(
+            height: AfriClubBottomNav.contentBottomInset(context),
+          ),
         ),
       ],
     );
@@ -290,39 +328,7 @@ class HomeScreen extends ConsumerWidget {
         content = _buildHeroSurface(context, ref, snapshot);
         break;
       case 'primary_action_buttons':
-        if (snapshot.heroSlides.isEmpty) {
-          return const SliverToBoxAdapter(child: SizedBox.shrink());
-        }
-        final predictAccess = ref
-            .watch(featureConfigServiceProvider)
-            .getFeatureAccess('predict');
-        if (!predictAccess.isVisible) {
-          return const SliverToBoxAdapter(child: SizedBox.shrink());
-        }
-        final heroRoute = snapshot.heroSlides.first.route ?? '/club/fixtures';
-        content = Padding(
-          padding: const EdgeInsets.fromLTRB(
-            SpacingTokens.screenPadding,
-            SpacingTokens.spacing2,
-            SpacingTokens.screenPadding,
-            SpacingTokens.spacing4,
-          ),
-          child: Center(
-            child: AfriButton(
-              label: predictAccess.isAvailable
-                  ? context.afriL10n.homeOpenMatchday
-                  : context.afriL10n.homeMatchdayUnavailable,
-              semanticsLabel: predictAccess.isAvailable
-                  ? context.afriL10n.homeOpenMatchdaySemantic
-                  : context.afriL10n.homeMatchdayUnavailableSemantic,
-              enabled: predictAccess.isAvailable,
-              onTap: () => context.push(heroRoute),
-              variant: AfriButtonVariant.secondary,
-              fullWidth: false,
-            ),
-          ),
-        );
-        break;
+        return const SliverToBoxAdapter(child: SizedBox.shrink());
       case 'quick_actions_grid':
         content = Padding(
           padding: const EdgeInsets.symmetric(
@@ -335,7 +341,6 @@ class HomeScreen extends ConsumerWidget {
                     ? snapshot.quickActions
                     : homeFeedLocalFallbackActions,
               ),
-              _homeMatchEditorial(context, snapshot),
             ],
           ),
         );
@@ -476,76 +481,13 @@ class HomeScreen extends ConsumerWidget {
 
     final slides = snapshot.heroSlides;
 
-    if (slides.isEmpty) {
-      final canOpenPredict = ref
-          .watch(featureConfigServiceProvider)
-          .isRouteAvailable('/predict');
-      return _HomeHeroStateCard(
-        key: const ValueKey<String>('home-hero-state-compact'),
-        compactHeight: true,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: SpacingTokens.screenPadding,
-          ),
-          child: AfriStateView.empty(
-            title: l10n.homeMatchdayTitle,
-            message: snapshot.showFixturePlaceholder
-                ? l10n.homeNextFixturePending
-                : l10n.homeFixturesUnavailable,
-            icon: AfriIcons.league,
-            actionLabel: canOpenPredict ? l10n.homeOpenPredict : null,
-            onAction: canOpenPredict ? () => context.go('/predict') : null,
-            compact: true,
-          ),
-        ),
-      );
-    }
+    if (slides.isEmpty) return const SizedBox.shrink();
 
     return RepaintBoundary(
       child: Column(children: [MatchScoreCard(slides: slides)]),
     );
   }
 }
-
-Widget _homeMatchEditorial(BuildContext context, HomeFeedSnapshot snapshot) =>
-    Column(
-      children: [
-        // Approved editorial media remains in its CMS-governed match block.
-        // It is a separate object so score text never competes with a photo.
-        for (final slide
-            in snapshot.heroSlides
-                .where(
-                  (slide) =>
-                      slide.imageRightsApproved &&
-                      (slide.imageUrl?.isNotEmpty ?? false) &&
-                      (slide.imageProvenanceId?.isNotEmpty ?? false),
-                )
-                .take(1))
-          if (slide.imageRightsApproved &&
-              (slide.imageUrl?.trim().isNotEmpty ?? false) &&
-              (slide.imageProvenanceId?.trim().isNotEmpty ?? false))
-            Padding(
-              padding: const EdgeInsets.all(SpacingTokens.screenPadding),
-              child: LayoutBuilder(
-                builder: (context, constraints) => AfriPressFeedback(
-                  onTap: slide.route == null
-                      ? null
-                      : () => context.push(slide.route!),
-                  semanticsLabel: context.afriL10n.homeOpenMatchDetails,
-                  child: AfriGovernedImage(
-                    image: NetworkImage(slide.imageUrl!),
-                    width: constraints.maxWidth,
-                    height: constraints.maxWidth / (16 / 9),
-                    borderRadius: ShapeTokens.radiusXl,
-                    semanticLabel: '${slide.homeTeam} · ${slide.awayTeam}',
-                    provenanceId: slide.imageProvenanceId!,
-                    rightsApproved: true,
-                  ),
-                ),
-              ),
-            ),
-      ],
-    );
 
 List<ContentBlock> _homeBlocksForPlacement(
   String placementKey,
@@ -666,20 +608,15 @@ class _HomeHeroSkeleton extends StatelessWidget {
 }
 
 class _HomeHeroStateCard extends StatelessWidget {
-  const _HomeHeroStateCard({
-    required this.child,
-    this.compactHeight = false,
-    super.key,
-  });
+  const _HomeHeroStateCard({required this.child});
 
   final Widget child;
-  final bool compactHeight;
 
   @override
   Widget build(BuildContext context) {
     final height = homeHeroHeight(context);
     return Container(
-      constraints: BoxConstraints(minHeight: compactHeight ? 0 : height),
+      constraints: BoxConstraints(minHeight: height),
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.vertical(
           bottom: Radius.circular(ShapeTokens.radiusXl),

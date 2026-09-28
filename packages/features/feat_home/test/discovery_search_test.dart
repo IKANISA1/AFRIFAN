@@ -524,7 +524,7 @@ void main() {
           );
           await tester.pumpAndSettle();
 
-          expect(find.text(testCase.title), findsOneWidget);
+          expect(find.text(testCase.title), findsNWidgets(2));
           await tester.enterText(
             find.byKey(const ValueKey<String>('discovery-search-input')),
             testCase.query,
@@ -670,7 +670,7 @@ void main() {
         FocusManager.instance.primaryFocus?.unfocus();
         await tester.pump(const Duration(milliseconds: 100));
 
-        expect(find.text(testCase.expectedTitle), findsOneWidget);
+        expect(find.text(testCase.expectedTitle), findsNWidgets(2));
         expect(tester.takeException(), isNull);
         await expectLater(
           find.byKey(const ValueKey<String>('search-localized-golden')),

@@ -3,6 +3,7 @@ import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
+import 'package:feat_club/feat_club.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -306,17 +307,104 @@ abstract class LatestIntelRepository {
 }
 
 final homeFeedRepositoryProvider = Provider<HomeFeedRepository>((ref) {
-  return SupabaseHomeFeedRepository(
+  final mainRepository = SupabaseHomeFeedRepository(
     client: ref.watch(supabaseClientProvider),
     storeReleasePolicy: ref.watch(storeReleasePolicyProvider),
+  );
+  if (!gikundiroPublicSourceConfigured) return mainRepository;
+  return GikundiroHomeFeedRepository(
+    mainRepository,
+    ref.watch(clubContentGatewayProvider),
   );
 });
 
 final latestIntelRepositoryProvider = Provider<LatestIntelRepository>((ref) {
+  if (gikundiroPublicSourceConfigured) {
+    return GikundiroLatestIntelRepository(
+      ref.watch(clubContentGatewayProvider),
+    );
+  }
   return SupabaseLatestIntelRepository(
     client: ref.watch(supabaseClientProvider),
   );
 });
+
+class GikundiroHomeFeedRepository implements HomeFeedRepository {
+  GikundiroHomeFeedRepository(this.mainRepository, this.clubGateway);
+
+  final HomeFeedRepository mainRepository;
+  final ClubContentGateway clubGateway;
+
+  @override
+  Future<HomeFeedSnapshot> load() async {
+    final base = await mainRepository.load();
+    try {
+      final fixtures = await clubGateway.loadMatches();
+      if (fixtures.isEmpty) return base;
+      final slides = fixtures
+          .take(3)
+          .map((fixture) {
+        final local = fixture.matchDate?.toLocal();
+        final dateInfo = local == null
+            ? fixture.kickoffTime
+            : '${local.day.toString().padLeft(2, '0')}/'
+                  '${local.month.toString().padLeft(2, '0')} · '
+                  '${fixture.kickoffTime}';
+            return MatchSlide(
+              homeTeam: fixture.homeTeam,
+              awayTeam: fixture.awayTeam,
+              venue: fixture.venue,
+              status: fixture.competition,
+              dateInfo: dateInfo,
+              route: '/club/fixtures/${fixture.id}',
+            );
+          })
+          .toList(growable: false);
+      return base.copyWith(
+        heroSlides: slides,
+        status: base.status == HomeFeedStatus.error
+            ? HomeFeedStatus.degraded
+            : HomeFeedStatus.success,
+        showFixturePlaceholder: false,
+      );
+    } catch (_) {
+      return base;
+    }
+  }
+}
+
+class GikundiroLatestIntelRepository implements LatestIntelRepository {
+  GikundiroLatestIntelRepository(this.clubGateway);
+
+  final ClubContentGateway clubGateway;
+
+  @override
+  Future<LatestIntelSnapshot> loadPublishedArticles() async {
+    try {
+      final news = await clubGateway.loadNews();
+      if (news.isEmpty) return localLatestIntelFallbackSnapshot();
+      return LatestIntelSnapshot(
+        status: LatestIntelStatus.ready,
+        articles: news
+            .take(10)
+            .map(
+              (item) => <String, dynamic>{
+                'id': item.id,
+                'title': item.title,
+                'subtitle': item.body,
+                'source_url': item.sourceUrl,
+              },
+            )
+            .toList(growable: false),
+      );
+    } catch (_) {
+      return const LatestIntelSnapshot(
+        status: LatestIntelStatus.error,
+        notice: LatestIntelNotice.unavailable,
+      );
+    }
+  }
+}
 
 class SupabaseHomeFeedRepository implements HomeFeedRepository {
   SupabaseHomeFeedRepository({

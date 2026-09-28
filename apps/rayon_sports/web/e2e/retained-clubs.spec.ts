@@ -10,9 +10,10 @@ for (const [host, name, rayon, crest] of [
   ["rayon-sports.example.test", "Rayon Sports FC", true, "rayon-sports.png"],
   ["nkana.example.test", "Nkana FC", false, "nkana.png"],
   ["as-vita.example.test", "AS Vita Club", false, "as-vita.png"],
+  ["costa-do-sol.example.test", "CD Costa do Sol", false, null],
 ] as const) {
   test(`${name} keeps support, deletion and metadata bound to its own identity`, async ({ page }) => {
-    const brand = rayon ? "Gikundiro" : host.startsWith("vitalo.") ? "Vital'O" : name;
+    const brand = rayon ? "Gikundiro" : host.startsWith("vitalo.") ? "Vital'O" : host.startsWith("costa-do-sol.") ? "Costa do Sol" : name;
     await page.setExtraHTTPHeaders({ "x-forwarded-host": host });
     for (const route of ["/support", "/account-deletion", "/share-target"]) {
       await page.goto(route, { waitUntil: "domcontentloaded" });
@@ -37,7 +38,7 @@ for (const [host, name, rayon, crest] of [
       ? prepareStateEvidence(browser, testInfo, `retained_club_${host.split(".")[0].replaceAll("-", "_")}`) : null;
     await page.setExtraHTTPHeaders({ "x-forwarded-host": host });
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText(`${rayon ? "Rayon Sports" : host.startsWith("vitalo.") ? "Vital'O" : name}. Matchday starts here.`);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(`${rayon ? "Rayon Sports" : host.startsWith("vitalo.") ? "Vital'O" : host.startsWith("costa-do-sol.") ? "Costa do Sol" : name}. Matchday starts here.`);
     await expect(page.locator(".blue-wall-score")).toHaveCount(0);
     await expect(page.locator(".circles-content")).toHaveAttribute("aria-busy", "false");
     if (!rayon) {
@@ -45,13 +46,19 @@ for (const [host, name, rayon, crest] of [
       await expect(page.locator("footer")).not.toContainText(/Rayon|Rwandan|Gikundiro/);
     }
     const mark = await page.request.get("/brand-mark.svg", { headers: { "x-forwarded-host": host }, maxRedirects: 0 });
-    expect(mark.status()).toBe(307);
-    expect(mark.headers().location).toBe(`/crests/${crest}`);
-    const artwork = await page.request.get(mark.headers().location);
-    expect(artwork.ok()).toBe(true);
-    expect(artwork.headers()["content-type"]).toContain("image/png");
-    const digest = (bytes: Buffer) => createHash("sha256").update(bytes).digest("hex");
-    expect(digest(await artwork.body())).toBe(digest(fs.readFileSync(path.join(process.cwd(), "public/crests", crest))));
+    if (crest) {
+      expect(mark.status()).toBe(307);
+      expect(mark.headers().location).toBe(`/crests/${crest}`);
+      const artwork = await page.request.get(mark.headers().location);
+      expect(artwork.ok()).toBe(true);
+      expect(artwork.headers()["content-type"]).toContain("image/png");
+      const digest = (bytes: Buffer) => createHash("sha256").update(bytes).digest("hex");
+      expect(digest(await artwork.body())).toBe(digest(fs.readFileSync(path.join(process.cwd(), "public/crests", crest))));
+    } else {
+      expect(mark.status()).toBe(200);
+      expect(mark.headers()["content-type"]).toContain("image/svg+xml");
+      expect(await mark.text()).toContain("CDS");
+    }
     const result = await new AxeBuilder({ page }).include("nav.site-primary-navigation")
       .withRules(["color-contrast"]).analyze();
     expect(result.violations).toEqual([]);

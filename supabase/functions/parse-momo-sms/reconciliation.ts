@@ -83,6 +83,16 @@ export async function reconcileParsedSms(
     .eq("user_id", rawSms.user_id)
     .eq("status", "pending")
     .eq("expected_amount", parsed.amount)
+    // Count only eligible intents. An expired checkout or a payment for a
+    // different merchant/currency must not hide a valid later candidate or
+    // prevent the more specific contribution/commerce matching paths.
+    .eq(
+      "receiving_account_id",
+      receiverResult.data?.id ?? "00000000-0000-0000-0000-000000000000",
+    )
+    .eq("currency", parsed.currency.trim().toUpperCase())
+    .or(`expires_at.is.null,expires_at.gt.${new Date().toISOString()}`)
+    .order("id")
     .limit(2);
   if (intentResult.error) throw intentResult.error;
 
@@ -124,7 +134,8 @@ export async function reconcileParsedSms(
       throw new Error("Payment intent allocation result is invalid.");
     }
 
-    const membershipActivated = intent.target_table === "membership_payment_orders";
+    const membershipActivated =
+      intent.target_table === "membership_payment_orders";
     return {
       matchType: `intent_${intent.target_table}`,
       matchStatus: "matched",
