@@ -1,0 +1,60 @@
+{
+  "name": "africlub-supporter-membership-api-staging",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-09-26",
+  "account_id": "",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [],
+  "observability": {
+    "enabled": false
+  },
+  "services": [
+    {
+      "binding": "IDENTITY",
+      "service": "africlub-supporter-identity-verifier-staging",
+      "entrypoint": "SupporterIdentityVerifier"
+    },
+    {
+      "binding": "CHECKOUT",
+      "service": "africlub-membership-checkout-staging",
+      "entrypoint": "MembershipCheckout"
+    },
+    {
+      "binding": "CHECKOUT_READER",
+      "service": "africlub-membership-checkout-staging",
+      "entrypoint": "MembershipCheckoutReader"
+    },
+    {
+      "binding": "PAYMENT_RECEIPTS",
+      "service": "africlub-payment-allocation-staging",
+      "entrypoint": "PaymentReceiptReader"
+    }
+  ],
+  "ratelimits": [
+    {
+      "name": "EDGE_LIMIT",
+      "namespace_id": "REPLACE_WITH_ISOLATED_EDGE_NAMESPACE",
+      "simple": {
+        "limit": 120,
+        "period": 60
+      }
+    },
+    {
+      "name": "SUBJECT_LIMIT",
+      "namespace_id": "REPLACE_WITH_ISOLATED_SUBJECT_NAMESPACE",
+      "simple": {
+        "limit": 60,
+        "period": 60
+      }
+    }
+  ],
+  "vars": {
+    "MEMBERSHIP_API_ENABLED": "false",
+    "MEMBERSHIP_ENVIRONMENT": "isolated-staging",
+    "NATIVE_ORIGIN": "",
+    "CLUB_ROUTES_JSON": "[]",
+    "MEMBERSHIP_HANDOFF_JOURNAL_ENABLED": "false",
+    "MEMBERSHIP_HANDOFF_RELEASE_ENABLED": "false"
+  }
+}

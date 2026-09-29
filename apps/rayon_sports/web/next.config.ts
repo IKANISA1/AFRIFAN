@@ -19,9 +19,9 @@ const nextConfig: NextConfig = {
   distDir: process.env.NEXT_BUILD_DIR || ".next",
   serverExternalPackages: ["exceljs"],
   typescript: {
-    // `npm run typecheck` is the authoritative gate. Skipping Next's duplicate
-    // build-time pass avoids flaky `.next/types/*` generation races.
-    ignoreBuildErrors: true,
+    // Both the explicit typecheck and the production build must reject errors.
+    // Do not trade a flaky generated-types race for a deployable invalid build.
+    ignoreBuildErrors: false,
   },
   experimental: {
     cpus: 1,
@@ -59,6 +59,15 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      {
+        source: "/membership/:path*",
+        headers: [
+          { key: "Cache-Control", value: "private, no-store" },
+          { key: "CDN-Cache-Control", value: "no-store" },
+          { key: "Cloudflare-CDN-Cache-Control", value: "no-store" },
+          { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" },
+        ],
+      },
       {
         source: "/(.*)",
         headers: [

@@ -63,6 +63,11 @@ val hasReleaseSigning = !releaseStoreFile.isNullOrEmpty() &&
     !releaseKeyPassword.isNullOrEmpty()
 
 android {
+    // Compile one shared protected recovery host; each engine owns its dispatcher.
+    sourceSets.getByName("main").java.srcDir(
+        "../../../../packages/features/feat_membership/native/android/src/main/kotlin",
+    )
+
     namespace = "mz.ikanisa.costadosol"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion

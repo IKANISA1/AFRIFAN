@@ -79,6 +79,11 @@ if (isReleaseBuildRequested && !hasReleaseSigning) {
 }
 
 android {
+    // Compile one shared protected recovery host; each engine owns its dispatcher.
+    sourceSets.getByName("main").java.srcDir(
+        "../../../../packages/features/feat_membership/native/android/src/main/kotlin",
+    )
+
     namespace = "rw.gikundiro.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion

@@ -23,18 +23,20 @@ import {
   deleteAdminContributionGroup,
   downloadContributionExcel,
   getAdminContributionSnapshot,
-  normalizeAdminContributionSnapshot,
 } from "@/lib/data/admin/contributions";
 import {
   deleteAdminFanClub,
   getAdminFanClubs,
-  normalizeAdminFanClubs,
   saveAdminFanClub,
 } from "@/lib/data/admin/fan-clubs";
+import {
+  communityBundleIsEmpty,
+  emptyCommunityBundle,
+  normalizeCommunityBundle,
+} from "@/lib/data/admin/community";
 import { isAdminMutationConflict } from "@/lib/data/admin/http";
 import type {
   AdminContributionGroup,
-  AdminContributionSnapshot,
   AdminFanClub,
 } from "@/lib/types";
 import { useAdminCollection } from "@/lib/use-admin-collection";
@@ -53,27 +55,6 @@ import {
 } from "./_components/community-state";
 
 type CommunityTab = "chapters" | "groups" | "contributions";
-
-type CommunityBundle = {
-  chapters: AdminFanClub[];
-  snapshot: AdminContributionSnapshot;
-};
-
-const emptySnapshot: AdminContributionSnapshot = {
-  groups: [],
-  contributions: [],
-  monthlyTotal: 0,
-};
-
-const emptyCommunityBundle: CommunityBundle = {
-  chapters: [],
-  snapshot: emptySnapshot,
-};
-
-const communityBundleIsEmpty = (value: CommunityBundle) =>
-  value.chapters.length === 0 &&
-  value.snapshot.groups.length === 0 &&
-  value.snapshot.contributions.length === 0;
 
 const statusCopy: Record<
   AdminResourceStatus,
@@ -117,17 +98,6 @@ const statusCopy: Record<
     detail: "No community operation or change was confirmed.",
   },
 };
-
-export function normalizeCommunityBundle(value: unknown): CommunityBundle {
-  if (value == null || typeof value !== "object" || Array.isArray(value)) {
-    return emptyCommunityBundle;
-  }
-  const record = value as Record<string, unknown>;
-  return {
-    chapters: normalizeAdminFanClubs(record.chapters),
-    snapshot: normalizeAdminContributionSnapshot(record.snapshot),
-  };
-}
 
 function contributionStatusTone(status: string) {
   if (status === "confirmed" || status === "completed") return "success";

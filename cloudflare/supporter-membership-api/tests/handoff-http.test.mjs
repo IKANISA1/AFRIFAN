@@ -1,0 +1,33 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {readFileSync} from 'node:fs';
+import {fixture as base,json,ids} from './fixture.mjs';import {NOW_SQL} from '../../payment-allocation/src/policy.mjs';
+import {PaymentHandoffService} from '../../payment-allocation/src/handoff-service.mjs';
+import {checkoutPrincipal,readPrincipal} from '../../payment-allocation/tests/checkout-fixture.mjs';
+async function fixture(t){const f=await base(t);f.payment.db.sql.exec(readFileSync(new URL('../../payment-allocation/migrations/0003_payment_handoff_journal.sql',import.meta.url),'utf8').replaceAll(NOW_SQL,'test_now_ms()'));
+f.payment.db.sql.exec(readFileSync(new URL('../../payment-allocation/migrations/0004_release_unclaimed_handoff.sql',import.meta.url),'utf8').replaceAll(NOW_SQL,'test_now_ms()'));
+ f.payment.env.HANDOFF_JOURNAL_ENABLED='true';f.payment.db.sql.exec('UPDATE pa_handoff_settings SET enabled=1');f.env.MEMBERSHIP_HANDOFF_JOURNAL_ENABLED='true';
+ const write=new PaymentHandoffService(f.payment.env,checkoutPrincipal),read=new PaymentHandoffService(f.payment.env,readPrincipal);
+ f.env.CHECKOUT.reserveHandoff=v=>write.reserveHandoff(v);f.env.CHECKOUT.claimHandoff=v=>write.claimHandoff(v);f.env.CHECKOUT_READER.currentHandoff=v=>read.currentHandoff(v);
+ const journal=(op,body,key=crypto.randomUUID(),options={})=>f.call('membership/handoffs/'+op,{method:op==='current'?'GET':'POST',body,key:op==='current'?undefined:key,...options});
+ return {...f,journal};}
+test('authenticated checkout -> journal -> one claim -> status -> actual allocation',async t=>{
+ const f=await fixture(t),order=await f.prepare(),r=await json(await f.journal('reservations',{orderId:order.orderId}));assert.equal(r.mayOpenDialer,false);assert.equal(f.payment.count('pa_memberships'),0);
+ const request={handoffId:r.handoff.handoffId};assert.equal((await json(await f.journal('claims',request))).mayOpenDialer,true);
+ assert.equal((await json(await f.journal('claims',request))).mayOpenDialer,false);
+ const fresh=await json(await f.journal('current'));assert.equal(fresh.handoff.phase,'claimed');assert.equal(fresh.mayOpenDialer,false);
+ await f.allocate(order.orderId);assert.equal((await json(await f.journal('current'))).handoff.phase,'allocated');assert.equal(f.payment.count('pa_memberships'),1);
+});
+test('journal is unavailable until explicitly enabled',async t=>{const f=await fixture(t);delete f.env.MEMBERSHIP_HANDOFF_JOURNAL_ENABLED;await json(await f.journal('current'),503);});
+test('another authenticated owner does not receive a reservation',async t=>{const f=await fixture(t),order=await f.prepare();await json(await f.journal('reservations',{orderId:order.orderId}));const other=await f.attacker();assert.equal((await json(await f.journal('current',undefined,undefined,{token:other.accessToken}))).handoff,null);});
+test('actor override never reaches journal writer',async t=>{const f=await fixture(t),order=await f.prepare();await json(await f.journal('reservations',{orderId:order.orderId,userId:ids.user}),400);assert.equal(f.payment.count('pa_handoff_reservations'),0);});
+test('duplicate JSON fields rejected before write',async t=>{const f=await fixture(t),order=await f.prepare();await json(await f.journal('reservations',`{"orderId":"${order.orderId}","orderId":"${order.orderId}"}`,crypto.randomUUID(),{raw:true}),400);});
+test('missing request key rejected',async t=>{const f=await fixture(t),order=await f.prepare();await json(await f.journal('reservations',{orderId:order.orderId},null),400);});
+test('browser cookies remain rejected',async t=>{const f=await fixture(t);await json(await f.journal('current',undefined,undefined,{headers:{cookie:'session=fake'}}),403);});
+test('wrong session fails before reserve',async t=>{const f=await fixture(t),order=await f.prepare();await json(await f.journal('reservations',{orderId:order.orderId},undefined,{headers:{'x-africlub-session':crypto.randomUUID()}}),409);assert.equal(f.payment.count('pa_handoff_reservations'),0);});
+test('lost claim response returns unknown and next query cannot regrant',async t=>{const f=await fixture(t),order=await f.prepare(),r=await json(await f.journal('reservations',{orderId:order.orderId})),original=f.env.CHECKOUT.claimHandoff;
+ f.env.CHECKOUT.claimHandoff=async v=>{await original(v);throw Error('synthetic lost acknowledgement')};const key=crypto.randomUUID();const body=await json(await f.journal('claims',{handoffId:r.handoff.handoffId},key),503);assert.equal(body.error,'handoff_outcome_unknown');assert.equal(body.requestId,key);
+ f.env.CHECKOUT.claimHandoff=original;assert.equal((await json(await f.journal('claims',{handoffId:r.handoff.handoffId},key))).mayOpenDialer,false);
+});
+test('session revocation after claim commit withholds first-call permission',async t=>{const f=await fixture(t),order=await f.prepare(),r=await json(await f.journal('reservations',{orderId:order.orderId})),original=f.env.CHECKOUT.claimHandoff;
+ f.env.CHECKOUT.claimHandoff=async v=>{const result=await original(v);await f.auth.service.revoke(24,f.tokens.accessToken,{scope:'current'});return result};const body=await json(await f.journal('claims',{handoffId:r.handoff.handoffId}),503);assert.equal(body.outcome,'unknown');assert.equal('mayOpenDialer' in body,false);assert.equal(f.payment.count('pa_handoff_claims'),1);
+});
+test('malformed upstream grant does not escape as success',async t=>{const f=await fixture(t),order=await f.prepare(),r=await json(await f.journal('reservations',{orderId:order.orderId}));f.env.CHECKOUT.claimHandoff=async()=>({schemaVersion:1,handoff:null,mayOpenDialer:true});const body=await json(await f.journal('claims',{handoffId:r.handoff.handoffId}),503);assert.equal(body.outcome,'unknown');});

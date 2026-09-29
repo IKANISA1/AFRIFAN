@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7B1A4599B955E5B2515355BC /* IOSNativeRecoveryHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7045A5A6FDB9A88AC2D1D3D2 /* IOSNativeRecoveryHost.swift */; };
+		5B68A5474B34E23774730628 /* IOSNativeRecoveryRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28E206DD660FD28350D544B4 /* IOSNativeRecoveryRegistration.swift */; };
+		0F1310F03940D70CCD8217C6 /* KeychainRecoveryBlob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5032A29D33062E95C084AB /* KeychainRecoveryBlob.swift */; };
+		6EAB71DCE433EB81A50FB028 /* RecoveryDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CEB0E0DEF66CFFED96BCD2E /* RecoveryDispatcher.swift */; };
+		2B761BF1B84949B3DAF9BAEE /* RecoveryFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = D992E53A2A273BAE031DFAB4 /* RecoveryFiles.swift */; };
+		DE5CB1B860B7B0D7B811B204 /* RecoveryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B066F84408D34AD8E92F1F4 /* RecoveryProtocol.swift */; };
+		8FF019058B928BAF9E3472A2 /* RecoveryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53C49FF71536B417B6647F4 /* RecoveryStore.swift */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
@@ -43,6 +50,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		7045A5A6FDB9A88AC2D1D3D2 /* IOSNativeRecoveryHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../../packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryHost.swift"; sourceTree = SOURCE_ROOT; };
+		28E206DD660FD28350D544B4 /* IOSNativeRecoveryRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../../packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryRegistration.swift"; sourceTree = SOURCE_ROOT; };
+		1D5032A29D33062E95C084AB /* KeychainRecoveryBlob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../../packages/features/feat_membership/native/ios/Sources/KeychainRecoveryBlob.swift"; sourceTree = SOURCE_ROOT; };
+		6CEB0E0DEF66CFFED96BCD2E /* RecoveryDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../../packages/features/feat_membership/native/ios/Sources/RecoveryDispatcher.swift"; sourceTree = SOURCE_ROOT; };
+		D992E53A2A273BAE031DFAB4 /* RecoveryFiles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../../packages/features/feat_membership/native/ios/Sources/RecoveryFiles.swift"; sourceTree = SOURCE_ROOT; };
+		3B066F84408D34AD8E92F1F4 /* RecoveryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../../packages/features/feat_membership/native/ios/Sources/RecoveryProtocol.swift"; sourceTree = SOURCE_ROOT; };
+		E53C49FF71536B417B6647F4 /* RecoveryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../../packages/features/feat_membership/native/ios/Sources/RecoveryStore.swift"; sourceTree = SOURCE_ROOT; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		1A2C0827AD00223A8B1750DC /* Pods-Runner.debug-qa.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug-qa.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug-qa.xcconfig"; sourceTree = "<group>"; };
@@ -176,6 +190,13 @@
 				1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */,
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
+				7045A5A6FDB9A88AC2D1D3D2 /* IOSNativeRecoveryHost.swift */,
+				28E206DD660FD28350D544B4 /* IOSNativeRecoveryRegistration.swift */,
+				1D5032A29D33062E95C084AB /* KeychainRecoveryBlob.swift */,
+				6CEB0E0DEF66CFFED96BCD2E /* RecoveryDispatcher.swift */,
+				D992E53A2A273BAE031DFAB4 /* RecoveryFiles.swift */,
+				3B066F84408D34AD8E92F1F4 /* RecoveryProtocol.swift */,
+				E53C49FF71536B417B6647F4 /* RecoveryStore.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 			);
 			path = Runner;
@@ -382,6 +403,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				7B1A4599B955E5B2515355BC /* IOSNativeRecoveryHost.swift in Sources */,
+				5B68A5474B34E23774730628 /* IOSNativeRecoveryRegistration.swift in Sources */,
+				0F1310F03940D70CCD8217C6 /* KeychainRecoveryBlob.swift in Sources */,
+				6EAB71DCE433EB81A50FB028 /* RecoveryDispatcher.swift in Sources */,
+				2B761BF1B84949B3DAF9BAEE /* RecoveryFiles.swift in Sources */,
+				DE5CB1B860B7B0D7B811B204 /* RecoveryProtocol.swift in Sources */,
+				8FF019058B928BAF9E3472A2 /* RecoveryStore.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

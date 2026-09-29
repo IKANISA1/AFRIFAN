@@ -1,0 +1,695 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-09-30",
+  "scope": "cloudflare/supporter-membership-api/",
+  "source_archive": {
+    "path": "docs/drive-import/2026-09-28/mirror/AFRICLUB_Implementation_08_2026-09-28.zip",
+    "sha256": "4264a115e3974bf6236d90cfd8bc59537f066725d56757b9e03dd256095a8af5",
+    "bytes": 1375626,
+    "verified": true
+  },
+  "frozen_inventory": "docs/drive-import/2026-09-28/candidate-08-vs-checkout.tsv",
+  "source_file_count": 34,
+  "files": [
+    {
+      "path": "cloudflare/supporter-membership-api/NATIVE_PAYMENT_HANDOFF.md",
+      "source_bytes": 5657,
+      "source_sha256": "13f18864fda48c22bae397afbbc760c9141110de1d39e43cdec54da56f6a37ff",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/NATIVE_PAYMENT_HANDOFF.md",
+      "zip_member_sha256": "13f18864fda48c22bae397afbbc760c9141110de1d39e43cdec54da56f6a37ff",
+      "active_sha256": "13f18864fda48c22bae397afbbc760c9141110de1d39e43cdec54da56f6a37ff",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 5657,
+      "reason_added": "Preserve explicit review/confirm/recovery, server journal semantics and historical device/acceptance limits for native integration review.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/README.md",
+      "source_bytes": 14586,
+      "source_sha256": "aea89b5c7d3432f0e55160d54de665aa49f71c05ad37597ea45fb3857e9abe42",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/README.md",
+      "zip_member_sha256": "aea89b5c7d3432f0e55160d54de665aa49f71c05ad37597ea45fb3857e9abe42",
+      "active_sha256": "a3f34df89e28b167e5c0879c236d0a35bb94887d1a012d9d9618a01bd5eeed79",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_with_reviewed_corrections",
+      "corrections": [
+        "Add dated current local integration context and all11 operation entries; preserve historical claims. Clarify random key-generation wording to avoid the unrelated legacy surface substring."
+      ],
+      "active_bytes": 16648,
+      "reason_added": "Document all11 bearer operations, binding/recovery/deployment boundaries and current local evidence separately from preserved historical source claims.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/client.ts",
+      "source_bytes": 22833,
+      "source_sha256": "80b6e50b30e41b31234d6120924d1afffa9b1722ac73038c0fc142970e22cfe0",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/client.ts",
+      "zip_member_sha256": "80b6e50b30e41b31234d6120924d1afffa9b1722ac73038c0fc142970e22cfe0",
+      "active_sha256": "7ee6b576488c9e5a359fce942eedc47d3b0150d3e0f2d99f2d5cbe47f0f22ee2",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_with_reviewed_corrections",
+      "corrections": [
+        "Replace8 String(value)-coercing enum checks with typed string membership checks. Arrays cannot masquerade as statuses/phases, and malformed pending recovery cannot be replaced with a new request key."
+      ],
+      "active_bytes": 22848,
+      "reason_added": "Supply the strict native bearer HTTP reference client and durable original-key recovery coordinator without automatic POST retries or token persistence.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/contracts/openapi.json",
+      "source_bytes": 61315,
+      "source_sha256": "3fc7bf13a4c46387c1c8053f5876a96b4ac24712f4a3c89230d30323c5ca5530",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/contracts/openapi.json",
+      "zip_member_sha256": "3fc7bf13a4c46387c1c8053f5876a96b4ac24712f4a3c89230d30323c5ca5530",
+      "active_sha256": "77c47c40c0bfef358d7cbc1c6e1b68293fdf73f4369a08f576b4695ec806cb6f",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_with_reviewed_corrections",
+      "corrections": [
+        "Version1.4.1 adds exact owned history page/item/receipt schemas, common session/order/cursor parameters, sanitized read error schemas and existing handoff_disabled/handoff_unavailable errors."
+      ],
+      "active_bytes": 71600,
+      "reason_added": "Supply authenticated wire schemas for all11 operations, minimized historical receipts, owned history reads and sanitized unknown outcomes.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/docs/continuation-provenance.json",
+      "source_bytes": 18776,
+      "source_sha256": "bf2c4737846e5e8474f40330842825d4fd03a214e7db95b361dffabca0c02f7a",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/docs/continuation-provenance.json",
+      "zip_member_sha256": "bf2c4737846e5e8474f40330842825d4fd03a214e7db95b361dffabca0c02f7a",
+      "active_sha256": "bf2c4737846e5e8474f40330842825d4fd03a214e7db95b361dffabca0c02f7a",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 18776,
+      "reason_added": "Preserve earlier context/continuation source hashes as historical lineage, independently of current frozen inventory and ZIP verification.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/docs/native-source-provenance.json",
+      "source_bytes": 1204,
+      "source_sha256": "d968a7c0270f0b81bddbd17b11898fab1b73ab2a2e1f257f5745149f98520034",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/docs/native-source-provenance.json",
+      "zip_member_sha256": "d968a7c0270f0b81bddbd17b11898fab1b73ab2a2e1f257f5745149f98520034",
+      "active_sha256": "d968a7c0270f0b81bddbd17b11898fab1b73ab2a2e1f257f5745149f98520034",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 1204,
+      "reason_added": "Preserve earlier native source-read lineage and SDK block as historical context; these are not current native acceptance claims.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/docs/source-map.md",
+      "source_bytes": 2549,
+      "source_sha256": "821f90c4b69702c38081273f99e8a027036d712acf5da4f7997fe27aef5db044",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/docs/source-map.md",
+      "zip_member_sha256": "821f90c4b69702c38081273f99e8a027036d712acf5da4f7997fe27aef5db044",
+      "active_sha256": "821f90c4b69702c38081273f99e8a027036d712acf5da4f7997fe27aef5db044",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 2549,
+      "reason_added": "Map preserved identity/financial behavior to native gateway duties and document authority boundaries.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/docs/source-provenance.json",
+      "source_bytes": 3121,
+      "source_sha256": "632fb246ad0ad494587038fe7000dccbfc69d4d8b5710d7b4a5016591944c46f",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/docs/source-provenance.json",
+      "zip_member_sha256": "632fb246ad0ad494587038fe7000dccbfc69d4d8b5710d7b4a5016591944c46f",
+      "active_sha256": "632fb246ad0ad494587038fe7000dccbfc69d4d8b5710d7b4a5016591944c46f",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 3121,
+      "reason_added": "Preserve earlier Drive contract hashes/file identifiers and archive lineage; current import proof is recorded independently per file here.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/payment-handoff.ts",
+      "source_bytes": 15169,
+      "source_sha256": "26d169df24763a8e7ba443fc0ce4ed8630c6bfab1c3a7f0af22c56fbed782355",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/payment-handoff.ts",
+      "zip_member_sha256": "26d169df24763a8e7ba443fc0ce4ed8630c6bfab1c3a7f0af22c56fbed782355",
+      "active_sha256": "26d169df24763a8e7ba443fc0ce4ed8630c6bfab1c3a7f0af22c56fbed782355",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 15169,
+      "reason_added": "Supply explicit reviewed dialer coordination, durable reserve/claim markers, lifecycle invalidation and read-only recovery; platform opening never proves payment.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/scripts/check-deployment.mjs",
+      "source_bytes": 6429,
+      "source_sha256": "d116f897816947ae3a5be4b3ed2e93f58bd98a1c992d0ecfa6f52b2ee552d3b0",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/scripts/check-deployment.mjs",
+      "zip_member_sha256": "d116f897816947ae3a5be4b3ed2e93f58bd98a1c992d0ecfa6f52b2ee552d3b0",
+      "active_sha256": "f92d9906ac0e5e3ede3ba56e505360d3cfa1d0489fa023f1f87fd688b0646e37",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_with_reviewed_corrections",
+      "corrections": [
+        "Validate explicit release flag, require matching gateway journal/private release enablement and retain requiredSecretsVerified:false/runtimeReady:false for structurally valid staging configurations."
+      ],
+      "active_bytes": 7018,
+      "reason_added": "Check disabled/isolated configuration, fixed entrypoints, identity/financial storage and principal separation without granting live or production approval.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/scripts/compile-client.mjs",
+      "source_bytes": 1006,
+      "source_sha256": "0a3884e25831c84b0cdb2569b639c87ee6134d2893c96784ddff33f1b24c73d0",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/scripts/compile-client.mjs",
+      "zip_member_sha256": "0a3884e25831c84b0cdb2569b639c87ee6134d2893c96784ddff33f1b24c73d0",
+      "active_sha256": "0a3884e25831c84b0cdb2569b639c87ee6134d2893c96784ddff33f1b24c73d0",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 1006,
+      "reason_added": "Strictly compile the reference client into temporary output and remove output after validation.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/scripts/compile-handoff.mjs",
+      "source_bytes": 1071,
+      "source_sha256": "13a5e49994c1a24abb33995a5e49236ba8f49ec0b2e451ea4c1629579d687efe",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/scripts/compile-handoff.mjs",
+      "zip_member_sha256": "13a5e49994c1a24abb33995a5e49236ba8f49ec0b2e451ea4c1629579d687efe",
+      "active_sha256": "13a5e49994c1a24abb33995a5e49236ba8f49ec0b2e451ea4c1629579d687efe",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 1071,
+      "reason_added": "Strictly compile the handoff coordinator and client dependency with temporary output cleanup.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/scripts/generate-native-vectors.mjs",
+      "source_bytes": 2788,
+      "source_sha256": "8a5402143ce559e8d62884abd8f561be2c0bcdd78205d89bdea30bf2ebcb7be4",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/scripts/generate-native-vectors.mjs",
+      "zip_member_sha256": "8a5402143ce559e8d62884abd8f561be2c0bcdd78205d89bdea30bf2ebcb7be4",
+      "active_sha256": "8a5402143ce559e8d62884abd8f561be2c0bcdd78205d89bdea30bf2ebcb7be4",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 2788,
+      "reason_added": "Preserve synthetic actual-service wire fixture regeneration tooling; not executed because the independently imported fixture must remain unchanged.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/handoff-projection.mjs",
+      "source_bytes": 2165,
+      "source_sha256": "ef9879cf3af81cdc5dbf827b248ed5b10d752dfccd96313c0368ab77b77e218c",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/src/handoff-projection.mjs",
+      "zip_member_sha256": "ef9879cf3af81cdc5dbf827b248ed5b10d752dfccd96313c0368ab77b77e218c",
+      "active_sha256": "ef9879cf3af81cdc5dbf827b248ed5b10d752dfccd96313c0368ab77b77e218c",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 2165,
+      "reason_added": "Reject malformed journal phases, ownership/correlation, stale observations and invalid first-response grants; no financial capability is introduced.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/http.mjs",
+      "source_bytes": 5592,
+      "source_sha256": "e4ce5de7d9f203b2d30038d3c6f1201edfa788deec0ff3acdb57d241ffd3fa27",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/src/http.mjs",
+      "zip_member_sha256": "e4ce5de7d9f203b2d30038d3c6f1201edfa788deec0ff3acdb57d241ffd3fa27",
+      "active_sha256": "e4ce5de7d9f203b2d30038d3c6f1201edfa788deec0ff3acdb57d241ffd3fa27",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 5592,
+      "reason_added": "Enforce exact native ingress, bearer syntax, versioned methods, canonical bounded streamed bodies and private sanitized responses.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/index.mjs",
+      "source_bytes": 8344,
+      "source_sha256": "211a05225be847763229f34f85687ce00711198849d4ca2b7ef6edf421628ac0",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/src/index.mjs",
+      "zip_member_sha256": "211a05225be847763229f34f85687ce00711198849d4ca2b7ef6edf421628ac0",
+      "active_sha256": "d63436a8299910064ed40d673f6faa542c484da78db36939c7e0b466f3de11c0",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_with_reviewed_corrections",
+      "corrections": [
+        "Revalidate current checkout freshness after final identity introspection; stale payment instructions are suppressed rather than disclosed after a delayed check."
+      ],
+      "active_bytes": 8728,
+      "reason_added": "Bind verified identities to owner-scoped session, checkout, membership/history and journal capabilities with pre/post checks and unknown invoked write outcomes.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/membership-status.mjs",
+      "source_bytes": 1895,
+      "source_sha256": "1bf8d95c67f70559c8503b8a056400fb8632b6c3eae3decadb2b3bed9021b64f",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/src/membership-status.mjs",
+      "zip_member_sha256": "1bf8d95c67f70559c8503b8a056400fb8632b6c3eae3decadb2b3bed9021b64f",
+      "active_sha256": "1bf8d95c67f70559c8503b8a056400fb8632b6c3eae3decadb2b3bed9021b64f",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 1895,
+      "reason_added": "Project current entitlement with suspension/expiry precedence; historical receipts cannot override incomplete or suspended terms.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/policy.mjs",
+      "source_bytes": 3702,
+      "source_sha256": "9c5858a978b3c8e139100d047613b6fd8c2d56e1bc07154b76e8e3a08eabd494",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/src/policy.mjs",
+      "zip_member_sha256": "9c5858a978b3c8e139100d047613b6fd8c2d56e1bc07154b76e8e3a08eabd494",
+      "active_sha256": "19b1fedec9d02af5717f09a39914d856e85e60ce0c7cdf8f840401385d84fd87",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_with_reviewed_corrections",
+      "corrections": [
+        "Reject malformed optional flags and release without journal; require actual journal/release methods before commands are marked invoked. Missing methods are configuration errors rather than unknown write outcomes."
+      ],
+      "active_bytes": 4602,
+      "reason_added": "Centralize bounded work, wire validation, purpose-separated HMAC limiter keys and least-authority required/optional capability checks.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/projection.mjs",
+      "source_bytes": 4933,
+      "source_sha256": "d5c17f990370c1d6eb1281eb8c5246021b12c23bd57c09d812a93cbaf537b180",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/src/projection.mjs",
+      "zip_member_sha256": "d5c17f990370c1d6eb1281eb8c5246021b12c23bd57c09d812a93cbaf537b180",
+      "active_sha256": "d5c17f990370c1d6eb1281eb8c5246021b12c23bd57c09d812a93cbaf537b180",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 4933,
+      "reason_added": "Validate exact identity, frozen checkout/pricing and owner/order/intent/amount/tier receipt correlation before minimizing public responses.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/client.test.mjs",
+      "source_bytes": 10265,
+      "source_sha256": "6f827630c997085b8038c9336a52f301ba8180dfb1044f3489a4cdfde2118ed6",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/tests/client.test.mjs",
+      "zip_member_sha256": "6f827630c997085b8038c9336a52f301ba8180dfb1044f3489a4cdfde2118ed6",
+      "active_sha256": "a3216d09e13f7f941b3e54c03d2ebb8b4762e724bf12de467de8076ed4642754",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_with_reviewed_corrections",
+      "corrections": [
+        "Add5 candidate-failing hostile-array and malformed recovery regressions, including no replacement POST after unresolved corrupt phase."
+      ],
+      "active_bytes": 11862,
+      "reason_added": "Exercise compiled client transport/recovery with actual local services, session swaps, hostile replies, durable original keys and no automatic POST retry.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/config.test.mjs",
+      "source_bytes": 4540,
+      "source_sha256": "6e61837fcebbd87a43c7357c4a0d34c8a171ddc32647b0f0827d65494cbe6e34",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/tests/config.test.mjs",
+      "zip_member_sha256": "6e61837fcebbd87a43c7357c4a0d34c8a171ddc32647b0f0827d65494cbe6e34",
+      "active_sha256": "201879405402d80e2fdfd08c1158d5c501030bd7027b9fb3605a7de522ba9d43",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_with_reviewed_corrections",
+      "corrections": [
+        "Add11 optional capability/disabled release/config coherence regressions;6 fail against candidate implementation. Existing fail-closed checks remain."
+      ],
+      "active_bytes": 7322,
+      "reason_added": "Reject config/binding/storage/principal drift and incoherent optional release enablement before domain RPC.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/contract.test.mjs",
+      "source_bytes": 3010,
+      "source_sha256": "f683ec0af9fe689d17ff5b3b28f7224db30af2a02cdd4099a2e4e3962739f963",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/tests/contract.test.mjs",
+      "zip_member_sha256": "f683ec0af9fe689d17ff5b3b28f7224db30af2a02cdd4099a2e4e3962739f963",
+      "active_sha256": "bcd4b4d84af877126d2b8ee16f165f7b3607c96c062c544c8b6764e9894faf68",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_with_reviewed_corrections",
+      "corrections": [
+        "Add3 candidate-failing operation schema, actual history response and documented handoff error regressions."
+      ],
+      "active_bytes": 4640,
+      "reason_added": "Compare actual service responses to documented minimal shapes and require complete authenticated operation/history/error schemas.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/fixture.mjs",
+      "source_bytes": 3958,
+      "source_sha256": "d13eba3b7506e5c014afee767cbd7d67fcbc34fc530afc8c73156705ed5313e5",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/tests/fixture.mjs",
+      "zip_member_sha256": "d13eba3b7506e5c014afee767cbd7d67fcbc34fc530afc8c73156705ed5313e5",
+      "active_sha256": "d13eba3b7506e5c014afee767cbd7d67fcbc34fc530afc8c73156705ed5313e5",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 3958,
+      "reason_added": "Reuse independently imported identity/payment fixtures with real Web Crypto and SQLite and synthetic edge/rate bindings; no conflicting fixture is recreated.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/handoff-http.test.mjs",
+      "source_bytes": 5741,
+      "source_sha256": "d1142ca8484345bb85af279af6b943f8e0d449ae103a073f8294505a83c4b982",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/tests/handoff-http.test.mjs",
+      "zip_member_sha256": "d1142ca8484345bb85af279af6b943f8e0d449ae103a073f8294505a83c4b982",
+      "active_sha256": "d1142ca8484345bb85af279af6b943f8e0d449ae103a073f8294505a83c4b982",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 5741,
+      "reason_added": "Verify journal HTTP ownership, canonical bodies, lost claims, revocation and malformed grants without duplicate dialer authorization.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/handoff-release-integration.test.mjs",
+      "source_bytes": 10057,
+      "source_sha256": "65cca8347888dec27a7ea1891aed126cd1f2637a572fd9d862e47f979b5ef264",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/tests/handoff-release-integration.test.mjs",
+      "zip_member_sha256": "65cca8347888dec27a7ea1891aed126cd1f2637a572fd9d862e47f979b5ef264",
+      "active_sha256": "65cca8347888dec27a7ea1891aed126cd1f2637a572fd9d862e47f979b5ef264",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 10057,
+      "reason_added": "Exercise real-service stranded recovery, explicit-only release, same-key retry, claim/release races and preserved local markers.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/history.test.mjs",
+      "source_bytes": 4742,
+      "source_sha256": "8ec66f4c4a759255c15a9a3ff0a0aa5c218ddc6057706f23b8666a2b5b26a063",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/tests/history.test.mjs",
+      "zip_member_sha256": "8ec66f4c4a759255c15a9a3ff0a0aa5c218ddc6057706f23b8666a2b5b26a063",
+      "active_sha256": "8ec66f4c4a759255c15a9a3ff0a0aa5c218ddc6057706f23b8666a2b5b26a063",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 4742,
+      "reason_added": "Verify owned read-only history, header cursor privacy/pagination, revoked/foreign identities and compiled client parsing.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/http-security.test.mjs",
+      "source_bytes": 5366,
+      "source_sha256": "c39b7f81ce74736f7b7d2ca8ea59fefa9acf3462094420cd6d812e39ab800f63",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/tests/http-security.test.mjs",
+      "zip_member_sha256": "c39b7f81ce74736f7b7d2ca8ea59fefa9acf3462094420cd6d812e39ab800f63",
+      "active_sha256": "c39b7f81ce74736f7b7d2ca8ea59fefa9acf3462094420cd6d812e39ab800f63",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 5366,
+      "reason_added": "Reject browser/actor headers, malformed credentials/bodies/routes/sessions and exercise bounded streaming and private limiter/error behavior.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/integration.test.mjs",
+      "source_bytes": 6514,
+      "source_sha256": "1f7348e6d14a0a84348ec72057fab72f4948e04821e745b11718b3701360c15b",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/tests/integration.test.mjs",
+      "zip_member_sha256": "1f7348e6d14a0a84348ec72057fab72f4948e04821e745b11718b3701360c15b",
+      "active_sha256": "47ca2f8ea81aca6ee483055e1e012e055d78f74f1589d0c90d5f895a8d1b548b",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_with_reviewed_corrections",
+      "corrections": [
+        "Add actual-service delayed final identity regression:503, no stale payment instruction and no allocation/membership side effect."
+      ],
+      "active_bytes": 7099,
+      "reason_added": "Exercise actual identity/checkout/evidence/allocation/receipt services, original-key recovery, source changes and response-boundary freshness/revocation.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/membership-status.test.mjs",
+      "source_bytes": 3883,
+      "source_sha256": "d222233edcf0ed955a4d615e6a462fbafaa64b61532a8d676b5c56a34f2355c2",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/tests/membership-status.test.mjs",
+      "zip_member_sha256": "d222233edcf0ed955a4d615e6a462fbafaa64b61532a8d676b5c56a34f2355c2",
+      "active_sha256": "d222233edcf0ed955a4d615e6a462fbafaa64b61532a8d676b5c56a34f2355c2",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 3883,
+      "reason_added": "Verify current membership ownership, suspension precedence, expiry and malformed/non-native denial without checkout writes.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/native-wire-vectors.test.mjs",
+      "source_bytes": 1116,
+      "source_sha256": "f6488c206120af82939ad91a2150a7856a122b166fb46756adccd9cb34a73c1b",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/tests/native-wire-vectors.test.mjs",
+      "zip_member_sha256": "f6488c206120af82939ad91a2150a7856a122b166fb46756adccd9cb34a73c1b",
+      "active_sha256": "f6488c206120af82939ad91a2150a7856a122b166fb46756adccd9cb34a73c1b",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 1116,
+      "reason_added": "Run compiled TypeScript conformance on all57 independently imported native vectors while preserving supplied fixture bytes.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/payment-handoff-integration.test.mjs",
+      "source_bytes": 5423,
+      "source_sha256": "c62535bfaba431df5f247300d0fccbff9a381520d5d1172c6a10123e2bfc8a14",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/tests/payment-handoff-integration.test.mjs",
+      "zip_member_sha256": "c62535bfaba431df5f247300d0fccbff9a381520d5d1172c6a10123e2bfc8a14",
+      "active_sha256": "c62535bfaba431df5f247300d0fccbff9a381520d5d1172c6a10123e2bfc8a14",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 5423,
+      "reason_added": "Exercise real-service journal-first handoff, revoked/changed sources and restart/lost-local-store duplicate prevention.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/payment-handoff.test.mjs",
+      "source_bytes": 13619,
+      "source_sha256": "1186f2216f6156a4e8783e46985e0c8ed1038d233da3126f8e006a41f0b45a5b",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/tests/payment-handoff.test.mjs",
+      "zip_member_sha256": "1186f2216f6156a4e8783e46985e0c8ed1038d233da3126f8e006a41f0b45a5b",
+      "active_sha256": "1186f2216f6156a4e8783e46985e0c8ed1038d233da3126f8e006a41f0b45a5b",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 13619,
+      "reason_added": "Exercise explicit acknowledgement, frozen reviews, monotonic expiry, locking/persistence, lifecycle and uncertain platform outcomes with synthetic native ports.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/tests/projection.test.mjs",
+      "source_bytes": 3167,
+      "source_sha256": "594cdfd3b86ace30a5acec1c23da8cff1cb6db58745ba92a18897a75ae4f9695",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/tests/projection.test.mjs",
+      "zip_member_sha256": "594cdfd3b86ace30a5acec1c23da8cff1cb6db58745ba92a18897a75ae4f9695",
+      "active_sha256": "594cdfd3b86ace30a5acec1c23da8cff1cb6db58745ba92a18897a75ae4f9695",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "active_bytes": 3167,
+      "reason_added": "Reject invalid identity/pricing/ownership/status and receipt correlations before disclosure; unknown writes cannot claim rollback or membership activation.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/wrangler.staging.jsonc",
+      "source_bytes": 1454,
+      "source_sha256": "7ecd32671167f8f87a5750efb48b988d5e1537bfbe97592ef3b8ad22baa92c8d",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-membership-api/wrangler.staging.jsonc",
+      "zip_member_sha256": "7ecd32671167f8f87a5750efb48b988d5e1537bfbe97592ef3b8ad22baa92c8d",
+      "active_sha256": "dae4e59c1853747be4c1afb43fbf1818f73e61d5c322d09e6cd9009e98ffe039",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_with_reviewed_corrections",
+      "corrections": [
+        "Add MEMBERSHIP_HANDOFF_RELEASE_ENABLED:false. Candidate runtime required the flag while its deployment checker prohibited adding it."
+      ],
+      "active_bytes": 1505,
+      "reason_added": "Ship the four-binding adapter disabled with no public routes, blank account/origin/clubs, placeholder limiter namespaces and disabled journal/release flags.",
+      "review_status": "reviewed_source_and_applicable_local_tests"
+    }
+  ],
+  "runtime_readiness": {
+    "status": "local_validation_passed_deployment_disabled",
+    "production_ready": false,
+    "runtime_ready": false,
+    "deployment_template_enabled": false,
+    "journal_enabled": false,
+    "unclaimed_release_enabled": false,
+    "required_secrets_verified": false,
+    "live_bindings_verified": false,
+    "provider_acceptance_verified": false,
+    "native_storage_and_device_acceptance_verified": false,
+    "all_five_app_journeys_accepted": false,
+    "atomic_cross_database_revocation_verified": false,
+    "deployment_performed": false,
+    "real_provider_or_financial_requests": 0,
+    "blockers": [
+      "Assign approved isolated account, native domain/route, five-club mappings and distinct limiter namespaces; placeholders intentionally fail --ready.",
+      "Provision and verify protected GATEWAY_RATE_KEY plus all private service bindings, upstream principals and isolated storage in an approved staging environment.",
+      "Approve financial/evidence source reconciliation and migrations plus explicit journal/release enablement; configuration and dry-run checks cannot verify live data or permissions.",
+      "Complete five-app auth/membership composition, protected native credentials/recovery storage, process/crash/backup behavior and representative Android/iOS/carrier acceptance.",
+      "Resolve measured abuse controls, approved redacted observability, retention/refund/late-payment support and atomic revocation/cutover policy before production approval."
+    ]
+  },
+  "validation": [
+    {
+      "check": "pinned_node_gateway_suite",
+      "status": "pass",
+      "node_version": "22.23.2",
+      "typescript_version": "5.9.3",
+      "tests": 385,
+      "passed": 385,
+      "failed": 0,
+      "skipped": 0,
+      "new_regression_tests": 20,
+      "native_wire_vectors": 57,
+      "log": "/tmp/africlub-goal-membership-gateway-tests-20260930.log"
+    },
+    {
+      "check": "regression_before_fixes",
+      "status": "candidate_failures_reproduced",
+      "config_failures": 6,
+      "contract_and_freshness_failures": 4,
+      "native_client_failures": 5,
+      "logs": [
+        "/tmp/africlub-goal-membership-config-regression-before-20260930.log",
+        "/tmp/africlub-goal-membership-contract-regression-before-20260930.log",
+        "/tmp/africlub-goal-membership-client-regression-before-20260930.log"
+      ]
+    },
+    {
+      "check": "strict_typescript_client_and_handoff_compile",
+      "status": "pass",
+      "runtime_dependencies_added": 0
+    },
+    {
+      "check": "disabled_template_validation",
+      "status": "pass",
+      "runtime_ready": false,
+      "production_approved": false
+    },
+    {
+      "check": "shipped_template_ready_validation",
+      "status": "blocked_expected",
+      "exit_code": 1,
+      "reason": "configuration_rejected:rate_namespace",
+      "log": "/tmp/africlub-goal-membership-ready-check-20260930.log"
+    },
+    {
+      "check": "wrangler_local_dry_run",
+      "status": "pass",
+      "wrangler_version": "4.120.0",
+      "uploaded": false,
+      "deployed": false,
+      "live_bindings_verified": false,
+      "log": "/tmp/africlub-goal-membership-dry-run-20260930.log",
+      "limitation": "Blank account_id warning is expected for the disabled template. Local bundling is not resource readiness."
+    },
+    {
+      "check": "repository_boundary",
+      "status": "pass",
+      "live_text_files_checked": 1980,
+      "preserved_evidence_files_excluded": 2282,
+      "snapshot_only": true
+    },
+    {
+      "check": "git_diff_check",
+      "status": "pass"
+    },
+    {
+      "check": "final_import_report_readback",
+      "status": "pass",
+      "frozen_inventory_matches": 34,
+      "original_zip_member_matches": 34,
+      "candidate_source_matches": 34,
+      "active_sha256_matches": 34,
+      "purpose_and_correction_rationale_records": 34
+    }
+  ],
+  "import_summary": {
+    "verified_source_files": 34,
+    "original_zip_members_verified": 34,
+    "source_bytes": 265990,
+    "exact_imports": 23,
+    "imports_with_corrections": 11,
+    "new_report_files": 1,
+    "source_archive_or_inventory_modified": false,
+    "identity_or_native_fixture_recreated": false,
+    "native_vector_generator_executed": false
+  },
+  "binding_review": [
+    {
+      "binding": "IDENTITY",
+      "entrypoint": "SupporterIdentityVerifier",
+      "source": "cloudflare/supporter-auth/src/identity-verifier-worker.mjs",
+      "capabilities_used": [
+        "current"
+      ],
+      "local_source_sha256": "543403b191806ff14aac53533898aed5b941ec6c6b2ea2af8d06305f434f25f1",
+      "verification": "local_wrapper_source_and_actual_service_fixture_tests",
+      "live_binding_verified": false
+    },
+    {
+      "binding": "CHECKOUT",
+      "entrypoint": "MembershipCheckout",
+      "source": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "capabilities_used": [
+        "prepare",
+        "reserveHandoff",
+        "claimHandoff",
+        "releaseHandoff"
+      ],
+      "local_source_sha256": "b690162cec2706dbfa58f928683c4018b67cdf70ca72c5bd127dad1fd79b086d",
+      "verification": "local_wrapper_source_and_actual_service_fixture_tests",
+      "live_binding_verified": false
+    },
+    {
+      "binding": "CHECKOUT_READER",
+      "entrypoint": "MembershipCheckoutReader",
+      "source": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "capabilities_used": [
+        "read",
+        "membershipStatus",
+        "history",
+        "historicalReceipt",
+        "currentHandoff"
+      ],
+      "local_source_sha256": "b690162cec2706dbfa58f928683c4018b67cdf70ca72c5bd127dad1fd79b086d",
+      "verification": "local_wrapper_source_and_actual_service_fixture_tests",
+      "live_binding_verified": false
+    },
+    {
+      "binding": "PAYMENT_RECEIPTS",
+      "entrypoint": "PaymentReceiptReader",
+      "source": "cloudflare/payment-allocation/src/worker.mjs",
+      "capabilities_used": [
+        "readReceipt"
+      ],
+      "local_source_sha256": "057eb01288151f81322be25ce9cc70fdb8c298e4f62c632d60c68098af5d9041",
+      "verification": "local_wrapper_source_and_actual_service_fixture_tests",
+      "live_binding_verified": false
+    }
+  ],
+  "review_references": [
+    {
+      "url": "https://developers.cloudflare.com/workers/best-practices/workers-best-practices/",
+      "purpose": "Current Worker request, binding, secret and async guidance"
+    },
+    {
+      "url": "https://developers.cloudflare.com/workers/runtime-apis/bindings/service-bindings/rpc/",
+      "purpose": "Current private WorkerEntrypoint RPC binding boundary"
+    },
+    {
+      "package": "@cloudflare/workers-types",
+      "version": "5.20260929.1",
+      "purpose": "Latest downloaded platform types reviewed without changing project dependencies"
+    },
+    {
+      "path": "apps/rayon_sports/web/node_modules/wrangler/config-schema.json",
+      "version": "4.120.0",
+      "purpose": "Bundled schema and actual local dry-run validation"
+    }
+  ]
+}

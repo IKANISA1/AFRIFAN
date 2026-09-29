@@ -1,7 +1,7 @@
-const STATIC_CACHE = "gikundiro-static-v8";
-const PAGE_CACHE = "gikundiro-pages-v8";
-const ASSET_CACHE = "gikundiro-assets-v8";
-const API_CACHE = "gikundiro-api-v8";
+const STATIC_CACHE = "gikundiro-static-v9";
+const PAGE_CACHE = "gikundiro-pages-v9";
+const ASSET_CACHE = "gikundiro-assets-v9";
+const API_CACHE = "gikundiro-api-v9";
 const PRECACHE_URLS = [
   "/offline",
   "/admin-offline",
@@ -55,6 +55,13 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("message", (event) => {
+  if (event.data?.type === "AFRICLUB_PRIVATE_CACHE_CHECK") {
+    let trusted=false;
+    try { trusted=!!event.source?.url&&new URL(event.source.url).origin===self.location.origin; } catch {}
+    if(trusted)event.waitUntil(purgePrivateCaches().then(purged=>event.ports?.[0]?.postMessage({protocol:"africlub-private-cache-v1",purged}))
+      .catch(()=>event.ports?.[0]?.postMessage({protocol:"africlub-private-cache-v1",purged:false})));
+    return;
+  }
   if (event.data && event.data.type === "SKIP_WAITING") {
     self.skipWaiting();
   }
@@ -83,7 +90,11 @@ async function readCache(cache, request) {
 }
 
 async function storePublicResponse(cache, request, response) {
-  if (!cache || !response?.ok || request.headers?.has("authorization")) return;
+  if (!cache || !response?.ok || privateRequest(request) || response.redirected) return;
+  const url=new URL(request.url);
+  if(isPrivatePath(url.pathname)&&url.pathname!=="/api/search-index")return;
+  if(/(?:^|,)\s*cookie\s*(?:,|$)/i.test(response.headers.get("vary")??""))return;
+  if(!url.pathname.startsWith("/_next/static/")&&!/(?:^|,)\s*public\b/i.test(response.headers.get("cache-control")??""))return;
   if (/(?:^|,)\s*(?:private|no-store)\b/i.test(response.headers.get("cache-control") ?? "")) return;
   try {
     await cache.put(request, response.clone());
@@ -117,10 +128,33 @@ async function offlineRecovery(pathname) {
 }
 
 function isPrivatePath(pathname) {
-  return /^\/(?:admin|supporters|membership)(?:\/|$)/.test(pathname);
+  return /^\/(?:admin|operator|supporters|membership|auth|account-deletion|v1|api)(?:\/|$)/.test(pathname);
+}
+function privateRequest(request) {
+  const url=new URL(request.url);
+  return url.pathname.includes("%") || (isPrivatePath(url.pathname)&&url.pathname!=="/api/search-index")||
+    request.headers.has("authorization")||request.headers.has("rsc")||request.headers.has("next-action")||request.headers.has("next-router-prefetch");
+}
+async function privateNetwork(request) {
+  try { return await fetch(request,{cache:"no-store"}); }
+  catch {
+    if(request.mode==="navigate") {
+      const page=await offlineRecovery(new URL(request.url).pathname.startsWith("/admin")?"/admin-offline":"/offline");
+      return new Response(page.body,{status:503,headers:page.headers});
+    }
+    return new Response(JSON.stringify({error:"connection_required"}),{status:503,headers:{"Content-Type":"application/json","Cache-Control":"private, no-store"}});
+  }
+}
+async function purgePrivateCaches() {
+  // Only this application's dynamic cache namespaces; never localStorage/IndexedDB or another app's caches.
+  const keys=await caches.keys();
+  const results=await Promise.all(keys.filter(key=>/^gikundiro-(pages|api)-v\d+$/.test(key)).map(key=>caches.delete(key)));
+  return results.every(Boolean);
 }
 
+
 async function networkFirst(request) {
+  if(privateRequest(request))return privateNetwork(request);
   try {
     const response = await fetch(request);
     await storePublicResponse(await openCache(PAGE_CACHE), request, response);
@@ -176,6 +210,11 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  if (privateRequest(request)) {
+    event.respondWith(privateNetwork(request));
+    return;
+  }
+
   if (url.pathname === "/api/search-index") {
     event.respondWith(apiNetworkFirst(request));
     return;
@@ -209,74 +248,56 @@ self.addEventListener("fetch", (event) => {
   }
 });
 
-/* ─── Push Notifications ─────────────────────────────────── */
+/* ─── Data-minimized notifications; never a payment or login command ─── */
+
+function notificationPath(value) {
+  // Only app landing pages are accepted. No external URLs, query credentials,
+  // account IDs, redirects or encoded/normalized alternate paths are followed.
+  if (typeof value !== "string" || value.length > 256 || /[%\\\s]/.test(value)) return "/admin";
+  try {
+    const url = new URL(value, self.location.origin);
+    if (url.origin !== self.location.origin || url.protocol !== "https:" || url.username || url.password || url.search || url.hash) return "/admin";
+    const allowed = new Set(["/admin", "/membership", "/news", "/fixtures", "/results", "/support"]);
+    // Reject raw dot segments and URL normalization, even if the result is allowed.
+    if (value !== url.pathname && value !== self.location.origin + url.pathname) return "/admin";
+    return allowed.has(url.pathname) ? url.pathname : "/admin";
+  } catch { return "/admin"; }
+}
 
 self.addEventListener("push", (event) => {
   if (!event.data) return;
-
   let data;
   try {
-    data = event.data.json();
-  } catch {
-    data = { title: "Gikundiro Admin", body: event.data.text() };
-  }
-
-  const title = data.title || "Gikundiro Admin";
+    const raw = event.data.text();
+    if (raw.length > 4096) return;
+    data = JSON.parse(raw);
+    if (!data || typeof data !== "object" || Array.isArray(data)) return;
+  } catch { return; }
   const options = {
-    body: data.body || "",
-    icon: data.icon || "/brand-mark.svg",
-    badge: data.badge || "/brand-mark.svg",
-    tag: data.tag || "admin-notification",
-    renotify: true,
-    requireInteraction: data.requireInteraction || false,
-    data: {
-      url: data.url || "/admin",
-      timestamp: Date.now(),
-    },
-    actions: data.actions || [
-      { action: "open", title: "Open dashboard" },
-      { action: "dismiss", title: "Dismiss" },
-    ],
-    vibrate: [100, 50, 100],
+    body: "Open the app to view this update.", icon: "/brand-mark.svg", badge: "/brand-mark.svg",
+    tag: "africlub-update", data: { url: notificationPath(data.url) },
+    actions: [{ action: "open", title: "Open app" }, { action: "dismiss", title: "Dismiss" }],
   };
-
-  event.waitUntil(
-    self.registration.showNotification(title, options).then(() => {
-      // Update badge count
-      if ("setAppBadge" in self.navigator) {
-        return self.navigator.setAppBadge(data.badgeCount ?? 1);
-      }
-    }),
-  );
+  // Payload titles, amounts, raw messages, icons and arbitrary actions are not
+  // displayed on a lock screen or persisted in notification metadata.
+  event.waitUntil(self.registration.showNotification("AFRICLUB", options).then(async () => {
+    try { if ("setAppBadge" in self.navigator) await self.navigator.setAppBadge(1); } catch { /* Cosmetic only. */ }
+  }));
 });
-
-/* ─── Notification Click ─────────────────────────────────── */
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-
-  if (event.action === "dismiss") return;
-
-  const targetUrl = event.notification.data?.url || "/admin";
-
-  event.waitUntil(
-    self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((clients) => {
-      // Try to focus an existing window
-      for (const client of clients) {
-        if (client.url.includes("/admin") && "focus" in client) {
-          client.navigate(targetUrl);
-          return client.focus();
-        }
-      }
-      // No existing window — open a new one
-      return self.clients.openWindow(targetUrl);
-    }).then(() => {
-      // Clear badge after clicking
-      if ("clearAppBadge" in self.navigator) {
-        return self.navigator.clearAppBadge();
-      }
-    }),
-  );
+  if (event.action && event.action !== "open") return;
+  // Validate again: already displayed legacy notifications may contain unsafe data.
+  const path = notificationPath(event.notification.data?.url);
+  const target = self.location.origin + path;
+  event.waitUntil((async () => {
+    const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    const existing = windows.find(client => client.url === target && typeof client.focus === "function");
+    if (existing) await existing.focus();
+    else await self.clients.openWindow(target);
+    try { if ("clearAppBadge" in self.navigator) await self.navigator.clearAppBadge(); } catch { /* Cosmetic only. */ }
+  })());
 });
 
 /* ─── Background Sync — Preserve Legacy Mutations ────────── */
@@ -310,7 +331,7 @@ self.addEventListener("periodicsync", (event) => {
   if (event.tag === "public-content-refresh") {
     event.waitUntil(
       Promise.all(
-        ["/", "/fixtures", "/news", "/shop", "/membership"].map((url) =>
+        ["/", "/fixtures", "/news", "/shop"].map((url) =>
           networkFirst(new Request(new URL(url, self.location.origin))),
         ),
       ),

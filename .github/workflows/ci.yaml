@@ -142,7 +142,7 @@ jobs:
 
       - uses: denoland/setup-deno@v2
         with:
-          deno-version: v2.x
+          deno-version: v2.9.6
 
       - name: Type-check and test all governed Supabase Edge Functions
         run: |
@@ -170,6 +170,9 @@ jobs:
 
       - name: Bootstrap workspace
         run: dart run melos bootstrap
+
+      - name: Verify pure Dart membership and protected recovery contracts
+        run: python3 tools/scripts/verify_native_membership.py --results "${{ runner.temp }}/africlub-native-membership"
 
       - name: Enforce workspace architecture
         run: |
@@ -321,6 +324,21 @@ jobs:
           node cloudflare/payment-allocation/scripts/check-checkout-deployment.mjs
           node cloudflare/allocation-delivery/scripts/check-deployment.mjs
 
+      - name: Verify identity, OTP delivery, membership and cookie portal contracts
+        working-directory: ${{ github.workspace }}
+        run: |
+          export PATH="$GITHUB_WORKSPACE/apps/rayon_sports/web/node_modules/.bin:$PATH"
+          node --test cloudflare/supporter-auth/tests/*.test.mjs cloudflare/auth-code-delivery/tests/*.test.mjs cloudflare/supporter-membership-api/tests/*.test.mjs cloudflare/supporter-browser-api/tests/*.test.mjs cloudflare/supporter-web-router/tests/*.test.mjs
+          node cloudflare/supporter-auth/scripts/check-deployment.mjs
+          node cloudflare/supporter-auth/scripts/check-reliable-delivery.mjs
+          node cloudflare/auth-code-delivery/scripts/check-deployment.mjs
+          node cloudflare/auth-code-delivery/scripts/check-receipts-deployment.mjs
+          node cloudflare/supporter-membership-api/scripts/compile-client.mjs
+          node cloudflare/supporter-membership-api/scripts/compile-handoff.mjs
+          node cloudflare/supporter-membership-api/scripts/check-deployment.mjs
+          node cloudflare/supporter-browser-api/scripts/check-deployment.mjs
+          node cloudflare/supporter-web-router/scripts/validate-config.mjs
+
       - name: Validate dependency graph and advisories
         run: corepack npm run check:dependencies
 
@@ -374,6 +392,9 @@ jobs:
 
       - name: Install Playwright browsers
         run: corepack npm exec -- playwright install --with-deps chromium firefox webkit
+
+      - name: Verify controlled cookie portal rendering and cache isolation
+        run: node scripts/browser-portal-controlled-qa.mjs
 
       - name: Build
         env:

@@ -3,11 +3,16 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { beginProductionBuild, markProductionCompilationComplete, sealProductionBuild, validateProductionBuild } from "./web-build-provenance.mjs";
+import { createHash } from "node:crypto";
+import { beginProductionBuild, markProductionCompilationComplete, productionSourceSnapshot, sealProductionBuild, validateProductionBuild } from "./web-build-provenance.mjs";
+
+const sharedPrefix = "../../../cloudflare/supporter-browser-api/";
+const sharedFiles = ["client.ts", "portal-controller.ts", "browser-platform.ts"];
 
 function fixture(t) {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "africlub-build-proof-"));
-  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const repository = fs.mkdtempSync(path.join(os.tmpdir(), "africlub-build-proof-"));
+  const root = path.join(repository, "apps/rayon_sports/web");
+  t.after(() => fs.rmSync(repository, { recursive: true, force: true }));
   const put = (name, value = "fixture") => {
     fs.mkdirSync(path.dirname(path.join(root, name)), { recursive: true });
     fs.writeFileSync(path.join(root, name), value);
@@ -23,6 +28,13 @@ function fixture(t) {
   };
   const build = () => { beginProductionBuild(root, ["synthetic-fixture-compiler"]); compile(); return sealProductionBuild(root); };
   return { root, put, compile, build };
+}
+
+function portalFixture(t) {
+  const result = fixture(t);
+  result.put("src/components/browser-membership-portal.tsx", "export const portal = true;");
+  for (const file of sharedFiles) result.put(`${sharedPrefix}${file}`, "export const shared = true;");
+  return result;
 }
 
 test("sealed production source, build and artifacts stay linked without exposing dotenv values", (t) => {
@@ -78,4 +90,77 @@ test("an unsealed or unsuccessful build is rejected", (t) => {
   assert.throws(() => validateProductionBuild(root), /provenance is missing/);
   beginProductionBuild(root, ["synthetic-fixture-compiler"]);
   assert.throws(() => sealProductionBuild(root), /No successful production compilation/);
+});
+
+for (const file of sharedFiles) test(`sealed portal build binds the external ${file} bytes`, (t) => {
+  const { root, put, build } = portalFixture(t);
+  const record = build();
+  assert.deepEqual(record.source.files.filter((entry) => entry.file.startsWith(sharedPrefix)).map((entry) => entry.file).sort(), sharedFiles.map((name) => `${sharedPrefix}${name}`).sort());
+  validateProductionBuild(root);
+  put(`${sharedPrefix}${file}`, "export const shared = 'changed runtime';");
+  assert.throws(() => validateProductionBuild(root), /stale for the current source/);
+});
+
+test("shared portal changes during compilation reject compilation completion", (t) => {
+  const { root, put, compile } = portalFixture(t);
+  beginProductionBuild(root, ["synthetic-fixture-compiler"]);
+  put(`${sharedPrefix}client.ts`, "changed external runtime");
+  assert.throws(compile, /source changed during compilation/);
+});
+
+test("shared portal changes after compilation reject sealing", (t) => {
+  const { root, put, compile } = portalFixture(t);
+  beginProductionBuild(root, ["synthetic-fixture-compiler"]); compile();
+  put(`${sharedPrefix}portal-controller.ts`, "changed external runtime");
+  assert.throws(() => sealProductionBuild(root), /source changed before sealing/);
+});
+
+for (const file of sharedFiles) test(`an installed portal requires its external ${file}`, (t) => {
+  const { root } = portalFixture(t);
+  fs.unlinkSync(path.join(root, sharedPrefix, file));
+  assert.throws(() => beginProductionBuild(root, ["synthetic-fixture-compiler"]), /Missing required shared portal build input/);
+});
+
+test("an external dependency symlink cannot escape the declared shared module", (t) => {
+  const { root, put } = portalFixture(t);
+  put("../../../cloudflare/unrelated-client.ts", "unreviewed external runtime");
+  const file = path.join(root, sharedPrefix, "client.ts"); fs.unlinkSync(file);
+  fs.symlinkSync(path.resolve(root, "../../../cloudflare/unrelated-client.ts"), file);
+  assert.throws(() => beginProductionBuild(root, ["synthetic-fixture-compiler"]), /symlink escapes/);
+});
+
+test("a shared module directory symlink cannot relocate the allowed boundary", (t) => {
+  const { root } = portalFixture(t);
+  const sharedDirectory = path.resolve(root, sharedPrefix), relocated = path.resolve(root, "../../../cloudflare/relocated-module");
+  fs.renameSync(sharedDirectory, relocated); fs.symlinkSync(relocated, sharedDirectory);
+  assert.throws(() => beginProductionBuild(root, ["synthetic-fixture-compiler"]), /shared portal.*directory.*escapes/i);
+});
+
+test("a bounded shared file symlink is recorded and its target mutation invalidates the seal", (t) => {
+  const { root, put, build } = portalFixture(t), file = path.join(root, sharedPrefix, "client.ts");
+  fs.unlinkSync(file); fs.symlinkSync("portal-controller.ts", file);
+  const record = build();
+  assert.equal(record.source.files.find((entry) => entry.file === `${sharedPrefix}client.ts`).link, "portal-controller.ts");
+  put(`${sharedPrefix}portal-controller.ts`, "changed linked runtime");
+  assert.throws(() => validateProductionBuild(root), /stale for the current source/);
+});
+
+test("external portal environment keys are hash-only build inputs", (t) => {
+  const { root, put } = portalFixture(t), key = "AFRICLUB_SHARED_PORTAL_PROVENANCE_FIXTURE", previous = process.env[key];
+  t.after(() => { if (previous === undefined) delete process.env[key]; else process.env[key] = previous; });
+  process.env[key] = "private-external-environment-fixture";
+  put(`${sharedPrefix}browser-platform.ts`, `export const setting = process.env.${key};`);
+  const record = beginProductionBuild(root, ["synthetic-fixture-compiler"]);
+  assert.equal(record.environment_value_sha256[key], createHash("sha256").update(process.env[key]).digest("hex"));
+  assert.ok(!JSON.stringify(record).includes(process.env[key]));
+  assert.ok(!JSON.stringify(record).includes("private-fixture-value"));
+});
+
+test("the shared inventory is bounded and required only when the portal component exists", (t) => {
+  const plain = fixture(t), before = productionSourceSnapshot(plain.root);
+  plain.put(`${sharedPrefix}client.ts`, "unconsumed runtime");
+  assert.deepEqual(productionSourceSnapshot(plain.root), before);
+  const portal = portalFixture(t); portal.build(); const sealed = validateProductionBuild(portal.root);
+  portal.put(`${sharedPrefix}unrelated-test.ts`, "unconsumed fixture");
+  assert.deepEqual(validateProductionBuild(portal.root), sealed);
 });

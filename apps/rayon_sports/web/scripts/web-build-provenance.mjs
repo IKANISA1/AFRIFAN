@@ -13,7 +13,7 @@ const write = (file, value) => {
   fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`);
 };
 
-function inventory(root, entries) {
+function inventory(root, entries, boundary = "web root") {
   const files = [];
   const visit = (relative) => {
     const full = path.resolve(root, relative);
@@ -21,7 +21,7 @@ function inventory(root, entries) {
     if (stat.isSymbolicLink()) {
       const target = fs.realpathSync(full);
       const relativeTarget = path.relative(root, target);
-      requireValue(relativeTarget !== ".." && !relativeTarget.startsWith(`..${path.sep}`) && !path.isAbsolute(relativeTarget), `Build input symlink escapes web root: ${relative}`);
+      requireValue(relativeTarget !== ".." && !relativeTarget.startsWith(`..${path.sep}`) && !path.isAbsolute(relativeTarget), `Build input symlink escapes ${boundary}: ${relative}`);
       requireValue(fs.statSync(target).isFile(), `Build input directory link requires explicit inventory: ${relative}`);
       files.push({ file: relative, link: fs.readlinkSync(full), sha256: sha256(fs.readFileSync(full)) });
     } else if (stat.isDirectory()) {
@@ -35,6 +35,30 @@ function inventory(root, entries) {
   return { sha256: sha256(JSON.stringify(files)), files };
 }
 
+function sharedPortalInputs(root) {
+  if (!fs.existsSync(path.join(root, "src/components/browser-membership-portal.tsx"))) return [];
+  // These are compiled by the portal across the web boundary. Keep this an
+  // explicit required file list rather than sweeping in repository output/tests.
+  const relativeDirectory = "../../../cloudflare/supporter-browser-api";
+  const declaredDirectory = path.resolve(root, relativeDirectory);
+  requireValue(fs.existsSync(declaredDirectory), "Missing required shared portal build input directory");
+  const repository = fs.realpathSync(path.resolve(root, "../../.."));
+  const expectedDirectory = path.join(repository, "cloudflare/supporter-browser-api");
+  requireValue(fs.realpathSync(declaredDirectory) === expectedDirectory, "Shared portal build input directory symlink escapes declared repository location");
+  const entries = ["client.ts", "portal-controller.ts", "browser-platform.ts"];
+  for (const file of entries) {
+    let stat;
+    try { stat = fs.lstatSync(path.join(expectedDirectory, file)); }
+    catch (error) {
+      if (error.code !== "ENOENT") throw error;
+      throw new Error(`Missing required shared portal build input: ${file}`);
+    }
+    requireValue(stat.isFile() || stat.isSymbolicLink(), `Shared portal build input must be a file: ${file}`);
+  }
+  return inventory(expectedDirectory, entries, "shared portal root").files.map((entry) =>
+    ({ ...entry, file: `${relativeDirectory}/${entry.file}` }));
+}
+
 export function productionSourceSnapshot(root) {
   // Test fixtures and generated output are deliberately outside production input.
   // Dotenv files are hashed, never copied into evidence or printed as values.
@@ -43,7 +67,8 @@ export function productionSourceSnapshot(root) {
   for (const file of [".env", ".env.local", ".env.production", ".env.production.local"]) {
     if (fs.existsSync(path.join(root, file))) entries.push(file);
   }
-  return inventory(root, entries);
+  const files = [...inventory(root, entries).files, ...sharedPortalInputs(root)];
+  return { sha256: sha256(JSON.stringify(files)), files };
 }
 
 export function productionArtifactSnapshot(root) {

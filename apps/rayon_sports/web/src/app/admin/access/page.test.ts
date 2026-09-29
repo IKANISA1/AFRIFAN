@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { normalizeAdminRoleAssignments } from "./page";
+import * as accessPage from "./page";
+import { normalizeAdminRoleAssignments } from "@/lib/admin-role-assignments";
 
 describe("admin access response normalization", () => {
+  it("keeps the page entry module limited to its Next component export", () => {
+    expect(Object.keys(accessPage)).toEqual(["default"]);
+  });
+
   it("bounds records, removes extra private fields, and rejects invalid rows", () => {
     const input = [
       {

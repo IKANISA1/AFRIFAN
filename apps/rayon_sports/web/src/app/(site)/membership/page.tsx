@@ -1,3 +1,8 @@
+import {headers} from 'next/headers';
+import {browserPortalConfig} from '@/lib/browser-portal-server';
+import {BrowserMembershipPortal} from '@/components/browser-membership-portal';
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 import { MembershipSurface } from "@/components/membership-surface";
 import { resolveFanAppHref, siteConfig } from "@/lib/config";
 import { getClubProfile } from "@/lib/data/public";
@@ -25,6 +30,10 @@ export default async function MembershipPage() {
   }
 
   const club = await getClubProfile();
+  let browserConfig;
+  try { browserConfig = await browserPortalConfig(club.id, (await headers()).get('host')); }
+  catch { return <section className="circles-surface"><h1>Membership temporarily unavailable</h1><p role="alert">The membership service configuration could not be verified. This page has not submitted a new checkout. Previous requests may still need a result check.</p><a href="/support">Contact support</a></section>; }
+  if (browserConfig) return <BrowserMembershipPortal origin={browserConfig.origin} clubId={browserConfig.clubId} clubName={club.shortName} />;
   return (
     <MembershipSurface
       locale={club.defaultLanguage}

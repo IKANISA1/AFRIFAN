@@ -1,0 +1,374 @@
+{
+  "sourceOfTruth": "AFRICLUB Drive folder 1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH",
+  "references": [
+    {
+      "path": "pubspec.yaml",
+      "sha256": "a04a613f1c3a7b4c00dd2aac1495f2b1bb949f64210acf2f669a77149af17d54",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/supporter-auth/README.md",
+      "sha256": "cadd9257f2e65d099dad7624c6f0c7fb811e1d37c003fd41c6bef12b80033906",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/supporter-auth/PRIVATE_DELIVERY_INTEGRATION.md",
+      "sha256": "61366abc8630ee290eaa89bbbcfab8dceb8aa84daf038006c9d739e903f9feed",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/MEMBERSHIP_CHECKOUT.md",
+      "sha256": "e8245aec5a5917e40172f11f9fcb3ddbcdc95bacfe42c8afa3f1ee8faf530d8f",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/wrangler.staging.jsonc",
+      "sha256": "594af5b1157c0e22fd578532d58e92050d70b2ae357440096ccf6322f0afccfd",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/README.md",
+      "sha256": "edda1f00271e3adc03273162b5f371480e772ddd899b78687970901d42afcf18",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/wrangler.checkout.staging.jsonc",
+      "sha256": "8a8c53785e48ce3b613e32ebd6edc3439635358351f545002cd3bf84de813c8d",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/checkout-client.ts",
+      "sha256": "afdb865f2f948f8310d7f9cf7a00251226430422faea458e45c6e0aba0615a89",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/contracts/private-rpc.json",
+      "sha256": "6518dfea38f22dd1559f71d95f7a39fb391851cb2a8035a8410a1b66d8d7fec2",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/contracts/membership-checkout.json",
+      "sha256": "47cfbb8c07c48daeb384d03de808d4e033d06fcb4243880cfaa7a9df0834a4e7",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/check-deployment.mjs",
+      "sha256": "8ebf33a15e921322fed12e4a2242fcefe1ac36a13c111062b149417efcde32e4",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/check-checkout-deployment.mjs",
+      "sha256": "50daca04129ffb1289cc6d5e426ae4a2fe358ca385589918bf70b1c48d7a07e0",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/prepare-staging-import.mjs",
+      "sha256": "368e057d140213d96e0abfd50ccd966783cf18549e3cb68c86d3cb947311218b",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/compile-checkout-client.mjs",
+      "sha256": "d0238f849624d817570381aef1ae737b8240dce6f02a30a30bbbd92a5e2b2265",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/prepare-checkout-catalog.mjs",
+      "sha256": "cde856fdc73cc74b787baf366d5da5a374949916b30ce5a49fb3274dbea22d79",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/check-sql-runtime.sql",
+      "sha256": "21bce04fa3b65f173e5bbd8f139c249d21d572842032b6b32295fab60049bc27",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/evidence.test.mjs",
+      "sha256": "0d263fc7664135a29e85b279fe53e0d100ac632e179cde50171dfcc5d4059c6d",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/security.test.mjs",
+      "sha256": "f1632d55e2d619b35de3b693a36da8c91462cfda238d82a26d98a67eb1f3b42e",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/contract.test.mjs",
+      "sha256": "908b976d2b44b9f631a8425d41d88cacd009fc29a3ec87d8c0b2b7fa758e2150",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-client.test.mjs",
+      "sha256": "f46298d4e38bc790eeb9f00afbc71fd6bf81993c42c3f470759cac91583de307",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-catalog.test.mjs",
+      "sha256": "3c1a0c51898a381b6b722e6280a0a1c2af7c9a3759bfa428013e2ffeb2f15fed",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/concurrency.test.mjs",
+      "sha256": "fc931954ca06af7fc48586c91a2582663faf9ec1284abd50b57ebb4c8b430b06",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-core.test.mjs",
+      "sha256": "7c8c9c96b1427f1537ad209d1158092562d7a5b2b589a2c3de067d56b6384cb5",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/import-config.test.mjs",
+      "sha256": "448d894ca55ad8a4baa6b5d2b5a96d8be5f4b9e0e050e3ade5693e7f08f3ebfc",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-fixture.mjs",
+      "sha256": "a531491a5f794415a2e72f95003f9dda70e911a1684116d0d7b6b18365860b7f",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/outbox.test.mjs",
+      "sha256": "701a17793c7e37b7b79152a992e30c8827212207b6a930e16045cc42c03cc3e6",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-security.test.mjs",
+      "sha256": "db423da059d72bc8e44be9fc3f28e63b3d5d9af53897d940bc348f5185508a35",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-tooling.test.mjs",
+      "sha256": "a83c36b961420df8019fd66c72ecd64876a99c0dc82fedb1a3f031beeb75da26",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-contract.test.mjs",
+      "sha256": "5eed439b95001612123117ca4fea6ac40716b25733240ea1c77ed33e8d8d4979",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-concurrency.test.mjs",
+      "sha256": "f2cf1978b495de119a7175303847774d7f3440b1055d6f71fe97ce7a28c102d5",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/allocation.test.mjs",
+      "sha256": "27b11d991d86bcc8cc62b1d0da1fcf9749283a46103613dc7b6d362ff348b3bf",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-concurrent-worker.mjs",
+      "sha256": "880f5ed7d1f5170ba31610dcd0c6a6e7edd4ca0f77587a5041b0d567460c58d0",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/concurrent-worker.mjs",
+      "sha256": "2d3753e39db2377033abea64016619eb317c45fc1c535e028f73e645260ab381",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/fixture.mjs",
+      "sha256": "7e7f5c78f34fe5913eb22a5bdcc69850c130d110cd23f4b97815723af1c4316e",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/migrations/0001_payment_allocation.sql",
+      "sha256": "67bd55d0e2d115d0f0e67d3d80ee1805fece303863d1d9bf42c9e1fa4fb68489",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/migrations/0002_membership_checkout.sql",
+      "sha256": "924269edcc59d9e7f90d72f102c7e977404d77cbdad30c13fdd3ffd124d8d7a7",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/docs/checkout-source-map.md",
+      "sha256": "6e197ef025bbadbb8d872ac57d33736d0af9bacb0f7eed7774fe2e7eaa8574f3",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/docs/source-provenance.json",
+      "sha256": "61256ab359972c0714beb53a82efedf599ce2d701dbe1f84d79d9316d783a909",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/docs/source-map.md",
+      "sha256": "1a40d0dd5f391afc4f0d70d233a4a5f72bc7c2918fdd910a72c0e4652b2c0a5c",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-policy.mjs",
+      "sha256": "2f9289df7c6a3c522544f0c7787fa4611177e82ffa826110ddfd2b48ef54dea2",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/worker.mjs",
+      "sha256": "057eb01288151f81322be25ce9cc70fdb8c298e4f62c632d60c68098af5d9041",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-service.mjs",
+      "sha256": "31750238e703b9b77880e64f4306ada67da2e033356012f2d66c9a751c090800",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "sha256": "363240764eaa9bfc4651d02952fb50294145f1b046ecf58e68562d7754b655ba",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/outbox.mjs",
+      "sha256": "7ea1130aaea885e3c9b8c006c4b0cc006a89d25fdbe0f013d88fe3c5e66d4bc7",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/policy.mjs",
+      "sha256": "97f33ffb61f5ccf97d130f32fa724671b27d7f51c5c0c21b5fd34077ff0c40c0",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/service.mjs",
+      "sha256": "cc1571645eb15f841eb9f9ab34aeb5f632eaa84e62768fd51e3d8625849f4f24",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/security-http.test.mjs",
+      "sha256": "ac6aaf1acea6a09ae4dc171458631616928ef5f75ea76f837948487c28324498",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/identity.test.mjs",
+      "sha256": "35ebd4a49c655d6806125487f4f7ea05ed83c5f27274540ca00666416da91d99",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/delivery.test.mjs",
+      "sha256": "8c21360cc5c8a995e8d11fb087e7aca3bef945bce71cf96b77e237741c1740b5",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/supporter-auth/migrations/0001_supporter_identity.sql",
+      "sha256": "969b463d31c8dfd03d8b9e633b82900cd9e36ccd6635ad54bc291aedde061799",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/delivery.mjs",
+      "sha256": "29439e44d9efc0b54f4c8b058e70eb2b2f20205ceaeaa8502d6c013079b3196d",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/errors.mjs",
+      "sha256": "ca6bcab5e215589f060f0acf825709c0383fbd6d656b43b17832919167fd2901",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/identity-verifier-worker.mjs",
+      "sha256": "543403b191806ff14aac53533898aed5b941ec6c6b2ea2af8d06305f434f25f1",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/identity-service.mjs",
+      "sha256": "0531558d9d2b307300d49710f3950d97be2699fbc09574ecafaff152fe6cb2d1",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/whatsapp.mjs",
+      "sha256": "8b60bf5ca9d0fea9cc699aa493293d7e76a7dcfce1cb65f89550f09daec35127",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/crypto.mjs",
+      "sha256": "16a0a6b502554c50597f6510edeecbedf00c3316951883f31c42def17146452f",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/private-delivery-sender.mjs",
+      "sha256": "275b8da3dbeeca4c547656aff20b9b9016f75deec67c78b6af8e6be5044dbf06",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/index.mjs",
+      "sha256": "b4a921fcc185c54bf0ae3ac914233c8406922e4c6461a2e6e45b37e5105f3f90",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/http.mjs",
+      "sha256": "7d488919bb2122d9f3c3da00291d86efa9c6c4121f3928b29443d23422c0fb29",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/support/fixture.mjs",
+      "sha256": "fbf2ef09db31fa99f066a07dd228ddfea121970f55e63e6a32639bdb49cf32af",
+      "basis": "recovered Batch9 source-reference backup; not a new production export"
+    }
+  ],
+  "liveSourcesReexported": false,
+  "secretDataIncluded": false,
+  "gatewayBaseline": [
+    {
+      "path": "cloudflare/supporter-membership-api/README.md",
+      "driveFileId": "1ZMOX3aVmWujKCYV_YahrkQ5NPbFXuY7h",
+      "sha256": "f6bee2caf711409b37657e493cfbf6c2177548c879508d90139b039afa61ee33",
+      "retrieval": "current Drive bytes downloaded during this continuation"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/client.ts",
+      "driveFileId": "1rbTgLIJzrkYEt3LtNahCIijmsEMpoe-j",
+      "sha256": "d056c088b35891479d29dddf4d9b8d3b2445b641e50e005c5801d26aa24c6e4d",
+      "retrieval": "current Drive bytes downloaded during this continuation"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/wrangler.staging.jsonc",
+      "driveFileId": "1AETDVu4czZPLBw5yMVdkGEOgCX_X4S05",
+      "sha256": "3da158262da13ae7df7e364ad891d6f660aa0c8b34d14386a4e820b424b69234",
+      "retrieval": "current Drive bytes downloaded during this continuation"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/index.mjs",
+      "driveFileId": "1VVbSv26mmCiW9Q6k_cMPvUwqIIPMSMyG",
+      "sha256": "0bc89801b23a6b7d72aee168bb53e68f8c05d420018fb54e6e3b6f3ae4837909",
+      "retrieval": "current Drive bytes downloaded during this continuation"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/projection.mjs",
+      "driveFileId": "1NZQdnOEZbqv9NjXptcsOKq8XFdpXAzCF",
+      "sha256": "be395201b28a3e651ccf6a03a08810bc4254168313c84e2373dbce932091e2b3",
+      "retrieval": "current Drive bytes downloaded during this continuation"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/http.mjs",
+      "driveFileId": "1aub5WiSxn6mOynBDReexGRYoWmb3TEkc",
+      "sha256": "daf44bbda3bfa166213dab68ef30cbae75a3b9e06f5318a4728b0290b8a78f20",
+      "retrieval": "current Drive bytes downloaded during this continuation"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/src/policy.mjs",
+      "driveFileId": "1ThYmG6EP3OXuPQfWzfqgnSC4GFK6Tm--",
+      "sha256": "9c5858a978b3c8e139100d047613b6fd8c2d56e1bc07154b76e8e3a08eabd494",
+      "retrieval": "current Drive bytes downloaded during this continuation"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/contracts/openapi.json",
+      "driveFileId": "10ba9ATWsC9hE8XzF4UtdH9n7rA62FiPA",
+      "sha256": "6c54d33af48e38e74ec2bfbb9811b543b4d30a3c5f1022982676a518df40f586",
+      "retrieval": "current Drive bytes downloaded during this continuation"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/docs/source-provenance.json",
+      "driveFileId": "11MXMwLL60VYK5UARQqkZkv4P_ClmA82W",
+      "sha256": "632fb246ad0ad494587038fe7000dccbfc69d4d8b5710d7b4a5016591944c46f",
+      "retrieval": "current Drive bytes downloaded during this continuation"
+    },
+    {
+      "path": "cloudflare/supporter-membership-api/docs/source-map.md",
+      "driveFileId": "1Q_Px0Xfep3Hg8cFGdmvi0qbof2hzezkL",
+      "sha256": "821f90c4b69702c38081273f99e8a027036d712acf5da4f7997fe27aef5db044",
+      "retrieval": "current Drive bytes downloaded during this continuation"
+    }
+  ],
+  "referenceArchive": {
+    "driveFileId": "1iQlIMvMFOcSGIK4-HKmPF1F5tBzTjDVX",
+    "sha256": "4dcaf34851e2654acefa288704497d2b23628f876d6685a85eace27dd5f8d71e",
+    "scope": "60 upstream source/test/config files; no production data"
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "contract": "africlub-browser-v1",
+  "originPolicy": "one exact configured HTTPS origin and club; matching AUTH_DB origin record required",
+  "cookies": {
+    "session": "__Host-africlub_browser",
+    "bootstrap": "__Host-africlub_pre",
+    "attributes": [
+      "Secure",
+      "HttpOnly",
+      "SameSite=Strict",
+      "Path=/"
+    ],
+    "domain": null
+  },
+  "headers": {
+    "all": "X-AfriClub-Browser-Intent: browser-v1",
+    "writesExceptStart": "X-AfriClub-CSRF + UUID Idempotency-Key + exact Origin",
+    "membership": "X-AfriClub-Browser-Session = current browser sessionId",
+    "history": "Optional X-Africlub-History-Cursor on history list only; private metadata, never authority."
+  },
+  "routes": [
+    {
+      "method": "POST",
+      "path": "/v1/browser/session/start",
+      "purpose": "Create encrypted short-lived login bootstrap; exact Origin + custom intent required."
+    },
+    {
+      "method": "GET",
+      "path": "/v1/browser/session/bootstrap",
+      "purpose": "Read existing bootstrap CSRF; no new challenge or session."
+    },
+    {
+      "method": "POST",
+      "path": "/v1/browser/session/challenge",
+      "purpose": "Issue one bootstrap-bound OTP with original request UUID."
+    },
+    {
+      "method": "POST",
+      "path": "/v1/browser/session/verify",
+      "purpose": "Verify the bound OTP and rotate from preauth to authenticated cookie."
+    },
+    {
+      "method": "GET",
+      "path": "/v1/browser/session",
+      "purpose": "Read current browser identity and CSRF; no idle extension."
+    },
+    {
+      "method": "POST",
+      "path": "/v1/browser/session/rotate",
+      "purpose": "Explicit same-operation rotation with bounded original-cookie replay."
+    },
+    {
+      "method": "POST",
+      "path": "/v1/browser/session/logout",
+      "purpose": "Revoke current browser and linked identity session."
+    },
+    {
+      "method": "GET",
+      "path": "/v1/browser/membership/status",
+      "purpose": "Current entitlement; not a historical receipt."
+    },
+    {
+      "method": "GET",
+      "path": "/v1/browser/membership/offers",
+      "purpose": "Read bounded approved checkout offers for current authenticated club/user, without receiver or provider-route identifiers; preparation does not charge or confirm payment."
+    },
+    {
+      "method": "POST",
+      "path": "/v1/browser/membership/checkouts",
+      "purpose": "Prepare an owned checkout; no payment confirmation."
+    },
+    {
+      "method": "GET",
+      "path": "/v1/browser/membership/operations/{requestId}",
+      "purpose": "Read original checkout operation; absence does not establish failure."
+    },
+    {
+      "method": "GET",
+      "path": "/v1/browser/membership/checkouts/{orderId}",
+      "purpose": "Read owned current checkout; instructions are for review, not automatic dialling."
+    },
+    {
+      "method": "GET",
+      "path": "/v1/browser/membership/checkouts/{orderId}/receipt",
+      "purpose": "Read owned historical fulfilled allocation receipt."
+    },
+    {
+      "method": "GET",
+      "path": "/v1/browser/membership/history",
+      "purpose": "Owned membership allocation history; fixed 20-row live keyset pages; optional X-Africlub-History-Cursor header; no writes."
+    },
+    {
+      "method": "GET",
+      "path": "/v1/browser/membership/history/{orderId}",
+      "purpose": "Owned historical receipt, including imported orders without checkout snapshots; not current entitlement or settlement proof."
+    }
+  ],
+  "forbiddenCapabilities": [
+    "native token exchange",
+    "browser payment confirmation",
+    "automatic USSD/dialer action",
+    "refund execution",
+    "direct database access",
+    "provider dispatch",
+    "cross-origin CORS"
+  ],
+  "errors": {
+    "unknownWrite": {
+      "schemaVersion": 1,
+      "error": "identity_outcome_unknown or checkout_outcome_unknown",
+      "outcome": "unknown",
+      "requestId": "original UUID"
+    }
+  },
+  "notObserved": {
+    "found": false,
+    "result": null,
+    "mayRetryWithNewKey": false
+  },
+  "rollout": {
+    "templateEnabled": false,
+    "sqlEnabled": false,
+    "productionAccepted": false
+  },
+  "client": "../client.ts",
+  "service": "../../supporter-auth/src/browser-session-service.mjs",
+  "portal": {
+    "controller": "../portal-controller.ts",
+    "nextRoute": "/membership",
+    "mode": "cookie-v1, explicitly enabled per host/club",
+    "recovery": "Opt-in last-checkout metadata is persisted and read back before pending metadata is cleared; operational identifiers are private, not anonymous.",
+    "writes": "Only deliberate user actions submit; lifecycle, expiry ticks and recovery lookup never create another checkout."
+  },
+  "history": {
+    "pageSize": 20,
+    "scope": "membership_allocations",
+    "snapshot": false,
+    "cursor": "mh1:clubId:userId:recordedAt:allocationId",
+    "cursorIsAuthorization": false,
+    "storedLocally": false,
+    "financialWrites": false
+  }
+}

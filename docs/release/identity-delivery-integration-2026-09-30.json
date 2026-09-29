@@ -1,0 +1,1415 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-09-30",
+  "status": "integrated_locally_verified_disabled",
+  "source_archive_path": "docs/drive-import/2026-09-28/mirror/AFRICLUB_Implementation_08_2026-09-28.zip",
+  "source_archive_sha256": "4264a115e3974bf6236d90cfd8bc59537f066725d56757b9e03dd256095a8af5",
+  "comparison_register": "docs/drive-import/2026-09-28/candidate-08-vs-checkout.tsv",
+  "precondition": "All 72 regular active paths absent; candidate register and original ZIP source member hashes agree before copy.",
+  "initial_source_file_count": 72,
+  "files": [
+    {
+      "path": "cloudflare/auth-code-delivery/DELIVERY_RECEIPTS.md",
+      "bytes": 12525,
+      "source_sha256": "43bdbe035cd752e5c7cccaf2fa3e17fece53129bb817bd6158ae4e9af8837c17",
+      "active_sha256": "43bdbe035cd752e5c7cccaf2fa3e17fece53129bb817bd6158ae4e9af8837c17",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/DELIVERY_RECEIPTS.md",
+      "delta_from_candidate": false,
+      "active_bytes": 12525
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/README.md",
+      "bytes": 8842,
+      "source_sha256": "211badf9dc72f96eabbb7d7011ab0b727f739c51c2df9bdb83df181eec84bca9",
+      "active_sha256": "c1068aa6d5cc5b1528b07e4169bd5023dd19f26ef5eb90f4475e6514e245071d",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/README.md",
+      "delta_from_candidate": true,
+      "active_bytes": 8753,
+      "delta_reason": "Replace obsolete legacy fallback assertion with current private-only queue contract and both dispatch migrations."
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/contracts/delivery-receipts.json",
+      "bytes": 2275,
+      "source_sha256": "8e3c488739bf42846f09630412452306e3ef81e98ab509450f9d4594d7e80e08",
+      "active_sha256": "8e3c488739bf42846f09630412452306e3ef81e98ab509450f9d4594d7e80e08",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/contracts/delivery-receipts.json",
+      "delta_from_candidate": false,
+      "active_bytes": 2275
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/contracts/private-rpc.json",
+      "bytes": 789,
+      "source_sha256": "ac3f1d86f4faf75611d7dd4c5b6e1fe5cf91d9a50a82d11c9f9581011230aed4",
+      "active_sha256": "ac3f1d86f4faf75611d7dd4c5b6e1fe5cf91d9a50a82d11c9f9581011230aed4",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/contracts/private-rpc.json",
+      "delta_from_candidate": false,
+      "active_bytes": 789
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/migrations/0001_dispatch_claims.sql",
+      "bytes": 1782,
+      "source_sha256": "5f7a90a483402695ac5d1956ff7c436c7fde141141d887125ce5bfd733e614e4",
+      "active_sha256": "5f7a90a483402695ac5d1956ff7c436c7fde141141d887125ce5bfd733e614e4",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/migrations/0001_dispatch_claims.sql",
+      "delta_from_candidate": false,
+      "active_bytes": 1782
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/migrations/0002_delivery_status_receipts.sql",
+      "bytes": 3495,
+      "source_sha256": "724411afebc9c81e7975b15444d59b49be474830f645253d32013fff82a86f61",
+      "active_sha256": "724411afebc9c81e7975b15444d59b49be474830f645253d32013fff82a86f61",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/migrations/0002_delivery_status_receipts.sql",
+      "delta_from_candidate": false,
+      "active_bytes": 3495
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/scripts/check-deployment.mjs",
+      "bytes": 2646,
+      "source_sha256": "70c0b2920991e87b784e4cc911649a4e224e7c31a0c03d52ef76888de0ebea46",
+      "active_sha256": "368f7dc588b076ea629f4091eb33882983e09f9b46385cd64b0175e56dc50031",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/scripts/check-deployment.mjs",
+      "delta_from_candidate": true,
+      "active_bytes": 2920,
+      "delta_reason": "Reject alternate public route, unreviewed capabilities and unrecognized plaintext variables."
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/scripts/check-receipts-deployment.mjs",
+      "bytes": 6598,
+      "source_sha256": "c40192bf655108402f34ef6e892f55ce032bf8345c0b7606fbeb40d5c66830b8",
+      "active_sha256": "a77077eaa51e6777ea7be62452600405e2788c85eb92508b763a4d9d3157f566",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/scripts/check-receipts-deployment.mjs",
+      "delta_from_candidate": true,
+      "active_bytes": 6606,
+      "delta_reason": "Reject alternate singular public routes across sender, webhook and receipt reader."
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/scripts/inspect-provider.mjs",
+      "bytes": 1423,
+      "source_sha256": "8eebeec70e70535b510ae4aeeb5f9c374a1339be383455784a33adb3d06f4016",
+      "active_sha256": "8eebeec70e70535b510ae4aeeb5f9c374a1339be383455784a33adb3d06f4016",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/scripts/inspect-provider.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 1423
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/graph.mjs",
+      "bytes": 4164,
+      "source_sha256": "dd6cd151ddf8699b06998ae3c9084c69c5e219f00a7b9fc34db73e1bfc97985f",
+      "active_sha256": "dd6cd151ddf8699b06998ae3c9084c69c5e219f00a7b9fc34db73e1bfc97985f",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/src/graph.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 4164
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/policy.mjs",
+      "bytes": 3178,
+      "source_sha256": "3467e6e9045dccc2d37430ac1678fab9dcdd4de75413e2919fce87c3337779f7",
+      "active_sha256": "3467e6e9045dccc2d37430ac1678fab9dcdd4de75413e2919fce87c3337779f7",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/src/policy.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 3178
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipt-http.mjs",
+      "bytes": 7265,
+      "source_sha256": "6099650d404e09db6f296518438edb94cf9d55b681ac8a66ef1420c27f2177f3",
+      "active_sha256": "6099650d404e09db6f296518438edb94cf9d55b681ac8a66ef1420c27f2177f3",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/src/receipt-http.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 7265
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipt-reader-worker.mjs",
+      "bytes": 488,
+      "source_sha256": "b4d3aa095744d075699b40a20cca8a61c4bb1d879c2157a78fe19c8148371937",
+      "active_sha256": "b4d3aa095744d075699b40a20cca8a61c4bb1d879c2157a78fe19c8148371937",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/src/receipt-reader-worker.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 488
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipt-store.mjs",
+      "bytes": 5436,
+      "source_sha256": "f575777f7bfb2780951f3fa2009196a29d02a0533f68087a39ecbf9f4fd02a6f",
+      "active_sha256": "f575777f7bfb2780951f3fa2009196a29d02a0533f68087a39ecbf9f4fd02a6f",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/src/receipt-store.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 5436
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipts-policy.mjs",
+      "bytes": 4587,
+      "source_sha256": "b8254634216301a9e30656bb1b2ec8ec79f9e2a3d3e8241432dd1f75a8436f83",
+      "active_sha256": "b8254634216301a9e30656bb1b2ec8ec79f9e2a3d3e8241432dd1f75a8436f83",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/src/receipts-policy.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 4587
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipts-webhook-worker.mjs",
+      "bytes": 425,
+      "source_sha256": "f2204db70d38aa364f662625475f1374ceed82ebec2e435e6d334d3f6ddf8bc8",
+      "active_sha256": "f2204db70d38aa364f662625475f1374ceed82ebec2e435e6d334d3f6ddf8bc8",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/src/receipts-webhook-worker.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 425
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/service.mjs",
+      "bytes": 5246,
+      "source_sha256": "880ddf1c7a73f5ca32b7a5ba5a475ceca5f489ad24b443ac2359ecae965363c3",
+      "active_sha256": "880ddf1c7a73f5ca32b7a5ba5a475ceca5f489ad24b443ac2359ecae965363c3",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/src/service.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 5246
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/status-aware-service.mjs",
+      "bytes": 2972,
+      "source_sha256": "77d4711499a1026242627e60eecd564b5bd108ae719f647b887f2220fb41272a",
+      "active_sha256": "77d4711499a1026242627e60eecd564b5bd108ae719f647b887f2220fb41272a",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/src/status-aware-service.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 2972
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/status-aware-worker.mjs",
+      "bytes": 691,
+      "source_sha256": "dc8d69a5fc5d7e23494e27f2622165f6c4a3d03db6994aea89a8d92d1ba3309d",
+      "active_sha256": "dc8d69a5fc5d7e23494e27f2622165f6c4a3d03db6994aea89a8d92d1ba3309d",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/src/status-aware-worker.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 691
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/worker.mjs",
+      "bytes": 761,
+      "source_sha256": "58de482b8ba170bc23af255c4bf4ab5f216de147ea0dbedf95099f3f6a5756b5",
+      "active_sha256": "58de482b8ba170bc23af255c4bf4ab5f216de147ea0dbedf95099f3f6a5756b5",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/src/worker.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 761
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/current-queue.test.mjs",
+      "bytes": 8194,
+      "source_sha256": "81d9cdea418d3563e98f4e5ce7ba1563f656af83e8ece314411acda543bfbfab",
+      "active_sha256": "81d9cdea418d3563e98f4e5ce7ba1563f656af83e8ece314411acda543bfbfab",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/tests/current-queue.test.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 8194
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/delivery.test.mjs",
+      "bytes": 12283,
+      "source_sha256": "a332b876e034713a2f23ef183c3d43285e2c1d1662dbdf40d5b435414ed9f3b7",
+      "active_sha256": "a332b876e034713a2f23ef183c3d43285e2c1d1662dbdf40d5b435414ed9f3b7",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/tests/delivery.test.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 12283
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/fixture.mjs",
+      "bytes": 2558,
+      "source_sha256": "6fd2f0d09ed44ba2fb78a24f79745c0f53becb49f65c8b25118c170b643c779f",
+      "active_sha256": "6fd2f0d09ed44ba2fb78a24f79745c0f53becb49f65c8b25118c170b643c779f",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/tests/fixture.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 2558
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/receipts-config.test.mjs",
+      "bytes": 4299,
+      "source_sha256": "29983d7560075bf0c03dd61586df015afb899eaa5afc54fee4d19bcc30470510",
+      "active_sha256": "29983d7560075bf0c03dd61586df015afb899eaa5afc54fee4d19bcc30470510",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/tests/receipts-config.test.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 4299
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/receipts-fixture.mjs",
+      "bytes": 3314,
+      "source_sha256": "4201225649a90713223f40ee828eb67816956383a67192b1f6a9aa9a07fad272",
+      "active_sha256": "4201225649a90713223f40ee828eb67816956383a67192b1f6a9aa9a07fad272",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/tests/receipts-fixture.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 3314
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/receipts-http.test.mjs",
+      "bytes": 8642,
+      "source_sha256": "a5520701937129d658f94cec95967e93dbd14db666aa50f14a2ff5fcb94ba0b8",
+      "active_sha256": "a5520701937129d658f94cec95967e93dbd14db666aa50f14a2ff5fcb94ba0b8",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/tests/receipts-http.test.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 8642
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/receipts-integration.test.mjs",
+      "bytes": 6836,
+      "source_sha256": "1cc504ae93aafa63995ea242e4631f2540c3495b12f447c3768ab4137dc0378a",
+      "active_sha256": "1cc504ae93aafa63995ea242e4631f2540c3495b12f447c3768ab4137dc0378a",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/tests/receipts-integration.test.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 6836
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/receipts-store.test.mjs",
+      "bytes": 9313,
+      "source_sha256": "aa4f5f8ded6080b5cece53ca39e483aa0bdf86a8b53c70804abaf4d9010b436c",
+      "active_sha256": "aa4f5f8ded6080b5cece53ca39e483aa0bdf86a8b53c70804abaf4d9010b436c",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/tests/receipts-store.test.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 9313
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/tooling.test.mjs",
+      "bytes": 3833,
+      "source_sha256": "42d0e28b1eae1fc4d1fce8ae33b49c06161a040ac7922089ddaf8003db735234",
+      "active_sha256": "42d0e28b1eae1fc4d1fce8ae33b49c06161a040ac7922089ddaf8003db735234",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/tests/tooling.test.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 3833
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/wrangler.receipt-reader.staging.jsonc",
+      "bytes": 653,
+      "source_sha256": "ea9c04ceac8f2bef07947604d1a0047d308960168d04576a93dc023d60b68817",
+      "active_sha256": "ea9c04ceac8f2bef07947604d1a0047d308960168d04576a93dc023d60b68817",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/wrangler.receipt-reader.staging.jsonc",
+      "delta_from_candidate": false,
+      "active_bytes": 653
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/wrangler.receipts-webhook.staging.jsonc",
+      "bytes": 886,
+      "source_sha256": "9a8c96eef3f47224e984529b26cc81e37cb9795c8182306c5327d74cb78f120d",
+      "active_sha256": "9a8c96eef3f47224e984529b26cc81e37cb9795c8182306c5327d74cb78f120d",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/wrangler.receipts-webhook.staging.jsonc",
+      "delta_from_candidate": false,
+      "active_bytes": 886
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/wrangler.staging.jsonc",
+      "bytes": 538,
+      "source_sha256": "2faba4b9384948fe17d94b825c02f14fd100bb230b4592664a43a502222e73dc",
+      "active_sha256": "2faba4b9384948fe17d94b825c02f14fd100bb230b4592664a43a502222e73dc",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/wrangler.staging.jsonc",
+      "delta_from_candidate": false,
+      "active_bytes": 538
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/wrangler.status-aware.staging.jsonc",
+      "bytes": 746,
+      "source_sha256": "a484717b4f9d6ab5b70e3d7fac454d1e0d7a33c523cb2136bf2ee9a197fea296",
+      "active_sha256": "a484717b4f9d6ab5b70e3d7fac454d1e0d7a33c523cb2136bf2ee9a197fea296",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/auth-code-delivery/wrangler.status-aware.staging.jsonc",
+      "delta_from_candidate": false,
+      "active_bytes": 746
+    },
+    {
+      "path": "cloudflare/supporter-auth/BROWSER_SESSIONS.md",
+      "bytes": 2945,
+      "source_sha256": "90da3fccd3ad41821773462c7776ac32ecc2fd8d25b1369579fa83bad890a563",
+      "active_sha256": "90da3fccd3ad41821773462c7776ac32ecc2fd8d25b1369579fa83bad890a563",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/BROWSER_SESSIONS.md",
+      "delta_from_candidate": false,
+      "active_bytes": 2945
+    },
+    {
+      "path": "cloudflare/supporter-auth/ISSUANCE_LIMITS.md",
+      "bytes": 1463,
+      "source_sha256": "58c182b4f2598a33fa3d7abae79f5abb6735da722656e20caa91e8ddb0dbe4cc",
+      "active_sha256": "58c182b4f2598a33fa3d7abae79f5abb6735da722656e20caa91e8ddb0dbe4cc",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/ISSUANCE_LIMITS.md",
+      "delta_from_candidate": false,
+      "active_bytes": 1463
+    },
+    {
+      "path": "cloudflare/supporter-auth/PRIVATE_DELIVERY_INTEGRATION.md",
+      "bytes": 2836,
+      "source_sha256": "45ffb6705c435b21d9f0f6edf174a280e8bb020437918f605e35f8069e6c1d67",
+      "active_sha256": "45ffb6705c435b21d9f0f6edf174a280e8bb020437918f605e35f8069e6c1d67",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/PRIVATE_DELIVERY_INTEGRATION.md",
+      "delta_from_candidate": false,
+      "active_bytes": 2836
+    },
+    {
+      "path": "cloudflare/supporter-auth/README.md",
+      "bytes": 15337,
+      "source_sha256": "9f78b9fd8b7344b22bea675f7b52466b0bb7225d6abd5682e7c136f8063a52de",
+      "active_sha256": "72b44d53c517c9bb08b58ff601b6ee12196c91d475bc0733c3a240cf1c602d06",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/README.md",
+      "delta_from_candidate": true,
+      "active_bytes": 16221,
+      "delta_reason": "Replace absent historical client/OpenAPI/compile/import instructions with actual identity entrypoints, disabled current configuration checks and explicit missing import/native-credential/phone-recovery acceptance."
+    },
+    {
+      "path": "cloudflare/supporter-auth/RELIABLE_DELIVERY.md",
+      "bytes": 6387,
+      "source_sha256": "36ba211a4dfe87ba922736413eb8481f53979f30b75baab1dde6679daca4af2b",
+      "active_sha256": "36ba211a4dfe87ba922736413eb8481f53979f30b75baab1dde6679daca4af2b",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/RELIABLE_DELIVERY.md",
+      "delta_from_candidate": false,
+      "active_bytes": 6387
+    },
+    {
+      "path": "cloudflare/supporter-auth/contracts/reliable-delivery.json",
+      "bytes": 1033,
+      "source_sha256": "894ebe12ae917cd6bb837b2cef537145dc79b38db3a0ae57650dbfa06ae93e0b",
+      "active_sha256": "894ebe12ae917cd6bb837b2cef537145dc79b38db3a0ae57650dbfa06ae93e0b",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/contracts/reliable-delivery.json",
+      "delta_from_candidate": false,
+      "active_bytes": 1033
+    },
+    {
+      "path": "cloudflare/supporter-auth/migrations/0001_supporter_identity.sql",
+      "bytes": 7127,
+      "source_sha256": "969b463d31c8dfd03d8b9e633b82900cd9e36ccd6635ad54bc291aedde061799",
+      "active_sha256": "969b463d31c8dfd03d8b9e633b82900cd9e36ccd6635ad54bc291aedde061799",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/migrations/0001_supporter_identity.sql",
+      "delta_from_candidate": false,
+      "active_bytes": 7127
+    },
+    {
+      "path": "cloudflare/supporter-auth/migrations/0002_club_delivery_index.sql",
+      "bytes": 328,
+      "source_sha256": "7813579941b5e67dadb7562550dd95c9a51729ab10f301a1ac234742b113ef76",
+      "active_sha256": "7813579941b5e67dadb7562550dd95c9a51729ab10f301a1ac234742b113ef76",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/migrations/0002_club_delivery_index.sql",
+      "delta_from_candidate": false,
+      "active_bytes": 328
+    },
+    {
+      "path": "cloudflare/supporter-auth/migrations/0003_reliable_delivery_control.sql",
+      "bytes": 3821,
+      "source_sha256": "d1c9553d04c706ffd7d0aec26026006178a6994e1fd07940de170ae2ecdcafde",
+      "active_sha256": "d1c9553d04c706ffd7d0aec26026006178a6994e1fd07940de170ae2ecdcafde",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/migrations/0003_reliable_delivery_control.sql",
+      "delta_from_candidate": false,
+      "active_bytes": 3821
+    },
+    {
+      "path": "cloudflare/supporter-auth/migrations/0004_browser_sessions.sql",
+      "bytes": 5056,
+      "source_sha256": "cbcd0b695f83e1cc3ec5992e78b4232f4cd509b5410868d6825808ac5b9a2cb6",
+      "active_sha256": "cbcd0b695f83e1cc3ec5992e78b4232f4cd509b5410868d6825808ac5b9a2cb6",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/migrations/0004_browser_sessions.sql",
+      "delta_from_candidate": false,
+      "active_bytes": 5056
+    },
+    {
+      "path": "cloudflare/supporter-auth/scripts/check-reliable-delivery.mjs",
+      "bytes": 1711,
+      "source_sha256": "e619158b0c3a93020e077c6a20ce8d5e209ea18c9dd4c5829a9064aa331c19d5",
+      "active_sha256": "eaf2b2e40cc0e1d75abdffd3e4b7fdf98e1e1715f8c631b444e41d7434c38d1c",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/scripts/check-reliable-delivery.mjs",
+      "delta_from_candidate": true,
+      "active_bytes": 1991,
+      "delta_reason": "Reject hidden public route and unreviewed storage/capabilities; require actual identity storage name."
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/browser-identity-worker.mjs",
+      "bytes": 1190,
+      "source_sha256": "a18059a7c83ac7e97aa79ba289955de45a0117d1a96bceb1889693371785bba3",
+      "active_sha256": "a18059a7c83ac7e97aa79ba289955de45a0117d1a96bceb1889693371785bba3",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/src/browser-identity-worker.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 1190
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/browser-session-service.mjs",
+      "bytes": 16454,
+      "source_sha256": "6cd15eb16a0b9bd0f990c0a403c437df91aba2573ad260bae15984533a64a97e",
+      "active_sha256": "6cd15eb16a0b9bd0f990c0a403c437df91aba2573ad260bae15984533a64a97e",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/src/browser-session-service.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 16454
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/crypto.mjs",
+      "bytes": 3239,
+      "source_sha256": "16a0a6b502554c50597f6510edeecbedf00c3316951883f31c42def17146452f",
+      "active_sha256": "16a0a6b502554c50597f6510edeecbedf00c3316951883f31c42def17146452f",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/src/crypto.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 3239
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/delivery-health-worker.mjs",
+      "bytes": 403,
+      "source_sha256": "07c8a10db1f5bf3243988488aeb9385b3c84fab26df2bf8eb82d4b8e533b24ce",
+      "active_sha256": "07c8a10db1f5bf3243988488aeb9385b3c84fab26df2bf8eb82d4b8e533b24ce",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/src/delivery-health-worker.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 403
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/delivery-health.mjs",
+      "bytes": 614,
+      "source_sha256": "4c91004ddf1d6d4fc45ae225d3a1fc49afbafcebdd7b74b85b73a94bf23a51d4",
+      "active_sha256": "4c91004ddf1d6d4fc45ae225d3a1fc49afbafcebdd7b74b85b73a94bf23a51d4",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/src/delivery-health.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 614
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/delivery-policy.mjs",
+      "bytes": 2226,
+      "source_sha256": "3d7f76ca4a6db1b8704565eb4e6945ecb14c66f86f893ba300ab51db9d084341",
+      "active_sha256": "3d7f76ca4a6db1b8704565eb4e6945ecb14c66f86f893ba300ab51db9d084341",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/src/delivery-policy.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 2226
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/delivery.mjs",
+      "bytes": 1838,
+      "source_sha256": "b5cf5fd70ca10d752edad67ad5d8f1d31fb3ae6a7ca72ddebb5397e86564aed4",
+      "active_sha256": "b5cf5fd70ca10d752edad67ad5d8f1d31fb3ae6a7ca72ddebb5397e86564aed4",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/src/delivery.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 1838
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/errors.mjs",
+      "bytes": 1220,
+      "source_sha256": "ca6bcab5e215589f060f0acf825709c0383fbd6d656b43b17832919167fd2901",
+      "active_sha256": "ca6bcab5e215589f060f0acf825709c0383fbd6d656b43b17832919167fd2901",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/src/errors.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 1220
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/http.mjs",
+      "bytes": 2654,
+      "source_sha256": "7d488919bb2122d9f3c3da00291d86efa9c6c4121f3928b29443d23422c0fb29",
+      "active_sha256": "07caca9b88c0cb750ab7ada8bdf4586c59fd4f47d7fa1f34db210fbdc1e5b2d9",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/src/http.mjs",
+      "delta_from_candidate": true,
+      "active_bytes": 3003,
+      "delta_reason": "Bound complete native request-body reads to two seconds with sanitized HTTP408 and nonblocking cancellation."
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/identity-service.mjs",
+      "bytes": 17909,
+      "source_sha256": "7887dcfeb8bd015bf508b24d37e0a338de03edfafb51da9029e01c5be58cd299",
+      "active_sha256": "7887dcfeb8bd015bf508b24d37e0a338de03edfafb51da9029e01c5be58cd299",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/src/identity-service.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 17909
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/identity-verifier-worker.mjs",
+      "bytes": 658,
+      "source_sha256": "543403b191806ff14aac53533898aed5b941ec6c6b2ea2af8d06305f434f25f1",
+      "active_sha256": "543403b191806ff14aac53533898aed5b941ec6c6b2ea2af8d06305f434f25f1",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/src/identity-verifier-worker.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 658
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/index.mjs",
+      "bytes": 2087,
+      "source_sha256": "6e1dcd928f09158b2a4b600bf83690155bda65a429e444ba0a7f987676363844",
+      "active_sha256": "6e1dcd928f09158b2a4b600bf83690155bda65a429e444ba0a7f987676363844",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/src/index.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 2087
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/issuance-policy.mjs",
+      "bytes": 2259,
+      "source_sha256": "8ae94d1559053ac7d124fc1cbafce53c818c09e1770fc2a6c12148c2fbbc2fd6",
+      "active_sha256": "8ae94d1559053ac7d124fc1cbafce53c818c09e1770fc2a6c12148c2fbbc2fd6",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/src/issuance-policy.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 2259
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/maintenance.mjs",
+      "bytes": 1025,
+      "source_sha256": "9de45e90cc1caefb78a3fc24167968dcdbac788bcf1583ba0c6a1844cf0c6f45",
+      "active_sha256": "9de45e90cc1caefb78a3fc24167968dcdbac788bcf1583ba0c6a1844cf0c6f45",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/src/maintenance.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 1025
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/private-delivery-sender.mjs",
+      "bytes": 1375,
+      "source_sha256": "0d8c21d87466dcc6dbbb07ebac28448daabc87b9b96a63cb0916ba675d5537a0",
+      "active_sha256": "0d8c21d87466dcc6dbbb07ebac28448daabc87b9b96a63cb0916ba675d5537a0",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/src/private-delivery-sender.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 1375
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/reliable-delivery.mjs",
+      "bytes": 12701,
+      "source_sha256": "4c1bfe3ed292999e84e1e59032ceaf4793e30e668e273986e6b2c86acfc3c0bb",
+      "active_sha256": "4c1bfe3ed292999e84e1e59032ceaf4793e30e668e273986e6b2c86acfc3c0bb",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/src/reliable-delivery.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 12701
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/whatsapp.mjs",
+      "bytes": 2555,
+      "source_sha256": "8b60bf5ca9d0fea9cc699aa493293d7e76a7dcfce1cb65f89550f09daec35127",
+      "active_sha256": "8b60bf5ca9d0fea9cc699aa493293d7e76a7dcfce1cb65f89550f09daec35127",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/src/whatsapp.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 2555
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/delivery.test.mjs",
+      "bytes": 6901,
+      "source_sha256": "0762b1c32a9bcbaeb54a3acae1d793fde476995ea5bf27f935938265e7c339aa",
+      "active_sha256": "0762b1c32a9bcbaeb54a3acae1d793fde476995ea5bf27f935938265e7c339aa",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/tests/delivery.test.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 6901
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/identity.test.mjs",
+      "bytes": 13439,
+      "source_sha256": "35ebd4a49c655d6806125487f4f7ea05ed83c5f27274540ca00666416da91d99",
+      "active_sha256": "35ebd4a49c655d6806125487f4f7ea05ed83c5f27274540ca00666416da91d99",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/tests/identity.test.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 13439
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/issuance-policy.test.mjs",
+      "bytes": 4077,
+      "source_sha256": "fab7960a48ec456aa7f236567996f487e69d2a0d914f122156fa651bf49ac892",
+      "active_sha256": "fab7960a48ec456aa7f236567996f487e69d2a0d914f122156fa651bf49ac892",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/tests/issuance-policy.test.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 4077
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/maintenance-health.test.mjs",
+      "bytes": 5640,
+      "source_sha256": "2ceecefd05a5ef97f23e28344c42acbe463fd5e2a83c7b2755e82314169e3519",
+      "active_sha256": "2ceecefd05a5ef97f23e28344c42acbe463fd5e2a83c7b2755e82314169e3519",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/tests/maintenance-health.test.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 5640
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/queue-concurrency.test.mjs",
+      "bytes": 2855,
+      "source_sha256": "2177f1b15e00e9149405d946ca3e853df287678bb02f3919598b0f4f38304967",
+      "active_sha256": "2177f1b15e00e9149405d946ca3e853df287678bb02f3919598b0f4f38304967",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/tests/queue-concurrency.test.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 2855
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/queue-concurrent-worker.mjs",
+      "bytes": 921,
+      "source_sha256": "923537ba789219b56f6bbdb16c1853c5be97614dfe30c45cef82fb2321665fe2",
+      "active_sha256": "923537ba789219b56f6bbdb16c1853c5be97614dfe30c45cef82fb2321665fe2",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/tests/queue-concurrent-worker.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 921
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/reliable-delivery.test.mjs",
+      "bytes": 14117,
+      "source_sha256": "83bf80908ffc0aabf81dc7193b4e232b033e7042e3a794def29ea8ca29a37fc9",
+      "active_sha256": "83bf80908ffc0aabf81dc7193b4e232b033e7042e3a794def29ea8ca29a37fc9",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/tests/reliable-delivery.test.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 14117
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/security-http.test.mjs",
+      "bytes": 8353,
+      "source_sha256": "ac6aaf1acea6a09ae4dc171458631616928ef5f75ea76f837948487c28324498",
+      "active_sha256": "ac6aaf1acea6a09ae4dc171458631616928ef5f75ea76f837948487c28324498",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/tests/security-http.test.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 8353
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/support/fixture.mjs",
+      "bytes": 6203,
+      "source_sha256": "eaa2f856e17d33a39db1b71cd115abc55ad5074d3ffac977ab0695e5ecc9d8e1",
+      "active_sha256": "eaa2f856e17d33a39db1b71cd115abc55ad5074d3ffac977ab0695e5ecc9d8e1",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/tests/support/fixture.mjs",
+      "delta_from_candidate": false,
+      "active_bytes": 6203
+    },
+    {
+      "path": "cloudflare/supporter-auth/wrangler.browser-identity.staging.jsonc",
+      "bytes": 705,
+      "source_sha256": "600855b67467a888a73e63526f71af947b4f274b3521b2797b42dc2dfbea3bd5",
+      "active_sha256": "600855b67467a888a73e63526f71af947b4f274b3521b2797b42dc2dfbea3bd5",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/wrangler.browser-identity.staging.jsonc",
+      "delta_from_candidate": false,
+      "active_bytes": 705
+    },
+    {
+      "path": "cloudflare/supporter-auth/wrangler.delivery-health.staging.jsonc",
+      "bytes": 602,
+      "source_sha256": "47e2168520dcd3f904a9976d806e85bb91e744678dc5d18ff3d4489a21247402",
+      "active_sha256": "47e2168520dcd3f904a9976d806e85bb91e744678dc5d18ff3d4489a21247402",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/supporter-auth/wrangler.delivery-health.staging.jsonc",
+      "delta_from_candidate": false,
+      "active_bytes": 602
+    }
+  ],
+  "production_ready": false,
+  "supabase_remains_authoritative": true,
+  "verification": [
+    {
+      "kind": "baseline_node_bank",
+      "command": "/Users/jeanbosco/.nvm/versions/node/v22.23.2/bin/node --test cloudflare/supporter-auth/tests/*.test.mjs cloudflare/auth-code-delivery/tests/*.test.mjs (before local deltas)",
+      "exit_code": 0,
+      "counts": {
+        "tests": 474,
+        "pass": 474,
+        "fail": 0,
+        "skipped": 0
+      },
+      "log": {
+        "path": "/tmp/africlub-goal-identity-baseline-20260930.log",
+        "sha256": "e55519bd16a5e181b0b4e3ec7b600266bb9f509d713eb63e694549ef429076ef"
+      }
+    },
+    {
+      "kind": "patched_node_bank",
+      "command": "/Users/jeanbosco/.nvm/versions/node/v22.23.2/bin/node --test cloudflare/supporter-auth/tests/*.test.mjs cloudflare/auth-code-delivery/tests/*.test.mjs",
+      "exit_code": 0,
+      "counts": {
+        "tests": 529,
+        "pass": 529,
+        "fail": 0,
+        "skipped": 0
+      },
+      "log": {
+        "path": "/tmp/africlub-goal-identity-patched-20260930.log",
+        "sha256": "885f311e62f017db8827aec63fc55e382c4cf56952dec213886c4f125852ab9e"
+      }
+    },
+    {
+      "kind": "native_body_deadline_regression",
+      "before": {
+        "counts": {
+          "tests": 2,
+          "pass": 0,
+          "fail": 2,
+          "skipped": 0
+        },
+        "log": {
+          "path": "/tmp/africlub-goal-identity-body-before-20260930.log",
+          "sha256": "734881e9f58bd47df815addc975faecfbad5435bc0c216744ade56ed19ec86bf"
+        }
+      },
+      "after": {
+        "tests": 2,
+        "pass": 2,
+        "fail": 0
+      },
+      "cases": [
+        "incomplete stream yields sanitized408 and cancels",
+        "non-settling cancellation does not hold deadline open"
+      ]
+    },
+    {
+      "kind": "existing_private_config_regressions",
+      "before": {
+        "counts": {
+          "tests": 9,
+          "pass": 0,
+          "fail": 9,
+          "skipped": 0
+        },
+        "log": {
+          "path": "/tmp/africlub-goal-identity-config-before-20260930.log",
+          "sha256": "3980754c2711559c46b73d61bb975844d46b20f910eed7f7512b983129ee4085"
+        }
+      },
+      "after": {
+        "tests": 9,
+        "pass": 9,
+        "fail": 0
+      },
+      "scope": "Reject alternate public routes across five workers, extra bindings/plaintext provider variable, wrong health database authority."
+    },
+    {
+      "kind": "disabled_template_validator",
+      "command": "/Users/jeanbosco/.nvm/versions/node/v22.23.2/bin/node cloudflare/supporter-auth/scripts/check-deployment.mjs",
+      "exit_code": 0,
+      "result": {
+        "configurationPassed": true,
+        "errors": [],
+        "templatesOnly": true,
+        "deployable": false,
+        "enabled": false,
+        "liveImportVerified": false,
+        "secretsProvisioned": false,
+        "actualCloudflareRuntimeVerified": false,
+        "providerAcceptanceVerified": false,
+        "supabaseRetired": false,
+        "releaseAuthorized": false,
+        "deploymentPerformed": false
+      }
+    },
+    {
+      "kind": "disabled_template_validator",
+      "command": "/Users/jeanbosco/.nvm/versions/node/v22.23.2/bin/node cloudflare/supporter-auth/scripts/check-reliable-delivery.mjs",
+      "exit_code": 0,
+      "result": {
+        "configuration": "disabled",
+        "liveAccessVerified": false,
+        "operatorAuthorizationVerified": false
+      }
+    },
+    {
+      "kind": "disabled_template_validator",
+      "command": "/Users/jeanbosco/.nvm/versions/node/v22.23.2/bin/node cloudflare/auth-code-delivery/scripts/check-deployment.mjs",
+      "exit_code": 0,
+      "result": {
+        "configurationPassed": true,
+        "errors": [],
+        "liveProviderVerified": false,
+        "senderOwnershipVerified": false,
+        "copyCodeTemplateReviewed": false,
+        "consentVerified": false,
+        "actualCloudflareRuntimeVerified": false,
+        "releaseAuthorized": false,
+        "deploymentPerformed": false
+      }
+    },
+    {
+      "kind": "disabled_template_validator",
+      "command": "/Users/jeanbosco/.nvm/versions/node/v22.23.2/bin/node cloudflare/auth-code-delivery/scripts/check-receipts-deployment.mjs",
+      "exit_code": 0,
+      "result": {
+        "configurationPassed": true,
+        "errors": [],
+        "liveSignatureVerified": false,
+        "providerSubscriptionVerified": false,
+        "secretsProvisioned": false,
+        "privateCallerAuthorizationVerified": false,
+        "actualCloudflareRuntimeVerified": false,
+        "retentionApproved": false,
+        "releaseAuthorized": false,
+        "deploymentPerformed": false
+      }
+    },
+    {
+      "kind": "fresh_local_sqlite_migrations",
+      "procedure": "Two independent temporary DatabaseSync files with PRAGMA foreign_keys=ON. Execute four ordered supporter-auth migrations in identity, two auth-code-delivery migrations in dispatch. Assert both foreign_key_check empty and integrity_check=ok; identity import_ready=0, queue enabled=0, users/clubs=0 and dispatches=0. Remove temporary databases after checks.",
+      "exit_code": 0,
+      "result": {
+        "node": "v22.23.2",
+        "databaseFilesSeparate": true,
+        "remoteMutation": false,
+        "identity": {
+          "migrationCount": 4,
+          "migrations": [
+            "0001_supporter_identity.sql",
+            "0002_club_delivery_index.sql",
+            "0003_reliable_delivery_control.sql",
+            "0004_browser_sessions.sql"
+          ],
+          "foreignKeys": 1,
+          "foreignKeyViolations": 0,
+          "integrity": "ok",
+          "schema": [
+            {
+              "type": "index",
+              "name": "auth_browser_login_secret_expiry"
+            },
+            {
+              "type": "index",
+              "name": "auth_browser_owner_session"
+            },
+            {
+              "type": "index",
+              "name": "auth_browser_rotation_secret_expiry"
+            },
+            {
+              "type": "index",
+              "name": "auth_challenges_delivery"
+            },
+            {
+              "type": "index",
+              "name": "auth_challenges_phone"
+            },
+            {
+              "type": "index",
+              "name": "auth_club_delivery_due"
+            },
+            {
+              "type": "index",
+              "name": "auth_code_payload_expiry"
+            },
+            {
+              "type": "index",
+              "name": "auth_delivery_attempt_club"
+            },
+            {
+              "type": "index",
+              "name": "auth_delivery_attempt_expiry"
+            },
+            {
+              "type": "index",
+              "name": "auth_delivery_health_state"
+            },
+            {
+              "type": "index",
+              "name": "auth_delivery_outcome_time"
+            },
+            {
+              "type": "index",
+              "name": "auth_last_lease_expiry"
+            },
+            {
+              "type": "index",
+              "name": "auth_rate_expiry"
+            },
+            {
+              "type": "index",
+              "name": "auth_refresh_replay_expiry"
+            },
+            {
+              "type": "index",
+              "name": "auth_sessions_owner"
+            },
+            {
+              "type": "index",
+              "name": "auth_verification_replay_expiry"
+            },
+            {
+              "type": "table",
+              "name": "auth_accounts"
+            },
+            {
+              "type": "table",
+              "name": "auth_assertions"
+            },
+            {
+              "type": "table",
+              "name": "auth_audit"
+            },
+            {
+              "type": "table",
+              "name": "auth_browser_challenges"
+            },
+            {
+              "type": "table",
+              "name": "auth_browser_control"
+            },
+            {
+              "type": "table",
+              "name": "auth_browser_origins"
+            },
+            {
+              "type": "table",
+              "name": "auth_browser_rotations"
+            },
+            {
+              "type": "table",
+              "name": "auth_browser_sessions"
+            },
+            {
+              "type": "table",
+              "name": "auth_challenges"
+            },
+            {
+              "type": "table",
+              "name": "auth_clubs"
+            },
+            {
+              "type": "table",
+              "name": "auth_deletion_requests"
+            },
+            {
+              "type": "table",
+              "name": "auth_delivery_attempts"
+            },
+            {
+              "type": "table",
+              "name": "auth_delivery_control"
+            },
+            {
+              "type": "table",
+              "name": "auth_delivery_outcomes"
+            },
+            {
+              "type": "table",
+              "name": "auth_delivery_quarantine"
+            },
+            {
+              "type": "table",
+              "name": "auth_delivery_turns"
+            },
+            {
+              "type": "table",
+              "name": "auth_outbox"
+            },
+            {
+              "type": "table",
+              "name": "auth_rate_windows"
+            },
+            {
+              "type": "table",
+              "name": "auth_refresh_receipts"
+            },
+            {
+              "type": "table",
+              "name": "auth_sessions"
+            },
+            {
+              "type": "table",
+              "name": "auth_settings"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_account_identity_immutable"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_account_status_epoch"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_audit_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_audit_no_update"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_browser_challenge_immutable"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_browser_control_epoch"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_browser_logout_identity"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_browser_origin_epoch"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_browser_origin_identity"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_browser_revocation_permanent"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_browser_rotation_immutable"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_browser_rotation_retained"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_browser_session_identity"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_club_revision"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_deletion_immutable"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_deletion_retained"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_delivery_attempt_identity"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_delivery_attempt_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_delivery_attempt_no_update"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_delivery_control_identity"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_delivery_control_retain"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_delivery_control_revision"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_delivery_outcome_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_delivery_outcome_no_update"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_delivery_quarantine_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_delivery_quarantine_no_update"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_outbox_identity_immutable"
+            },
+            {
+              "type": "trigger",
+              "name": "auth_outbox_retained"
+            }
+          ],
+          "settings": {
+            "singleton": 1,
+            "import_ready": 0,
+            "import_evidence": null,
+            "key_version": "1"
+          },
+          "deliveryControl": {
+            "singleton": 1,
+            "enabled": 0,
+            "revision": 1,
+            "sequence": 0
+          },
+          "users": 0,
+          "clubs": 0
+        },
+        "dispatch": {
+          "migrationCount": 2,
+          "migrations": [
+            "0001_dispatch_claims.sql",
+            "0002_delivery_status_receipts.sql"
+          ],
+          "foreignKeys": 1,
+          "foreignKeyViolations": 0,
+          "integrity": "ok",
+          "schema": [
+            {
+              "type": "index",
+              "name": "delivery_dispatches_state_time"
+            },
+            {
+              "type": "index",
+              "name": "delivery_status_by_message"
+            },
+            {
+              "type": "index",
+              "name": "delivery_status_links_challenge"
+            },
+            {
+              "type": "index",
+              "name": "delivery_status_received"
+            },
+            {
+              "type": "table",
+              "name": "delivery_dispatches"
+            },
+            {
+              "type": "table",
+              "name": "delivery_receipt_bindings"
+            },
+            {
+              "type": "table",
+              "name": "delivery_status_events"
+            },
+            {
+              "type": "table",
+              "name": "delivery_status_links"
+            },
+            {
+              "type": "trigger",
+              "name": "delivery_claim_immutable"
+            },
+            {
+              "type": "trigger",
+              "name": "delivery_claim_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "receipt_binding_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "receipt_binding_no_update"
+            },
+            {
+              "type": "trigger",
+              "name": "status_event_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "status_event_no_update"
+            },
+            {
+              "type": "trigger",
+              "name": "status_link_guard"
+            },
+            {
+              "type": "trigger",
+              "name": "status_link_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "status_link_no_update"
+            }
+          ],
+          "dispatches": 0
+        }
+      },
+      "log": {
+        "path": "/tmp/africlub-goal-identity-sqlite-20260930.json",
+        "sha256": "78e7262ff89a24141d49b432eb3193316eafc85bc702706301ee97ff3c8c134d"
+      }
+    },
+    {
+      "kind": "javascript_syntax",
+      "command": "/Users/jeanbosco/.nvm/versions/node/v22.23.2/bin/node --check for each current identity/delivery .mjs file",
+      "files_checked": 54,
+      "exit_code": 0,
+      "limits": "Syntax only for cloudflare:workers wrappers; no workerd/RPC runtime acceptance."
+    },
+    {
+      "kind": "documented_node_commands",
+      "paths_resolved": [
+        "cloudflare/auth-code-delivery/scripts/check-deployment.mjs",
+        "cloudflare/auth-code-delivery/scripts/check-receipts-deployment.mjs",
+        "cloudflare/supporter-auth/scripts/check-deployment.mjs",
+        "cloudflare/supporter-auth/scripts/check-reliable-delivery.mjs"
+      ],
+      "all_present": true
+    }
+  ],
+  "remaining_acceptance": [
+    "Deterministic reviewed identity import planner and original UUID/contact/history reconciliation; anonymous upgrade and authenticated phone/account recovery.",
+    "Actual workerd/Workers RPC and isolated D1 SQL, replication, failure and capability/Access verification.",
+    "Approved key lifecycle/rotation, separately provisioned secrets, private caller ownership and approved resource/locality configuration.",
+    "Reviewed WhatsApp sender/templates/version/consent/provider receipts, phone/device acceptance and measured abuse/spend fairness.",
+    "Native protected storage/refresh/lifecycle integration and five-club physical-device acceptance; existing Supabase app auth remains authoritative.",
+    "Browser gateway/HttpOnly/CSRF and operator/resource role approval for exact candidate.",
+    "Complete erasure/retention/downstream acknowledgement, incident/alerting and backup/restore/cutover/rollback acceptance.",
+    "Independent security review and named release approval; no deployment, provider enablement or Supabase retirement is authorized by these local checks."
+  ],
+  "added_files": [
+    {
+      "path": "cloudflare/supporter-auth/scripts/check-deployment.mjs",
+      "bytes": 4779,
+      "sha256": "e7cd8f72e0b3eb36a7650fa6cd11719501c983426f594b0d390b3b19e679f668",
+      "reason": "Current disabled native/verifier template or checker; meaningful native body/deployment boundary regression."
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/deployment-config.test.mjs",
+      "bytes": 4313,
+      "sha256": "3e18d99f556860beb4ba18a18034434a5724627ee271434a4ad3538e85eab316",
+      "reason": "Current disabled native/verifier template or checker; meaningful native body/deployment boundary regression."
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/http-body-deadline.test.mjs",
+      "bytes": 1481,
+      "sha256": "8fe86ce54d815dffef4c0e53aa91599be205e53df75f011e32830c562ff9eb44",
+      "reason": "Current disabled native/verifier template or checker; meaningful native body/deployment boundary regression."
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/private-config-boundary.test.mjs",
+      "bytes": 2099,
+      "sha256": "408d99231083c7dd740e8ce3cf2d484bf35d70cb0488d40ba47b935429115e51",
+      "reason": "Current disabled native/verifier template or checker; meaningful native body/deployment boundary regression."
+    },
+    {
+      "path": "cloudflare/supporter-auth/wrangler.identity-verifier.staging.jsonc",
+      "bytes": 544,
+      "sha256": "efabb06b6a5cd7baf8b042fc49bb69d08f527bf693b9a0374b2c3207b9d617ed",
+      "reason": "Current disabled native/verifier template or checker; meaningful native body/deployment boundary regression."
+    },
+    {
+      "path": "cloudflare/supporter-auth/wrangler.native-identity.staging.jsonc",
+      "bytes": 974,
+      "sha256": "116385998fa2dd79299ecb2a1483db21065c0238fc6cbf8cdbd53253fc65dbca",
+      "reason": "Current disabled native/verifier template or checker; meaningful native body/deployment boundary regression."
+    }
+  ],
+  "initial_subtree_counts": {
+    "cloudflare/supporter-auth": 39,
+    "cloudflare/auth-code-delivery": 33
+  },
+  "initial_unchanged_count": 66,
+  "initial_modified_count": 6,
+  "new_file_count": 6,
+  "current_file_count": 78,
+  "completed_at_utc": "2026-09-29T22:31:46.757870+00:00",
+  "remote_mutation": false,
+  "deployment_performed": false,
+  "real_provider_called": false,
+  "baseline_commit": "f932b2d7bc022f9631aaf30a0a740d9c2a728a78",
+  "toolchain": {
+    "node_path": "/Users/jeanbosco/.nvm/versions/node/v22.23.2/bin/node",
+    "node_version": "v22.23.2",
+    "npm_version": "12.0.2",
+    "npm_verification_command": "PATH=/Users/jeanbosco/.nvm/versions/node/v22.23.2/bin:/usr/bin:/bin corepack npm --version (in pinned web package)",
+    "npm_package_changes": false,
+    "wrangler_schema_source": "apps/rayon_sports/web/node_modules/wrangler/config-schema.json",
+    "wrangler_schema_sha256": "033bace52a20e3c053b68017699cf1fadfaa796f7e99681ef48f5b69b4ef9043"
+  },
+  "disabled_configs": [
+    {
+      "path": "cloudflare/supporter-auth/wrangler.browser-identity.staging.jsonc",
+      "sha256": "600855b67467a888a73e63526f71af947b4f274b3521b2797b42dc2dfbea3bd5",
+      "switches": {
+        "AUTH_SERVICE_ENABLED": "false",
+        "AUTH_BROWSER_ENABLED": "false"
+      },
+      "routes": [],
+      "cron": [],
+      "database_placeholders": [
+        "REPLACE_WITH_REVIEWED_IDENTITY_DATABASE"
+      ],
+      "service_bindings": [],
+      "release_authorized": false
+    },
+    {
+      "path": "cloudflare/supporter-auth/wrangler.delivery-health.staging.jsonc",
+      "sha256": "47e2168520dcd3f904a9976d806e85bb91e744678dc5d18ff3d4489a21247402",
+      "switches": {
+        "AUTH_DELIVERY_HEALTH_ENABLED": "false"
+      },
+      "routes": [],
+      "cron": [],
+      "database_placeholders": [
+        "REPLACE_WITH_REVIEWED_IDENTITY_DATABASE"
+      ],
+      "service_bindings": [],
+      "release_authorized": false
+    },
+    {
+      "path": "cloudflare/supporter-auth/wrangler.identity-verifier.staging.jsonc",
+      "sha256": "efabb06b6a5cd7baf8b042fc49bb69d08f527bf693b9a0374b2c3207b9d617ed",
+      "switches": {
+        "AUTH_SERVICE_ENABLED": "false"
+      },
+      "routes": [],
+      "cron": [],
+      "database_placeholders": [
+        "00000000-0000-0000-0000-000000000000"
+      ],
+      "service_bindings": [],
+      "release_authorized": false
+    },
+    {
+      "path": "cloudflare/supporter-auth/wrangler.native-identity.staging.jsonc",
+      "sha256": "116385998fa2dd79299ecb2a1483db21065c0238fc6cbf8cdbd53253fc65dbca",
+      "switches": {
+        "AUTH_SERVICE_ENABLED": "false",
+        "AUTH_DELIVERY_ENABLED": "false"
+      },
+      "routes": [],
+      "cron": [],
+      "database_placeholders": [
+        "00000000-0000-0000-0000-000000000000"
+      ],
+      "service_bindings": [
+        {
+          "binding": "OTP_DELIVERY",
+          "service": "africlub-auth-code-delivery-staging",
+          "entrypoint": "AuthenticationCodeDelivery"
+        }
+      ],
+      "release_authorized": false
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/wrangler.receipt-reader.staging.jsonc",
+      "sha256": "ea9c04ceac8f2bef07947604d1a0047d308960168d04576a93dc023d60b68817",
+      "switches": {
+        "RECEIPT_READ_ENABLED": "false"
+      },
+      "routes": [],
+      "cron": [],
+      "database_placeholders": [
+        "00000000-0000-0000-0000-000000000000"
+      ],
+      "service_bindings": [],
+      "release_authorized": false
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/wrangler.receipts-webhook.staging.jsonc",
+      "sha256": "9a8c96eef3f47224e984529b26cc81e37cb9795c8182306c5327d74cb78f120d",
+      "switches": {
+        "RECEIPT_WEBHOOK_ENABLED": "false",
+        "RECEIPT_RECONCILE_ENABLED": "false"
+      },
+      "routes": [],
+      "cron": [],
+      "database_placeholders": [
+        "00000000-0000-0000-0000-000000000000"
+      ],
+      "service_bindings": [],
+      "release_authorized": false
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/wrangler.staging.jsonc",
+      "sha256": "2faba4b9384948fe17d94b825c02f14fd100bb230b4592664a43a502222e73dc",
+      "switches": {
+        "DELIVERY_ENABLED": "false"
+      },
+      "routes": [],
+      "cron": [],
+      "database_placeholders": [
+        "00000000-0000-0000-0000-000000000000"
+      ],
+      "service_bindings": [],
+      "release_authorized": false
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/wrangler.status-aware.staging.jsonc",
+      "sha256": "a484717b4f9d6ab5b70e3d7fac454d1e0d7a33c523cb2136bf2ee9a197fea296",
+      "switches": {
+        "DELIVERY_ENABLED": "false",
+        "RECEIPT_BINDING_ENABLED": "false"
+      },
+      "routes": [],
+      "cron": [],
+      "database_placeholders": [
+        "00000000-0000-0000-0000-000000000000"
+      ],
+      "service_bindings": [],
+      "release_authorized": false
+    }
+  ],
+  "privacy_and_outcome_coverage": {
+    "otp_and_session": "Genuine SQLite/WebCrypto tests cover bound codes, guessing budgets, original verification/rotation keys, refresh reuse, disabled accounts, club revisions and same-database commit-time guards.",
+    "lease_retry": "Atomic journal/lease controls, adoption quarantine, late responses, lease loss and receipt replay preserve unknown outcomes and never authorize a second external provider POST for the same claim.",
+    "provider_boundary": "All network/provider tests use synthetic fetchers and receipts. Accepted provider message is not handset receipt or authentication. No live provider call executed.",
+    "redaction": "Native public errors and provider/SQL errors are sanitized. Code/phone ciphertexts and purpose-separated HMAC/hash commitments remain private linkable data with retention gates. Nine deployment bypass regressions and two body-deadline regressions have before/after proof.",
+    "private_capabilities": "Verifier, browser identity, queue health, private sender and private receipt readers expose HTTP404. Direct native routes require configured HTTPS origin, native marker, trusted CF context and limiter; native marker alone is not authentication."
+  },
+  "phase2_hash_refresh": {
+    "recorded_at_utc": "2026-09-29T22:59:46.352612+00:00",
+    "basis": "immutable phase2 source freeze; excludes future source changes",
+    "source_freeze_sha256": "c7a0bb5824a403a6713d2b2e9622fe4b358f660b19547797785b0a90f99127c5",
+    "source_hashes_refreshed": 72,
+    "release_accepted": false
+  }
+}

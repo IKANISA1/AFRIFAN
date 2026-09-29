@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { normalizeCommunityBundle } from "@/app/admin/community/page";
+import * as communityPage from "@/app/admin/community/page";
+import { normalizeCommunityBundle } from "./community";
 import { normalizeAdminContributionSnapshot } from "./contributions";
 import { normalizeAdminFanClubs } from "./fan-clubs";
 
@@ -48,6 +49,10 @@ const validContribution = {
 };
 
 describe("admin community response normalization", () => {
+  it("keeps the page entry module limited to its Next component export", () => {
+    expect(Object.keys(communityPage)).toEqual(["default"]);
+  });
+
   it("projects bounded FanClubs fields and removes private extras", () => {
     const [chapter] = normalizeAdminFanClubs([validChapter]);
 

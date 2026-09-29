@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "purpose": "Auditable living AFRICLUB production-readiness ledger; historical source status and current local verification are independent.",
-  "updated_at_utc": "2026-09-29T22:12:17.726055+00:00",
+  "updated_at_utc": "2026-09-29T22:59:46.352612+00:00",
   "release_decision": "NO-GO",
   "release_accepted": false,
   "applicability": "All 130 recorded tasks remain applicable unless an explicit product-owner scope decision is recorded; none has been excluded.",
@@ -853,6 +853,331 @@
         "final_club_app_scopes_passed": 5,
         "final_club_app_tests_passed": 27
       }
+    },
+    {
+      "id": "EV-P2-IDENTITY",
+      "status": "passed_scoped",
+      "summary": "72 candidate identity/OTP paths plus6 current local checker/template/regression files integrated;529 tests pass after concrete native-body deadline and private-template corrections; separate4+2 migration SQLite replay passes disabled/empty.",
+      "counts": {
+        "candidate_paths": 72,
+        "new_local_paths": 6,
+        "tests_passed": 529,
+        "tests_failed": 0,
+        "tests_skipped": 0
+      },
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-goal-identity-patched-20260930.log",
+          "sha256": "99e39e6857311c8b87e8f69d737960e6b5c31698c79d21365f9298ac9510d02d",
+          "bytes": 97454
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-goal-identity-sqlite-20260930.json",
+          "sha256": "78e7262ff89a24141d49b432eb3193316eafc85bc702706301ee97ff3c8c134d",
+          "bytes": 7984
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-goal-identity-body-before-20260930.log",
+          "sha256": "734881e9f58bd47df815addc975faecfbad5435bc0c216744ade56ed19ec86bf",
+          "bytes": 1971
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-goal-identity-config-before-20260930.log",
+          "sha256": "3980754c2711559c46b73d61bb975844d46b20f910eed7f7512b983129ee4085",
+          "bytes": 9577
+        }
+      ],
+      "report": "docs/release/identity-delivery-integration-2026-09-30.json",
+      "limits": "No exact identity import/anonymous upgrade/phone recovery, native credentials, provider acceptance or real Workers/D1 authorization. Supabase remains authoritative.",
+      "recorded_at_utc": "2026-09-29T22:59:46.352612+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable phase2 source freeze plus inspected logs; native/full Flutter final status explicitly pending where stated",
+      "report_sha256": "79fe33d34776ae64c375a126944e8ffc522a475b9e59e8cbd281a9fb80325450"
+    },
+    {
+      "id": "EV-P2-GATEWAY",
+      "status": "passed_scoped",
+      "summary": "34 candidate membership gateway paths integrated with11 reviewed corrections;385 tests pass, strict client/handoff compile and disabled configuration/local dry-run pass;15 baseline regressions demonstrated source defects.",
+      "counts": {
+        "candidate_paths": 34,
+        "tests_passed": 385,
+        "tests_failed": 0,
+        "tests_skipped": 0,
+        "native_wire_vectors": 57
+      },
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-goal-membership-gateway-tests-20260930.log",
+          "sha256": "0fa4f557ad650b1ab7cbaf8a92bbdaf0f9f374ecfce10dc88f12da140f5f64ba",
+          "bytes": 66291
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-goal-membership-config-regression-before-20260930.log",
+          "sha256": "6a2b24d8e5d1c228f1768726f98b35b12d5ad7fcde21676c678dc19f5d30f038",
+          "bytes": 12313
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-goal-membership-contract-regression-before-20260930.log",
+          "sha256": "621ff47b0a5837e0b4d36e6b0d22f72632f4549b69ce5138122599696bde5bb3",
+          "bytes": 8842
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-goal-membership-client-regression-before-20260930.log",
+          "sha256": "fb3507e9582d14afeb5674a97ec5691dbd80b1c38bbe6370a67b86ac9816966e",
+          "bytes": 9662
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-goal-membership-dry-run-20260930.log",
+          "sha256": "2a0e50e64e409f4ac0b1d0ada12a007705c1adf70e2fa09f3b5b385a9f825af9",
+          "bytes": 2485
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-goal-membership-ready-check-20260930.log",
+          "sha256": "65e83a23b9d652c6212d832a2d44e0d0fa1f9f6f5d81e6e87f32cce23d49d39f",
+          "bytes": 38
+        }
+      ],
+      "report": "docs/release/membership-gateway-integration-2026-09-30.json",
+      "limits": "Ready-check intentionally rejects unresolved namespaces; local bundle/fixtures do not verify live bindings or financial/provider acceptance.",
+      "recorded_at_utc": "2026-09-29T22:59:46.352612+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable phase2 source freeze plus inspected logs; native/full Flutter final status explicitly pending where stated",
+      "report_sha256": "a2ad2dbeeee7a0a7e2811f5b013d7edccec6bd0fdc887af35e0ab9da3ed7ac82"
+    },
+    {
+      "id": "EV-P2-BROWSER",
+      "status": "passed_controlled_synthetic",
+      "summary": "38 browser candidate paths (35 formerly absent,3 reconciled) plus4 locally authored render/config/harness files;18 real-component/real-service-worker desktop/mobile Chromium checks pass with synthetic API and denied external network.",
+      "counts": {
+        "candidate_paths": 38,
+        "checks_passed": 18,
+        "checks_failed": 0,
+        "browser_projects": 2,
+        "external_requests": 0
+      },
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/browser-controlled-public-summary.json",
+          "sha256": "cb3f9d866b4cdce1cc29e3bee3812a4f6990ce5c9b48ef76b551983d4d1bc116",
+          "bytes": 12692
+        }
+      ],
+      "report": "docs/release/browser-membership-integration-2026-09-30.json",
+      "limits": "Real Chromium rendering proves scoped current component/client/controller/cache behavior. It does not cover all clubs, live cookies/providers, operator/native journeys, native zoom or named visual/screen-reader acceptance.",
+      "recorded_at_utc": "2026-09-29T22:59:46.352612+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable phase2 source freeze plus inspected logs; native/full Flutter final status explicitly pending where stated",
+      "report_sha256": "c1d26c123a69981745a4f61c5bee69642bc4e4355b71a3de467301f07154c0fd"
+    },
+    {
+      "id": "EV-P2-COMBINED",
+      "status": "passed_scoped",
+      "summary": "Final identity+dispatch+native gateway+browser API+router bank passed1235/1235 tests, zero failures/skips. Module-specific counts overlap and must not be added.",
+      "counts": {
+        "tests": 1235,
+        "pass": 1235,
+        "fail": 0,
+        "skipped": 0
+      },
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/identity-membership-browser-combined-20260930.log",
+          "sha256": "1b59c12c3a50ac7e21f27e4dc9f75f567183a057befa9e50d2edbf48c3666285",
+          "bytes": 229398
+        }
+      ],
+      "limits": "Synthetic local SQLite/private bindings; actual isolated Workers/D1/provider/concurrency behavior still requires acceptance.",
+      "recorded_at_utc": "2026-09-29T22:59:46.352612+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable phase2 source freeze plus inspected logs; native/full Flutter final status explicitly pending where stated"
+    },
+    {
+      "id": "EV-P2-NATIVE",
+      "status": "final_build_results_pending",
+      "summary": "40 native/tool candidate paths plus protected host/composition integration;95 Flutter feature tests and10 final composition tests;pure Dart72+12+11, portable Kotlin69 and Swift68;actual shared Android host and all five Swift delegates typecheck.",
+      "counts": {
+        "candidate_paths": 40,
+        "feature_flutter_tests_passed": 95,
+        "final_composition_tests_passed": 10,
+        "pure_dart_contract_checks": 72,
+        "pure_dart_recovery_checks": 12,
+        "pure_dart_history_checks": 11,
+        "portable_kotlin_tests_passed": 69,
+        "portable_swift_tests_passed": 68,
+        "swift_delegates_typechecked": 5,
+        "keychain_xctests_typechecked": 9,
+        "keychain_xctests_executed": 0
+      },
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-native-membership-flutter-test.log",
+          "sha256": "1464f5f2cd8aa84c15eb88409acf72deae069991c94ba176e605c4408cf9516a",
+          "bytes": 17769
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-native-composition-final-test.log",
+          "sha256": "fb3d93d685ea9ad7c6551a155ec2de3aaf78300d6e80989f2a61028a37409997",
+          "bytes": 1001
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-native-membership-analyze.log",
+          "sha256": "8136396603242927b448a812cef03f80085ae2fa5301a198ffdf9241c1bf9334",
+          "bytes": 96
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-native-android-summary.log",
+          "sha256": "bed53cf631da88ca51af12e49faad90612eedaa0ed5e3531a4b96425535a6c47",
+          "bytes": 1802
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-native-ios-summary.log",
+          "sha256": "43a67966d2a292ff5033456ddf8b83f9664e8d095d2520b88f48ba0ff5270d30",
+          "bytes": 582
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-native-dart-summary.log",
+          "sha256": "c15e96dbfa753bf2b3ff7ed3d9e743a149566e6a26d42b1073789dd6cde74ac3",
+          "bytes": 577
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-native-android-host-typecheck.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-native-ios-delegate-typecheck.json",
+          "sha256": "3ba1ac4f0fb81ce1e4ed491757b9e7af8cbc0f26c6b9f291c747ac8de1c63e1a",
+          "bytes": 8974
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/africlub-native-ios-keychain-tests-typecheck.json",
+          "sha256": "1c3fa29b09b43e25e7832ae8e46717e8e35a1ea525e23cb30630880c859d63d7",
+          "bytes": 1914
+        }
+      ],
+      "report": "docs/release/native-membership-integration-2026-09-30.json",
+      "limits": "Native final all-five Android checks still pending until agent final message. Keystore/Keychain execution, complete iOS/Android builds, signed/installed devices and native product screens/provider/store acceptance remain open.",
+      "recorded_at_utc": "2026-09-29T22:59:46.352612+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable phase2 source freeze plus inspected logs; native/full Flutter final status explicitly pending where stated",
+      "report_binding_status": "Pending native-agent final checkpoint. Frozen pre-refresh report metadata is preserved in the248-path freeze; native source hashes are bound separately."
+    },
+    {
+      "id": "EV-P2-THREAT",
+      "status": "documented_local_review",
+      "summary": "Documented identity/OTP/native/browser/private-financial assets, trust transitions, attack/failure paths and unresolved cross-database fencing/provider/credential/deletion risks.",
+      "source_path": "docs/security/identity-membership-threat-model-2026-09-30.md",
+      "source_sha256": "3e745b6a263851749f33f12f64d9b621de85a18240b550aeee31a7ffaa2530cc",
+      "logs": [],
+      "limits": "Implementer source review; independent security, key management, exact import and owner risk acceptance remain open.",
+      "recorded_at_utc": "2026-09-29T22:59:46.352612+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable phase2 source freeze plus inspected logs; native/full Flutter final status explicitly pending where stated"
+    },
+    {
+      "id": "EV-P2-WEB",
+      "status": "passed_local_pre_cosmetic_source_with_live_smoke_unexecuted",
+      "summary": "Web lint, strict production build and current seal pass;115 unit files,993 pass, one intentionally gated live source-provider smoke skipped;JS166.68/170kB,CSS37.38/45kB.",
+      "counts": {
+        "unit_files_passed": 115,
+        "unit_tests_passed": 993,
+        "unit_tests_skipped": 1,
+        "provenance_regressions_passed": 21
+      },
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/web-full-unit-final-20260930.log",
+          "sha256": "3ee06a06447f44727198109a39df067a94839927922b4987d7a8dde2d886f86f",
+          "bytes": 15992
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/browser-web-production-build-accepted-20260930.log",
+          "sha256": "55c083db68b141a91755cce2bfd8e072cc0d29e12134fc437b2464238f806df5",
+          "bytes": 7320
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/web-current-seal-20260930.json",
+          "sha256": "010e748aae2d1185f87804fa93c1c7ef57b3e6e2c4431ccbfa7fc3afc9b99759",
+          "bytes": 398
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/web-bundle-budget-20260930.log",
+          "sha256": "0fdbfea1cf098bae3e0610ccc65cd410a843bafac640ad0134688628f21a3109",
+          "bytes": 689
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/web-provenance-regressions-20260930.log",
+          "sha256": "c3a4dfafdc0f73af545c2080effabd6bd979b1e59e2f85e2ad47d3611a23f9f6",
+          "bytes": 4394
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/browser-web-lint-accepted-20260930.log",
+          "sha256": "61c3fc82d999725f0c46be5ea9096ad9d6f7157140d0ec8bf3b1142fc64a7f89",
+          "bytes": 71
+        }
+      ],
+      "limits": "Build observed exceed_storage_size_quota. Live smoke at gikundiro-source.test.ts:137 remains unexecuted; hosted/signed/full product acceptance remains open.",
+      "recorded_at_utc": "2026-09-29T22:59:46.352612+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable phase2 source freeze plus inspected logs; native/full Flutter final status explicitly pending where stated",
+      "source_relation": "Four post-test cosmetic changes only. Tests/build/seal retain their original tested source hashes; no new exact-byte full candidate or artifact acceptance is inferred. Future phase3 source is excluded."
+    },
+    {
+      "id": "EV-P2-FLUTTER",
+      "status": "failed_baseline_repairs_pending",
+      "summary": "Pinned strict active-workspace Flutter analysis passed with zero issues. Fresh raw full Melos bank exited1:23 of28 packages passed;four white-label app tests omitted required CLUB_ID by bypassing the existing wrapper;core_theme has three decoding/source-scope failures. Failed baseline retained; corrected invocation/source-gate repairs and reruns pending.",
+      "counts": {
+        "analysis_issues": 0,
+        "workspace_packages_passed": 23,
+        "workspace_packages_failed": 5,
+        "workspace_packages_total": 28,
+        "full_bank_exit_code": 1
+      },
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/flutter-analyze-phase2-20260930.log",
+          "sha256": "54476a9f867d381f119b6d546bc8c305338214f6636aade50e2ee6be40693903",
+          "bytes": 4529
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/flutter-full-workspace-tests-20260930.log",
+          "sha256": "0e0602fce39c23229fe1c560f9ef97e5c76f21c544a776ca55ece4e8617115fb",
+          "bytes": 2815575
+        }
+      ],
+      "limits": "Failed raw aggregate is not full candidate acceptance. Preserve actual failed log;correct wrapper configuration and source/image assertions, then rerun affected packages. Native release/device acceptance and hosted exact-candidate CI are separate.",
+      "recorded_at_utc": "2026-09-29T22:59:46.352612+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable phase2 source freeze plus inspected logs; native/full Flutter final status explicitly pending where stated"
+    },
+    {
+      "id": "EV-P2-LINEAGE",
+      "status": "frozen_local_checkpoint",
+      "summary": "283 candidate paths present exact/reviewed,111 still absent and22 existing paths pending reconciliation.248 changed/new paths itemized;210 added,38 modified.",
+      "counts": {
+        "candidate_paths": 416,
+        "present_exact_or_reviewed": 283,
+        "still_absent": 111,
+        "pending_reconciliation": 22,
+        "changed_or_new_files": 248,
+        "new_files": 210,
+        "modified_files": 38,
+        "source_snapshot_files": 3503
+      },
+      "source_path": "docs/release/candidate-lineage-disposition-2026-09-30.tsv",
+      "source_sha256": "72fcd90eac17e42ad2d703313f631d7a393d2b4789ad1acb9c7fa1cc7a503d2e",
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/phase2-source-freeze.json",
+          "sha256": "c7a0bb5824a403a6713d2b2e9622fe4b358f660b19547797785b0a90f99127c5",
+          "bytes": 53001
+        }
+      ],
+      "limits": "Immutable phase2 before future source imports. Source presence and hash parity are not acceptance.",
+      "recorded_at_utc": "2026-09-29T22:59:46.352612+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable phase2 source freeze plus inspected logs; native/full Flutter final status explicitly pending where stated",
+      "post_test_cosmetic_corrections": "Four post-test cosmetic changes only. Tests/build/seal retain their original tested source hashes; no new exact-byte full candidate or artifact acceptance is inferred. Future phase3 source is excluded."
     }
   ],
   "tasks": [
@@ -879,7 +1204,7 @@
       "implementation_06_note": "Fresh Drive folder metadata still shows anyone/writer. Available sharing action grants access, not revocation; no ACL/credential change performed. Canonical-source trust remains open.",
       "implementation_07_note": "Fresh root metadata still shows anyone/writer; no sharing or credentials changed. Current Drive tool discovery exposes reads only, not upload or permission-revocation actions.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -911,7 +1236,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -943,7 +1268,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -977,7 +1302,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1009,7 +1334,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1041,7 +1366,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1097,7 +1422,7 @@
       "implementation_06_note": "Limited path/pattern scan covers all 384 scoped source files with no flagged findings. Full Drive/Git/archive and independent secret review remain outstanding.",
       "implementation_07_note": "Limited source path/pattern scan reads394 exact scoped files, with zero flagged findings. Full archives/history/exposure and independent review are not closed.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1146,7 +1471,7 @@
       "implementation_06_note": "Portal state excludes phone/OTP/CSRF/cookies, private pages use cache isolation and operational local records remain explicitly private. Approved retention/redaction and shared-device policy are not complete.",
       "implementation_07_note": "Generic push presentation and fixed local assets exclude raw notification body, URLs, amounts and private identifiers. History cursor remains private memory/header metadata; policy approval and full retention remain open.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1181,7 +1506,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1213,7 +1538,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1257,7 +1582,7 @@
         "uploaded_to_drive": false
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1323,16 +1648,17 @@
       "implementation_06_note": "Matched Implementation05 archive and all451 checksums, retrieved four exact Next/SW source prerequisites.32 authored changes preserve unknown edits; not a full source convergence.",
       "implementation_07_note": "Implementation07 binds35 changes to the provided384-file Implementation06 source and493 verified internal checksums. No fresh recursive export or protected source convergence.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
-          "EV-PAYMENT-LOCAL"
+          "EV-PAYMENT-LOCAL",
+          "EV-P2-LINEAGE"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "81 selected paths were reconciled exactly; every batch and revised sibling disposition remains broader than this import.",
+        "remaining_acceptance": "283 candidate paths now present exact/reviewed;111 absent and22 existing conflicts remain. Reconcile all archives/revised siblings and current future-phase sources before closure.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -1347,7 +1673,7 @@
       "gate": "G1",
       "dependencies": "REP-02",
       "status": "In progress",
-      "acceptance_evidence": "Reviewed merge commits preserve current auth/payment interfaces; no blind application of cumulative v1\u2013v4 archives.",
+      "acceptance_evidence": "Reviewed merge commits preserve current auth/payment interfaces; no blind application of cumulative v1–v4 archives.",
       "evidence_refs": "F02; F03; F06; F07; F24",
       "assigned_owner": "",
       "target_date": "",
@@ -1384,7 +1710,7 @@
       "implementation_06_note": "Guarded delta installer retains exact before hashes, unchanged prerequisites and rollback. Original Drive source is not overwritten or canonically merged.",
       "implementation_07_note": "Exact baseline guarded install/rollback maintained; unknown edits and conflicting migration histories are rejected. No remote canonical merge or source overwrite.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1392,10 +1718,14 @@
         "evidence_ids": [
           "EV-PAYMENT-LOCAL",
           "EV-SOURCE-RPC-TIMEOUT",
-          "EV-FEATURE-AVAILABILITY"
+          "EV-FEATURE-AVAILABILITY",
+          "EV-P2-LINEAGE",
+          "EV-P2-IDENTITY",
+          "EV-P2-GATEWAY",
+          "EV-P2-BROWSER"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "87 reviewed candidate paths adopted (77 exact and ten corrected); twelve already match, twenty-five require reconciliation and 292 still need integration. Complete identity, native, browser, operator and public dependencies before closure.",
+        "remaining_acceptance": "Review adopted corrections against retained originals; preserve current security patches, scope and newer design/runtime controls. Operator/public/governance source convergence and approved reviewed commit remain open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -1431,7 +1761,7 @@
         "uploaded_to_drive": false
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "local_implemented",
         "local_acceptance_verified": true,
         "release_accepted": false,
@@ -1465,7 +1795,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1524,17 +1854,19 @@
       },
       "implementation_05_note": "Added exact source/input manifests and verification logs for this scoped package. No production build, signed artifact or deployment evidence is granted.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
           "EV-PAYMENT-LOCAL",
-          "EV-CI-SOURCE"
+          "EV-CI-SOURCE",
+          "EV-P2-WEB",
+          "EV-P2-LINEAGE"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "81-file provenance is recorded; complete source/config/build/signing/deployment manifest remains absent.",
+        "remaining_acceptance": "Web seal now covers transitive root Cloudflare source. Complete pinned source/config/migration/artifact manifests, native installed provenance and approved hosted deployment binding remain open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -1587,16 +1919,18 @@
       "implementation_07_note": "History suites are in existing registered test directories; new Dart history harness is registered, with explicit blocked SDK result. No full pinned CI execution.",
       "implementation_08_note": "Registered the allocation-delivery tests and disabled-template check in the existing strict source verifier. Its Node/Dart release gates remain blocked and unchanged.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
-          "EV-CI-SOURCE"
+          "EV-CI-SOURCE",
+          "EV-P2-COMBINED",
+          "EV-P2-NATIVE"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Relevant selected banks are wired in source; actual hosted/native SDK jobs and complete current command inventory remain unverified.",
+        "remaining_acceptance": "New identity/gateway/browser/native commands are registered in CI source. Complete remaining operator/public/governance gates and successful hosted exact-candidate execution remain open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -1632,14 +1966,16 @@
         "uploaded_to_drive": false
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P2-NATIVE"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Protected shared iOS source/registration is active and all five delegates typecheck. Complete supported iOS builds and real Keychain/foreground/device behavior before acceptance.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -1677,7 +2013,7 @@
         "uploaded_to_drive": false
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1734,7 +2070,7 @@
         "uploadEvidence": "Separate verified Implementation 04 upload receipt"
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1769,7 +2105,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1802,7 +2138,7 @@
       "release_accepted": false,
       "continuation_note": "Independent SQLite connection tests passed, but real Cloudflare D1/Workers capability/load evidence is absent.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1837,16 +2173,18 @@
       "release_accepted": false,
       "continuation_note": "Pre/post identity checks do not close the cross-database revocation interval; no atomic revocation guarantee added.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
-          "EV-PAYMENT-LOCAL"
+          "EV-PAYMENT-LOCAL",
+          "EV-P2-THREAT",
+          "EV-P2-COMBINED"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Selected command revocation guards are locally tested; approved cross-database acceptance points and full refund/admin semantics remain open.",
+        "remaining_acceptance": "Local native/browser pre/post identity fencing and unknown-outcome recovery pass. Identity and financial databases are not atomic; accountable operation-specific revocation semantics and real target tests remain required.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -1871,7 +2209,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1932,17 +2270,20 @@
       "implementation_07_note": "Browser contract now has15 routes; native OpenAPI has11 paths. Two new GET operations per surface, strict actor-bound projections and private cursor header; target runtime compatibility remains unverified.",
       "implementation_08_note": "Added versioned private allocation-delivery contract and a strictly compiled inspection/health/redrive client, with original-operation recovery tests.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
           "EV-PAYMENT-LOCAL",
-          "EV-EDGE-LOCAL"
+          "EV-EDGE-LOCAL",
+          "EV-P2-IDENTITY",
+          "EV-P2-GATEWAY",
+          "EV-P2-BROWSER"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Selected private contracts/clients execute locally; complete service/public old-client compatibility matrix remains unverified.",
+        "remaining_acceptance": "Current identity, native gateway, browser session/CSRF/history wire contracts locally pass. Complete versioned backend/client contract inventory and actual target compatibility acceptance remain open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -1967,7 +2308,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2005,7 +2346,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2039,7 +2380,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2099,17 +2440,21 @@
       "implementation_07_note": "History runs through existing private read capability and gateway authentication; no provider or financial mutation method added. Historical selectors are not authentication tokens.",
       "implementation_08_note": "Separated dispatch, review, inbox ingest and inbox read bindings. No public business HTTP route and no database capability in the dispatcher. Actual binding/Access review remains required.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
           "EV-PAYMENT-LOCAL",
-          "EV-SOURCE-RPC-TIMEOUT"
+          "EV-SOURCE-RPC-TIMEOUT",
+          "EV-P2-THREAT",
+          "EV-P2-IDENTITY",
+          "EV-P2-GATEWAY",
+          "EV-P2-BROWSER"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Disabled private bindings/principals and corrected timeout recovery pass locally. Reviewed live RPC/caller capability and hosted authority acceptance remain open.",
+        "remaining_acceptance": "Disabled templates reject unexpected vars/routes/storage/bindings and expose narrow private capabilities. Real caller ownership, Access/resource ACL and governed enablement remain required.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -2134,7 +2479,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2166,7 +2511,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2198,7 +2543,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2230,7 +2575,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2265,7 +2610,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2297,7 +2642,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2340,7 +2685,7 @@
         "uploadEvidence": "Separate verified Implementation 04 upload receipt"
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2372,7 +2717,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2404,7 +2749,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2436,7 +2781,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2480,7 +2825,7 @@
         "uploadEvidence": "Separate verified Implementation 04 upload receipt"
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2515,14 +2860,16 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P2-THREAT"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Current identity/OTP/native/browser trust model and abuse paths documented; independent review, key lifecycle and exact deployed issuer/capability acceptance remain open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -2566,14 +2913,16 @@
         }
       ],
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P2-IDENTITY"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Local club/phone/IP/global issuance and queue fairness contracts pass. Real measured abuse, spend and provider/carrier acceptance remain required.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -2598,7 +2947,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2630,14 +2979,17 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P2-NATIVE",
+          "EV-P2-THREAT"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Checkout metadata has protected native recovery composition; this does not implement native OTP/access/refresh credential journal, process-safe single-flight rotation or account migration. Complete those and physical-device acceptance.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -2664,14 +3016,17 @@
       "implementation_05_note": "Implemented separate browser session service and cookie gateway: HttpOnly/Secure/__Host cookies, same-origin and CSRF checks, independent lifetime, atomic rotation, shared identity revocation and logout. Real browser/D1 and full portal integration remain unverified.",
       "implementation_06_note": "Actual Next membership route uses cookie-v1 client/controller when explicitly enabled; session loss/expiry/rotation/logout handled without native bearer exposure. Rendered browser and real cookie acceptance remain pending.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P2-BROWSER",
+          "EV-P2-COMBINED"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Cookie/CSRF/exact-origin/rotation/logout local contracts and synthetic rendered portal pass. Real hosted HTTPS cookie behavior, full browser matrix and approved session/origin policy remain required.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -2696,16 +3051,18 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
-          "EV-PAYMENT-LOCAL"
+          "EV-PAYMENT-LOCAL",
+          "EV-P2-COMBINED",
+          "EV-P2-THREAT"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Local selected command guards test stale authority; identity/financial DB revocation interval and all sensitive commands remain open.",
+        "remaining_acceptance": "Local wrong-club/user/session and revoked/unknown financial outcomes are withheld and preserve original operations. Cross-database non-atomicity and deployed revocation semantics remain governed open acceptance.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -2730,7 +3087,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2762,7 +3119,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2794,7 +3151,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2826,7 +3183,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2860,7 +3217,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2918,7 +3275,7 @@
         "uploadEvidence": "Separate verified Implementation 04 upload receipt"
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2953,7 +3310,7 @@
       "release_accepted": false,
       "implementation_03_note": "Only referral to a refund-review workflow is implemented. No refund, reversal, corrective posting or financial execution is implemented by this delivery.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3001,16 +3358,18 @@
       "implementation_06_note": "New portal shows current observed entitlement separately from owned historical receipts, and locally downgrades expiry. Full financial acceptance and native composition remain open.",
       "implementation_07_note": "Owned historical membership allocations/receipts can be listed without newer checkout snapshots or local recovery IDs. Current entitlement remains distinct; no authenticity, reconciliation, refunds or full financial acceptance claimed.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
-          "EV-PAYMENT-LOCAL"
+          "EV-PAYMENT-LOCAL",
+          "EV-P2-GATEWAY",
+          "EV-P2-BROWSER"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Selected current status and immutable receipt semantics pass locally; integrated five-club data/client/provider acceptance remains open.",
+        "remaining_acceptance": "Native/browser current entitlement and minimized historical receipt/history projections are separated and owner-correlated. Actual providers, complete financial history and real entitlement acceptance remain required.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -3035,7 +3394,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3067,7 +3426,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3099,7 +3458,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3131,7 +3490,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3165,7 +3524,7 @@
       "continuation_note": "Existing outbox controls preserved; no provider dispatcher or complete business effect added.",
       "implementation_08_note": "Implemented an actual operational-inbox consumer of existing allocation outbox events with atomic receiver deduplication, retained source attempts, bounded retry/expiry, dead-letter inspection and original-event redrive. Not external notification, contribution fulfillment, provider evidence or full financial acceptance.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3201,7 +3560,7 @@
       "release_accepted": false,
       "continuation_note": "Local journal concurrency is additional evidence; no complete real-data balance/reference reconciliation.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3236,14 +3595,16 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P2-NATIVE"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Actual shared Android host compiles with pinned engine/Android SDK; portable69 contracts pass. Full app builds/bridge acceptance, Keystore/locked device/disposal/backup execution remain open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -3268,14 +3629,16 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P2-NATIVE"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Seven shared Swift sources and all five delegates typecheck with Swift6;portable68 pass;9 Keychain XTests typecheck but have not executed. Full Xcode builds, entitlements and device Keychain/foreground acceptance remain open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -3302,7 +3665,7 @@
       "continuation_note": "Matching Dart adapter and tests authored; required SDK absent and verifier exits blocked. This task remains Open.",
       "implementation_07_note": "Authored additive Dart history API, native GET transport and eleven harness checks; registered in the pure-Dart verifier. Dart/Flutter are absent, so these are authored not executed.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3311,10 +3674,12 @@
           "EV-TOOLCHAIN",
           "EV-FLUTTER-GAMIFICATION",
           "EV-FLUTTER-WORKSPACE",
-          "EV-FEATURE-AVAILABILITY"
+          "EV-FEATURE-AVAILABILITY",
+          "EV-P2-NATIVE",
+          "EV-P2-FLUTTER"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Strict analysis and affected gamification tests pass; terminal full Melos run has 27 passing packages and three core_theme guardrail failures. Corrected full core_theme run and combined source reconciliation remain pending.",
+        "remaining_acceptance": "Pure Dart72+12+11 checks and95 Flutter membership tests pass;strict workspace analyzer passes. Complete whole pinned candidate and actual native/device acceptance remain open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -3339,16 +3704,17 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
-          "EV-FEATURE-AVAILABILITY"
+          "EV-FEATURE-AVAILABILITY",
+          "EV-P2-NATIVE"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Root-owned feature availability integration is in progress; require terminal policy/route regressions and all five-club configuration/user-authority checks before local closure.",
+        "remaining_acceptance": "All ten native source targets register the shared protected host; lifecycle-aware Dart composition is disabled by default and requires compatible identity/API injection. Existing Supabase paid-membership flow remains authoritative; complete product composition and devices.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -3373,7 +3739,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3425,16 +3791,18 @@
         }
       ],
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
-          "EV-PAYMENT-LOCAL"
+          "EV-PAYMENT-LOCAL",
+          "EV-P2-GATEWAY",
+          "EV-P2-NATIVE"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Durable server handoff is locally present; active native recovery composition, reinstall/device-loss and target acceptance remain open.",
+        "remaining_acceptance": "Original-key unknown preparation/handoff/receipt/history recovery is locally tested; absent lookup does not prove noncommit. Device reinstall/lost-state and real provider reconciliation acceptance remain required.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -3479,14 +3847,17 @@
         }
       ],
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P2-NATIVE",
+          "EV-P2-BROWSER"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Local composition/portal invalidation covers foreground/logout/session/club change and late responses with read-only recovery. Actual route/product wiring, credential coordination and ten installed-device journeys remain open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -3511,7 +3882,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3543,18 +3914,19 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
-        "external_acceptance_status": "blocked",
+        "external_acceptance_status": "not_verified",
         "evidence_ids": [
-          "EV-SCOPE"
+          "EV-SCOPE",
+          "EV-P2-NATIVE"
         ],
         "blocker_evidence_ids": [
           "EV-SCOPE"
         ],
-        "remaining_acceptance": "Source identities/QA isolation are checked; every final merged release privacy/link/push configuration remains unverified.",
+        "remaining_acceptance": "Five Android source manifests and backup rules protect checkout recovery; iOS non-sync device-only Keychain policy is implemented. Actual merged manifest, entitlements/link/push and device backup/privacy acceptance remain required.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -3579,7 +3951,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3624,7 +3996,7 @@
         "uploaded_to_drive": false
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3667,7 +4039,7 @@
         "uploaded_to_drive": false
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3701,16 +4073,19 @@
       "implementation_05_note": "Authored versioned 12-route same-origin browser membership API and session/storage contract without weakening native-only bearer boundaries. Product/owner acceptance and actual site integration remain open.",
       "implementation_06_note": "Preserved old membership surface under explicit legacy/default mode; enabled cookie-v1 misconfiguration fails closed. Authenticated membership route is source-integrated; contribution API/flow still outstanding.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
-        "external_acceptance_status": "blocked",
-        "evidence_ids": [],
+        "external_acceptance_status": "not_verified",
+        "evidence_ids": [
+          "EV-P2-BROWSER",
+          "EV-P2-THREAT"
+        ],
         "blocker_evidence_ids": [
           "EV-BACKEND-QUOTA"
         ],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Separate same-origin cookie portal/session contract locally integrated. Contributions/refunds/lost-phone/deletion matrix and accountable browser/product policy remain open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -3738,16 +4113,19 @@
       "implementation_06_note": "Wired Next membership page, real browser client, offers, preparation review, last-order persistence and original-result recovery. Pure TS/gateway integration tests pass; pinned Next/rendered E2E acceptance absent.",
       "implementation_07_note": "Actual portal integrates bounded history pages and historical receipt reads; corrupted local checkout metadata and disabled checkout creation preserve read-only access. Pure TypeScript integration passes; rendered browser acceptance remains open.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
-        "external_acceptance_status": "blocked",
-        "evidence_ids": [],
+        "external_acceptance_status": "not_verified",
+        "evidence_ids": [
+          "EV-P2-BROWSER",
+          "EV-P2-COMBINED"
+        ],
         "blocker_evidence_ids": [
           "EV-BACKEND-QUOTA"
         ],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Cookie session/CSRF/owned membership reads/unknown writes/explicit original-key retry pass local contracts and18 synthetic real-rendered checks. Complete intended hosted multi-club API, contributions and provider acceptance.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -3796,7 +4174,7 @@
         "uploadEvidence": "Separate verified Implementation 04 upload receipt"
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3841,7 +4219,7 @@
         "uploadEvidence": "Separate verified Implementation 04 upload receipt"
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3875,14 +4253,16 @@
       "implementation_06_note": "Fixed actual periodic service-worker membership caching path; private requests network-only, owned page/API cache handshake/purge, offline/BFCache/cross-tab concealment and no mutation replay. VM tests pass; real SW lifecycle/retention/shared-device acceptance pending.",
       "implementation_07_note": "History presentation clears on lifecycle/logout/authorization denial. Original service-worker private cache controls preserved. New notification tests run actual receiving script in a VM, not browser lifecycle acceptance.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P2-BROWSER"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Production service-worker private-cache purge/bypass, lifecycle concealment, unrelated cache/recovery preservation and unsupported-worker blocking pass controlled Chromium. Actual CDN/old-client/cross-account/installed-PWA matrix remains open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -3910,7 +4290,7 @@
       "implementation_06_note": "Added private Next response headers and exact-origin outer router with sanitized forwarded host. API private headers preserved; whole-site CSP, live network policy and legacy paths are not certified.",
       "implementation_07_note": "Notification target URL is revalidated against six same-origin landing pages, including clicks on legacy notifications; external/dot/encoded URLs cannot navigate. Full-site CSP and live route authorization remain open.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3945,7 +4325,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3977,16 +4357,18 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
-        "external_acceptance_status": "blocked",
-        "evidence_ids": [],
+        "external_acceptance_status": "not_verified",
+        "evidence_ids": [
+          "EV-P2-BROWSER"
+        ],
         "blocker_evidence_ids": [
           "EV-BACKEND-QUOTA"
         ],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Two Chromium project scopes execute18 controlled portal checks. Complete all five clubs, real desktop/mobile browsers, installed PWA, operator/admin and named owner UAT remain required.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -3998,7 +4380,7 @@
       "priority": "P0",
       "task": "Approve one Predict/FET economic contract",
       "owner_role": "Product/design lead",
-      "gate": "G2\u2013G3",
+      "gate": "G2–G3",
       "dependencies": "REG-08; REP-10",
       "status": "Open",
       "acceptance_evidence": "Versioned free-entry or separately approved alternative; ledger/API/UI/terms/tests and historical treatment agree before transactional enablement.",
@@ -4011,7 +4393,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4030,7 +4412,7 @@
       "priority": "P1",
       "task": "Complete authoritative fixture/result lifecycle",
       "owner_role": "Product/design lead",
-      "gate": "G2\u2013G3",
+      "gate": "G2–G3",
       "dependencies": "DAT-02; PRD-01",
       "status": "Open",
       "acceptance_evidence": "Feed IDs, kickoff, postponement, void, official-result correction and settlement finality controlled server-side; duplicate feeds tested.",
@@ -4043,7 +4425,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4062,7 +4444,7 @@
       "priority": "P1",
       "task": "Approve source/media/brand rights with expiry and scope",
       "owner_role": "Product/design lead",
-      "gate": "G2\u2013G3",
+      "gate": "G2–G3",
       "dependencies": "DAT-08; REG-09",
       "status": "Open",
       "acceptance_evidence": "Club crests, players, ticket/shop images, feeds and generated assets have owner, permission, territory and renewal evidence.",
@@ -4075,7 +4457,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4094,7 +4476,7 @@
       "priority": "P1",
       "task": "Reconcile design authority and reusable semantic tokens",
       "owner_role": "Product/design lead",
-      "gate": "G2\u2013G3",
+      "gate": "G2–G3",
       "dependencies": "REP-10",
       "status": "Open",
       "acceptance_evidence": "One accessible shared token/component system and documented club identity overrides; private skill provisioned to authorized reviewers/CI.",
@@ -4107,7 +4489,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4126,7 +4508,7 @@
       "priority": "P1",
       "task": "Define complete state and accessibility matrix",
       "owner_role": "Product/design lead",
-      "gate": "G2\u2013G3",
+      "gate": "G2–G3",
       "dependencies": "PRD-04",
       "status": "Open",
       "acceptance_evidence": "Loading/empty/error/offline/permission/unknown/disabled/destructive states mapped to real routes; WCAG 2.2 AA and native checks specified.",
@@ -4139,14 +4521,16 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P2-BROWSER"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Cookie portal states, touch targets, keyboard/axe and200percent-equivalent/text scaling locally exercised. Complete declared state matrix, native TalkBack/VoiceOver, real browser zoom and product design acceptance remain required.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -4158,7 +4542,7 @@
       "priority": "P1",
       "task": "Populate current route/state and artifact-evidence registries",
       "owner_role": "Product/design lead",
-      "gate": "G2\u2013G3",
+      "gate": "G2–G3",
       "dependencies": "PRD-05; QAT-08",
       "status": "Open",
       "acceptance_evidence": "Each required cell links exact candidate/config/build/screenshot/test and accountable reviewer; empty registry is no longer treated as closure.",
@@ -4171,7 +4555,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4190,7 +4574,7 @@
       "priority": "P1",
       "task": "Resolve market-language and translation policy explicitly",
       "owner_role": "Product/design lead",
-      "gate": "G2\u2013G3",
+      "gate": "G2–G3",
       "dependencies": "REG-06; PRD-04",
       "status": "Open",
       "acceptance_evidence": "Current English-only/source policy preserved until an approved change; test comprehension and terminology with each club market.",
@@ -4203,7 +4587,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4222,7 +4606,7 @@
       "priority": "P1",
       "task": "Complete onboarding, consent, help and support journeys",
       "owner_role": "Product/design lead",
-      "gate": "G2\u2013G3",
+      "gate": "G2–G3",
       "dependencies": "AUT-03; PAY-02",
       "status": "Open",
       "acceptance_evidence": "New supporter, returning member, denied staff, missing record and recoverable payment flows have clear human support escalation.",
@@ -4235,7 +4619,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4254,7 +4638,7 @@
       "priority": "P1",
       "task": "Verify runtime flags and deep-link authorization everywhere",
       "owner_role": "Product/design lead",
-      "gate": "G2\u2013G3",
+      "gate": "G2–G3",
       "dependencies": "ARC-05; AUT-06",
       "status": "Open",
       "acceptance_evidence": "Build capability, club policy, runtime enablement and user authority agree; direct links/cached sessions cannot re-enable blocked operations.",
@@ -4267,7 +4651,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4288,7 +4672,7 @@
       "priority": "P2",
       "task": "Validate product analytics and club success measures",
       "owner_role": "Product/design lead",
-      "gate": "G2\u2013G3",
+      "gate": "G2–G3",
       "dependencies": "OPS-02; REG-02",
       "status": "Open",
       "acceptance_evidence": "Privacy-approved events distinguish prepared checkout, dialer opened, evidence allocated and active member; no inflated conversion success.",
@@ -4301,7 +4685,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4357,20 +4741,22 @@
         "uploadEvidence": "Separate verified Implementation 04 upload receipt"
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
-        "external_acceptance_status": "blocked",
+        "external_acceptance_status": "not_verified",
         "evidence_ids": [
           "EV-PAYMENT-LOCAL",
           "EV-CI-SOURCE",
-          "EV-HOSTED-CI"
+          "EV-HOSTED-CI",
+          "EV-P2-LINEAGE",
+          "EV-P2-WEB"
         ],
         "blocker_evidence_ids": [
           "EV-HOSTED-CI"
         ],
-        "remaining_acceptance": "Selected provenance and source gates exist; required hosted jobs, signed artifacts and checked-artifact deployment binding remain open.",
+        "remaining_acceptance": "Immutable phase2 source reconstruction and web shared-source/artifact seal recorded. Exact hosted/release/native artifacts and named current-candidate approval remain unverified.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -4398,23 +4784,26 @@
       "implementation_06_note": "Manual Node bank passes on22.16.0 but required22.23.2 is preserved; Dart/Flutter and full Next dependencies absent. Main verifier reports blocked; no claim of complete pinned workspace validation.",
       "implementation_07_note": "Strict gate remains blocked for Node22.16.0 versus22.23.2 and absent Dart/Flutter. React/Next dependency registry read fails EAI_AGAIN; no complete application build or browser run.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
-        "external_acceptance_status": "blocked",
+        "external_acceptance_status": "not_verified",
         "evidence_ids": [
           "EV-TOOLCHAIN",
           "EV-FLUTTER-WORKSPACE",
           "EV-WEB-LOCAL",
           "EV-WEB-DEPS",
-          "EV-FEATURE-AVAILABILITY"
+          "EV-FEATURE-AVAILABILITY",
+          "EV-P2-FLUTTER",
+          "EV-P2-WEB",
+          "EV-P2-COMBINED"
         ],
         "blocker_evidence_ids": [
           "EV-HOSTED-CI",
           "EV-BACKEND-QUOTA"
         ],
-        "remaining_acceptance": "Final active-workspace analysis and repaired package scopes pass. Web typecheck, lint, build, unit tests and size pass with one skip retained. The initial aggregate failure is preserved. Fresh checkout, hosted exact-candidate verification, native/asset acceptance and skip disposition remain required.",
+        "remaining_acceptance": "Strict workspace analyzer, web115 files/993pass/1 gated live-smoke skip and combined1235 local contracts verified. Fresh raw Flutter aggregate exited1 with23 of28 packages passing;four wrong app invocations andthree core_theme assertions need repaired reruns. Fresh clone, all native builds and hosted candidate checks remain required.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -4439,21 +4828,24 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
-        "external_acceptance_status": "blocked",
+        "external_acceptance_status": "not_verified",
         "evidence_ids": [
           "EV-PAYMENT-LOCAL",
           "EV-SUPABASE-REPLAY",
           "EV-EDGE-LOCAL",
-          "EV-SOURCE-RPC-TIMEOUT"
+          "EV-SOURCE-RPC-TIMEOUT",
+          "EV-P2-IDENTITY",
+          "EV-P2-GATEWAY",
+          "EV-P2-COMBINED"
         ],
         "blocker_evidence_ids": [
           "EV-BACKEND-QUOTA"
         ],
-        "remaining_acceptance": "Fresh local Supabase replay passes 37 contracts/678 assertions plus 46 races; Node688 and Deno293 pass. Actual isolated D1/Workers/Access integration and hosted service restoration remain pending.",
+        "remaining_acceptance": "Actual local SQLite identity/dispatch/gateway/browser behavior is executed. Real isolated D1/Workers/Access/RPC/replication/provider acceptance remains open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -4515,7 +4907,7 @@
       "implementation_07_note": "127 new Node cases and three new Python checks cover history ownership, pagination, old receipts, storage/lifecycle failures, notification URL redirection and read-only behavior. Hosted/D1/device acceptance not completed.",
       "implementation_08_note": "Added 81 Node tests including five independent-connection races; tests use actual SQLite/source classes and a separate inbox. Hosted D1/Workers, full multi-club app acceptance and independent security remain open.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4523,10 +4915,12 @@
         "evidence_ids": [
           "EV-SCOPE",
           "EV-PAYMENT-LOCAL",
-          "EV-EDGE-LOCAL"
+          "EV-EDGE-LOCAL",
+          "EV-P2-COMBINED",
+          "EV-P2-BROWSER"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Selected tenant negatives and five-club identity inventory run; all five legitimate journeys/storage/realtime/cache/export/deep-link matrix remains open.",
+        "remaining_acceptance": "Local negative club/actor/body/credential checks and rendered tenant-switch/lifecycle tests pass. Complete intended five-club role/device/provider matrix remains open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -4551,7 +4945,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4584,7 +4978,7 @@
       "release_accepted": false,
       "continuation_note": "Three new independent local SQLite-connection journal races pass; actual target-runtime/load task remains Open.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4616,7 +5010,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4650,14 +5044,16 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P2-BROWSER"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Two Chromium portal scopes pass keyboard/touch/axe and200percent-equivalent/text checks. Full native assistive technology, screen-reader/real zoom/visual reference and named sign-off remain open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -4682,7 +5078,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4714,21 +5110,24 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
-        "external_acceptance_status": "blocked",
+        "external_acceptance_status": "not_verified",
         "evidence_ids": [
           "EV-SCOPE",
           "EV-HOSTED-CI",
-          "EV-BRANCH-PROTECTION"
+          "EV-BRANCH-PROTECTION",
+          "EV-P2-LINEAGE",
+          "EV-P2-WEB",
+          "EV-P2-NATIVE"
         ],
         "blocker_evidence_ids": [
           "EV-HOSTED-CI",
           "EV-BACKEND-QUOTA"
         ],
-        "remaining_acceptance": "This living task ledger preserves scope and failures; full per-surface evidence and accountable go/no-go dossiers remain absent.",
+        "remaining_acceptance": "Phase2 dossier reports exact source changes, passed/failed/pending checks and external blockers. It remains NO-GO until every applicable release acceptance criterion is evidenced.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -4753,7 +5152,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4805,7 +5204,7 @@
       },
       "implementation_08_note": "Added private capped per-club queue health with explicit non-snapshot semantics and no event/user IDs. Production metrics ingestion, dashboards, alerts and privacy approval are not complete.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4837,7 +5236,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4878,7 +5277,7 @@
       ],
       "implementation_08_note": "Added SQL-guarded event-delivery state transitions, separate review-principal redrive, lease-expiry accounting and immutable command history. Actual on-call operation, retention and hosted recovery drill remain open.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4945,7 +5344,7 @@
         "uploadEvidence": "Separate verified Implementation 04 upload receipt"
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4977,7 +5376,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5018,7 +5417,7 @@
       ],
       "implementation_05_note": "Added bounded expiry of browser login/rotation replay ciphertext without requiring keys, provider credentials or enabled login. No schedule deployed, audit deletion or complete account-erasure policy implemented.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5060,7 +5459,7 @@
       "implementation_07_note": "Hardened receiving-side notification URL/action handling, generic lock-screen text, exact-window focus and independent cosmetic badge failure. Sender authentication, subscription tenant lifecycle and dispatch receipts remain open.",
       "implementation_08_note": "Added disabled scheduled source and a bounded one-event-per-configured-club runner; no actual Cron schedule or provider notification was enabled.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5092,7 +5491,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5126,7 +5525,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5145,7 +5544,7 @@
       "priority": "P0",
       "task": "Map Rwanda storage/transfer obligations to actual architecture",
       "owner_role": "Privacy/legal lead",
-      "gate": "G0\u2013G3",
+      "gate": "G0–G3",
       "dependencies": "SEC-03",
       "status": "Open",
       "acceptance_evidence": "Controller/processor roles, applicable registrations and valid foreign-storage authorization evidenced for DB/replicas/logs/backups/processors.",
@@ -5158,7 +5557,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5177,7 +5576,7 @@
       "priority": "P1",
       "task": "Approve data map, notices, lawful grounds and retention",
       "owner_role": "Privacy/legal lead",
-      "gate": "G0\u2013G3",
+      "gate": "G0–G3",
       "dependencies": "REG-01",
       "status": "Open",
       "acceptance_evidence": "Personal-data processing inventory and processor contracts cover consent, rights, children, access requests, erasure and breach response.",
@@ -5190,7 +5589,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5209,7 +5608,7 @@
       "priority": "P1",
       "task": "Complete Burundi legal and payment launch assessment",
       "owner_role": "Privacy/legal lead",
-      "gate": "G0\u2013G3",
+      "gate": "G0–G3",
       "dependencies": "REG-02; PRD-01",
       "status": "Open",
       "acceptance_evidence": "Qualified local assessment documents privacy/transfers, consumer terms, payment model and contest/age requirements or scope restrictions.",
@@ -5222,7 +5621,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5241,7 +5640,7 @@
       "priority": "P1",
       "task": "Complete DR Congo legal and payment launch assessment",
       "owner_role": "Privacy/legal lead",
-      "gate": "G0\u2013G3",
+      "gate": "G0–G3",
       "dependencies": "REG-02; PRD-01",
       "status": "Open",
       "acceptance_evidence": "Qualified local assessment documents privacy/transfers, consumer terms, payment model and contest/age requirements or scope restrictions.",
@@ -5254,7 +5653,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5273,7 +5672,7 @@
       "priority": "P1",
       "task": "Complete Zambia legal and payment launch assessment",
       "owner_role": "Privacy/legal lead",
-      "gate": "G0\u2013G3",
+      "gate": "G0–G3",
       "dependencies": "REG-02; PRD-01",
       "status": "Open",
       "acceptance_evidence": "Qualified local assessment documents privacy/transfers, consumer terms, payment model and contest/age requirements or scope restrictions.",
@@ -5286,7 +5685,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5305,7 +5704,7 @@
       "priority": "P1",
       "task": "Approve all club commercial, price, currency and receiver records",
       "owner_role": "Privacy/legal lead",
-      "gate": "G0\u2013G3",
+      "gate": "G0–G3",
       "dependencies": "REG-02",
       "status": "Open",
       "acceptance_evidence": "Each country/club has authorized merchant identity, settlement ownership, unit rules, refund terms and carrier/payment routes.",
@@ -5318,7 +5717,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5337,7 +5736,7 @@
       "priority": "P1",
       "task": "Complete Mozambique legal and payment launch assessment",
       "owner_role": "Privacy/legal lead",
-      "gate": "G0\u2013G3",
+      "gate": "G0–G3",
       "dependencies": "REG-02; REG-06",
       "status": "Open",
       "acceptance_evidence": "Qualified local assessment plus Costa do Sol native IDs, crest/palette, receiver routes and tenant-1001 collision check completed.",
@@ -5350,7 +5749,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5371,7 +5770,7 @@
       "priority": "P0",
       "task": "Resolve contest/reward and store-billing classification",
       "owner_role": "Privacy/legal lead",
-      "gate": "G0\u2013G3",
+      "gate": "G0–G3",
       "dependencies": "REG-02",
       "status": "Open",
       "acceptance_evidence": "Counsel/product record free versus paid entry, redemption, age and territories; each membership benefit classified physical/digital under current store rules.",
@@ -5384,7 +5783,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5403,7 +5802,7 @@
       "priority": "P1",
       "task": "Approve white-label submission and brand ownership",
       "owner_role": "Privacy/legal lead",
-      "gate": "G0\u2013G3",
+      "gate": "G0–G3",
       "dependencies": "REG-02",
       "status": "Open",
       "acceptance_evidence": "Content-provider/developer-account responsibilities and per-club authorization documented; Apple 4.2.6 template and 4.3 duplicate sports-team variant risks assessed.",
@@ -5416,7 +5815,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5435,7 +5834,7 @@
       "priority": "P1",
       "task": "Complete current store and public-policy submission package",
       "owner_role": "Privacy/legal lead",
-      "gate": "G0\u2013G3",
+      "gate": "G0–G3",
       "dependencies": "REG-08; REG-09; QAT-10",
       "status": "Open",
       "acceptance_evidence": "Reviewer access, support, privacy/Data Safety, in-app/web deletion paths, age ratings, required SDK/target levels and regional billing rules verified at submission.",
@@ -5448,7 +5847,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5467,7 +5866,7 @@
       "priority": "P0",
       "task": "Approve narrowly scoped staged rollout instead of big-bang release",
       "owner_role": "Release manager",
-      "gate": "G4\u2013G5",
+      "gate": "G4–G5",
       "dependencies": "REP-10; ARC-01",
       "status": "Open",
       "acceptance_evidence": "Public read-only, authenticated membership, financial products and club/platform expansions have separate acceptance gates and kill switches.",
@@ -5480,7 +5879,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5499,7 +5898,7 @@
       "priority": "P1",
       "task": "Verify infrastructure-as-code and environmental isolation",
       "owner_role": "Release manager",
-      "gate": "G4\u2013G5",
+      "gate": "G4–G5",
       "dependencies": "DAT-03; SEC-10",
       "status": "Open",
       "acceptance_evidence": "Approved accounts, regions, resource IDs, secrets, routes and principals read back; no placeholders or production test overrides.",
@@ -5512,7 +5911,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5537,7 +5936,7 @@
       "priority": "P1",
       "task": "Release a read-only pilot only after its own gates pass",
       "owner_role": "Release manager",
-      "gate": "G4\u2013G5",
+      "gate": "G4–G5",
       "dependencies": "WEB-01; WEB-02; WEB-09; OPS-03; QAT-01",
       "status": "Open",
       "acceptance_evidence": "Approved fresh source, rights, public read behavior, domain/security/operational checks and owner acceptance tied to exact artifact.",
@@ -5550,7 +5949,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5571,7 +5970,7 @@
       "priority": "P1",
       "task": "Run supervised authenticated membership pilot",
       "owner_role": "Release manager",
-      "gate": "G4\u2013G5",
+      "gate": "G4–G5",
       "dependencies": "AUT-10; PAY-10; MOB-10; WEB-10; QAT-10",
       "status": "Open",
       "acceptance_evidence": "Real isolated end-to-end sign-in/checkout/provider evidence/renewal/recovery and support checks succeed before real-money expansion.",
@@ -5584,7 +5983,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5605,7 +6004,7 @@
       "priority": "P0",
       "task": "Rehearse single-writer cutover with versioned client admission",
       "owner_role": "Release manager",
-      "gate": "G4\u2013G5",
+      "gate": "G4–G5",
       "dependencies": "DAT-10; REL-02; PAY-10",
       "status": "Open",
       "acceptance_evidence": "Final consistent export/deltas, drained jobs, old-client policy, source freeze, reconciliation and target writer enablement executed in rehearsal.",
@@ -5618,7 +6017,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5637,7 +6036,7 @@
       "priority": "P0",
       "task": "Rehearse rollback after target financial writes",
       "owner_role": "Release manager",
-      "gate": "G4\u2013G5",
+      "gate": "G4–G5",
       "dependencies": "REL-05; OPS-06",
       "status": "Open",
       "acceptance_evidence": "Document restore/forward-reconcile strategy; no traffic flip to stale source; customer obligations and original references preserved.",
@@ -5650,7 +6049,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5669,7 +6068,7 @@
       "priority": "P1",
       "task": "Obtain named go/no-go approvals and staged store rollout",
       "owner_role": "Release manager",
-      "gate": "G4\u2013G5",
+      "gate": "G4–G5",
       "dependencies": "REG-10; QAT-10; REL-06",
       "status": "Open",
       "acceptance_evidence": "Security, privacy, finance, product, QA, ops and club owners approve exact scope; percentages/observation windows chosen from evidence.",
@@ -5683,7 +6082,7 @@
       "release_accepted": false,
       "continuation_note": "Approval-envelope validation implemented; no named owner approval, environment approval or rollout performed.",
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5705,7 +6104,7 @@
       "priority": "P1",
       "task": "Observe and reconcile the launch before expanding clubs",
       "owner_role": "Release manager",
-      "gate": "G4\u2013G5",
+      "gate": "G4–G5",
       "dependencies": "REL-07; OPS-09; OPS-10",
       "status": "Open",
       "acceptance_evidence": "Per-club errors, support demand, provider settlement and duplicate-prevention checks meet budgets; pause criteria enforced.",
@@ -5718,7 +6117,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5737,7 +6136,7 @@
       "priority": "P1",
       "task": "Retire source services only after dependency and restore closure",
       "owner_role": "Release manager",
-      "gate": "G4\u2013G5",
+      "gate": "G4–G5",
       "dependencies": "REL-08; DAT-09",
       "status": "Open",
       "acceptance_evidence": "No remaining client/function/job/storage dependency; archives restorable; keys revoked; paid obligations and retention approvals complete.",
@@ -5750,7 +6149,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5769,7 +6168,7 @@
       "priority": "P2",
       "task": "Maintain continuous post-launch assurance and policy watch",
       "owner_role": "Release manager",
-      "gate": "G4\u2013G5",
+      "gate": "G4–G5",
       "dependencies": "REL-08",
       "status": "Open",
       "acceptance_evidence": "Periodic access, dependency, privacy, store-policy, rights, disaster-recovery and cost reviews have accountable owners.",
@@ -5782,7 +6181,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:12:17.726055+00:00",
+        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5806,46 +6205,52 @@
         "id": "QA-CHECK-01",
         "source_position": 1,
         "source_line": 226,
-        "source_text": "**QA-00 \u2014 Execution prerequisites:** Confirm stable disk capacity, pinned tools, isolated service health and required per-club build inputs before each resource-heavy run. Retain current source/configuration hashes. Official Flutter 3.44.9 now passes standard iOS builds; default recovered external simulator paths remain open with an owned internal-set workaround (QA-ENV-011). Current Home checkpoint recorded transient Docker timeouts, then resumed the exact owned services and verified four tenant configuration responses plus Auth health. No global reset or data loss; root cause remains unconfirmed.",
+        "source_text": "**QA-00 — Execution prerequisites:** Confirm stable disk capacity, pinned tools, isolated service health and required per-club build inputs before each resource-heavy run. Retain current source/configuration hashes. Official Flutter 3.44.9 now passes standard iOS builds; default recovered external simulator paths remain open with an owned internal-set workaround (QA-ENV-011). Current Home checkpoint recorded transient Docker timeouts, then resumed the exact owned services and verified four tenant configuration responses plus Auth health. No global reset or data loss; root cause remains unconfirmed.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
           "evidence_ids": [
             "EV-TOOLCHAIN",
-            "EV-SCOPE"
+            "EV-SCOPE",
+            "EV-P2-FLUTTER",
+            "EV-P2-WEB",
+            "EV-P2-LINEAGE"
           ],
           "execution_state": "open",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
         }
       },
       {
         "id": "QA-CHECK-02",
         "source_position": 2,
         "source_line": 227,
-        "source_text": "**QA-01 \u2014 Complete case mapping:** Reconcile the consolidated 47 native rendered entries plus 15 compatibility redirects, 51 web destinations plus one compatibility redirect, with all components, overlays, states, roles, clubs, platforms and actual feature availability. Complete the coverage audit; resolve gaps in API/RPC/table/policy/storage/job coverage without inventing a final case count.",
+        "source_text": "**QA-01 — Complete case mapping:** Reconcile the consolidated 47 native rendered entries plus 15 compatibility redirects, 51 web destinations plus one compatibility redirect, with all components, overlays, states, roles, clubs, platforms and actual feature availability. Complete the coverage audit; resolve gaps in API/RPC/table/policy/storage/job coverage without inventing a final case count.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
           "evidence_ids": [
-            "EV-SCOPE"
+            "EV-SCOPE",
+            "EV-P2-LINEAGE"
           ],
           "execution_state": "open",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
         }
       },
       {
         "id": "QA-CHECK-03",
         "source_position": 3,
         "source_line": 228,
-        "source_text": "**QA-01/06 \u2014 Reference coverage:** Bind every applicable screen/state to a current Revolut comparator or justified adaptation; resolve missing platform/theme/state references and preserve club identity and workflows.",
+        "source_text": "**QA-01/06 — Reference coverage:** Bind every applicable screen/state to a current Revolut comparator or justified adaptation; resolve missing platform/theme/state references and preserve club identity and workflows.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "not_verified",
@@ -5862,7 +6267,7 @@
         "id": "QA-CHECK-04",
         "source_position": 4,
         "source_line": 229,
-        "source_text": "**QA-02 \u2014 Full current baseline:** Run the remaining complete Flutter/package/integration and supported Playwright project suites on the revised scope, measure coverage, refresh dependency/security checks and retain all failure/skip distinctions. Passing affected suites is not a full candidate pass. Earlier source-bound backend and web results are retained in the readiness report; no fresh full browser/SQL/Edge replay is claimed by this Home checkpoint. The subsequent Home layout checkpoint passes 2,332 tests (2,306 shared-package and 26 app tests), zero skips, and strict analysis on final shared UI source; 16 meaningful UI regression cases were added. Coverage is not remeasured.",
+        "source_text": "**QA-02 — Full current baseline:** Run the remaining complete Flutter/package/integration and supported Playwright project suites on the revised scope, measure coverage, refresh dependency/security checks and retain all failure/skip distinctions. Passing affected suites is not a full candidate pass. Earlier source-bound backend and web results are retained in the readiness report; no fresh full browser/SQL/Edge replay is claimed by this Home checkpoint. The subsequent Home layout checkpoint passes 2,332 tests (2,306 shared-package and 26 app tests), zero skips, and strict analysis on final shared UI source; 16 meaningful UI regression cases were added. Coverage is not remeasured.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
@@ -5871,21 +6276,25 @@
             "EV-FLUTTER-WORKSPACE",
             "EV-WEB-LOCAL",
             "EV-EDGE-LOCAL",
-            "EV-SUPABASE-REPLAY"
+            "EV-SUPABASE-REPLAY",
+            "EV-P2-FLUTTER",
+            "EV-P2-WEB",
+            "EV-P2-COMBINED"
           ],
           "execution_state": "open",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
         }
       },
       {
         "id": "QA-CHECK-06",
         "source_position": 6,
         "source_line": 231,
-        "source_text": "**QA-03/08 \u2014 Payment evidence binding:** Complete receiver/payee, currency and provider-evidence checks in fallback matching; revalidate receiver changes and expiry after lock waits (QA-MONEY-007/008). Locked automatic/manual intent allocation and ticket/shop checkout revalidation pass, including receiver changes after waits. Paid membership binds provider, country and recipient to the checkout snapshot. Candidate matching now filters merchant, currency and expiry before ambiguity/limit checks (QA-MONEY-016). The previously probed server receipt handler stores null club/provider metadata and trusts client-submitted message text (QA-MONEY-019/020). These are backend/future management-gateway contract gaps, not supporter-app features. Define authenticated management-device/operator submission, server-bound club/merchant scope and replay-resistant receipt validation without restoring any mobile collector. Group/initiative/other fallback receiver changes and the trusted server receipt boundary remain open.",
+        "source_text": "**QA-03/08 — Payment evidence binding:** Complete receiver/payee, currency and provider-evidence checks in fallback matching; revalidate receiver changes and expiry after lock waits (QA-MONEY-007/008). Locked automatic/manual intent allocation and ticket/shop checkout revalidation pass, including receiver changes after waits. Paid membership binds provider, country and recipient to the checkout snapshot. Candidate matching now filters merchant, currency and expiry before ambiguity/limit checks (QA-MONEY-016). The previously probed server receipt handler stores null club/provider metadata and trusts client-submitted message text (QA-MONEY-019/020). These are backend/future management-gateway contract gaps, not supporter-app features. Define authenticated management-device/operator submission, server-bound club/merchant scope and replay-resistant receipt validation without restoring any mobile collector. Group/initiative/other fallback receiver changes and the trusted server receipt boundary remain open.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
@@ -5904,7 +6313,7 @@
         "id": "QA-CHECK-07",
         "source_position": 7,
         "source_line": 232,
-        "source_text": "**QA-03/08 \u2014 Atomic financial posting:** Prove intent, ledger, reconciliation, target fulfillment and reward changes remain consistent under partial failure, concurrency and retry; prevent duplicate/out-of-order evidence and transaction reuse from allocating value twice. Generic allocation and commerce SQL contracts pass in the current full vendor replay. Paid membership activation, fulfillment reconciliation and exact-once renewal pass through real Auth/PostgREST and the actual parser with synthetic scoped receipts. Seven payment/parser routines now acquire the same raw-evidence mutex before row locks; eight added races cover a newly inserted review, allocation/rejection, parser claim/persistence, commerce and direct parser foreign-key inserts (QA-MONEY-021). Current complete database total is 45 races. Other generic-intent linked fulfillment and group/initiative posting atomicity remain open.",
+        "source_text": "**QA-03/08 — Atomic financial posting:** Prove intent, ledger, reconciliation, target fulfillment and reward changes remain consistent under partial failure, concurrency and retry; prevent duplicate/out-of-order evidence and transaction reuse from allocating value twice. Generic allocation and commerce SQL contracts pass in the current full vendor replay. Paid membership activation, fulfillment reconciliation and exact-once renewal pass through real Auth/PostgREST and the actual parser with synthetic scoped receipts. Seven payment/parser routines now acquire the same raw-evidence mutex before row locks; eight added races cover a newly inserted review, allocation/rejection, parser claim/persistence, commerce and direct parser foreign-key inserts (QA-MONEY-021). Current complete database total is 45 races. Other generic-intent linked fulfillment and group/initiative posting atomicity remain open.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
@@ -5924,7 +6333,7 @@
         "id": "QA-CHECK-08",
         "source_position": 8,
         "source_line": 233,
-        "source_text": "**QA-03/07/08 \u2014 Interrupted processing:** Exercise crash/response-loss/stalled-parser recovery and durable notification outcomes after a committed transaction. Recovery must neither lose a valid posting nor duplicate it. Historical current-source-bound intent/commerce handler and process-termination checks remain recorded. Current vendor replay reruns parser claim and takeover races; actual membership handler recovery now passes after a committed response is lost and the merchant is rotated/inactivated, with no extra AI interpretation, debit or renewal (QA-MONEY-017). Recovery after saved interpretations/partial business writes outside verified receipts and durable notification delivery remain open.",
+        "source_text": "**QA-03/07/08 — Interrupted processing:** Exercise crash/response-loss/stalled-parser recovery and durable notification outcomes after a committed transaction. Recovery must neither lose a valid posting nor duplicate it. Historical current-source-bound intent/commerce handler and process-termination checks remain recorded. Current vendor replay reruns parser claim and takeover races; actual membership handler recovery now passes after a committed response is lost and the merchant is rotated/inactivated, with no extra AI interpretation, debit or renewal (QA-MONEY-017). Recovery after saved interpretations/partial business writes outside verified receipts and durable notification delivery remain open.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
@@ -5944,48 +6353,55 @@
         "id": "QA-CHECK-09",
         "source_position": 9,
         "source_line": 234,
-        "source_text": "**QA-03/04/05 \u2014 Identity lifecycle:** Complete guest/club entry, OTP invalid/expired/resend/rate-limit behavior, restore/refresh/expiry, logout/account switch, role removal, private data access/export/deletion and concurrent profile/phone edits through actual clients.",
+        "source_text": "**QA-03/04/05 — Identity lifecycle:** Complete guest/club entry, OTP invalid/expired/resend/rate-limit behavior, restore/refresh/expiry, logout/account switch, role removal, private data access/export/deletion and concurrent profile/phone edits through actual clients.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
           "evidence_ids": [
             "EV-EDGE-LOCAL",
             "EV-SUPABASE-REPLAY",
-            "EV-FEATURE-AVAILABILITY"
+            "EV-FEATURE-AVAILABILITY",
+            "EV-P2-IDENTITY",
+            "EV-P2-BROWSER"
           ],
           "execution_state": "open",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
         }
       },
       {
         "id": "QA-CHECK-10",
         "source_position": 10,
         "source_line": 235,
-        "source_text": "**QA-04/05 \u2014 Member lifecycle:** Complete paid-tier selection, authoritative MoMo payment preparation, automatic matched-payment activation/renewal and fan-club/community permissions. The retired application/manual-review/free-tier workflow must remain inaccessible. Current full-schema SQL and actual Auth/REST/parser checks cover paid checkout, server amount and route, provider/recipient binding, automatic activation, exact-once renewal, retained tier/points, receiver-rotation recovery and preserved administrative suspension (QA-MONEY-018). Payment-success cases use directly seeded scoped synthetic receipts. Complete client journeys using server-confirmed payments, contribution intents, statements and totals for all retained clubs. Any message capture is owned by the separate management gateway.",
+        "source_text": "**QA-04/05 — Member lifecycle:** Complete paid-tier selection, authoritative MoMo payment preparation, automatic matched-payment activation/renewal and fan-club/community permissions. The retired application/manual-review/free-tier workflow must remain inaccessible. Current full-schema SQL and actual Auth/REST/parser checks cover paid checkout, server amount and route, provider/recipient binding, automatic activation, exact-once renewal, retained tier/points, receiver-rotation recovery and preserved administrative suspension (QA-MONEY-018). Payment-success cases use directly seeded scoped synthetic receipts. Complete client journeys using server-confirmed payments, contribution intents, statements and totals for all retained clubs. Any message capture is owned by the separate management gateway.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
           "evidence_ids": [
             "EV-PAYMENT-LOCAL",
-            "EV-SUPABASE-REPLAY"
+            "EV-SUPABASE-REPLAY",
+            "EV-P2-GATEWAY",
+            "EV-P2-NATIVE",
+            "EV-P2-BROWSER"
           ],
           "execution_state": "open",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
         }
       },
       {
         "id": "QA-CHECK-12",
         "source_position": 12,
         "source_line": 237,
-        "source_text": "**QA-03/04/05 \u2014 Predict/FET:** Complete eligible/ineligible entry, balances/history, result correction, settlement retry, void and no-winner outcomes. Preserve the existing passing duplicate-entry, overspend and kickoff races.",
+        "source_text": "**QA-03/04/05 — Predict/FET:** Complete eligible/ineligible entry, balances/history, result correction, settlement retry, void and no-winner outcomes. Preserve the existing passing duplicate-entry, overspend and kickoff races.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
@@ -6005,7 +6421,7 @@
         "id": "QA-CHECK-13",
         "source_position": 13,
         "source_line": 238,
-        "source_text": "**QA-03/04/05 \u2014 Tickets/Wallet:** Complete price/capacity and pending/failed/unknown/confirmed purchase outcomes, issue/cancel/refund where implemented, ownership and expiry, Wallet availability/save flow and outbox recovery. Preserve the passing migration/issuance contracts.",
+        "source_text": "**QA-03/04/05 — Tickets/Wallet:** Complete price/capacity and pending/failed/unknown/confirmed purchase outcomes, issue/cancel/refund where implemented, ownership and expiry, Wallet availability/save flow and outbox recovery. Preserve the passing migration/issuance contracts.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
@@ -6025,7 +6441,7 @@
         "id": "QA-CHECK-14",
         "source_position": 14,
         "source_line": 239,
-        "source_text": "**QA-03/04/05 \u2014 Shop:** Complete stock/price authority, stale cart review, last-item races, payment uncertainty, reservation expiry, fulfillment/cancellation/refund and concurrent transition correctness.",
+        "source_text": "**QA-03/04/05 — Shop:** Complete stock/price authority, stale cart review, last-item races, payment uncertainty, reservation expiry, fulfillment/cancellation/refund and concurrent transition correctness.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
@@ -6044,7 +6460,7 @@
         "id": "QA-CHECK-15",
         "source_position": 15,
         "source_line": 240,
-        "source_text": "**QA-05 \u2014 Public websites:** Exercise all 23 public page templates and configured retained-club hosts/identities, content discovery, search, SEO, privacy/support and app/deep links across supported responsive browsers. Current scope includes four-club support/deletion/share identity and tenant-specific root/page metadata/JSON-LD, verified by 48 browser cases. Unconfigured club domains do not inherit Rayon canonicals.",
+        "source_text": "**QA-05 — Public websites:** Exercise all 23 public page templates and configured retained-club hosts/identities, content discovery, search, SEO, privacy/support and app/deep links across supported responsive browsers. Current scope includes four-club support/deletion/share identity and tenant-specific root/page metadata/JSON-LD, verified by 48 browser cases. Unconfigured club domains do not inherit Rayon canonicals.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
@@ -6064,7 +6480,7 @@
         "id": "QA-CHECK-17",
         "source_position": 17,
         "source_line": 242,
-        "source_text": "**QA-05 \u2014 Admin operations:** Complete every retained module and role, actual cross-club API writes/readback, search/filter/sort/pagination, detail-return state, save conflicts, destructive review, bulk partial failure and audit actor/reason/time checks.",
+        "source_text": "**QA-05 — Admin operations:** Complete every retained module and role, actual cross-club API writes/readback, search/filter/sort/pagination, detail-return state, save conflicts, destructive review, bulk partial failure and audit actor/reason/time checks.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
@@ -6083,7 +6499,7 @@
         "id": "QA-CHECK-18",
         "source_position": 18,
         "source_line": 243,
-        "source_text": "**QA-05/06 \u2014 Admin responsive controls:** Finish current-candidate checks for identity/brand/palette/flag controls, text enlargement, keyboard/focus, table density and existing dialog/hydration regressions across supported browsers.",
+        "source_text": "**QA-05/06 — Admin responsive controls:** Finish current-candidate checks for identity/brand/palette/flag controls, text enlargement, keyboard/focus, table density and existing dialog/hydration regressions across supported browsers.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "not_verified",
@@ -6100,7 +6516,7 @@
         "id": "QA-CHECK-19",
         "source_position": 19,
         "source_line": 244,
-        "source_text": "**QA-03 \u2014 API/backend integration:** Extend real application transport coverage for endpoint methods, authorization/tenant boundaries, invalid input, 401/403/404/409/429/5xx, timeout and retry outcomes. Assert UI and persisted state together. Fifteen current real Auth/PostgREST/Edge membership checks pass, including anonymous/foreign-club rejection, denied supporter snapshot writes and committed-response recovery. The historical server SMS-handler probe exposes an open gateway/server receipt boundary; it neither represents a supporter-app feature nor proves an end-to-end live payment.",
+        "source_text": "**QA-03 — API/backend integration:** Extend real application transport coverage for endpoint methods, authorization/tenant boundaries, invalid input, 401/403/404/409/429/5xx, timeout and retry outcomes. Assert UI and persisted state together. Fifteen current real Auth/PostgREST/Edge membership checks pass, including anonymous/foreign-club rejection, denied supporter snapshot writes and committed-response recovery. The historical server SMS-handler probe exposes an open gateway/server receipt boundary; it neither represents a supporter-app feature nor proves an end-to-end live payment.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
@@ -6108,21 +6524,23 @@
             "EV-EDGE-LOCAL",
             "EV-SUPABASE-REPLAY",
             "EV-SOURCE-RPC-TIMEOUT",
-            "EV-BACKEND-QUOTA"
+            "EV-BACKEND-QUOTA",
+            "EV-P2-COMBINED"
           ],
           "execution_state": "blocked",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
         }
       },
       {
         "id": "QA-CHECK-20",
         "source_position": 20,
         "source_line": 245,
-        "source_text": "**QA-03/07 \u2014 Storage/realtime/jobs:** Complete upload type/size/path access, private storage boundaries, cross-account realtime subscriptions and reconnect catch-up, scheduled-job overlap/retries and stale-data behavior. Current scope: actual isolated WebSocket/Flutter-controller recovery passes for both published public match sources. Thirteen real Storage API checks and nine upload-handler/Auth/Storage outcomes verify type/size/path/RLS/tenant/role-removal behavior. Private subscriptions and remaining job behavior remain open; no private bucket is configured.",
+        "source_text": "**QA-03/07 — Storage/realtime/jobs:** Complete upload type/size/path access, private storage boundaries, cross-account realtime subscriptions and reconnect catch-up, scheduled-job overlap/retries and stale-data behavior. Current scope: actual isolated WebSocket/Flutter-controller recovery passes for both published public match sources. Thirteen real Storage API checks and nine upload-handler/Auth/Storage outcomes verify type/size/path/RLS/tenant/role-removal behavior. Private subscriptions and remaining job behavior remain open; no private bucket is configured.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
@@ -6142,103 +6560,116 @@
         "id": "QA-CHECK-21",
         "source_position": 21,
         "source_line": 246,
-        "source_text": "**QA-03/07 \u2014 Integration failure handling:** Exercise all applicable auth-hook, server receipt, notification, football-feed, image-generation and Wallet integration boundaries using approved substitutes/sinks. Verify signatures, authorization, invalid tokens, deduplication, failure/retry and review-before-publication behavior. The earlier server-handler probe confirms missing trusted tenant/provider context and an undefined receipt trust boundary. Specify the separate management-gateway/server contract and local negative regressions; supporter-app collection is excluded. No external provider was contacted in the isolated payment runs.",
+        "source_text": "**QA-03/07 — Integration failure handling:** Exercise all applicable auth-hook, server receipt, notification, football-feed, image-generation and Wallet integration boundaries using approved substitutes/sinks. Verify signatures, authorization, invalid tokens, deduplication, failure/retry and review-before-publication behavior. The earlier server-handler probe confirms missing trusted tenant/provider context and an undefined receipt trust boundary. Specify the separate management-gateway/server contract and local negative regressions; supporter-app collection is excluded. No external provider was contacted in the isolated payment runs.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
           "evidence_ids": [
             "EV-EDGE-LOCAL",
             "EV-PAYMENT-LOCAL",
-            "EV-BACKEND-QUOTA"
+            "EV-BACKEND-QUOTA",
+            "EV-P2-IDENTITY",
+            "EV-P2-GATEWAY",
+            "EV-P2-BROWSER"
           ],
           "execution_state": "blocked",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
         }
       },
       {
         "id": "QA-CHECK-22",
         "source_position": 22,
         "source_line": 247,
-        "source_text": "**QA-04 \u2014 Native prerequisites:** Resolve actual release inputs for all five clubs. The earlier four-club checkpoint found Firebase configuration files and bundled iOS app-icon PNGs absent for Vital'O, Nkana and AS Vita. Costa do Sol production backend URL/key, identities, crest, payment/provider routing and owner review remain unverified. Refresh the input inventory for the exact candidate; retain each missing or provisional input as a blocker. Verify intended integrations, registered identities and real build inputs; absence does not by itself prove a boot crash.",
+        "source_text": "**QA-04 — Native prerequisites:** Resolve actual release inputs for all five clubs. The earlier four-club checkpoint found Firebase configuration files and bundled iOS app-icon PNGs absent for Vital'O, Nkana and AS Vita. Costa do Sol production backend URL/key, identities, crest, payment/provider routing and owner review remain unverified. Refresh the input inventory for the exact candidate; retain each missing or provisional input as a blocker. Verify intended integrations, registered identities and real build inputs; absence does not by itself prove a boot crash.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
           "evidence_ids": [
-            "EV-SCOPE"
+            "EV-SCOPE",
+            "EV-P2-NATIVE"
           ],
           "execution_state": "blocked",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
         }
       },
       {
         "id": "QA-CHECK-23",
         "source_position": 23,
         "source_line": 248,
-        "source_text": "**QA-04 \u2014 Ten native builds/boots:** Build, install and launch all five retained clubs on both Android and iOS. Require ten current-candidate artifact and launch records; reconcile them to the native release inventory above. Verify icons, IDs, tenant/currency, feature flags, capabilities, deep links, bootstrap/backend behavior and actual iOS SwiftPM/CocoaPods resolution. The historical four-club Home checkpoint rebuilt, installed, launched and read back eight main-entrypoint debug artifacts; its evidence is home-layout-20260923/report.json and does not cover Costa do Sol or the final five-club candidate. This is not signing, full-journey or store acceptance.",
+        "source_text": "**QA-04 — Ten native builds/boots:** Build, install and launch all five retained clubs on both Android and iOS. Require ten current-candidate artifact and launch records; reconcile them to the native release inventory above. Verify icons, IDs, tenant/currency, feature flags, capabilities, deep links, bootstrap/backend behavior and actual iOS SwiftPM/CocoaPods resolution. The historical four-club Home checkpoint rebuilt, installed, launched and read back eight main-entrypoint debug artifacts; its evidence is home-layout-20260923/report.json and does not cover Costa do Sol or the final five-club candidate. This is not signing, full-journey or store acceptance.",
         "recorded_checked": false,
         "current": {
-          "implementation_status": "not_verified",
+          "implementation_status": "partial",
           "evidence_ids": [
             "EV-SCOPE",
-            "EV-FEATURE-AVAILABILITY"
+            "EV-FEATURE-AVAILABILITY",
+            "EV-P2-NATIVE"
           ],
           "execution_state": "blocked",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
         }
       },
       {
         "id": "QA-CHECK-24",
         "source_position": 24,
         "source_line": 249,
-        "source_text": "**QA-04 \u2014 Remaining native journeys:** Execute the remaining repaired screenshot/integration journeys, capture iOS separately and expand beyond the earlier synthetic Rayon Club pilot to the complete supporter workflow. Current Home checkpoint passes five Home/auth/settings/deep-link/recovery cases and one Club/squad/player/history case on each platform (12 native case executions), with 20 system captures. These use synthetic repositories/auth; all-club authenticated and provider journeys remain open.",
-        "recorded_checked": false,
-        "current": {
-          "implementation_status": "not_verified",
-          "evidence_ids": [],
-          "execution_state": "open",
-          "checked": false,
-          "release_accepted": false,
-          "closure_link": null,
-          "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
-        }
-      },
-      {
-        "id": "QA-CHECK-25",
-        "source_position": 25,
-        "source_line": 250,
-        "source_text": "**QA-05/07 \u2014 PWA lifecycle:** Verify tab versus installed mode, offline launch/reconnect, session expiry/logout, storage denial/quota, draft preservation during update, old tabs and supported version recovery. Confirm safe treatment of legacy queued mutations and obtain supported Safari/Firefox worker evidence. Current scope: six browser profiles pass real worker origin-loss/reconnect, private membership-cache exclusion, preference storage denial, explicit update cancellation and older-tab draft preservation. Workers retain legacy mutations without replay. Installed mode, durable saved drafts, account expiry across all lifecycle states and arbitrary mixed-version compatibility remain open.",
+        "source_text": "**QA-04 — Remaining native journeys:** Execute the remaining repaired screenshot/integration journeys, capture iOS separately and expand beyond the earlier synthetic Rayon Club pilot to the complete supporter workflow. Current Home checkpoint passes five Home/auth/settings/deep-link/recovery cases and one Club/squad/player/history case on each platform (12 native case executions), with 20 system captures. These use synthetic repositories/auth; all-club authenticated and provider journeys remain open.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
           "evidence_ids": [
-            "EV-WEB-LOCAL"
+            "EV-P2-NATIVE"
           ],
           "execution_state": "open",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
+        }
+      },
+      {
+        "id": "QA-CHECK-25",
+        "source_position": 25,
+        "source_line": 250,
+        "source_text": "**QA-05/07 — PWA lifecycle:** Verify tab versus installed mode, offline launch/reconnect, session expiry/logout, storage denial/quota, draft preservation during update, old tabs and supported version recovery. Confirm safe treatment of legacy queued mutations and obtain supported Safari/Firefox worker evidence. Current scope: six browser profiles pass real worker origin-loss/reconnect, private membership-cache exclusion, preference storage denial, explicit update cancellation and older-tab draft preservation. Workers retain legacy mutations without replay. Installed mode, durable saved drafts, account expiry across all lifecycle states and arbitrary mixed-version compatibility remain open.",
+        "recorded_checked": false,
+        "current": {
+          "implementation_status": "partial",
+          "evidence_ids": [
+            "EV-WEB-LOCAL",
+            "EV-P2-BROWSER"
+          ],
+          "execution_state": "open",
+          "checked": false,
+          "release_accepted": false,
+          "closure_link": null,
+          "owner_decision": null,
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
         }
       },
       {
         "id": "QA-CHECK-26",
         "source_position": 26,
         "source_line": 251,
-        "source_text": "**QA-06 \u2014 Visual acceptance:** Complete matched source/target comparisons for geometry, type, full color roles, density, imagery, copy, controls and overlays on all applicable surfaces. Update evidence without treating widget golden equality as source-fidelity approval. Owner approval from 20 September remains bound to the original gallery/image hashes; exact source fidelity and independent technical acceptance remain separate. Home checkpoint closes QA-UI-004/005/006 locally. Eight new Home images and nine reviewed Membership heading changes bring the register to 1,062 (766 route images and 296 shared variants). Current images do not inherit prior owner approval.",
+        "source_text": "**QA-06 — Visual acceptance:** Complete matched source/target comparisons for geometry, type, full color roles, density, imagery, copy, controls and overlays on all applicable surfaces. Update evidence without treating widget golden equality as source-fidelity approval. Owner approval from 20 September remains bound to the original gallery/image hashes; exact source fidelity and independent technical acceptance remain separate. Home checkpoint closes QA-UI-004/005/006 locally. Eight new Home images and nine reviewed Membership heading changes bring the register to 1,062 (766 route images and 296 shared variants). Current images do not inherit prior owner approval.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "not_verified",
@@ -6257,24 +6688,27 @@
         "id": "QA-CHECK-27",
         "source_position": 27,
         "source_line": 252,
-        "source_text": "**QA-06 \u2014 Accessibility/usability:** Complete keyboard and human screen-reader tasks, contrast/focus/touch targets, compact reflow, article/header control clearance, 200% text/applicable 400% zoom, large native text, reduced motion, themes, permissions and supported orientations. Record actual task outcomes. New checks cover compact control geometry, News reflow at 200/300 percent, and a protected native status inset while scrolling. Android/iOS Home fixtures pass at 200 percent. Human reader, physical-device and remaining screen/state checks remain open.",
+        "source_text": "**QA-06 — Accessibility/usability:** Complete keyboard and human screen-reader tasks, contrast/focus/touch targets, compact reflow, article/header control clearance, 200% text/applicable 400% zoom, large native text, reduced motion, themes, permissions and supported orientations. Record actual task outcomes. New checks cover compact control geometry, News reflow at 200/300 percent, and a protected native status inset while scrolling. Android/iOS Home fixtures pass at 200 percent. Human reader, physical-device and remaining screen/state checks remain open.",
         "recorded_checked": false,
         "current": {
-          "implementation_status": "not_verified",
-          "evidence_ids": [],
+          "implementation_status": "partial",
+          "evidence_ids": [
+            "EV-P2-BROWSER"
+          ],
           "execution_state": "open",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
         }
       },
       {
         "id": "QA-CHECK-28",
         "source_position": 28,
         "source_line": 253,
-        "source_text": "**QA-07 \u2014 Performance:** Measure native cold/warm start, frames, memory and representative operations; web Lighthouse/admin-volume/route behavior; and current database plans/policies/index warnings. Keep existing bundle budgets; old advisor counts need regeneration after schema changes. Current scope: bundle and admin-volume budgets pass. Current cold-cache Lighthouse audit passes eight of nine runs; first Home performance is 0.89 against 0.90. All failures are retained. Native performance, representative database plans and all-route performance remain open.",
+        "source_text": "**QA-07 — Performance:** Measure native cold/warm start, frames, memory and representative operations; web Lighthouse/admin-volume/route behavior; and current database plans/policies/index warnings. Keep existing bundle budgets; old advisor counts need regeneration after schema changes. Current scope: bundle and admin-volume budgets pass. Current cold-cache Lighthouse audit passes eight of nine runs; first Home performance is 0.89 against 0.90. All failures are retained. Native performance, representative database plans and all-route performance remain open.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "not_verified",
@@ -6291,7 +6725,7 @@
         "id": "QA-CHECK-29",
         "source_position": 29,
         "source_line": 254,
-        "source_text": "**QA-07 \u2014 Resilience/operations:** Exercise process death, background/foreground interruption, network loss, timeout before submission/after commit, provider failure and unchanged-input retry. Verify bounded logs/alerts, queue/dead-letter handling, operational recovery and release rollback compatibility.",
+        "source_text": "**QA-07 — Resilience/operations:** Exercise process death, background/foreground interruption, network loss, timeout before submission/after commit, provider failure and unchanged-input retry. Verify bounded logs/alerts, queue/dead-letter handling, operational recovery and release rollback compatibility.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
@@ -6311,7 +6745,7 @@
         "id": "QA-CHECK-30",
         "source_position": 30,
         "source_line": 255,
-        "source_text": "**QA-08 \u2014 Findings closure:** Repair remaining reproduced defects, retest affected shared code and all materially different club variants, and link each closure to reproduction, fix, regression and current evidence. Preserve scoped historical closures and excluded-product findings as such. Earlier source-bound payment, mobile-collector-removal and toolchain closures remain recorded; gateway/server trust findings QA-MONEY-019/020 and other actionable QA remain open. Home findings QA-UI-004/005/006 now have retained reproductions, shared-code fixes, final unit tests and Android/iOS capture evidence. This does not close the findings task as a whole.",
+        "source_text": "**QA-08 — Findings closure:** Repair remaining reproduced defects, retest affected shared code and all materially different club variants, and link each closure to reproduction, fix, regression and current evidence. Preserve scoped historical closures and excluded-product findings as such. Earlier source-bound payment, mobile-collector-removal and toolchain closures remain recorded; gateway/server trust findings QA-MONEY-019/020 and other actionable QA remain open. Home findings QA-UI-004/005/006 now have retained reproductions, shared-code fixes, final unit tests and Android/iOS capture evidence. This does not close the findings task as a whole.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
@@ -6320,21 +6754,23 @@
             "EV-FLUTTER-WORKSPACE",
             "EV-SUPABASE-REPLAY",
             "EV-SOURCE-RPC-TIMEOUT",
-            "EV-FEATURE-AVAILABILITY"
+            "EV-FEATURE-AVAILABILITY",
+            "EV-P2-LINEAGE"
           ],
           "execution_state": "open",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
         }
       },
       {
         "id": "QA-CHECK-31",
         "source_position": 31,
         "source_line": 256,
-        "source_text": "**QA-09 \u2014 Final candidate verification:** Run required final checks, regenerate source/configuration/artifact hashes and current screenshots/traces, reconcile every applicable case and publish the final per-surface readiness decision with separate quality results. Home checkpoint records final source/component/artifact hashes, eight rebuilt main artifacts and separate native fixture evidence; final whole-system candidate acceptance remains open.",
+        "source_text": "**QA-09 — Final candidate verification:** Run required final checks, regenerate source/configuration/artifact hashes and current screenshots/traces, reconcile every applicable case and publish the final per-surface readiness decision with separate quality results. Home checkpoint records final source/component/artifact hashes, eight rebuilt main artifacts and separate native fixture evidence; final whole-system candidate acceptance remains open.",
         "recorded_checked": false,
         "current": {
           "implementation_status": "partial",
@@ -6342,14 +6778,17 @@
             "EV-PAYMENT-LOCAL",
             "EV-SCOPE",
             "EV-HOSTED-CI",
-            "EV-BACKEND-QUOTA"
+            "EV-BACKEND-QUOTA",
+            "EV-P2-LINEAGE",
+            "EV-P2-WEB"
           ],
           "execution_state": "blocked",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
         }
       },
       {
@@ -6467,21 +6906,21 @@
         "id": "QA-CHECK-05",
         "source_position": 5,
         "source_line": 230,
-        "source_text": "**QA-03/08 \u2014 Server payment allocation:** Repair the SQL allocation path that writes invalid payment-intent status `completed`, with meaningful authorization, idempotency and persisted-outcome regressions (QA-MONEY-007). Verified locally: 44 SQL assertions, eight additional concurrency scenarios and seven real isolated Auth/PostgREST journeys. Linked business-target fulfillment remains task 7.",
+        "source_text": "**QA-03/08 — Server payment allocation:** Repair the SQL allocation path that writes invalid payment-intent status `completed`, with meaningful authorization, idempotency and persisted-outcome regressions (QA-MONEY-007). Verified locally: 44 SQL assertions, eight additional concurrency scenarios and seven real isolated Auth/PostgREST journeys. Linked business-target fulfillment remains task 7.",
         "recorded_checked": true
       },
       {
         "id": "QA-CHECK-11",
         "source_position": 11,
         "source_line": 236,
-        "source_text": "**QA-05/07 \u2014 Member recovery:** Complete real account switching, request deadlines, offline restored sessions, failed sign-out and stale-response protection on the current candidate. Retain the already-fixed history and activation regressions. Verified locally on sealed web build `Cmc0QxLAzr6rgw3Gi4lUU` in Chromium, Firefox and WebKit: 63 functional checks plus 12 fixture cleanup assertions across actual isolated Auth/REST/RPC recovery and two-account switching. Includes offline restore, failed sign-out across reload, response loss after contribution commit, late-response rejection and identical-input retry. Only the owned test-port CORS origin is adapted; provider delivery and installed PWA acceptance remain separate.",
+        "source_text": "**QA-05/07 — Member recovery:** Complete real account switching, request deadlines, offline restored sessions, failed sign-out and stale-response protection on the current candidate. Retain the already-fixed history and activation regressions. Verified locally on sealed web build `Cmc0QxLAzr6rgw3Gi4lUU` in Chromium, Firefox and WebKit: 63 functional checks plus 12 fixture cleanup assertions across actual isolated Auth/REST/RPC recovery and two-account switching. Includes offline restore, failed sign-out across reload, response loss after contribution commit, late-response rejection and identical-input retry. Only the owned test-port CORS origin is adapted; provider delivery and installed PWA acceptance remain separate.",
         "recorded_checked": true
       },
       {
         "id": "QA-CHECK-16",
         "source_position": 16,
         "source_line": 241,
-        "source_text": "**QA-05/08 \u2014 Editorial provenance:** Verify the hardcoded home competition, score and champion headline against approved content and all retained-club behavior before deciding whether to retain or replace it (QA-CONT-001). No approved factual source was found in the maintained content records; removed the unbound championship/score and stale navigation fixture/roster claims. Retained live confirmed content, routes and club-specific identity. Four-club unit regressions and 24 browser cases pass; visual/owner acceptance remains separate.",
+        "source_text": "**QA-05/08 — Editorial provenance:** Verify the hardcoded home competition, score and champion headline against approved content and all retained-club behavior before deciding whether to retain or replace it (QA-CONT-001). No approved factual source was found in the maintained content records; removed the unbound championship/score and stale navigation fixture/roster claims. Retained live confirmed content, routes and club-specific identity. Four-club unit regressions and 24 browser cases pass; visual/owner acceptance remains separate.",
         "recorded_checked": true
       }
     ],
@@ -6499,8 +6938,8 @@
       "P2": 2
     },
     "current_implementation": {
-      "not_verified": 92,
-      "partial": 37,
+      "not_verified": 77,
+      "partial": 52,
       "local_implemented": 1
     },
     "local_acceptance_verified": 1,
@@ -6515,5 +6954,56 @@
     "Supersede stale running/failed snapshots only with terminal repaired-candidate evidence; do not delete historical failures.",
     "Never set release_accepted from local tests alone; record exact artifact/config/source, accountable owner and external gates."
   ],
-  "evidence_manifest": "docs/release/production-goal-evidence-2026-09-29.json"
+  "evidence_manifest": "docs/release/production-goal-evidence-2026-09-30.json",
+  "phase2_checkpoint": {
+    "baseline_commit": "f932b2d7bc022f9631aaf30a0a740d9c2a728a78",
+    "source_freeze_sha256": "c7a0bb5824a403a6713d2b2e9622fe4b358f660b19547797785b0a90f99127c5",
+    "source_task_objects_sha256": "3033d0cd53dc3f5c2f2a87805969fcdb797e1da68fc58c907ddf3841c211ff57",
+    "source_task_objects_preserved": 130,
+    "original_open_qa_texts_preserved": 34,
+    "new_current_updates": "partial only; no owner acceptance or closure",
+    "future_source_not_included": true,
+    "release_accepted": false,
+    "evidence_privacy_validation": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930/evidence-privacy-validation.json",
+      "sha256": "abac2422792253d6416c74ac4bbeb2ca31b66b103f2782ceeff4cb6a04c1b86f",
+      "status": "pass",
+      "human_review_status": "pending",
+      "completion_claim": false
+    },
+    "post_test_cosmetic_corrections": {
+      "files": [
+        {
+          "path": "apps/rayon_sports/web/src/lib/admin-role-assignments.ts",
+          "before_sha256": "e7375ce1ddfbdd46a9446c93bde97bec380ba285f27d7bc0468187f9ca492008",
+          "after_sha256": "17aeadd57cc590a26cdb59c05eb3d232666636f29b57ff8891e10f637e082c5d",
+          "bytes": 2148,
+          "correction": "Remove trailing whitespace or duplicate final newline only; no tokens, declarations, function bodies or behavior changed."
+        },
+        {
+          "path": "apps/rayon_sports/web/src/lib/auth-callback.ts",
+          "before_sha256": "4f600506f7a9e6023e7fb57a2cb10297929d806afe4990befcb267d196a953cb",
+          "after_sha256": "3eabd6e0caa57c1c2611f661fd2a093b44f766788645d7f91b6ba4936d496ad0",
+          "bytes": 708,
+          "correction": "Remove trailing whitespace or duplicate final newline only; no tokens, declarations, function bodies or behavior changed."
+        },
+        {
+          "path": "apps/rayon_sports/web/src/lib/data/admin/community.ts",
+          "before_sha256": "0a0e29e7a0d77382220eb63bbc5b6be51bfd27bae954c95c86bec882a7bd0056",
+          "after_sha256": "1d7b8fab8b860677a7c7fd0a2bbdc545169f925ec14f393dc4549bb9d44330a1",
+          "bytes": 1085,
+          "correction": "Remove trailing whitespace or duplicate final newline only; no tokens, declarations, function bodies or behavior changed."
+        },
+        {
+          "path": "cloudflare/supporter-browser-api/scripts/check-deployment.mjs",
+          "before_sha256": "d6d86bd3e978ed820a7c468828b041e07cca89ab84356218cba7168faedef1d4",
+          "after_sha256": "ce869ab1c66f4e0441332cb8687a4f4784b6e76f3811e5ef91f14a117aa6ba22",
+          "bytes": 4983,
+          "correction": "Remove trailing whitespace or duplicate final newline only; no tokens, declarations, function bodies or behavior changed."
+        }
+      ],
+      "scope": "Four post-test cosmetic changes only. Tests/build/seal retain their original tested source hashes; no new exact-byte full candidate or artifact acceptance is inferred. Future phase3 source is excluded.",
+      "release_accepted": false
+    }
+  }
 }

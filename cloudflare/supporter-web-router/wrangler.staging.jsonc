@@ -1,0 +1,26 @@
+{
+  "name": "africlub-supporter-web-router-staging",
+  "main": "src/index.mjs",
+  "compatibility_date": "2026-09-28",
+  "account_id": "",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [],
+  "observability": {
+    "enabled": false
+  },
+  "services": [
+    {
+      "binding": "NEXT_APP",
+      "service": "REPLACE_WITH_REVIEWED_NEXT_APP"
+    },
+    {
+      "binding": "BROWSER_API",
+      "service": "REPLACE_WITH_REVIEWED_BROWSER_API"
+    }
+  ],
+  "vars": {
+    "WEB_ROUTER_ENABLED": "false",
+    "WEB_ORIGIN": ""
+  }
+}

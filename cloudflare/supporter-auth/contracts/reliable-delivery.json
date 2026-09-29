@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "enabledByDefault": false,
+  "migration": "0003_reliable_delivery_control.sql",
+  "requiredPriorMigration": "0002_club_delivery_index.sql",
+  "privateSender": "AuthenticationCodeDelivery.deliverWithReceipt",
+  "privateHealthReader": "OtpQueueHealthReader.read",
+  "healthRequest": {},
+  "maxAttemptsPerChallenge": 3,
+  "noImplicitLegacySender": true,
+  "noRepeatedExternalSend": "Required of the unchanged private sender, not provided by D1 alone.",
+  "acceptedMeaning": "Provider acceptance stored in the identity database; not handset delivery or authenticated session.",
+  "healthContains": [
+    "configured club IDs",
+    "bounded state counts",
+    "oldest pending timestamp",
+    "control revision",
+    "observation timestamp"
+  ],
+  "healthExcludes": [
+    "phone",
+    "code",
+    "token",
+    "user ID",
+    "challenge ID",
+    "provider message ID"
+  ],
+  "quarantineMeaning": "Legacy attempted challenge lacks the new dispatch journal; never automatically resend.",
+  "liveAcceptance": false
+}

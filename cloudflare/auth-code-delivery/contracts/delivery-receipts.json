@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Information-only provider delivery evidence. Not login or payment authority.",
+  "webhook": {
+    "path": "/webhooks/whatsapp/auth-delivery",
+    "methods": [
+      "GET",
+      "POST"
+    ],
+    "postAuthentication": "HMAC-SHA256 over the original request bytes, X-Hub-Signature-256; configured Meta app secret",
+    "verification": "Exact hub.mode=subscribe, matching hub.verify_token, numeric hub.challenge echo",
+    "maxBodyBytes": 65536,
+    "maxStatusEventsPerRequest": 20,
+    "acknowledgement": "HTTP 200 only after atomic persistence or intentionally ignored supported-envelope records"
+  },
+  "privateReader": {
+    "entrypoint": "AuthenticationDeliveryReceiptReader",
+    "method": "readDeliveryStatus",
+    "request": {
+      "clubId": "positive integer",
+      "challengeId": "UUID v4"
+    },
+    "responseFields": [
+      "schemaVersion",
+      "challengeId",
+      "clubId",
+      "providerAccepted",
+      "deliveryState",
+      "reported",
+      "errorCodes",
+      "observedEvents",
+      "informationOnly"
+    ],
+    "deliveryStates": [
+      "unknown",
+      "sent",
+      "delivered",
+      "read",
+      "failed",
+      "conflicting"
+    ],
+    "reportedFields": [
+      "sentAt",
+      "deliveredAt",
+      "readAt",
+      "failedAt",
+      "deletedAt"
+    ],
+    "informationOnly": true,
+    "authority": "Calling service must authenticate and authorize resource ownership. There is no public read API."
+  },
+  "storedFields": [
+    "semantic event hash",
+    "provider account and sender identifiers",
+    "provider message identifier",
+    "keyed recipient commitment",
+    "provider timestamp",
+    "receipt timestamp",
+    "status",
+    "numeric error codes"
+  ],
+  "notStored": [
+    "raw webhook body",
+    "recipient phone number",
+    "code",
+    "free-text error detail",
+    "token",
+    "inbound message content"
+  ],
+  "correlation": [
+    "accepted immutable dispatch message ID",
+    "pre-send binding",
+    "club",
+    "account",
+    "sender",
+    "recipient commitment",
+    "key version",
+    "timestamp window"
+  ],
+  "operationalLimits": {
+    "reconcileBatch": 100,
+    "intakeMaxAgeDays": 8,
+    "futureSkewSeconds": 300,
+    "privateReadEventLimit": 200
+  },
+  "releaseAuthorized": false
+}

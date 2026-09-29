@@ -1,0 +1,1704 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-30",
+  "generatedAtUtc": "2026-09-29T22:51:14.639371+00:00",
+  "scope": "Missing37 membership candidate files, three offline native verification tools and protected recovery host composition for the current five clubs. Existing membership backend/route selection is coordinated separately.",
+  "status": "local native integration implemented; device/provider/store acceptance open",
+  "source": {
+    "candidate": "docs/drive-import/2026-09-28/candidates/implementation-08-source",
+    "archive": "docs/drive-import/2026-09-28/mirror/AFRICLUB_Implementation_08_2026-09-28.zip",
+    "archive_sha256": "4264a115e3974bf6236d90cfd8bc59537f066725d56757b9e03dd256095a8af5",
+    "frozen_comparison": "docs/drive-import/2026-09-28/candidate-08-vs-checkout.tsv",
+    "frozen_comparison_sha256": "8726e6f3d3d271b53428ae0086ce3473d33475444ae99d7a282025cb17d02877",
+    "imported_paths": 40,
+    "original_zip_members_matched": 40,
+    "frozen_comparison_bytes_and_hashes_matched": 40,
+    "source_preserved": true,
+    "historical_ios_source_provenance_reclassified_as_current": false
+  },
+  "totals": {
+    "imported_missing_membership_paths": 37,
+    "imported_verification_tools": 3,
+    "host_existing_files_reconciled": 25,
+    "new_backup_xml": 8,
+    "new_composition_registration_and_regression_files": 3,
+    "owned_paths_in_manifest": 76,
+    "new_active_paths": 51
+  },
+  "runtime": {
+    "flutter": "3.44.9",
+    "dart": "3.12.2",
+    "native_channel": "africlub/native-checkout-recovery/v1",
+    "pins_changed": false,
+    "source_dependencies_added": false
+  },
+  "technical_decisions": [
+    "Keep existing Supabase paid membership flow; NativeMembershipApi injection makes backend choice explicit and prevents passing Supabase JWT into Cloudflare native token port.",
+    "Account/club scope is checked before storage/backend work. Session rotation and background/logout fence in-flight replies; after a sent write a lost identity recheck is unknown.",
+    "Persist exact original checkout/handoff identifiers; lifecycle events never clear markers, create a replacement key, retry automatically or launch an external app.",
+    "Android uses app-private noBackupFilesDir and Keystore AES-256-GCM; no new SMS/CALL_PHONE permissions. Below API26 recovery fails closed without raising unrelated app minSdk.",
+    "iOS uses WhenUnlockedThisDeviceOnly/non-sync Keychain and a protected excluded-from-backup installation anchor; mismatched, weak or ambiguous legacy state blocks recovery.",
+    "Registration enables protected storage capability only. Dart native checkout remains disabled unless the explicit composition selects it.",
+    "The imported dated source-provenance record remains historical evidence; only this report records the current archive/member/hash checks."
+  ],
+  "checks": {
+    "flutter_feature_tests": {
+      "command": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter test --no-pub packages/features/feat_membership/test",
+      "exitCode": 0,
+      "testsPassed": 95,
+      "evidence": {
+        "local_log": "/tmp/africlub-native-membership-flutter-test.log",
+        "sha256": "1464f5f2cd8aa84c15eb88409acf72deae069991c94ba176e605c4408cf9516a"
+      }
+    },
+    "flutter_composition_final_tests": {
+      "command": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter test --no-pub packages/features/feat_membership/test/native_membership_composition_test.dart",
+      "exitCode": 0,
+      "testsPassed": 10,
+      "evidence": {
+        "local_log": "/tmp/africlub-native-composition-final-test.log",
+        "sha256": "fb3d93d685ea9ad7c6551a155ec2de3aaf78300d6e80989f2a61028a37409997"
+      }
+    },
+    "flutter_feature_analyze": {
+      "command": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter analyze --no-pub packages/features/feat_membership",
+      "exitCode": 0,
+      "issues": 0,
+      "evidence": {
+        "local_log": "/tmp/africlub-native-membership-analyze.log",
+        "sha256": "8136396603242927b448a812cef03f80085ae2fa5301a198ffdf9241c1bf9334"
+      }
+    },
+    "pure_dart": {
+      "schemaVersion": 1,
+      "dartExecuted": true,
+      "flutterBridgeVerified": false,
+      "secureStorageVerified": false,
+      "deviceDialerVerified": false,
+      "providerRequests": 0,
+      "dependenciesInstalled": false,
+      "steps": [
+        {
+          "name": "analyze",
+          "exitCode": 0
+        },
+        {
+          "name": "contracts",
+          "exitCode": 0
+        },
+        {
+          "name": "platform-recovery",
+          "exitCode": 0
+        },
+        {
+          "name": "membership-history",
+          "exitCode": 0
+        }
+      ],
+      "dartVersion": "Dart SDK version: 3.12.2 (stable) (Tue Jun 9 01:11:39 2026 -0700) on \"macos_arm64\"",
+      "status": "passed_pure_dart_only",
+      "reason": "Flutter bridge and OS/device acceptance still required",
+      "contractChecksPassed": 72,
+      "platformRecoveryChecksPassed": 12,
+      "historyChecksPassed": 11
+    },
+    "portable_android": {
+      "schemaVersion": 1,
+      "portableJvmCompiled": true,
+      "portableJvmTestsPassed": 69,
+      "androidHostCompiled": false,
+      "androidKeystoreVerified": false,
+      "flutterBridgeVerified": false,
+      "deviceStorageVerified": false,
+      "appsRegistered": 0,
+      "steps": [
+        {
+          "name": "compile",
+          "exitCode": 0
+        },
+        {
+          "name": "contracts",
+          "exitCode": 0
+        }
+      ],
+      "sourceHashes": {
+        "packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/RecoveryProtocol.kt": "173f9ba29baa9994a2bd8c8819b874a7c8f8d1daf8280b0e6ffc549fbac78e68",
+        "packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/EncryptedRecoveryFile.kt": "cb90f7bc88c3d39590ba53e0afbb95c6aa1f44c47b2c901ea484ed4cd5e5eb44",
+        "packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/RecoveryStore.kt": "142ab7064cf6941605712eb29138a587edf8d86d640f81ac3d4a557acd9c2c08",
+        "packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/RecoveryDispatcher.kt": "5ff0c525d5b6833dca1b41098da33dee27c3b4c41aaad3b10d49fb57ccbc061b",
+        "packages/features/feat_membership/native/android/tests/RecoveryContractHarness.kt": "7cd07844aedd436202aa94da305ed874fa693b9a0e53ec7d262dbda27a173261",
+        "packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/AndroidRecoveryHost.kt": "20bdcb4ca9b9193d69b4b85ee79e2cf734cd30cc41a858c692924c538bd3753e",
+        "packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/NativeCheckoutRecoveryPlugin.kt": "ad1f467e08f3ad6530a5942a4484f191f348313c27e793eafef67b33cce6dbe3"
+      },
+      "status": "passed_portable_jvm_only",
+      "reason": "Android host, Keystore, Flutter/Dart and device tests are still required"
+    },
+    "portable_ios": {
+      "schemaVersion": 1,
+      "swiftExecuted": true,
+      "iosHostCompiled": false,
+      "keychainExecuted": false,
+      "flutterCompiled": false,
+      "deviceVerified": false,
+      "networkRequests": 0,
+      "releaseReady": false,
+      "steps": [
+        {
+          "name": "portable_compile",
+          "exitCode": 0
+        },
+        {
+          "name": "portable_tests",
+          "exitCode": 0
+        }
+      ],
+      "compiler": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx26.0\nswift-driver version: 1.168.6",
+      "portableTestsPassed": 68,
+      "status": "passed_portable_only",
+      "reason": "Apple Keychain, iOS host, Dart/Flutter and device checks remain required"
+    },
+    "real_android_host": {
+      "exitCode": 0,
+      "compiler": "Kotlin2.2.20 from existing Gradle cache via temporary local launcher; JRE21.0.8",
+      "sdk": "Android36",
+      "flutterEngine": "5a2a6a42cce67f965cf540fcecf616faca624aa1",
+      "inputs": "all six shared native Kotlin sources plus actual android.jar and pinned Flutter embedding jar",
+      "flags": [
+        "-Werror"
+      ],
+      "evidence": {
+        "local_log": "/tmp/africlub-native-android-host-typecheck.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "keystoreExecuted": false
+    },
+    "real_ios_delegates": {
+      "results": [
+        {
+          "app": "rayon_sports",
+          "exitCode": 0,
+          "command": [
+            "/usr/bin/swiftc",
+            "-typecheck",
+            "-parse-as-library",
+            "-swift-version",
+            "6",
+            "-warnings-as-errors",
+            "-target",
+            "arm64-apple-ios15.5-simulator",
+            "-sdk",
+            "/Volumes/PRO-G40/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk",
+            "-F",
+            "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/cache/artifacts/engine/ios/Flutter.xcframework/ios-arm64_x86_64-simulator",
+            "-import-objc-header",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/ios/Runner/Runner-Bridging-Header.h",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryHost.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryRegistration.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/KeychainRecoveryBlob.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryDispatcher.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryFiles.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryProtocol.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryStore.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/ios/Runner/AppDelegate.swift"
+          ]
+        },
+        {
+          "app": "vitalo",
+          "exitCode": 0,
+          "command": [
+            "/usr/bin/swiftc",
+            "-typecheck",
+            "-parse-as-library",
+            "-swift-version",
+            "6",
+            "-warnings-as-errors",
+            "-target",
+            "arm64-apple-ios15.5-simulator",
+            "-sdk",
+            "/Volumes/PRO-G40/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk",
+            "-F",
+            "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/cache/artifacts/engine/ios/Flutter.xcframework/ios-arm64_x86_64-simulator",
+            "-import-objc-header",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/ios/Runner/Runner-Bridging-Header.h",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryHost.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryRegistration.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/KeychainRecoveryBlob.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryDispatcher.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryFiles.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryProtocol.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryStore.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/ios/Runner/AppDelegate.swift"
+          ]
+        },
+        {
+          "app": "as_vita",
+          "exitCode": 0,
+          "command": [
+            "/usr/bin/swiftc",
+            "-typecheck",
+            "-parse-as-library",
+            "-swift-version",
+            "6",
+            "-warnings-as-errors",
+            "-target",
+            "arm64-apple-ios15.5-simulator",
+            "-sdk",
+            "/Volumes/PRO-G40/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk",
+            "-F",
+            "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/cache/artifacts/engine/ios/Flutter.xcframework/ios-arm64_x86_64-simulator",
+            "-import-objc-header",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/ios/Runner/Runner-Bridging-Header.h",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryHost.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryRegistration.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/KeychainRecoveryBlob.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryDispatcher.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryFiles.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryProtocol.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryStore.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/ios/Runner/AppDelegate.swift"
+          ]
+        },
+        {
+          "app": "nkana",
+          "exitCode": 0,
+          "command": [
+            "/usr/bin/swiftc",
+            "-typecheck",
+            "-parse-as-library",
+            "-swift-version",
+            "6",
+            "-warnings-as-errors",
+            "-target",
+            "arm64-apple-ios15.5-simulator",
+            "-sdk",
+            "/Volumes/PRO-G40/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk",
+            "-F",
+            "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/cache/artifacts/engine/ios/Flutter.xcframework/ios-arm64_x86_64-simulator",
+            "-import-objc-header",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/ios/Runner/Runner-Bridging-Header.h",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryHost.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryRegistration.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/KeychainRecoveryBlob.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryDispatcher.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryFiles.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryProtocol.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryStore.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/ios/Runner/AppDelegate.swift"
+          ]
+        },
+        {
+          "app": "costa_do_sol",
+          "exitCode": 0,
+          "command": [
+            "/usr/bin/swiftc",
+            "-typecheck",
+            "-parse-as-library",
+            "-swift-version",
+            "6",
+            "-warnings-as-errors",
+            "-target",
+            "arm64-apple-ios15.5-simulator",
+            "-sdk",
+            "/Volumes/PRO-G40/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk",
+            "-F",
+            "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/cache/artifacts/engine/ios/Flutter.xcframework/ios-arm64_x86_64-simulator",
+            "-import-objc-header",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/ios/Runner/Runner-Bridging-Header.h",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryHost.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryRegistration.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/KeychainRecoveryBlob.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryDispatcher.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryFiles.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryProtocol.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryStore.swift",
+            "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/ios/Runner/AppDelegate.swift"
+          ]
+        }
+      ],
+      "sharedSources": 7,
+      "swiftVersion": "6.4 compiler, Swift6 language mode",
+      "sdk": "iPhoneSimulator27.0, arm64-apple-ios15.5-simulator",
+      "flags": [
+        "-typecheck",
+        "-warnings-as-errors"
+      ],
+      "keychainExecuted": false,
+      "signedAppBuilt": false
+    },
+    "real_ios_keychain_tests_typecheck": {
+      "exitCode": 0,
+      "command": [
+        "/usr/bin/swiftc",
+        "-I",
+        "/Volumes/PRO-G40/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib",
+        "-typecheck",
+        "-swift-version",
+        "6",
+        "-warnings-as-errors",
+        "-target",
+        "arm64-apple-ios15.5-simulator",
+        "-sdk",
+        "/Volumes/PRO-G40/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk",
+        "-F",
+        "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/cache/artifacts/engine/ios/Flutter.xcframework/ios-arm64_x86_64-simulator",
+        "-F",
+        "/Volumes/PRO-G40/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryHost.swift",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryRegistration.swift",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/KeychainRecoveryBlob.swift",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryDispatcher.swift",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryFiles.swift",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryProtocol.swift",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Sources/RecoveryStore.swift",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/features/feat_membership/native/ios/Tests/KeychainRecoveryIntegrationTests.swift"
+      ],
+      "executed": false,
+      "authoredTests": 9
+    },
+    "repository_boundary": {
+      "exitCode": 0,
+      "activeTextFiles": 1987,
+      "excludedEvidenceFiles": 2282,
+      "evidence": {
+        "local_log": "/tmp/africlub-native-boundary-check.log",
+        "sha256": "7ef7d155553cb5d36cd48b9de83c46862296ae5f9dba7df1fe22851340ecf769"
+      }
+    },
+    "five_app_host_configuration": [
+      {
+        "app": "rayon_sports",
+        "pbxprojValid": true,
+        "sharedSwiftSources": 7,
+        "backupDisabled": true,
+        "smsPermissions": 0
+      },
+      {
+        "app": "vitalo",
+        "pbxprojValid": true,
+        "sharedSwiftSources": 7,
+        "backupDisabled": true,
+        "smsPermissions": 0
+      },
+      {
+        "app": "as_vita",
+        "pbxprojValid": true,
+        "sharedSwiftSources": 7,
+        "backupDisabled": true,
+        "smsPermissions": 0
+      },
+      {
+        "app": "nkana",
+        "pbxprojValid": true,
+        "sharedSwiftSources": 7,
+        "backupDisabled": true,
+        "smsPermissions": 0
+      },
+      {
+        "app": "costa_do_sol",
+        "pbxprojValid": true,
+        "sharedSwiftSources": 7,
+        "backupDisabled": true,
+        "smsPermissions": 0
+      }
+    ],
+    "android_gradle_baseline": [
+      {
+        "app": "rayon_sports",
+        "exitCode": 1,
+        "command": [
+          "./gradlew",
+          ":app:compileDebugKotlin",
+          "--offline",
+          "--console=plain"
+        ]
+      },
+      {
+        "app": "vitalo",
+        "exitCode": 1,
+        "command": [
+          "./gradlew",
+          ":app:compileDebugKotlin",
+          "--offline",
+          "--console=plain"
+        ]
+      },
+      {
+        "app": "as_vita",
+        "exitCode": 1,
+        "command": [
+          "./gradlew",
+          ":app:compileDebugKotlin",
+          "--offline",
+          "--console=plain"
+        ]
+      },
+      {
+        "app": "nkana",
+        "exitCode": 1,
+        "command": [
+          "./gradlew",
+          ":app:compileDebugKotlin",
+          "--offline",
+          "--console=plain"
+        ]
+      },
+      {
+        "app": "costa_do_sol",
+        "exitCode": 1,
+        "command": [
+          "./gradlew",
+          ":app:compileDebugKotlin",
+          "--offline",
+          "--console=plain"
+        ]
+      }
+    ],
+    "pinned_android_precache": {
+      "command": [
+        "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+        "--suppress-analytics",
+        "precache",
+        "--android"
+      ],
+      "startUtc": "2026-09-29T22:39:18.437028+00:00",
+      "endUtc": "2026-09-29T22:40:35.470946+00:00",
+      "elapsedSeconds": 77.197,
+      "exitCode": 0,
+      "engineRevision": "5a2a6a42cce67f965cf540fcecf616faca624aa1",
+      "runtimePinsChanged": false,
+      "evidence": {
+        "local_log": "/tmp/africlub-native-android-precache.log",
+        "sha256": "ec6d046ed0c2335fc814c40d0a36fdc62db89aeb118055538b14589deb6b0898"
+      },
+      "downloadedArtifactIdentity": [
+        {
+          "artifactSet": "android-x86",
+          "files": 2,
+          "jars": [
+            {
+              "path": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/cache/artifacts/engine/android-x86/flutter.jar",
+              "bytes": 115210298,
+              "sha256": "c93552c0610d58302cecca5dea9d81dc88389376189e8141c18782d0dc8d741c"
+            }
+          ]
+        },
+        {
+          "artifactSet": "android-x64",
+          "files": 2,
+          "jars": [
+            {
+              "path": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/cache/artifacts/engine/android-x64/flutter.jar",
+              "bytes": 119880709,
+              "sha256": "6a89914bb2c915c9955fd6ef576b799dedcf74cc70d41e685802c1de8f91d1be"
+            }
+          ]
+        },
+        {
+          "artifactSet": "android-arm",
+          "files": 2,
+          "jars": [
+            {
+              "path": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/cache/artifacts/engine/android-arm/flutter.jar",
+              "bytes": 114674536,
+              "sha256": "9547b43e53d40e35dce90ad587f6b6a2639d6cd79c2b92bb3497c664f50beb40"
+            }
+          ]
+        },
+        {
+          "artifactSet": "android-arm-profile",
+          "files": 4,
+          "jars": [
+            {
+              "path": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/cache/artifacts/engine/android-arm-profile/flutter.jar",
+              "bytes": 44701587,
+              "sha256": "dd6c3e572ea061153b7124a1be1e3924d093b2eea2db4ab1b03432c4f9d79f8c"
+            }
+          ]
+        },
+        {
+          "artifactSet": "android-arm-release",
+          "files": 4,
+          "jars": [
+            {
+              "path": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/cache/artifacts/engine/android-arm-release/flutter.jar",
+              "bytes": 41488093,
+              "sha256": "2faac0d3a0c87cc597eb48adfde998bb38b6411d6da3ebaa3a056febdf974d52"
+            }
+          ]
+        },
+        {
+          "artifactSet": "android-arm64",
+          "files": 2,
+          "jars": [
+            {
+              "path": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/cache/artifacts/engine/android-arm64/flutter.jar",
+              "bytes": 180540423,
+              "sha256": "5f0131c5ad435184068c994c2c9547cb125decc7ff6427218221c85e82934242"
+            }
+          ]
+        },
+        {
+          "artifactSet": "android-arm64-profile",
+          "files": 4,
+          "jars": [
+            {
+              "path": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/cache/artifacts/engine/android-arm64-profile/flutter.jar",
+              "bytes": 45599460,
+              "sha256": "1a9f8566d5b4c6d217448108eac292b2352f703486e2580ebbf4ae7adc6aa0da"
+            }
+          ]
+        },
+        {
+          "artifactSet": "android-arm64-release",
+          "files": 4,
+          "jars": [
+            {
+              "path": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/cache/artifacts/engine/android-arm64-release/flutter.jar",
+              "bytes": 42427411,
+              "sha256": "a3c4d457e4411b2f834085090b53412346beccba947884a12966c9cf63f9233c"
+            }
+          ]
+        },
+        {
+          "artifactSet": "android-x64-profile",
+          "files": 4,
+          "jars": [
+            {
+              "path": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/cache/artifacts/engine/android-x64-profile/flutter.jar",
+              "bytes": 45858695,
+              "sha256": "fa69d78ace7eb22f0391a9d87c465a6f95227d574d2eaa00f0cb45f8be2b3a4d"
+            }
+          ]
+        },
+        {
+          "artifactSet": "android-x64-release",
+          "files": 4,
+          "jars": [
+            {
+              "path": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/cache/artifacts/engine/android-x64-release/flutter.jar",
+              "bytes": 42695680,
+              "sha256": "122a0d26940477ab5c8e836ec82e5d50098912465e0a175e4e2c731fa32d5085"
+            }
+          ]
+        }
+      ]
+    },
+    "android_gradle_after_precache": [
+      {
+        "app": "rayon_sports",
+        "exitCode": 1,
+        "command": [
+          "./gradlew",
+          ":app:compileDebugKotlin",
+          "--offline",
+          "--console=plain"
+        ],
+        "startUtc": "2026-09-29T22:41:20.115947+00:00",
+        "elapsedSeconds": 65.137
+      },
+      {
+        "app": "vitalo",
+        "exitCode": 1,
+        "command": [
+          "./gradlew",
+          ":app:compileDebugKotlin",
+          "--offline",
+          "--console=plain"
+        ],
+        "startUtc": "2026-09-29T22:42:25.252586+00:00",
+        "elapsedSeconds": 125.465
+      },
+      {
+        "app": "as_vita",
+        "exitCode": 1,
+        "command": [
+          "./gradlew",
+          ":app:compileDebugKotlin",
+          "--offline",
+          "--console=plain"
+        ],
+        "startUtc": "2026-09-29T22:44:30.716258+00:00",
+        "elapsedSeconds": 36.812
+      },
+      {
+        "app": "nkana",
+        "exitCode": 1,
+        "command": [
+          "./gradlew",
+          ":app:compileDebugKotlin",
+          "--offline",
+          "--console=plain"
+        ],
+        "startUtc": "2026-09-29T22:45:07.527831+00:00",
+        "elapsedSeconds": 9.021
+      },
+      {
+        "app": "costa_do_sol",
+        "exitCode": 1,
+        "command": [
+          "./gradlew",
+          ":app:compileDebugKotlin",
+          "--offline",
+          "--console=plain"
+        ],
+        "startUtc": "2026-09-29T22:45:16.549235+00:00",
+        "elapsedSeconds": 15.973
+      }
+    ],
+    "android_gradle_dependency_fill": {
+      "app": "rayon_sports",
+      "command": [
+        "./gradlew",
+        ":app:compileDebugKotlin",
+        "--console=plain"
+      ],
+      "exitCode": 0,
+      "startUtc": "2026-09-29T22:43:49.150223+00:00",
+      "elapsedSeconds": 302.646,
+      "pinsChanged": false,
+      "sourcePackagesChanged": false,
+      "deviceOrSignAction": false
+    },
+    "android_gradle_coordinate_fill": {
+      "command": [
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/gradlew",
+        "--project-dir",
+        "/tmp/africlub-pinned-flutter-gradle-deps",
+        "resolveRecoveryEngine",
+        "--console=plain",
+        "--no-daemon"
+      ],
+      "exitCode": 1,
+      "startUtc": "2026-09-29T22:48:37.162960+00:00",
+      "elapsedSeconds": 87.766,
+      "coordinates": [
+        "io.flutter:armeabi_v7a_debug:1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1",
+        "io.flutter:x86_64_debug:1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1",
+        "io.flutter:arm64_v8a_debug:1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1",
+        "io.flutter:flutter_embedding_debug:1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1"
+      ],
+      "repository": "https://storage.googleapis.com/download.flutter.io",
+      "persistentRepositoryConfigurationChanged": false,
+      "sourcePackageVersionsChanged": false
+    }
+  },
+  "remaining_acceptance": [
+    "Actual protected credential supply and frontend/backend selection with accessible reviewed confirmation must be validated in the composed supporter journey.",
+    "Real Android Keystore and iOS Keychain tests, device lock/unlock/reboot/process kill/power interruption/low storage/multi-engine/disposal, encrypted storage policy and exact uncertain recovery semantics.",
+    "Signed five-club full builds and physical-device dialer/network behavior, accessibility and existing paid-membership journey acceptance.",
+    "Reinstall, app-data clearing, restore/rollback and server-authoritative reconciliation; absence of both local halves cannot distinguish new install from lost unresolved state.",
+    "Capacity/retention/erasure/compaction/key-rotation/lost-state operational design; the local store never evicts pending markers.",
+    "Provider reconciliation, deployed backend/auth and store/legal/release acceptance; no provider, signing, deployment or store action was performed."
+  ],
+  "files": [
+    {
+      "path": "packages/features/feat_membership/NATIVE_CHECKOUT.md",
+      "source_sha256": "5488c26167cce572f9fd3396fcedb3c1c658300de4a3fd9fbfc57a9ad7c29a93",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/NATIVE_CHECKOUT.md",
+      "bytes": 3177,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "797a1d1bea2ac74a4d1bce0be18689c90950727df04ce5b2a62d74bb61358193",
+      "active_bytes": 4146,
+      "active_equals_source": false,
+      "why_added": "Documents protected checkout composition, explicit confirmation, original-key recovery and verified versus pending acceptance.",
+      "local_delta": [
+        "Update documentation to dated current local integration and execution evidence while retaining explicit native device/provider/store limitations."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/native_membership.dart",
+      "source_sha256": "71fbc2b8a512e83b6d85a5a07359e751fd74999be179f15e9395f5e8dcca2ec9",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/lib/native_membership.dart",
+      "bytes": 465,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "0230e917a5eaab2413c6125ed0c3fec19ebd3868b772a6d6433c1102e9804dcf",
+      "active_bytes": 466,
+      "active_equals_source": false,
+      "why_added": "Exports the isolated typed native API and recovery controllers without replacing existing membership routes.",
+      "local_delta": [
+        "Pinned Dart formatting and active workspace lint/import ordering; standalone harness package imports use feat_membership."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/native_membership_flutter.dart",
+      "source_sha256": "0ffe1884149489fb0ba52be7a9c21c121de5592c8c2444800ff23af95668c862",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/lib/native_membership_flutter.dart",
+      "bytes": 1029,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "7b76e4550c9eb9d8e108ae9c4dc7469695cd7148e959134e1a650dcd98c5e980",
+      "active_bytes": 1167,
+      "active_equals_source": false,
+      "why_added": "Adds bounded external tel URI handoff; opening a dialer never proves payment success.",
+      "local_delta": [
+        "Pinned Dart formatting and active workspace lint/import ordering; standalone harness package imports use feat_membership."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/native_membership_storage_flutter.dart",
+      "source_sha256": "fa276b6bd8b4f81779c2cf4a156b9f90cb80a2be94341c94a0f0724b3cfe788f",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/lib/native_membership_storage_flutter.dart",
+      "bytes": 1078,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "5dc028f3de7eb2caddf0908180b319a4240a2b38bde47f9165facd194e639ec7",
+      "active_bytes": 1110,
+      "active_equals_source": false,
+      "why_added": "Maps the fixed Android protected channel and native failures; no preferences or plaintext fallback.",
+      "local_delta": [
+        "Pinned Dart formatting and active workspace lint/import ordering; standalone harness package imports use feat_membership."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/native_membership_storage_ios.dart",
+      "source_sha256": "84ca2d6380ba1f526bb0315f737be071a7fa6f8ecbb92db10304cdfdec8e7a5e",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/lib/native_membership_storage_ios.dart",
+      "bytes": 1085,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "077509cd821a777b2787cfa2e031338073c9044aeb3311f7c9e9bc76e847e59a",
+      "active_bytes": 1107,
+      "active_equals_source": false,
+      "why_added": "Maps the same fixed contract to iOS protected storage without sharing credentials or keys.",
+      "local_delta": [
+        "Pinned Dart formatting and active workspace lint/import ordering; standalone harness package imports use feat_membership."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/client.dart",
+      "source_sha256": "1e99ccea768d44ff33a7d6928acf22b2a0794c26dcd05bcef1df541bbf935f9f",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/lib/src/native_checkout/client.dart",
+      "bytes": 8379,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "946ab50bd323f2db2f129189c762750e49ce8095af714a0cfb51bb48ce4d9c2e",
+      "active_bytes": 10707,
+      "active_equals_source": false,
+      "why_added": "Implements the opt-in native bearer gateway with exact schemas, club/session checks and unknown sent-write outcomes.",
+      "local_delta": [
+        "Pinned Dart formatting and active workspace lint/import ordering; standalone harness package imports use feat_membership."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/history.dart",
+      "source_sha256": "60c94ec39cd47336542f3050521e7386c3b8005a9dd887b0a4c01d0d97f4cf69",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/lib/src/native_checkout/history.dart",
+      "bytes": 3492,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "7a03932968ebb45e0c673f3cf69c710310bf89033f74e07885ea82228dc35c90",
+      "active_bytes": 4275,
+      "active_equals_source": false,
+      "why_added": "Provides read-only historical receipt/history contracts that do not grant current membership entitlement.",
+      "local_delta": [
+        "Pinned Dart formatting and active workspace lint/import ordering; standalone harness package imports use feat_membership."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/io_transport.dart",
+      "source_sha256": "4b2eb261aecd4e814a95338305ee36d475e48cd30cd0d98d9850268e3c206c33",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/lib/src/native_checkout/io_transport.dart",
+      "bytes": 2354,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "175658a6221ade05c488000598fc6358de5611f31082c455e6fe85043ea84a8e",
+      "active_bytes": 2778,
+      "active_equals_source": false,
+      "why_added": "Provides bounded single-submit HTTPS transport with system TLS trust, no redirects or financial write retry.",
+      "local_delta": [
+        "Pinned Dart formatting and active workspace lint/import ordering; standalone harness package imports use feat_membership."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/models.dart",
+      "source_sha256": "c53fa5a645a656250a012963474e682a0b5a54e352c75e9a45fd77ea0a5f71e7",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/lib/src/native_checkout/models.dart",
+      "bytes": 10091,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "ef0b71786e13892296fd756c3a041024db79c3e4f008859266a08dbffbc06990",
+      "active_bytes": 12171,
+      "active_equals_source": false,
+      "why_added": "Validates exact wire fields, amounts, club/order/session identity, payment instructions and historical allocation semantics.",
+      "local_delta": [
+        "Pinned Dart formatting and active workspace lint/import ordering; standalone harness package imports use feat_membership."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/payment_handoff.dart",
+      "source_sha256": "5edb06a15f2111eabf312634495fab1f6a051016b836da4cad038e140a194943",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/lib/src/native_checkout/payment_handoff.dart",
+      "bytes": 10169,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "0e7abfa9fca46268e3c3560aa51af0f0feedf9e45e3feaa80e2f5ce0e8005502",
+      "active_bytes": 12653,
+      "active_equals_source": false,
+      "why_added": "Requires explicit reviewed confirmation and server reserve/claim before one dialer attempt; uncertain claims cannot reset.",
+      "local_delta": [
+        "Pinned Dart formatting and active workspace lint/import ordering; standalone harness package imports use feat_membership."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/platform_recovery_store.dart",
+      "source_sha256": "e2a50be206cd7cf2fa815b59133eef009bf05e4d32e65ba3cd66b78506250798",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/lib/src/native_checkout/platform_recovery_store.dart",
+      "bytes": 6901,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "66560f1abb2a84271c93c26a151b1ee3168b0fcdbed1778f22d6ac4a45a94881",
+      "active_bytes": 7538,
+      "active_equals_source": false,
+      "why_added": "Adapts native lease/CAS locking across processes and isolates with bounded scope/value and uncertain-write errors.",
+      "local_delta": [
+        "Pinned Dart formatting and active workspace lint/import ordering; standalone harness package imports use feat_membership."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/ports.dart",
+      "source_sha256": "3fa0673cb00c72c3ca162b24879b3e22013b4976db262b0e0a155e9f32a261f8",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/lib/src/native_checkout/ports.dart",
+      "bytes": 2005,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "603292c5d0113ddf639fd5211b8e9cbaf449e0ce9f8e33b173a5d6df1fe0320c",
+      "active_bytes": 2147,
+      "active_equals_source": false,
+      "why_added": "Defines explicit API, transport, protected recovery and external dialer dependencies without a silent production substitute.",
+      "local_delta": [
+        "Pinned Dart formatting and active workspace lint/import ordering; standalone harness package imports use feat_membership."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/recovery.dart",
+      "source_sha256": "1b6ee975a8056422eb121d1b5dae21d6fe1fa01479e5cb3fdf057df5583fd2c5",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/lib/src/native_checkout/recovery.dart",
+      "bytes": 4194,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "9baa52aa7a15277c4435eed3c9e93cfbf20c01c4207a055617fc0f8dd2d1565f",
+      "active_bytes": 5009,
+      "active_equals_source": false,
+      "why_added": "Persists checkout identity before POST and retains the original request key for explicit recovery.",
+      "local_delta": [
+        "Pinned Dart formatting and active workspace lint/import ordering; standalone harness package imports use feat_membership."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/android/README.md",
+      "source_sha256": "b312c7ecf275962e10e66b75ed434a05598b454ec7d15085936f8290eb4d98ef",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/android/README.md",
+      "bytes": 10696,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "1410d59b1e60d8e909cf1cff0d45ade3a9842a545ebc3f7ef20411279a357fec",
+      "active_bytes": 11020,
+      "active_equals_source": false,
+      "why_added": "Documents Android storage policy, host composition, local check scope and real-device release gates.",
+      "local_delta": [
+        "Update documentation to dated current local integration and execution evidence while retaining explicit native device/provider/store limitations."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/android/contracts/recovery-channel.json",
+      "source_sha256": "cbba5977307e363c6c98c9d9be26f46ab752d7f3e2791ee1a99abb419783b659",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/android/contracts/recovery-channel.json",
+      "bytes": 2039,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "cbba5977307e363c6c98c9d9be26f46ab752d7f3e2791ee1a99abb419783b659",
+      "active_bytes": 2039,
+      "active_equals_source": true,
+      "why_added": "Preserves the strict four-operation versioned Android recovery channel contract.",
+      "local_delta": [],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/AndroidRecoveryHost.kt",
+      "source_sha256": "46bcdae7ea5ce747241323573f41af48a919d0d91e85be3af1122b5878bd7f12",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/AndroidRecoveryHost.kt",
+      "bytes": 3445,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "20bdcb4ca9b9193d69b4b85ee79e2cf734cd30cc41a858c692924c538bd3753e",
+      "active_bytes": 3582,
+      "active_equals_source": false,
+      "why_added": "Binds AES-GCM storage to app-owned no-backup paths and Android Keystore with locked-device and version gates.",
+      "local_delta": [
+        "Replace hidden Android O_DIRECTORY with public O_NOFOLLOW and fstat/S_ISDIR verification before directory fsync; actual SDK compilation validates compatibility."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/EncryptedRecoveryFile.kt",
+      "source_sha256": "cb90f7bc88c3d39590ba53e0afbb95c6aa1f44c47b2c901ea484ed4cd5e5eb44",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/EncryptedRecoveryFile.kt",
+      "bytes": 6010,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "cb90f7bc88c3d39590ba53e0afbb95c6aa1f44c47b2c901ea484ed4cd5e5eb44",
+      "active_bytes": 6010,
+      "active_equals_source": true,
+      "why_added": "Implements authenticated encrypted snapshots, durable atomic replacement, revision/capacity checks and fail-closed corruption.",
+      "local_delta": [],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/NativeCheckoutRecoveryPlugin.kt",
+      "source_sha256": "ad1f467e08f3ad6530a5942a4484f191f348313c27e793eafef67b33cce6dbe3",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/NativeCheckoutRecoveryPlugin.kt",
+      "bytes": 2653,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "ad1f467e08f3ad6530a5942a4484f191f348313c27e793eafef67b33cce6dbe3",
+      "active_bytes": 2653,
+      "active_equals_source": true,
+      "why_added": "Provides one dispatcher owner per Flutter engine; channel arguments cannot choose a path, key alias or owner.",
+      "local_delta": [],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/RecoveryDispatcher.kt",
+      "source_sha256": "5ff0c525d5b6833dca1b41098da33dee27c3b4c41aaad3b10d49fb57ccbc061b",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/RecoveryDispatcher.kt",
+      "bytes": 2493,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "5ff0c525d5b6833dca1b41098da33dee27c3b4c41aaad3b10d49fb57ccbc061b",
+      "active_bytes": 2493,
+      "active_equals_source": true,
+      "why_added": "Enforces exact channel argument sets, lease ownership, feature gates and stable recovery error codes.",
+      "local_delta": [],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/RecoveryProtocol.kt",
+      "source_sha256": "173f9ba29baa9994a2bd8c8819b874a7c8f8d1daf8280b0e6ffc549fbac78e68",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/RecoveryProtocol.kt",
+      "bytes": 3826,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "173f9ba29baa9994a2bd8c8819b874a7c8f8d1daf8280b0e6ffc549fbac78e68",
+      "active_bytes": 3826,
+      "active_equals_source": true,
+      "why_added": "Validates fixed protocol, scopes, application identity, size bounds and snapshots.",
+      "local_delta": [],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/RecoveryStore.kt",
+      "source_sha256": "142ab7064cf6941605712eb29138a587edf8d86d640f81ac3d4a557acd9c2c08",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/android/src/main/kotlin/com/africlub/recovery/RecoveryStore.kt",
+      "bytes": 4474,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "142ab7064cf6941605712eb29138a587edf8d86d640f81ac3d4a557acd9c2c08",
+      "active_bytes": 4474,
+      "active_equals_source": true,
+      "why_added": "Coordinates installation-wide process/file locks and scope-specific CAS without deletion, eviction or expired lease reset.",
+      "local_delta": [],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/android/tests/RecoveryContractHarness.kt",
+      "source_sha256": "7cd07844aedd436202aa94da305ed874fa693b9a0e53ec7d262dbda27a173261",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/android/tests/RecoveryContractHarness.kt",
+      "bytes": 17596,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "7cd07844aedd436202aa94da305ed874fa693b9a0e53ec7d262dbda27a173261",
+      "active_bytes": 17596,
+      "active_equals_source": true,
+      "why_added": "Adds portable real-file/crypto/process-lock regressions without claiming Android Keystore/device execution.",
+      "local_delta": [],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/README.md",
+      "source_sha256": "1dde8cfe8416c1e3b308b6727d6bca0d434b70ce4f76abd3eff3de23e8a42733",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/ios/README.md",
+      "bytes": 8899,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "c824b033762735a10537bb05563cad87f1ff2d27b2c6bb0447212b2e51c36324",
+      "active_bytes": 8864,
+      "active_equals_source": false,
+      "why_added": "Documents iOS storage policy, host composition, local check scope and real-device release gates.",
+      "local_delta": [
+        "Update documentation to dated current local integration and execution evidence while retaining explicit native device/provider/store limitations."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryHost.swift",
+      "source_sha256": "b1bb78b315f2781307449b5ff09c2ee41b880ccf52787265f3057b5f12067dd2",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryHost.swift",
+      "bytes": 7169,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "b1bb78b315f2781307449b5ff09c2ee41b880ccf52787265f3057b5f12067dd2",
+      "active_bytes": 7169,
+      "active_equals_source": true,
+      "why_added": "Provides off-main bounded Keychain work and protected-data/foreground gates with channel replies on the UIKit actor.",
+      "local_delta": [],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/KeychainRecoveryBlob.swift",
+      "source_sha256": "6f87df0aaee43ebdfd4cd14bf48e3be073671922a47d8389bd2dfca6bce3f7a7",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/ios/Sources/KeychainRecoveryBlob.swift",
+      "bytes": 3070,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "dc8d71564cd43867740fe99619203385efa72879c6ead3c04f1c0fb72809132e",
+      "active_bytes": 3453,
+      "active_equals_source": false,
+      "why_added": "Stores markers as device-only nonsynchronized Keychain values; weaker or ambiguous legacy policy blocks recovery.",
+      "local_delta": [
+        "Read all synchronization variants and require exactly one same-namespace item, preventing weaker/ambiguous legacy item from looking absent; writes retain ThisDeviceOnly/non-sync policy."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/RecoveryDispatcher.swift",
+      "source_sha256": "7c014a35685aae1ef1045bd9cd194b084344d364cbce9a82aefa9a276a418e15",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/ios/Sources/RecoveryDispatcher.swift",
+      "bytes": 2684,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "7c014a35685aae1ef1045bd9cd194b084344d364cbce9a82aefa9a276a418e15",
+      "active_bytes": 2684,
+      "active_equals_source": true,
+      "why_added": "Enforces exact channel argument sets, lease ownership, feature gates and stable recovery error codes.",
+      "local_delta": [],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/RecoveryFiles.swift",
+      "source_sha256": "b4d7d7b2216862fbfc0605c99aeb0ed5f714635dc4f0e0e389dc2f9e634abbf8",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/ios/Sources/RecoveryFiles.swift",
+      "bytes": 4141,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "b4d7d7b2216862fbfc0605c99aeb0ed5f714635dc4f0e0e389dc2f9e634abbf8",
+      "active_bytes": 4141,
+      "active_equals_source": true,
+      "why_added": "Protects fixed lock/anchor paths using POSIX ownership/mode/inode checks and complete file protection in the iOS host.",
+      "local_delta": [],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/RecoveryProtocol.swift",
+      "source_sha256": "92619396de3ac90eb4f013da5ea3f1210da5fabfd13a241550f7c246bacedf31",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/ios/Sources/RecoveryProtocol.swift",
+      "bytes": 5135,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "92619396de3ac90eb4f013da5ea3f1210da5fabfd13a241550f7c246bacedf31",
+      "active_bytes": 5135,
+      "active_equals_source": true,
+      "why_added": "Validates fixed protocol, scopes, application identity, size bounds and snapshots.",
+      "local_delta": [],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/RecoveryStore.swift",
+      "source_sha256": "e5aac7f3a830be11a1813ee999dad6ec82e83d42a46e4df0ef757ce3ea798fb5",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/ios/Sources/RecoveryStore.swift",
+      "bytes": 7868,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "e5aac7f3a830be11a1813ee999dad6ec82e83d42a46e4df0ef757ce3ea798fb5",
+      "active_bytes": 7868,
+      "active_equals_source": true,
+      "why_added": "Coordinates installation-wide process/file locks and scope-specific CAS without deletion, eviction or expired lease reset.",
+      "local_delta": [],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Tests/KeychainRecoveryIntegrationTests.swift",
+      "source_sha256": "589b652140c9a4020e49d2af182e0e79a345eb2c1ed4968a472fd916e393db1c",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/ios/Tests/KeychainRecoveryIntegrationTests.swift",
+      "bytes": 5088,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "a0bea2c76e0c5a5fca2708d7a59d64f34e882b630140454f0a41285b380f0d3e",
+      "active_bytes": 6217,
+      "active_equals_source": false,
+      "why_added": "Supplies nine isolated synthetic namespace Keychain device tests, including weaker synchronization and duplicate-policy rejection.",
+      "local_delta": [
+        "Add two synchronized/ambiguous legacy policy XCTest regressions; cleanup remains scoped to per-test random namespaces and both synchronization variants."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Tests/RecoveryHarness.swift",
+      "source_sha256": "bdc4581e368d6dc410301780640bc398e6f3012c3c1c783f95b45ecce05c2b49",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/ios/Tests/RecoveryHarness.swift",
+      "bytes": 23618,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "bdc4581e368d6dc410301780640bc398e6f3012c3c1c783f95b45ecce05c2b49",
+      "active_bytes": 23618,
+      "active_equals_source": true,
+      "why_added": "Adds portable Swift real-file/lock/process regressions; test backends are explicitly unprotected.",
+      "local_delta": [],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/contracts/recovery-channel.json",
+      "source_sha256": "875422b65061edbae1eb7c024b58ced17d7ab28596a7d736ef42794a6d007864",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/ios/contracts/recovery-channel.json",
+      "bytes": 2547,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "875422b65061edbae1eb7c024b58ced17d7ab28596a7d736ef42794a6d007864",
+      "active_bytes": 2547,
+      "active_equals_source": true,
+      "why_added": "Preserves the strict four-operation versioned iOS recovery channel contract.",
+      "local_delta": [],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/contracts/source-provenance.json",
+      "source_sha256": "fc663df23f4c1d09309596b79c3132ccf0b42279c48ac1fdca65ded6a3b58f98",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/native/ios/contracts/source-provenance.json",
+      "bytes": 1613,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "fc663df23f4c1d09309596b79c3132ccf0b42279c48ac1fdca65ded6a3b58f98",
+      "active_bytes": 1613,
+      "active_equals_source": true,
+      "why_added": "Preserves the historical source-authoring evidence record without treating dated Drive-read claims as current verification.",
+      "local_delta": [],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/test/native_checkout/contract_harness.dart",
+      "source_sha256": "3106809698b4f11ff871efff1e6d621315aa0141525477056ae8d9349d7c85b4",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/test/native_checkout/contract_harness.dart",
+      "bytes": 11753,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "6f7147dbf40721567eea9170f3bfe1f2da8082acd3663620f48cbb70555213bc",
+      "active_bytes": 14915,
+      "active_equals_source": false,
+      "why_added": "Exercises typed wire vectors, durable request-key recovery, server handoff claims and explicit payment confirmation.",
+      "local_delta": [
+        "Pinned Dart formatting and active workspace lint/import ordering; standalone harness package imports use feat_membership.",
+        "Correct tel opaque path assertion by decoding its encoded path before comparison; fragment/query rejection and encoded hash assertions retained."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/test/native_checkout/history_harness.dart",
+      "source_sha256": "493e4c2763e21c97d1ecc68ef9bc28344f66d10d4aa57840fd42f0c2adffcd2c",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/test/native_checkout/history_harness.dart",
+      "bytes": 2574,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "cee519626031ba43486481c7d8edfab9cc18f473668d28490c8f9990719b0178",
+      "active_bytes": 3103,
+      "active_equals_source": false,
+      "why_added": "Tests read-only history/receipt validation and cross-scope failures.",
+      "local_delta": [
+        "Pinned Dart formatting and active workspace lint/import ordering; standalone harness package imports use feat_membership."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/test/native_checkout/platform_recovery_harness.dart",
+      "source_sha256": "e70a8b49d3cb6197d6bfa69ce2caea85446ed23fa6f10ca50c0d4c577824ee28",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/test/native_checkout/platform_recovery_harness.dart",
+      "bytes": 5827,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "9c4fe1af4b882926877b72b1b83065a205ea4325f4990835838bc742a7b52bac",
+      "active_bytes": 6516,
+      "active_equals_source": false,
+      "why_added": "Tests disabled/missing scope, lease/CAS, released-zone escape and uncertain native write/release handling.",
+      "local_delta": [
+        "Pinned Dart formatting and active workspace lint/import ordering; standalone harness package imports use feat_membership."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/test/native_checkout/wire-vectors.json",
+      "source_sha256": "100f306fa9d694dfdc4abc3890f8c5a8f6db4f5160927b899dfbd42f2c093dce",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/features/feat_membership/test/native_checkout/wire-vectors.json",
+      "bytes": 31476,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "100f306fa9d694dfdc4abc3890f8c5a8f6db4f5160927b899dfbd42f2c093dce",
+      "active_bytes": 31476,
+      "active_equals_source": true,
+      "why_added": "Retains exact original positive/negative wire vectors shared with the membership gateway conformance suite.",
+      "local_delta": [],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "tools/scripts/verify_android_recovery.py",
+      "source_sha256": "c81e74694c6c8769eb209a5780dac67fa76d262fbcb1121c0d927c648a285e6a",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/tools/scripts/verify_android_recovery.py",
+      "bytes": 4323,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "c81e74694c6c8769eb209a5780dac67fa76d262fbcb1121c0d927c648a285e6a",
+      "active_bytes": 4323,
+      "active_equals_source": true,
+      "why_added": "Compiles a fresh portable JVM JAR before executing recovery tests, preserving host/device acceptance boundaries.",
+      "local_delta": [],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "tools/scripts/verify_ios_recovery.py",
+      "source_sha256": "c81f4656fea8b878c22f9d74ed085cd80bc682a8565c7f0f712ed6bf8027c035",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/tools/scripts/verify_ios_recovery.py",
+      "bytes": 4009,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "c81f4656fea8b878c22f9d74ed085cd80bc682a8565c7f0f712ed6bf8027c035",
+      "active_bytes": 4009,
+      "active_equals_source": true,
+      "why_added": "Compiles a fresh portable Swift executable before its bounded harness; never mutates Keychain or claims device acceptance.",
+      "local_delta": [],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "tools/scripts/verify_native_membership.py",
+      "source_sha256": "7b2cdeb9fd5bbe0b7ed2627aa009d38a9cfd4d7f70a31447f4d9d123ab03b15d",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/tools/scripts/verify_native_membership.py",
+      "bytes": 4931,
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "be41b5f0ebefd29a8cad82a4550ded642b7b2b80e79e9ea9e748ea0f1e42a22d",
+      "active_bytes": 4901,
+      "active_equals_source": false,
+      "why_added": "Runs fresh isolated offline pure Dart analysis and harnesses; missing SDK or failed step cannot become a pass.",
+      "local_delta": [
+        "Use feat_membership as the isolated temporary package name so package imports analyze and execute without workspace/Flutter dependencies."
+      ],
+      "review": "implementer technical source review with scoped contract/native checks; no independent release approval"
+    },
+    {
+      "path": "apps/rayon_sports/android/app/build.gradle.kts",
+      "preintegration_sha256": "eaa1af8050e708366f862a42435606b2c3d2541964bad333e70424f88f27dfe1",
+      "change": "reconciled_existing_host",
+      "active_sha256": "8a3662a5c0764f9df023327d20e2bfbf50e29149f616e05242a1e624e14c296a",
+      "active_bytes": 5490,
+      "why_added_or_changed": "Include shared Android recovery source once in the existing pinned host build; preserve app identity and dependencies.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/rayon_sports/android/app/src/main/kotlin/rw/gikundiro/app/MainActivity.kt",
+      "preintegration_sha256": "c472107bcdac7bf98d7f5634e7bc93748dff5a2da9474c3ae3a58cbd638ebaba",
+      "change": "reconciled_existing_host",
+      "active_sha256": "7b62fbf7c7f7da4d31f8c537f0f7aa9c87b3155bfea1663ced4488049529d48c",
+      "active_bytes": 4406,
+      "why_added_or_changed": "Register one fresh protected recovery plugin per engine while preserving existing platform channels.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/rayon_sports/android/app/src/main/AndroidManifest.xml",
+      "preintegration_sha256": "16eddd85f0f7f85a7015927f96f9651652be027c28b8054c3863b6776dad5911",
+      "change": "reconciled_existing_host",
+      "active_sha256": "8b511485aeae1cdec98821d12ded0a503ace2371bd063e0245af848a5c9cac31",
+      "active_bytes": 8065,
+      "why_added_or_changed": "Disable application backup and declare backup exclusions and external tel query capability without SMS or CALL_PHONE permission.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/rayon_sports/ios/Runner/AppDelegate.swift",
+      "preintegration_sha256": "451c6d9ba0a2b3ff43092ea349c60fa79a91f1158b915eb29dbdd357cb95d7b8",
+      "change": "reconciled_existing_host",
+      "active_sha256": "5f1d16882052d3bdf77e286d57580207f2d365b3b743066827e5fb8a24148767",
+      "active_bytes": 1085,
+      "why_added_or_changed": "Retain per-engine iOS recovery registration and assert UIKit actor isolation before generated and recovery plugin setup.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/rayon_sports/ios/Runner.xcodeproj/project.pbxproj",
+      "preintegration_sha256": "7ee560f69d8df4b03d65fd52c8ec4e13c5fed53a7275417675ade1f622c8bc60",
+      "change": "reconciled_existing_host",
+      "active_sha256": "66b70d268c0fba5116dfe3e41a79cdc18995784ba139ce8251a5541bd468b604",
+      "active_bytes": 38099,
+      "why_added_or_changed": "Compile the same seven shared Swift sources in the Runner target; avoid five diverging native implementations.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/vitalo/android/app/build.gradle.kts",
+      "preintegration_sha256": "a3bc63b344dc72eb790840b7390701403db33e30affa05570eb605dc888d428a",
+      "change": "reconciled_existing_host",
+      "active_sha256": "79c150301f3f12f76737e3641ee00c18e8952264941d09bf60d38f470b8cf652",
+      "active_bytes": 4781,
+      "why_added_or_changed": "Include shared Android recovery source once in the existing pinned host build; preserve app identity and dependencies.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/vitalo/android/app/src/main/kotlin/bi/ikanisa/vitalo/MainActivity.kt",
+      "preintegration_sha256": "e6d258abc755d0f1767a4e4ae9b933faebfda516b72a94b4250f5df89415c68a",
+      "change": "reconciled_existing_host",
+      "active_sha256": "55af6f86b6e364556221fe3ce02f1a09323b36b895e5a11d429e54de1b8dc518",
+      "active_bytes": 554,
+      "why_added_or_changed": "Register one fresh protected recovery plugin per engine while preserving existing platform channels.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/vitalo/android/app/src/main/AndroidManifest.xml",
+      "preintegration_sha256": "cfc7b30d02dd3f884c05f2aac5d693d060e0ba2e0360b238cb4c12af5e85f26d",
+      "change": "reconciled_existing_host",
+      "active_sha256": "f1e3468a1aa97ecc14f8df98d36e1aaf60b02f9a24845ee8b32047efef90d3e3",
+      "active_bytes": 2453,
+      "why_added_or_changed": "Disable application backup and declare backup exclusions and external tel query capability without SMS or CALL_PHONE permission.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/vitalo/android/app/src/main/res/xml/backup_rules.xml",
+      "preintegration_sha256": null,
+      "change": "added_host_configuration",
+      "active_sha256": "9a52a133009e7e4b9922f0c708ad5b5bfb3248055753ecf6385fe6148fa8f66f",
+      "active_bytes": 401,
+      "why_added_or_changed": "Apply the existing Rayon Sports backup/data extraction exclusions to the other four app hosts.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/vitalo/android/app/src/main/res/xml/data_extraction_rules.xml",
+      "preintegration_sha256": null,
+      "change": "added_host_configuration",
+      "active_sha256": "fa1cfcde26caaa063dce42685552f3351c9f8362a932a06a75cf191698347984",
+      "active_bytes": 834,
+      "why_added_or_changed": "Apply the existing Rayon Sports backup/data extraction exclusions to the other four app hosts.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/vitalo/ios/Runner/AppDelegate.swift",
+      "preintegration_sha256": "451c6d9ba0a2b3ff43092ea349c60fa79a91f1158b915eb29dbdd357cb95d7b8",
+      "change": "reconciled_existing_host",
+      "active_sha256": "5f1d16882052d3bdf77e286d57580207f2d365b3b743066827e5fb8a24148767",
+      "active_bytes": 1085,
+      "why_added_or_changed": "Retain per-engine iOS recovery registration and assert UIKit actor isolation before generated and recovery plugin setup.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/vitalo/ios/Runner.xcodeproj/project.pbxproj",
+      "preintegration_sha256": "c95cbdb0c1e248fd4cf7ca17f7440d90ba579a573455d5b7e1955e87174645ab",
+      "change": "reconciled_existing_host",
+      "active_sha256": "c8b11d9a93ab1fcd6d872b4aac628ea99ffa7cfb6e629bf1b8adf5b15dac59b1",
+      "active_bytes": 44320,
+      "why_added_or_changed": "Compile the same seven shared Swift sources in the Runner target; avoid five diverging native implementations.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/as_vita/android/app/build.gradle.kts",
+      "preintegration_sha256": "b10306ae4d7904c0d6a89e41e10e246a1eaacafdcde0b18cdada45947e362c4e",
+      "change": "reconciled_existing_host",
+      "active_sha256": "47e7b1add91b9a4ed41fff855d2820b676abde1209c89ba99838e9f43f406b43",
+      "active_bytes": 4798,
+      "why_added_or_changed": "Include shared Android recovery source once in the existing pinned host build; preserve app identity and dependencies.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/as_vita/android/app/src/main/kotlin/cd/ikanisa/as_vita/MainActivity.kt",
+      "preintegration_sha256": "cf4939b82b038e1cf19e3ea8efc67c1159a0a79934dfbf84689cfd22a4536916",
+      "change": "reconciled_existing_host",
+      "active_sha256": "21fedb0b3c978044372cd845a714cedbe8a4ffba0702f1d44fb0df274144591c",
+      "active_bytes": 555,
+      "why_added_or_changed": "Register one fresh protected recovery plugin per engine while preserving existing platform channels.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/as_vita/android/app/src/main/AndroidManifest.xml",
+      "preintegration_sha256": "cfc7b30d02dd3f884c05f2aac5d693d060e0ba2e0360b238cb4c12af5e85f26d",
+      "change": "reconciled_existing_host",
+      "active_sha256": "f1e3468a1aa97ecc14f8df98d36e1aaf60b02f9a24845ee8b32047efef90d3e3",
+      "active_bytes": 2453,
+      "why_added_or_changed": "Disable application backup and declare backup exclusions and external tel query capability without SMS or CALL_PHONE permission.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/as_vita/android/app/src/main/res/xml/backup_rules.xml",
+      "preintegration_sha256": null,
+      "change": "added_host_configuration",
+      "active_sha256": "9a52a133009e7e4b9922f0c708ad5b5bfb3248055753ecf6385fe6148fa8f66f",
+      "active_bytes": 401,
+      "why_added_or_changed": "Apply the existing Rayon Sports backup/data extraction exclusions to the other four app hosts.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/as_vita/android/app/src/main/res/xml/data_extraction_rules.xml",
+      "preintegration_sha256": null,
+      "change": "added_host_configuration",
+      "active_sha256": "fa1cfcde26caaa063dce42685552f3351c9f8362a932a06a75cf191698347984",
+      "active_bytes": 834,
+      "why_added_or_changed": "Apply the existing Rayon Sports backup/data extraction exclusions to the other four app hosts.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/as_vita/ios/Runner/AppDelegate.swift",
+      "preintegration_sha256": "451c6d9ba0a2b3ff43092ea349c60fa79a91f1158b915eb29dbdd357cb95d7b8",
+      "change": "reconciled_existing_host",
+      "active_sha256": "5f1d16882052d3bdf77e286d57580207f2d365b3b743066827e5fb8a24148767",
+      "active_bytes": 1085,
+      "why_added_or_changed": "Retain per-engine iOS recovery registration and assert UIKit actor isolation before generated and recovery plugin setup.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/as_vita/ios/Runner.xcodeproj/project.pbxproj",
+      "preintegration_sha256": "edeaded36bb39f90e45a291dc8330d08360df8e4f7ae74a131ccba26c261b46d",
+      "change": "reconciled_existing_host",
+      "active_sha256": "124af8c27f683e699044bc5d7a9eedcf16d1438680f8189c877e0c7368d7d50d",
+      "active_bytes": 44320,
+      "why_added_or_changed": "Compile the same seven shared Swift sources in the Runner target; avoid five diverging native implementations.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/nkana/android/app/build.gradle.kts",
+      "preintegration_sha256": "e237465fcd1319b13a4c2b1a7aa2daebf1a3c0deca0b266c42155c1e9cae3a6b",
+      "change": "reconciled_existing_host",
+      "active_sha256": "6315c09abf39f74414e571eee1ef2f8afb68739180f426ddb071d79f2714d317",
+      "active_bytes": 4782,
+      "why_added_or_changed": "Include shared Android recovery source once in the existing pinned host build; preserve app identity and dependencies.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/nkana/android/app/src/main/kotlin/zm/ikanisa/nkana/MainActivity.kt",
+      "preintegration_sha256": "d3c36b4bd1c42ddc163b8c2fe2015c069cbbb8dc2a44597d6b411d8534713cd3",
+      "change": "reconciled_existing_host",
+      "active_sha256": "d6afe23cee7506bfa14ca413a800ab7ac73216b02bded30eca9980df0eb40af3",
+      "active_bytes": 553,
+      "why_added_or_changed": "Register one fresh protected recovery plugin per engine while preserving existing platform channels.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/nkana/android/app/src/main/AndroidManifest.xml",
+      "preintegration_sha256": "cfc7b30d02dd3f884c05f2aac5d693d060e0ba2e0360b238cb4c12af5e85f26d",
+      "change": "reconciled_existing_host",
+      "active_sha256": "f1e3468a1aa97ecc14f8df98d36e1aaf60b02f9a24845ee8b32047efef90d3e3",
+      "active_bytes": 2453,
+      "why_added_or_changed": "Disable application backup and declare backup exclusions and external tel query capability without SMS or CALL_PHONE permission.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/nkana/android/app/src/main/res/xml/backup_rules.xml",
+      "preintegration_sha256": null,
+      "change": "added_host_configuration",
+      "active_sha256": "9a52a133009e7e4b9922f0c708ad5b5bfb3248055753ecf6385fe6148fa8f66f",
+      "active_bytes": 401,
+      "why_added_or_changed": "Apply the existing Rayon Sports backup/data extraction exclusions to the other four app hosts.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/nkana/android/app/src/main/res/xml/data_extraction_rules.xml",
+      "preintegration_sha256": null,
+      "change": "added_host_configuration",
+      "active_sha256": "fa1cfcde26caaa063dce42685552f3351c9f8362a932a06a75cf191698347984",
+      "active_bytes": 834,
+      "why_added_or_changed": "Apply the existing Rayon Sports backup/data extraction exclusions to the other four app hosts.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/nkana/ios/Runner/AppDelegate.swift",
+      "preintegration_sha256": "451c6d9ba0a2b3ff43092ea349c60fa79a91f1158b915eb29dbdd357cb95d7b8",
+      "change": "reconciled_existing_host",
+      "active_sha256": "5f1d16882052d3bdf77e286d57580207f2d365b3b743066827e5fb8a24148767",
+      "active_bytes": 1085,
+      "why_added_or_changed": "Retain per-engine iOS recovery registration and assert UIKit actor isolation before generated and recovery plugin setup.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/nkana/ios/Runner.xcodeproj/project.pbxproj",
+      "preintegration_sha256": "d4d1d1ad4a90eaed36b62bb7627d57d294a29c470c5a3be7cb1870f8142604a4",
+      "change": "reconciled_existing_host",
+      "active_sha256": "7df0cad30bb887df1f8a9194270de2f01dd52cd41b77f7b590660554dbb0126c",
+      "active_bytes": 44310,
+      "why_added_or_changed": "Compile the same seven shared Swift sources in the Runner target; avoid five diverging native implementations.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/costa_do_sol/android/app/build.gradle.kts",
+      "preintegration_sha256": "2ee4c0cc5ba563267e16fe7d62e8dd5aa937f020745bd2a316cc51b6b847fb13",
+      "change": "reconciled_existing_host",
+      "active_sha256": "eba680fb646cb925716c6dd23529c0e4c3f2f36833c612f0a65836ae93d8f9c1",
+      "active_bytes": 4804,
+      "why_added_or_changed": "Include shared Android recovery source once in the existing pinned host build; preserve app identity and dependencies.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/costa_do_sol/android/app/src/main/kotlin/mz/ikanisa/costadosol/MainActivity.kt",
+      "preintegration_sha256": "768a2316beaa2d301f5d049e1c4802ba16c4a6b436d866ddecf8c5aee7ba5be4",
+      "change": "reconciled_existing_host",
+      "active_sha256": "f15c5948907f480138b4961fac25edfa2d55f91e6149fe018c582f828d6950a0",
+      "active_bytes": 558,
+      "why_added_or_changed": "Register one fresh protected recovery plugin per engine while preserving existing platform channels.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/costa_do_sol/android/app/src/main/AndroidManifest.xml",
+      "preintegration_sha256": "cfc7b30d02dd3f884c05f2aac5d693d060e0ba2e0360b238cb4c12af5e85f26d",
+      "change": "reconciled_existing_host",
+      "active_sha256": "f1e3468a1aa97ecc14f8df98d36e1aaf60b02f9a24845ee8b32047efef90d3e3",
+      "active_bytes": 2453,
+      "why_added_or_changed": "Disable application backup and declare backup exclusions and external tel query capability without SMS or CALL_PHONE permission.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/costa_do_sol/android/app/src/main/res/xml/backup_rules.xml",
+      "preintegration_sha256": null,
+      "change": "added_host_configuration",
+      "active_sha256": "9a52a133009e7e4b9922f0c708ad5b5bfb3248055753ecf6385fe6148fa8f66f",
+      "active_bytes": 401,
+      "why_added_or_changed": "Apply the existing Rayon Sports backup/data extraction exclusions to the other four app hosts.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/costa_do_sol/android/app/src/main/res/xml/data_extraction_rules.xml",
+      "preintegration_sha256": null,
+      "change": "added_host_configuration",
+      "active_sha256": "fa1cfcde26caaa063dce42685552f3351c9f8362a932a06a75cf191698347984",
+      "active_bytes": 834,
+      "why_added_or_changed": "Apply the existing Rayon Sports backup/data extraction exclusions to the other four app hosts.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/costa_do_sol/ios/Runner/AppDelegate.swift",
+      "preintegration_sha256": "451c6d9ba0a2b3ff43092ea349c60fa79a91f1158b915eb29dbdd357cb95d7b8",
+      "change": "reconciled_existing_host",
+      "active_sha256": "5f1d16882052d3bdf77e286d57580207f2d365b3b743066827e5fb8a24148767",
+      "active_bytes": 1085,
+      "why_added_or_changed": "Retain per-engine iOS recovery registration and assert UIKit actor isolation before generated and recovery plugin setup.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "apps/costa_do_sol/ios/Runner.xcodeproj/project.pbxproj",
+      "preintegration_sha256": "f704a265d673376bcf08cb18573e14eb273cf481c0d2aa1794e8ab048e26fa24",
+      "change": "reconciled_existing_host",
+      "active_sha256": "9b6b6a8480cdf690ef21a6bf8b0af4e7604b357d82ad3eb8d33ead09a7c2dd3b",
+      "active_bytes": 44360,
+      "why_added_or_changed": "Compile the same seven shared Swift sources in the Runner target; avoid five diverging native implementations.",
+      "review": "implementer technical host composition review; native device/store approval remains pending"
+    },
+    {
+      "path": "packages/features/feat_membership/lib/native_membership_composition_flutter.dart",
+      "change": "new_local_integration",
+      "source_sha256": null,
+      "active_sha256": "8eae6b05e5e3fd8860808219ed51ad31568e571a08133bf2ff67b3eae86ae192",
+      "active_bytes": 7555,
+      "why_added": "Compose an explicitly injected API with OS-protected storage, fixed club scope and lifecycle/identity fencing; never auto-submit on resume or replace unresolved keys.",
+      "review": "implementer technical integration and test review; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryRegistration.swift",
+      "change": "new_local_integration",
+      "source_sha256": null,
+      "active_sha256": "a2e1f55458e5c0df7f57843f28bbfaf757b4079e6a2d37483e44f1454f69c450",
+      "active_bytes": 1782,
+      "why_added": "Defer channel installation until foreground/protected data availability; retain and dispose one registration owner per engine without executing checkout or payment.",
+      "review": "implementer technical integration and test review; no independent release approval"
+    },
+    {
+      "path": "packages/features/feat_membership/test/native_membership_composition_test.dart",
+      "change": "new_local_integration",
+      "source_sha256": null,
+      "active_sha256": "fb44a581c603293be8ccc4574487b5183e410f3c88a08244b2a22331da658c91",
+      "active_bytes": 12028,
+      "why_added": "Ten regressions for disabled platforms, club mismatch, foreground/logout/rotation interruption, original-key retry, confirmation invalidation and missing/locked protected channels.",
+      "review": "implementer technical integration and test review; no independent release approval"
+    }
+  ]
+}

@@ -1,0 +1,828 @@
+{
+  "schema_version": 1,
+  "source_zip_sha256": "4264a115e3974bf6236d90cfd8bc59537f066725d56757b9e03dd256095a8af5",
+  "files": [
+    {
+      "path": "apps/rayon_sports/web/next.config.ts",
+      "candidate_sha256": "080f8883fc4b9fb9553c39ac6d8e93e672e4b96e7a3dc2d2cc0a522d2ac8ca5b",
+      "candidate_bytes": 5236,
+      "original_active_sha256": "08a4bfdbd775be2a9658ebf1846e0f242788ca98ff97ca67e57d873e2b0e304c",
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "080f8883fc4b9fb9553c39ac6d8e93e672e4b96e7a3dc2d2cc0a522d2ac8ca5b",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [
+        "Production type errors fail the build; private membership paths have no-store and noindex policy."
+      ],
+      "active_bytes": 5236
+    },
+    {
+      "path": "apps/rayon_sports/web/public/sw.js",
+      "candidate_sha256": "56185483ee5cb77f2c94c862712a9c73b72f4259f5f618599144bc7c7d6b92cb",
+      "candidate_bytes": 12563,
+      "original_active_sha256": "004f75ed29196bef049752a923711ea9cb89500a5cabbc78c957295ebd2e83a8",
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "56185483ee5cb77f2c94c862712a9c73b72f4259f5f618599144bc7c7d6b92cb",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [
+        "Private requests, response Vary Cookie and encoded paths cannot enter dynamic caches.",
+        "Owned private-cache handshake preserves unrelated storage and unresolved mutations.",
+        "Notification payloads use generic text and a same-origin landing-page allowlist."
+      ],
+      "active_bytes": 12563
+    },
+    {
+      "path": "apps/rayon_sports/web/src/app/(site)/membership/page.tsx",
+      "candidate_sha256": "6ef4f4fa638750b8dd9869fbf1906a04d5497e01942bd4943840235cea5f072e",
+      "candidate_bytes": 2059,
+      "original_active_sha256": "4d561501128b0ed6e41e89acd834ff27e8a9eeb5c5b7d011330353c9734b1b5e",
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "6ef4f4fa638750b8dd9869fbf1906a04d5497e01942bd4943840235cea5f072e",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [
+        "Explicit reviewed Workers cookie mode is tenant-bound; invalid enabled configuration blocks and absent/legacy mode preserves the existing site.",
+        "Force-dynamic and zero revalidation enforce request-specific membership presentation."
+      ],
+      "active_bytes": 2059
+    },
+    {
+      "path": "apps/rayon_sports/web/src/components/browser-membership-portal.module.css",
+      "candidate_sha256": "450bb51617307bd9be8f60ed892b2cec60a357610697057481c3e0fb12afdbae",
+      "candidate_bytes": 2086,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "83507a9ed3270561507f13cb937d264bad3c3474f82e6dddfa39a130c92d869a",
+      "disposition": "imported_with_reviewed_corrections",
+      "reviewed": true,
+      "corrections": [
+        "All action targets and checkbox label targets have 48px minimum height."
+      ],
+      "active_bytes": 2166
+    },
+    {
+      "path": "apps/rayon_sports/web/src/components/browser-membership-portal.tsx",
+      "candidate_sha256": "2f09bda9b2a21580760a9ea03792be2bc1ecd8e8852fbb5e7c10202591ff6052",
+      "candidate_bytes": 12095,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "c9316a517d57053485949a6ebba8455f885f4347eba8ae71b9172e430b2b2139",
+      "disposition": "imported_with_reviewed_corrections",
+      "reviewed": true,
+      "corrections": [
+        "Tenant-keyed controller replacement occurs before presentation, concealing prior-club state.",
+        "Initialization verifies the controlling worker cache protocol, tolerates failures by blocking private presentation, and removes subscriptions on unmount.",
+        "Product copy describes required supporter actions and payment state."
+      ],
+      "active_bytes": 12996
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/browser-portal-config.ts",
+      "candidate_sha256": "06345069ebd21ed197005ffe9e844ae4131298b252f046aa49e23d19acda4861",
+      "candidate_bytes": 963,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "06345069ebd21ed197005ffe9e844ae4131298b252f046aa49e23d19acda4861",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 963
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/browser-portal-server.ts",
+      "candidate_sha256": "a3a87db0dc4f9220b2b71ef7ad7221a0b83cbe49bd114e6543a6fcd99e5a7d98",
+      "candidate_bytes": 705,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "a3a87db0dc4f9220b2b71ef7ad7221a0b83cbe49bd114e6543a6fcd99e5a7d98",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 705
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/PORTAL_INTEGRATION.md",
+      "candidate_sha256": "e831329f7424346ea092c6b1af86213b887f0480f598b9dffbba771fcc9ae21f",
+      "candidate_bytes": 6970,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "e831329f7424346ea092c6b1af86213b887f0480f598b9dffbba771fcc9ae21f",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 6970
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/README.md",
+      "candidate_sha256": "4d077fd91dc15e0028e49de0070b15addd3fa36787eda6c96b1e635bd94c5482",
+      "candidate_bytes": 10218,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "7933b478247e01d58d2a613c64700cdc78170a1a2e2b1aec238d3e27eb471e8c",
+      "disposition": "imported_with_reviewed_corrections",
+      "reviewed": true,
+      "corrections": [
+        "Replace historical blocked/unexecuted browser claims with current scoped local source and synthetic rendering results; retain real Workers, cookie, device and release limits."
+      ],
+      "active_bytes": 11648
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/browser-platform.ts",
+      "candidate_sha256": "293b4e7ad3d5ece8c3ab6afd3b3e53e54820ffc608158331bbe587a69077b229",
+      "candidate_bytes": 973,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "293b4e7ad3d5ece8c3ab6afd3b3e53e54820ffc608158331bbe587a69077b229",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 973
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/client.ts",
+      "candidate_sha256": "3d60d9826fc5f36512833e279217ff09dd5a83715118cf9f9977f9581db9f29e",
+      "candidate_bytes": 27832,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "819bd0ce57fbe3d04dd5ca3ae99d1daa2ca3e40a896b74fe9670c1e26999f32b",
+      "disposition": "imported_with_reviewed_corrections",
+      "reviewed": true,
+      "corrections": [
+        "Async Web Locks generic adapts Promise flattening under installed strict TypeScript.",
+        "Independent HTTP/body deadline cancels stalled streams and preserves unknown operation keys.",
+        "Lock acquisition is bounded and late callbacks cannot dispatch; acquired locks remain exclusive until action completes.",
+        "Enum fields require real strings rather than coercing array values."
+      ],
+      "active_bytes": 29584
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/contracts/browser-v1.json",
+      "candidate_sha256": "d5877622ccf3a56491492eeed4eda4d82023506cd0c7a870cb646061d4fe9b15",
+      "candidate_bytes": 4945,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "d5877622ccf3a56491492eeed4eda4d82023506cd0c7a870cb646061d4fe9b15",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 4945
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/portal-controller.ts",
+      "candidate_sha256": "4aa5d5481fe20412e409679c9f989932bb73a896c3c364708bc7a747f04c472f",
+      "candidate_bytes": 15321,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "6ab47aeeae76d95e9ece3b6bf94f25b8aecbb31d2030a22fa114e4c7cd6d69f4",
+      "disposition": "imported_with_reviewed_corrections",
+      "reviewed": true,
+      "corrections": [
+        "Retry callbacks keep original operation identity and accept the current presentation epoch.",
+        "Lifecycle invalidation before unsent challenge/rotation prevents dispatch.",
+        "Unauthenticated read refresh retains unresolved original sign-in retry; terminal known challenge errors release only that retry."
+      ],
+      "active_bytes": 15691
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/scripts/check-deployment.mjs",
+      "candidate_sha256": "6306344d937724da216a94ad43c3bd368ab3dc471822e5c69f30d43ed967798b",
+      "candidate_bytes": 2739,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "ce869ab1c66f4e0441332cb8687a4f4784b6e76f3811e5ef91f14a117aa6ba22",
+      "disposition": "imported_with_reviewed_corrections",
+      "reviewed": true,
+      "corrections": [
+        "Exact disabled variable/capability/entrypoint/database authority, no live account, and explicit unverified runtime/secret status.",
+        "Remove trailing whitespace or duplicate final newline only; no tokens, declarations, function bodies or behavior changed."
+      ],
+      "active_bytes": 4983
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/src/http.mjs",
+      "candidate_sha256": "4772c4b493be0afb3c4dd3c98d496a39d0bd382356e6ebccb851b7e137132df6",
+      "candidate_bytes": 3934,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "4772c4b493be0afb3c4dd3c98d496a39d0bd382356e6ebccb851b7e137132df6",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 3934
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/src/index.mjs",
+      "candidate_sha256": "0181db8b1b32415867a9b52d705e0a844eb5634934597ebc131e12c42c007f24",
+      "candidate_bytes": 12214,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "cfc2a263fe70db69e3aaee8a536741615ae882ac3870bafb33150bb1ee5a1d55",
+      "disposition": "imported_with_reviewed_corrections",
+      "reviewed": true,
+      "corrections": [
+        "Malformed array-valued private challenge IDs are rejected as unknown outcomes."
+      ],
+      "active_bytes": 12249
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/src/offers.mjs",
+      "candidate_sha256": "c99cf337976bcaa0615c1ee912b560d6d8b9a1d0030ac0614f09cfeeef814b56",
+      "candidate_bytes": 1111,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "c99cf337976bcaa0615c1ee912b560d6d8b9a1d0030ac0614f09cfeeef814b56",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 1111
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/src/policy.mjs",
+      "candidate_sha256": "765106ffc2a3655b05d7ddad89c5eae9ac899fc1be3eabd64077af0f11bf1f94",
+      "candidate_bytes": 3529,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "765106ffc2a3655b05d7ddad89c5eae9ac899fc1be3eabd64077af0f11bf1f94",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 3529
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/tests/client.test.mjs",
+      "candidate_sha256": "c811d272f3f04555644dc30862a57446753786d089330b504bad0af909c6db86",
+      "candidate_bytes": 10205,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "5f398008a97901f3d07cddb6bb2b6351408e6159c5b788e50f361e3e7aa85ddc",
+      "disposition": "imported_with_reviewed_corrections",
+      "reviewed": true,
+      "corrections": [
+        "Regression or disabled-template correction accompanying documented runtime fixes."
+      ],
+      "active_bytes": 13125
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/tests/concurrency.test.mjs",
+      "candidate_sha256": "9dce1d913b3aa6438b12870fe563905a054513cd3c6057baecc3df67573c4448",
+      "candidate_bytes": 2386,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "9dce1d913b3aa6438b12870fe563905a054513cd3c6057baecc3df67573c4448",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 2386
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/tests/config.test.mjs",
+      "candidate_sha256": "02912ea90c1173d6e320e6916e7ec9ef1ef7aad92b18fc0838e94dc05c9613cd",
+      "candidate_bytes": 2335,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "5d75ecb50f0c409b75ea08b91480c86354e5c39159b3f39fb1b4dd1c92293be0",
+      "disposition": "imported_with_reviewed_corrections",
+      "reviewed": true,
+      "corrections": [
+        "Regression or disabled-template correction accompanying documented runtime fixes."
+      ],
+      "active_bytes": 3244
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/tests/history.test.mjs",
+      "candidate_sha256": "2184859339264a09f2c9b58522ebf2212fac4db199624fe1fe0a6258b00112ec",
+      "candidate_bytes": 7928,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "2184859339264a09f2c9b58522ebf2212fac4db199624fe1fe0a6258b00112ec",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 7928
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/tests/http.test.mjs",
+      "candidate_sha256": "0ae29b28bc28ab297b77c343c93ff627d5f7a4c684a451cc17c077eabc17089f",
+      "candidate_bytes": 13116,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "30e1e0963967be523ca98bf8670143880ce34fa242463e40289a4e006556dbd6",
+      "disposition": "imported_with_reviewed_corrections",
+      "reviewed": true,
+      "corrections": [
+        "Regression or disabled-template correction accompanying documented runtime fixes."
+      ],
+      "active_bytes": 13762
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/tests/offers.test.mjs",
+      "candidate_sha256": "b5b42eef56acc3b69058392231f4768bd5157d5549017506f1a47088bc67d0c1",
+      "candidate_bytes": 2818,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "b5b42eef56acc3b69058392231f4768bd5157d5549017506f1a47088bc67d0c1",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 2818
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/tests/portal.test.mjs",
+      "candidate_sha256": "c0e0b57ffff534132735b956940db963c83e9dbe03158c534983960d29ec03cd",
+      "candidate_bytes": 11250,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "41d5019cec1bb99d7daf5f6cfdbab31b319c86a4845b78daab79671026d8dba9",
+      "disposition": "imported_with_reviewed_corrections",
+      "reviewed": true,
+      "corrections": [
+        "Regression or disabled-template correction accompanying documented runtime fixes."
+      ],
+      "active_bytes": 14592
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/tests/session.test.mjs",
+      "candidate_sha256": "1542d005efa188801e5dce5289ebeb29202b098756346684f59ec09d40017313",
+      "candidate_bytes": 16591,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "1542d005efa188801e5dce5289ebeb29202b098756346684f59ec09d40017313",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 16591
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/tests/support/fixture.mjs",
+      "candidate_sha256": "e3b952182aafa26070c7231db4b22bcc5bcfd1ca90da4e14a0072671839d974b",
+      "candidate_bytes": 5277,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "e3b952182aafa26070c7231db4b22bcc5bcfd1ca90da4e14a0072671839d974b",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 5277
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/tests/support/portal-fixture.mjs",
+      "candidate_sha256": "961b87f659500baf53a0cc3ae0171c8559b6f6f6be937270c83fd81a652730cc",
+      "candidate_bytes": 3188,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "961b87f659500baf53a0cc3ae0171c8559b6f6f6be937270c83fd81a652730cc",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 3188
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/tests/support/race-worker.mjs",
+      "candidate_sha256": "8b38a6966bed03905bd2375ff974347b95267c401897262b6c2de99f7c7a7d74",
+      "candidate_bytes": 883,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "8b38a6966bed03905bd2375ff974347b95267c401897262b6c2de99f7c7a7d74",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 883
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/wrangler.staging.jsonc",
+      "candidate_sha256": "d28c6b82fa47d1bf7d1809db7057d4a7d959673ff792918d42a25d3063a3e818",
+      "candidate_bytes": 1231,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "d28c6b82fa47d1bf7d1809db7057d4a7d959673ff792918d42a25d3063a3e818",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 1231
+    },
+    {
+      "path": "cloudflare/supporter-web-router/README.md",
+      "candidate_sha256": "99327352e2ff2b757090354097667edeb25b2dd5b5d6d18d1a62acfed676c796",
+      "candidate_bytes": 2665,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "3dd6299097a1d09a6d1b36ae0bf36c58cc9efa7bfbc1e594f6817f0014ba7ed3",
+      "disposition": "imported_with_reviewed_corrections",
+      "reviewed": true,
+      "corrections": [
+        "Replace historical blocked/unexecuted browser claims with current scoped local source and synthetic rendering results; retain real Workers, cookie, device and release limits."
+      ],
+      "active_bytes": 3205
+    },
+    {
+      "path": "cloudflare/supporter-web-router/scripts/validate-config.mjs",
+      "candidate_sha256": "9129fda48eabc7de6face9272bd338bbf976291279fe230f57c3e8ea8c556337",
+      "candidate_bytes": 1193,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "2d3c6895cd1610362bb9d8cd3eaaaa88bf745dccc10bb2e3a9e37ba4ee2f4d21",
+      "disposition": "imported_with_reviewed_corrections",
+      "reviewed": true,
+      "corrections": [
+        "Exact disabled vars, private service capability bounds, and explicit unverified runtime/secret status."
+      ],
+      "active_bytes": 1993
+    },
+    {
+      "path": "cloudflare/supporter-web-router/src/index.mjs",
+      "candidate_sha256": "35864daae2915fd26415723a7e9117654b8bb6d7f979dfb46561115bb65532b4",
+      "candidate_bytes": 2943,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "477be59939b8b5b51bf85c5b62ff3fbb7d239a27ff4dbe3c19765a4f6d171ea1",
+      "disposition": "imported_with_reviewed_corrections",
+      "reviewed": true,
+      "corrections": [
+        "Encoded private paths lose all public/CDN cache permission; decoded API namespace never falls through.",
+        "Bounded one-dispatch service-binding waits; a timed-out write remains unknown and is never retried."
+      ],
+      "active_bytes": 3570
+    },
+    {
+      "path": "cloudflare/supporter-web-router/tests/config.test.mjs",
+      "candidate_sha256": "730f56303f32ca56e9f684658406034889dc7a5bc8abff04707290f17db6df6a",
+      "candidate_bytes": 2894,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "ba5856e09fb12f1b938f7f9fd403eb6b5810e21bcff575570002623f62c7c44e",
+      "disposition": "imported_with_reviewed_corrections",
+      "reviewed": true,
+      "corrections": [
+        "Regression or disabled-template correction accompanying documented runtime fixes."
+      ],
+      "active_bytes": 3496
+    },
+    {
+      "path": "cloudflare/supporter-web-router/tests/notifications.test.mjs",
+      "candidate_sha256": "7041b715b27a52e1ef0a7cb70f765571c85b04d88c5905a023059b7a3fe901a1",
+      "candidate_bytes": 3712,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "7041b715b27a52e1ef0a7cb70f765571c85b04d88c5905a023059b7a3fe901a1",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 3712
+    },
+    {
+      "path": "cloudflare/supporter-web-router/tests/router.test.mjs",
+      "candidate_sha256": "4e06c70fa40289ba6c9a5e42b0af87c19273d29dfed134185b1a949a5208bdfd",
+      "candidate_bytes": 3648,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "4377267166191e29cd616fd473095ea4195f4e0edc13803c99fa94d9cdcb2d61",
+      "disposition": "imported_with_reviewed_corrections",
+      "reviewed": true,
+      "corrections": [
+        "Regression or disabled-template correction accompanying documented runtime fixes."
+      ],
+      "active_bytes": 5137
+    },
+    {
+      "path": "cloudflare/supporter-web-router/tests/service-worker.test.mjs",
+      "candidate_sha256": "905b5df531ace1f6e47096c89ba74657bb9111f45cb5f75a4e3f8cfe34f13fdf",
+      "candidate_bytes": 5536,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "905b5df531ace1f6e47096c89ba74657bb9111f45cb5f75a4e3f8cfe34f13fdf",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 5536
+    },
+    {
+      "path": "cloudflare/supporter-web-router/wrangler.staging.jsonc",
+      "candidate_sha256": "d4c395cded7802317ba21f5783b6ec5dcfe26482a22db775e37651e1dd38dbb4",
+      "candidate_bytes": 534,
+      "original_active_sha256": null,
+      "source_verified": true,
+      "reason": "Same-origin cookie membership and private-cache isolation with explicit disabled deployment controls.",
+      "active_sha256": "d4c395cded7802317ba21f5783b6ec5dcfe26482a22db775e37651e1dd38dbb4",
+      "disposition": "exact_import",
+      "reviewed": true,
+      "corrections": [],
+      "active_bytes": 534
+    }
+  ],
+  "release_authorized": false,
+  "verification": [
+    {
+      "check": "combined_identity_membership_browser_contracts",
+      "status": "passed",
+      "counts": {
+        "tests": 1235,
+        "pass": 1235,
+        "fail": 0,
+        "skipped": 0
+      },
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/identity-membership-browser-combined-20260930.log",
+          "sha256": "1b59c12c3a50ac7e21f27e4dc9f75f567183a057befa9e50d2edbf48c3666285",
+          "bytes": 229398
+        }
+      ],
+      "scope": "Combined actual local service/client/controller/router contracts; synthetic SQLite and private bindings; overlapping module-specific runs are not additive."
+    },
+    {
+      "check": "web_unit_bank",
+      "status": "passed_with_one_live_smoke_not_executed",
+      "files_passed": 115,
+      "tests_passed": 993,
+      "tests_skipped": 1,
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/web-full-unit-final-20260930.log",
+          "sha256": "3ee06a06447f44727198109a39df067a94839927922b4987d7a8dde2d886f86f",
+          "bytes": 15992
+        }
+      ],
+      "skip": {
+        "path": "apps/rayon_sports/web/src/lib/data/public/gikundiro-source.test.ts",
+        "line": 137,
+        "condition": "GIKUNDIRO_LIVE_SMOKE !== true",
+        "acceptance_status": "real provider smoke unexecuted; retain gated live test"
+      }
+    },
+    {
+      "check": "production_browser_portal_rendering",
+      "status": "passed_controlled_synthetic",
+      "checks_passed": 18,
+      "checks_failed": 0,
+      "projects": [
+        "desktop-chromium-1440x900",
+        "mobile-chromium-Pixel7"
+      ],
+      "external_requests": 0,
+      "real_component_client_controller_and_styles": true,
+      "production_service_worker": true,
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/browser-controlled-public-summary.json",
+          "sha256": "cb3f9d866b4cdce1cc29e3bee3812a4f6990ce5c9b48ef76b551983d4d1bc116",
+          "bytes": 12692
+        }
+      ],
+      "limits": "Two Chromium projects with synthetic API; source hashes stable; browser native zoom false; synthetic visibility/pagehide/BFCache events alongside actual cross-tab storage; no complete five-club hosted/native/operator/provider acceptance."
+    },
+    {
+      "check": "web_strict_production_build",
+      "status": "passed_local_pre_cosmetic_source",
+      "build_id": "SV9uOQta2xjdlpe0edrwT",
+      "source_sha256": "248f9ab5077812ab3f684bf686d806f979515d49cf268aa17c0e061272ca892e",
+      "artifact_sha256": "d9231e2ea82020241ea08d66e5b9b97c095febf3da0c0ad8be62a4b2a374356f",
+      "provenance_sha256": "66502d0556e3c366fe64df969b90d211c8f8830c4d8ad6efd45c7ad39360e820",
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/browser-web-production-build-accepted-20260930.log",
+          "sha256": "55c083db68b141a91755cce2bfd8e072cc0d29e12134fc437b2464238f806df5",
+          "bytes": 7320
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/web-current-seal-20260930.json",
+          "sha256": "010e748aae2d1185f87804fa93c1c7ef57b3e6e2c4431ccbfa7fc3afc9b99759",
+          "bytes": 398
+        }
+      ],
+      "backend_available_verified": false,
+      "observed_read_restriction": "exceed_storage_size_quota",
+      "source_relation": "Four post-test cosmetic changes only. Tests/build/seal retain their original tested source hashes; no new exact-byte full candidate or artifact acceptance is inferred. Future phase3 source is excluded."
+    },
+    {
+      "check": "web_lint_and_bundle",
+      "status": "passed_local",
+      "js_kb": 166.68,
+      "js_limit_kb": 170,
+      "css_kb": 37.38,
+      "css_limit_kb": 45,
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/browser-web-lint-accepted-20260930.log",
+          "sha256": "61c3fc82d999725f0c46be5ea9096ad9d6f7157140d0ec8bf3b1142fc64a7f89",
+          "bytes": 71
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/web-bundle-budget-20260930.log",
+          "sha256": "0fdbfea1cf098bae3e0610ccc65cd410a843bafac640ad0134688628f21a3109",
+          "bytes": 689
+        }
+      ],
+      "device_performance_verified": false
+    },
+    {
+      "check": "shared_web_build_provenance",
+      "status": "passed",
+      "tests_passed": 21,
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930/web-provenance-regressions-20260930.log",
+          "sha256": "c3a4dfafdc0f73af545c2080effabd6bd979b1e59e2f85e2ad47d3611a23f9f6",
+          "bytes": 4394
+        }
+      ],
+      "correction": "Root Cloudflare source dependencies are included in web provenance; same-size same-mtime mutation of shared source is rejected."
+    }
+  ],
+  "counts": {
+    "source_verified": 38,
+    "initial_absent_imports": 35,
+    "existing_paths_reconciled": 3,
+    "current_exact": 22,
+    "current_corrected": 16
+  },
+  "limits": [
+    "Disabled local source candidate; no real Workers/D1/cookie/origin/provider/domain acceptance.",
+    "Membership preparation and owned read/history are integrated; contributions, refunds, lost-phone and deletion flows remain governed open tasks.",
+    "Phone/code and session credentials stay out of browser storage. Sign-in retry closures are memory-only; crash/reload recovery for unresolved identity requests remains an explicit gap.",
+    "Custom native identity client/migration and native product screens remain pending; existing Supabase identity stays authoritative.",
+    "Synthetic browser and local SQLite tests do not satisfy named club/carrier/device/operator/release acceptance."
+  ],
+  "phase2_hash_refresh": {
+    "recorded_at_utc": "2026-09-29T22:59:46.352612+00:00",
+    "basis": "immutable phase2 source freeze; excludes future source changes; four enumerated cosmetic corrections applied after tests",
+    "source_freeze_sha256": "c7a0bb5824a403a6713d2b2e9622fe4b358f660b19547797785b0a90f99127c5",
+    "source_hashes_refreshed": 38,
+    "release_accepted": false
+  },
+  "new_locally_written_files": [
+    {
+      "path": "apps/rayon_sports/web/src/components/browser-membership-portal.test.tsx",
+      "sha256": "f83a8369a8f71a940bcf4ff4f7b57768790194e41c96b4bfc6d227a43da1b97d",
+      "bytes": 10618,
+      "reason": "Render the actual portal with real client/controller; tenant change, delayed read disposal, explicit retry, state concealment, storage/cache support and accessible confirmation regressions."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/browser-portal-config.test.ts",
+      "sha256": "4b57b5f016b7982ff38883ae43e3794835d5048be35bdf106da1e3f51c521ae3",
+      "bytes": 1596,
+      "reason": "Validate explicit cookie mode, exact HTTPS host, club identity and rejection without legacy fallback for invalid enabled configuration."
+    },
+    {
+      "path": "apps/rayon_sports/web/e2e/fixtures/browser-portal-controlled-entry.tsx",
+      "sha256": "293d0228655604461a0dbc3a992b035a96e24dc7fb8be2ef2c4e67ea70d24899",
+      "bytes": 801,
+      "reason": "Bundle the actual portal/styles for an isolated synthetic HTTPS harness; supplies no production route or real credentials."
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/browser-portal-controlled-qa.mjs",
+      "sha256": "88741a0b280dbd49010f1c3d4d4c0037ac97c57dfc48cc9d2bd34b4beb3c1283",
+      "bytes": 28676,
+      "reason": "Exercise real rendered portal, real service worker, source hash stability, private cache purge and lifecycle across desktop and mobile Chromium while denying external network."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/admin-role-assignments.ts",
+      "sha256": "17aeadd57cc590a26cdb59c05eb3d232666636f29b57ff8891e10f637e082c5d",
+      "bytes": 2148,
+      "reason": "Extract server-only privileged role assignment behavior so Next page exports remain supported under strict production types.",
+      "post_test_cosmetic_correction": "Remove trailing whitespace or duplicate final newline only; no tokens, declarations, function bodies or behavior changed."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/auth-callback.ts",
+      "sha256": "3eabd6e0caa57c1c2611f661fd2a093b44f766788645d7f91b6ba4936d496ad0",
+      "bytes": 708,
+      "reason": "Extract callback input/redirect validation from unsupported route helper exports and preserve the tested callback contract.",
+      "post_test_cosmetic_correction": "Remove trailing whitespace or duplicate final newline only; no tokens, declarations, function bodies or behavior changed."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/data/admin/community.ts",
+      "sha256": "1d7b8fab8b860677a7c7fd0a2bbdc545169f925ec14f393dc4549bb9d44330a1",
+      "bytes": 1085,
+      "reason": "Extract authenticated role-scoped community data behavior into the dedicated server data layer.",
+      "post_test_cosmetic_correction": "Remove trailing whitespace or duplicate final newline only; no tokens, declarations, function bodies or behavior changed."
+    }
+  ],
+  "supplemental_local_reconciliations": [
+    {
+      "path": "apps/rayon_sports/web/scripts/web-build-provenance.mjs",
+      "sha256": "39bab46b1a0be92dd3ca4312296fa21bdcf6ad735c951ad002365ddbc4fe4c4a",
+      "bytes": 8321,
+      "reason": "Preserve strict Next route/page exports or include transitive root Cloudflare imports in exact web build provenance; associated behavior tests retained."
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/web-build-provenance.node-test.mjs",
+      "sha256": "d65818c791abb91ed199bb9893e32f7fa6810af6689bc2f2707b7bbb5f2b323d",
+      "bytes": 9487,
+      "reason": "Preserve strict Next route/page exports or include transitive root Cloudflare imports in exact web build provenance; associated behavior tests retained."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/app/admin/access/page.test.ts",
+      "sha256": "b24c99c969fbf8c2bd9581c00eaf03e4bd8ae9344609d572fdef0afc7e8e225b",
+      "bytes": 1651,
+      "reason": "Preserve strict Next route/page exports or include transitive root Cloudflare imports in exact web build provenance; associated behavior tests retained."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/app/admin/access/page.tsx",
+      "sha256": "458487a0fe7379d704cdfd1ee33161b7088977b5c996af97b332979c954c727e",
+      "bytes": 29292,
+      "reason": "Preserve strict Next route/page exports or include transitive root Cloudflare imports in exact web build provenance; associated behavior tests retained."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/app/admin/community/page.tsx",
+      "sha256": "4ea753d9049097d9f34ebae0c8092fe793820df80a67b25c2108f5dc0877c62f",
+      "bytes": 42127,
+      "reason": "Preserve strict Next route/page exports or include transitive root Cloudflare imports in exact web build provenance; associated behavior tests retained."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/app/auth/callback/route.test.ts",
+      "sha256": "d2f2fcd21100ab757ac3549fff87d9379b969fe9ba9b31352b2133f184463bee",
+      "bytes": 6556,
+      "reason": "Preserve strict Next route/page exports or include transitive root Cloudflare imports in exact web build provenance; associated behavior tests retained."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/app/auth/callback/route.ts",
+      "sha256": "d959cd31807e27e20be9dd245105ef17f8f6584b975bc12a0ed22c292fc0eafa",
+      "bytes": 3445,
+      "reason": "Preserve strict Next route/page exports or include transitive root Cloudflare imports in exact web build provenance; associated behavior tests retained."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/data/admin/community.test.ts",
+      "sha256": "cb22015528df8b7744ac9a2353db7789ac2fb13f152d4c5517807051e607ad57",
+      "bytes": 5887,
+      "reason": "Preserve strict Next route/page exports or include transitive root Cloudflare imports in exact web build provenance; associated behavior tests retained."
+    },
+    {
+      "path": "apps/rayon_sports/web/tsconfig.json",
+      "sha256": "c3324741736b3789864564598d08616cf032607833bfa280d229f5e78f663ab6",
+      "bytes": 791,
+      "reason": "Preserve strict Next route/page exports or include transitive root Cloudflare imports in exact web build provenance; associated behavior tests retained."
+    }
+  ],
+  "post_test_cosmetic_corrections": {
+    "files": [
+      {
+        "path": "apps/rayon_sports/web/src/lib/admin-role-assignments.ts",
+        "before_sha256": "e7375ce1ddfbdd46a9446c93bde97bec380ba285f27d7bc0468187f9ca492008",
+        "after_sha256": "17aeadd57cc590a26cdb59c05eb3d232666636f29b57ff8891e10f637e082c5d",
+        "bytes": 2148,
+        "correction": "Remove trailing whitespace or duplicate final newline only; no tokens, declarations, function bodies or behavior changed."
+      },
+      {
+        "path": "apps/rayon_sports/web/src/lib/auth-callback.ts",
+        "before_sha256": "4f600506f7a9e6023e7fb57a2cb10297929d806afe4990befcb267d196a953cb",
+        "after_sha256": "3eabd6e0caa57c1c2611f661fd2a093b44f766788645d7f91b6ba4936d496ad0",
+        "bytes": 708,
+        "correction": "Remove trailing whitespace or duplicate final newline only; no tokens, declarations, function bodies or behavior changed."
+      },
+      {
+        "path": "apps/rayon_sports/web/src/lib/data/admin/community.ts",
+        "before_sha256": "0a0e29e7a0d77382220eb63bbc5b6be51bfd27bae954c95c86bec882a7bd0056",
+        "after_sha256": "1d7b8fab8b860677a7c7fd0a2bbdc545169f925ec14f393dc4549bb9d44330a1",
+        "bytes": 1085,
+        "correction": "Remove trailing whitespace or duplicate final newline only; no tokens, declarations, function bodies or behavior changed."
+      },
+      {
+        "path": "cloudflare/supporter-browser-api/scripts/check-deployment.mjs",
+        "before_sha256": "d6d86bd3e978ed820a7c468828b041e07cca89ab84356218cba7168faedef1d4",
+        "after_sha256": "ce869ab1c66f4e0441332cb8687a4f4784b6e76f3811e5ef91f14a117aa6ba22",
+        "bytes": 4983,
+        "correction": "Remove trailing whitespace or duplicate final newline only; no tokens, declarations, function bodies or behavior changed."
+      }
+    ],
+    "scope": "Four post-test cosmetic changes only. Tests/build/seal retain their original tested source hashes; no new exact-byte full candidate or artifact acceptance is inferred. Future phase3 source is excluded.",
+    "behavior_retested": false,
+    "release_accepted": false
+  }
+}

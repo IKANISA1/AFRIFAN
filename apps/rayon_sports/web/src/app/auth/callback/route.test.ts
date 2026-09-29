@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getServerSupabase } from "@/lib/supabase/server";
+import * as callbackRoute from "./route";
 import {
   authCallbackOperationTimeoutMs,
-  GET,
   resolveNextPath,
-} from "./route";
+} from "@/lib/auth-callback";
+import { GET } from "./route";
 
 vi.mock("@/lib/supabase/server", () => ({
   getServerSupabase: vi.fn(),
@@ -27,6 +28,10 @@ function destination(response: Response) {
 }
 
 describe("auth callback controlled states", () => {
+  it("keeps the route entry module limited to its Next HTTP handler export", () => {
+    expect(Object.keys(callbackRoute)).toEqual(["GET"]);
+  });
+
   beforeEach(() => {
     vi.clearAllMocks();
     vi.useRealTimers();
