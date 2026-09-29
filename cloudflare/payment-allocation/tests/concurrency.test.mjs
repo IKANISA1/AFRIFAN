@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {Worker} from 'node:worker_threads';
+import {DatabaseSync} from 'node:sqlite';
+import {mkdtempSync,rmSync,readFileSync} from 'node:fs';
+import {join} from 'node:path';
+import {tmpdir} from 'node:os';
+import {fixture,ready,ids} from './fixture.mjs';
+async function concurrently(file,now,inputs){const gate=new SharedArrayBuffer(4),workers=[],readySignals=[],results=[];
+ for(const input of inputs){let markReady;readySignals.push(new Promise(resolve=>{markReady=resolve;}));const w=new Worker(new URL('./concurrent-worker.mjs',import.meta.url),{workerData:{file,now,input,principal:ids.allocate,gate}});workers.push(w);results.push(new Promise((resolve,reject)=>{w.on('error',reject);w.on('message',value=>{if(value.ready)markReady();else resolve(value);});w.on('exit',code=>{if(code!==0)reject(Error('worker exit'));});}));}
+ try{await Promise.all(readySignals);Atomics.store(new Int32Array(gate),0,1);Atomics.notify(new Int32Array(gate),0);return await Promise.all(results);}finally{await Promise.all(workers.map(w=>w.terminate()));}}
+for(const mode of ['same-key','different-key','duplicate-provider'])test(`independent SQLite connections: ${mode}`,async t=>{const f=fixture();t.after(()=>f.close());const a=await ready(f),temp=mkdtempSync(join(tmpdir(),'pa-concurrency-'));t.after(()=>rmSync(temp,{recursive:true,force:true}));let second={...a,requestId:mode==='same-key'?a.requestId:crypto.randomUUID()};if(mode==='duplicate-provider'){const o=f.createOrder(),e=f.evidence(o);e.parsed.rawId=e.raw.id;e.parsed.providerReference=f.input.parsed.providerReference;await f.ingestion.ingest(e);second=f.allocation(e,o);}const file=join(temp,'state.sqlite');f.db.sql.prepare('VACUUM INTO ?').run(file);const r=await concurrently(file,f.db.time,[a,second]);if(mode==='duplicate-provider')assert.equal(r.filter(x=>x.ok).length,1);else{assert.ok(r.every(x=>x.ok),JSON.stringify(r));assert.deepEqual(r[0].result,r[1].result);}const db=new DatabaseSync(file);try{for(const table of ['pa_allocations','pa_memberships','pa_receipts','pa_external_claims','pa_outbox'])assert.equal(db.prepare(`SELECT count(*) n FROM ${table}`).get().n,1,table);}finally{db.close();}});
+test('raw SQL runtime probe executes without clock substitution or mutation',()=>{const db=new DatabaseSync(':memory:');try{const query=readFileSync(new URL('../scripts/check-sql-runtime.sql',import.meta.url),'utf8'),result=db.prepare(query).get();assert.equal(result.leap_day,'2025-02-28');assert.equal(result.shape_ok,1);assert.ok(Math.abs(result.current_time_ms-Date.now())<5000);assert.equal(db.prepare("SELECT count(*) n FROM sqlite_master WHERE type='table'").get().n,0);}finally{db.close();}});

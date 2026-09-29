@@ -6,9 +6,9 @@ import {
   readFileSync,
 } from 'node:fs';
 import { execFileSync } from 'node:child_process';
-import { extname, join } from 'node:path';
-
-const root = process.cwd();
+import { createHash } from 'node:crypto';
+import { extname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const decodeHex = (hex) => Buffer.from(hex, 'hex').toString('utf8');
 
@@ -38,7 +38,7 @@ const unsupportedTokens = [
   '67616d655f636f6e74656e74',
   '67616d655f636f6e74726f6c',
   '67616d655f6a6f696e',
-].map(decodeHex);
+].map((hex) => decodeHex(hex).replaceAll(/[\s-]+/g, '_'));
 
 const standaloneUnsupportedPatterns = ['7476', '7175697a'].map(
   (hex) => new RegExp(`\\b${decodeHex(hex)}\\b`, 'i'),
@@ -71,11 +71,13 @@ const textExtensions = new Set([
   '',
   '.c',
   '.cc',
+  '.cmake',
   '.conf',
   '.css',
   '.csv',
   '.dart',
   '.env',
+  '.entitlements',
   '.gradle',
   '.graphql',
   '.h',
@@ -91,9 +93,11 @@ const textExtensions = new Set([
   '.md',
   '.mjs',
   '.plist',
+  '.pbxproj',
   '.properties',
   '.py',
   '.rb',
+  '.resolved',
   '.sh',
   '.sql',
   '.swift',
@@ -102,112 +106,210 @@ const textExtensions = new Set([
   '.tsx',
   '.txt',
   '.xml',
+  '.xcconfig',
+  '.xcprivacy',
   '.yaml',
   '.yml',
 ]);
 
-const violations = [];
-let checkedFiles = 0;
+// Exact snapshots reviewed by the implementer for REP-04. These are technical
+// exceptions for historical inventory, not owner or independent approval. A
+// changed snapshot requires renewed review; the deadline forces that review.
+export const governedLegacyReferences = Object.freeze([
+  Object.freeze({
+    path: 'docs/architecture/cloudflare-backend-migration-plan-2026-09-24.md',
+    sha256: '9f6cbd153b77ce312a8a0c81dd84baacc3033f13c95cade508f9a3aff456ced4',
+    expiresAt: '2026-10-29T00:00:00.000Z',
+  }),
+  Object.freeze({
+    path: 'docs/architecture/cloudflare-stage0-live-inventory-2026-09-24.md',
+    sha256: 'a9e01fe1642392ddd1d1e1ae1f43f6e77d5ebef794f7f57567a6fac9856c2898',
+    expiresAt: '2026-10-29T00:00:00.000Z',
+  }),
+  Object.freeze({
+    path: 'tools/scripts/inventory_cloudflare_migration.py',
+    sha256: '33cad14805f545962f7bb05bdf104ead7d98a276306abd33df27fd970b57a520',
+    expiresAt: '2026-10-29T00:00:00.000Z',
+  }),
+]);
 
-function inspectText(relativePath, source) {
-  const normalizedPath = relativePath.toLowerCase();
-  // A published club channel citation is data provenance, not ownership of
-  // the separate display app. Keep the exception paired with its source URL.
-  const clubChannelAttribution = `'${decodeHex('7261796f6e2073706f727473207476')}', 'https://www.youtube.com/@rayon_sports'`;
-  const normalizedSource = (normalizedPath.startsWith('supabase/migrations/') ||
-    normalizedPath === 'supabase/seed-clubs.sql')
-    ? source.toLowerCase().replaceAll(clubChannelAttribution, "'official club source'")
-    : source.toLowerCase();
-  const ownershipPath = normalizedPath.replaceAll(/[\s-]+/g, '_');
-  const ownershipSource = normalizedSource.replaceAll(/[\s-]+/g, '_');
-  const isDependencyLock =
-    normalizedPath.endsWith('.lock') ||
-    normalizedPath.endsWith('-lock.json') ||
-    normalizedPath.endsWith('.resolved');
+const archivePrefix = 'docs/drive-import/';
+const runtimePrefixes = ['apps/', 'packages/', 'supabase/', 'cloudflare/', '.github/workflows/'];
+const rootBuildConfigurationPaths = new Set(['pubspec.yaml', 'pubspec.yml', 'package.json']);
 
-  for (const token of unsupportedTokens) {
-    if (ownershipPath.includes(token) || ownershipSource.includes(token)) {
-      violations.push(`${relativePath}: unsupported ownership token`);
-      return;
+// This reviewed audit control names the excluded archive namespace and writes
+// synthetic negative fixtures. It never promotes archived source or media into
+// a runtime dependency. This is not a general test-file or legacy-token waiver.
+export const governedArchiveControlTests = Object.freeze([
+  Object.freeze({
+    path: 'packages/core/core_theme/test/ui_source_guardrails_test.dart',
+    sha256: '73505819a41024a86218782639034a33ad67770467cac10dade0780b3d9b9034',
+    expiresAt: '2026-10-29T00:00:00.000Z',
+    reviewedBy: 'implementation technical review; no owner or release approval',
+  }),
+]);
+
+export function governedArchiveControlStatus(relativePath, contents, now = new Date()) {
+  const entry = governedArchiveControlTests.find((value) => value.path === relativePath);
+  if (!entry) return 'none';
+  if (!Number.isFinite(now.getTime()) || now.getTime() >= Date.parse(entry.expiresAt)) return 'expired';
+  return createHash('sha256').update(contents).digest('hex') === entry.sha256 ? 'valid' : 'wrong-hash';
+}
+
+export function governedReferenceStatus(relativePath, contents, now = new Date()) {
+  const exception = governedLegacyReferences.find((entry) => entry.path === relativePath);
+  if (!exception) return 'none';
+  if (!Number.isFinite(now.getTime()) || now.getTime() >= Date.parse(exception.expiresAt)) {
+    return 'expired';
+  }
+  return createHash('sha256').update(contents).digest('hex') === exception.sha256
+    ? 'valid' : 'wrong-hash';
+}
+
+export function validateRepositoryBoundary(root, { now = new Date() } = {}) {
+  const violations = [];
+  let checkedFiles = 0;
+  let archivedFiles = 0;
+
+  function inspectText(relativePath, source, permitsLegacyReferences = false) {
+    const normalizedPath = relativePath.toLowerCase();
+    // A published club channel citation is data provenance, not ownership of
+    // the separate display app. Keep the exception paired with its source URL.
+    const clubChannelAttribution = `'${decodeHex('7261796f6e2073706f727473207476')}', 'https://www.youtube.com/@rayon_sports'`;
+    const normalizedSource = (normalizedPath.startsWith('supabase/migrations/') ||
+      normalizedPath === 'supabase/seed-clubs.sql')
+      ? source.toLowerCase().replaceAll(clubChannelAttribution, "'official club source'")
+      : source.toLowerCase();
+    const ownershipPath = normalizedPath.replaceAll(/[\s-]+/g, '_');
+    const ownershipSource = normalizedSource.replaceAll(/[\s-]+/g, '_');
+    const isDependencyLock =
+      normalizedPath.endsWith('.lock') ||
+      normalizedPath.endsWith('-lock.json') ||
+      normalizedPath.endsWith('.resolved');
+
+    for (const token of unsupportedTokens) {
+      if (ownershipPath.includes(token) || (!permitsLegacyReferences && ownershipSource.includes(token))) {
+        violations.push(`${relativePath}: unsupported ownership token`);
+        return;
+      }
+    }
+
+    if (
+      !isDependencyLock &&
+      standaloneUnsupportedPatterns.some(
+        (pattern) =>
+          pattern.test(normalizedPath) || (!permitsLegacyReferences && pattern.test(normalizedSource)),
+      )
+    ) {
+      violations.push(`${relativePath}: unsupported standalone surface token`);
+    }
+
+  }
+
+  // Inspect tracked and new source, including tracked files covered by ignores.
+  // Normal ignored dependencies and build caches are not repository contents.
+  const sourcePaths = execFileSync(
+    'git', ['ls-files', '--cached', '--others', '--exclude-standard', '-z'],
+    { cwd: root, encoding: 'utf8' },
+  ).split('\0').filter(Boolean);
+
+  for (const relativePath of new Set(sourcePaths)) {
+    // Imported snapshots are recoverable evidence only. Paths outside this exact
+    // namespace retain all source checks, including force-tracked ignored output.
+    if (relativePath.startsWith(archivePrefix)) {
+      archivedFiles += 1;
+      continue;
+    }
+    const absolutePath = join(root, relativePath);
+    let stat;
+    try {
+      stat = lstatSync(absolutePath);
+    } catch (error) {
+      if (error.code === 'ENOENT') continue; // Deleted in the current worktree.
+      throw error;
+    }
+    if (stat.isSymbolicLink()) {
+      violations.push(`${relativePath}: source symlinks must not bypass boundary scanning`);
+      continue;
+    }
+    if (relativePath.split('/').slice(0, -1).some(
+      (name) => generatedDirectoryNames.has(name) || name === 'output',
+    )) {
+      violations.push(`${relativePath}: generated output must not be tracked`);
+      continue;
+    }
+    inspectText(relativePath, '');
+    if (!stat.isFile() || !textExtensions.has(extname(relativePath).toLowerCase())) continue;
+    const contents = readFileSync(absolutePath);
+    const referenceStatus = governedReferenceStatus(relativePath, contents, now);
+    const archiveControlStatus = governedArchiveControlStatus(relativePath, contents, now);
+    if (referenceStatus === 'expired' || referenceStatus === 'wrong-hash') {
+      violations.push(`${relativePath}: governed legacy reference exception ${referenceStatus}`);
+    }
+    if (archiveControlStatus === 'expired' || archiveControlStatus === 'wrong-hash') {
+      violations.push(`${relativePath}: governed archive audit control ${archiveControlStatus}`);
+    }
+    if (contents.includes(0)) {
+      violations.push(`${relativePath}: binary content must not bypass text source scanning`);
+      continue;
+    }
+    checkedFiles += 1;
+    const source = contents.toString('utf8');
+    // Archived code/data must never become a runtime dependency merely because its
+    // original snapshot is excluded above. Documentation links remain evidence.
+    if ((runtimePrefixes.some((prefix) => relativePath.startsWith(prefix)) ||
+         rootBuildConfigurationPaths.has(relativePath)) &&
+        archiveControlStatus !== 'valid' &&
+        extname(relativePath).toLowerCase() !== '.md' &&
+        /docs\/(?:\.\/)*drive-import\//.test(source.toLowerCase().replaceAll('\\', '/'))) {
+      violations.push(`${relativePath}: runtime source must not reference archived Drive evidence`);
+    }
+    inspectText(relativePath, source, referenceStatus === 'valid');
+  }
+
+  const requiredPaths = [
+    'packages/features/feat_gamification/lib/src/predict/predict_module.dart',
+    'packages/features/feat_gamification/lib/src/repositories/prediction_repository.dart',
+    'supabase/migrations/20260820080202_football_only_baseline.sql',
+    'supabase/tests/repository_boundary_contract.sql',
+  ];
+
+  for (const requiredPath of requiredPaths) {
+    if (!existsSync(join(root, requiredPath)) || !lstatSync(join(root, requiredPath)).isFile()) {
+      violations.push(`${requiredPath}: required football capability is missing`);
     }
   }
 
-  if (
-    !isDependencyLock &&
-    standaloneUnsupportedPatterns.some(
-      (pattern) =>
-        pattern.test(normalizedPath) || pattern.test(normalizedSource),
-    )
-  ) {
-    violations.push(`${relativePath}: unsupported standalone surface token`);
+  const registryPath = join(
+    root,
+    'packages/app_registry/lib/src/module_registry.dart',
+  );
+  const registry = existsSync(registryPath) && lstatSync(registryPath).isFile()
+    ? readFileSync(registryPath, 'utf8') : '';
+  for (const requiredModule of [
+    'ClubModule()',
+    'PredictModule()',
+    'LiveModule()',
+    'MembershipModule()',
+    'TicketingModule()',
+    'ShopModule()',
+  ]) {
+    if (!registry.includes(requiredModule)) {
+      violations.push(`module_registry.dart: missing ${requiredModule}`);
+    }
   }
 
+  return { checkedFiles, archivedFiles, violations: [...new Set(violations)].sort() };
 }
 
-// Inspect tracked and new source, including tracked files covered by ignores.
-// Normal ignored dependencies and build caches are not repository contents.
-const sourcePaths = execFileSync(
-  'git', ['ls-files', '--cached', '--others', '--exclude-standard', '-z'],
-  { cwd: root, encoding: 'utf8' },
-).split('\0').filter(Boolean);
-
-for (const relativePath of new Set(sourcePaths)) {
-  const absolutePath = join(root, relativePath);
-  if (!existsSync(absolutePath)) continue; // Deleted in the current worktree.
-  if (relativePath.split('/').slice(0, -1).some(
-    (name) => generatedDirectoryNames.has(name) || name === 'output',
-  )) {
-    violations.push(`${relativePath}: generated output must not be tracked`);
-    continue;
-  }
-  inspectText(relativePath, '');
-  const stat = lstatSync(absolutePath);
-  if (!stat.isFile() || !textExtensions.has(extname(relativePath).toLowerCase())) continue;
-  const contents = readFileSync(absolutePath);
-  if (contents.includes(0)) continue;
-  checkedFiles += 1;
-  inspectText(relativePath, contents.toString('utf8'));
-}
-
-const requiredPaths = [
-  'packages/features/feat_gamification/lib/src/predict/predict_module.dart',
-  'packages/features/feat_gamification/lib/src/repositories/prediction_repository.dart',
-  'supabase/migrations/20260820080202_football_only_baseline.sql',
-  'supabase/tests/repository_boundary_contract.sql',
-];
-
-for (const requiredPath of requiredPaths) {
-  if (!existsSync(join(root, requiredPath))) {
-    violations.push(`${requiredPath}: required football capability is missing`);
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const result = validateRepositoryBoundary(process.cwd());
+  console.log(`Repository boundary scan checked ${result.checkedFiles} text files; ${result.archivedFiles} evidence files excluded from live source.`);
+  if (result.violations.length > 0) {
+    console.error('Repository boundary violations:');
+    for (const violation of result.violations) console.error(`- ${violation}`);
+    process.exitCode = 1;
+  } else {
+    console.log('Repository boundary and football preservation checks passed.');
   }
 }
-
-const registryPath = join(
-  root,
-  'packages/app_registry/lib/src/module_registry.dart',
-);
-const registry = readFileSync(registryPath, 'utf8');
-for (const requiredModule of [
-  'ClubModule()',
-  'PredictModule()',
-  'LiveModule()',
-  'MembershipModule()',
-  'TicketingModule()',
-  'ShopModule()',
-]) {
-  if (!registry.includes(requiredModule)) {
-    violations.push(`module_registry.dart: missing ${requiredModule}`);
-  }
-}
-
-console.log(`Repository boundary scan checked ${checkedFiles} text files.`);
-
-if (violations.length > 0) {
-  console.error('Repository boundary violations:');
-  for (const violation of [...new Set(violations)].sort()) {
-    console.error(`- ${violation}`);
-  }
-  process.exit(1);
-}
-
-console.log('Repository boundary and football preservation checks passed.');

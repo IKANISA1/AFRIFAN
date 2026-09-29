@@ -11,6 +11,44 @@ import yaml from "js-yaml";
 
 // Exercise the installed transitive packages, not a copied implementation.
 // Advisory IDs and dependency chains are documented in the remediation report.
+// Undici's September 2026 advisories patch the maintained branches at these
+// floors: https://github.com/nodejs/undici/releases/tag/v7.29.1
+test("every locked undici copy meets its maintained security patch floor", async () => {
+  const lock = JSON.parse(await readFile(new URL("../package-lock.json", import.meta.url), "utf8"));
+  const copies = Object.entries(lock.packages).filter(([name]) => /(?:^|\/)node_modules\/undici$/.test(name));
+  assert.ok(copies.length > 0, "Miniflare's undici dependency must be represented in the lockfile");
+  const minimums = { 6: [28, 1], 7: [29, 1], 8: [10, 2] };
+  for (const [location, { version }] of copies) {
+    assert.match(version, /^\d+\.\d+\.\d+$/, `${location} must use a reviewed stable release`);
+    const [major, minor, patch] = version.split(".").map(Number);
+    const minimum = minimums[major];
+    assert.ok(minimum, `${location}: undici ${version} requires a reviewed security floor for this release branch`);
+    assert.ok(minor > minimum[0] || (minor === minimum[0] && patch >= minimum[1]),
+      `${location}: undici ${version} predates the branch security patch`);
+  }
+  const requireFromMiniflare = createRequire(import.meta.resolve("miniflare"));
+  const installed = requireFromMiniflare("undici/package.json");
+  assert.ok(copies.some(([, entry]) => entry.version === installed.version), "Miniflare's installed undici must match the reviewed lock graph");
+});
+
+test("Miniflare's undici BalancedPool retains a rejecting custom connector", async (t) => {
+  // GHSA-w293-vg96-wgc3: BalancedPool's JSON clone previously discarded
+  // function-valued connection options, bypassing custom connection policy.
+  const requireFromMiniflare = createRequire(import.meta.resolve("miniflare"));
+  const { BalancedPool } = requireFromMiniflare("undici");
+  const expected = new Error("synthetic custom connector policy rejection");
+  let calls = 0;
+  const pool = new BalancedPool("http://127.0.0.1:1", {
+    connect(_options, callback) {
+      calls += 1;
+      callback(expected, null);
+    },
+  });
+  t.after(() => pool.destroy());
+  await assert.rejects(pool.request({ path: "/", method: "GET" }), (error) => error === expected);
+  assert.equal(calls, 1);
+});
+
 test("YAML merge budgets also bound repeated empty sources", () => {
   const input = `base: &base {}\nmerged:\n  <<: [${Array(12).fill("*base").join(", ")}]\n`;
   assert.throws(() => yaml.load(input, { maxTotalMergeKeys: 5 }), /maxTotalMergeKeys/);

@@ -1,0 +1,26 @@
+{
+  "name": "africlub-membership-checkout-staging",
+  "main": "src/checkout-worker.mjs",
+  "compatibility_date": "2026-09-26",
+  "workers_dev": false,
+  "preview_urls": false,
+  "observability": {
+    "enabled": false
+  },
+  "d1_databases": [
+    {
+      "binding": "ALLOCATION_DB",
+      "database_name": "africlub-payment-allocation-staging",
+      "database_id": "REPLACE_WITH_SHARED_ALLOCATION_STAGING_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "MEMBERSHIP_CHECKOUT_ENABLED": "false",
+    "PAYMENT_ALLOCATION_ENABLED": "false",
+    "ALLOCATION_ENVIRONMENT": "isolated-staging",
+    "CHECKOUT_PRINCIPAL_ID": "",
+    "CHECKOUT_READ_PRINCIPAL_ID": "",
+    "HANDOFF_JOURNAL_ENABLED": "false"
+  }
+}

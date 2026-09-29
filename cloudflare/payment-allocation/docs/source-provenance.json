@@ -1,0 +1,49 @@
+{
+  "sourceAuthority": "AFRICLUB current Google Drive repository",
+  "retrievedOn": "2026-09-26",
+  "sourceFiles": [
+    {
+      "path": "supabase/migrations/20260923102734_serialize_momo_evidence_before_row_locks.sql",
+      "driveFileId": "17FbCaT0BGM7E_vZVND8iblSw5xxMF6LI",
+      "sha256": "88c46eeadd14ad5d69ee63d6542e46df3c8649be931d321b87e803260dc8cad9",
+      "bytes": 47949
+    },
+    {
+      "path": "supabase/migrations/20260923101604_preserve_paid_membership_restrictions_and_receipt_recovery.sql",
+      "driveFileId": "1qbzmSFVCV7kvkL1mnN7FIFOnBuCQK4N2",
+      "sha256": "c6a79019133b8330319c6942c325e2b60e46051b9e56579ab90c6b1140459059",
+      "bytes": 13772
+    },
+    {
+      "path": "supabase/migrations/20260823061851_member_portal_and_contribution_intents.sql",
+      "driveFileId": "1n6SkJmmohQ0fKmDr6JPlUtPp_fzfBg0c",
+      "sha256": "dfffc98065e02c48731d687deef41879d9ac06dda1c53765dbfb55021e06efe4",
+      "bytes": 9524
+    },
+    {
+      "path": "supabase/migrations/20260920123000_automatic_paid_membership.sql",
+      "driveFileId": "1oMihqEyvByuyjqBu6In6mydTsXMIkRcO",
+      "sha256": "4dc42488303502a4da2806be77dead9c52d4dcb6ba2efbe6a1fa3fb0cace2d9b",
+      "bytes": 10901
+    },
+    {
+      "path": "supabase/migrations/20260916185609_member_contribution_history_and_route_validation.sql",
+      "driveFileId": "1dj6ggqbk5ltscU6bUJL7-jteBtS5RE4v",
+      "sha256": "be2647357e51f27493a16fe0476c51f1f367c5c0436acfe292e3fe5838d25297",
+      "bytes": 7950
+    },
+    {
+      "path": "supabase/migrations/20260920165540_membership_payment_evidence_binding.sql",
+      "driveFileId": "17gFdlbgAmrwpsRmChUCJR6iux1d6LdE4",
+      "sha256": "5204bc0078cafc74f2df925ec1c91a094d932359cc5c6838664e69cca8c3a1bd",
+      "bytes": 10133
+    },
+    {
+      "path": "supabase/migrations/20260919164057_atomic_initiative_confirmation.sql",
+      "driveFileId": "1SQZ0wW61O9McDSZ5yNmaEXtRNS3b0c_4",
+      "sha256": "3e49247fa85ebe78f8af70e08e6a3320d51e878d916f95564262e29fd7a012a4",
+      "bytes": 3770
+    }
+  ],
+  "productionMigration": false
+}

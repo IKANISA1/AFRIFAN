@@ -1,0 +1,26 @@
+{
+  "compatibility_date": "2026-09-01",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [],
+  "name": "africlub-allocation-delivery-dispatch-staging",
+  "main": "src/dispatch-worker.mjs",
+  "vars": {
+    "DELIVERY_DISPATCH_ENABLED": "false",
+    "DELIVERY_ENVIRONMENT": "isolated-staging",
+    "DELIVERY_CLUB_IDS": "[]",
+    "DELIVERY_TIMEOUT_MS": "2000"
+  },
+  "services": [
+    {
+      "binding": "SOURCE",
+      "service": "africlub-allocation-delivery-source-staging",
+      "entrypoint": "AllocationEventSource"
+    },
+    {
+      "binding": "INBOX",
+      "service": "africlub-allocation-delivery-inbox-staging",
+      "entrypoint": "AllocationEventInbox"
+    }
+  ]
+}

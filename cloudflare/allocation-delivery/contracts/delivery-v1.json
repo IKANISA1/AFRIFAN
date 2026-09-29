@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "name": "allocation-delivery-v1",
+  "visibility": "private-service-bindings-only",
+  "effect": "operations_inbox_record",
+  "financialEffects": false,
+  "handsetDelivery": false,
+  "sourceStore": "existing ALLOCATION_DB",
+  "consumerStore": "separate INBOX_DB",
+  "deliveryIdentity": [
+    "consumerId",
+    "eventId"
+  ],
+  "crossDatabaseAtomic": false,
+  "methods": {
+    "AllocationEventSource": [
+      "take",
+      "readForDispatch",
+      "finish"
+    ],
+    "AllocationDeliveryReview": [
+      "inspect",
+      "health",
+      "redrive"
+    ],
+    "AllocationEventInbox": [
+      "accept"
+    ],
+    "AllocationInboxReader": [
+      "list"
+    ],
+    "AllocationDeliveryRunner": [
+      "run"
+    ]
+  },
+  "limits": {
+    "clubsPerRun": 5,
+    "eventsPerClubPerRun": 1,
+    "pageSize": 50,
+    "healthCountCap": 1000,
+    "sinkTimeoutMsMaximum": 4000,
+    "sourceRpcTimeoutMsMaximum": 4000,
+    "attemptsMaximum": 10
+  },
+  "retry": "retained original event ID and envelope; explicit original-operation redrive",
+  "timeout": "per RPC; observation deadline does not cancel remote commit; unknown source calls preserve original event and lease",
+  "legacy": "only never-attempted pending rows can be adopted; existing attempts and delivered records untouched"
+}

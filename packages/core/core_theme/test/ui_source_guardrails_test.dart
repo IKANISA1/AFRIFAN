@@ -1220,6 +1220,118 @@ void main() {
         isFalse,
       );
     });
+
+    test('Preserved Drive evidence does not become an active design surface', () {
+      final fixture = Directory.systemTemp.createTempSync(
+        'africlub-visual-source-boundary-',
+      );
+      addTearDown(() => fixture.deleteSync(recursive: true));
+      void write(String relative, String content) {
+        final file = File('${fixture.path}/$relative');
+        file.parent.createSync(recursive: true);
+        file.writeAsStringSync(content);
+      }
+
+      write(
+        'docs/drive-import/2026-09-28/mirror/DESIGN.md',
+        'Historical source of truth for product design. assets/images/old.png',
+      );
+      write(
+        'docs/drive-import/2026-09-28/mirror/capture.png',
+        'Synthetic archived screenshot bytes; no runtime rights approval.',
+      );
+      expect(_findSecondaryDesignAuthorityFiles(fixture), isEmpty);
+      expect(_findStoredVisualAssets(fixture), isEmpty);
+      expect(_findForbiddenStaticDesignReferences(fixture), isEmpty);
+
+      // Copying historical material into a live surface restores every guard;
+      // the archive's location cannot confer runtime rights or design authority.
+      write(
+        'docs/style-guide.md',
+        'Competing source of truth for product design.',
+      );
+      write(
+        'apps/club/assets/capture.png',
+        'Synthetic unregistered live asset bytes.',
+      );
+      write(
+        'apps/club/lib/screen.dart',
+        "Image.asset('assets/images/old.png')",
+      );
+      expect(_findSecondaryDesignAuthorityFiles(fixture), [
+        '${fixture.path}/docs/style-guide.md',
+      ]);
+      expect(_findStoredVisualAssets(fixture), [
+        '${fixture.path}/apps/club/assets/capture.png',
+      ]);
+      expect(_findForbiddenStaticDesignReferences(fixture), [
+        '${fixture.path}/apps/club/lib/screen.dart',
+      ]);
+      expect(
+        _isPreservedDriveEvidencePath(
+          fixture,
+          '${fixture.path}/apps/club/docs/drive-import/capture.png',
+        ),
+        isFalse,
+      );
+    });
+
+    test('Registered media API templates do not waive static asset guards', () {
+      final fixture = Directory.systemTemp.createTempSync(
+        'africlub-media-api-reference-',
+      );
+      addTearDown(() => fixture.deleteSync(recursive: true));
+      final worker = File(
+        '${fixture.path}/cloudflare/rayon-public/src/index.mjs',
+      );
+      worker.parent.createSync(recursive: true);
+      const apiTemplate =
+          r'return `${origin}/v1/public/rayon/media/${encodeURIComponent(id)}`;';
+      worker.writeAsStringSync(apiTemplate);
+      expect(_findForbiddenStaticDesignReferences(fixture), isEmpty);
+      worker.writeAsStringSync(
+        '$apiTemplate\nconst unregistered = "/media/old-design.png";',
+      );
+      expect(_findForbiddenStaticDesignReferences(fixture), [worker.path]);
+    });
+
+    test('Static media paths are distinguished from slash-separated prose', () {
+      final fixture = Directory.systemTemp.createTempSync(
+        'africlub-static-path-context-',
+      );
+      addTearDown(() => fixture.deleteSync(recursive: true));
+      final source = File('${fixture.path}/apps/club/lib/screen.dart');
+      source.parent.createSync(recursive: true);
+      for (final reference in [
+        'Approve source/media/brand rights with expiry and scope',
+        'Approve source/icons/brand rights with expiry and scope',
+      ]) {
+        source.writeAsStringSync('"$reference"');
+        expect(
+          _findForbiddenStaticDesignReferences(fixture),
+          isEmpty,
+          reason: reference,
+        );
+      }
+
+      for (final reference in [
+        '/media/file.jpg',
+        '"/media/file.jpg"',
+        'https://example.com/media/file.jpg',
+        'src="/media/file.jpg"',
+        '/icons/club.svg',
+        'https://example.com/icons/club.svg',
+        '../media/file.jpg',
+        'public/media/file.jpg',
+        'src="public/media/club"',
+        r'`${origin}/media/file.jpg`',
+      ]) {
+        source.writeAsStringSync(reference);
+        expect(_findForbiddenStaticDesignReferences(fixture), [
+          source.path,
+        ], reason: reference);
+      }
+    });
   });
 }
 
@@ -1454,8 +1566,21 @@ bool _isGovernedGoldenEvidence(Directory repoRoot, File mediaFile) {
 }
 
 List<String> _findForbiddenStaticDesignReferences(Directory repoRoot) {
+  // Directory names embedded in a slash-separated task title are prose. Root
+  // paths, URL paths, relative asset files and string/attribute references are
+  // actual static asset contracts and remain prohibited.
+  const rootOrUrlAssetPath =
+      r'''(?:^|[\s"'`(=:\[\]{},])(?:(?:https?://|//)[^\s"'`<>]*?|(?:\.{1,2})?(?:/[^/\s"'`<>]+)*?)/(?:icons|media)/''';
+  const quotedRelativeAssetPath =
+      r'''(?:^|["'`(=:\[\]{},])(?:[A-Za-z0-9_.-]+/)*(?:icons|media)/''';
+  const relativeAssetFile =
+      r'''(?:^|[\s"'`(=:\[\]{},])(?:[A-Za-z0-9_.-]+/)*(?:icons|media)/[^\s"'`<>]+\.[A-Za-z0-9]+''';
+  const deletedAssetContracts =
+      r'(CREST_ASSET|crestAsset|assets/crest|assets/images|LaunchImage|\bAppIcon\b|ic_launcher|splash_logo|favicon|Image\.asset)';
   final forbidden = RegExp(
-    r'(CREST_ASSET|crestAsset|assets/crest|assets/images|LaunchImage|\bAppIcon\b|ic_launcher|splash_logo|favicon|/icons/|/media/|Image\.asset)',
+    '$deletedAssetContracts|$rootOrUrlAssetPath|'
+    '$quotedRelativeAssetPath|$relativeAssetFile',
+    multiLine: true,
   );
 
   return _scanTextFiles(
@@ -1479,6 +1604,7 @@ List<String> _findForbiddenStaticDesignReferences(Directory repoRoot) {
       '.html',
     },
     pattern: forbidden,
+    sourceForInspection: _staticAssetScanSource,
     allow: (path) =>
         ((path.endsWith('/docs/architecture/club-identity.md') ||
                 path.endsWith(
@@ -1582,6 +1708,7 @@ List<String> _scanTextFiles({
   required Set<String> extensions,
   required RegExp pattern,
   bool Function(String normalizedPath)? allow,
+  String Function(String normalizedPath, String source)? sourceForInspection,
 }) {
   final violations = <String>[];
 
@@ -1596,7 +1723,9 @@ List<String> _scanTextFiles({
       if (allow != null && allow(normalizedPath)) continue;
       if (!extensions.any(normalizedPath.endsWith)) continue;
 
-      final content = entity.readAsStringSync();
+      final rawContent = entity.readAsStringSync();
+      final content =
+          sourceForInspection?.call(normalizedPath, rawContent) ?? rawContent;
       if (pattern.hasMatch(content)) {
         violations.add(normalizedPath);
       }
@@ -1622,7 +1751,8 @@ List<FileSystemEntity> _safeRecursiveList(Directory root) {
 
     for (final child in children) {
       final normalizedPath = child.path.replaceAll('\\', '/');
-      if (_isGeneratedPath(normalizedPath)) {
+      if (_isGeneratedPath(normalizedPath) ||
+          _isPreservedDriveEvidencePath(root, normalizedPath)) {
         continue;
       }
       entities.add(child);
@@ -1633,6 +1763,24 @@ List<FileSystemEntity> _safeRecursiveList(Directory root) {
   }
 
   return entities;
+}
+
+bool _isPreservedDriveEvidencePath(Directory root, String normalizedPath) {
+  final archiveRoot = '${root.path.replaceAll('\\', '/')}/docs/drive-import';
+  return normalizedPath == archiveRoot ||
+      normalizedPath.startsWith('$archiveRoot/');
+}
+
+String _staticAssetScanSource(String normalizedPath, String source) {
+  // This exact dynamic URL points at the governed media API, not the retired
+  // static /media asset directory. Retain all other checks on this Worker.
+  if (!normalizedPath.endsWith('/cloudflare/rayon-public/src/index.mjs')) {
+    return source;
+  }
+  return source.replaceAll(
+    r'${origin}/v1/public/rayon/media/${encodeURIComponent(id)}',
+    '',
+  );
 }
 
 bool _isGeneratedPath(String normalizedPath) {

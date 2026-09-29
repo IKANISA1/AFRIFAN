@@ -1,16 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-String _normalizeFeatureKey(String value) {
-  final normalized = value.trim().toLowerCase();
-  if (normalized.isEmpty) {
-    return '';
-  }
+import 'feature_availability_policy.dart';
 
-  return normalized
-      .replaceAll(RegExp(r'[^a-z0-9]+'), '_')
-      .replaceAll(RegExp(r'^_+|_+$'), '');
-}
+export 'feature_availability_policy.dart' show isFeatureSnapshotForClub;
 
 /// The only feature modules allowed to render in the mobile bottom nav.
 const List<String> primaryBottomTabFeatureOrder = <String>[
@@ -82,7 +75,8 @@ abstract class FeatureModule {
   /// Config-aware enablement check.
   ///
   /// When a [PlatformConfigSnapshot] is available (fetched from Supabase),
-  /// this checks `isEffectivelyEnabled` on the matching feature.
+  /// this intersects club capability with operational runtime availability.
+  /// A runtime flag never enables an explicitly disabled club capability.
   /// Falls back to [isEnabled] with compile-time [featureFlags] when:
   ///   - The config snapshot is null (network failed, first run)
   ///   - The feature is not found in the snapshot
@@ -92,35 +86,11 @@ abstract class FeatureModule {
     Map<String, bool> featureFlags = const <String, bool>{},
     Map<String, dynamic>? configSnapshot,
   }) {
-    if (configSnapshot != null) {
-      final features = configSnapshot['features'];
-      if (features is List) {
-        for (final raw in features) {
-          if (raw is Map<String, dynamic> &&
-              _normalizeFeatureKey(raw['feature_key'] as String? ?? '') ==
-                  _normalizeFeatureKey(featureKey)) {
-            // Module registration should follow operational availability.
-            // Hidden features remain registered so routes and deep links can be
-            // handled gracefully, but maintenance / disabled features are
-            // removed entirely.
-            final isGlobalEnabled = raw['is_enabled'] as bool? ?? true;
-            final visibility = raw['visibility_state'] as String? ?? 'visible';
-            final channel = raw['channel'] as Map<String, dynamic>?;
-            final channelEnabled = channel?['is_enabled'] as bool? ?? true;
-            final rules = raw['rules'] as Map<String, dynamic>?;
-            final isWithinSchedule =
-                rules?['is_within_schedule'] as bool? ?? true;
-
-            return isGlobalEnabled &&
-                channelEnabled &&
-                visibility != 'maintenance' &&
-                isWithinSchedule;
-          }
-        }
-      }
-    }
-    // Not in config → fall back to compile-time flags.
-    return isEnabled(featureFlags);
+    return isFeatureOperational(
+      featureKey: featureKey,
+      clubEnabled: isEnabled(featureFlags),
+      snapshot: configSnapshot,
+    );
   }
 
   /// Routes contributed by this module.

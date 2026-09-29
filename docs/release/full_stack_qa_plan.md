@@ -55,6 +55,33 @@ Owner clarification on 23 September 2026: all five supporter apps have no SMS co
 
 The five app directories are `vitalo` (Burundi, tenant 44), `rayon_sports` (Rwanda, tenant 24), `nkana` (Zambia, tenant 26), `as_vita` (DR Congo, tenant 6), and `costa_do_sol` (Mozambique, tenant 1001). All other dedicated app shells and club configuration packages are removed. The sole design authority, `revolut-design`, applies to all ten native targets, public and member websites, and admin/PWA.
 
+### Current native release inventory (29 September 2026)
+
+This prospective scope is five clubs and ten Android/iOS targets. The identities
+below are the current source identities, not proof of store registration,
+provider registration, signing authority, successful builds or owner acceptance.
+Costa do Sol's identities and brand are provisional until approved. Historical
+four-club/eight-artifact results and approvals retain their original scope.
+
+<!-- release-scope:start -->
+| App slug | Tenant ID | Country code | Config class | Android application ID | iOS bundle ID |
+| --- | --- | --- | --- | --- | --- |
+| vitalo | 44 | BI | VitaloConfig | bi.ikanisa.vitalo | bi.ikanisa.vitalo |
+| rayon_sports | 24 | RW | RayonSportsConfig | rw.gikundiro.app | rw.ikanisa.rayonSports |
+| nkana | 26 | ZM | NkanaConfig | zm.ikanisa.nkana | zm.ikanisa.nkana |
+| as_vita | 6 | CD | AsVitaConfig | cd.ikanisa.as_vita | cd.ikanisa.asVita |
+| costa_do_sol | 1001 | MZ | CostaDoSolConfig | mz.ikanisa.costadosol | mz.ikanisa.costadosol |
+<!-- release-scope:end -->
+
+Run `node tools/scripts/validate_release_scope.mjs` before candidate evidence is
+collected. It reconciles this table with the actual workspace/app/config package
+registrations, production tenant/country values, Android IDs and iOS Runner
+configuration relationships. It also reports missing backend bootstrap inputs
+without exposing their contents. `--scope-only` gates source inventory agreement
+in CI; any release-input blocker still appears in the result and production
+readiness remains unverified. Signing, provider authenticity, installed behavior
+and the other release contracts require their own evidence.
+
 Current source test inventory: 212 Dart unit/widget `*_test.dart` files, four mobile integration-test Dart files, 111 web test files, and 53 web Playwright spec files. These are file counts, not passing tests. The consolidated route register contains 50 native rendered entries plus 12 compatibility redirects; reconcile route/state/role coverage separately rather than treating file or image counts as a final case denominator.
 
 AFRICLUB's web implementation is included. The separate sibling `Gikundiro` repository and other recovered products are outside this repository's scope. Discover dormant, removed or disabled paths and classify them; do not resurrect retired external products to increase coverage.
@@ -217,8 +244,8 @@ The maintained repository objective above is current. The 23 September continuat
 19. [ ] **QA-03 — API/backend integration:** Extend real application transport coverage for endpoint methods, authorization/tenant boundaries, invalid input, 401/403/404/409/429/5xx, timeout and retry outcomes. Assert UI and persisted state together. Fifteen current real Auth/PostgREST/Edge membership checks pass, including anonymous/foreign-club rejection, denied supporter snapshot writes and committed-response recovery. The historical server SMS-handler probe exposes an open gateway/server receipt boundary; it neither represents a supporter-app feature nor proves an end-to-end live payment.
 20. [ ] **QA-03/07 — Storage/realtime/jobs:** Complete upload type/size/path access, private storage boundaries, cross-account realtime subscriptions and reconnect catch-up, scheduled-job overlap/retries and stale-data behavior. Current scope: actual isolated WebSocket/Flutter-controller recovery passes for both published public match sources. Thirteen real Storage API checks and nine upload-handler/Auth/Storage outcomes verify type/size/path/RLS/tenant/role-removal behavior. Private subscriptions and remaining job behavior remain open; no private bucket is configured.
 21. [ ] **QA-03/07 — Integration failure handling:** Exercise all applicable auth-hook, server receipt, notification, football-feed, image-generation and Wallet integration boundaries using approved substitutes/sinks. Verify signatures, authorization, invalid tokens, deduplication, failure/retry and review-before-publication behavior. The earlier server-handler probe confirms missing trusted tenant/provider context and an undefined receipt trust boundary. Specify the separate management-gateway/server contract and local negative regressions; supporter-app collection is excluded. No external provider was contacted in the isolated payment runs.
-22. [ ] **QA-04 — Native prerequisites:** Resolve actual release inputs for the four clubs. Current local checks find Firebase configuration files and bundled iOS app-icon PNGs absent for Vital'O, Nkana and AS Vita. Verify intended integrations, registered identities and real build inputs; absence does not by itself prove a boot crash.
-23. [ ] **QA-04 — Eight native builds/boots:** Build, install and launch each retained club on both Android and iOS. Verify icons, IDs, tenant/currency, feature flags, capabilities, deep links, bootstrap/backend behavior and actual iOS SwiftPM/CocoaPods resolution. After the Home fixes, all eight main-entrypoint debug artifacts are rebuilt, installed, launched and read back again; current evidence is home-layout-20260923/report.json. This is not signing, full-journey or store acceptance.
+22. [ ] **QA-04 — Native prerequisites:** Resolve actual release inputs for all five clubs. The earlier four-club checkpoint found Firebase configuration files and bundled iOS app-icon PNGs absent for Vital'O, Nkana and AS Vita. Costa do Sol production backend URL/key, identities, crest, payment/provider routing and owner review remain unverified. Refresh the input inventory for the exact candidate; retain each missing or provisional input as a blocker. Verify intended integrations, registered identities and real build inputs; absence does not by itself prove a boot crash.
+23. [ ] **QA-04 — Ten native builds/boots:** Build, install and launch all five retained clubs on both Android and iOS. Require ten current-candidate artifact and launch records; reconcile them to the native release inventory above. Verify icons, IDs, tenant/currency, feature flags, capabilities, deep links, bootstrap/backend behavior and actual iOS SwiftPM/CocoaPods resolution. The historical four-club Home checkpoint rebuilt, installed, launched and read back eight main-entrypoint debug artifacts; its evidence is home-layout-20260923/report.json and does not cover Costa do Sol or the final five-club candidate. This is not signing, full-journey or store acceptance.
 24. [ ] **QA-04 — Remaining native journeys:** Execute the remaining repaired screenshot/integration journeys, capture iOS separately and expand beyond the earlier synthetic Rayon Club pilot to the complete supporter workflow. Current Home checkpoint passes five Home/auth/settings/deep-link/recovery cases and one Club/squad/player/history case on each platform (12 native case executions), with 20 system captures. These use synthetic repositories/auth; all-club authenticated and provider journeys remain open.
 25. [ ] **QA-05/07 — PWA lifecycle:** Verify tab versus installed mode, offline launch/reconnect, session expiry/logout, storage denial/quota, draft preservation during update, old tabs and supported version recovery. Confirm safe treatment of legacy queued mutations and obtain supported Safari/Firefox worker evidence. Current scope: six browser profiles pass real worker origin-loss/reconnect, private membership-cache exclusion, preference storage denial, explicit update cancellation and older-tab draft preservation. Workers retain legacy mutations without replay. Installed mode, durable saved drafts, account expiry across all lifecycle states and arbitrary mixed-version compatibility remain open.
 26. [ ] **QA-06 — Visual acceptance:** Complete matched source/target comparisons for geometry, type, full color roles, density, imagery, copy, controls and overlays on all applicable surfaces. Update evidence without treating widget golden equality as source-fidelity approval. Owner approval from 20 September remains bound to the original gallery/image hashes; exact source fidelity and independent technical acceptance remain separate. Home checkpoint closes QA-UI-004/005/006 locally. Eight new Home images and nine reviewed Membership heading changes bring the register to 1,062 (766 route images and 296 shared variants). Current images do not inherit prior owner approval.

@@ -14,7 +14,7 @@ class HubPartnerPoolRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.afriL10n;
-    final ink = ColorTokens.discoveryInk;
+    const ink = ColorTokens.discoveryInk;
     final secondary = ink.withValues(alpha: 0.76);
     final viewerEntry = pool.viewerEntry;
     final points = CurrencyFormatter(
@@ -71,7 +71,11 @@ class HubPartnerPoolRow extends StatelessWidget {
               const SizedBox(height: SpacingTokens.spacing4),
               Row(
                 children: [
-                  Icon(AfriIcons.check, color: ink, size: SizeTokens.iconSm),
+                  const Icon(
+                    AfriIcons.check,
+                    color: ink,
+                    size: SizeTokens.iconSm,
+                  ),
                   const SizedBox(width: SpacingTokens.spacing2),
                   Expanded(
                     child: Text(

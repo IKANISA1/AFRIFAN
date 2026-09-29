@@ -35,8 +35,10 @@ abstract final class AppModuleRegistry {
   ///
   /// When [configSnapshot] (the raw JSON from `get_platform_config`) is
   /// provided, modules use [FeatureModule.isEnabledForConfig] which
-  /// checks the admin-controlled platform feature registry first,
+  /// intersects club capability with operational runtime availability,
   /// falling back to [ClubConfig.features] when a feature is not found.
+  /// Supplied club/channel scope must match this mobile app. Legacy snapshots
+  /// omitting scope remain supported by the existing scoped fetch/cache.
   ///
   /// When [configSnapshot] is null (network failed, first run, etc.),
   /// modules fall back to the compile-time [config.features] map.
@@ -45,8 +47,17 @@ abstract final class AppModuleRegistry {
     Map<String, dynamic>? configSnapshot,
     bool allowInternalMobileAdmin = internalMobileAdminBuild,
   }) {
+    if (!isFeatureSnapshotForClub(
+      clubId: config.clubId,
+      snapshot: configSnapshot,
+    )) {
+      return const <FeatureModule>[];
+    }
     return _allModules
         .where((module) {
+          // A feature implementation or remote flag cannot expand the club's
+          // explicitly disabled capability set.
+          if (config.features[module.featureKey] == false) return false;
           if (module.featureKey == 'admin' && !allowInternalMobileAdmin) {
             return false;
           }

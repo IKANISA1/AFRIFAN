@@ -74,10 +74,11 @@ class AppRouter {
           requestedPath: state.uri.queryParameters['from'],
         ),
       ),
-      StatefulShellRoute.indexedStack(
-        builder: (context, state, shell) => shellBuilder(context, shell),
-        branches: _buildBranches(),
-      ),
+      if (_buildBranches().isNotEmpty)
+        StatefulShellRoute.indexedStack(
+          builder: (context, state, shell) => shellBuilder(context, shell),
+          branches: _buildBranches(),
+        ),
       // Non-tab routes from all modules
       ..._buildStandaloneRoutes(),
     ],
@@ -152,13 +153,13 @@ class AppRouter {
             .where(
               (module) =>
                   module.tabRoute != null &&
-                  primaryBottomTabFeatureKeys.contains(module.featureKey),
+                  shellBranchFeatureKeys.contains(module.featureKey),
             )
             .toList()
           ..sort(
-            (left, right) => primaryBottomTabOrderForFeature(
+            (left, right) => shellBranchOrderForFeature(
               left.featureKey,
-            ).compareTo(primaryBottomTabOrderForFeature(right.featureKey)),
+            ).compareTo(shellBranchOrderForFeature(right.featureKey)),
           );
 
     for (final module in tabModules) {
@@ -177,8 +178,8 @@ class AppRouter {
       }
     }
 
-    throw StateError(
-      'AppRouter requires at least one tab route or absolute standalone route.',
-    );
+    // Fail closed without crashing when runtime configuration disables all
+    // modules. The built-in recovery route is always registered.
+    return '/feature-unavailable';
   }
 }

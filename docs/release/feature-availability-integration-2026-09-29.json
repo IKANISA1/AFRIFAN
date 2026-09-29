@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-09-29T22:09:21.026946+00:00",
+  "status": "integrated_and_scoped_locally_verified",
+  "source_directory": "docs/drive-import/2026-09-28/candidates/implementation-08-source",
+  "comparison_register": "docs/drive-import/2026-09-28/candidate-08-vs-checkout.tsv",
+  "source_archive": "docs/drive-import/2026-09-28/mirror/AFRICLUB_Implementation_08_2026-09-28.zip",
+  "source_archive_sha256": "4264a115e3974bf6236d90cfd8bc59537f066725d56757b9e03dd256095a8af5",
+  "candidate_precondition": "All six candidate file hashes and byte lengths matched the frozen comparison register; three new paths were absent and three existing active hashes matched the captured preintegration snapshot before promotion.",
+  "toolchain": {
+    "flutter": "3.44.9",
+    "dart": "3.12.2",
+    "framework_revision": "6b182d2c7585eba26d4edce0f97630effd256c33",
+    "root": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub"
+  },
+  "file_count": 7,
+  "files": [
+    {
+      "path": "packages/core/core_router/lib/src/feature_availability_policy.dart",
+      "source_sha256": "88d32350b84e968e8d6214cc48c978c4cdd2d1d35b19396eb7e08048b2964497",
+      "preintegration_sha256": null,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/core/core_router/lib/src/feature_availability_policy.dart",
+      "active_sha256": "2acad4b0596a7bdd4c5d6883fa110e673b48eb96140123b17d431a484e5daee4",
+      "bytes": 3078,
+      "delta_from_candidate": true,
+      "integration": "added_and_adapted",
+      "rationale": "Adopt the candidate pure club-capability/runtime intersection; reject malformed flag types, unknown visibility, empty or duplicate normalized identities. Add optional explicit club/channel scope matching while preserving compatibility with unscoped typed snapshots."
+    },
+    {
+      "path": "packages/core/core_router/test/empty_modules_recovery_test.dart",
+      "source_sha256": "1288c89fb9e536a0a574ff9343dbf8cf57a8a5e007ae328146f1aeddefe9f8a6",
+      "preintegration_sha256": null,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/core/core_router/test/empty_modules_recovery_test.dart",
+      "active_sha256": "d7079af7e45c9369d5247ecdd9ad80b04a1a66d39d3c526b154a97a18cbbfcc8",
+      "bytes": 6684,
+      "delta_from_candidate": true,
+      "integration": "added_and_adapted",
+      "rationale": "Expand the candidate constructor smoke test into seven policy/widget regressions for empty registries, zero shell branches, standalone-only and Settings-only recovery, disabled-route/Home recovery and later enablement, malformed flags and club-disabled intersection."
+    },
+    {
+      "path": "packages/core/core_router/lib/src/feature_module.dart",
+      "source_sha256": "f3711b2308853cfec24f9877d528210f23ea31d54f1266d9f6a6e9fec09394e9",
+      "preintegration_sha256": "9fee702f142345412538c321103352b9d668e80cafca98362007c888fd518e9d",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/core/core_router/lib/src/feature_module.dart",
+      "active_sha256": "524b91530bfb0fcc7e23995a72e10085cb6efac1d96ed71bae1144dd70e9a2d1",
+      "bytes": 6026,
+      "delta_from_candidate": true,
+      "integration": "reconciled_with_active_contract",
+      "rationale": "Replace casting-based config enablement with the candidate pure fail-closed policy. Preserve all active routing/presentation metadata and expose only the snapshot-scope helper needed by the registry."
+    },
+    {
+      "path": "packages/core/core_router/lib/src/app_router.dart",
+      "source_sha256": "565a9b74cd83ffeafb991c10517b53846b1d1ef33556b6f7532774b8a4e27293",
+      "preintegration_sha256": "3e3fac79fc2a865a1f8d1ffc0a0dac55a62c1e9d61146f653161e033b4986556",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/core/core_router/lib/src/app_router.dart",
+      "active_sha256": "aebfe3883bca1b8d64aa80ae5de8b8afed0ce9db38551239e65397b58230c623",
+      "bytes": 5712,
+      "delta_from_candidate": true,
+      "integration": "reconciled_with_active_contract",
+      "rationale": "Adopt conditional indexed-shell construction and the built-in unavailable destination when no route is enabled. Extend initial fallback selection to the existing Settings shell branch while preserving the Home gate exemption and primary bottom-navigation set."
+    },
+    {
+      "path": "packages/app_registry/lib/src/module_registry.dart",
+      "source_sha256": "72e215f15259d98161c2bc370ef2b6d7dea53353547414cb9749b4306686eb77",
+      "preintegration_sha256": "b5f464995bd731e518a50f6768f5087a25199df9e6b55f79dfdd0294357cbd3f",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/packages/app_registry/lib/src/module_registry.dart",
+      "active_sha256": "503a5735be44a58b7a67cbde20c864062dfbc6730b4fba7b4f1f71501798d352",
+      "bytes": 3507,
+      "delta_from_candidate": true,
+      "integration": "reconciled_with_active_contract",
+      "rationale": "Adopt the candidate explicit-club-disable guard before specialized module overrides. Reject supplied wrong/malformed club or non-mobile channel scope. Preserve compile-time internal-admin control and current Club/Membership always-visible behavior when the club capability is enabled."
+    },
+    {
+      "path": "tools/scripts/test_feature_availability_policy.dart",
+      "source_sha256": "507e78949aeff5fd7dece8728d74eac8940fd8cd2877566d2a624ba90b09af64",
+      "preintegration_sha256": null,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/tools/scripts/test_feature_availability_policy.dart",
+      "active_sha256": "9a94651701dbde0000c74f97331725d7e0d792e86003e4e9b86061776bce43cb",
+      "bytes": 4666,
+      "delta_from_candidate": true,
+      "integration": "added_and_adapted",
+      "rationale": "Expand the candidate standalone dependency-free policy check from 20 to 36 checks, including malformed values, blank/duplicate identities, unknown visibility and explicit wrong-club/channel scope."
+    },
+    {
+      "path": "packages/app_registry/test/feature_availability_integration_test.dart",
+      "source_sha256": null,
+      "preintegration_sha256": null,
+      "active_sha256": "a1ceda99388711680d2c74e533d141f6fabd04186aa866c41139362f4c0cfbc2",
+      "bytes": 4356,
+      "delta_from_candidate": true,
+      "integration": "new_local_regressions",
+      "rationale": "Add six package-local integration regressions for club capability, explicit wrong or malformed scope, core-module override preservation, malformed optional flags, zero enabled modules and offline/legacy bootstrap."
+    }
+  ],
+  "verification": [
+    {
+      "command": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter test --no-pub packages/core/core_router/test packages/app_registry/test --reporter expanded",
+      "exit_code": 0,
+      "log_sha256": "2553749a4ddd083444ee057edbc0459dd88dab808fa88f489c52aebeb5be6075",
+      "log_path_local_only": "/tmp/africlub-feature-availability-flutter-tests.log",
+      "passed_tests": 96,
+      "result": "00:09 +96: All tests passed!"
+    },
+    {
+      "command": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter analyze --no-pub packages/core/core_router packages/app_registry tools/scripts/test_feature_availability_policy.dart",
+      "exit_code": 0,
+      "log_sha256": "b0591bb8d580340ae8e17df26671532e7f827dfb994d8334f8fe22b37849fced",
+      "log_path_local_only": "/tmp/africlub-feature-availability-analyze.log",
+      "passed_tests": null,
+      "result": "No issues found! (ran in 12.6s)"
+    },
+    {
+      "command": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/dart tools/scripts/test_feature_availability_policy.dart",
+      "exit_code": 0,
+      "passed_checks": 36,
+      "result": "Feature availability policy passed: 36 checks."
+    }
+  ],
+  "scope_and_limitations": [
+    "These checks verify shared module registration and router recovery. Runtime feature registration does not authorize backend operations.",
+    "Existing ClubModule and MembershipModule overrides remain always visible when their compile-time club capability is enabled; explicit compile-time false still excludes them in the shared registry.",
+    "Explicit raw club_id/channel metadata is checked. PlatformConfigSnapshot.toJson currently omits club_id; compatibility with those unscoped typed snapshots is retained, relying on the existing scoped fetch/cache. This integration does not prove provenance for an arbitrary unscoped snapshot.",
+    "Scoped tests include existing router recovery/transition goldens and registry/navigation/inventory tests. No physical device, hosted deployment, provider or whole-platform acceptance is claimed.",
+    "Local test logs are outside tracked source; their hashes and commands are retained here."
+  ]
+}

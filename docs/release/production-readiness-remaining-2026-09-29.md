@@ -2,12 +2,17 @@
 
 **Compiled:** 29 September 2026. **Decision:** NO-GO for production release.
 
+Implementation is now tracked in the [living task register](production-readiness-task-register.json)
+and [current progress checkpoint](production-readiness-progress-2026-09-29.md).
+The recorded Drive statuses below remain historical. Current local results,
+remaining acceptance and observed external blockers are recorded separately.
+
 This is a consolidated execution list, not a claim that the dated Drive task statuses were independently re-tested today. The 130 numbered tasks below come from the 28 September Implementation 08 `TASK_REGISTER.json`, preserved inside the [Drive package](../drive-import/2026-09-28/mirror/AFRICLUB_Implementation_08_2026-09-28.zip). Its acceptance criteria are reproduced below. All 130 lack a release-accepted closure in that register: 93 Open, 37 In progress (37 P0, 91 P1, two P2). The [current repository QA plan](full_stack_qa_plan.md) contributes 34 still-open execution checks. Those checks overlap the 130 tasks and must not be added to them as 34 distinct product features.
 
 ## Reconciliation required before release claims
 
 1. **Set one exact candidate and scope.** The active checkout has five club app shells: Vital’O, Rayon Sports, Nkana, AS Vita and Costa do Sol. The QA plan explicitly adds Costa do Sol and ten Android/iOS targets, while its older checklist entries and the 23 September readiness checkpoint still cite four clubs or eight artifacts. Reconcile every inventory, approval and test result to the five-club candidate. The four-club owner approval applies only to its recorded artifacts.
-2. **Reconcile the Drive implementation lineage with active source.** Implementation 08 is a 416-file scoped candidate based on exact Implementation 07. It was preserved for review, not installed into active app, SQL or Cloudflare paths. The [Drive comparison](../drive-import/2026-09-28/REVIEW.md) found 94 archive paths with multiple versions and 26 divergent active paths against that candidate. Select, review and integrate only compatible changes, then build a protected candidate with a source-to-artifact manifest.
+2. **Reconcile the Drive implementation lineage with active source.** Implementation 08 is a 416-file scoped candidate based on exact Implementation 07. It was initially preserved for review. The current goal has selectively integrated 81 payment/allocation/delivery paths, with reviewed corrections and further integration tracked in the living register. The [Drive comparison](../drive-import/2026-09-28/REVIEW.md) found 94 archive paths with multiple versions and 26 divergent active paths at the initial comparison. Remaining auth/native/web/operator/public modules and existing divergent paths require explicit disposition, followed by a protected candidate with a source-to-artifact manifest.
 3. **Restore hosted verification.** On 29 September, `origin/main` resolved to `6fa4588eec0903ea76a3d2f148c4942381dd40d0`. Its [28 September push run](https://github.com/IKANISA1/AFRIFAN/actions/runs/36472373062) ended `startup_failure` with zero jobs. Local Drive-review commits are not a hosted QA pass. Diagnose the actual startup failure, then run required workflows for the exact release candidate.
 4. **Treat source evidence and release evidence separately.** The Drive review verified file coverage and hashes, not product behavior. The 23 September [readiness checkpoint](../../output/qa/full-stack-20260914/readiness-report.md) is four-club and historical for the new scope. The [release sign-off](football_platform_release_signoff.md) has blank gate, owner and decision fields. Refresh each against the exact candidate before any release decision.
 

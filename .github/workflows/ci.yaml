@@ -80,6 +80,16 @@ jobs:
       - name: Validate English-only product policy
         run: node tools/scripts/validate_english_only.mjs
 
+      - name: Validate five-club and ten-platform scope
+        run: |
+          node --test tools/scripts/validate_release_scope.test.mjs
+          node tools/scripts/validate_release_scope.mjs --scope-only
+
+      - name: Test source and evidence credential boundaries and redaction
+        run: >-
+          python3 -m unittest tools/scripts/validate_source_secrets_test.py
+          tools/scripts/validate_evidence_privacy_test.py
+
       - name: Validate localization inventory controls
         run: node --test tools/scripts/generate_dynamic_copy_inventory.test.mjs
 
@@ -165,6 +175,7 @@ jobs:
         run: |
           dart run tools/scripts/validate_workspace_architecture_test.dart
           dart run tools/scripts/validate_workspace_architecture.dart
+          dart run tools/scripts/test_feature_availability_policy.dart
 
       - name: Generate route inventory and validate design source compliance
         env:
@@ -299,6 +310,16 @@ jobs:
 
       - name: Install dependencies
         run: corepack npm ci
+
+      - name: Verify allocation, financial recovery and reliable inbox contracts
+        working-directory: ${{ github.workspace }}
+        run: |
+          export PATH="$GITHUB_WORKSPACE/apps/rayon_sports/web/node_modules/.bin:$PATH"
+          node --test cloudflare/payment-allocation/tests/*.test.mjs cloudflare/allocation-delivery/tests/*.test.mjs
+          node cloudflare/payment-allocation/scripts/compile-checkout-client.mjs
+          node cloudflare/payment-allocation/scripts/check-deployment.mjs
+          node cloudflare/payment-allocation/scripts/check-checkout-deployment.mjs
+          node cloudflare/allocation-delivery/scripts/check-deployment.mjs
 
       - name: Validate dependency graph and advisories
         run: corepack npm run check:dependencies

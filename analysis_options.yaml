@@ -49,6 +49,10 @@ analyzer:
     missing_return: error
     dead_code: warning
   exclude:
+    # Preserved Drive candidates and recovery snapshots are reviewed source
+    # evidence. Active runtime imports are checked by the repository boundary.
+    - "docs/drive-import/**"
+    - ".recovery/**"
     - "output/**"
     - "**/.dart_tool/**"
     - "**/build/**"

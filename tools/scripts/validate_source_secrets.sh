@@ -6,7 +6,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$ROOT"
 
 client_service_role_hits="$(
-  git grep -n -i -E 'service_role|SUPABASE_SERVICE_ROLE_KEY' -- \
+  git grep -l -i -E 'service_role|SUPABASE_SERVICE_ROLE_KEY' -- \
     ':(glob)apps/**/*.dart' \
     ':(glob)packages/**/*.dart' \
     ':(exclude,glob)apps/**/test/**' \
@@ -16,20 +16,20 @@ client_service_role_hits="$(
     || true
 )"
 if [ -n "$client_service_role_hits" ]; then
-  echo "Forbidden service-role reference found in production Flutter client source:" >&2
+  echo "Forbidden service-role reference found in production Flutter client paths:" >&2
   echo "$client_service_role_hits" >&2
   exit 1
 fi
 
 high_confidence_secret_hits="$(
-  git grep -n -E \
+  git grep -l -E \
     '(sb_secret_|sk_live_|rk_live_)[A-Za-z0-9_-]{16,}|AKIA[A-Z0-9]{16}' -- \
     . \
     ':(exclude)tools/scripts/validate_source_secrets.sh' \
     || true
 )"
 if [ -n "$high_confidence_secret_hits" ]; then
-  echo "High-confidence secret token found in tracked source:" >&2
+  echo "High-confidence secret token found in tracked paths (values redacted):" >&2
   echo "$high_confidence_secret_hits" >&2
   exit 1
 fi

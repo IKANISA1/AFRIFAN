@@ -1,0 +1,1562 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-09-29",
+  "status": "integrated_locally_verified_disabled",
+  "source_archive_sha256": "4264a115e3974bf6236d90cfd8bc59537f066725d56757b9e03dd256095a8af5",
+  "source_directory": "docs/drive-import/2026-09-28/candidates/implementation-08-source",
+  "comparison_register": "docs/drive-import/2026-09-28/candidate-08-vs-checkout.tsv",
+  "precondition": "All 81 active paths absent; every candidate byte length and SHA-256 matched register before copy.",
+  "file_count": 81,
+  "files": [
+    {
+      "path": "cloudflare/allocation-delivery/README.md",
+      "bytes": 8058,
+      "source_sha256": "975a71bd6e10a27c67fea842b69457a139f42033120b2b3b2d9214e13fc4b449",
+      "active_sha256": "bd8a611ff34a56740973c41c8d83407d47472dcc2f14680250a5832eddb67d33",
+      "delta_from_candidate": true,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/README.md"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/contracts/delivery-v1.json",
+      "bytes": 1295,
+      "source_sha256": "35f2d5901dbd2b37eae81e2cbcbcc7f3f68cfd41bedf1f0dc7ddf12b01044c37",
+      "active_sha256": "5704efed4b867ede3f21a6dbff2173652120d75526bbebd212d33cc07a25f2e7",
+      "delta_from_candidate": true,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/contracts/delivery-v1.json"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/migrations/0001_operations_inbox.sql",
+      "bytes": 1558,
+      "source_sha256": "5c2cacddc80e1e1192e5427a2c81828e94d54143fcd3f2a3b4619d0d391bb4d6",
+      "active_sha256": "5c2cacddc80e1e1192e5427a2c81828e94d54143fcd3f2a3b4619d0d391bb4d6",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/migrations/0001_operations_inbox.sql"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/review-client.ts",
+      "bytes": 5167,
+      "source_sha256": "df87df1063ba908e5cd1444f042efb3e9e2fdac5db09f5cd89ec5fe474f19d51",
+      "active_sha256": "df87df1063ba908e5cd1444f042efb3e9e2fdac5db09f5cd89ec5fe474f19d51",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/review-client.ts"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/scripts/check-deployment.mjs",
+      "bytes": 2424,
+      "source_sha256": "71d20551c1fc52568b5a4d4e5ee3f826f7a111dd91a895bc64402932500a14d5",
+      "active_sha256": "71d20551c1fc52568b5a4d4e5ee3f826f7a111dd91a895bc64402932500a14d5",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/scripts/check-deployment.mjs"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/dispatch-worker.mjs",
+      "bytes": 510,
+      "source_sha256": "485ea1b40a29cb1ff8eedfb7d03816dcdeacd8aaf4e15a0164012aef5ecf433a",
+      "active_sha256": "485ea1b40a29cb1ff8eedfb7d03816dcdeacd8aaf4e15a0164012aef5ecf433a",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/src/dispatch-worker.mjs"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/dispatcher.mjs",
+      "bytes": 3671,
+      "source_sha256": "8cd4bf504aeeea828281a5a4ea1fe4c1222d0b356741cb9c960d9577f35fec64",
+      "active_sha256": "d64ea56c47a2d6bf664a3f12a4bec3d4c3eee63c9c5d96b6665713cf2135d4af",
+      "delta_from_candidate": true,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/src/dispatcher.mjs"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/inbox-worker.mjs",
+      "bytes": 634,
+      "source_sha256": "b192b73983a8a6a6b92f87156e2dcb1a0d33867368ffd28e83d99f5d65837e16",
+      "active_sha256": "b192b73983a8a6a6b92f87156e2dcb1a0d33867368ffd28e83d99f5d65837e16",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/src/inbox-worker.mjs"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/inbox.mjs",
+      "bytes": 3177,
+      "source_sha256": "347d1ba8978baa9042fe80f8cbcd4304aaf2dd8ef2a1d296989902f164dd11b2",
+      "active_sha256": "347d1ba8978baa9042fe80f8cbcd4304aaf2dd8ef2a1d296989902f164dd11b2",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/src/inbox.mjs"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/policy.mjs",
+      "bytes": 1708,
+      "source_sha256": "d6a11628c3d2f76e953a3547914dc3d95fe0a44d14d982f0a65c9e152b09ceaa",
+      "active_sha256": "d6a11628c3d2f76e953a3547914dc3d95fe0a44d14d982f0a65c9e152b09ceaa",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/src/policy.mjs"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/source-worker.mjs",
+      "bytes": 1035,
+      "source_sha256": "abfc50b165231a67252446260e4f9eb5dfa6e86ac9430e98f453e26a5ab18204",
+      "active_sha256": "abfc50b165231a67252446260e4f9eb5dfa6e86ac9430e98f453e26a5ab18204",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/src/source-worker.mjs"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/source.mjs",
+      "bytes": 10602,
+      "source_sha256": "d3b4bab5e0a3e191d176f2d3380bcc8b63f9b70e261b2b1be5ddb3d3099c01fc",
+      "active_sha256": "d3b4bab5e0a3e191d176f2d3380bcc8b63f9b70e261b2b1be5ddb3d3099c01fc",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/src/source.mjs"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/tests/client-config.test.mjs",
+      "bytes": 6096,
+      "source_sha256": "ead0c0ddfc25c3f641fe8a9eb9edc8f3921277d9a75e1cfaa68a788f6af67f5c",
+      "active_sha256": "ead0c0ddfc25c3f641fe8a9eb9edc8f3921277d9a75e1cfaa68a788f6af67f5c",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/tests/client-config.test.mjs"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/tests/concurrency.test.mjs",
+      "bytes": 3697,
+      "source_sha256": "5e6abf30bd111991d56fab718ecb7e5c61c5756fd6ddc29e37b96197b7c905f5",
+      "active_sha256": "dde80cb9cc8660b6a35d421304ceec4dbc15357755056c4c52c107041580c80a",
+      "delta_from_candidate": true,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/tests/concurrency.test.mjs",
+      "correction": "Remove one trailing space from the original candidate test after staged whitespace validation. Test logic is unchanged; original bytes remain in the source archive."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/tests/delivery.test.mjs",
+      "bytes": 11302,
+      "source_sha256": "3543725def57dc7859e9fbdb5719030f95b98d44e02824671e6291295b106a0b",
+      "active_sha256": "3543725def57dc7859e9fbdb5719030f95b98d44e02824671e6291295b106a0b",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/tests/delivery.test.mjs"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/tests/fixture.mjs",
+      "bytes": 3787,
+      "source_sha256": "755eb10428f5e925796c8bee2abaf9aff5f93a560cbac83ffb2a2adf09201cf3",
+      "active_sha256": "755eb10428f5e925796c8bee2abaf9aff5f93a560cbac83ffb2a2adf09201cf3",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/tests/fixture.mjs"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/tests/race-worker.mjs",
+      "bytes": 1041,
+      "source_sha256": "a52c749b0f9029e8cc070fdd5671a02199918419b64e3ea1773c8cdf93857c72",
+      "active_sha256": "a52c749b0f9029e8cc070fdd5671a02199918419b64e3ea1773c8cdf93857c72",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/tests/race-worker.mjs"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/tests/security.test.mjs",
+      "bytes": 6672,
+      "source_sha256": "037cc50c5caf667537fda05d7da593ee26b85218e4de0f288234c82cb6aeefde",
+      "active_sha256": "037cc50c5caf667537fda05d7da593ee26b85218e4de0f288234c82cb6aeefde",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/tests/security.test.mjs"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/wrangler.dispatch.staging.jsonc",
+      "bytes": 687,
+      "source_sha256": "bf111cf0106324884c450fe013b98bbd0a4795c7f3492a0518503efc1acff427",
+      "active_sha256": "bf111cf0106324884c450fe013b98bbd0a4795c7f3492a0518503efc1acff427",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/wrangler.dispatch.staging.jsonc"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/wrangler.inbox.staging.jsonc",
+      "bytes": 536,
+      "source_sha256": "fa8f2b1d24da44788222de902410c79fc6a02c396039271d267b920a2d394648",
+      "active_sha256": "fa8f2b1d24da44788222de902410c79fc6a02c396039271d267b920a2d394648",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/wrangler.inbox.staging.jsonc"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/wrangler.source.staging.jsonc",
+      "bytes": 729,
+      "source_sha256": "f3c71bab5e548a7eca714e1a6374503a75b99732bce74776ce031f49e2101495",
+      "active_sha256": "f3c71bab5e548a7eca714e1a6374503a75b99732bce74776ce031f49e2101495",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/allocation-delivery/wrangler.source.staging.jsonc"
+    },
+    {
+      "path": "cloudflare/payment-allocation/MEMBERSHIP_CHECKOUT.md",
+      "bytes": 13179,
+      "source_sha256": "8b78b5eb7569c1e92ccd2e28aae23369c81e07cac18a2d8977d7773212c8d0ee",
+      "active_sha256": "8b78b5eb7569c1e92ccd2e28aae23369c81e07cac18a2d8977d7773212c8d0ee",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/MEMBERSHIP_CHECKOUT.md"
+    },
+    {
+      "path": "cloudflare/payment-allocation/MEMBERSHIP_HISTORY.md",
+      "bytes": 4118,
+      "source_sha256": "5f41b8358b9857a75b0a3e3a13799b7de3105919a486328ab44c5dcc8e0728a8",
+      "active_sha256": "5f41b8358b9857a75b0a3e3a13799b7de3105919a486328ab44c5dcc8e0728a8",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/MEMBERSHIP_HISTORY.md"
+    },
+    {
+      "path": "cloudflare/payment-allocation/PAYMENT_HANDOFF_JOURNAL.md",
+      "bytes": 5328,
+      "source_sha256": "3900189de94e93c9fd346e3fbfbcd77412a2a86afd58a8618e764ef936208bd7",
+      "active_sha256": "3900189de94e93c9fd346e3fbfbcd77412a2a86afd58a8618e764ef936208bd7",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/PAYMENT_HANDOFF_JOURNAL.md"
+    },
+    {
+      "path": "cloudflare/payment-allocation/README.md",
+      "bytes": 13039,
+      "source_sha256": "119780cca256ea4605e488f1aaa17d360c4749636ed69cb3a8a6f193798a8da1",
+      "active_sha256": "119780cca256ea4605e488f1aaa17d360c4749636ed69cb3a8a6f193798a8da1",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/README.md"
+    },
+    {
+      "path": "cloudflare/payment-allocation/UNCLAIMED_HANDOFF_RELEASE.md",
+      "bytes": 4785,
+      "source_sha256": "ef8230bfa4f976afa0b119ec869640605595040c2f45c1402d0b89c91e14406b",
+      "active_sha256": "ef8230bfa4f976afa0b119ec869640605595040c2f45c1402d0b89c91e14406b",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/UNCLAIMED_HANDOFF_RELEASE.md"
+    },
+    {
+      "path": "cloudflare/payment-allocation/checkout-client.ts",
+      "bytes": 5564,
+      "source_sha256": "afdb865f2f948f8310d7f9cf7a00251226430422faea458e45c6e0aba0615a89",
+      "active_sha256": "afdb865f2f948f8310d7f9cf7a00251226430422faea458e45c6e0aba0615a89",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/checkout-client.ts"
+    },
+    {
+      "path": "cloudflare/payment-allocation/contracts/membership-checkout.json",
+      "bytes": 3014,
+      "source_sha256": "47cfbb8c07c48daeb384d03de808d4e033d06fcb4243880cfaa7a9df0834a4e7",
+      "active_sha256": "47cfbb8c07c48daeb384d03de808d4e033d06fcb4243880cfaa7a9df0834a4e7",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/contracts/membership-checkout.json"
+    },
+    {
+      "path": "cloudflare/payment-allocation/contracts/payment-handoff.json",
+      "bytes": 2068,
+      "source_sha256": "8310245dc640cc6cfb9db54cbe1a4b66250b1d9ebb5cd1c8a486f97ee3c2822b",
+      "active_sha256": "8310245dc640cc6cfb9db54cbe1a4b66250b1d9ebb5cd1c8a486f97ee3c2822b",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/contracts/payment-handoff.json"
+    },
+    {
+      "path": "cloudflare/payment-allocation/contracts/private-rpc.json",
+      "bytes": 4601,
+      "source_sha256": "6518dfea38f22dd1559f71d95f7a39fb391851cb2a8035a8410a1b66d8d7fec2",
+      "active_sha256": "6518dfea38f22dd1559f71d95f7a39fb391851cb2a8035a8410a1b66d8d7fec2",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/contracts/private-rpc.json"
+    },
+    {
+      "path": "cloudflare/payment-allocation/docs/checkout-source-map.md",
+      "bytes": 2299,
+      "source_sha256": "6e197ef025bbadbb8d872ac57d33736d0af9bacb0f7eed7774fe2e7eaa8574f3",
+      "active_sha256": "6e197ef025bbadbb8d872ac57d33736d0af9bacb0f7eed7774fe2e7eaa8574f3",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/docs/checkout-source-map.md"
+    },
+    {
+      "path": "cloudflare/payment-allocation/docs/source-map.md",
+      "bytes": 4410,
+      "source_sha256": "1a40d0dd5f391afc4f0d70d233a4a5f72bc7c2918fdd910a72c0e4652b2c0a5c",
+      "active_sha256": "1a40d0dd5f391afc4f0d70d233a4a5f72bc7c2918fdd910a72c0e4652b2c0a5c",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/docs/source-map.md"
+    },
+    {
+      "path": "cloudflare/payment-allocation/docs/source-provenance.json",
+      "bytes": 2056,
+      "source_sha256": "61256ab359972c0714beb53a82efedf599ce2d701dbe1f84d79d9316d783a909",
+      "active_sha256": "61256ab359972c0714beb53a82efedf599ce2d701dbe1f84d79d9316d783a909",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/docs/source-provenance.json"
+    },
+    {
+      "path": "cloudflare/payment-allocation/migrations/0001_payment_allocation.sql",
+      "bytes": 25515,
+      "source_sha256": "67bd55d0e2d115d0f0e67d3d80ee1805fece303863d1d9bf42c9e1fa4fb68489",
+      "active_sha256": "67bd55d0e2d115d0f0e67d3d80ee1805fece303863d1d9bf42c9e1fa4fb68489",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/migrations/0001_payment_allocation.sql"
+    },
+    {
+      "path": "cloudflare/payment-allocation/migrations/0002_membership_checkout.sql",
+      "bytes": 19081,
+      "source_sha256": "924269edcc59d9e7f90d72f102c7e977404d77cbdad30c13fdd3ffd124d8d7a7",
+      "active_sha256": "924269edcc59d9e7f90d72f102c7e977404d77cbdad30c13fdd3ffd124d8d7a7",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/migrations/0002_membership_checkout.sql"
+    },
+    {
+      "path": "cloudflare/payment-allocation/migrations/0003_payment_handoff_journal.sql",
+      "bytes": 5314,
+      "source_sha256": "9d9996f474dce1e46d12b7995c61ace2a3bc11a93c36a31b0f4c5a51fae43ff9",
+      "active_sha256": "9d9996f474dce1e46d12b7995c61ace2a3bc11a93c36a31b0f4c5a51fae43ff9",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/migrations/0003_payment_handoff_journal.sql"
+    },
+    {
+      "path": "cloudflare/payment-allocation/migrations/0004_release_unclaimed_handoff.sql",
+      "bytes": 2870,
+      "source_sha256": "fd5f7d53cbc1f1ce6c9e293cd8b01f7641e3ab24c3c07e4c6e4533c614fb2131",
+      "active_sha256": "fd5f7d53cbc1f1ce6c9e293cd8b01f7641e3ab24c3c07e4c6e4533c614fb2131",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/migrations/0004_release_unclaimed_handoff.sql"
+    },
+    {
+      "path": "cloudflare/payment-allocation/migrations/0005_membership_history_read_index.sql",
+      "bytes": 325,
+      "source_sha256": "34246ede712d8008ff46a43608a3fc9f1ee7b53ca4f8dc46c984e0cbd73ae0b2",
+      "active_sha256": "34246ede712d8008ff46a43608a3fc9f1ee7b53ca4f8dc46c984e0cbd73ae0b2",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/migrations/0005_membership_history_read_index.sql"
+    },
+    {
+      "path": "cloudflare/payment-allocation/migrations/0006_reliable_event_delivery.sql",
+      "bytes": 9221,
+      "source_sha256": "1b6aecb8269d41850bd5ca795b70ae8fa6dbd99bb944169200726610bab10f52",
+      "active_sha256": "1b6aecb8269d41850bd5ca795b70ae8fa6dbd99bb944169200726610bab10f52",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/migrations/0006_reliable_event_delivery.sql"
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/check-checkout-deployment.mjs",
+      "bytes": 3153,
+      "source_sha256": "84814dea4eb43c997792228f829bd2a69fd44c4c424eded73fc9e266e8c9f137",
+      "active_sha256": "84814dea4eb43c997792228f829bd2a69fd44c4c424eded73fc9e266e8c9f137",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/scripts/check-checkout-deployment.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/check-deployment.mjs",
+      "bytes": 2451,
+      "source_sha256": "8ebf33a15e921322fed12e4a2242fcefe1ac36a13c111062b149417efcde32e4",
+      "active_sha256": "8ebf33a15e921322fed12e4a2242fcefe1ac36a13c111062b149417efcde32e4",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/scripts/check-deployment.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/check-sql-runtime.sql",
+      "bytes": 414,
+      "source_sha256": "21bce04fa3b65f173e5bbd8f139c249d21d572842032b6b32295fab60049bc27",
+      "active_sha256": "21bce04fa3b65f173e5bbd8f139c249d21d572842032b6b32295fab60049bc27",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/scripts/check-sql-runtime.sql"
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/compile-checkout-client.mjs",
+      "bytes": 1051,
+      "source_sha256": "d0238f849624d817570381aef1ae737b8240dce6f02a30a30bbbd92a5e2b2265",
+      "active_sha256": "d0238f849624d817570381aef1ae737b8240dce6f02a30a30bbbd92a5e2b2265",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/scripts/compile-checkout-client.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/prepare-checkout-catalog.mjs",
+      "bytes": 4496,
+      "source_sha256": "cde856fdc73cc74b787baf366d5da5a374949916b30ce5a49fb3274dbea22d79",
+      "active_sha256": "cde856fdc73cc74b787baf366d5da5a374949916b30ce5a49fb3274dbea22d79",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/scripts/prepare-checkout-catalog.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/scripts/prepare-staging-import.mjs",
+      "bytes": 6408,
+      "source_sha256": "368e057d140213d96e0abfd50ccd966783cf18549e3cb68c86d3cb947311218b",
+      "active_sha256": "368e057d140213d96e0abfd50ccd966783cf18549e3cb68c86d3cb947311218b",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/scripts/prepare-staging-import.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-policy.mjs",
+      "bytes": 2066,
+      "source_sha256": "2f9289df7c6a3c522544f0c7787fa4611177e82ffa826110ddfd2b48ef54dea2",
+      "active_sha256": "2f9289df7c6a3c522544f0c7787fa4611177e82ffa826110ddfd2b48ef54dea2",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/src/checkout-policy.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-service.mjs",
+      "bytes": 10125,
+      "source_sha256": "5c6f8daa9b3a909b421c76b1ef21dd4e3485a6211c6eb467d5b2f6a850e69a06",
+      "active_sha256": "5c6f8daa9b3a909b421c76b1ef21dd4e3485a6211c6eb467d5b2f6a850e69a06",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/src/checkout-service.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "bytes": 1927,
+      "source_sha256": "b690162cec2706dbfa58f928683c4018b67cdf70ca72c5bd127dad1fd79b086d",
+      "active_sha256": "b690162cec2706dbfa58f928683c4018b67cdf70ca72c5bd127dad1fd79b086d",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/src/checkout-worker.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/handoff-service.mjs",
+      "bytes": 10076,
+      "source_sha256": "b097d1cd29fa377eb333aa025106428c1c1da00cb89438dd6a9cd9478b14c610",
+      "active_sha256": "b097d1cd29fa377eb333aa025106428c1c1da00cb89438dd6a9cd9478b14c610",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/src/handoff-service.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/membership-history.mjs",
+      "bytes": 4835,
+      "source_sha256": "3f6aee9fd89ff5a28e78ae1be550a26ba6668bc56248d15383a06e48aced576b",
+      "active_sha256": "3f6aee9fd89ff5a28e78ae1be550a26ba6668bc56248d15383a06e48aced576b",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/src/membership-history.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/outbox.mjs",
+      "bytes": 3210,
+      "source_sha256": "7ea1130aaea885e3c9b8c006c4b0cc006a89d25fdbe0f013d88fe3c5e66d4bc7",
+      "active_sha256": "7ea1130aaea885e3c9b8c006c4b0cc006a89d25fdbe0f013d88fe3c5e66d4bc7",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/src/outbox.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/policy.mjs",
+      "bytes": 4939,
+      "source_sha256": "97f33ffb61f5ccf97d130f32fa724671b27d7f51c5c0c21b5fd34077ff0c40c0",
+      "active_sha256": "97f33ffb61f5ccf97d130f32fa724671b27d7f51c5c0c21b5fd34077ff0c40c0",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/src/policy.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/service.mjs",
+      "bytes": 6858,
+      "source_sha256": "cc1571645eb15f841eb9f9ab34aeb5f632eaa84e62768fd51e3d8625849f4f24",
+      "active_sha256": "cc1571645eb15f841eb9f9ab34aeb5f632eaa84e62768fd51e3d8625849f4f24",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/src/service.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/worker.mjs",
+      "bytes": 1354,
+      "source_sha256": "057eb01288151f81322be25ce9cc70fdb8c298e4f62c632d60c68098af5d9041",
+      "active_sha256": "057eb01288151f81322be25ce9cc70fdb8c298e4f62c632d60c68098af5d9041",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/src/worker.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/allocation.test.mjs",
+      "bytes": 8947,
+      "source_sha256": "27b11d991d86bcc8cc62b1d0da1fcf9749283a46103613dc7b6d362ff348b3bf",
+      "active_sha256": "27b11d991d86bcc8cc62b1d0da1fcf9749283a46103613dc7b6d362ff348b3bf",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/allocation.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-catalog.test.mjs",
+      "bytes": 5073,
+      "source_sha256": "3c1a0c51898a381b6b722e6280a0a1c2af7c9a3759bfa428013e2ffeb2f15fed",
+      "active_sha256": "3c1a0c51898a381b6b722e6280a0a1c2af7c9a3759bfa428013e2ffeb2f15fed",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/checkout-catalog.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-client.test.mjs",
+      "bytes": 6527,
+      "source_sha256": "f46298d4e38bc790eeb9f00afbc71fd6bf81993c42c3f470759cac91583de307",
+      "active_sha256": "f46298d4e38bc790eeb9f00afbc71fd6bf81993c42c3f470759cac91583de307",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/checkout-client.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-concurrency.test.mjs",
+      "bytes": 3739,
+      "source_sha256": "f2cf1978b495de119a7175303847774d7f3440b1055d6f71fe97ce7a28c102d5",
+      "active_sha256": "f2cf1978b495de119a7175303847774d7f3440b1055d6f71fe97ce7a28c102d5",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/checkout-concurrency.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-concurrent-worker.mjs",
+      "bytes": 1876,
+      "source_sha256": "880f5ed7d1f5170ba31610dcd0c6a6e7edd4ca0f77587a5041b0d567460c58d0",
+      "active_sha256": "880f5ed7d1f5170ba31610dcd0c6a6e7edd4ca0f77587a5041b0d567460c58d0",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/checkout-concurrent-worker.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-contract.test.mjs",
+      "bytes": 2561,
+      "source_sha256": "5eed439b95001612123117ca4fea6ac40716b25733240ea1c77ed33e8d8d4979",
+      "active_sha256": "5eed439b95001612123117ca4fea6ac40716b25733240ea1c77ed33e8d8d4979",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/checkout-contract.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-core.test.mjs",
+      "bytes": 5932,
+      "source_sha256": "7c8c9c96b1427f1537ad209d1158092562d7a5b2b589a2c3de067d56b6384cb5",
+      "active_sha256": "7c8c9c96b1427f1537ad209d1158092562d7a5b2b589a2c3de067d56b6384cb5",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/checkout-core.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-fixture.mjs",
+      "bytes": 3496,
+      "source_sha256": "d786a4514b468c8e17177f488eada72fc5a1cc6bb8c5571569212813fd14f762",
+      "active_sha256": "d786a4514b468c8e17177f488eada72fc5a1cc6bb8c5571569212813fd14f762",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/checkout-fixture.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-security.test.mjs",
+      "bytes": 8354,
+      "source_sha256": "db423da059d72bc8e44be9fc3f28e63b3d5d9af53897d940bc348f5185508a35",
+      "active_sha256": "db423da059d72bc8e44be9fc3f28e63b3d5d9af53897d940bc348f5185508a35",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/checkout-security.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/checkout-tooling.test.mjs",
+      "bytes": 5483,
+      "source_sha256": "a83c36b961420df8019fd66c72ecd64876a99c0dc82fedb1a3f031beeb75da26",
+      "active_sha256": "a83c36b961420df8019fd66c72ecd64876a99c0dc82fedb1a3f031beeb75da26",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/checkout-tooling.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/concurrency.test.mjs",
+      "bytes": 2738,
+      "source_sha256": "fc931954ca06af7fc48586c91a2582663faf9ec1284abd50b57ebb4c8b430b06",
+      "active_sha256": "fc931954ca06af7fc48586c91a2582663faf9ec1284abd50b57ebb4c8b430b06",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/concurrency.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/concurrent-worker.mjs",
+      "bytes": 1642,
+      "source_sha256": "2d3753e39db2377033abea64016619eb317c45fc1c535e028f73e645260ab381",
+      "active_sha256": "2d3753e39db2377033abea64016619eb317c45fc1c535e028f73e645260ab381",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/concurrent-worker.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/contract.test.mjs",
+      "bytes": 3152,
+      "source_sha256": "908b976d2b44b9f631a8425d41d88cacd009fc29a3ec87d8c0b2b7fa758e2150",
+      "active_sha256": "908b976d2b44b9f631a8425d41d88cacd009fc29a3ec87d8c0b2b7fa758e2150",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/contract.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/evidence.test.mjs",
+      "bytes": 5573,
+      "source_sha256": "0d263fc7664135a29e85b279fe53e0d100ac632e179cde50171dfcc5d4059c6d",
+      "active_sha256": "0d263fc7664135a29e85b279fe53e0d100ac632e179cde50171dfcc5d4059c6d",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/evidence.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/fixture.mjs",
+      "bytes": 6127,
+      "source_sha256": "7e7f5c78f34fe5913eb22a5bdcc69850c130d110cd23f4b97815723af1c4316e",
+      "active_sha256": "7e7f5c78f34fe5913eb22a5bdcc69850c130d110cd23f4b97815723af1c4316e",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/fixture.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/handoff-concurrency.test.mjs",
+      "bytes": 5888,
+      "source_sha256": "996276cefa36e9e7c512cd02f5f5efb8b0bb19af628d260858c9a148e913f93d",
+      "active_sha256": "996276cefa36e9e7c512cd02f5f5efb8b0bb19af628d260858c9a148e913f93d",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/handoff-concurrency.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/handoff-concurrent-worker.mjs",
+      "bytes": 2138,
+      "source_sha256": "2dee9e9006feef5c30fcae115b7e2e6364f8dad21c4a3e7cef701c49884f8b74",
+      "active_sha256": "2dee9e9006feef5c30fcae115b7e2e6364f8dad21c4a3e7cef701c49884f8b74",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/handoff-concurrent-worker.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/handoff-journal.test.mjs",
+      "bytes": 11625,
+      "source_sha256": "995fdcecac8e76a233d0d5f5c8f3a95e9fc228eec3fa5f94907852782c6c78c4",
+      "active_sha256": "995fdcecac8e76a233d0d5f5c8f3a95e9fc228eec3fa5f94907852782c6c78c4",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/handoff-journal.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/handoff-release.test.mjs",
+      "bytes": 8775,
+      "source_sha256": "e68936ebf7075c8441e331bdb4549bfba049e330d9b6fe1348452eeaefd26d86",
+      "active_sha256": "e68936ebf7075c8441e331bdb4549bfba049e330d9b6fe1348452eeaefd26d86",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/handoff-release.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/import-config.test.mjs",
+      "bytes": 7706,
+      "source_sha256": "448d894ca55ad8a4baa6b5d2b5a96d8be5f4b9e0e050e3ade5693e7f08f3ebfc",
+      "active_sha256": "448d894ca55ad8a4baa6b5d2b5a96d8be5f4b9e0e050e3ade5693e7f08f3ebfc",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/import-config.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/membership-history.test.mjs",
+      "bytes": 9261,
+      "source_sha256": "a3bd07b2c57e08935d22c7069ec435bd4a3b6bbbaee66e75bc5e2e49f685d496",
+      "active_sha256": "a3bd07b2c57e08935d22c7069ec435bd4a3b6bbbaee66e75bc5e2e49f685d496",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/membership-history.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/membership-status.test.mjs",
+      "bytes": 3532,
+      "source_sha256": "76c1dc2747237a1d43e47ca91a8e4e3763b1ccd2b7f2aef4798aee85050b0115",
+      "active_sha256": "76c1dc2747237a1d43e47ca91a8e4e3763b1ccd2b7f2aef4798aee85050b0115",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/membership-status.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/outbox.test.mjs",
+      "bytes": 6681,
+      "source_sha256": "701a17793c7e37b7b79152a992e30c8827212207b6a930e16045cc42c03cc3e6",
+      "active_sha256": "701a17793c7e37b7b79152a992e30c8827212207b6a930e16045cc42c03cc3e6",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/outbox.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/tests/security.test.mjs",
+      "bytes": 9207,
+      "source_sha256": "f1632d55e2d619b35de3b693a36da8c91462cfda238d82a26d98a67eb1f3b42e",
+      "active_sha256": "f1632d55e2d619b35de3b693a36da8c91462cfda238d82a26d98a67eb1f3b42e",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/tests/security.test.mjs"
+    },
+    {
+      "path": "cloudflare/payment-allocation/wrangler.checkout.staging.jsonc",
+      "bytes": 724,
+      "source_sha256": "537cb4e8aff2470cd18fca3c2cdf92cd644da6317ef93e49d6871c37448bcd00",
+      "active_sha256": "537cb4e8aff2470cd18fca3c2cdf92cd644da6317ef93e49d6871c37448bcd00",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/wrangler.checkout.staging.jsonc"
+    },
+    {
+      "path": "cloudflare/payment-allocation/wrangler.staging.jsonc",
+      "bytes": 672,
+      "source_sha256": "594af5b1157c0e22fd578532d58e92050d70b2ae357440096ccf6322f0afccfd",
+      "active_sha256": "594af5b1157c0e22fd578532d58e92050d70b2ae357440096ccf6322f0afccfd",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-allocation/wrangler.staging.jsonc"
+    },
+    {
+      "path": "cloudflare/shared/membership-history.mjs",
+      "bytes": 4084,
+      "source_sha256": "906ddac35f4fadbfd3cb9b69c5c8247099176e5e4c90ee3862b5f9a5123426e8",
+      "active_sha256": "906ddac35f4fadbfd3cb9b69c5c8247099176e5e4c90ee3862b5f9a5123426e8",
+      "delta_from_candidate": false,
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/shared/membership-history.mjs"
+    }
+  ],
+  "verification": [
+    {
+      "kind": "test_bank",
+      "command": "PATH=\"/Users/jeanbosco/.nvm/versions/node/v22.23.2/bin:/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/web/node_modules/.bin:/usr/bin:/bin\" /Users/jeanbosco/.nvm/versions/node/v22.23.2/bin/node --test cloudflare/payment-allocation/tests/*.test.mjs cloudflare/allocation-delivery/tests/*.test.mjs",
+      "exit_code": 0,
+      "test_file_count": 23,
+      "counts": {
+        "tests": 684,
+        "pass": 684,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "stdout_sha256": "d64c5b2ae85ed46b1daa27d722b4eb4c9f919a6300338c75d7dda53b0fdd085b"
+    },
+    {
+      "kind": "checkout_client_strict_compile",
+      "command": "PATH=\"/Users/jeanbosco/.nvm/versions/node/v22.23.2/bin:/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/web/node_modules/.bin:/usr/bin:/bin\" /Users/jeanbosco/.nvm/versions/node/v22.23.2/bin/node cloudflare/payment-allocation/scripts/compile-checkout-client.mjs",
+      "exit_code": 0
+    },
+    {
+      "kind": "delivery_review_client_strict_compile",
+      "command": "/Users/jeanbosco/.nvm/versions/node/v22.23.2/bin/node apps/rayon_sports/web/node_modules/typescript/bin/tsc cloudflare/allocation-delivery/review-client.ts --strict --target ES2022 --module NodeNext --moduleResolution NodeNext --outDir /tmp/africlub-delivery-client-2026-09-29",
+      "exit_code": 0
+    },
+    {
+      "kind": "allocation_disabled_deployment_check",
+      "command": "/Users/jeanbosco/.nvm/versions/node/v22.23.2/bin/node cloudflare/payment-allocation/scripts/check-deployment.mjs",
+      "exit_code": 0,
+      "result": {
+        "configurationValid": true,
+        "enabled": false,
+        "stagingOnly": true,
+        "liveDatabaseVerified": false,
+        "sourceReconciled": false,
+        "historicalDeduplicationVerified": false,
+        "callerBindingsVerified": false,
+        "productionReleaseAuthorized": false
+      }
+    },
+    {
+      "kind": "checkout_disabled_deployment_check",
+      "command": "/Users/jeanbosco/.nvm/versions/node/v22.23.2/bin/node cloudflare/payment-allocation/scripts/check-checkout-deployment.mjs",
+      "exit_code": 0,
+      "result": {
+        "configurationValid": true,
+        "enabled": false,
+        "stagingOnly": true,
+        "handoffEnabled": false,
+        "serverRecoveryAccepted": false,
+        "liveSharedDatabaseVerified": false,
+        "catalogReconciled": false,
+        "humanAuthenticationVerified": false,
+        "callerBindingsVerified": false,
+        "productionReleaseAuthorized": false
+      }
+    },
+    {
+      "kind": "delivery_disabled_deployment_check",
+      "command": "/Users/jeanbosco/.nvm/versions/node/v22.23.2/bin/node cloudflare/allocation-delivery/scripts/check-deployment.mjs",
+      "exit_code": 0,
+      "result": {
+        "templatesOnly": true,
+        "deployable": false,
+        "results": [
+          {
+            "kind": "source",
+            "errors": []
+          },
+          {
+            "kind": "inbox",
+            "errors": []
+          },
+          {
+            "kind": "dispatch",
+            "errors": []
+          }
+        ]
+      }
+    },
+    {
+      "kind": "fresh_local_sqlite_migrations",
+      "exit_code": 0,
+      "procedure": "Use Node DatabaseSync in two separate temporary files. Enable PRAGMA foreign_keys=ON before execution. Apply lexically ordered payment-allocation/migrations/*.sql (exactly six); apply allocation-delivery/migrations/0001_operations_inbox.sql to the second DB. Execute check-sql-runtime.sql and require subsecond timestamp, leap-day floor=2025-02-28, JSON shape_ok=1. Require PRAGMA foreign_keys=1, foreign_key_check empty, integrity_check=ok for each DB. Assert allocation writer_mode=disabled and zero grants; inbox has zero controls. Remove both temporary DB files after verification.",
+      "result": {
+        "node": "v22.23.2",
+        "allocation": {
+          "migrationCount": 6,
+          "migrations": [
+            "0001_payment_allocation.sql",
+            "0002_membership_checkout.sql",
+            "0003_payment_handoff_journal.sql",
+            "0004_release_unclaimed_handoff.sql",
+            "0005_membership_history_read_index.sql",
+            "0006_reliable_event_delivery.sql"
+          ],
+          "probe": {
+            "sqlite_version": "3.51.3",
+            "current_time_ms": 1790718807552,
+            "leap_day": "2025-02-28",
+            "shape_ok": 1
+          },
+          "foreignKeys": 1,
+          "foreignKeyViolations": 0,
+          "integrity": "ok",
+          "settings": {
+            "singleton": 1,
+            "purpose": "africlub-payment-allocation",
+            "writer_mode": "disabled",
+            "source_reconciled": 0,
+            "historical_claims_verified": 0,
+            "evidence_ref": ""
+          },
+          "grants": 0,
+          "schema": [
+            {
+              "type": "index",
+              "name": "pa_checkout_packages_choice"
+            },
+            {
+              "type": "index",
+              "name": "pa_checkout_pending_membership"
+            },
+            {
+              "type": "index",
+              "name": "pa_checkout_receiver_lookup"
+            },
+            {
+              "type": "index",
+              "name": "pa_checkout_request_budget"
+            },
+            {
+              "type": "index",
+              "name": "pa_checkout_routes_choice"
+            },
+            {
+              "type": "index",
+              "name": "pa_delivery_commands_history"
+            },
+            {
+              "type": "index",
+              "name": "pa_delivery_due"
+            },
+            {
+              "type": "index",
+              "name": "pa_handoff_owner_history"
+            },
+            {
+              "type": "index",
+              "name": "pa_handoff_release_owner"
+            },
+            {
+              "type": "index",
+              "name": "pa_ledger_owner"
+            },
+            {
+              "type": "index",
+              "name": "pa_membership_history_owner"
+            },
+            {
+              "type": "index",
+              "name": "pa_orders_owner"
+            },
+            {
+              "type": "index",
+              "name": "pa_outbox_due"
+            },
+            {
+              "type": "index",
+              "name": "pa_outbox_enrollment"
+            },
+            {
+              "type": "table",
+              "name": "pa_allocations"
+            },
+            {
+              "type": "table",
+              "name": "pa_checkout_audit"
+            },
+            {
+              "type": "table",
+              "name": "pa_checkout_clubs"
+            },
+            {
+              "type": "table",
+              "name": "pa_checkout_grants"
+            },
+            {
+              "type": "table",
+              "name": "pa_checkout_order_details"
+            },
+            {
+              "type": "table",
+              "name": "pa_checkout_packages"
+            },
+            {
+              "type": "table",
+              "name": "pa_checkout_requests"
+            },
+            {
+              "type": "table",
+              "name": "pa_checkout_results"
+            },
+            {
+              "type": "table",
+              "name": "pa_checkout_routes"
+            },
+            {
+              "type": "table",
+              "name": "pa_checkout_settings"
+            },
+            {
+              "type": "table",
+              "name": "pa_clubs"
+            },
+            {
+              "type": "table",
+              "name": "pa_commands"
+            },
+            {
+              "type": "table",
+              "name": "pa_delivery_commands"
+            },
+            {
+              "type": "table",
+              "name": "pa_delivery_control"
+            },
+            {
+              "type": "table",
+              "name": "pa_delivery_grants"
+            },
+            {
+              "type": "table",
+              "name": "pa_delivery_jobs"
+            },
+            {
+              "type": "table",
+              "name": "pa_evidence"
+            },
+            {
+              "type": "table",
+              "name": "pa_external_claims"
+            },
+            {
+              "type": "table",
+              "name": "pa_grants"
+            },
+            {
+              "type": "table",
+              "name": "pa_handoff_audit"
+            },
+            {
+              "type": "table",
+              "name": "pa_handoff_claims"
+            },
+            {
+              "type": "table",
+              "name": "pa_handoff_guards"
+            },
+            {
+              "type": "table",
+              "name": "pa_handoff_heads"
+            },
+            {
+              "type": "table",
+              "name": "pa_handoff_release_settings"
+            },
+            {
+              "type": "table",
+              "name": "pa_handoff_releases"
+            },
+            {
+              "type": "table",
+              "name": "pa_handoff_reservations"
+            },
+            {
+              "type": "table",
+              "name": "pa_handoff_settings"
+            },
+            {
+              "type": "table",
+              "name": "pa_ledger"
+            },
+            {
+              "type": "table",
+              "name": "pa_memberships"
+            },
+            {
+              "type": "table",
+              "name": "pa_orders"
+            },
+            {
+              "type": "table",
+              "name": "pa_outbox"
+            },
+            {
+              "type": "table",
+              "name": "pa_outbox_delivery"
+            },
+            {
+              "type": "table",
+              "name": "pa_principals"
+            },
+            {
+              "type": "table",
+              "name": "pa_raw_evidence"
+            },
+            {
+              "type": "table",
+              "name": "pa_receipts"
+            },
+            {
+              "type": "table",
+              "name": "pa_receivers"
+            },
+            {
+              "type": "table",
+              "name": "pa_settings"
+            },
+            {
+              "type": "table",
+              "name": "pa_subjects"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_allocation_effects"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_allocation_guard"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_allocations_delete_blocked"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_allocations_update_blocked"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_audit_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_audit_no_update"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_clubs_identity"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_clubs_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_clubs_revision"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_grants_identity"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_grants_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_grants_revision"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_order_details_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_order_details_no_update"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_packages_identity"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_packages_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_packages_revision"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_prepare"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_request_guard"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_requests_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_requests_no_update"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_results_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_results_no_update"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_routes_identity"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_routes_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_routes_revision"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_settings_identity"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_settings_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_checkout_settings_revision"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_clubs_identity"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_clubs_revision"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_command_authorized"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_commands_delete_blocked"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_commands_update_blocked"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_delivery_blocks_legacy"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_delivery_command_apply"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_delivery_command_guard"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_delivery_commands_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_delivery_commands_no_update"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_delivery_control_identity"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_delivery_jobs_guard"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_delivery_jobs_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_evidence_bound"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_evidence_delete_blocked"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_evidence_update_blocked"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_external_claims_delete_blocked"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_external_claims_update_blocked"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_grants_identity"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_grants_revision"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_audit_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_audit_update"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_claim_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_claim_owner"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_claim_release_guard"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_claim_update"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_head_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_head_insert"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_head_update"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_prevent_claimed_cancellation"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_release_control_retain"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_release_guard"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_release_identity"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_release_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_release_no_update"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_release_revision"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_reservation_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_reservation_update"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_settings_identity"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_settings_retain"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_handoff_settings_revision"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_ledger_delete_blocked"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_ledger_update_blocked"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_order_initial"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_order_state"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_orders_delete_blocked"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_outbox_delete_blocked"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_outbox_delivery_delete_blocked"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_outbox_transition"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_outbox_update_blocked"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_principals_identity"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_principals_revision"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_raw_evidence_delete_blocked"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_raw_evidence_update_blocked"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_receipts_delete_blocked"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_receipts_update_blocked"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_receivers_identity"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_receivers_revision"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_subjects_identity"
+            },
+            {
+              "type": "trigger",
+              "name": "pa_subjects_revision"
+            }
+          ]
+        },
+        "inbox": {
+          "migrationCount": 1,
+          "migrations": [
+            "0001_operations_inbox.sql"
+          ],
+          "databaseSeparate": true,
+          "foreignKeys": 1,
+          "foreignKeyViolations": 0,
+          "integrity": "ok",
+          "controls": 0,
+          "schema": [
+            {
+              "type": "index",
+              "name": "adi_club_events"
+            },
+            {
+              "type": "table",
+              "name": "adi_clubs"
+            },
+            {
+              "type": "table",
+              "name": "adi_control"
+            },
+            {
+              "type": "table",
+              "name": "adi_events"
+            },
+            {
+              "type": "trigger",
+              "name": "adi_event_authority"
+            },
+            {
+              "type": "trigger",
+              "name": "adi_no_delete"
+            },
+            {
+              "type": "trigger",
+              "name": "adi_no_update"
+            }
+          ]
+        },
+        "remoteMutation": false
+      }
+    }
+  ],
+  "production_ready": false,
+  "subtree_counts": {
+    "cloudflare/payment-allocation/": 59,
+    "cloudflare/shared/": 1,
+    "cloudflare/allocation-delivery/": 21
+  },
+  "source_archive_path": "docs/drive-import/2026-09-28/mirror/AFRICLUB_Implementation_08_2026-09-28.zip",
+  "source_drive_file_id": "15TXHOrMOpSSfaKbzJdJ-yKucdoISPZGi",
+  "baseline_commit": "589698c64d83e0c0209a648b1eda30a60498b27c",
+  "delta_from_candidate_count": 0,
+  "completed_at_utc": "2026-09-29T21:54:36.728309+00:00",
+  "remote_mutation": false,
+  "deployment_performed": false,
+  "toolchain": {
+    "node_path": "/Users/jeanbosco/.nvm/versions/node/v22.23.2/bin/node",
+    "node_version": "v22.23.2",
+    "typescript_version": "5.9.3",
+    "typescript_bin": "apps/rayon_sports/web/node_modules/typescript/bin/tsc",
+    "typescript_bin_sha256": "8d5fa5bd883fec0979fc2004f1fe1d99aef40570155d550eadc0b03b55513bf0",
+    "typescript_package_sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6",
+    "typescript_lib_tsc_sha256": "e8f349eabd48486bdb2bf9dc1a00c89d58297270c54b745838879e2859194419",
+    "path_prefix": "/Users/jeanbosco/.nvm/versions/node/v22.23.2/bin:/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/web/node_modules/.bin"
+  },
+  "disabled_configs": [
+    {
+      "path": "cloudflare/allocation-delivery/wrangler.dispatch.staging.jsonc",
+      "sha256": "bf111cf0106324884c450fe013b98bbd0a4795c7f3492a0518503efc1acff427",
+      "runtime_switches": {
+        "DELIVERY_DISPATCH_ENABLED": "false"
+      },
+      "public_routes": false,
+      "cron_schedule": false,
+      "account_id_present": false,
+      "database_ids": [],
+      "deployable_approved": false
+    },
+    {
+      "path": "cloudflare/allocation-delivery/wrangler.inbox.staging.jsonc",
+      "sha256": "fa8f2b1d24da44788222de902410c79fc6a02c396039271d267b920a2d394648",
+      "runtime_switches": {
+        "INBOX_ENABLED": "false"
+      },
+      "public_routes": false,
+      "cron_schedule": false,
+      "account_id_present": false,
+      "database_ids": [
+        "REVIEW_REQUIRED"
+      ],
+      "deployable_approved": false
+    },
+    {
+      "path": "cloudflare/allocation-delivery/wrangler.source.staging.jsonc",
+      "sha256": "f3c71bab5e548a7eca714e1a6374503a75b99732bce74776ce031f49e2101495",
+      "runtime_switches": {
+        "PAYMENT_ALLOCATION_ENABLED": "false",
+        "ALLOCATION_DELIVERY_ENABLED": "false"
+      },
+      "public_routes": false,
+      "cron_schedule": false,
+      "account_id_present": false,
+      "database_ids": [
+        "REVIEW_REQUIRED"
+      ],
+      "deployable_approved": false
+    },
+    {
+      "path": "cloudflare/payment-allocation/wrangler.checkout.staging.jsonc",
+      "sha256": "537cb4e8aff2470cd18fca3c2cdf92cd644da6317ef93e49d6871c37448bcd00",
+      "runtime_switches": {
+        "MEMBERSHIP_CHECKOUT_ENABLED": "false",
+        "PAYMENT_ALLOCATION_ENABLED": "false",
+        "HANDOFF_JOURNAL_ENABLED": "false"
+      },
+      "public_routes": false,
+      "cron_schedule": false,
+      "account_id_present": false,
+      "database_ids": [
+        "REPLACE_WITH_SHARED_ALLOCATION_STAGING_ID"
+      ],
+      "deployable_approved": false
+    },
+    {
+      "path": "cloudflare/payment-allocation/wrangler.staging.jsonc",
+      "sha256": "594af5b1157c0e22fd578532d58e92050d70b2ae357440096ccf6322f0afccfd",
+      "runtime_switches": {
+        "PAYMENT_ALLOCATION_ENABLED": "false"
+      },
+      "public_routes": false,
+      "cron_schedule": false,
+      "account_id_present": false,
+      "database_ids": [
+        "00000000-0000-0000-0000-000000000000"
+      ],
+      "deployable_approved": false
+    }
+  ],
+  "migration_lineage": {
+    "active_0003": "cloudflare/payment-allocation/migrations/0003_payment_handoff_journal.sql",
+    "reference_only_conflicting_0003": "docs/drive-import/2026-09-28/mirror/cloudflare/payment-allocation/migrations/0003_server_handoff_recovery.sql",
+    "reference_sha256": "b992f0af381a14646fcc6522298e03214cc2fc3155070f56987f746512bad59a",
+    "reference_installed": false,
+    "reason": "The standalone Drive mirror server_handoff_recovery migration conflicts with the coherent Implementation 08 handoff-journal lineage; retained as source evidence and never combined in active migrations."
+  },
+  "remaining_acceptance": [
+    {
+      "item": "Hosted Workers RPC and D1 runtime, replication, SQL-feature and failure semantics",
+      "verified": false
+    },
+    {
+      "item": "Single authoritative payment writer and reconciliation of legacy Supabase orders, evidence, historical claims, membership catalog and currency/provider mappings",
+      "verified": false
+    },
+    {
+      "item": "Five-club tenant approval, capability grants, trusted caller identity and cross-database revocation behavior",
+      "verified": false
+    },
+    {
+      "item": "Approved payment evidence provenance, provider authenticity, bank/mobile-money settlement and refund handling",
+      "verified": false
+    },
+    {
+      "item": "Native/web checkout and recovery UI integration plus physical-device and club UAT",
+      "verified": false
+    },
+    {
+      "item": "Cloudflare Access operator adapter and accountable maker/checker acceptance",
+      "verified": false
+    },
+    {
+      "item": "Retention, erasure, on-call, monitoring/alerts, dead-letter operation, legacy-outbox stop and cutover/rollback rehearsal",
+      "verified": false
+    },
+    {
+      "item": "Production-shaped load/cost, resilience, backup/restore and delivery acceptance",
+      "verified": false
+    },
+    {
+      "item": "Approved resource IDs, secret/caller binding configuration, isolated provisioning, hosted CI and named production go/no-go",
+      "verified": false
+    }
+  ],
+  "local_corrections": [
+    {
+      "reason": "Bound source RPC observation deadlines so a stalled club cannot block later clubs, preserve uncertain remote writes and original event/lease/request identity.",
+      "paths": [
+        "cloudflare/allocation-delivery/src/dispatcher.mjs",
+        "cloudflare/allocation-delivery/README.md",
+        "cloudflare/allocation-delivery/contracts/delivery-v1.json"
+      ],
+      "added_tests": [
+        "cloudflare/allocation-delivery/tests/source-timeouts.test.mjs"
+      ],
+      "regression_evidence": {
+        "before": {
+          "tests": 4,
+          "failed": 4
+        },
+        "after": {
+          "combined_tests": 688,
+          "passed": 688,
+          "failed": 0,
+          "skipped": 0
+        },
+        "toolchain": "Node22.23.2 with repository TypeScript",
+        "log": "output/qa/full-stack-20260914/production-goal-20260929/africlub-goal-payment-tests-patched-20260929.log"
+      },
+      "new_files": [
+        {
+          "path": "cloudflare/allocation-delivery/tests/source-timeouts.test.mjs",
+          "sha256": "a6a9767abe1276ae3fdfb05130b395dcd7bcf4ed16587aca2e64e8f18894b28e"
+        }
+      ]
+    }
+  ]
+}

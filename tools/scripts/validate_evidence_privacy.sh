@@ -48,8 +48,11 @@ for pattern in "${patterns[@]}"; do
       rg -v '"sha256"[[:space:]]*:' || true
   )"
   if [ -n "$text_matches" ]; then
-    printf 'Evidence privacy violation for pattern %s:\n%s\n' \
-      "$pattern" "$text_matches" >&2
+    # Matches can contain the exact credential or private value being rejected.
+    # Emit paths only; keep matched lines out of CI and evidence logs.
+    printf 'Evidence privacy violation for pattern %s (values redacted):\n' \
+      "$pattern" >&2
+    printf '%s\n' "$text_matches" | sed -E 's/:[0-9]+:.*$//' | sort -u >&2
     scan_failed=true
   fi
 done
