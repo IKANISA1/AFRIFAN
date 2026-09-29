@@ -28,17 +28,20 @@
   },
   "folder_count": 67157,
   "folder_errors": 0,
-  "generated_byte_comparison_not_attempted": 251828,
+  "generated_byte_comparison_not_attempted": 0,
   "generated_drive_byte_comparison": {
     "different": 5,
-    "error": 1174,
-    "identical": 857
+    "identical": 253859
   },
   "generated_drive_size_comparison": {
     "different_size": 4,
     "same_size": 253860
   },
   "generated_file_count": 253864,
+  "generated_file_occurrence_byte_comparison": {
+    "different": 5,
+    "identical": 253889
+  },
   "generated_size_comparison_pending": 0,
   "git_internal_same_path_byte_comparison": {
     "different": 16,

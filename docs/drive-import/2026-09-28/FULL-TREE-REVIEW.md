@@ -2,7 +2,7 @@
 
 **Drive folder:** [AFRICLUB](https://drive.google.com/drive/folders/1izZgoOKfEONHZTyHkE0MzBW9Eeo4-VeH)
 
-**Review date:** 28 September 2026
+**Review date:** 28–29 September 2026
 
 **Local checkout:** `/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB`
 
@@ -38,10 +38,10 @@ The [file-level register](full-tree-file-analysis.tsv.gz) has one row for each o
 | Recovery evidence | 640 | Individual local format/hash analysis and Drive byte comparison. |
 | Other output evidence | 342 | Individual local format/hash analysis and Drive byte comparison. |
 | Git internals | 1,010 | Same-path byte comparison or validated, separately preserved Drive object/sidecar. |
-| Generated build output | 145,649 | Individual local format/hash analysis and Drive size comparison. |
-| Installed dependencies | 65,861 | Individual local format/hash analysis and Drive size comparison. |
-| QA output | 41,724 | Individual local format/hash analysis and Drive size comparison. |
-| Generated tooling | 630 | Individual local format/hash analysis and Drive size comparison. |
+| Generated build output | 145,649 | Individual local format/hash analysis and Drive SHA-256 comparison. |
+| Installed dependencies | 65,861 | Individual local format/hash analysis and Drive SHA-256 comparison. |
+| QA output | 41,724 | Individual local format/hash analysis and Drive SHA-256 comparison. |
+| Generated tooling | 630 | Individual local format/hash analysis and Drive SHA-256 comparison. |
 
 A second [type-specific register](full-tree-structured-code-analysis.tsv.gz) checked **25,638** files that the first pass had only read as generic binary or unclassified content. All **13,621 source maps parsed as JSON**, **3,177 plist/privacy/entitlement files parsed**, **2,653 SVG/interface/workspace files parsed as XML**, and **6,187 class, DEX, Android resource, or QCOW2 files had the expected binary signature**. This is structural validation of the local counterparts; the separate Drive comparison statuses show which bytes were actually compared with Drive.
 
@@ -67,11 +67,11 @@ Of the **260,835 unique Drive paths**, **259,021** exist at the same relative pa
 
 Every **5,961 substantive project source, documentation, dated delivery, recovery, and non-QA output files** was fetched from Drive and SHA-256 compared with its checkout or mirror counterpart. **5,960 were byte-identical; `.gitignore` was the one differing file.** Of the 61 Git-internal files with same-path local copies, 45 matched and 16 differed; the Drive variants are retained. The 947 loose Git objects passed object-ID validation and remain available logically through local Git as well.
 
-Another **38 generated files** were fetched as initial spot checks and matched the local bytes. They include the two empty PNGs and two malformed JSON QA artifacts described above. An expanded raw byte pass then downloaded and SHA-256 compared **862 generated files**: **857 matched** and **five `.dart_tool` files differed**. The five Drive versions are retained as variants.
+Every one of the **253,864 unique generated QA, build, dependency, and tooling files** was downloaded from its Drive ID and SHA-256 compared with its local counterpart. **253,859 were byte-identical and five `.dart_tool` files differed**; all five Drive versions are retained as variants. The [per-file byte-comparison register](full-tree-generated-byte-comparison.tsv.gz) contains the Drive and local hashes and has **no pending or failed comparison**. It also records 30 additional duplicate-name Drive IDs, all byte-identical to their same-name local files: **253,894 generated file occurrences** in total. The two empty PNGs and two malformed JSON QA artifacts described above are among the byte-identical files; matching bytes do not turn them into valid evidence or JSON.
 
-Every generated file was inventoried and had its local content hashed and format checked. A separate [per-file Drive size comparison](full-tree-generated-size-comparison.tsv.gz) completed for all **253,864** QA, build, dependency, and tooling files: **253,860 matched in size** and **four differed**. Size was obtained either from the Drive download response or the corresponding Drive folder metadata; both routes use the same Drive file ID. The expanded byte pass found a fifth difference with an equal size. Its [per-file byte-comparison register](full-tree-generated-byte-comparison.tsv.gz) records completed, failed, and pending raw comparisons.
+The earlier [per-file Drive size comparison](full-tree-generated-size-comparison.tsv.gz) found **253,860 equal-size files and four size differences**. Full byte comparison found a fifth difference with equal size, illustrating why the size check was only an interim control. Public Drive downloads briefly returned **“Quota exceeded”** during the 28 September pass. When access resumed on 29 September, the resumable [download verifier](verify_generated_drive_bytes.py) completed the remaining raw comparisons; [the merge script](merge_generated_byte_results.py) reconciled them with the earlier register. [Coverage totals](full-tree-coverage.json) record the completed result.
 
-Google Drive then returned **“Quota exceeded”** HTML for public downloads across multiple file IDs. The byte pass stopped after 862 successful comparisons and 1,174 download failures during the quota period; the remaining generated files have not been downloaded for content hashing. The authenticated Drive connector still fetches individual files, and it was used to preserve the fifth variant, but a complete local Drive export or renewed download access is needed to finish byte parity for the entire generated tree. Matching size and successful local format checks do not prove byte identity. [Coverage totals](full-tree-coverage.json) give the exact count in each state.
+Across all **260,865 Drive file occurrences**, the registers account for **5,961 substantive files** compared by bytes, **253,894 generated occurrences** compared by bytes, **61 same-path Git internals** compared by bytes, and **949 missing Git storage paths** whose exact Drive files were retained separately. The latter comprise 947 validated loose objects and two pack sidecars. These checks establish file coverage and local copy integrity; they do not establish that archived app versions are compatible with the active checkout or that QA artifacts prove the behavior they describe.
 
 ## Integration decision
 
