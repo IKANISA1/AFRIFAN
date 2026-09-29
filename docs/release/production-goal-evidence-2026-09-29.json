@@ -17449,7 +17449,7 @@
       "path": "cloudflare/shared/membership-history.mjs",
       "change": "A",
       "sha256": "906ddac35f4fadbfd3cb9b69c5c8247099176e5e4c90ee3862b5f9a5123426e8",
-      "why": "Share exact global external-payment-reference fingerprint semantics across private financial commands."
+      "why": "Share strict membership history/status response validation and bounded pagination across the private service clients."
     },
     {
       "path": "docs/release/candidate-lineage-disposition-2026-09-29.tsv",
