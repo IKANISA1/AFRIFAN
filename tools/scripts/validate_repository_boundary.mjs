@@ -143,7 +143,7 @@ const rootBuildConfigurationPaths = new Set(['pubspec.yaml', 'pubspec.yml', 'pac
 export const governedArchiveControlTests = Object.freeze([
   Object.freeze({
     path: 'packages/core/core_theme/test/ui_source_guardrails_test.dart',
-    sha256: '73505819a41024a86218782639034a33ad67770467cac10dade0780b3d9b9034',
+    sha256: 'a87e7e46d9e55d796a0346db94362b14df8037754b341991041ce026036f7639',
     expiresAt: '2026-10-29T00:00:00.000Z',
     reviewedBy: 'implementation technical review; no owner or release approval',
   }),

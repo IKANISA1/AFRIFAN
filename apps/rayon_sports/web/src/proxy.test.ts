@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { describe, expect, it } from "vitest";
-import { proxy } from "./proxy";
+import { routeHostRequest as proxy } from "./lib/host-request-routing";
 
 describe("proxy recovery routing", () => {
   it.each([

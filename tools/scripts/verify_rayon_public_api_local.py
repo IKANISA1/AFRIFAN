@@ -8,6 +8,8 @@ import hashlib
 import json
 import os
 import pathlib
+import re
+import urllib.parse
 import sys
 import urllib.error
 import urllib.request
@@ -41,6 +43,7 @@ def ensure(condition: bool, message: str) -> None:
 def main() -> int:
     observed: dict[str, int] = {}
     shop_images: list[str] = []
+    snapshot_ids: set[str] = set()
     now = dt.datetime.now(dt.timezone.utc)
     for route in ROUTES:
         status, body = fetch(route)
@@ -49,7 +52,14 @@ def main() -> int:
         ensure(isinstance(body.get("sourceCapturedAt"), str) and isinstance(body.get("rows"), list),
                f"Missing {route} freshness or rows")
         rows = body["rows"]
-        ensure(len(rows) > 0, f"No real {route} rows were served")
+        snapshot_id = body.get("snapshotId")
+        ensure(isinstance(snapshot_id, str) and re.fullmatch(r"[a-f0-9]{64}", snapshot_id) is not None,
+               f"Missing immutable {route} snapshot identity")
+        snapshot_ids.add(snapshot_id)
+        captured = dt.datetime.fromisoformat(body["sourceCapturedAt"].replace("Z", "+00:00"))
+        ensure(captured.tzinfo is not None and now - dt.timedelta(hours=24) < captured <= now + dt.timedelta(minutes=5),
+               f"Stale or future {route} publication")
+        # A valid approved snapshot may intentionally have no rows for a route.
         ensure(all(isinstance(row, dict) for row in rows), f"Invalid {route} row shape")
         ensure(all("payload_json" not in row and "buyer_phone" not in row and
                    "leader_contact_public" not in row for row in rows),
@@ -70,8 +80,8 @@ def main() -> int:
                        for row in rows), "Shop safety rule failed")
             shop_images = [row["imageUrl"] for row in rows]
         if route == "partners":
-            ensure(all(row.get("logoUrl") is None for row in rows),
-                   "Uncleared partner media was published")
+            ensure(all(row.get("logoUrl") is None or row["logoUrl"].startswith(BASE) for row in rows),
+                   "Partner media escaped the rights-checked Worker")
         if route == "tickets":
             ensure(all(row.get("reservationOnly") is True and
                        row.get("paidTicketIssuanceEnabled") is False
@@ -83,6 +93,7 @@ def main() -> int:
             ensure(all(row.get("entryEnabled") is False for row in rows),
                    "Source pool must not authorize app prediction")
         observed[route] = len(rows)
+    ensure(len(snapshot_ids) == 1, "Snapshot changed during smoke test; retry against one stable approved publication")
     ensure(fetch("news", method="POST")[0] == 405, "Public API accepted a write method")
     ensure(fetch("unknown")[0] == 404, "Public API accepted an unknown route")
     if BASE.startswith("https://"):
@@ -90,7 +101,7 @@ def main() -> int:
                          "output/migration/cloudflare-stage0/gikundiro-public/app-media/manifest.json")
         media = {item["source_id"]: item for item in json.loads(manifest_path.read_text())["objects"]}
         for url in shop_images:
-            asset_id = url.rsplit("/", 1)[-1]
+            asset_id = urllib.parse.urlsplit(url).path.rsplit("/", 1)[-1]
             request = urllib.request.Request(url, headers={"User-Agent": "curl/8.7.1"})
             with urllib.request.urlopen(request, timeout=15) as response:
                 body = response.read()
@@ -110,6 +121,6 @@ def main() -> int:
 if __name__ == "__main__":
     try:
         sys.exit(main())
-    except RuntimeError as error:
+    except (RuntimeError, OSError, ValueError, KeyError, TypeError) as error:
         print(f"Local public API failed: {error}", file=sys.stderr)
         sys.exit(2)

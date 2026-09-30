@@ -40,7 +40,31 @@ TABLES = {
 }
 
 
+class NoPublicSourceRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, request, response, code, message, headers, new_url):
+        # urllib otherwise forwards API headers across redirected origins.
+        raise RuntimeError("Public source redirect refused")
+
+
+def validated_public_base(value: str) -> str:
+    try:
+        parsed = urllib.parse.urlsplit(value)
+        valid = (parsed.scheme == "https" and parsed.hostname == EXPECTED_HOST and
+                 parsed.port in (None, 443) and not parsed.username and not parsed.password and
+                 parsed.path in ("", "/") and not parsed.query and not parsed.fragment)
+    except (ValueError, TypeError):
+        valid = False
+    if not valid:
+        raise RuntimeError("Configured Gikundiro public source is unavailable")
+    return value.rstrip("/")
+
+
 def fetch(base: str, key: str, table: str, params: dict[str, str]) -> list[dict[str, object]]:
+    base = validated_public_base(base)
+    if not isinstance(key, str) or not key:
+        raise RuntimeError("Configured Gikundiro public source is unavailable")
+    if table not in {"clubs", *TABLES}:
+        raise RuntimeError("Unsupported public source table")
     query = urllib.parse.urlencode(params)
     url = f"{base}/rest/v1/{table}?{query}"
     request = urllib.request.Request(
@@ -48,7 +72,7 @@ def fetch(base: str, key: str, table: str, params: dict[str, str]) -> list[dict[
         method="GET",
     )
     try:
-        with urllib.request.urlopen(request, timeout=30) as response:
+        with urllib.request.build_opener(NoPublicSourceRedirect).open(request, timeout=30) as response:
             rows = json.load(response)
     except urllib.error.HTTPError as error:
         raise RuntimeError(f"Public {table} query returned HTTP {error.code}") from None
@@ -58,13 +82,13 @@ def fetch(base: str, key: str, table: str, params: dict[str, str]) -> list[dict[
 
 
 def main() -> int:
+    capture_started_at = dt.datetime.now(dt.timezone.utc).isoformat()
     env = read_env(DEFAULT_ENV)
     configured = env.get("GIKUNDIRO_PUBLIC_SUPABASE_URL", "")
     key = env.get("GIKUNDIRO_PUBLIC_SUPABASE_ANON_KEY", "")
-    parsed = urllib.parse.urlsplit(configured)
-    if parsed.scheme != "https" or parsed.hostname != EXPECTED_HOST or not key:
-        raise SystemExit("Configured Gikundiro public source is unavailable")
-    base = configured.rstrip("/")
+    base = validated_public_base(configured)
+    if not key:
+        raise RuntimeError("Configured Gikundiro public source is unavailable")
     clubs = fetch(base, key, "clubs", {"select": "id,slug,name,short_name", "slug": "eq.rayon-sports", "limit": "2"})
     if len(clubs) != 1 or not clubs[0].get("id"):
         raise RuntimeError("Rayon source club must resolve to exactly one row")
@@ -90,7 +114,9 @@ def main() -> int:
     output.chmod(0o700)
     write_json(output / "rayon-public-source-rows.json", captured)
     write_json(output / "manifest.json", {
-        "captured_at_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "captured_at_utc": capture_started_at,
+        "capture_started_at_utc": capture_started_at,
+        "capture_completed_at_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
         "source_host": EXPECTED_HOST, "club_id": club_id,
         "counts": counts,
         "rows_file": "rayon-public-source-rows.json",

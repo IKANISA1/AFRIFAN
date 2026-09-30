@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "date": "2026-09-30",
-  "generatedAtUtc": "2026-09-29T22:51:14.639371+00:00",
+  "generatedAtUtc": "2026-09-29T23:13:33.981825+00:00",
   "scope": "Missing37 membership candidate files, three offline native verification tools and protected recovery host composition for the current five clubs. Existing membership backend/route selection is coordinated separately.",
   "status": "local native integration implemented; device/provider/store acceptance open",
   "source": {
@@ -659,7 +659,93 @@
       "sourcePackagesChanged": false,
       "deviceOrSignAction": false
     },
+    "android_gradle_final_offline": [
+      {
+        "app": "rayon_sports",
+        "exitCode": 1,
+        "command": [
+          "./gradlew",
+          ":app:compileDebugKotlin",
+          "--offline",
+          "--console=plain"
+        ],
+        "startUtc": "2026-09-29T22:54:38.672301+00:00",
+        "elapsedSeconds": 201.139
+      },
+      {
+        "app": "vitalo",
+        "exitCode": 0,
+        "command": [
+          "./gradlew",
+          ":app:compileDebugKotlin",
+          "--offline",
+          "--console=plain"
+        ],
+        "startUtc": "2026-09-29T22:57:59.836471+00:00",
+        "elapsedSeconds": 45.508
+      },
+      {
+        "app": "as_vita",
+        "exitCode": 0,
+        "command": [
+          "./gradlew",
+          ":app:compileDebugKotlin",
+          "--offline",
+          "--console=plain"
+        ],
+        "startUtc": "2026-09-29T22:58:45.345295+00:00",
+        "elapsedSeconds": 47.894
+      },
+      {
+        "app": "nkana",
+        "exitCode": 0,
+        "command": [
+          "./gradlew",
+          ":app:compileDebugKotlin",
+          "--offline",
+          "--console=plain"
+        ],
+        "startUtc": "2026-09-29T22:59:33.240195+00:00",
+        "elapsedSeconds": 70.905
+      },
+      {
+        "app": "costa_do_sol",
+        "exitCode": 0,
+        "command": [
+          "./gradlew",
+          ":app:compileDebugKotlin",
+          "--offline",
+          "--console=plain"
+        ],
+        "startUtc": "2026-09-29T23:00:44.145079+00:00",
+        "elapsedSeconds": 133.56
+      }
+    ],
     "android_gradle_coordinate_fill": {
+      "command": [
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/gradlew",
+        "--project-dir",
+        "/tmp/africlub-pinned-flutter-gradle-deps",
+        "resolveRecoveryEngine",
+        "--console=plain",
+        "--no-daemon"
+      ],
+      "exitCode": 0,
+      "startUtc": "2026-09-29T22:52:25.003105+00:00",
+      "elapsedSeconds": 106.326,
+      "coordinates": [
+        "io.flutter:armeabi_v7a_debug:1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1",
+        "io.flutter:x86_64_debug:1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1",
+        "io.flutter:arm64_v8a_debug:1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1",
+        "io.flutter:flutter_embedding_debug:1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1"
+      ],
+      "repository": "https://storage.googleapis.com/download.flutter.io",
+      "transitiveResolution": false,
+      "reason": "Only fills exact engine coordinates; actual five app builds retain their original complete dependency graph.",
+      "persistentRepositoryConfigurationChanged": false,
+      "sourcePackageVersionsChanged": false
+    },
+    "android_gradle_coordinate_fill_baseline": {
       "command": [
         "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/gradlew",
         "--project-dir",
@@ -680,9 +766,262 @@
       "repository": "https://storage.googleapis.com/download.flutter.io",
       "persistentRepositoryConfigurationChanged": false,
       "sourcePackageVersionsChanged": false
-    }
+    },
+    "android_gradle_declared_test_runner_cache_fill": {
+      "command": [
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/gradlew",
+        "-p",
+        "/tmp/africlub-pinned-flutter-gradle-deps",
+        "resolveDeclaredTestRunner",
+        "--console=plain"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 37.146,
+      "log": "/tmp/africlub-native-android-test-runner-cache-fill.log",
+      "scope": "Existing pinned Flutter integration_test declared androidx.test:runner:1.2+ metadata; temporary resolver only, no pins or package sources changed"
+    },
+    "android_gradle_rayons_first_runner_retry": {
+      "app": "rayon_sports",
+      "command": [
+        "./gradlew",
+        ":app:compileDebugKotlin",
+        "--offline",
+        "--console=plain"
+      ],
+      "exitCode": 1,
+      "elapsedSeconds": 203.3,
+      "log": "/tmp/africlub-native-android-rayon_sports-gradle-offline-cache-retry.log",
+      "pinsChanged": false
+    },
+    "android_gradle_actual_declared_graph_cache_fill": {
+      "command": [
+        "./gradlew",
+        ":integration_test:dependencies",
+        "--configuration",
+        "debugCompileClasspath",
+        "--console=plain"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 113.216,
+      "log": "/tmp/africlub-native-android-rayon-declared-graph-cache-fill.log",
+      "pinsChanged": false
+    },
+    "android_gradle_rayons_final_graph_retry": {
+      "app": "rayon_sports",
+      "command": [
+        "./gradlew",
+        ":app:compileDebugKotlin",
+        "--offline",
+        "--console=plain"
+      ],
+      "exitCode": 1,
+      "elapsedSeconds": 63.311,
+      "log": "/tmp/africlub-native-android-rayon_sports-gradle-offline-graph-retry.log",
+      "pinsChanged": false
+    },
+    "android_gradle_downloaded_artifact_identity": [
+      {
+        "coordinate": "io.flutter:armeabi_v7a_debug:1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1",
+        "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/io.flutter/armeabi_v7a_debug/1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1/57cbfe7211c065ccd949498ed42980712cfbc9e5/armeabi_v7a_debug-1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1.jar",
+        "bytes": 113962737,
+        "sha256": "5a15c310ea0224cce072c18947722573a2830a7d2ff5a13ccb1c859c61ecb67f"
+      },
+      {
+        "coordinate": "io.flutter:armeabi_v7a_debug:1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1",
+        "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/io.flutter/armeabi_v7a_debug/1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1/128a64a4a3d88065c3ac1bd818f0cb97fbfd1a73/armeabi_v7a_debug-1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1.pom",
+        "bytes": 510,
+        "sha256": "98a87f9fc96a3348f020f282b9172b8c9a0095dd37d62d8708fa0cbb4e9e5468"
+      },
+      {
+        "coordinate": "io.flutter:arm64_v8a_debug:1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1",
+        "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/io.flutter/arm64_v8a_debug/1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1/f80a58526b7f22ee5ef0a2028e50a5e586dcd85f/arm64_v8a_debug-1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1.jar",
+        "bytes": 179828624,
+        "sha256": "46b91188c290d0135d4c10105a4bbfce4345df4fafbda66e850e3a26324c6463"
+      },
+      {
+        "coordinate": "io.flutter:arm64_v8a_debug:1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1",
+        "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/io.flutter/arm64_v8a_debug/1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1/591e12ba9608de8c87abd5bdedc36a5e2ace199c/arm64_v8a_debug-1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1.pom",
+        "bytes": 508,
+        "sha256": "e58431450822b7bf44e4ff5d91c7b474e331bfe5b4bfd1480c440adcdff5f4ee"
+      },
+      {
+        "coordinate": "io.flutter:x86_64_debug:1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1",
+        "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/io.flutter/x86_64_debug/1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1/7cafce378a32198be7dd870494cedf9fd95de47b/x86_64_debug-1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1.pom",
+        "bytes": 505,
+        "sha256": "b30c193373287848c5b6ddfcc9dd84cbe39db0559b130fb90228c8dd511b2ba0"
+      },
+      {
+        "coordinate": "io.flutter:x86_64_debug:1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1",
+        "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/io.flutter/x86_64_debug/1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1/fb3c92fe4f01ebddc74790df4bcec9f33cd8c4e5/x86_64_debug-1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1.jar",
+        "bytes": 119168910,
+        "sha256": "680e0d52ace2fbe16aa692d11eb3e48633454fba72693ac37315104ca60dbc62"
+      },
+      {
+        "coordinate": "io.flutter:flutter_embedding_debug:1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1",
+        "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/io.flutter/flutter_embedding_debug/1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1/413f86980b11f5d504b115b00d475a0454c7d20b/flutter_embedding_debug-1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1.pom",
+        "bytes": 2542,
+        "sha256": "83e929977b9968e71d09b0c8da823e5423b91594d5255ece9744c862f5f9ea26"
+      },
+      {
+        "coordinate": "io.flutter:flutter_embedding_debug:1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1",
+        "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/io.flutter/flutter_embedding_debug/1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1/d501cc92f43e44b9b264953cc76bf4fe7b75d544/flutter_embedding_debug-1.0.0-5a2a6a42cce67f965cf540fcecf616faca624aa1.jar",
+        "bytes": 1576378,
+        "sha256": "cdd36fc84bfede7ec4e69a63e8d00f90df4a2b19b0df525f5aa5959058d7fc8d"
+      },
+      {
+        "coordinate": "androidx.test:runner:1.3.0",
+        "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/androidx.test/runner/1.3.0/e8862a8d71f5a8ab90d822b7d9349c7e4e74e49b/runner-1.3.0.aar",
+        "bytes": 168380,
+        "sha256": "61d13f5a9fcbbd73ba18fa84e1d6a0111c6e1c665a89b418126966e61fffd93b"
+      },
+      {
+        "coordinate": "androidx.test:rules:1.2.0",
+        "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/androidx.test/rules/1.2.0/91904046e724ac82d9b7fe698e5fe92b871c726e/rules-1.2.0.aar",
+        "bytes": 46803,
+        "sha256": "24bd7111e0db91b4a5f6d5c3e3e89698580dc90d29273d04a775bb7fe7c2a761"
+      },
+      {
+        "coordinate": "androidx.test.espresso:espresso-core:3.3.0",
+        "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/androidx.test.espresso/espresso-core/3.3.0/48261fce30cd47bb2e4d9328224f71a6c4d7e727/espresso-core-3.3.0.aar",
+        "bytes": 550876,
+        "sha256": "23ebf6014645e0c60aec7d1ed924d4d4c848ae8c3673b7d8d06b2ec6a56cafee"
+      }
+    ],
+    "android_compile_summary": {
+      "command": "./gradlew :app:compileDebugKotlin --offline --console=plain",
+      "offline_passed_apps": [
+        "vitalo",
+        "as_vita",
+        "nkana",
+        "costa_do_sol"
+      ],
+      "offline_failed_app": "rayon_sports",
+      "offline_success_count": 4,
+      "online_compile_verified_for_rayons": true,
+      "offline_blocker": "Pinned Flutter integration_test declares dynamic androidx.test:runner:1.2+; Gradle offline reports no cached version listing even after exact engine fill, declared runner resolution and actual dependency graph cache fill. The online actual graph resolves runner1.3.0/rules1.2.0/espresso3.3.0. No SDK/package version or resolution override was applied.",
+      "full_signed_or_device_build_claimed": false
+    },
+    "android_gradle_log_evidence": [
+      {
+        "local_log": "/tmp/africlub-native-android-as_vita-gradle-after-precache.log",
+        "sha256": "82777b5ddbd931b56704f0b813f7397efcca09df17785e16346c5f3dc01190d3"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-as_vita-gradle-baseline.log",
+        "sha256": "e2eda8e882c9b3c174401dc2a28fcd65fa0b22807b2d36d858f3c721c0426d96"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-as_vita-gradle-final-offline.log",
+        "sha256": "c27557c83639ad9112e283cbe15c40d121048b94898d28ae5fb4058b7c485302"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-as_vita-gradle.log",
+        "sha256": "e2eda8e882c9b3c174401dc2a28fcd65fa0b22807b2d36d858f3c721c0426d96"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-costa_do_sol-gradle-after-precache.log",
+        "sha256": "af9309f8d5221746aebcd21f2b4112df70836e5790fc54b3c9a4b3cfa4b81527"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-costa_do_sol-gradle-baseline.log",
+        "sha256": "912f9e853481955827cfd43765451c1b08a6ad4d48cb38fe809c80175569b010"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-costa_do_sol-gradle-final-offline.log",
+        "sha256": "758bbfbdcfd4efa60175739c38c432baa3c81b6d8ee4fd86a5ee4646a31498b2"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-costa_do_sol-gradle.log",
+        "sha256": "912f9e853481955827cfd43765451c1b08a6ad4d48cb38fe809c80175569b010"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-gradle-coordinate-fill-baseline.log",
+        "sha256": "0acc409c1ff340ab0b44eefb8561120bac20b06fb68b8c9f52c0c2d4f31eab9e"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-gradle-coordinate-fill.log",
+        "sha256": "a523c1b6525c0ba83a92811342b30df5d865e847cf011f65fc4aae92de7adb0f"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-gradle-dependency-fill.log",
+        "sha256": "3d77666da7b8e505d1d2d751f5c8fa3ae5bf89a7622bc405991049b07ead1aec"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-nkana-gradle-after-precache.log",
+        "sha256": "c90bf1136f2f1e584034975f1d8b44f4142227fd0efc6f16bb75cd3c46451a04"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-nkana-gradle-baseline.log",
+        "sha256": "d2ebcdb60e16a302ec9dd80812e7e20f4646df0fe771f0d7a74b805af67a4495"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-nkana-gradle-final-offline.log",
+        "sha256": "147ae7f94dd5c1126bd8358f547b07ce7d3aca5978858f4550193da149f0e152"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-nkana-gradle.log",
+        "sha256": "d2ebcdb60e16a302ec9dd80812e7e20f4646df0fe771f0d7a74b805af67a4495"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-rayon_sports-gradle-after-precache.log",
+        "sha256": "500244a8451956c2a94ee770bcfae29aed82a2ad6750b8340b43f5f4f261b2c7"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-rayon_sports-gradle-baseline.log",
+        "sha256": "45ba32c0788b3eb1c040fc4e3a28b5cbe2e4d6703b817693aaeaa86c616029ad"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-rayon_sports-gradle-bounded-offline-attempt.log",
+        "sha256": "755110751887459493a874140411c5db3dcf8bbe3181affd590e64437810718b"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-rayon_sports-gradle-final-offline.log",
+        "sha256": "49e149962f07c55da4cb0d0e57145cc5f08e3a94e91ce3d75d6d3b10695883ac"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-rayon_sports-gradle-offline-cache-retry.log",
+        "sha256": "b944450a92eb656c821958e7af0c286f24db6274eae1f1fde7efb70db816b99b"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-rayon_sports-gradle-offline-graph-retry.log",
+        "sha256": "d8b832a71710da316e793790894899d21cbbc2f11d50031cf59002e2cab0350e"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-rayon_sports-gradle.log",
+        "sha256": "45ba32c0788b3eb1c040fc4e3a28b5cbe2e4d6703b817693aaeaa86c616029ad"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-vitalo-gradle-after-precache.log",
+        "sha256": "c9822ef3efa3d6c2e752d5b32679910ca3770315f02d63c93ed1cbc50349be18"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-vitalo-gradle-baseline.log",
+        "sha256": "0376cdbe4fc4c2d2f749f2e36205288ddca8c5fefacdebf7061168d4a08ff911"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-vitalo-gradle-bounded-offline-attempt.log",
+        "sha256": "75441240e40058dd58cab47e2ce4bed9641cf25b817f40b98315a38cd5f59929"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-vitalo-gradle-final-offline.log",
+        "sha256": "617ee2d8fcf9b7253da0e01655c358a7b0f93f89fddd1528f13e705d2b0723db"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-vitalo-gradle.log",
+        "sha256": "0376cdbe4fc4c2d2f749f2e36205288ddca8c5fefacdebf7061168d4a08ff911"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-test-runner-cache-fill.log",
+        "sha256": "77f6101584475b7335a965a7180286a5013b88ff985ac80bf203397130a04c80"
+      },
+      {
+        "local_log": "/tmp/africlub-native-android-rayon-declared-graph-cache-fill.log",
+        "sha256": "ae286adb043a8ea6f88cac220363dd1bf53e48d185b5ad70f335fc36d6ba494f"
+      }
+    ]
   },
   "remaining_acceptance": [
+    "Rayon Android offline reproducibility: resolve the declared dynamic integration_test dependency metadata without altering unreviewed SDK/package pins; online compilation is verified but offline acceptance is 4/5.",
     "Actual protected credential supply and frontend/backend selection with accessible reviewed confirmation must be validated in the composed supporter journey.",
     "Real Android Keystore and iOS Keychain tests, device lock/unlock/reboot/process kill/power interruption/low storage/multi-engine/disposal, encrypted storage policy and exact uncertain recovery semantics.",
     "Signed five-club full builds and physical-device dialer/network behavior, accessibility and existing paid-membership journey acceptance.",

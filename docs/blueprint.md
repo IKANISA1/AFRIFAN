@@ -165,7 +165,10 @@ void, offline, and retry states.
 
 ## UI And UX Contract
 
-`DESIGN.md` is the single visual and interaction authority.
+The selected `revolut-design` skill is the sole visual and interaction authority.
+`DESIGN.md` is the product adapter; implementation tokens and evidence inventories
+cannot override that authority or grant visual approval. Coverage includes five
+club shells on both Android and iOS, plus public/member web and the admin PWA.
 
 Football-first composition rules:
 
@@ -219,3 +222,19 @@ Before merge:
 Local validation is not deployment evidence. Production data reconciliation,
 signing, physical-device accessibility, store processing, deployment,
 monitoring, and accountable release approval remain separate governed gates.
+
+## Migration implementation status and safety controls — 26 September 2026
+
+The Cloudflare public-source hardening patch uses immutable snapshots and private,
+explicitly approved publication. It does not replace supporter identity, payment,
+membership, ticket, ledger or prediction transactions. The original Supabase
+runtime remains authoritative until an approved cutover proves otherwise.
+
+`tools/scripts/validate_migration_release.py` validates candidate-bound evidence
+before cutover or retirement. A successful source test or an evidence-package
+validation is not production authorization. Preserve applied migration history,
+recovery exports and original media; never infer retirement from an unmapped object.
+
+The economic conflict in `docs/governance/predict_economics_decision.md` blocks
+promotion of transaction-bearing prediction mechanics. Historical implementation
+descriptions are not evidence of product, legal, payment or store approval.

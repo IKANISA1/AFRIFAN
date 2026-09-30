@@ -1,3 +1,5 @@
+import { activeSnapshot, primarySession, sha256, MAX_MEDIA_BYTES, PublicationError } from "./snapshot-publication.mjs";
+
 const routes = new Set([
   "fixtures", "news", "squad", "fanclubs", "partners", "shop",
   "tickets", "membership-tiers", "predict-pools",
@@ -8,12 +10,22 @@ function label(value) {
 }
 
 function https(value) {
+  if (typeof value !== "string") return null;
   try {
     const url = new URL(value);
-    return url.protocol === "https:" ? url.toString() : null;
+    return url.protocol === "https:" && !url.username && !url.password ? url.toString() : null;
   } catch {
     return null;
   }
+}
+
+// Public display fields must never carry unreviewed nested source records.
+function displayList(value) {
+  return Array.isArray(value) ? value.filter(item => typeof item === "string").map(label).filter(Boolean) : [];
+}
+
+function publicCount(value) {
+  return typeof value === "number" && Number.isSafeInteger(value) && value >= 0 ? value : null;
 }
 
 function asTime(value) {
@@ -25,17 +37,17 @@ function publicRow(row) {
   return row.approval_status === "approved" && row.active === true && row.visibility === "public";
 }
 
-async function rows(db, table) {
+async function rows(db, table, snapshot) {
   const result = await db.prepare(
-    "SELECT payload_json FROM source_records WHERE source_table = ? ORDER BY source_id",
-  ).bind(table).all();
+    "SELECT payload_json FROM public_snapshot_records WHERE snapshot_id=? AND source_club_id=? AND source_table=? ORDER BY source_id",
+  ).bind(snapshot.snapshot_id, snapshot.source_club_id, table).all();
   return result.results.map(({ payload_json }) => JSON.parse(payload_json));
 }
 
-async function mediaById(db) {
+async function mediaById(db, snapshot) {
   const [assets, registered] = await Promise.all([
-    rows(db, "media_assets"),
-    db.prepare("SELECT source_asset_id,source_bucket,source_path,sha256,usage_scopes_json,usage_rights FROM source_media").all(),
+    rows(db, "media_assets", snapshot),
+    db.prepare("SELECT source_asset_id,source_bucket,source_path,sha256,usage_scopes_json,usage_rights FROM public_snapshot_media WHERE snapshot_id=?").bind(snapshot.snapshot_id).all(),
   ]);
   const byId = new Map(assets.filter(publicRow).map((asset) => [asset.id, asset]));
   const allowed = new Map();
@@ -50,31 +62,31 @@ async function mediaById(db) {
   return allowed;
 }
 
-function approvedImage(registered, id, scope, origin) {
+function approvedImage(registered, id, scope, origin, snapshot) {
   const item = registered.get(id);
   if (!item || !label(item.usage_rights) ||
       !JSON.parse(item.usage_scopes_json).includes(scope)) return null;
   if (/generated|pending|review-before-commercial-reuse|unverified/i.test(item.usage_rights)) return null;
-  return `${origin}/v1/public/rayon/media/${encodeURIComponent(id)}`;
+  return `${origin}/v1/public/rayon/media/${encodeURIComponent(id)}?snapshot=${snapshot.snapshot_id}`;
 }
 
-function json(body, status = 200) {
+function json(body, status = 200, cacheSeconds = 60) {
   return new Response(JSON.stringify(body), {
     status,
     headers: {
       "content-type": "application/json; charset=utf-8",
-      "cache-control": status === 200 ? "public, max-age=60" : "no-store",
+      "cache-control": status === 200 ? `public, max-age=${cacheSeconds}, must-revalidate` : "no-store",
       "x-content-type-options": "nosniff",
     },
   });
 }
 
-async function content(db, route, now, origin) {
+export async function publicSnapshotContent(db, route, now, origin, snapshot) {
   const time = now.getTime();
   if (route === "fixtures" || route === "predict-pools") {
     const [fixtures, teams, competitions] = await Promise.all([
-      rows(db, "prediction_fixtures"), rows(db, "prediction_teams"),
-      rows(db, "prediction_competitions"),
+      rows(db, "prediction_fixtures", snapshot), rows(db, "prediction_teams", snapshot),
+      rows(db, "prediction_competitions", snapshot),
     ]);
     const team = new Map(teams.map((row) => [row.id, row]));
     const competition = new Map(competitions.filter((row) => row.active === true).map((row) => [row.id, row]));
@@ -99,14 +111,14 @@ async function content(db, route, now, origin) {
         predictionEntryEnabled: false,
       }));
     const fixtureIds = new Set(active.map((row) => row.id));
-    return (await rows(db, "prediction_pools"))
+    return (await rows(db, "prediction_pools", snapshot))
       .filter((row) => row.status === "open" && fixtureIds.has(row.fixture_id) && (asTime(row.locks_at) ?? 0) > time)
       .map((row) => ({ id: row.id, fixtureId: `gikundiro-${row.fixture_id}`, locksAt: row.locks_at, entryEnabled: false }));
   }
   if (route === "news") {
     const cutoff = new Date(now);
     cutoff.setUTCMonth(cutoff.getUTCMonth() - 3);
-    return (await rows(db, "news_posts"))
+    return (await rows(db, "news_posts", snapshot))
       .filter((row) => publicRow(row) && row.status === "published" && row.post_type === "news_feed" &&
         (asTime(row.published_at) ?? Infinity) >= cutoff.getTime() &&
         (asTime(row.published_at) ?? Infinity) <= time &&
@@ -124,8 +136,8 @@ async function content(db, route, now, origin) {
       });
   }
   if (route === "squad") {
-    const media = await mediaById(db);
-    return (await rows(db, "players"))
+    const media = await mediaById(db, snapshot);
+    return (await rows(db, "players", snapshot))
       .filter((row) => publicRow(row) && label(row.display_name))
       .sort((a, b) => (a.sort_order ?? 100) - (b.sort_order ?? 100))
       .map((row) => ({
@@ -134,10 +146,10 @@ async function content(db, route, now, origin) {
         position: label(row.specific_position) || label(row.position),
         nationality: label(row.nationality), bio: label(row.short_bio),
         squadGroup: label(row.team) || "mens_first_team",
-        imageUrl: approvedImage(media, row.photo_asset_id, "squad", origin),
+        imageUrl: approvedImage(media, row.photo_asset_id, "squad", origin, snapshot),
       }));
   }
-  if (route === "fanclubs") return (await rows(db, "fanclubs"))
+  if (route === "fanclubs") return (await rows(db, "fanclubs", snapshot))
     .filter((row) => publicRow(row) && label(row.name))
     .sort((a, b) => (a.sort_order ?? 100) - (b.sort_order ?? 100))
     .map((row) => ({
@@ -146,44 +158,44 @@ async function content(db, route, now, origin) {
       country: label(row.country), province: label(row.province),
       district: label(row.district), city: label(row.city),
       acceptingMembers: row.accepting_members === true,
-      memberCount: row.show_member_count === true ? row.member_count_public : null,
-      activities: row.activities, impactSummary: label(row.impact_summary),
+      memberCount: row.show_member_count === true ? publicCount(row.member_count_public) : null,
+      activities: typeof row.activities === "string" ? label(row.activities) : displayList(row.activities), impactSummary: label(row.impact_summary),
     }));
   if (route === "partners") {
-    const media = await mediaById(db);
-    return (await rows(db, "partners"))
+    const media = await mediaById(db, snapshot);
+    return (await rows(db, "partners", snapshot))
       .filter((row) => publicRow(row) && label(row.name))
       .sort((a, b) => (a.sort_order ?? 100) - (b.sort_order ?? 100))
       .map((row) => ({
         id: `gikundiro-${row.id}`, name: label(row.name),
         category: label(row.category) || label(row.tier),
         description: label(row.relationship_summary),
-        logoUrl: approvedImage(media, row.logo_asset_id, "partners", origin),
+        logoUrl: approvedImage(media, row.logo_asset_id, "partners", origin, snapshot),
         websiteUrl: https(row.website_url),
       }));
   }
   if (route === "shop") {
-    const media = await mediaById(db);
-    const categories = new Map((await rows(db, "marketplace_categories"))
+    const media = await mediaById(db, snapshot);
+    const categories = new Map((await rows(db, "marketplace_categories", snapshot))
       .filter((row) => row.active === true).map((row) => [row.id, row]));
     const season = now.getUTCMonth() >= 6 ? now.getUTCFullYear() : now.getUTCFullYear() - 1;
     const status = `current_media_verified_${season}_${String((season + 1) % 100).padStart(2, "0")}`;
-    return (await rows(db, "marketplace_products"))
+    return (await rows(db, "marketplace_products", snapshot))
       .filter((row) => publicRow(row) && row.verification_status === status &&
         Number(row.price_rwf) > 0 && label(row.name) &&
-        approvedImage(media, row.image_asset_id, "shop", origin))
+        approvedImage(media, row.image_asset_id, "shop", origin, snapshot))
       .sort((a, b) => (a.sort_order ?? 100) - (b.sort_order ?? 100))
       .map((row) => ({
         id: `gikundiro-${row.id}`, name: label(row.name),
         description: label(row.description), priceRwf: Number(row.price_rwf),
         category: label(categories.get(row.category_id)?.label) || label(categories.get(row.category_id)?.name) || "Merchandise",
         sizes: Array.isArray(row.variant_options?.sizes) ? row.variant_options.sizes.filter((size) => typeof size === "string") : [],
-        imageUrl: approvedImage(media, row.image_asset_id, "shop", origin),
+        imageUrl: approvedImage(media, row.image_asset_id, "shop", origin, snapshot),
         commerceMode: "enquiry", checkoutEnabled: false,
       }));
   }
   if (route === "tickets") {
-    const categories = await rows(db, "ticket_sale_categories");
+    const categories = await rows(db, "ticket_sale_categories", snapshot);
     const bySale = new Map();
     for (const row of categories) {
       if (row.sale_enabled === true) {
@@ -193,7 +205,7 @@ async function content(db, route, now, origin) {
         bySale.set(row.ticket_sale_id, list);
       }
     }
-    return (await rows(db, "ticket_sales"))
+    return (await rows(db, "ticket_sales", snapshot))
       .filter((row) => publicRow(row) && row.sale_status === "reservation_open" &&
         row.sale_mode === "reservation_only" && (asTime(row.kickoff_at) ?? 0) > time)
       .sort((a, b) => asTime(a.kickoff_at) - asTime(b.kickoff_at))
@@ -205,67 +217,86 @@ async function content(db, route, now, origin) {
         reservationOnly: true, paidTicketIssuanceEnabled: false,
       }));
   }
-  if (route === "membership-tiers") return (await rows(db, "membership_tiers"))
+  if (route === "membership-tiers") return (await rows(db, "membership_tiers", snapshot))
     .filter((row) => publicRow(row) && label(row.name))
     .sort((a, b) => (a.sort_order ?? 100) - (b.sort_order ?? 100))
     .map((row) => ({
       id: `gikundiro-${row.id}`, name: label(row.name),
       priceRwf: Number(row.price_rwf) || Number(row.monthly_price_rwf) || 0,
       billingPeriod: label(row.billing_period), packageType: label(row.package_type),
-      benefits: row.benefits, purchaseEnabled: false,
+      benefits: displayList(row.benefits), purchaseEnabled: false,
     }));
   return [];
 }
 
-async function media(request, env, assetId) {
-  if (request.method !== "GET") return json({ error: "method_not_allowed" }, 405);
-  if (!env.RAYON_PUBLIC_DB || !env.RAYON_PUBLIC_MEDIA) return json({ error: "service_unavailable" }, 503);
-  const record = await env.RAYON_PUBLIC_DB.prepare(
-    "SELECT m.bytes,m.sha256,m.usage_scopes_json,m.usage_rights,r.payload_json " +
-    "FROM source_media m JOIN source_records r ON r.source_table='media_assets' AND r.source_id=m.source_asset_id " +
-    "WHERE m.source_asset_id=?",
-  ).bind(assetId).first();
+async function recheckResponseSnapshot(db, snapshot) {
+  const latest = await activeSnapshot(db, new Date());
+  if (latest.snapshot_id !== snapshot.snapshot_id) throw new PublicationError('source_changed');
+  return latest;
+}
+
+async function media(request, env, assetId, db, snapshot) {
+  if (!env.RAYON_PUBLIC_MEDIA) return json({ error: "service_unavailable" }, 503);
+  const requestedSnapshot = new URL(request.url).searchParams.get("snapshot");
+  if (requestedSnapshot && requestedSnapshot !== snapshot.snapshot_id) return json({ error: "not_found" }, 404);
+  const record = await db.prepare(
+    "SELECT m.bytes,m.sha256,m.r2_key,m.source_bucket,m.source_path,m.usage_scopes_json,m.usage_rights,r.payload_json " +
+    "FROM public_snapshot_media m JOIN public_snapshot_records r ON r.snapshot_id=m.snapshot_id " +
+    "AND r.source_table='media_assets' AND r.source_id=m.source_asset_id " +
+    "WHERE m.snapshot_id=? AND r.source_club_id=? AND m.source_asset_id=?",
+  ).bind(snapshot.snapshot_id, snapshot.source_club_id, assetId).first();
   if (!record) return json({ error: "not_found" }, 404);
   const asset = JSON.parse(record.payload_json);
   const scopes = JSON.parse(record.usage_scopes_json);
   if (!publicRow(asset) || !record.usage_rights || !Array.isArray(scopes) || scopes.length === 0 ||
+      asset.storage_bucket !== record.source_bucket || asset.storage_path !== record.source_path ||
+      label(asset.checksum_sha256).toLowerCase() !== record.sha256 ||
       /generated|pending|review-before-commercial-reuse|unverified/i.test(record.usage_rights)) {
     return json({ error: "not_found" }, 404);
   }
-  const object = await env.RAYON_PUBLIC_MEDIA.get(`assets/${assetId}.bin`);
+  if (record.bytes > MAX_MEDIA_BYTES || record.r2_key !== `assets/${record.sha256}.bin`)
+    return json({ error: "service_unavailable" }, 503);
+  const object = await env.RAYON_PUBLIC_MEDIA.get(record.r2_key);
   if (!object || object.size !== record.bytes) return json({ error: "service_unavailable" }, 503);
+  const bytes = await object.arrayBuffer();
+  if (await sha256(bytes) !== record.sha256) return json({ error: "service_unavailable" }, 503);
+  // A slow object read must not extend freshness past the approved snapshot TTL.
+  // This is a second observed state, not a transaction locking publication forever.
+  const latest = await recheckResponseSnapshot(db, snapshot);
   const headers = new Headers();
   object.writeHttpMetadata(headers);
-  headers.set("cache-control", "public, max-age=3600");
+  headers.set("cache-control", `public, max-age=${latest.cacheSeconds}, must-revalidate`);
   headers.set("x-content-type-options", "nosniff");
-  return new Response(object.body, { headers });
+  headers.set("content-security-policy", "default-src 'none'; sandbox");
+  headers.set("etag", `"${record.sha256}"`);
+  return new Response(bytes, { headers });
 }
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     const mediaMatch = /^\/v1\/public\/rayon\/media\/([0-9a-f-]{36})$/.exec(url.pathname);
-    if (mediaMatch) {
-      try { return await media(request, env, mediaMatch[1]); }
-      catch { return json({ error: "service_unavailable" }, 503); }
-    }
     const match = /^\/v1\/public\/rayon\/([a-z-]+)$/.exec(url.pathname);
-    if (!match || !routes.has(match[1])) return json({ error: "not_found" }, 404);
-    if (request.method !== "GET") return json({ error: "method_not_allowed" }, 405);
+    if (!mediaMatch && (!match || !routes.has(match[1]))) return json({ error: "not_found" }, 404);
+    if (request.method !== "GET") {
+      const response = json({ error: "method_not_allowed" }, 405);
+      response.headers.set("allow", "GET");
+      return response;
+    }
     if (!env.RAYON_PUBLIC_DB) return json({ error: "service_unavailable" }, 503);
     try {
-      const [records, captured] = await Promise.all([
-        content(env.RAYON_PUBLIC_DB, match[1], new Date(), url.origin),
-        env.RAYON_PUBLIC_DB.prepare("SELECT MAX(captured_at_utc) AS captured_at FROM source_records").first(),
-      ]);
-      const capturedAt = Date.parse(captured?.captured_at ?? "");
-      if (!Number.isFinite(capturedAt) || capturedAt > Date.now() + 5 * 60_000 ||
-          Date.now() - capturedAt > 24 * 60 * 60_000) {
-        return json({ error: "source_stale" }, 503);
-      }
-      return json({ schemaVersion: 1, route: match[1], sourceCapturedAt: captured?.captured_at ?? null, rows: records });
-    } catch {
-      return json({ error: "service_unavailable" }, 503);
+      const db = primarySession(env.RAYON_PUBLIC_DB);
+      const now = new Date();
+      const snapshot = await activeSnapshot(db, now);
+      if (mediaMatch) return await media(request, env, mediaMatch[1], db, snapshot);
+      const records = await publicSnapshotContent(db, match[1], now, url.origin, snapshot);
+      const latest = await recheckResponseSnapshot(db, snapshot);
+      return json({ schemaVersion: 1, route: match[1], snapshotId: snapshot.snapshot_id,
+        sourceCapturedAt: snapshot.captured_at_utc, rows: records }, 200, latest.cacheSeconds);
+    } catch (error) {
+      const code = error instanceof PublicationError &&
+        ["source_stale", "source_unpublished", "source_changed"].includes(error.code) ? error.code : "service_unavailable";
+      return json({ error: code }, 503);
     }
   },
 };

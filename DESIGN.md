@@ -13,7 +13,7 @@ bundled references. Current user instructions take precedence.
 
 ## Scope and reference
 
-The review covers the shared Flutter supporter application, all four configured
+The review covers the shared Flutter supporter application, all five configured
 club shells on Android and iOS, public and member websites, and Admin PWA. Use the skill's matching native, website, operator and PWA references for
 each surface. The native comparator below does not establish web or desktop
 parity. Internal mobile admin remains role guarded; operational tasks preserve
@@ -88,7 +88,9 @@ AFRICLUB screen hierarchy must follow these rules:
   projects, tickets, products, and supporter communities according to permissions
   and availability.
 
-Predict follows the simplified Gikundiro contract requested on 6 September 2026:
+The following describes the historical simplified Gikundiro implementation requested on 6 September 2026, not a new approval to enable financial entry mechanics. The release-blocking economic conflict is recorded in `docs/governance/predict_economics_decision.md` and its machine-readable decision record. Preserve existing historical ledger data; do not promote this behavior to a Cloudflare transactional API until an accountable decision and corresponding tests are recorded.
+
+Historical implementation:
 
 - only Home, Draw or Away on prepared, future fixtures with registered team crests;
 - a stored, fixed FET entry price per fixture (100 by default), one entry per verified supporter;

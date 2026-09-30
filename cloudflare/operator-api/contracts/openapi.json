@@ -1,0 +1,3045 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "AFRICLUB operator public-source publication API",
+    "version": "1.1.0",
+    "description": "Staging source candidate. Only configured Rayon tenant is available. Runtime ctx.access authenticates human operators; the private service enforces live grants. Access cookies are handled by the browser. Raw identity headers and request-body approvers are never authority. No supporter authentication or financial commands. Read-only candidate inspection and review recovery support the separately enabled same-origin operator interface. Opening a page or preview never publishes. UI assets are directly served by the authenticated Worker, without Static Assets routing."
+  },
+  "security": [
+    {
+      "CloudflareAccess": []
+    }
+  ],
+  "paths": {
+    "/v1/admin/clubs/{clubId}/public-source/head": {
+      "get": {
+        "operationId": "readPublicationHead",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9999999999
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HeadResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or incorrect runtime Access identity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Identity, role, or origin denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Unsupported method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, review, or idempotency conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Review expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported encoding or content type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Disabled, unconfigured, or unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/clubs/{clubId}/public-source/reviews": {
+      "post": {
+        "operationId": "reviewSnapshot",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9999999999
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS operator origin."
+          },
+          {
+            "name": "X-AFRICLUB-Action",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "publish-review"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or incorrect runtime Access identity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Identity, role, or origin denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Unsupported method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, review, or idempotency conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Review expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported encoding or content type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Disabled, unconfigured, or unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewRequest"
+              }
+            }
+          },
+          "description": "Maximum encoded request body: 4096 bytes; extra properties are rejected."
+        }
+      }
+    },
+    "/v1/admin/clubs/{clubId}/public-source/publications": {
+      "post": {
+        "operationId": "confirmPublication",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9999999999
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri"
+            },
+            "description": "Exact configured HTTPS operator origin."
+          },
+          {
+            "name": "X-AFRICLUB-Action",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "const": "publish-review"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{16,128}$"
+            },
+            "description": "Persist before sending. Retry the same review with the SAME key after uncertain response; do not automatically start a new operation."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or incorrect runtime Access identity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Identity, role, or origin denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Unsupported method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, review, or idempotency conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Review expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported encoding or content type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Disabled, unconfigured, or unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PublishRequest"
+              }
+            }
+          },
+          "description": "Maximum encoded request body: 4096 bytes; extra properties are rejected."
+        }
+      }
+    },
+    "/v1/admin/clubs/{clubId}/public-source/publications/{operationId}": {
+      "get": {
+        "operationId": "readPublicationReceipt",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9999999999
+            }
+          },
+          {
+            "name": "operationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or incorrect runtime Access identity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Identity, role, or origin denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Unsupported method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, review, or idempotency conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Review expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported encoding or content type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Disabled, unconfigured, or unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/clubs/{clubId}/public-source/session": {
+      "get": {
+        "operationId": "readOperatorSession",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9999999999
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or incorrect runtime Access identity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Identity, role, or origin denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Unsupported method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, review, or idempotency conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Review expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported encoding or content type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Disabled, unconfigured, or unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/clubs/{clubId}/public-source/candidates": {
+      "get": {
+        "operationId": "listImportedCandidates",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9999999999
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidateListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or incorrect runtime Access identity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Identity, role, or origin denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Unsupported method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, review, or idempotency conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Review expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported encoding or content type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Disabled, unconfigured, or unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/clubs/{clubId}/public-source/candidates/{snapshotId}": {
+      "get": {
+        "operationId": "inspectImportedCandidate",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9999999999
+            }
+          },
+          {
+            "name": "snapshotId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CandidateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or incorrect runtime Access identity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Identity, role, or origin denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Unsupported method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, review, or idempotency conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Review expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported encoding or content type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Disabled, unconfigured, or unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/clubs/{clubId}/public-source/reviews/{reviewId}": {
+      "get": {
+        "operationId": "readOwnReviewStatus",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9999999999
+            }
+          },
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewStatusResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or incorrect runtime Access identity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Identity, role, or origin denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Unsupported method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, review, or idempotency conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Review expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported encoding or content type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Disabled, unconfigured, or unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/admin/clubs/{clubId}/public-source/candidates/{snapshotId}/preview/{section}": {
+      "get": {
+        "operationId": "previewVerifiedPublicSection",
+        "parameters": [
+          {
+            "name": "clubId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 9999999999
+            }
+          },
+          {
+            "name": "snapshotId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          {
+            "name": "section",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "fixtures",
+                "news",
+                "squad",
+                "fanclubs",
+                "partners",
+                "shop",
+                "tickets",
+                "membership-tiers",
+                "predict-pools"
+              ]
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100000,
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreviewResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or incorrect runtime Access identity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Identity, role, or origin denied",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Unknown or unavailable resource",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Unsupported method",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "State, review, or idempotency conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "410": {
+            "description": "Review expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body too large",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Unsupported encoding or content type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Disabled, unconfigured, or unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "CloudflareAccess": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "CF_Authorization",
+        "description": "Validated upstream by Cloudflare Access and consumed through runtime ctx.access only. This declaration does not authorize arbitrary cookies."
+      }
+    },
+    "schemas": {
+      "ReviewRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "snapshotId": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "expectedPreviousId": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reviewRef": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.:/-]{3,160}$"
+          }
+        },
+        "required": [
+          "snapshotId",
+          "expectedPreviousId",
+          "reviewRef"
+        ]
+      },
+      "PublishRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "reviewId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "reviewId"
+        ]
+      },
+      "Head": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "clubId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9999999999
+          },
+          "snapshotId": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "capturedAt": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "activatedAt": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "fresh": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "clubId",
+          "snapshotId",
+          "capturedAt",
+          "activatedAt",
+          "fresh"
+        ]
+      },
+      "Review": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "reviewId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clubId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9999999999
+          },
+          "snapshotId": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "expectedPreviousId": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reviewRef": {
+            "type": "string"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rowCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "mediaCount": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "reviewId",
+          "clubId",
+          "snapshotId",
+          "expectedPreviousId",
+          "reviewRef",
+          "expiresAt",
+          "rowCount",
+          "mediaCount"
+        ]
+      },
+      "Publication": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "operationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clubId": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9999999999
+          },
+          "snapshotId": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "previousSnapshotId": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "const": "published"
+          },
+          "replayed": {
+            "type": "boolean"
+          },
+          "reviewId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "operationId",
+          "clubId",
+          "snapshotId",
+          "previousSnapshotId",
+          "publishedAt",
+          "status",
+          "replayed",
+          "reviewId"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "error": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "code": {
+                "type": "string",
+                "pattern": "^[a-z_]+$"
+              },
+              "requestId": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "required": [
+              "code",
+              "requestId"
+            ]
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "error"
+        ]
+      },
+      "HeadResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Head"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "requestId",
+          "data"
+        ]
+      },
+      "ReviewResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Review"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "requestId",
+          "data"
+        ]
+      },
+      "PublicationResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "const": 1
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Publication"
+          }
+        },
+        "required": [
+          "schemaVersion",
+          "requestId",
+          "data"
+        ]
+      },
+      "Session": {
+        "type": "object",
+        "required": [
+          "clubId",
+          "clubSlug",
+          "scopeKey",
+          "canReview",
+          "canPublish",
+          "serverNow",
+          "grantExpiresAt"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "clubId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "clubSlug": {
+            "type": "string",
+            "pattern": "^[a-z0-9_-]{1,80}$"
+          },
+          "scopeKey": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "canReview": {
+            "type": "boolean"
+          },
+          "canPublish": {
+            "type": "boolean"
+          },
+          "serverNow": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "grantExpiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CandidateSummary": {
+        "type": "object",
+        "required": [
+          "snapshotId",
+          "capturedAt",
+          "status",
+          "fresh"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "snapshotId": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "capturedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "importing",
+              "sealed",
+              "verified"
+            ]
+          },
+          "fresh": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CandidateList": {
+        "type": "object",
+        "required": [
+          "clubId",
+          "serverNow",
+          "hasMore",
+          "items"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "clubId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "serverNow": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hasMore": {
+            "type": "boolean"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CandidateSummary"
+            },
+            "maxItems": 20
+          }
+        }
+      },
+      "Candidate": {
+        "type": "object",
+        "required": [
+          "clubId",
+          "snapshotId",
+          "manifestHash",
+          "capturedAt",
+          "status",
+          "serverNow",
+          "fresh",
+          "rowCount",
+          "mediaCount",
+          "tables"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "clubId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "snapshotId": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "manifestHash": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "capturedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "importing",
+              "sealed",
+              "verified",
+              "active",
+              "retired"
+            ]
+          },
+          "serverNow": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fresh": {
+            "type": "boolean"
+          },
+          "rowCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "mediaCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "tables": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "count"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "pattern": "^[a-z_]+$"
+                },
+                "count": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            },
+            "maxItems": 15
+          }
+        }
+      },
+      "ReviewStatus": {
+        "type": "object",
+        "required": [
+          "clubId",
+          "reviewId",
+          "snapshotId",
+          "expectedPreviousId",
+          "reviewRef",
+          "expiresAt",
+          "serverNow",
+          "state",
+          "publication"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "clubId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "reviewId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "snapshotId": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "expectedPreviousId": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reviewRef": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.:/-]{3,160}$"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "serverNow": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "expired",
+              "invalidated",
+              "published",
+              "unavailable"
+            ]
+          },
+          "publication": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/Publication"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "FixturesPreviewRow": {
+        "type": "object",
+        "required": [
+          "id",
+          "sourceId",
+          "homeTeam",
+          "awayTeam",
+          "competition",
+          "kickoffAt",
+          "venue",
+          "roundLabel",
+          "sourceUrl",
+          "predictionEntryEnabled"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "sourceId": {
+            "type": "string"
+          },
+          "homeTeam": {
+            "type": "string"
+          },
+          "awayTeam": {
+            "type": "string"
+          },
+          "competition": {
+            "type": "string"
+          },
+          "kickoffAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "venue": {
+            "type": "string"
+          },
+          "roundLabel": {
+            "type": "string"
+          },
+          "sourceUrl": {
+            "type": "string"
+          },
+          "predictionEntryEnabled": {
+            "type": "boolean",
+            "const": false
+          }
+        }
+      },
+      "NewsPreviewRow": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "excerpt",
+          "category",
+          "publishedAt",
+          "author",
+          "sourceUrl"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "excerpt": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "author": {
+            "type": "string"
+          },
+          "sourceUrl": {
+            "type": "string"
+          }
+        }
+      },
+      "SquadPreviewRow": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "shirtNumber",
+          "position",
+          "nationality",
+          "bio",
+          "squadGroup"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "shirtNumber": {
+            "type": "number"
+          },
+          "position": {
+            "type": "string"
+          },
+          "nationality": {
+            "type": "string"
+          },
+          "bio": {
+            "type": "string"
+          },
+          "squadGroup": {
+            "type": "string"
+          }
+        }
+      },
+      "FanclubsPreviewRow": {
+        "type": "object",
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "officialName",
+          "chapterType",
+          "country",
+          "province",
+          "district",
+          "city",
+          "acceptingMembers",
+          "impactSummary"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "officialName": {
+            "type": "string"
+          },
+          "chapterType": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "province": {
+            "type": "string"
+          },
+          "district": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "acceptingMembers": {
+            "type": "boolean"
+          },
+          "memberCount": {},
+          "activities": {},
+          "impactSummary": {
+            "type": "string"
+          }
+        }
+      },
+      "PartnersPreviewRow": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "category",
+          "description",
+          "websiteUrl"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "websiteUrl": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        }
+      },
+      "ShopPreviewRow": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "priceRwf",
+          "category",
+          "sizes",
+          "commerceMode",
+          "checkoutEnabled"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "priceRwf": {
+            "type": "number"
+          },
+          "category": {
+            "type": "string"
+          },
+          "sizes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "commerceMode": {
+            "type": "string",
+            "const": "enquiry"
+          },
+          "checkoutEnabled": {
+            "type": "boolean",
+            "const": false
+          }
+        }
+      },
+      "TicketsPreviewRow": {
+        "type": "object",
+        "required": [
+          "id",
+          "homeTeam",
+          "awayTeam",
+          "competition",
+          "kickoffAt",
+          "venue",
+          "categories",
+          "reservationOnly",
+          "paidTicketIssuanceEnabled"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "homeTeam": {
+            "type": "string"
+          },
+          "awayTeam": {
+            "type": "string"
+          },
+          "competition": {
+            "type": "string"
+          },
+          "kickoffAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "venue": {
+            "type": "string"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "priceRwf",
+                "capacity",
+                "available"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "priceRwf": {
+                  "type": "number"
+                },
+                "capacity": {
+                  "type": "number"
+                },
+                "available": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "reservationOnly": {
+            "type": "boolean",
+            "const": true
+          },
+          "paidTicketIssuanceEnabled": {
+            "type": "boolean",
+            "const": false
+          }
+        }
+      },
+      "MembershipTiersPreviewRow": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "priceRwf",
+          "billingPeriod",
+          "packageType",
+          "purchaseEnabled"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "priceRwf": {
+            "type": "number"
+          },
+          "billingPeriod": {
+            "type": "string"
+          },
+          "packageType": {
+            "type": "string"
+          },
+          "benefits": {},
+          "purchaseEnabled": {
+            "type": "boolean",
+            "const": false
+          }
+        }
+      },
+      "PredictPoolsPreviewRow": {
+        "type": "object",
+        "required": [
+          "id",
+          "fixtureId",
+          "locksAt",
+          "entryEnabled"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "fixtureId": {
+            "type": "string"
+          },
+          "locksAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "entryEnabled": {
+            "type": "boolean",
+            "const": false
+          }
+        }
+      },
+      "Preview": {
+        "oneOf": [
+          {
+            "type": "object",
+            "required": [
+              "clubId",
+              "snapshotId",
+              "route",
+              "offset",
+              "total",
+              "nextOffset",
+              "rows",
+              "serverNow",
+              "mediaPreviewEnabled"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "clubId": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "snapshotId": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "route": {
+                "type": "string",
+                "const": "fixtures"
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100000
+              },
+              "total": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "nextOffset": {
+                "oneOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/FixturesPreviewRow"
+                },
+                "maxItems": 25
+              },
+              "serverNow": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "mediaPreviewEnabled": {
+                "type": "boolean",
+                "const": false
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "clubId",
+              "snapshotId",
+              "route",
+              "offset",
+              "total",
+              "nextOffset",
+              "rows",
+              "serverNow",
+              "mediaPreviewEnabled"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "clubId": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "snapshotId": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "route": {
+                "type": "string",
+                "const": "news"
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100000
+              },
+              "total": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "nextOffset": {
+                "oneOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/NewsPreviewRow"
+                },
+                "maxItems": 25
+              },
+              "serverNow": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "mediaPreviewEnabled": {
+                "type": "boolean",
+                "const": false
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "clubId",
+              "snapshotId",
+              "route",
+              "offset",
+              "total",
+              "nextOffset",
+              "rows",
+              "serverNow",
+              "mediaPreviewEnabled"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "clubId": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "snapshotId": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "route": {
+                "type": "string",
+                "const": "squad"
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100000
+              },
+              "total": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "nextOffset": {
+                "oneOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SquadPreviewRow"
+                },
+                "maxItems": 25
+              },
+              "serverNow": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "mediaPreviewEnabled": {
+                "type": "boolean",
+                "const": false
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "clubId",
+              "snapshotId",
+              "route",
+              "offset",
+              "total",
+              "nextOffset",
+              "rows",
+              "serverNow",
+              "mediaPreviewEnabled"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "clubId": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "snapshotId": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "route": {
+                "type": "string",
+                "const": "fanclubs"
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100000
+              },
+              "total": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "nextOffset": {
+                "oneOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/FanclubsPreviewRow"
+                },
+                "maxItems": 25
+              },
+              "serverNow": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "mediaPreviewEnabled": {
+                "type": "boolean",
+                "const": false
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "clubId",
+              "snapshotId",
+              "route",
+              "offset",
+              "total",
+              "nextOffset",
+              "rows",
+              "serverNow",
+              "mediaPreviewEnabled"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "clubId": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "snapshotId": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "route": {
+                "type": "string",
+                "const": "partners"
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100000
+              },
+              "total": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "nextOffset": {
+                "oneOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PartnersPreviewRow"
+                },
+                "maxItems": 25
+              },
+              "serverNow": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "mediaPreviewEnabled": {
+                "type": "boolean",
+                "const": false
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "clubId",
+              "snapshotId",
+              "route",
+              "offset",
+              "total",
+              "nextOffset",
+              "rows",
+              "serverNow",
+              "mediaPreviewEnabled"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "clubId": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "snapshotId": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "route": {
+                "type": "string",
+                "const": "shop"
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100000
+              },
+              "total": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "nextOffset": {
+                "oneOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ShopPreviewRow"
+                },
+                "maxItems": 25
+              },
+              "serverNow": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "mediaPreviewEnabled": {
+                "type": "boolean",
+                "const": false
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "clubId",
+              "snapshotId",
+              "route",
+              "offset",
+              "total",
+              "nextOffset",
+              "rows",
+              "serverNow",
+              "mediaPreviewEnabled"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "clubId": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "snapshotId": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "route": {
+                "type": "string",
+                "const": "tickets"
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100000
+              },
+              "total": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "nextOffset": {
+                "oneOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TicketsPreviewRow"
+                },
+                "maxItems": 25
+              },
+              "serverNow": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "mediaPreviewEnabled": {
+                "type": "boolean",
+                "const": false
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "clubId",
+              "snapshotId",
+              "route",
+              "offset",
+              "total",
+              "nextOffset",
+              "rows",
+              "serverNow",
+              "mediaPreviewEnabled"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "clubId": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "snapshotId": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "route": {
+                "type": "string",
+                "const": "membership-tiers"
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100000
+              },
+              "total": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "nextOffset": {
+                "oneOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/MembershipTiersPreviewRow"
+                },
+                "maxItems": 25
+              },
+              "serverNow": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "mediaPreviewEnabled": {
+                "type": "boolean",
+                "const": false
+              }
+            }
+          },
+          {
+            "type": "object",
+            "required": [
+              "clubId",
+              "snapshotId",
+              "route",
+              "offset",
+              "total",
+              "nextOffset",
+              "rows",
+              "serverNow",
+              "mediaPreviewEnabled"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "clubId": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "snapshotId": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              },
+              "route": {
+                "type": "string",
+                "const": "predict-pools"
+              },
+              "offset": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 100000
+              },
+              "total": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "nextOffset": {
+                "oneOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "rows": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PredictPoolsPreviewRow"
+                },
+                "maxItems": 25
+              },
+              "serverNow": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "mediaPreviewEnabled": {
+                "type": "boolean",
+                "const": false
+              }
+            }
+          }
+        ]
+      },
+      "SessionResponse": {
+        "type": "object",
+        "required": [
+          "schemaVersion",
+          "requestId",
+          "data"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "type": "integer",
+            "const": 1
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Session"
+          }
+        }
+      },
+      "CandidateListResponse": {
+        "type": "object",
+        "required": [
+          "schemaVersion",
+          "requestId",
+          "data"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "type": "integer",
+            "const": 1
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "data": {
+            "$ref": "#/components/schemas/CandidateList"
+          }
+        }
+      },
+      "CandidateResponse": {
+        "type": "object",
+        "required": [
+          "schemaVersion",
+          "requestId",
+          "data"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "type": "integer",
+            "const": 1
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Candidate"
+          }
+        }
+      },
+      "ReviewStatusResponse": {
+        "type": "object",
+        "required": [
+          "schemaVersion",
+          "requestId",
+          "data"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "type": "integer",
+            "const": 1
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "data": {
+            "$ref": "#/components/schemas/ReviewStatus"
+          }
+        }
+      },
+      "PreviewResponse": {
+        "type": "object",
+        "required": [
+          "schemaVersion",
+          "requestId",
+          "data"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "schemaVersion": {
+            "type": "integer",
+            "const": 1
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Preview"
+          }
+        }
+      }
+    }
+  }
+}

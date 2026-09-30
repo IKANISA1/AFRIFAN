@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "purpose": "Auditable living AFRICLUB production-readiness ledger; historical source status and current local verification are independent.",
-  "updated_at_utc": "2026-09-29T22:59:46.352612+00:00",
+  "updated_at_utc": "2026-09-29T23:34:30.026363+00:00",
   "release_decision": "NO-GO",
   "release_accepted": false,
   "applicability": "All 130 recorded tasks remain applicable unless an explicit product-owner scope decision is recorded; none has been excluded.",
@@ -1178,6 +1178,701 @@
       "release_accepted": false,
       "verification_basis": "immutable phase2 source freeze plus inspected logs; native/full Flutter final status explicitly pending where stated",
       "post_test_cosmetic_corrections": "Four post-test cosmetic changes only. Tests/build/seal retain their original tested source hashes; no new exact-byte full candidate or artifact acceptance is inferred. Future phase3 source is excluded."
+    },
+    {
+      "id": "EV-P3-LINEAGE",
+      "status": "complete_scoped_candidate_disposition",
+      "summary": "All 416 candidate paths handled: 299 adopted exact, 99 corrected, 11 already identical, 6 stronger current paths retained, 1 proxy entrypoint explicitly superseded. No unexplained absent or divergent path in this scoped candidate.",
+      "counts": {
+        "already_identical": 11,
+        "adopted_with_reviewed_correction": 99,
+        "adopted_exact": 299,
+        "reviewed_retained_current": 6,
+        "superseded_by_supported_middleware": 1
+      },
+      "source_path": "docs/release/candidate-lineage-disposition-2026-09-30-phase3.tsv",
+      "source_sha256": "eebcb2a711a94a73ea3e6022867424d7f235d01475bb8b0d4839dc167edcca82",
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/phase3-source-freeze.json",
+          "sha256": "939a11d53017265e8b9ee8f1300a84404788191a840fe3ba73cff662c47e9361",
+          "bytes": 30365
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/phase3-source-freeze-after-ci-review.json",
+          "sha256": "1b6563f85fe666a18dc6a758de60e3d157cfb0f10e5630dedd3b31688d05e32a",
+          "bytes": 31011
+        }
+      ],
+      "limits": "416-path scoped candidate convergence is not proof that every historic archive behavior or all production acceptance criteria are complete.",
+      "recorded_at_utc": "2026-09-29T23:27:23.650753+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable reviewed phase 3 source freeze and inspected retained local logs; external acceptance explicitly separate"
+    },
+    {
+      "id": "EV-P3-PUBLIC",
+      "status": "passed_scoped_source_disabled",
+      "summary": "13 absent public paths plus 7 existing conflicts reconciled; 57 Node contracts, 20 Python import cases and 4 fully mocked capture tests pass. Isolated public database retains 2628 source rows/11 media references, no active approved head.",
+      "counts": {
+        "candidate_paths": 20,
+        "node_tests_passed": 57,
+        "python_import_tests_passed": 20,
+        "mocked_source_capture_tests_passed": 4,
+        "retained_public_rows": 2628,
+        "media_metadata_rows": 11,
+        "approved_active_heads": 0
+      },
+      "report": "docs/release/public-snapshot-integration-2026-09-30.json",
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/public-snapshot-full-bank-20260930.log",
+          "sha256": "478c8958f26c803bd104d29ae6d110fe3a874ddc156afa3084a9cad3fba4695f",
+          "bytes": 11050
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/public-source-capture-initial-harness-20260930.log",
+          "sha256": "08e8f9cfa990989e8d251c7e980c65ee5b5b431a2dab824ae0207038d58bc0f4",
+          "bytes": 7046
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/public-source-capture-after-20260930.log",
+          "sha256": "d21dbba83087d5cb042773625a4031245c860cf94c89ad3456c03e21c9443c51",
+          "bytes": 722
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/public-snapshot-isolated-saved-db-20260930.json",
+          "sha256": "ee195cfbb2356479046989ba90e77e3eb07e421e4f445d8bea8034835aca556f",
+          "bytes": 1197
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/public-snapshot-stale-replay-20260930.json",
+          "sha256": "63610ce36a5f95680ed3fbe62eaa2778129c1c5a6bfe58aa845f6c50a715cc15",
+          "bytes": 347
+        }
+      ],
+      "limits": "Saved 25 September public export correctly fails source_stale; originals remain unchanged. One initial faulty HTTP mock sent a read-only fixed-host request with synthetic key and received 403; no real credentials, rows or mutations. Final capture bank mocks both protocols and performs0 network calls. No fresh source/editorial/rights approval or five-club public cutover inferred.",
+      "recorded_at_utc": "2026-09-29T23:27:23.650753+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable reviewed phase 3 source freeze and inspected retained local logs; external acceptance explicitly separate",
+      "report_sha256": "cd6d16a5a57cbb365f8dba52aa4214f3b0c8f6ea4d728df5a0a3e92b3c4407b1"
+    },
+    {
+      "id": "EV-P3-OPERATOR",
+      "status": "passed_local_synthetic_disabled",
+      "summary": "60 archive-verified operator/exception files plus one local browser harness: 337 Node and 19 actual Chrome loopback cases pass; strict clients/UI bundle parity and disabled configs/Worker dry runs pass.",
+      "counts": {
+        "candidate_paths": 60,
+        "new_browser_harness": 1,
+        "node_tests_passed": 337,
+        "browser_cases_passed": 19,
+        "browser_cases_failed": 0
+      },
+      "report": "docs/release/operator-exceptions-integration-2026-09-30.json",
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/africlub-operator-exceptions-node-bank-final.log",
+          "sha256": "afb749961f8f9bc12e9e424e85a971600b4ec39f62d19bdd59f19fd6a277719d",
+          "bytes": 24763
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/operator-browser-results.json",
+          "sha256": "5d89b9da454509bbe673409e8b72643b6e9e3c1a1957c2afbbff12490e12b92a",
+          "bytes": 4027
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/africlub-operator-disabled-config-final.log",
+          "sha256": "fe90e3022e616f6f6637ab5ffde110cbf85f399df10f15fca475a7022a8c1f08",
+          "bytes": 147
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/africlub-exceptions-disabled-config-final.log",
+          "sha256": "60dd7caf001fef18e38ac8fa6963a9dbc09bd570e8b303670deedf6b96249466",
+          "bytes": 99
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/africlub-operator-saved-export-stale-replay.json",
+          "sha256": "04faa83ecf237c0c13e624aefe9e9a8932bb8d4c72a03990172d949458403921",
+          "bytes": 2220
+        }
+      ],
+      "limits": "Synthetic Access/RPC/R2 and actual local SQLite; no live staff enrollment/Access/binding acceptance. Cases have no financial effect and do not verify references/refund/settlement. Publication is same-authorized-person review/confirm; payment-case review uses separate checker.",
+      "recorded_at_utc": "2026-09-29T23:27:23.650753+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable reviewed phase 3 source freeze and inspected retained local logs; external acceptance explicitly separate",
+      "report_sha256": "0c1637490854bfb8939686490bde808b2a866afcb9792d7508019207048506d1"
+    },
+    {
+      "id": "EV-P3-GOVERNANCE",
+      "status": "passed_scoped_source",
+      "summary": "38 absent governance/tool paths plus 15 existing conflicts reconciled or stronger current retained. Source/migration/comparison/artifact/evidence/dependency/privacy gates execute locally with approvals disabled.",
+      "counts": {
+        "candidate_paths": 53,
+        "new_candidate_paths": 38,
+        "existing_conflicts_disposed": 15
+      },
+      "report": "docs/release/governance-tooling-integration-2026-09-30.json",
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/governance-python-complete-20260930.log",
+          "sha256": "c31c4656449e77bc61b545e73a6f30e0c2e601fa2f20bb0a9a97adca55a1f62a",
+          "bytes": 26886
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/governance-source-inventory-final-20260930.log",
+          "sha256": "bc43305a313303e71acc715565f08a67466b1835515ef37aa33c3afd08e7dbe4",
+          "bytes": 5855
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/governance-regressions-before-20260930.log",
+          "sha256": "949f1fbaf008819bb358ed9df35f41adf3ebd23ef7020c7e64061ff405c4ba2d",
+          "bytes": 12503
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/task-closure-plan-20260930.json",
+          "sha256": "430ded5129b996328eb6a48944d60d4d0bb95475efc27f50546de2052b673437",
+          "bytes": 88920
+        }
+      ],
+      "limits": "Exact-byte and structural validators do not authenticate owners or approve Predict economics, source access, privacy, cutover or retirement.",
+      "recorded_at_utc": "2026-09-29T23:27:23.650753+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable reviewed phase 3 source freeze and inspected retained local logs; external acceptance explicitly separate",
+      "report_sha256": "713c7fecf95e08cfe246e0b64595efe3124c89491f3e2438079094ec72450c12"
+    },
+    {
+      "id": "EV-P3-BACKEND",
+      "status": "passed_scoped_final_gate",
+      "summary": "All 17 final source-gate steps pass: 2363 Node tests with 0 fail/skip, 248 Python tests plus 4separately registered mocked capture tests. Missing declared source/modules cannot silently reduce inventory.",
+      "counts": {
+        "steps_passed": 17,
+        "node_tests_passed": 2363,
+        "node_tests_failed": 0,
+        "node_tests_skipped": 0,
+        "python_tests_passed": 248,
+        "separate_mocked_capture_tests_passed": 4
+      },
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/converged-verification.json",
+          "sha256": "ea23ba1e651c25c7d43d254bccaa088d72d973e24d2d13d7dbb14d6e79e49248",
+          "bytes": 10452
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/converged-backend-contracts.log",
+          "sha256": "1ba95141678296cd897bb5b21f73ee6814d614ea2a351644be4dd48f3c389061",
+          "bytes": 444465
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/converged-python-source-gates.log",
+          "sha256": "b6331b37b98c163d5ebe2d6199b77faddc52763c7073f7f1af328ed96f29ca4d",
+          "bytes": 26886
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/converged-public-source-capture.log",
+          "sha256": "cda265be743be6bdd089ba8a617a12a7caa3c3b0d1f37cc9ba148c3da6ae3c65",
+          "bytes": 766
+        }
+      ],
+      "limits": "Module-specific counts overlap this bank and must not be added. Real D1/Workers/RPC/Access/providers are not validated by SQLite/bundle/config fixtures. Narrow source-guard hash changes after this gate have separate 37 boundary proof.",
+      "recorded_at_utc": "2026-09-29T23:27:23.650753+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable reviewed phase 3 source freeze and inspected retained local logs; external acceptance explicitly separate"
+    },
+    {
+      "id": "EV-P3-FLUTTER",
+      "status": "passed_configured_workspace_before_narrow_guard_refresh",
+      "summary": "Correct configured Melos wrapper completes all 28 packages with 2371 tests passed, 0 skipped/failed. Each package counted once from its final summary; prior23/28 failed direct-invocation baseline remains preserved.",
+      "counts": {
+        "packages_passed": 28,
+        "tests_passed": 2371,
+        "tests_skipped": 0,
+        "tests_failed": 0
+      },
+      "per_package": {
+        "app_registry": {
+          "passed": 46,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "as_vita": {
+          "passed": 1,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "club_data": {
+          "passed": 33,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "core_app": {
+          "passed": 34,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "core_auth": {
+          "passed": 100,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "core_feature_config": {
+          "passed": 96,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "core_l10n": {
+          "passed": 8,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "core_network": {
+          "passed": 83,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "core_router": {
+          "passed": 50,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "core_theme": {
+          "passed": 457,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "core_utils": {
+          "passed": 31,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "costa_do_sol": {
+          "passed": 1,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "feat_admin": {
+          "passed": 221,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "feat_club": {
+          "passed": 182,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "feat_contributions": {
+          "passed": 95,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "feat_fan_clubs": {
+          "passed": 20,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "feat_gamification": {
+          "passed": 155,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "feat_home": {
+          "passed": 165,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "feat_live": {
+          "passed": 11,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "feat_membership": {
+          "passed": 95,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "feat_onboarding": {
+          "passed": 102,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "feat_settings": {
+          "passed": 119,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "feat_shop": {
+          "passed": 105,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "feat_ticketing": {
+          "passed": 133,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "nkana": {
+          "passed": 1,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "rayon_sports": {
+          "passed": 23,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "test_support": {
+          "passed": 3,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        },
+        "vitalo": {
+          "passed": 1,
+          "skipped": 0,
+          "failed": 0,
+          "all_tests_passed": true,
+          "melos_success": true
+        }
+      },
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/flutter-full-configured-workspace-20260930.log",
+          "sha256": "79f7f6e9fb6c3ceecef7e675821ba6fb05a6098c91caec7039965be9405e42e2",
+          "bytes": 2714769
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/flutter-full-configured-workspace-summary-20260930.json",
+          "sha256": "316448fc48918b2c7a568f78b023804edb0ec6e9393520298207f0e750741ee6",
+          "bytes": 3085
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/africlub-phase3-flutter-package-counts-20260930.json",
+          "sha256": "27f4849a1da0becf604b60da26e4572bf6f7c94001ebc08e8eb0b25d5860788a",
+          "bytes": 4385
+        }
+      ],
+      "limits": "Whole bank covers prior guard bytes. Later canonical phase-inventory source-guard/boundary refresh has61 guard/37 boundary targeted proof; no second full-workspace run after it is claimed. Phase4native identity source/tests excluded.",
+      "recorded_at_utc": "2026-09-29T23:27:23.650753+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable reviewed phase 3 source freeze and inspected retained local logs; external acceptance explicitly separate"
+    },
+    {
+      "id": "EV-P3-GUARD-REFRESH",
+      "status": "passed_scoped_post_full_workspace",
+      "summary": "Meaningful phase-manifest regression first fails; corrected complete source-guard file passes61 tests, targeted Dart analysis0issues, 37 boundary regressions and actual current source scan pass. Hash waiver renewed only for exact audited fixture; October 29 expiry unchanged.",
+      "counts": {
+        "source_guard_tests_passed": 61,
+        "boundary_regressions_passed": 37,
+        "targeted_analysis_issues": 0
+      },
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/phase-manifest-guard-before-targeted-20260930.log",
+          "sha256": "0e9ca3c2fb9a734d46b4e64b1bb0b06f511165210b0f98a53d3bc2d429f82539",
+          "bytes": 1104
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/phase-manifest-guard-final-20260930.log",
+          "sha256": "a47cb874036404584bf765fd4806152fff7a35df459b5a01fbffe2fb0b3ef804",
+          "bytes": 5675
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/repository-boundary-phase3-reviewed-20260930.json",
+          "sha256": "670249ed3fbaa30fa313885ffc4727d3b3840856d2866d6e9ab43eb4dd5a248a",
+          "bytes": 158
+        }
+      ],
+      "source_paths": [
+        "packages/core/core_theme/test/ui_source_guardrails_test.dart",
+        "tools/scripts/validate_repository_boundary.mjs"
+      ],
+      "limits": "Five canonical/noncanonical phase fixture examples and strict audited schema/runtime validation; technical source review only. Earlier incorrect wrapper invocation is not a legitimate failed regression gate. No full-suite-after-change claim.",
+      "recorded_at_utc": "2026-09-29T23:27:23.650753+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable reviewed phase 3 source freeze and inspected retained local logs; external acceptance explicitly separate"
+    },
+    {
+      "id": "EV-P3-WEB",
+      "status": "passed_local_next_opennext_and_dryrun",
+      "summary": "116 web unit files, 996pass and one intentionally gated live Gikundiro smoke skip; strict Next buildXCZ1mT_x2wqjkIkqENIDJ, OpenNext Edge adapter, manifest handling and Wrangler dry-run pass after supported middleware reconciliation.",
+      "counts": {
+        "web_unit_files_passed": 116,
+        "web_unit_tests_passed": 996,
+        "web_unit_tests_skipped": 1
+      },
+      "web_pre_adapter_provenance": {
+        "build_id": "XCZ1mT_x2wqjkIkqENIDJ",
+        "source_sha256": "a194bbb09785bd020daa45043591722e41c87d1d1dae2c1225ff4e62e04ea5ce",
+        "artifact_sha256": "0ac986e6b4865c177146ced9e338ea1fef3e166969eb8ff90dd002ba87fc9aa1",
+        "provenance_sha256": "b655447412fc739acfab27278cd2d0af844dfef5d7d4381f567926db7a344f2c",
+        "started_at": "2026-09-29T23:07:13.685Z",
+        "finished_at": "2026-09-29T23:08:28.989Z"
+      },
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/web-all-unit-phase3-20260930.log",
+          "sha256": "766a6819c05eeae33ad55a01a0293da189f2076d8aadd72e3e5fe0e70bd5a399",
+          "bytes": 16073
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/web-edge-production-build-final-20260930.log",
+          "sha256": "5262c23fad3ccf32240f1d0adf68dc5ef4117751cf43425c231a82c34edb0f4e",
+          "bytes": 8599
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/web-edge-pre-adapter-provenance-final-20260930.json",
+          "sha256": "2cc7ba336e728117103e2f281b409f12ae716812807d08e5556b6d994c58ec29",
+          "bytes": 398
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/web-opennext-edge-adapter-final-20260930.log",
+          "sha256": "505cb35d290f64f33d5f3c16fa4ab3836944f544cab34812387cd172924fb196",
+          "bytes": 1108
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/web-open-next-manifests-20260930.log",
+          "sha256": "51a06dc2c32b96a1782017a5516216b6720f2c20a5cc54b4fab90189f86bb452",
+          "bytes": 188
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/web-cloudflare-edge-dryrun-20260930.log",
+          "sha256": "89bcf72c6a09103b37ae343afa5ff7797e0762af3c149dcd651f9fcff1898cd0",
+          "bytes": 1050
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/web-edge-lint-final-20260930.log",
+          "sha256": "61c3fc82d999725f0c46be5ea9096ad9d6f7157140d0ec8bf3b1142fc64a7f89",
+          "bytes": 71
+        }
+      ],
+      "limits": "Seal is the recorded pre-adapter Next artifact, not a hosted/submitted full platform. Adapter/dry-run are local only. Backend build reads still report exceed_storage_size_quota; live smoke remains unexecuted. No provider/device/store/owner acceptance.",
+      "recorded_at_utc": "2026-09-29T23:27:23.650753+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable reviewed phase 3 source freeze and inspected retained local logs; external acceptance explicitly separate"
+    },
+    {
+      "id": "EV-P3-NATIVE",
+      "status": "scoped_native_compilation_offline_reproduction_incomplete",
+      "summary": "Final native report: four clubs compile Android Kotlin offline; Rayon compiles online but repeat offline dynamic integration_test runner listing remains missing. All five Swift delegates/shared host sources and 9 Keychain tests typecheck; Keychain/Keystore device execution is absent.",
+      "counts": {
+        "android_offline_clubs_passed": 4,
+        "android_offline_clubs_failed": 1,
+        "rayon_online_compile_passed": true,
+        "swift_delegates_typechecked": 5,
+        "keychain_tests_typechecked": 9,
+        "keychain_tests_executed": 0
+      },
+      "report": "docs/release/native-membership-integration-2026-09-30.json",
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/africlub-native-android-rayon_sports-gradle-final-offline.log",
+          "sha256": "49e149962f07c55da4cb0d0e57145cc5f08e3a94e91ce3d75d6d3b10695883ac",
+          "bytes": 21776
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/africlub-native-android-rayon_sports-gradle-offline-graph-retry.log",
+          "sha256": "d8b832a71710da316e793790894899d21cbbc2f11d50031cf59002e2cab0350e",
+          "bytes": 21786
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/africlub-native-android-vitalo-gradle-final-offline.log",
+          "sha256": "617ee2d8fcf9b7253da0e01655c358a7b0f93f89fddd1528f13e705d2b0723db",
+          "bytes": 19609
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/africlub-native-android-as_vita-gradle-final-offline.log",
+          "sha256": "c27557c83639ad9112e283cbe15c40d121048b94898d28ae5fb4058b7c485302",
+          "bytes": 19269
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/africlub-native-android-nkana-gradle-final-offline.log",
+          "sha256": "147ae7f94dd5c1126bd8358f547b07ce7d3aca5978858f4550193da149f0e152",
+          "bytes": 19270
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/africlub-native-android-costa_do_sol-gradle-final-offline.log",
+          "sha256": "758bbfbdcfd4efa60175739c38c432baa3c81b6d8ee4fd86a5ee4646a31498b2",
+          "bytes": 24328
+        }
+      ],
+      "limits": "No pinned SDK/dependency override made. Debug Kotlin compile is not complete signed/install/store acceptance. Full iOS build and device storage, native credentials/product/carrier/provider/retention gates remain open.",
+      "recorded_at_utc": "2026-09-29T23:27:23.650753+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable reviewed phase 3 source freeze and inspected retained local logs; external acceptance explicitly separate",
+      "report_sha256": "d581ba9764fe324edb78fda656a8d01b6e33f70bc9cffc85750c1a2a891589fa"
+    },
+    {
+      "id": "EV-P3-DRIVE-ACL",
+      "status": "blocked_root_anyone_writer",
+      "summary": "Fresh root-only Drive permission metadata still includes anyone/writer with allowFileDiscovery false. Approved named principals not verified; no ACL mutation; child/direct/archive grants not freshly enumerated.",
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/drive-root-access-refresh-20260930.json",
+          "sha256": "8b567b57ad8a80c3192c0c0adb166e207c6a364ed34d0237c6ce84fa12a04ff9",
+          "bytes": 782
+        }
+      ],
+      "observed_at_utc": "2026-09-29 23:12:31 UTC",
+      "limits": "Unlisted discovery is not restricted source access. Source/canonical release authorization remains false.",
+      "recorded_at_utc": "2026-09-29T23:27:23.650753+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable reviewed phase 3 source freeze and inspected retained local logs; external acceptance explicitly separate"
+    },
+    {
+      "id": "EV-P3-HOSTED-CI",
+      "status": "blocked_fresh_readonly_startup_failure_and_protection_403",
+      "summary": "Fresh read-only GitHub evidence retains startup_failure for latest actual run 36536634254 with 0 jobs on remote main 6fa4588eec0903ea76a3d2f148c4942381dd40d0; main protection returns 403.",
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/hosted-ci-refresh-20260930.json",
+          "sha256": "2420e61bdc6b78bedce1ee7acfff45b9d076d04061d396674a3e7320436973eb",
+          "bytes": 282
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/hosted-ci-jobs-refresh-20260930.json",
+          "sha256": "81fad6e0b8c5e61b09d89c058a469316f5b3b72e1c8aeca03a4495974b1ce443",
+          "bytes": 28
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/main-protection-refresh-20260930.json",
+          "sha256": "679d5e86a2d0420e39e3231784b69b41386d12599f70ff4fc4ed7c0438095272",
+          "bytes": 205
+        }
+      ],
+      "limits": "No account, billing, visibility or protection settings changed. Remote main remains unchanged; local exact candidate has not been pushed or accepted by hosted CI.",
+      "recorded_at_utc": "2026-09-29T23:27:23.650753+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable reviewed phase 3 source freeze and inspected retained local logs; external acceptance explicitly separate"
+    },
+    {
+      "id": "EV-P3-EDGE-SOURCE",
+      "status": "passed_post_adapter_source_binding_artifact_seal_pending",
+      "summary": "All 615 current web source inputs still match the pre-adapter compiled source and build provenance after OpenNext adaptation.",
+      "source_binding": {
+        "schemaVersion": 1,
+        "currentSourceSha256": "a194bbb09785bd020daa45043591722e41c87d1d1dae2c1225ff4e62e04ea5ce",
+        "sealedSourceSha256": "a194bbb09785bd020daa45043591722e41c87d1d1dae2c1225ff4e62e04ea5ce",
+        "sourceFileCount": 615,
+        "buildId": "XCZ1mT_x2wqjkIkqENIDJ",
+        "buildProvenanceSha256": "b655447412fc739acfab27278cd2d0af844dfef5d7d4381f567926db7a344f2c",
+        "sourceStillMatchesAfterAdapter": true,
+        "artifactSnapshotRecheckClaimed": false,
+        "note": "OpenNext mutates adapted artifact bytes. Pre-adapter Next artifact proof and the separately sealed OpenNext inventory are distinct.",
+        "deploymentPerformed": false,
+        "productionReady": false
+      },
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/web-edge-post-adapter-source-binding-20260930.json",
+          "sha256": "6bdd9f29dd4a06ca379d50e039a2944e9c7737080c28df6d137043e969dcf135",
+          "bytes": 659
+        }
+      ],
+      "limits": "OpenNext changes adapted artifact bytes; the pre-adapter Next artifact digest is not claimed unchanged. Exact commit-bound OpenNext release ZIP sealing, verification and extracted readback remain pending until the phase 3 checkpoint commit.",
+      "recorded_at_utc": "2026-09-29T23:27:23.650753+00:00",
+      "release_accepted": false,
+      "verification_basis": "immutable reviewed phase 3 source freeze and inspected retained local logs; external acceptance explicitly separate"
+    },
+    {
+      "id": "EV-P3-CI-REVIEW",
+      "status": "corrected_local_validation_hosted_execution_unverified",
+      "recorded_at_utc": "2026-09-29T23:34:30.026363+00:00",
+      "summary": "Independent review found missing clean-runner public Supabase inputs and OpenNext bypass of the npm pin. Both existing CI workflows now enforce the existing approved public configuration inputs and a private verified npm subprocess resolver.",
+      "logs": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/hosted-public-build-inputs-20260930.json",
+          "sha256": "d950247147b1aa4a7ea836e7eb2016a2dcc5591b1116c2bcfc49ef41d0b9f7fd",
+          "bytes": 3261
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/pinned-npm-subprocess-20260930.json",
+          "sha256": "fe9987de01f36cb8f21e2a2bbe1e7d648a4626f1d3ba87277af0f0add460fd7b",
+          "bytes": 95
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/ci-post-review-contracts-final-20260930.log",
+          "sha256": "82d357ca72263b4c333080d40acc2acde62bfdb901026b1dfa07a71c987e1fd2",
+          "bytes": 131
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/ci-post-review-yaml-shell-20260930.json",
+          "sha256": "e8db9ee4604e6f96247ad76f9400bb6e0e014c9a4058f038e485458757886c6b",
+          "bytes": 538
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase3/phase3-metadata-source-guards-20260930.log",
+          "sha256": "d1c481a20f70b2883c1d0b846b4a4bfafc4b448cff39ee685112145f4c4f4907",
+          "bytes": 5675
+        }
+      ],
+      "source_paths": [
+        ".github/workflows/ci.yaml",
+        ".github/workflows/deploy-gikundiro-web.yml"
+      ],
+      "counts": {
+        "embedded_public_config_cases_passed": 18,
+        "ci_python_contracts_passed": 32,
+        "pinned_outer_npm": "12.0.2",
+        "pinned_bare_subprocess_npm": "12.0.2",
+        "ci_jobs_parsed": 10,
+        "deployment_jobs_parsed": 1,
+        "selected_shell_steps_syntax_valid": 7
+      },
+      "limits": "Local structural/subprocess proof only. Public inputs are structurally classified, without JWT signature/provider acceptance. The first local shim probe lacked its harness directory and failed before the corrected probe; that was a probe setup error. No new credentials, hosted CI success, account/billing/visibility changes or deployment. Prior web/native/backend test banks were not rerun after these CI-only changes. Exact commit-bound adapted release artifact sealing remains pending.",
+      "release_accepted": false,
+      "verification_basis": "Post-independent-review immutable source freeze and retained bounded local proof"
     }
   ],
   "tasks": [
@@ -1204,14 +1899,16 @@
       "implementation_06_note": "Fresh Drive folder metadata still shows anyone/writer. Available sharing action grants access, not revocation; no ACL/credential change performed. Canonical-source trust remains open.",
       "implementation_07_note": "Fresh root metadata still shows anyone/writer; no sharing or credentials changed. Current Drive tool discovery exposes reads only, not upload or permission-revocation actions.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P3-DRIVE-ACL"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Fresh root still anyone/writer. Restrict root/children/direct/archive grants with authentic owner review; no permission change or source release approval recorded.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -1236,7 +1933,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1268,7 +1965,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1302,7 +1999,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1334,7 +2031,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1366,7 +2063,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1422,7 +2119,7 @@
       "implementation_06_note": "Limited path/pattern scan covers all 384 scoped source files with no flagged findings. Full Drive/Git/archive and independent secret review remain outstanding.",
       "implementation_07_note": "Limited source path/pattern scan reads394 exact scoped files, with zero flagged findings. Full archives/history/exposure and independent review are not closed.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1471,7 +2168,7 @@
       "implementation_06_note": "Portal state excludes phone/OTP/CSRF/cookies, private pages use cache isolation and operational local records remain explicitly private. Approved retention/redaction and shared-device policy are not complete.",
       "implementation_07_note": "Generic push presentation and fixed local assets exclude raw notification body, URLs, amounts and private identifiers. History cursor remains private memory/header metadata; policy approval and full retention remain open.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1506,7 +2203,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1538,7 +2235,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1582,7 +2279,7 @@
         "uploaded_to_drive": false
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1648,17 +2345,18 @@
       "implementation_06_note": "Matched Implementation05 archive and all451 checksums, retrieved four exact Next/SW source prerequisites.32 authored changes preserve unknown edits; not a full source convergence.",
       "implementation_07_note": "Implementation07 binds35 changes to the provided384-file Implementation06 source and493 verified internal checksums. No fresh recursive export or protected source convergence.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
           "EV-PAYMENT-LOCAL",
-          "EV-P2-LINEAGE"
+          "EV-P2-LINEAGE",
+          "EV-P3-LINEAGE"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "283 candidate paths now present exact/reviewed;111 absent and22 existing conflicts remain. Reconcile all archives/revised siblings and current future-phase sources before closure.",
+        "remaining_acceptance": "All 416 scoped candidate paths dispositioned. Complete every other revised batch/source lineage and authentic protected-candidate review before original acceptance closure.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -1710,7 +2408,7 @@
       "implementation_06_note": "Guarded delta installer retains exact before hashes, unchanged prerequisites and rollback. Original Drive source is not overwritten or canonically merged.",
       "implementation_07_note": "Exact baseline guarded install/rollback maintained; unknown edits and conflicting migration histories are rejected. No remote canonical merge or source overwrite.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1722,10 +2420,12 @@
           "EV-P2-LINEAGE",
           "EV-P2-IDENTITY",
           "EV-P2-GATEWAY",
-          "EV-P2-BROWSER"
+          "EV-P2-BROWSER",
+          "EV-P3-LINEAGE",
+          "EV-P3-GOVERNANCE"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Review adopted corrections against retained originals; preserve current security patches, scope and newer design/runtime controls. Operator/public/governance source convergence and approved reviewed commit remain open.",
+        "remaining_acceptance": "Candidate convergence preserves patched Undici/current CSS and stronger source guards; one entrypoint explicitly superseded. Protected reviewed commit/hosted/owner acceptance remains required.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -1761,7 +2461,7 @@
         "uploaded_to_drive": false
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "local_implemented",
         "local_acceptance_verified": true,
         "release_accepted": false,
@@ -1795,16 +2495,17 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
-          "EV-BOUNDARY"
+          "EV-BOUNDARY",
+          "EV-P3-GUARD-REFRESH"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Archive files are distinguished from active source by the validator; archives remain tracked and fresh-clone source hygiene is not fully accepted.",
+        "remaining_acceptance": "Active runtime media/source and ignored archive/controlled browser/evidence inventories are separately classified; canonical phase 1-99 audited manifests remain schema-gated. Broader evidence access/retention and independent review remain required.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -1854,7 +2555,7 @@
       },
       "implementation_05_note": "Added exact source/input manifests and verification logs for this scoped package. No production build, signed artifact or deployment evidence is granted.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1863,13 +2564,17 @@
           "EV-PAYMENT-LOCAL",
           "EV-CI-SOURCE",
           "EV-P2-WEB",
-          "EV-P2-LINEAGE"
+          "EV-P2-LINEAGE",
+          "EV-P3-LINEAGE",
+          "EV-P3-WEB",
+          "EV-P3-CI-REVIEW"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Web seal now covers transitive root Cloudflare source. Complete pinned source/config/migration/artifact manifests, native installed provenance and approved hosted deployment binding remain open.",
+        "remaining_acceptance": "3623 source hashes bind baseline+reviewed freeze; local Next/OpenNext/dry-run records are retained separately. Hosted/native installed/submitted artifact lineage and approval remain open.",
         "assigned_owner": "",
         "owner_decision": null,
-        "closure_link": null
+        "closure_link": null,
+        "phase3_ci_review_note": "Both CI defects corrected and locally validated; hosted exact-candidate execution and prebuilt artifact verification remain required."
       }
     },
     {
@@ -1919,7 +2624,7 @@
       "implementation_07_note": "History suites are in existing registered test directories; new Dart history harness is registered, with explicit blocked SDK result. No full pinned CI execution.",
       "implementation_08_note": "Registered the allocation-delivery tests and disabled-template check in the existing strict source verifier. Its Node/Dart release gates remain blocked and unchanged.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -1927,13 +2632,18 @@
         "evidence_ids": [
           "EV-CI-SOURCE",
           "EV-P2-COMBINED",
-          "EV-P2-NATIVE"
+          "EV-P2-NATIVE",
+          "EV-P3-BACKEND",
+          "EV-P3-GOVERNANCE",
+          "EV-P3-HOSTED-CI",
+          "EV-P3-CI-REVIEW"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "New identity/gateway/browser/native commands are registered in CI source. Complete remaining operator/public/governance gates and successful hosted exact-candidate execution remain open.",
+        "remaining_acceptance": "All 17 final local gate steps and substantive module inventory pass; public/identity/capture are registered in CI source. Exact hosted candidate job execution remains unverified.",
         "assigned_owner": "",
         "owner_decision": null,
-        "closure_link": null
+        "closure_link": null,
+        "phase3_ci_review_note": "Both CI defects corrected and locally validated; hosted exact-candidate execution and prebuilt artifact verification remain required."
       }
     },
     {
@@ -1966,7 +2676,7 @@
         "uploaded_to_drive": false
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2013,20 +2723,25 @@
         "uploaded_to_drive": false
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
           "EV-TOOLCHAIN",
-          "EV-WEB-DEPS"
+          "EV-WEB-DEPS",
+          "EV-P3-FLUTTER",
+          "EV-P3-NATIVE",
+          "EV-P3-WEB",
+          "EV-P3-CI-REVIEW"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Pinned local tools and locks ran; fresh Android/Apple and complete clean-install reproduction remain unverified.",
+        "remaining_acceptance": "Pinned configured Flutter/web/backend gates run. Rayon dynamic SDK runner offline listing still blocks full reproducibility; fresh clone/full Apple/Android artifacts and hosted acceptance remain open.",
         "assigned_owner": "",
         "owner_decision": null,
-        "closure_link": null
+        "closure_link": null,
+        "phase3_ci_review_note": "Both CI defects corrected and locally validated; hosted exact-candidate execution and prebuilt artifact verification remain required."
       }
     },
     {
@@ -2070,17 +2785,18 @@
         "uploadEvidence": "Separate verified Implementation 04 upload receipt"
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
           "EV-SCOPE",
-          "EV-BOUNDARY"
+          "EV-BOUNDARY",
+          "EV-P3-GOVERNANCE"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Scope and this unique-ID ledger are explicit; accepted design hierarchy and complete object dispositions remain open.",
+        "remaining_acceptance": "Governance hierarchy and 130-task dependency planner execute without changing baseline IDs/criteria or inventing named owners. Economics/source/independent owner decisions remain unresolved.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -2105,7 +2821,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2138,7 +2854,7 @@
       "release_accepted": false,
       "continuation_note": "Independent SQLite connection tests passed, but real Cloudflare D1/Workers capability/load evidence is absent.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2173,7 +2889,7 @@
       "release_accepted": false,
       "continuation_note": "Pre/post identity checks do not close the cross-database revocation interval; no atomic revocation guarantee added.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2209,7 +2925,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2270,7 +2986,7 @@
       "implementation_07_note": "Browser contract now has15 routes; native OpenAPI has11 paths. Two new GET operations per surface, strict actor-bound projections and private cursor header; target runtime compatibility remains unverified.",
       "implementation_08_note": "Added versioned private allocation-delivery contract and a strictly compiled inspection/health/redrive client, with original-operation recovery tests.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2280,10 +2996,13 @@
           "EV-EDGE-LOCAL",
           "EV-P2-IDENTITY",
           "EV-P2-GATEWAY",
-          "EV-P2-BROWSER"
+          "EV-P2-BROWSER",
+          "EV-P3-PUBLIC",
+          "EV-P3-OPERATOR",
+          "EV-P3-BACKEND"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Current identity, native gateway, browser session/CSRF/history wire contracts locally pass. Complete versioned backend/client contract inventory and actual target compatibility acceptance remain open.",
+        "remaining_acceptance": "Public immutable publication and operator/case typed wire contracts execute locally. Real binding/Access/version compatibility and complete backend/client inventory remain required.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -2308,7 +3027,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2346,7 +3065,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2380,7 +3099,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2440,7 +3159,7 @@
       "implementation_07_note": "History runs through existing private read capability and gateway authentication; no provider or financial mutation method added. Historical selectors are not authentication tokens.",
       "implementation_08_note": "Separated dispatch, review, inbox ingest and inbox read bindings. No public business HTTP route and no database capability in the dispatcher. Actual binding/Access review remains required.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2479,7 +3198,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2511,7 +3230,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2543,7 +3262,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2575,7 +3294,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2610,7 +3329,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2642,7 +3361,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2685,7 +3404,7 @@
         "uploadEvidence": "Separate verified Implementation 04 upload receipt"
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2717,7 +3436,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2749,14 +3468,16 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P3-PUBLIC"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Rayon/Gikundiro public dataset remains separately scoped, 2628retained rows/11 media metadata with originals unchanged; 25 September capture is stale and not approved/published. No original AFRICLUB media recovery inferred.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -2781,14 +3502,16 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P3-PUBLIC"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Saved public subset replayed into isolated SQLite with five migrations/integrity/FK checks; no active head. Full transactionally consistent source database/object restore, financial history and approved RPO/RTO remain unverified.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -2825,17 +3548,18 @@
         "uploadEvidence": "Separate verified Implementation 04 upload receipt"
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
           "EV-PAYMENT-LOCAL",
-          "EV-SUPABASE-REPLAY"
+          "EV-SUPABASE-REPLAY",
+          "EV-P3-GOVERNANCE"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Fresh local replay passes 37 contracts/678 assertions plus 46 races. Real source/target counts, financial deltas, cutoff coverage and exception disposition remain unverified.",
+        "remaining_acceptance": "Normalized exact-key/decimal migration comparison and disposition tooling locally tested; supplied coverage declarations are not verified complete extracts or cutover parity.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -2860,7 +3584,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2913,7 +3637,7 @@
         }
       ],
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2947,7 +3671,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -2979,7 +3703,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3016,7 +3740,7 @@
       "implementation_05_note": "Implemented separate browser session service and cookie gateway: HttpOnly/Secure/__Host cookies, same-origin and CSRF checks, independent lifetime, atomic rotation, shared identity revocation and logout. Real browser/D1 and full portal integration remain unverified.",
       "implementation_06_note": "Actual Next membership route uses cookie-v1 client/controller when explicitly enabled; session loss/expiry/rotation/logout handled without native bearer exposure. Rendered browser and real cookie acceptance remain pending.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3051,7 +3775,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3087,7 +3811,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3119,7 +3843,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3151,7 +3875,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3183,7 +3907,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3217,7 +3941,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3275,16 +3999,17 @@
         "uploadEvidence": "Separate verified Implementation 04 upload receipt"
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
-          "EV-PAYMENT-LOCAL"
+          "EV-PAYMENT-LOCAL",
+          "EV-P3-OPERATOR"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Wrong/expired/duplicate/ambiguous rejection cases run locally; full governed exception queues and resolution remain unverified.",
+        "remaining_acceptance": "Metadata exception case workflow, tenant/grants/revisions/idempotency and separate checker locally tested. References remain unverified and financial effect none; actual reconciliation/refund/settlement exceptions remain required.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -3310,7 +4035,7 @@
       "release_accepted": false,
       "implementation_03_note": "Only referral to a refund-review workflow is implemented. No refund, reversal, corrective posting or financial execution is implemented by this delivery.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3358,7 +4083,7 @@
       "implementation_06_note": "New portal shows current observed entitlement separately from owned historical receipts, and locally downgrades expiry. Full financial acceptance and native composition remain open.",
       "implementation_07_note": "Owned historical membership allocations/receipts can be listed without newer checkout snapshots or local recovery IDs. Current entitlement remains distinct; no authenticity, reconciliation, refunds or full financial acceptance claimed.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3394,7 +4119,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3426,7 +4151,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3458,7 +4183,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3490,7 +4215,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3524,7 +4249,7 @@
       "continuation_note": "Existing outbox controls preserved; no provider dispatcher or complete business effect added.",
       "implementation_08_note": "Implemented an actual operational-inbox consumer of existing allocation outbox events with atomic receiver deduplication, retained source attempts, bounded retry/expiry, dead-letter inspection and original-event redrive. Not external notification, contribution fulfillment, provider evidence or full financial acceptance.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3560,7 +4285,7 @@
       "release_accepted": false,
       "continuation_note": "Local journal concurrency is additional evidence; no complete real-data balance/reference reconciliation.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3595,16 +4320,17 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
-          "EV-P2-NATIVE"
+          "EV-P2-NATIVE",
+          "EV-P3-NATIVE"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Actual shared Android host compiles with pinned engine/Android SDK; portable69 contracts pass. Full app builds/bridge acceptance, Keystore/locked device/disposal/backup execution remain open.",
+        "remaining_acceptance": "Four exact offline Kotlin app compilations and Rayon online compile pass; Rayon offline dynamic runner listing unresolved. Full Android build/bridge/Keystore/device/signing acceptance remains open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -3629,16 +4355,17 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
-          "EV-P2-NATIVE"
+          "EV-P2-NATIVE",
+          "EV-P3-NATIVE"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Seven shared Swift sources and all five delegates typecheck with Swift6;portable68 pass;9 Keychain XTests typecheck but have not executed. Full Xcode builds, entitlements and device Keychain/foreground acceptance remain open.",
+        "remaining_acceptance": "Five Swift delegate/shared source and 9 Keychain test typechecks pass; tests not executed. Full iOS builds/entitlements/device foreground/Keychain acceptance remain open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -3665,7 +4392,7 @@
       "continuation_note": "Matching Dart adapter and tests authored; required SDK absent and verifier exits blocked. This task remains Open.",
       "implementation_07_note": "Authored additive Dart history API, native GET transport and eleven harness checks; registered in the pure-Dart verifier. Dart/Flutter are absent, so these are authored not executed.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3676,10 +4403,12 @@
           "EV-FLUTTER-WORKSPACE",
           "EV-FEATURE-AVAILABILITY",
           "EV-P2-NATIVE",
-          "EV-P2-FLUTTER"
+          "EV-P2-FLUTTER",
+          "EV-P3-FLUTTER",
+          "EV-P3-GUARD-REFRESH"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Pure Dart72+12+11 checks and95 Flutter membership tests pass;strict workspace analyzer passes. Complete whole pinned candidate and actual native/device acceptance remain open.",
+        "remaining_acceptance": "All 28configured packages pass2371 tests; later two audited guard sources have targeted61/37proof. Native installed behavior and new phase 4identity client are not covered.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -3704,7 +4433,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3739,7 +4468,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3791,7 +4520,7 @@
         }
       ],
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3847,7 +4576,7 @@
         }
       ],
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3882,7 +4611,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3914,7 +4643,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3951,7 +4680,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -3996,14 +4725,16 @@
         "uploaded_to_drive": false
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P3-PUBLIC"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Immutable public snapshot reader/publisher and import/approval sources integrated disabled. Saved stale export cannot activate; fresh rights/content/operator setup and actual target acceptance remain required.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -4039,14 +4770,16 @@
         "uploaded_to_drive": false
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P3-PUBLIC"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Local media hash/rights/current-head/cache-bound contracts execute with 11original media references verified. Real R2/CDN rights revocation/purge/current source approval remain open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -4073,7 +4806,7 @@
       "implementation_05_note": "Authored versioned 12-route same-origin browser membership API and session/storage contract without weakening native-only bearer boundaries. Product/owner acceptance and actual site integration remain open.",
       "implementation_06_note": "Preserved old membership surface under explicit legacy/default mode; enabled cookie-v1 misconfiguration fails closed. Authenticated membership route is source-integrated; contribution API/flow still outstanding.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4113,7 +4846,7 @@
       "implementation_06_note": "Wired Next membership page, real browser client, offers, preparation review, last-order persistence and original-result recovery. Pure TS/gateway integration tests pass; pinned Next/rendered E2E acceptance absent.",
       "implementation_07_note": "Actual portal integrates bounded history pages and historical receipt reads; corrupted local checkout metadata and disabled checkout creation preserve read-only access. Pure TypeScript integration passes; rendered browser acceptance remains open.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4125,7 +4858,7 @@
         "blocker_evidence_ids": [
           "EV-BACKEND-QUOTA"
         ],
-        "remaining_acceptance": "Cookie session/CSRF/owned membership reads/unknown writes/explicit original-key retry pass local contracts and18 synthetic real-rendered checks. Complete intended hosted multi-club API, contributions and provider acceptance.",
+        "remaining_acceptance": "Cookie session/CSRF/owned membership reads/unknown writes/explicit original-key retry pass local contracts and 18 synthetic real-rendered checks. Complete intended hosted multi-club API, contributions and provider acceptance.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -4174,14 +4907,16 @@
         "uploadEvidence": "Separate verified Implementation 04 upload receipt"
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P3-OPERATOR"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Actual standalone gateway/operator/case UI and typed wrappers locally integrated; 337 Node/19Chrome cases pass. Live Access/private wrapper exclusivity/enrollment and existing admin navigation remain open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -4219,14 +4954,16 @@
         "uploadEvidence": "Separate verified Implementation 04 upload receipt"
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P3-OPERATOR"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Separate payment-case maker/checker and same-authorized-person publication review/confirm enforced locally; no invented financial authority. Complete all existing admin role actions and real staff acceptance remain required.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -4253,7 +4990,7 @@
       "implementation_06_note": "Fixed actual periodic service-worker membership caching path; private requests network-only, owned page/API cache handshake/purge, offline/BFCache/cross-tab concealment and no mutation replay. VM tests pass; real SW lifecycle/retention/shared-device acceptance pending.",
       "implementation_07_note": "History presentation clears on lifecycle/logout/authorization denial. Original service-worker private cache controls preserved. New notification tests run actual receiving script in a VM, not browser lifecycle acceptance.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4290,7 +5027,7 @@
       "implementation_06_note": "Added private Next response headers and exact-origin outer router with sanitized forwarded host. API private headers preserved; whole-site CSP, live network policy and legacy paths are not certified.",
       "implementation_07_note": "Notification target URL is revalidated against six same-origin landing pages, including clicks on legacy notifications; external/dot/encoded URLs cannot navigate. Full-site CSP and live route authorization remain open.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4325,7 +5062,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4357,18 +5094,20 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
-          "EV-P2-BROWSER"
+          "EV-P2-BROWSER",
+          "EV-P3-OPERATOR",
+          "EV-P3-WEB"
         ],
         "blocker_evidence_ids": [
           "EV-BACKEND-QUOTA"
         ],
-        "remaining_acceptance": "Two Chromium project scopes execute18 controlled portal checks. Complete all five clubs, real desktop/mobile browsers, installed PWA, operator/admin and named owner UAT remain required.",
+        "remaining_acceptance": "Local actual Chrome operator/case rendering and existing portal evidence retained; web116files/996pass/1live skip. Complete intended multi-club hosted/installed-browser/admin/provider and owner UAT remains open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -4393,14 +5132,16 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P3-GOVERNANCE"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Unresolved economic decision is explicit and release validator fails closed. Real versioned product/legal/payment/store approvals and corresponding transaction implementation remain absent.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -4425,7 +5166,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4457,7 +5198,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4489,14 +5230,17 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
-        "implementation_status": "not_verified",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
+        "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
-        "evidence_ids": [],
+        "evidence_ids": [
+          "EV-P3-GOVERNANCE",
+          "EV-P3-OPERATOR"
+        ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "No new current-candidate evidence verifies this task. Preserve the recorded source status; the original acceptance evidence remains required.",
+        "remaining_acceptance": "Five-club product adapter and existing semantic tokens retained; private design skill references not newly verified and no visual acceptance inferred.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -4521,7 +5265,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4530,7 +5274,7 @@
           "EV-P2-BROWSER"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Cookie portal states, touch targets, keyboard/axe and200percent-equivalent/text scaling locally exercised. Complete declared state matrix, native TalkBack/VoiceOver, real browser zoom and product design acceptance remain required.",
+        "remaining_acceptance": "Cookie portal states, touch targets, keyboard/axe and 200 percent-equivalent/text scaling locally exercised. Complete declared state matrix, native TalkBack/VoiceOver, real browser zoom and product design acceptance remain required.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -4555,7 +5299,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4587,7 +5331,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4619,7 +5363,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4651,7 +5395,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4685,7 +5429,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4741,7 +5485,7 @@
         "uploadEvidence": "Separate verified Implementation 04 upload receipt"
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4751,15 +5495,20 @@
           "EV-CI-SOURCE",
           "EV-HOSTED-CI",
           "EV-P2-LINEAGE",
-          "EV-P2-WEB"
+          "EV-P2-WEB",
+          "EV-P3-LINEAGE",
+          "EV-P3-WEB",
+          "EV-P3-EDGE-SOURCE",
+          "EV-P3-CI-REVIEW"
         ],
         "blocker_evidence_ids": [
           "EV-HOSTED-CI"
         ],
-        "remaining_acceptance": "Immutable phase2 source reconstruction and web shared-source/artifact seal recorded. Exact hosted/release/native artifacts and named current-candidate approval remain unverified.",
+        "remaining_acceptance": "Immutable reviewed freeze/source mapping and local build/adaptation records preserved; exact hosted/signed/submitted artifacts and accountable approval remain required.",
         "assigned_owner": "",
         "owner_decision": null,
-        "closure_link": null
+        "closure_link": null,
+        "phase3_ci_review_note": "Both CI defects corrected and locally validated; hosted exact-candidate execution and prebuilt artifact verification remain required."
       }
     },
     {
@@ -4784,7 +5533,7 @@
       "implementation_06_note": "Manual Node bank passes on22.16.0 but required22.23.2 is preserved; Dart/Flutter and full Next dependencies absent. Main verifier reports blocked; no claim of complete pinned workspace validation.",
       "implementation_07_note": "Strict gate remains blocked for Node22.16.0 versus22.23.2 and absent Dart/Flutter. React/Next dependency registry read fails EAI_AGAIN; no complete application build or browser run.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4797,16 +5546,22 @@
           "EV-FEATURE-AVAILABILITY",
           "EV-P2-FLUTTER",
           "EV-P2-WEB",
-          "EV-P2-COMBINED"
+          "EV-P2-COMBINED",
+          "EV-P3-FLUTTER",
+          "EV-P3-GUARD-REFRESH",
+          "EV-P3-WEB",
+          "EV-P3-BACKEND",
+          "EV-P3-CI-REVIEW"
         ],
         "blocker_evidence_ids": [
           "EV-HOSTED-CI",
           "EV-BACKEND-QUOTA"
         ],
-        "remaining_acceptance": "Strict workspace analyzer, web115 files/993pass/1 gated live-smoke skip and combined1235 local contracts verified. Fresh raw Flutter aggregate exited1 with23 of28 packages passing;four wrong app invocations andthree core_theme assertions need repaired reruns. Fresh clone, all native builds and hosted candidate checks remain required.",
+        "remaining_acceptance": "Configured whole Flutter2371/28, web996/116+1live skip and backend2363+248+4pass; later guard61/boundary37proof retained separately. Fresh clone/full native/offline/hosted and all declared journeys remain required.",
         "assigned_owner": "",
         "owner_decision": null,
-        "closure_link": null
+        "closure_link": null,
+        "phase3_ci_review_note": "Both CI defects corrected and locally validated; hosted exact-candidate execution and prebuilt artifact verification remain required."
       }
     },
     {
@@ -4828,7 +5583,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4840,12 +5595,15 @@
           "EV-SOURCE-RPC-TIMEOUT",
           "EV-P2-IDENTITY",
           "EV-P2-GATEWAY",
-          "EV-P2-COMBINED"
+          "EV-P2-COMBINED",
+          "EV-P3-PUBLIC",
+          "EV-P3-OPERATOR",
+          "EV-P3-BACKEND"
         ],
         "blocker_evidence_ids": [
           "EV-BACKEND-QUOTA"
         ],
-        "remaining_acceptance": "Actual local SQLite identity/dispatch/gateway/browser behavior is executed. Real isolated D1/Workers/Access/RPC/replication/provider acceptance remains open.",
+        "remaining_acceptance": "Actual local SQLite/public import/case contracts and real Worker bundles execute. Real isolated D1/R2/Workers/Access/replication/provider acceptance remains open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -4907,7 +5665,7 @@
       "implementation_07_note": "127 new Node cases and three new Python checks cover history ownership, pagination, old receipts, storage/lifecycle failures, notification URL redirection and read-only behavior. Hosted/D1/device acceptance not completed.",
       "implementation_08_note": "Added 81 Node tests including five independent-connection races; tests use actual SQLite/source classes and a separate inbox. Hosted D1/Workers, full multi-club app acceptance and independent security remain open.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4917,10 +5675,12 @@
           "EV-PAYMENT-LOCAL",
           "EV-EDGE-LOCAL",
           "EV-P2-COMBINED",
-          "EV-P2-BROWSER"
+          "EV-P2-BROWSER",
+          "EV-P3-BACKEND",
+          "EV-P3-OPERATOR"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Local negative club/actor/body/credential checks and rendered tenant-switch/lifecycle tests pass. Complete intended five-club role/device/provider matrix remains open.",
+        "remaining_acceptance": "Local tenant/actor/role/forgery/revocation/unknown-outcome cases pass, including19 actual Chrome operator/case journeys. Complete all five clubs/roles/native/providers remains required.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -4945,7 +5705,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -4978,7 +5738,7 @@
       "release_accepted": false,
       "continuation_note": "Three new independent local SQLite-connection journal races pass; actual target-runtime/load task remains Open.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5010,7 +5770,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5044,16 +5804,17 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
         "external_acceptance_status": "not_verified",
         "evidence_ids": [
-          "EV-P2-BROWSER"
+          "EV-P2-BROWSER",
+          "EV-P3-OPERATOR"
         ],
         "blocker_evidence_ids": [],
-        "remaining_acceptance": "Two Chromium portal scopes pass keyboard/touch/axe and200percent-equivalent/text checks. Full native assistive technology, screen-reader/real zoom/visual reference and named sign-off remain open.",
+        "remaining_acceptance": "Actual Chrome operator keyboard/mobile/200 percent zoom and existing portal axe/text checks pass scoped synthetic cases. TalkBack/VoiceOver/screen reader/full visual fidelity and named design sign-off remain open.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -5078,7 +5839,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5110,7 +5871,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5121,13 +5882,18 @@
           "EV-BRANCH-PROTECTION",
           "EV-P2-LINEAGE",
           "EV-P2-WEB",
-          "EV-P2-NATIVE"
+          "EV-P2-NATIVE",
+          "EV-P3-LINEAGE",
+          "EV-P3-FLUTTER",
+          "EV-P3-WEB",
+          "EV-P3-NATIVE",
+          "EV-P3-DRIVE-ACL"
         ],
         "blocker_evidence_ids": [
           "EV-HOSTED-CI",
           "EV-BACKEND-QUOTA"
         ],
-        "remaining_acceptance": "Phase2 dossier reports exact source changes, passed/failed/pending checks and external blockers. It remains NO-GO until every applicable release acceptance criterion is evidenced.",
+        "remaining_acceptance": "Phase3 dossier records source convergence, passing scoped tests and explicit stale-source/ACL/quota/native/hosted/provider/device/owner blockers. Production remains NO-GO.",
         "assigned_owner": "",
         "owner_decision": null,
         "closure_link": null
@@ -5152,7 +5918,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5204,7 +5970,7 @@
       },
       "implementation_08_note": "Added private capped per-club queue health with explicit non-snapshot semantics and no event/user IDs. Production metrics ingestion, dashboards, alerts and privacy approval are not complete.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5236,7 +6002,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5277,7 +6043,7 @@
       ],
       "implementation_08_note": "Added SQL-guarded event-delivery state transitions, separate review-principal redrive, lease-expiry accounting and immutable command history. Actual on-call operation, retention and hosted recovery drill remain open.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5344,7 +6110,7 @@
         "uploadEvidence": "Separate verified Implementation 04 upload receipt"
       },
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5376,7 +6142,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5417,7 +6183,7 @@
       ],
       "implementation_05_note": "Added bounded expiry of browser login/rotation replay ciphertext without requiring keys, provider credentials or enabled login. No schedule deployed, audit deletion or complete account-erasure policy implemented.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5459,7 +6225,7 @@
       "implementation_07_note": "Hardened receiving-side notification URL/action handling, generic lock-screen text, exact-window focus and independent cosmetic badge failure. Sender authentication, subscription tenant lifecycle and dispatch receipts remain open.",
       "implementation_08_note": "Added disabled scheduled source and a bounded one-event-per-configured-club runner; no actual Cron schedule or provider notification was enabled.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5491,7 +6257,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5525,7 +6291,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5557,7 +6323,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5589,7 +6355,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5621,7 +6387,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5653,7 +6419,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5685,7 +6451,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5717,7 +6483,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5749,7 +6515,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5783,7 +6549,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5815,7 +6581,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5847,7 +6613,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5879,7 +6645,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5911,23 +6677,28 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "partial",
         "local_acceptance_verified": false,
         "release_accepted": false,
-        "external_acceptance_status": "blocked",
+        "external_acceptance_status": "not_verified",
         "evidence_ids": [
           "EV-PAYMENT-LOCAL",
-          "EV-SCOPE"
+          "EV-SCOPE",
+          "EV-P3-GOVERNANCE",
+          "EV-P3-PUBLIC",
+          "EV-P3-OPERATOR",
+          "EV-P3-CI-REVIEW"
         ],
         "blocker_evidence_ids": [
           "EV-SCOPE",
           "EV-BACKEND-QUOTA"
         ],
-        "remaining_acceptance": "Disabled reference configurations are guarded; placeholders and Costa production inputs block approved hosted environment readback.",
+        "remaining_acceptance": "Disabled isolated templates/private capability checks and prebuilt protected promotion workflow are locally validated. Real resources/locality/protection/role grants and governed rollout remain unapproved.",
         "assigned_owner": "",
         "owner_decision": null,
-        "closure_link": null
+        "closure_link": null,
+        "phase3_ci_review_note": "Both CI defects corrected and locally validated; hosted exact-candidate execution and prebuilt artifact verification remain required."
       }
     },
     {
@@ -5949,7 +6720,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -5983,7 +6754,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -6017,7 +6788,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -6049,7 +6820,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -6082,7 +6853,7 @@
       "release_accepted": false,
       "continuation_note": "Approval-envelope validation implemented; no named owner approval, environment approval or rollout performed.",
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -6117,7 +6888,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -6149,7 +6920,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -6181,7 +6952,7 @@
       "baseline_status": "Open",
       "release_accepted": false,
       "current": {
-        "as_of_utc": "2026-09-29T22:59:46.352612+00:00",
+        "as_of_utc": "2026-09-29T23:27:23.650753+00:00",
         "implementation_status": "not_verified",
         "local_acceptance_verified": false,
         "release_accepted": false,
@@ -6214,7 +6985,11 @@
             "EV-SCOPE",
             "EV-P2-FLUTTER",
             "EV-P2-WEB",
-            "EV-P2-LINEAGE"
+            "EV-P2-LINEAGE",
+            "EV-P3-LINEAGE",
+            "EV-P3-FLUTTER",
+            "EV-P3-WEB",
+            "EV-P3-NATIVE"
           ],
           "execution_state": "open",
           "checked": false,
@@ -6222,7 +6997,8 @@
           "closure_link": null,
           "owner_decision": null,
           "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
-          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged.",
+          "phase3_note": "Scoped source/local checks recorded; original QA wording remains required. No hosted/provider/device/visual/owner release acceptance inferred."
         }
       },
       {
@@ -6235,7 +7011,11 @@
           "implementation_status": "partial",
           "evidence_ids": [
             "EV-SCOPE",
-            "EV-P2-LINEAGE"
+            "EV-P2-LINEAGE",
+            "EV-P3-LINEAGE",
+            "EV-P3-FLUTTER",
+            "EV-P3-WEB",
+            "EV-P3-NATIVE"
           ],
           "execution_state": "open",
           "checked": false,
@@ -6243,7 +7023,8 @@
           "closure_link": null,
           "owner_decision": null,
           "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
-          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged.",
+          "phase3_note": "Scoped source/local checks recorded; original QA wording remains required. No hosted/provider/device/visual/owner release acceptance inferred."
         }
       },
       {
@@ -6279,7 +7060,11 @@
             "EV-SUPABASE-REPLAY",
             "EV-P2-FLUTTER",
             "EV-P2-WEB",
-            "EV-P2-COMBINED"
+            "EV-P2-COMBINED",
+            "EV-P3-LINEAGE",
+            "EV-P3-FLUTTER",
+            "EV-P3-WEB",
+            "EV-P3-NATIVE"
           ],
           "execution_state": "open",
           "checked": false,
@@ -6287,7 +7072,8 @@
           "closure_link": null,
           "owner_decision": null,
           "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
-          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged.",
+          "phase3_note": "Scoped source/local checks recorded; original QA wording remains required. No hosted/provider/device/visual/owner release acceptance inferred."
         }
       },
       {
@@ -6466,14 +7252,19 @@
           "implementation_status": "partial",
           "evidence_ids": [
             "EV-WEB-LOCAL",
-            "EV-BACKEND-QUOTA"
+            "EV-BACKEND-QUOTA",
+            "EV-P3-LINEAGE",
+            "EV-P3-FLUTTER",
+            "EV-P3-WEB",
+            "EV-P3-NATIVE"
           ],
           "execution_state": "blocked",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase3_note": "Scoped source/local checks recorded; original QA wording remains required. No hosted/provider/device/visual/owner release acceptance inferred."
         }
       },
       {
@@ -6485,14 +7276,19 @@
         "current": {
           "implementation_status": "partial",
           "evidence_ids": [
-            "EV-WEB-LOCAL"
+            "EV-WEB-LOCAL",
+            "EV-P3-LINEAGE",
+            "EV-P3-FLUTTER",
+            "EV-P3-WEB",
+            "EV-P3-NATIVE"
           ],
           "execution_state": "open",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase3_note": "Scoped source/local checks recorded; original QA wording remains required. No hosted/provider/device/visual/owner release acceptance inferred."
         }
       },
       {
@@ -6502,14 +7298,20 @@
         "source_text": "**QA-05/06 — Admin responsive controls:** Finish current-candidate checks for identity/brand/palette/flag controls, text enlargement, keyboard/focus, table density and existing dialog/hydration regressions across supported browsers.",
         "recorded_checked": false,
         "current": {
-          "implementation_status": "not_verified",
-          "evidence_ids": [],
+          "implementation_status": "partial",
+          "evidence_ids": [
+            "EV-P3-LINEAGE",
+            "EV-P3-FLUTTER",
+            "EV-P3-WEB",
+            "EV-P3-NATIVE"
+          ],
           "execution_state": "open",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase3_note": "Scoped source/local checks recorded; original QA wording remains required. No hosted/provider/device/visual/owner release acceptance inferred."
         }
       },
       {
@@ -6525,7 +7327,11 @@
             "EV-SUPABASE-REPLAY",
             "EV-SOURCE-RPC-TIMEOUT",
             "EV-BACKEND-QUOTA",
-            "EV-P2-COMBINED"
+            "EV-P2-COMBINED",
+            "EV-P3-LINEAGE",
+            "EV-P3-FLUTTER",
+            "EV-P3-WEB",
+            "EV-P3-NATIVE"
           ],
           "execution_state": "blocked",
           "checked": false,
@@ -6533,7 +7339,8 @@
           "closure_link": null,
           "owner_decision": null,
           "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
-          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged.",
+          "phase3_note": "Scoped source/local checks recorded; original QA wording remains required. No hosted/provider/device/visual/owner release acceptance inferred."
         }
       },
       {
@@ -6570,7 +7377,11 @@
             "EV-BACKEND-QUOTA",
             "EV-P2-IDENTITY",
             "EV-P2-GATEWAY",
-            "EV-P2-BROWSER"
+            "EV-P2-BROWSER",
+            "EV-P3-LINEAGE",
+            "EV-P3-FLUTTER",
+            "EV-P3-WEB",
+            "EV-P3-NATIVE"
           ],
           "execution_state": "blocked",
           "checked": false,
@@ -6578,7 +7389,8 @@
           "closure_link": null,
           "owner_decision": null,
           "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
-          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged.",
+          "phase3_note": "Scoped source/local checks recorded; original QA wording remains required. No hosted/provider/device/visual/owner release acceptance inferred."
         }
       },
       {
@@ -6591,7 +7403,11 @@
           "implementation_status": "partial",
           "evidence_ids": [
             "EV-SCOPE",
-            "EV-P2-NATIVE"
+            "EV-P2-NATIVE",
+            "EV-P3-LINEAGE",
+            "EV-P3-FLUTTER",
+            "EV-P3-WEB",
+            "EV-P3-NATIVE"
           ],
           "execution_state": "blocked",
           "checked": false,
@@ -6599,7 +7415,8 @@
           "closure_link": null,
           "owner_decision": null,
           "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
-          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged.",
+          "phase3_note": "Scoped source/local checks recorded; original QA wording remains required. No hosted/provider/device/visual/owner release acceptance inferred."
         }
       },
       {
@@ -6613,7 +7430,11 @@
           "evidence_ids": [
             "EV-SCOPE",
             "EV-FEATURE-AVAILABILITY",
-            "EV-P2-NATIVE"
+            "EV-P2-NATIVE",
+            "EV-P3-LINEAGE",
+            "EV-P3-FLUTTER",
+            "EV-P3-WEB",
+            "EV-P3-NATIVE"
           ],
           "execution_state": "blocked",
           "checked": false,
@@ -6621,7 +7442,8 @@
           "closure_link": null,
           "owner_decision": null,
           "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
-          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged.",
+          "phase3_note": "Scoped source/local checks recorded; original QA wording remains required. No hosted/provider/device/visual/owner release acceptance inferred."
         }
       },
       {
@@ -6672,16 +7494,21 @@
         "source_text": "**QA-06 — Visual acceptance:** Complete matched source/target comparisons for geometry, type, full color roles, density, imagery, copy, controls and overlays on all applicable surfaces. Update evidence without treating widget golden equality as source-fidelity approval. Owner approval from 20 September remains bound to the original gallery/image hashes; exact source fidelity and independent technical acceptance remain separate. Home checkpoint closes QA-UI-004/005/006 locally. Eight new Home images and nine reviewed Membership heading changes bring the register to 1,062 (766 route images and 296 shared variants). Current images do not inherit prior owner approval.",
         "recorded_checked": false,
         "current": {
-          "implementation_status": "not_verified",
+          "implementation_status": "partial",
           "evidence_ids": [
-            "EV-FLUTTER-WORKSPACE"
+            "EV-FLUTTER-WORKSPACE",
+            "EV-P3-LINEAGE",
+            "EV-P3-FLUTTER",
+            "EV-P3-WEB",
+            "EV-P3-NATIVE"
           ],
           "execution_state": "open",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase3_note": "Scoped source/local checks recorded; original QA wording remains required. No hosted/provider/device/visual/owner release acceptance inferred."
         }
       },
       {
@@ -6693,7 +7520,11 @@
         "current": {
           "implementation_status": "partial",
           "evidence_ids": [
-            "EV-P2-BROWSER"
+            "EV-P2-BROWSER",
+            "EV-P3-LINEAGE",
+            "EV-P3-FLUTTER",
+            "EV-P3-WEB",
+            "EV-P3-NATIVE"
           ],
           "execution_state": "open",
           "checked": false,
@@ -6701,7 +7532,8 @@
           "closure_link": null,
           "owner_decision": null,
           "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
-          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged.",
+          "phase3_note": "Scoped source/local checks recorded; original QA wording remains required. No hosted/provider/device/visual/owner release acceptance inferred."
         }
       },
       {
@@ -6755,7 +7587,11 @@
             "EV-SUPABASE-REPLAY",
             "EV-SOURCE-RPC-TIMEOUT",
             "EV-FEATURE-AVAILABILITY",
-            "EV-P2-LINEAGE"
+            "EV-P2-LINEAGE",
+            "EV-P3-LINEAGE",
+            "EV-P3-FLUTTER",
+            "EV-P3-WEB",
+            "EV-P3-NATIVE"
           ],
           "execution_state": "open",
           "checked": false,
@@ -6763,7 +7599,8 @@
           "closure_link": null,
           "owner_decision": null,
           "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
-          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged.",
+          "phase3_note": "Scoped source/local checks recorded; original QA wording remains required. No hosted/provider/device/visual/owner release acceptance inferred."
         }
       },
       {
@@ -6780,7 +7617,11 @@
             "EV-HOSTED-CI",
             "EV-BACKEND-QUOTA",
             "EV-P2-LINEAGE",
-            "EV-P2-WEB"
+            "EV-P2-WEB",
+            "EV-P3-LINEAGE",
+            "EV-P3-FLUTTER",
+            "EV-P3-WEB",
+            "EV-P3-NATIVE"
           ],
           "execution_state": "blocked",
           "checked": false,
@@ -6788,7 +7629,8 @@
           "closure_link": null,
           "owner_decision": null,
           "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
-          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged."
+          "phase2_note": "Scoped phase2 source and local synthetic evidence recorded. Original QA text and outstanding current-candidate/native/hosted/provider/owner criteria are unchanged.",
+          "phase3_note": "Scoped source/local checks recorded; original QA wording remains required. No hosted/provider/device/visual/owner release acceptance inferred."
         }
       },
       {
@@ -6798,16 +7640,21 @@
         "source_text": "**Hosted CI:** Recheck the previously recorded GitHub account billing/spending blocker, resolve it through the account owner if still present, and obtain actual hosted QA results without accidentally triggering deployment. The retirement commit intentionally skipped CI. Read-only GitHub refresh on 20 September confirms the latest recorded run remains startup_failure with zero check runs; the earlier billing explanation is not re-proven.",
         "recorded_checked": false,
         "current": {
-          "implementation_status": "not_verified",
+          "implementation_status": "partial",
           "evidence_ids": [
-            "EV-HOSTED-CI"
+            "EV-HOSTED-CI",
+            "EV-P3-LINEAGE",
+            "EV-P3-FLUTTER",
+            "EV-P3-WEB",
+            "EV-P3-NATIVE"
           ],
           "execution_state": "blocked",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase3_note": "Scoped source/local checks recorded; original QA wording remains required. No hosted/provider/device/visual/owner release acceptance inferred."
         }
       },
       {
@@ -6885,19 +7732,24 @@
         "source_text": "**Production operations:** When explicitly authorized, apply the prepared migrations and release/decommissioning changes, validate hosted Cloudflare/Supabase/domains and confirm public availability and recovery. No production operation is authorized by this checklist.",
         "recorded_checked": false,
         "current": {
-          "implementation_status": "not_verified",
+          "implementation_status": "partial",
           "evidence_ids": [
             "EV-SCOPE",
             "EV-HOSTED-CI",
             "EV-BRANCH-PROTECTION",
-            "EV-BACKEND-QUOTA"
+            "EV-BACKEND-QUOTA",
+            "EV-P3-LINEAGE",
+            "EV-P3-FLUTTER",
+            "EV-P3-WEB",
+            "EV-P3-NATIVE"
           ],
           "execution_state": "blocked",
           "checked": false,
           "release_accepted": false,
           "closure_link": null,
           "owner_decision": null,
-          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset."
+          "remaining_acceptance": "Complete and verify the original checklist text against the exact five-club candidate; referenced evidence only covers its stated local subset.",
+          "phase3_note": "Scoped source/local checks recorded; original QA wording remains required. No hosted/provider/device/visual/owner release acceptance inferred."
         }
       }
     ],
@@ -6938,8 +7790,8 @@
       "P2": 2
     },
     "current_implementation": {
-      "not_verified": 77,
-      "partial": 52,
+      "not_verified": 69,
+      "partial": 60,
       "local_implemented": 1
     },
     "local_acceptance_verified": 1,
@@ -6954,7 +7806,7 @@
     "Supersede stale running/failed snapshots only with terminal repaired-candidate evidence; do not delete historical failures.",
     "Never set release_accepted from local tests alone; record exact artifact/config/source, accountable owner and external gates."
   ],
-  "evidence_manifest": "docs/release/production-goal-evidence-2026-09-30.json",
+  "evidence_manifest": "docs/release/production-goal-evidence-2026-09-30-phase3.json",
   "phase2_checkpoint": {
     "baseline_commit": "f932b2d7bc022f9631aaf30a0a740d9c2a728a78",
     "source_freeze_sha256": "c7a0bb5824a403a6713d2b2e9622fe4b358f660b19547797785b0a90f99127c5",
@@ -7005,5 +7857,21 @@
       "scope": "Four post-test cosmetic changes only. Tests/build/seal retain their original tested source hashes; no new exact-byte full candidate or artifact acceptance is inferred. Future phase3 source is excluded.",
       "release_accepted": false
     }
+  },
+  "phase3_checkpoint": {
+    "baseline_commit": "43e1f0d9cf29f54c397dec1c408563978b108b41",
+    "source_freeze_sha256": "1b6563f85fe666a18dc6a758de60e3d157cfb0f10e5630dedd3b31688d05e32a",
+    "original_task_objects_preserved": 130,
+    "original_open_QA_texts_preserved": 34,
+    "source_files": 3623,
+    "candidate_paths_disposed": 416,
+    "phase4_native_identity_excluded": [
+      "packages/core/core_auth/lib/native_identity.dart",
+      "packages/core/core_auth/lib/src/native_identity/",
+      "packages/core/core_auth/test/native_identity/",
+      "docs/release/native-identity-client-integration-2026-09-30.json"
+    ],
+    "post_full_workspace_guard_refresh_separate": true,
+    "release_accepted": false
   }
 }

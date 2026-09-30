@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -39,14 +40,17 @@ void main() {
         ),
       ),
     );
-    ui.Image? decoded;
-    for (var attempt = 0; decoded == null && attempt < 100; attempt += 1) {
-      await tester.runAsync(
-        () => Future<void>.delayed(const Duration(milliseconds: 5)),
-      );
-      await tester.pump();
-      decoded = tester.widget<RawImage>(find.byType(RawImage)).image;
-    }
+    // The production Image provider owns the actual bounded decode. Await its
+    // first frame/error on the real event loop before inspecting rendered pixels.
+    final imageWidget = tester.widget<Image>(find.byType(Image));
+    final configuration = createLocalImageConfiguration(
+      tester.element(find.byType(Image)),
+    );
+    await tester.runAsync(
+      () => _awaitFirstImageFrame(imageWidget.image.resolve(configuration)),
+    );
+    await tester.pump();
+    final decoded = tester.widget<RawImage>(find.byType(RawImage)).image;
     expect(decoded, isNotNull);
     expect(decoded!.width / decoded.height, 2);
     expect(decoded.width, lessThanOrEqualTo(80));
@@ -56,6 +60,35 @@ void main() {
       const Size(80, 80),
     );
   });
+  test(
+    'decode completion wait fails on an actual image stream error',
+    () async {
+      final stream = ImageStream()
+        ..setCompleter(
+          OneFrameImageStreamCompleter(
+            Future<ImageInfo>.error(StateError('synthetic decode failure')),
+          ),
+        );
+      await expectLater(
+        _awaitFirstImageFrame(stream),
+        throwsA(isA<StateError>()),
+      );
+      expect(stream.completer!.hasListeners, isFalse);
+    },
+  );
+
+  test('decode completion wait has a real bounded deadline', () async {
+    final stream = ImageStream()
+      ..setCompleter(
+        OneFrameImageStreamCompleter(Completer<ImageInfo>().future),
+      );
+    await expectLater(
+      _awaitFirstImageFrame(stream, timeout: const Duration(milliseconds: 20)),
+      throwsA(isA<TimeoutException>()),
+    );
+    expect(stream.completer!.hasListeners, isFalse);
+  });
+
   final onePixelPng = Uint8List.fromList(
     base64Decode(
       'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII=',
@@ -180,5 +213,29 @@ void main() {
         const Size(160, 90),
       );
     });
+  }
+}
+
+Future<void> _awaitFirstImageFrame(
+  ImageStream stream, {
+  Duration timeout = const Duration(seconds: 10),
+}) async {
+  final completed = Completer<void>();
+  final listener = ImageStreamListener(
+    (info, synchronousCall) {
+      if (!completed.isCompleted) completed.complete();
+      // ImageStream gives each listener an owned clone. The production widget
+      // retains its own frame; this observation must not leak a native image.
+      info.dispose();
+    },
+    onError: (Object error, StackTrace? stackTrace) {
+      if (!completed.isCompleted) completed.completeError(error, stackTrace);
+    },
+  );
+  stream.addListener(listener);
+  try {
+    await completed.future.timeout(timeout);
+  } finally {
+    stream.removeListener(listener);
   }
 }

@@ -297,6 +297,8 @@ jobs:
   # ──────────────────────────────────────────────
   web-ci:
     name: Web TypeCheck & Build
+    outputs:
+      release_sha256: ${{ steps.seal.outputs.sha256 }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     defaults:
@@ -311,8 +313,17 @@ jobs:
           cache: 'npm'
           cache-dependency-path: apps/rayon_sports/web/package-lock.json
 
+      - name: Pin npm for adapter subprocesses
+        run: |
+          mkdir -p "$RUNNER_TEMP/africlub-corepack-shims"
+          corepack enable npm --install-directory "$RUNNER_TEMP/africlub-corepack-shims"
+          echo "$RUNNER_TEMP/africlub-corepack-shims" >> "$GITHUB_PATH"
+
       - name: Install dependencies
-        run: corepack npm ci
+        run: |
+          africlub_expected_npm="$(node -p 'require("./package.json").packageManager.split("@")[1].split("+")[0]')"
+          test "$(npm --version)" = "$africlub_expected_npm"
+          corepack npm ci
 
       - name: Verify allocation, financial recovery and reliable inbox contracts
         working-directory: ${{ github.workspace }}
@@ -363,13 +374,68 @@ jobs:
         run: corepack npm run typecheck
 
       - name: Build
-        run: corepack npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          if [ "$GITHUB_REF" = "refs/heads/main" ]; then
+            node --input-type=module <<'PUBLIC_CONFIG'
+          const fail = () => { throw new Error("Required public browser build configuration is missing or invalid; values withheld"); };
+          try {
+            const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+            const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
+            if (!rawUrl || !key || rawUrl.length > 2048 || key.length > 8192) fail();
+            const url = new URL(rawUrl);
+            if (url.protocol !== "https:" || url.username || url.password || url.search || url.hash ||
+                url.port || url.pathname !== "/" || !url.hostname.includes(".") ||
+                /(?:^localhost$|[.]localhost$|[.]invalid$|[.]test$|^[0-9.:]+$)/i.test(url.hostname)) fail();
+            if (!/^sb_publishable_[A-Za-z0-9_-]{16,}$/.test(key)) {
+              const parts = key.split(".");
+              if (parts.length !== 3 || parts.some(part => !/^[A-Za-z0-9_-]+$/.test(part))) fail();
+              const header = JSON.parse(Buffer.from(parts[0], "base64url").toString("utf8"));
+              const claims = JSON.parse(Buffer.from(parts[1], "base64url").toString("utf8"));
+              if (header.alg !== "HS256" || claims.role !== "anon" ||
+                  !Number.isSafeInteger(claims.exp) || claims.exp <= Math.floor(Date.now() / 1000)) fail();
+            }
+            console.log("Public browser build inputs structurally valid; live provider acceptance remains unverified");
+          } catch { fail(); }
+          PUBLIC_CONFIG
+          fi
+          corepack npm run build
 
       - name: Bundle budget
         run: corepack npm run size
 
       - name: Lighthouse CI
         run: corepack npm run test:lighthouse
+
+      - name: Build deployment adapter from the checked Next output
+        if: github.ref == 'refs/heads/main'
+        run: |
+          node scripts/web-build-provenance.mjs check
+          corepack npm exec -- opennextjs-cloudflare build --skipNextBuild
+          node scripts/fix-route-group-manifests.mjs --open-next
+
+      - name: Seal exact OpenNext candidate and configuration
+        if: github.ref == 'refs/heads/main'
+        id: seal
+        env:
+          CANDIDATE_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          python3 ../../../tools/scripts/release_artifact.py seal --web . \
+            --output "${{ runner.temp }}/africlub-web-release.zip" \
+            --candidate "$CANDIDATE_SHA" --run-id "$RUN_ID" > "${{ runner.temp }}/release-summary.json"
+          python3 -c 'import json,os; r=json.load(open(os.environ["RUNNER_TEMP"]+"/release-summary.json")); open(os.environ["GITHUB_OUTPUT"],"a").write("sha256="+r["sha256"]+"\n")'
+
+      - name: Preserve sealed deployment candidate
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: africlub-web-${{ github.sha }}
+          path: ${{ runner.temp }}/africlub-web-release.zip
+          if-no-files-found: error
+          retention-days: 7
 
   web-e2e:
     name: Web E2E
@@ -565,3 +631,43 @@ jobs:
 
       - name: Build iOS Framework
         run: flutter build ios --release --no-codesign --no-pub --dart-define-from-file=assets/flavors/production.local.json
+
+  cloudflare-source-ci:
+    name: Converged Cloudflare contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: .nvmrc
+      - name: Resolve locked web toolchain
+        working-directory: apps/rayon_sports/web
+        run: corepack npm ci
+      - name: Reject privileged configuration and signing material in active Git source
+        run: python3 tools/scripts/check_sensitive_source.py --report "$RUNNER_TEMP/sensitive-source.json"
+      - name: Verify active migration lineage
+        run: python3 tools/scripts/check_migration_lineage.py --root .
+      - name: Run required backend and migration contracts
+        run: |
+          export PATH="$GITHUB_WORKSPACE/apps/rayon_sports/web/node_modules/.bin:$PATH"
+          python3 tools/scripts/verify_converged_source.py --profile backend --results "$RUNNER_TEMP/converged-source"
+      - name: Preserve checks on failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: converged-source-evidence
+          path: ${{ runner.temp }}/converged-source
+          if-no-files-found: error
+          retention-days: 30
+
+  promote-web:
+    name: Promote only the checked web candidate
+    needs: [paid-membership-ci, database-ci, flutter-ci, web-ci, web-e2e, android-build, ios-build, cloudflare-source-ci]
+    if: github.ref == 'refs/heads/main' && vars.AFRICLUB_RELEASE_PROMOTION_ENABLED == 'true'
+    uses: ./.github/workflows/deploy-gikundiro-web.yml
+    with:
+      candidate_sha: ${{ github.sha }}
+      artifact_sha256: ${{ needs.web-ci.outputs.release_sha256 }}

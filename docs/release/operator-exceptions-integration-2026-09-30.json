@@ -1,0 +1,1420 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-30",
+  "generatedAtUtc": "2026-09-29T23:11:23.416661+00:00",
+  "status": "Local operator/case integration verified; shipped flags disabled; hosted acceptance and release open.",
+  "source": {
+    "archive": "docs/drive-import/2026-09-28/mirror/AFRICLUB_Implementation_08_2026-09-28.zip",
+    "archive_sha256": "4264a115e3974bf6236d90cfd8bc59537f066725d56757b9e03dd256095a8af5",
+    "candidate": "docs/drive-import/2026-09-28/candidates/implementation-08-source",
+    "frozen_comparison": "docs/drive-import/2026-09-28/candidate-08-vs-checkout.tsv",
+    "frozen_comparison_sha256": "8726e6f3d3d271b53428ae0086ce3473d33475444ae99d7a282025cb17d02877",
+    "all_paths_verified_before_copy": true,
+    "original_zip_members_matched": 60,
+    "frozen_bytes_hashes_and_missing_status_matched": 60,
+    "candidate_source_preserved": true
+  },
+  "totals": {
+    "operator_candidate_paths_added": 38,
+    "payment_exception_candidate_paths_added": 22,
+    "new_browser_harness": 1,
+    "owned_code_and_document_paths": 61,
+    "report_is_additional_artifact": true,
+    "candidate_paths_equal_source_after_integration": 47,
+    "candidate_paths_reconciled_with_recorded_delta": 13
+  },
+  "technical_decisions": [
+    "Public content publication requires the same authorized human to review and explicitly confirm; no two-person publication approval requirement was invented.",
+    "Payment-case approve/reject requires a separate authorized checker, enforced at SQL INSERT; two roles on one subject do not permit self-review.",
+    "No financial tables, confirmed payments, allocations, refund execution, entitlement activation, SMS collection or provider commands are introduced.",
+    "Only runtime ctx.access supplies human account/audience/UUID identity; private service bindings and same-origin intent/CSRF remain exact and fail closed.",
+    "All shipped API/UI/case/metrics switches remain false; case storage stays a new isolated placeholder database and enrollment generator produces disabled rows only.",
+    "Both clients compile with existing TypeScript and invoke Window fetch without a client receiver. Post-commit 401/403 cannot prove no publication occurred.",
+    "Identity change/revocation clears old private display; original actor/club recovery records, immutable outcomes and exact keys survive unknown acknowledgements.",
+    "Controlled browser fixture uses unusable JSON after one real commit, avoiding Chromium internal retransmission of a pre-header reset; reload/recovery assert zero application POSTs."
+  ],
+  "checks": {
+    "node_bank": {
+      "passed": 337,
+      "failed": 0,
+      "skipped": 0,
+      "baseline_original_with_existing_tsc_passed": 330,
+      "new_failing_before_regressions": 7,
+      "command": "PATH=$PWD/apps/rayon_sports/web/node_modules/.bin:$PATH node --test cloudflare/operator-api/tests/*.test.mjs cloudflare/payment-exceptions/tests/*.test.mjs"
+    },
+    "clients_and_ui": {
+      "strict_operator_client": true,
+      "strict_both_clients_in_ui_build": true,
+      "deterministic_bundle_source_parity": true,
+      "existing_tokens_sha256": "2e0c05894ea4bf564c559f318517f2df29737d9b923ffc054ac4e5119bddea3d",
+      "dependencies_installed": false,
+      "package_locks_changed": false
+    },
+    "disabled_configuration_checks": {
+      "operator": {
+        "mode": "disabled-template",
+        "failures": [],
+        "liveAccessVerified": false,
+        "remoteRuntimeVerified": false,
+        "releaseAuthorized": false
+      },
+      "cases": {
+        "passed": true,
+        "configuration": "disabled template",
+        "deployable": false,
+        "paymentCapabilities": false
+      }
+    },
+    "wrangler": {
+      "version": "4.120.0",
+      "operator_dry_run_exit_code": 0,
+      "case_dry_run_exit_code": 0,
+      "deployed": false,
+      "remote_SQL_or_role_grants": false
+    },
+    "actual_browser": {
+      "schemaVersion": 1,
+      "scope": "Actual installed Chromium, active gateway/UI and local SQLite with synthetic Access/RPC/R2; no hosted Cloudflare acceptance",
+      "browser": "154.0.8037.59",
+      "playwright": "1.59.1",
+      "renderedAcceptance": true,
+      "navigationBlockedByAdministrator": false,
+      "browserPolicyChanged": false,
+      "remoteCalls": false,
+      "passed": 19,
+      "failed": 0,
+      "cases": [
+        {
+          "name": "desktop-complete-flow",
+          "passed": true,
+          "viewport": [
+            1280,
+            900
+          ],
+          "pageErrors": [],
+          "consoleErrors": []
+        },
+        {
+          "name": "mobile-390",
+          "passed": true,
+          "viewport": [
+            390,
+            844
+          ],
+          "pageErrors": [],
+          "consoleErrors": []
+        },
+        {
+          "name": "mobile-320",
+          "passed": true,
+          "viewport": [
+            320,
+            740
+          ],
+          "pageErrors": [],
+          "consoleErrors": []
+        },
+        {
+          "name": "lost-response-reload-recovery",
+          "passed": true,
+          "viewport": [
+            1280,
+            900
+          ],
+          "pageErrors": [],
+          "consoleErrors": []
+        },
+        {
+          "name": "expired-review",
+          "passed": true,
+          "viewport": [
+            1280,
+            900
+          ],
+          "pageErrors": [],
+          "consoleErrors": []
+        },
+        {
+          "name": "revoked-permission",
+          "passed": true,
+          "viewport": [
+            1280,
+            900
+          ],
+          "pageErrors": [],
+          "consoleErrors": [
+            "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+          ]
+        },
+        {
+          "name": "empty-imports",
+          "passed": true,
+          "viewport": [
+            1280,
+            900
+          ],
+          "pageErrors": [],
+          "consoleErrors": []
+        },
+        {
+          "name": "source-markup-not-executed",
+          "passed": true,
+          "viewport": [
+            1280,
+            900
+          ],
+          "pageErrors": [],
+          "consoleErrors": []
+        },
+        {
+          "name": "review-only-operator",
+          "passed": true,
+          "viewport": [
+            1280,
+            900
+          ],
+          "pageErrors": [],
+          "consoleErrors": []
+        },
+        {
+          "name": "storage-unavailable",
+          "passed": true,
+          "viewport": [
+            1280,
+            900
+          ],
+          "pageErrors": [],
+          "consoleErrors": []
+        },
+        {
+          "name": "keyboard-focus-and-skip",
+          "passed": true,
+          "viewport": [
+            1280,
+            900
+          ],
+          "pageErrors": [],
+          "consoleErrors": []
+        },
+        {
+          "name": "real-cross-tab-lock",
+          "passed": true,
+          "viewport": [
+            1280,
+            900
+          ],
+          "pageErrors": [],
+          "consoleErrors": []
+        },
+        {
+          "name": "200-percent-page-zoom",
+          "passed": true,
+          "viewport": [
+            1440,
+            1000
+          ],
+          "pageErrors": [],
+          "consoleErrors": []
+        },
+        {
+          "name": "case-maker-opens-and-proposes",
+          "passed": true,
+          "viewport": [
+            1280,
+            900
+          ],
+          "pageErrors": [],
+          "consoleErrors": []
+        },
+        {
+          "name": "case-separate-checker-approves",
+          "passed": true,
+          "viewport": [
+            1280,
+            900
+          ],
+          "pageErrors": [],
+          "consoleErrors": []
+        },
+        {
+          "name": "case-maker-closes-reopens-mobile",
+          "passed": true,
+          "viewport": [
+            390,
+            844
+          ],
+          "pageErrors": [],
+          "consoleErrors": []
+        },
+        {
+          "name": "case-lost-response-read-only-recovery",
+          "passed": true,
+          "viewport": [
+            1280,
+            900
+          ],
+          "pageErrors": [],
+          "consoleErrors": []
+        },
+        {
+          "name": "case-revoked-access-clears-private-view",
+          "passed": true,
+          "viewport": [
+            1280,
+            900
+          ],
+          "pageErrors": [],
+          "consoleErrors": [
+            "Failed to load resource: the server responded with a status of 403 (Forbidden)"
+          ]
+        },
+        {
+          "name": "case-reader-cannot-command",
+          "passed": true,
+          "viewport": [
+            1280,
+            900
+          ],
+          "pageErrors": [],
+          "consoleErrors": []
+        }
+      ]
+    },
+    "saved_original_export_replay": {
+      "exitCode": 1,
+      "elapsedSeconds": 0.251,
+      "expectedSourceStaleDenied": true,
+      "allSourceFilesUnchanged": true,
+      "filesVerifiedUnchanged": 17,
+      "log": "/tmp/africlub-operator-saved-export-stale-replay.log",
+      "sourceHashes": {
+        "rayon-public-source-rows.json": "61d99dbdc28532c26754dbf6f81dd1d591383d4eae8a7c17f2a821a484d99024",
+        "rayon-public-source-rows.json.sha256": "3b5ab3652dee3326da574d4514ff25fee93888b2c37e35e4cbbb811d4745c8fc",
+        "manifest.json": "e495cf161d7f04a7774a4631e1102b37ae219cc93086ae0feef3ceac1b8f481c",
+        "manifest.json.sha256": "41bfb99887e8af4f49f4ebdbd2f093e5427178eae269b9cefeb6869469523956",
+        "app-media/e35a87ce-92cd-4210-94fd-95b95b9dfaa9.bin": "76a486d579ee65892eed588a2bf1c4eeb10437d06d4e1cd8804a9c6134bf3db5",
+        "app-media/664bc026-7d29-4cd2-a061-18afecdb39c7.bin": "9fa1592c707d97453bc58a2c04a9d658f8d1b978d22c2890d41d09df6a31e1e9",
+        "app-media/d4cc7d78-40d7-4220-a9f1-f2d3c481827d.bin": "e9d0f4d62a6bd64ba7eba4f563165d168a3a35775df310873801f4d66ce5815f",
+        "app-media/42c55772-5284-440c-b88b-19bb63a580ae.bin": "fcdff535f60eaec62058da55e6f3e82f4023bd4c8aae7a3f3e81fa18358bcefe",
+        "app-media/b7dc64bd-5e32-48fd-811a-18f1801fcaa4.bin": "2662cb98109f366706747181b83d1d0daa7507d96c525cf9ac3359474b5e4170",
+        "app-media/731278ab-6814-4293-8fa0-e6a80b17b5cb.bin": "17bedcce8599b9eb0289888642912a01fda93a91ecf6a53ade745d0a3ea14762",
+        "app-media/8347f2fa-e372-454a-b875-5945a12facca.bin": "21bf34f619b6a581cc1594092cb199bb05e64a0015e93de1abec51e8b24b6963",
+        "app-media/fdf2a700-db50-478a-9b31-58953049d62a.bin": "6ac4495f5a048aadf8641db50f3e82736da6c37b97cc30e8da7a20fb68964d01",
+        "app-media/7739b6af-5fcf-4f20-9502-67f9cfe3e3d0.bin": "8c9f3c8f21b174efde92383b0e7eaaa83374d589d408d27f0eee0aa4a2e10908",
+        "app-media/39bd55be-d09c-461c-89a8-7d39e4a67633.bin": "ffc2f85faf752a1e5f916872f6d241bf45b7654ae656edec07bd5c98ba8488a3",
+        "app-media/manifest.json": "92ce1e6ab8123873fff51426835261d0e970b79c79e34bdb62e1f27b88fa6023",
+        "app-media/ef0286be-776b-4d08-a3f2-fb62fb98be72.bin": "6a13c26284de86186c1e161d5d7023606eed0d467808d2cc7e1b9594c8d77478",
+        "app-media/manifest.json.sha256": "c294e23d622fd468df744cbf4ea9704f86ab38196d8e2f896188d245fd2bfa51"
+      },
+      "sourceCaptureRewritten": false,
+      "publicationApprovalInferred": false
+    },
+    "repository_boundary": {
+      "exit_code": 0,
+      "active_files": 2111,
+      "excluded_evidence_files": 2282,
+      "owned_path_violations": 0,
+      "current_real_source_scan_passed": true,
+      "hosted_or_release_acceptance_claimed": false
+    }
+  },
+  "runtime": {
+    "node": "24.19.0",
+    "typescript": "5.9.3",
+    "playwright": "1.59.1",
+    "chrome": "154.0.8037.59",
+    "wrangler": "4.120.0",
+    "package_versions_changed": false
+  },
+  "remaining_acceptance": [
+    "Live same-origin Cloudflare Access account/audience/subject shape and policy, real staff session/revocation, private RPC binding exclusivity and authorized enrollments.",
+    "New isolated case D1 and public-source D1/R2 migration/resource readback, live concurrency/failure/backup/restore/cost/latency and governed setup.",
+    "Fresh source/editorial and image-rights evidence; original 25 September saved export is stale and was not retimestamped or published.",
+    "Existing admin navigation and shared-device/account erasure/retention/audit export, rate limits/monitoring and emergency-content response design.",
+    "Actual financial reference reconciliation and any independently authorized refund/payment workflows remain outside metadata case authority.",
+    "Screen-reader/assistive-technology, independent visual/security review, hosted staging journeys and governed release acceptance."
+  ],
+  "evidence": [
+    {
+      "path": "/tmp/africlub-operator-exceptions-node-bank.log",
+      "sha256": "0a59aaf83c6548d5c9e04aa9b6ceb3f545d18e6b24ed9ec68e97702481fdec59",
+      "bytes": 48441
+    },
+    {
+      "path": "/tmp/africlub-operator-exceptions-node-bank-correct-path.log",
+      "sha256": "97afc0f1727d50b4f5df3fda64c2835f870a0b93cdef0fdec60665cd8e8bf4b9",
+      "bytes": 24255
+    },
+    {
+      "path": "/tmp/africlub-operator-failing-before-regressions.log",
+      "sha256": "4c47558ea54185b09d1053d0c879a2b30cb77fcb5c0f4468552f2dfd185195a3",
+      "bytes": 61292
+    },
+    {
+      "path": "/tmp/africlub-browser-fetch-failing-before.log",
+      "sha256": "80f7320f21d52a2413f66663b19bf9472d1e0a2af538ee3415d21c8422d5f4e2",
+      "bytes": 29950
+    },
+    {
+      "path": "/tmp/africlub-operator-exceptions-node-bank-final.log",
+      "sha256": "9c5ea1862c8e485135a4b19bed5cee04bcbfbc3b187282e099736bc0535956f2",
+      "bytes": 24781
+    },
+    {
+      "path": "/tmp/africlub-operator-client-typecheck-final.log",
+      "sha256": "989f8ad64df912c8343f747b77692d02a4f0a67a1d676b4c5ac693dae15a2c1a",
+      "bytes": 48
+    },
+    {
+      "path": "/tmp/africlub-operator-ui-source-parity-final.log",
+      "sha256": "ef658a121466f61b8473cb95c4c8c85c60fb71d7592a5d07f7b0d52ab5e2659b",
+      "bytes": 32
+    },
+    {
+      "path": "/tmp/africlub-operator-disabled-config-final.log",
+      "sha256": "fe90e3022e616f6f6637ab5ffde110cbf85f399df10f15fca475a7022a8c1f08",
+      "bytes": 147
+    },
+    {
+      "path": "/tmp/africlub-exceptions-disabled-config-final.log",
+      "sha256": "60dd7caf001fef18e38ac8fa6963a9dbc09bd570e8b303670deedf6b96249466",
+      "bytes": 99
+    },
+    {
+      "path": "/tmp/africlub-operator-worker-dry-run-final.log",
+      "sha256": "a5bc83c6122d7da5c9a1b34ad0c2039e78d2ce8d047e900a227b07fe4e885c65",
+      "bytes": 1703
+    },
+    {
+      "path": "/tmp/africlub-cases-worker-dry-run.log",
+      "sha256": "a894b3b6674363319d7b0c64baa0eb112765a05b2f7e30aa92538cc1f943a9e9",
+      "bytes": 711
+    },
+    {
+      "path": "/tmp/africlub-operator-browser-failing-before.json",
+      "sha256": "12b4344e2c755d083e425b882a78c0b89d392257ce136cd97158897309a2ef23",
+      "bytes": 13149
+    },
+    {
+      "path": "/tmp/africlub-operator-browser-fixture-baseline.json",
+      "sha256": "8d53c373d54c3b9cccafe52e088279271de918410d970ac912f79b4866b4e7d1",
+      "bytes": 5340
+    },
+    {
+      "path": "/tmp/africlub-operator-cases-browser-accepted/browser-results.json",
+      "sha256": "5d89b9da454509bbe673409e8b72643b6e9e3c1a1957c2afbbff12490e12b92a",
+      "bytes": 4027
+    },
+    {
+      "path": "/tmp/africlub-operator-saved-export-stale-replay.json",
+      "sha256": "fc743fb2d77a68f9b33fd6e6a4df77193113cbd1221fb4efd386c0cbd442b8ed",
+      "bytes": 2308
+    },
+    {
+      "path": "/tmp/africlub-operator-boundary.log",
+      "sha256": "b0bc325d5b7fd0d771f3a087b71f1d6621039687d1dc6c8a8e41cb6ed151b6b1",
+      "bytes": 357
+    },
+    {
+      "path": "/tmp/africlub-operator-boundary-final.log",
+      "sha256": "d310c9e5e3040f9dc3d979e7cfe8771ca3329a0a33b71cb1dcc5f458f238f4a7",
+      "bytes": 158
+    }
+  ],
+  "files": [
+    {
+      "path": "cloudflare/operator-api/CONSOLE.md",
+      "bytes": 2961,
+      "source_sha256": "555a985934928191be48eab93c12948e31c9f528f85a9cceacc2ba811977f7e0",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/CONSOLE.md",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "51fd52baeee946d6ccf3ea7fe56f796f67d0a737840b20f446f4fac8d8fbad8a",
+      "active_bytes": 3627,
+      "active_equals_source": false,
+      "why_added": "Defines direct authenticated Worker composition, disabled switches, explicit public confirmation and separate nonfinancial case authority.",
+      "local_delta": [
+        "Reconcile historical integration/browser-blocker statements with dated current local checks; retain live Access/D1/provider/release limitations."
+      ],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/README.md",
+      "bytes": 13953,
+      "source_sha256": "3d147edaaf77635d31f64b4d1ebfe2b0123c30f801218c3baf102478b43f5868",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/README.md",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "608092c3fdbaac51da85b1925de60bba54dab540525bd696f043564c98f10ac3",
+      "active_bytes": 15171,
+      "active_equals_source": false,
+      "why_added": "Records module architecture, idempotent recovery, source/runtime boundaries and release prerequisites; updated current local evidence is distinct from archived claims.",
+      "local_delta": [
+        "Reconcile historical integration/browser-blocker statements with dated current local checks; retain live Access/D1/provider/release limitations."
+      ],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/client.ts",
+      "bytes": 10692,
+      "source_sha256": "8ef7b2e22f4f53b28027608926b86a89f1dd2a6dcd124c6a77e2b0e5491c47df",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/client.ts",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "bc3284e3289536999beac8c9112ae7aa3a1a4c7b71cbe6a9b30fbb18d649ddcf",
+      "active_bytes": 10834,
+      "active_equals_source": false,
+      "why_added": "Provides a strictly compiled same-origin staff browser client with response scope/operation checks and uncertain sent-write recovery.",
+      "local_delta": [
+        "Call fetch as a standalone function, preserving browser Window receiver semantics; operator confirming 401/403 is potentially committed after post-commit authority loss."
+      ],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/contracts/openapi.json",
+      "bytes": 79565,
+      "source_sha256": "eb844623047ac2c0d06ab816982e4778994af69f455b524e6388513245a00de3",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/contracts/openapi.json",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "eb844623047ac2c0d06ab816982e4778994af69f455b524e6388513245a00de3",
+      "active_bytes": 79565,
+      "active_equals_source": true,
+      "why_added": "Preserves the nine public-source command/inspection/recovery route schemas, exact request shapes and fixed section projections.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/scripts/build-ui.mjs",
+      "bytes": 3022,
+      "source_sha256": "4927db72ba96322121462a2841b0219dae5cf9b6234472e4960ec27e4aea0511",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/scripts/build-ui.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "4927db72ba96322121462a2841b0219dae5cf9b6234472e4960ec27e4aea0511",
+      "active_bytes": 3022,
+      "active_equals_source": true,
+      "why_added": "Builds both strictly compiled clients and deterministic Worker assets using the existing web design tokens; no remote assets or Static Assets router.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/scripts/check-deployment.mjs",
+      "bytes": 5609,
+      "source_sha256": "7bb80dd1c8175abda9d7b027670f3f1bebf0fb00c95369b65ca97a28dbd30e0e",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/scripts/check-deployment.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "7bb80dd1c8175abda9d7b027670f3f1bebf0fb00c95369b65ca97a28dbd30e0e",
+      "active_bytes": 5609,
+      "active_equals_source": true,
+      "why_added": "Fail-closes disabled template checks on reviewed ingress, private bindings, explicit runtime flags and storage separation.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/scripts/compile-client.mjs",
+      "bytes": 847,
+      "source_sha256": "0651865930745900cbd56d4508ef0a4a3ffac59195fb086b60a320c72568470c",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/scripts/compile-client.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "0651865930745900cbd56d4508ef0a4a3ffac59195fb086b60a320c72568470c",
+      "active_bytes": 847,
+      "active_equals_source": true,
+      "why_added": "Verifies the operator client with an installed strict TypeScript compiler without dependency or lockfile updates.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/scripts/prepare-enrollment.mjs",
+      "bytes": 2719,
+      "source_sha256": "d368626c87d3b3c3ed61fd6f2d9172b1f0caeea95e0bb754af8fdec879d94acc",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/scripts/prepare-enrollment.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "d368626c87d3b3c3ed61fd6f2d9172b1f0caeea95e0bb754af8fdec879d94acc",
+      "active_bytes": 2719,
+      "active_equals_source": true,
+      "why_added": "Generates only INSERT-only disabled enrollment SQL with bounded verified inputs; does not execute grants or enroll test identities.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/scripts/replay-saved-export.mjs",
+      "bytes": 6141,
+      "source_sha256": "cea18a20fe7b6cb0d78ae8b6e18a9d60bae4101ec8c420a212b61e428591f631",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/scripts/replay-saved-export.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "cea18a20fe7b6cb0d78ae8b6e18a9d60bae4101ec8c420a212b61e428591f631",
+      "active_bytes": 6141,
+      "active_equals_source": true,
+      "why_added": "Runs isolated local review/confirmation/reader conformance over saved export hashes; stale original evidence correctly blocks publication.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/src/access-identity.mjs",
+      "bytes": 1200,
+      "source_sha256": "bbeb20a20ade821712c3eefc7a7502e80ad2e90f33ff19090558c799f2ed03c8",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/src/access-identity.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "bbeb20a20ade821712c3eefc7a7502e80ad2e90f33ff19090558c799f2ed03c8",
+      "active_bytes": 1200,
+      "active_equals_source": true,
+      "why_added": "Accepts only trusted ctx.access human UUID/account/audience identity; spoofed headers, email and service tokens cannot authorize staff actions.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/src/errors.mjs",
+      "bytes": 871,
+      "source_sha256": "a8f839dcbb73a4739a4f6234467da513382857a5bb9d7d67fcb1f4a0c8b6fdd6",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/src/errors.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "a8f839dcbb73a4739a4f6234467da513382857a5bb9d7d67fcb1f4a0c8b6fdd6",
+      "active_bytes": 871,
+      "active_equals_source": true,
+      "why_added": "Defines fixed safe API errors, exact field validation and identifiers shared by the private publisher and gateway.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/src/http.mjs",
+      "bytes": 2921,
+      "source_sha256": "597b56c92b52a246eae2d7e4169ea582d087cac74fff0662fd3702c82ed5f42b",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/src/http.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "597b56c92b52a246eae2d7e4169ea582d087cac74fff0662fd3702c82ed5f42b",
+      "active_bytes": 2921,
+      "active_equals_source": true,
+      "why_added": "Bounds exact-origin CSRF, streaming JSON size/encoding and private no-store sanitized responses.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/src/index.mjs",
+      "bytes": 6604,
+      "source_sha256": "d1863d022ca346388acf79017613b9eae3fe4b671b0c369328281dd331be6070",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/src/index.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "d1863d022ca346388acf79017613b9eae3fe4b671b0c369328281dd331be6070",
+      "active_bytes": 6604,
+      "active_equals_source": true,
+      "why_added": "Composes fixed publication, authenticated direct UI, private case API and privacy-limited metrics through the existing Access gateway.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/src/payment-exceptions.mjs",
+      "bytes": 3934,
+      "source_sha256": "f8c7971e26ceca34c46c3a3c9907fd7d0b5a7e351ceceb54d3e8e4e94166aacc",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/src/payment-exceptions.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "f8c7971e26ceca34c46c3a3c9907fd7d0b5a7e351ceceb54d3e8e4e94166aacc",
+      "active_bytes": 3934,
+      "active_equals_source": true,
+      "why_added": "Bridges six bounded case methods to a private reviewed binding without browser-supplied identity, role or financial authority.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/src/telemetry.mjs",
+      "bytes": 1902,
+      "source_sha256": "43d8c804b2eeb8f74b8b5ea9cb9ca96f5edeee72472017d4d0a97e28afc92606",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/src/telemetry.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "43d8c804b2eeb8f74b8b5ea9cb9ca96f5edeee72472017d4d0a97e28afc92606",
+      "active_bytes": 1902,
+      "active_equals_source": true,
+      "why_added": "Emits only allowlisted HTTP route class/status/duration/generated request correlation; telemetry failure cannot retry a command.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/src/ui-assets.mjs",
+      "bytes": 85032,
+      "source_sha256": "108d723e9ce7858ec81c4a19efe245c2d954fe691604aeae37ce6807b3d1fe3d",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/src/ui-assets.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "06c4fb6fa75fadfabc9de9d608c1b738dba66692d6f5915c60fdc5bef56188b1",
+      "active_bytes": 85866,
+      "active_equals_source": false,
+      "why_added": "Adds deployable generated client/UI text tied to source hashes and existing tokens; regenerated for the reviewed client/controller corrections.",
+      "local_delta": [
+        "Deterministically rebuild both clients/controller text and source hashes; original token source and no Static Assets graph preserved."
+      ],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/src/ui-response.mjs",
+      "bytes": 1021,
+      "source_sha256": "76695b379c222c2a7ff0b06e0c4ce8f21863ef74240bb58d5afc4ddaad8a8189",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/src/ui-response.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "76695b379c222c2a7ff0b06e0c4ce8f21863ef74240bb58d5afc4ddaad8a8189",
+      "active_bytes": 1021,
+      "active_equals_source": true,
+      "why_added": "Serves only fixed self-hosted assets and protected pages with no-store, CSP, no framing and no remote media.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/tests/auth-http.test.mjs",
+      "bytes": 6966,
+      "source_sha256": "b862b81dcab1ea431fddfc61dc9bbcf769f24976bfa3e0a496326999df3b7c7b",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/tests/auth-http.test.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "b862b81dcab1ea431fddfc61dc9bbcf769f24976bfa3e0a496326999df3b7c7b",
+      "active_bytes": 6966,
+      "active_equals_source": true,
+      "why_added": "Adds executable regressions for Spoofed identity, CSRF, origin/body bounds, tenant/role denial and safe HTTP errors.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/tests/browser/run_browser.py",
+      "bytes": 10450,
+      "source_sha256": "d073304ad8ca48b4b9ab50398fc4a5cb63965dc6ea53192cc6feef92c0328b3f",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/tests/browser/run_browser.py",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "d073304ad8ca48b4b9ab50398fc4a5cb63965dc6ea53192cc6feef92c0328b3f",
+      "active_bytes": 10450,
+      "active_equals_source": true,
+      "why_added": "Preserves original isolated Python Playwright browser scenarios as reviewed source; current execution uses the additive Node port with installed dependencies.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/tests/browser/server.mjs",
+      "bytes": 3418,
+      "source_sha256": "183abd931f5b6b9854425c306dc1e822642b7c16d3153646e733ca4004a8a579",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/tests/browser/server.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "1dc2257d62a8b9192f2b6f58440ef69a3dd2e074963d3cd75ffeced2ed6c4940",
+      "active_bytes": 3844,
+      "active_equals_source": false,
+      "why_added": "Provides explicit opt-in, loopback-only ephemeral TLS synthetic authority fixtures over actual gateway/SQLite with one-commit uncertain acknowledgement injection.",
+      "local_delta": [
+        "Replace pre-header socket reset with unusable JSON acknowledgement after actual commit to avoid Chromium internal transport replay; count publication commands and assert one command plus GET-only recovery."
+      ],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/tests/client.test.mjs",
+      "bytes": 4851,
+      "source_sha256": "8a252d76a338300b2f719873986e6f7c9d3b6418713198dd42a5f1e4e1da9c94",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/tests/client.test.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "a63e5b0d4d8a7fb016df864a93e39f75a96afcd8be1b97f400b232287473e704",
+      "active_bytes": 5600,
+      "active_equals_source": false,
+      "why_added": "Adds executable regressions for Strict client conformance, response correlation, wrong scope, exact-key retry and sent-write unknown outcomes.",
+      "local_delta": [
+        "Add receiver-sensitive browser fetch regression; operator additionally asserts confirming 401/403 unknown outcomes."
+      ],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/tests/contract.test.mjs",
+      "bytes": 4032,
+      "source_sha256": "f9083c7d51bae4048363615723ce5b5e0372fa8337c9e235261eaa6bc00139e3",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/tests/contract.test.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "f9083c7d51bae4048363615723ce5b5e0372fa8337c9e235261eaa6bc00139e3",
+      "active_bytes": 4032,
+      "active_equals_source": true,
+      "why_added": "Adds executable regressions for Declared routes/schema references/enums and actual gateway responses remain compatible.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/tests/deployment.test.mjs",
+      "bytes": 3881,
+      "source_sha256": "736f3cd33f3f510b76c8b5e6100300852b2ae32eda6abf7241334247498ce9d8",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/tests/deployment.test.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "736f3cd33f3f510b76c8b5e6100300852b2ae32eda6abf7241334247498ce9d8",
+      "active_bytes": 3881,
+      "active_equals_source": true,
+      "why_added": "Adds executable regressions for Disabled defaults, exact authorized publisher/case bindings and disabled insert-only enrollment.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/tests/inspection.test.mjs",
+      "bytes": 8221,
+      "source_sha256": "5c63630fb2a2ac48b7bfbe8e8e9c47d89f8a36ad4222d3c5684dfa01c3f10484",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/tests/inspection.test.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "5c63630fb2a2ac48b7bfbe8e8e9c47d89f8a36ad4222d3c5684dfa01c3f10484",
+      "active_bytes": 8221,
+      "active_equals_source": true,
+      "why_added": "Adds executable regressions for Candidate isolation, exact public projection, bounded preview, freshness and read-only review/status.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/tests/publication.test.mjs",
+      "bytes": 10955,
+      "source_sha256": "7c80aabd0deb1155fb932d9429d2d035efac8311d1de3c5c2daf86af9a342693",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/tests/publication.test.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "7c80aabd0deb1155fb932d9429d2d035efac8311d1de3c5c2daf86af9a342693",
+      "active_bytes": 10955,
+      "active_equals_source": true,
+      "why_added": "Adds executable regressions for Atomic SQL guard/batch rollback, immutable receipts/audit, revocation/expiry, changed heads and same-person authorized confirmation.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/tests/support/fixture.mjs",
+      "bytes": 7151,
+      "source_sha256": "4988991fd6c914c237dc3309f9d25cc6e447158642bc5cd42e1270758be0bf48",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/tests/support/fixture.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "4988991fd6c914c237dc3309f9d25cc6e447158642bc5cd42e1270758be0bf48",
+      "active_bytes": 7151,
+      "active_equals_source": true,
+      "why_added": "Uses actual local SQLite/migrations and explicitly synthetic Access/RPC/media to test active services; never establishes hosted authority.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/tests/telemetry.test.mjs",
+      "bytes": 3007,
+      "source_sha256": "7a0e3ebad71556aa7d6aaf0fdff8405dd6f0d9c83efde847ed5be415b406b671",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/tests/telemetry.test.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "7a0e3ebad71556aa7d6aaf0fdff8405dd6f0d9c83efde847ed5be415b406b671",
+      "active_bytes": 3007,
+      "active_equals_source": true,
+      "why_added": "Adds executable regressions for Privacy allowlist and safe sink failure without command retry.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/tests/ui-controller.test.mjs",
+      "bytes": 11750,
+      "source_sha256": "ac454ea118e31007df25965f694a21c28911433bbc119d98979d4f8477fe243b",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/tests/ui-controller.test.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "d8fca4299bd26b0af70a111b182f62cb4c2f36664ba3525c9c50ed6a087f9671",
+      "active_bytes": 13525,
+      "active_equals_source": false,
+      "why_added": "Adds executable regressions for Actual client/gateway/local SQL state transitions, scope/identity, persistence, explicit confirmation and read-only recovery.",
+      "local_delta": [
+        "Add real gateway/SQLite post-commit 403 regression plus identity/revocation private-display cleanup with preserved original recovery."
+      ],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/tests/ui-static.test.mjs",
+      "bytes": 2778,
+      "source_sha256": "72df2b0227ca8033c4da8d7b3bef1fb529853aecc820c7cdef3ec59a78948761",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/tests/ui-static.test.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "72df2b0227ca8033c4da8d7b3bef1fb529853aecc820c7cdef3ec59a78948761",
+      "active_bytes": 2778,
+      "active_equals_source": true,
+      "why_added": "Adds executable regressions for Generated source/token hash parity, literal DOM/label IDs, HTML patterns and safe no-inline/no-remote rendering.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/ui/README.md",
+      "bytes": 5662,
+      "source_sha256": "4b4d75bd3066a0fa69c018ad414148ee403a64fb666e381c0fb91da2ea9bbd81",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/ui/README.md",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "50e53603f250954402899a6c0eae8551b6d7ed4142907023c59ed755113b74a9",
+      "active_bytes": 6435,
+      "active_equals_source": false,
+      "why_added": "Documents scoped storage/CSP/recovery behavior, deterministic bundle build and current rendered versus hosted acceptance.",
+      "local_delta": [
+        "Reconcile historical integration/browser-blocker statements with dated current local checks; retain live Access/D1/provider/release limitations."
+      ],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/ui/app.mjs",
+      "bytes": 12157,
+      "source_sha256": "33ba38b8a1b7ff402afa4b754db73715982e787c514867e05580c2d35484ae52",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/ui/app.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "33ba38b8a1b7ff402afa4b754db73715982e787c514867e05580c2d35484ae52",
+      "active_bytes": 12157,
+      "active_equals_source": true,
+      "why_added": "Wires explicit public inspection/review/confirmation and safe text-only previews with original-key recovery; no background publication.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/ui/case-controller.mjs",
+      "bytes": 10383,
+      "source_sha256": "61a1dde53dc5b65205f8aa03c1bd8c10d0442484f08f18f95fe5a6456535e97c",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/ui/case-controller.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "61a1dde53dc5b65205f8aa03c1bd8c10d0442484f08f18f95fe5a6456535e97c",
+      "active_bytes": 10383,
+      "active_equals_source": true,
+      "why_added": "Requires foreground explicit reviewed case commands and keeps original operation/revision through unknown outcomes and actor-scoped recovery.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/ui/cases.html",
+      "bytes": 7299,
+      "source_sha256": "6a0c8b190cbd7b0e1b9f813a4de6e30ffd906a1b06b71ef2c5ffa1dca17a3cc9",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/ui/cases.html",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "6a0c8b190cbd7b0e1b9f813a4de6e30ffd906a1b06b71ef2c5ffa1dca17a3cc9",
+      "active_bytes": 7299,
+      "active_equals_source": true,
+      "why_added": "Adds accessible metadata-only case workspace with separate proposal review, exact confirmation and nonfinancial receipt/history semantics.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/ui/cases.mjs",
+      "bytes": 10261,
+      "source_sha256": "0a1e5631fce781b214d3f222e303befb27c16f15062d7b65593a3bb9676d41c3",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/ui/cases.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "0a1e5631fce781b214d3f222e303befb27c16f15062d7b65593a3bb9676d41c3",
+      "active_bytes": 10261,
+      "active_equals_source": true,
+      "why_added": "Composes bounded case listing/history, maker/checker controls, foreground invalidation and private view cleanup without automatic POST retries.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/ui/controller.mjs",
+      "bytes": 10542,
+      "source_sha256": "c2d6d4afa65087c548155f2853111e12c83f212b3c2088657080b5d203cb297e",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/ui/controller.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "f1cbd4a05939edbf0f6ddab182cc0c190df9e4a76a38f4e6e5d9b1e2f896f5a1",
+      "active_bytes": 11094,
+      "active_equals_source": false,
+      "why_added": "Persists scoped original publication identifiers before POST, serializes tabs and supports GET-only recovery; clears stale private displays on identity/revocation.",
+      "local_delta": [
+        "On changed/revoked identity, clear old private display and disable actions while preserving original scoped durable recovery bytes."
+      ],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/ui/page.html",
+      "bytes": 5822,
+      "source_sha256": "974c55ad43f05cccbca710dc46f819dc72ccf761cd29c363a0b45fddf4aab145",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/ui/page.html",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "974c55ad43f05cccbca710dc46f819dc72ccf761cd29c363a0b45fddf4aab145",
+      "active_bytes": 5822,
+      "active_equals_source": true,
+      "why_added": "Adds protected public-source workspace with labels/focus targets and explicit review acknowledgement/phrase; opening content never publishes.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/ui/styles.css",
+      "bytes": 5724,
+      "source_sha256": "dd8424312e3397b9539dd79f23318dc321cbe22b19d3e7d7dee152c8e01f3264",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/ui/styles.css",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "dd8424312e3397b9539dd79f23318dc321cbe22b19d3e7d7dee152c8e01f3264",
+      "active_bytes": 5724,
+      "active_equals_source": true,
+      "why_added": "Reuses existing semantic UI tokens for responsive, reduced-motion and forced-color-aware protected operator views.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/wrangler.staging.jsonc",
+      "bytes": 771,
+      "source_sha256": "25cdedfb59108b2dc4a4cf743a6fe10a47bf7e31ea14b76a6be00003e47e60cf",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/operator-api/wrangler.staging.jsonc",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "25cdedfb59108b2dc4a4cf743a6fe10a47bf7e31ea14b76a6be00003e47e60cf",
+      "active_bytes": 771,
+      "active_equals_source": true,
+      "why_added": "Preserves all disabled runtime switches, no public template ingress, blank authority/resource configuration and exact private binding boundaries.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/README.md",
+      "bytes": 11122,
+      "source_sha256": "3950cacc60682617f659b7942ef064929c216baf3c993277e3d008a7772bfadb",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/README.md",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "3a218737cccab40095e8d2a13cc772eb94a23119278c84a792c12f4f776446fc",
+      "active_bytes": 12551,
+      "active_equals_source": false,
+      "why_added": "Records module architecture, idempotent recovery, source/runtime boundaries and release prerequisites; updated current local evidence is distinct from archived claims.",
+      "local_delta": [
+        "Reconcile historical integration/browser-blocker statements with dated current local checks; retain live Access/D1/provider/release limitations."
+      ],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/client.ts",
+      "bytes": 9453,
+      "source_sha256": "77e56d46aa28ff3c0618e624c2c28ce58e65fb8b0b58ae55a25a1a9cd532ad00",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/client.ts",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "a44cad8dba4438f5d03d94b648b9118e3c677da3561ddffac9a41560195c4489",
+      "active_bytes": 9556,
+      "active_equals_source": false,
+      "why_added": "Provides a strictly compiled same-origin staff browser client with response scope/operation checks and uncertain sent-write recovery.",
+      "local_delta": [
+        "Call fetch as a standalone function so Window fetch is not invoked with the client as receiver; case unknown-outcome semantics preserved."
+      ],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/contracts/api.json",
+      "bytes": 3296,
+      "source_sha256": "dafa72c5105504bf12fc6d0ebcf7df85cc23f5ba3b3238a8e14daf9e4e7516da",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/contracts/api.json",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "dafa72c5105504bf12fc6d0ebcf7df85cc23f5ba3b3238a8e14daf9e4e7516da",
+      "active_bytes": 3296,
+      "active_equals_source": true,
+      "why_added": "Preserves six case gateway methods, fixed enums, exact metadata-only commands and explicit nonfinancial/recovery semantics.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/migrations/0001_case_workflow.sql",
+      "bytes": 10001,
+      "source_sha256": "08ac5991977610d5d92f08e8a996b63577002167d9fd2403c818c2190a9d347a",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/migrations/0001_case_workflow.sql",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "08ac5991977610d5d92f08e8a996b63577002167d9fd2403c818c2190a9d347a",
+      "active_bytes": 10001,
+      "active_equals_source": true,
+      "why_added": "Creates only new isolated px_* metadata/ACL/history tables with immutable journal and projection triggers, separate checker and disabled initial settings.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/scripts/check-deployment.mjs",
+      "bytes": 801,
+      "source_sha256": "45f588747eea5c6dfb91c8ee356bf311047f3cf572a81b04b187181304b051d7",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/scripts/check-deployment.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "45f588747eea5c6dfb91c8ee356bf311047f3cf572a81b04b187181304b051d7",
+      "active_bytes": 801,
+      "active_equals_source": true,
+      "why_added": "Fail-closes disabled template checks on reviewed ingress, private bindings, explicit runtime flags and storage separation.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/src/policy.mjs",
+      "bytes": 5008,
+      "source_sha256": "c60f7a29356d842886e1f5d34fc912bec562796e635e5a460e139a2b88bb21bf",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/src/policy.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "c60f7a29356d842886e1f5d34fc912bec562796e635e5a460e139a2b88bb21bf",
+      "active_bytes": 5008,
+      "active_equals_source": true,
+      "why_added": "Validates exact isolated case commands, safe error tokens and canonical request hashes; rejects PII, raw SMS and financial mutations.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/src/service.mjs",
+      "bytes": 9385,
+      "source_sha256": "c00b780b65c2d42c900e9a33907d043edd8dcf023c794a6316712fb4763e0547",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/src/service.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "c00b780b65c2d42c900e9a33907d043edd8dcf023c794a6316712fb4763e0547",
+      "active_bytes": 9385,
+      "active_equals_source": true,
+      "why_added": "Applies current club/actor ACL, primary reads, immutable original outcomes and atomic SQL mutation-time revision/authorization checks.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/src/worker.mjs",
+      "bytes": 1020,
+      "source_sha256": "bde7445001863fe18823a54dcf12238a02d50488d61e7b0725ab25311e0ece07",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/src/worker.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "bde7445001863fe18823a54dcf12238a02d50488d61e7b0725ab25311e0ece07",
+      "active_bytes": 1020,
+      "active_equals_source": true,
+      "why_added": "Exposes only private metadata case RPC; unauthenticated HTTP paths remain 404 and no provider/payment writer is available.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/tests/browser/run_browser.py",
+      "bytes": 7152,
+      "source_sha256": "487798081b83cdfe3a6bf8b223d1e9d6412f6d2c81c98c092bda87fb061a55d1",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/tests/browser/run_browser.py",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "487798081b83cdfe3a6bf8b223d1e9d6412f6d2c81c98c092bda87fb061a55d1",
+      "active_bytes": 7152,
+      "active_equals_source": true,
+      "why_added": "Preserves original isolated Python Playwright browser scenarios as reviewed source; current execution uses the additive Node port with installed dependencies.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/tests/browser/server.mjs",
+      "bytes": 2746,
+      "source_sha256": "483194550f7fcfb3acffc5338056b78fe46b3451fe735e9fa0f4fd98514c3b8a",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/tests/browser/server.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "b594122dd11bf0eb765ff8fef52f7bdea7bbff4dedfd9644e0fc714a0491b8a4",
+      "active_bytes": 3055,
+      "active_equals_source": false,
+      "why_added": "Provides explicit opt-in, loopback-only ephemeral TLS synthetic authority fixtures over actual gateway/SQLite with one-commit uncertain acknowledgement injection.",
+      "local_delta": [
+        "Replace pre-header socket reset with unusable JSON acknowledgement after actual commit to avoid Chromium internal transport replay; count publication commands and assert one command plus GET-only recovery."
+      ],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/tests/client.test.mjs",
+      "bytes": 6335,
+      "source_sha256": "554000c45a0ea25ba8e7e1237799eecd862e829fb06e302efe679cff2ddfc2c7",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/tests/client.test.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "ba89e00a041c897d2d58bfd56443acaa8472fb2d7e56ab584a0013125c086f5e",
+      "active_bytes": 6776,
+      "active_equals_source": false,
+      "why_added": "Adds executable regressions for Strict client conformance, response correlation, wrong scope, exact-key retry and sent-write unknown outcomes.",
+      "local_delta": [
+        "Add receiver-sensitive browser fetch regression; operator additionally asserts confirming 401/403 unknown outcomes."
+      ],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/tests/concurrency.test.mjs",
+      "bytes": 2564,
+      "source_sha256": "63a132803d710f93bdc9a834d615ceb492816c2233e7276dfbb18e3a05a20597",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/tests/concurrency.test.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "63a132803d710f93bdc9a834d615ceb492816c2233e7276dfbb18e3a05a20597",
+      "active_bytes": 2564,
+      "active_equals_source": true,
+      "why_added": "Adds executable regressions for Independent real SQLite worker connections enforce single same-revision winner and exact-key convergence.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/tests/configuration.test.mjs",
+      "bytes": 1122,
+      "source_sha256": "8e88fd47c41bdf919458958998fd092462de0144703bf80879b0d15b7ce501cb",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/tests/configuration.test.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "8e88fd47c41bdf919458958998fd092462de0144703bf80879b0d15b7ce501cb",
+      "active_bytes": 1122,
+      "active_equals_source": true,
+      "why_added": "Adds executable regressions for Disabled case template and exact reviewed binding flags, service and entrypoint.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/tests/contract.test.mjs",
+      "bytes": 882,
+      "source_sha256": "2b52558c7fc75ef131cd1675e7288357478c999f25c700b8b3e5521623a817be",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/tests/contract.test.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "2b52558c7fc75ef131cd1675e7288357478c999f25c700b8b3e5521623a817be",
+      "active_bytes": 882,
+      "active_equals_source": true,
+      "why_added": "Adds executable regressions for Declared routes/schema references/enums and actual gateway responses remain compatible.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/tests/fixture.mjs",
+      "bytes": 5016,
+      "source_sha256": "5dac95bf08dc138b37a1e662c267408f9f6dfaf15c5d379c17d2fcd15985832c",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/tests/fixture.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "5dac95bf08dc138b37a1e662c267408f9f6dfaf15c5d379c17d2fcd15985832c",
+      "active_bytes": 5016,
+      "active_equals_source": true,
+      "why_added": "Uses actual local SQLite/migrations and explicitly synthetic Access/RPC/media to test active services; never establishes hosted authority.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/tests/gateway.test.mjs",
+      "bytes": 5252,
+      "source_sha256": "a260551b8e2d59c08bb495c0069a6fa345f161c5f90e7a167395a2d6d7a19979",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/tests/gateway.test.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "a260551b8e2d59c08bb495c0069a6fa345f161c5f90e7a167395a2d6d7a19979",
+      "active_bytes": 5252,
+      "active_equals_source": true,
+      "why_added": "Adds executable regressions for Exact case methods, authenticated runtime identity, safe headers, bounded JSON/query and sanitized provider failures.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/tests/race-worker.mjs",
+      "bytes": 708,
+      "source_sha256": "0015d65323d76e97104301631dcd20fad8ea7bbbce8adb62261112829b846ded",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/tests/race-worker.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "0015d65323d76e97104301631dcd20fad8ea7bbbce8adb62261112829b846ded",
+      "active_bytes": 708,
+      "active_equals_source": true,
+      "why_added": "Runs independent SQLite race participants with a bounded barrier and actual case service; validates mutation atomicity beyond one JS connection.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/tests/security.test.mjs",
+      "bytes": 5849,
+      "source_sha256": "cbd0549799814352ab62d6008f490f705447feccc9bfe5ec6eba7e45c751a06a",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/tests/security.test.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "cbd0549799814352ab62d6008f490f705447feccc9bfe5ec6eba7e45c751a06a",
+      "active_bytes": 5849,
+      "active_equals_source": true,
+      "why_added": "Adds executable regressions for Mutation-time tenant/role/revocation checks, metadata/PII bounds, immutable history and nonfinancial actions.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/tests/ui-access.test.mjs",
+      "bytes": 4862,
+      "source_sha256": "653fe1c7317aa92a41571da9a171f0847b8ef22788278f1d4d7e6f9a43602e6a",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/tests/ui-access.test.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "653fe1c7317aa92a41571da9a171f0847b8ef22788278f1d4d7e6f9a43602e6a",
+      "active_bytes": 4862,
+      "active_equals_source": true,
+      "why_added": "Adds executable regressions for Current staff capabilities and original-actor read-only receipt lookup without role inheritance.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/tests/ui-controller.test.mjs",
+      "bytes": 10448,
+      "source_sha256": "4acb946eed3bd8844ec493a902d01f3cd5643ba09a6ad7b7d6e2b6026dfdf8cd",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/tests/ui-controller.test.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "4acb946eed3bd8844ec493a902d01f3cd5643ba09a6ad7b7d6e2b6026dfdf8cd",
+      "active_bytes": 10448,
+      "active_equals_source": true,
+      "why_added": "Adds executable regressions for Actual client/gateway/local SQL state transitions, scope/identity, persistence, explicit confirmation and read-only recovery.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/tests/workflow.test.mjs",
+      "bytes": 8654,
+      "source_sha256": "8673739ec0b8715dbc4f2f22ca0cd6adb368f76f737bdf694dac8ada18813f62",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/tests/workflow.test.mjs",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "8673739ec0b8715dbc4f2f22ca0cd6adb368f76f737bdf694dac8ada18813f62",
+      "active_bytes": 8654,
+      "active_equals_source": true,
+      "why_added": "Adds executable regressions for All seven metadata case states, separate checker, nonfinancial closure/reopen, exact-key/idempotent replay and bounded paging.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/wrangler.staging.jsonc",
+      "bytes": 523,
+      "source_sha256": "2151103d2e6123b952dd1f4d9abd8500ab1d7945c8d478923fef0e012a2d39d7",
+      "source_archive_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/payment-exceptions/wrangler.staging.jsonc",
+      "change": "added_from_missing_candidate_path",
+      "frozen_checkout_status": "missing_active_path",
+      "original_zip_member_verified": true,
+      "candidate_bytes_verified": true,
+      "active_sha256": "2151103d2e6123b952dd1f4d9abd8500ab1d7945c8d478923fef0e012a2d39d7",
+      "active_bytes": 523,
+      "active_equals_source": true,
+      "why_added": "Preserves all disabled runtime switches, no public template ingress, blank authority/resource configuration and exact private binding boundaries.",
+      "local_delta": [],
+      "review": "Implementer technical source/contract/integration review and scoped tests; no independent or owner release approval inferred."
+    },
+    {
+      "path": "cloudflare/operator-api/tests/browser/run-browser.mjs",
+      "change": "new_local_integration",
+      "active_sha256": "1b6cb3c6e5eed735d05182f3c03a8affe9e125e1964640ecbd2cd9593290f0ed",
+      "active_bytes": 16894,
+      "source_sha256": null,
+      "why_added": "Port the original controlled publication/case browser scenarios to existing installed Node Playwright and Chrome; execute 19 rendered loopback cases without dependency installation or browser-policy changes."
+    }
+  ]
+}

@@ -1,5 +1,11 @@
 # Simplified Predict
 
+> Migration clarification — 26 September 2026: the economic descriptions across
+> repository sources conflict. See `docs/governance/predict_economics_decision.md`
+> (repository-relative) and `predict-economics.json`. Historical implementation
+> or test results do not grant new transactional migration or release approval.
+
+
 The Challenge replacement uses the current implementation in the separate
 `/Volumes/PRO-G40/Gikundiro` checkout as the behavioral reference. That checkout
 and its database remain separate from AFRICLUB.

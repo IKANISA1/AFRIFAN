@@ -1,5 +1,11 @@
 # FET Ledger And Rewards Policy
 
+> Migration clarification — 26 September 2026: the economic descriptions across
+> repository sources conflict. See `docs/governance/predict_economics_decision.md`
+> (repository-relative) and `predict-economics.json`. Historical implementation
+> or test results do not grant new transactional migration or release approval.
+
+
 Updated: 2026-07-30
 
 ## Policy

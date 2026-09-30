@@ -3,6 +3,9 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+# The shared privacy boundary covers all five clubs before the existing detailed
+# Rayon policy/copy assertions. Optional release arguments are forwarded.
+python3 "$ROOT/tools/scripts/validate_supporter_sms_boundary.py" "$ROOT" "$@"
 APP_DIR="$ROOT/apps/rayon_sports"
 python3 - \
   "$APP_DIR/store_metadata/privacy_policy.html" \

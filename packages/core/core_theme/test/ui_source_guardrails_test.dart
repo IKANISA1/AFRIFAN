@@ -1295,6 +1295,164 @@ void main() {
       expect(_findForbiddenStaticDesignReferences(fixture), [worker.path]);
     });
 
+    test('Browser QA output does not become runtime media or design authority', () {
+      final fixture = Directory.systemTemp.createTempSync(
+        'africlub-browser-qa-source-boundary-',
+      );
+      addTearDown(() => fixture.deleteSync(recursive: true));
+      void write(String relative, String content) {
+        final file = File('${fixture.path}/$relative');
+        file.parent.createSync(recursive: true);
+        file.writeAsStringSync(content);
+      }
+
+      write(
+        'apps/rayon_sports/web/tmp/browser-portal-controlled-fixture/capture.png',
+        'Synthetic screenshot',
+      );
+      write(
+        'apps/rayon_sports/web/tmp/browser-portal-controlled-fixture/private-details.json',
+        '"Image.asset assets/images/retired.png"',
+      );
+      write(
+        'apps/rayon_sports/web/tmp/browser-portal-controlled-fixture/DESIGN.md',
+        'Competing source of truth for product design.',
+      );
+      expect(_findStoredVisualAssets(fixture), isEmpty);
+      expect(_findForbiddenStaticDesignReferences(fixture), isEmpty);
+      expect(_findSecondaryDesignAuthorityFiles(fixture), isEmpty);
+
+      write(
+        'apps/rayon_sports/web/src/components/browser-membership-portal.tsx',
+        'const ungoverned = "/media/retired.png";',
+      );
+      write(
+        'apps/rayon_sports/web/public/unguarded.png',
+        'Synthetic runtime media',
+      );
+      write(
+        'apps/rayon_sports/web/tmp-lookalike/capture.png',
+        'Synthetic ungoverned sibling',
+      );
+      expect(_findForbiddenStaticDesignReferences(fixture), [
+        '${fixture.path}/apps/rayon_sports/web/src/components/browser-membership-portal.tsx',
+      ]);
+      expect(_findStoredVisualAssets(fixture), [
+        '${fixture.path}/apps/rayon_sports/web/public/unguarded.png',
+        '${fixture.path}/apps/rayon_sports/web/tmp-lookalike/capture.png',
+      ]);
+    });
+
+    test('Source inventory paths do not waive active static asset checks', () {
+      final fixture = Directory.systemTemp.createTempSync(
+        'africlub-source-inventory-boundary-',
+      );
+      addTearDown(() => fixture.deleteSync(recursive: true));
+      const relative = 'docs/release/production-goal-evidence-2026-09-30.json';
+      final manifest = File('${fixture.path}/$relative');
+      manifest.parent.createSync(recursive: true);
+      final metadata = <String, Object>{
+        'schema_version': 1,
+        'source_snapshot': <String, Object>{
+          'sha256': 'a' * 64,
+          'files': [
+            {
+              'path': 'apps/club/assets/images/retired.png',
+              'bytes': 12,
+              'sha256': 'b' * 64,
+            },
+          ],
+        },
+        'logs': <Object>[],
+        'changes': <Object>[],
+        'self_description': {'path': relative},
+      };
+      manifest.writeAsStringSync(jsonEncode(metadata));
+      expect(_findForbiddenStaticDesignReferences(fixture), isEmpty);
+      final snapshot = metadata['source_snapshot'] as Map<String, Object>;
+      snapshot['inventory_sha256'] = snapshot.remove('sha256')!;
+      manifest.writeAsStringSync(jsonEncode(metadata));
+      expect(_findForbiddenStaticDesignReferences(fixture), isEmpty);
+
+      final runtime = File('${fixture.path}/apps/club/lib/screen.dart');
+      runtime.parent.createSync(recursive: true);
+      runtime.writeAsStringSync("Image.asset('assets/images/retired.png')");
+      expect(_findForbiddenStaticDesignReferences(fixture), [runtime.path]);
+      runtime.deleteSync();
+      for (final phase in ['3', '30', '0', '03', '100']) {
+        final phasePath =
+            'docs/release/production-goal-evidence-2026-09-30-phase$phase.json';
+        final phaseManifest = File('${fixture.path}/$phasePath');
+        metadata['self_description'] = {'path': phasePath};
+        phaseManifest.writeAsStringSync(jsonEncode(metadata));
+        expect(
+          _findForbiddenStaticDesignReferences(fixture),
+          ['3', '30'].contains(phase) ? isEmpty : [phaseManifest.path],
+          reason: 'Only bounded canonical phase inventory names are metadata.',
+        );
+        phaseManifest.deleteSync();
+      }
+      metadata['self_description'] = {'path': 'wrong/path.json'};
+      manifest.writeAsStringSync(jsonEncode(metadata));
+      expect(_findForbiddenStaticDesignReferences(fixture), [manifest.path]);
+      manifest.writeAsStringSync('"Image.asset assets/images/retired.png"');
+      expect(_findForbiddenStaticDesignReferences(fixture), [manifest.path]);
+    });
+
+    test('Empty synthetic favicon response does not waive harness asset guards', () {
+      final fixture = Directory.systemTemp.createTempSync(
+        'africlub-browser-harness-static-boundary-',
+      );
+      addTearDown(() => fixture.deleteSync(recursive: true));
+      const responses = <String, String>{
+        'apps/rayon_sports/web/scripts/browser-portal-controlled-qa.mjs':
+            "if(pathname==='/favicon.ico'){res.writeHead(204,headers);res.end();return;}",
+        'cloudflare/operator-api/tests/browser/server.mjs':
+            "if(req.url==='/favicon.ico'){res.writeHead(204);res.end();return;}",
+        'cloudflare/payment-exceptions/tests/browser/server.mjs':
+            "if(url.pathname==='/favicon.ico'){res.writeHead(204);res.end();return;}",
+      };
+      for (final entry in responses.entries) {
+        final harness = File('${fixture.path}/${entry.key}');
+        harness.parent.createSync(recursive: true);
+        harness.writeAsStringSync(entry.value);
+        expect(_findForbiddenStaticDesignReferences(fixture), isEmpty);
+        harness.writeAsStringSync(
+          '${entry.value}\nconst oldAsset = "/media/retired.png";',
+        );
+        expect(_findForbiddenStaticDesignReferences(fixture), [harness.path]);
+        harness.deleteSync();
+      }
+    });
+
+    test('Registered media replay calls retain static asset protection', () {
+      final fixture = Directory.systemTemp.createTempSync(
+        'africlub-registered-media-replay-boundary-',
+      );
+      addTearDown(() => fixture.deleteSync(recursive: true));
+      const calls = <String, String>{
+        'cloudflare/rayon-public/tests/response-boundary.test.mjs':
+            "get(f,'media/'+ASSET)",
+        'cloudflare/rayon-public/tests/snapshot.test.mjs':
+            r'f.fetch(`media/${assetId}?snapshot=${s.id}`)',
+        'tools/scripts/replay_public_snapshot_export.mjs':
+            r'invoke(`media/${item.source_id}?snapshot=${id}`)',
+        'cloudflare/operator-api/scripts/replay-saved-export.mjs':
+            r'invoke(`media/${o.source_id}?snapshot=${snapshot[0].snapshot_id}`)',
+      };
+      for (final entry in calls.entries) {
+        final file = File('${fixture.path}/${entry.key}');
+        file.parent.createSync(recursive: true);
+        file.writeAsStringSync(entry.value);
+        expect(_findForbiddenStaticDesignReferences(fixture), isEmpty);
+        file.writeAsStringSync(
+          '${entry.value}\nconst retired = "/media/old.png";',
+        );
+        expect(_findForbiddenStaticDesignReferences(fixture), [file.path]);
+        file.deleteSync();
+      }
+    });
+
     test('Static media paths are distinguished from slash-separated prose', () {
       final fixture = Directory.systemTemp.createTempSync(
         'africlub-static-path-context-',
@@ -1604,7 +1762,10 @@ List<String> _findForbiddenStaticDesignReferences(Directory repoRoot) {
       '.html',
     },
     pattern: forbidden,
-    sourceForInspection: _staticAssetScanSource,
+    sourceForInspection: (path, source) =>
+        _isGoalSourceEvidenceManifest(repoRoot, path, source)
+        ? ''
+        : _staticAssetScanSource(path, source),
     allow: (path) =>
         ((path.endsWith('/docs/architecture/club-identity.md') ||
                 path.endsWith(
@@ -1771,13 +1932,106 @@ bool _isPreservedDriveEvidencePath(Directory root, String normalizedPath) {
       normalizedPath.startsWith('$archiveRoot/');
 }
 
+bool _isGoalSourceEvidenceManifest(
+  Directory repoRoot,
+  String normalizedPath,
+  String source,
+) {
+  final normalizedRoot = repoRoot.path.replaceAll('\\', '/');
+  final relative = normalizedPath.startsWith('$normalizedRoot/')
+      ? normalizedPath.substring(normalizedRoot.length + 1)
+      : '';
+  if (!RegExp(
+    r'^docs/release/production-goal-evidence-\d{4}-\d{2}-\d{2}(?:-phase[1-9]\d?)?\.json$',
+  ).hasMatch(relative)) {
+    return false;
+  }
+  // The inventory describes paths and hashes; it cannot make the referenced
+  // runtime file or asset exempt from its own independent source scan.
+  try {
+    final decoded = jsonDecode(source);
+    if (decoded is! Map<String, dynamic> || decoded['schema_version'] != 1) {
+      return false;
+    }
+    final snapshot = decoded['source_snapshot'];
+    final self = decoded['self_description'];
+    if (snapshot is! Map<String, dynamic> ||
+        self is! Map<String, dynamic> ||
+        self['path'] != relative ||
+        decoded['logs'] is! List<dynamic> ||
+        decoded['changes'] is! List<dynamic> ||
+        (snapshot['sha256'] ?? snapshot['inventory_sha256']) is! String ||
+        !RegExp(r'^[a-f0-9]{64}$').hasMatch(
+          (snapshot['sha256'] ?? snapshot['inventory_sha256']) as String,
+        )) {
+      return false;
+    }
+    final files = snapshot['files'];
+    return files is List<dynamic> &&
+        files.every(
+          (record) =>
+              record is Map<String, dynamic> &&
+              record['path'] is String &&
+              (record['path'] as String).isNotEmpty &&
+              record['bytes'] is int &&
+              (record['bytes'] as int) >= 0 &&
+              record['sha256'] is String &&
+              RegExp(r'^[a-f0-9]{64}$').hasMatch(record['sha256'] as String),
+        );
+  } on FormatException {
+    return false;
+  }
+}
+
 String _staticAssetScanSource(String normalizedPath, String source) {
+  var inspected = source;
+  // These exact loopback QA routes return an empty 204; they do not load or
+  // preserve a retired favicon. Other references in each harness still fail.
+  const emptyIconResponses = <String, String>{
+    '/apps/rayon_sports/web/scripts/browser-portal-controlled-qa.mjs':
+        "if(pathname==='/favicon.ico'){res.writeHead(204,headers);res.end();return;}",
+    '/cloudflare/operator-api/tests/browser/server.mjs':
+        "if(req.url==='/favicon.ico'){res.writeHead(204);res.end();return;}",
+    '/cloudflare/payment-exceptions/tests/browser/server.mjs':
+        "if(url.pathname==='/favicon.ico'){res.writeHead(204);res.end();return;}",
+  };
+  for (final entry in emptyIconResponses.entries) {
+    if (normalizedPath.endsWith(entry.key)) {
+      inspected = inspected.replaceAll(entry.value, '');
+    }
+  }
+  // These exact test/replay calls resolve relative fragments against the
+  // protected /v1/public/rayon/ API. They never load a retired static directory.
+  // Keep every other asset reference in the same files under the normal guard.
+  const registeredMediaCalls = <String, List<String>>{
+    '/cloudflare/rayon-public/tests/response-boundary.test.mjs': [
+      "get(f,'media/'+ASSET)",
+    ],
+    '/cloudflare/rayon-public/tests/snapshot.test.mjs': [
+      r'f.fetch(`media/${assetId}`)',
+      r'f.fetch(`media/${assetId}?snapshot=${s.id}`)',
+      r"f.fetch(`media/${assetId}?snapshot=${'0'.repeat(64)}`)",
+    ],
+    '/tools/scripts/replay_public_snapshot_export.mjs': [
+      r'invoke(`media/${item.source_id}?snapshot=${id}`)',
+    ],
+    '/cloudflare/operator-api/scripts/replay-saved-export.mjs': [
+      r'invoke(`media/${o.source_id}?snapshot=${snapshot[0].snapshot_id}`)',
+    ],
+  };
+  for (final entry in registeredMediaCalls.entries) {
+    if (normalizedPath.endsWith(entry.key)) {
+      for (final call in entry.value) {
+        inspected = inspected.replaceAll(call, '');
+      }
+    }
+  }
   // This exact dynamic URL points at the governed media API, not the retired
   // static /media asset directory. Retain all other checks on this Worker.
   if (!normalizedPath.endsWith('/cloudflare/rayon-public/src/index.mjs')) {
-    return source;
+    return inspected;
   }
-  return source.replaceAll(
+  return inspected.replaceAll(
     r'${origin}/v1/public/rayon/media/${encodeURIComponent(id)}',
     '',
   );
@@ -1792,6 +2046,8 @@ bool _isGeneratedPath(String normalizedPath) {
       normalizedPath.endsWith('/.next') ||
       normalizedPath.contains('/.open-next/') ||
       normalizedPath.endsWith('/.open-next') ||
+      normalizedPath.contains('/apps/rayon_sports/web/tmp/') ||
+      normalizedPath.endsWith('/apps/rayon_sports/web/tmp') ||
       normalizedPath.contains('/apps/rayon_sports/web/test-results/') ||
       normalizedPath.endsWith('/apps/rayon_sports/web/test-results') ||
       normalizedPath.contains('/apps/rayon_sports/web/playwright-report/') ||

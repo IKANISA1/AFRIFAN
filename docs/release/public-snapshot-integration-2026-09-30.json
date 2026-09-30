@@ -1,0 +1,597 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-09-30",
+  "recorded_at_utc": "2026-09-29T23:00:29.885358+00:00",
+  "scope": "Rayon approved Gikundiro public source immutable snapshots, private publication services and five scoped import/verification tools; no identity, financial command or five-club production cutover acceptance",
+  "source_archive": {
+    "path": "docs/drive-import/2026-09-28/mirror/AFRICLUB_Implementation_08_2026-09-28.zip",
+    "sha256": "4264a115e3974bf6236d90cfd8bc59537f066725d56757b9e03dd256095a8af5"
+  },
+  "frozen_inventory": {
+    "path": "docs/drive-import/2026-09-28/candidate-08-vs-checkout.tsv",
+    "sha256": "8726e6f3d3d271b53428ae0086ce3473d33475444ae99d7a282025cb17d02877"
+  },
+  "source_file_count": 20,
+  "files": [
+    {
+      "path": "cloudflare/rayon-public/README.md",
+      "source_bytes": 5107,
+      "source_sha256": "0a3f0c4ff07ce9910cf97219ae2ee8cc7c8a06ec214c643c82364ed6b056f9d2",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/rayon-public/README.md",
+      "zip_member_sha256": "0a3f0c4ff07ce9910cf97219ae2ee8cc7c8a06ec214c643c82364ed6b056f9d2",
+      "active_sha256": "076753aff507c31c41f5bb40911f95784b9fddfb186ad445f43f156685ffd892",
+      "active_bytes": 7611,
+      "before_sha256": "de1987ffdd00d9639a2dfe7a8f60a60a42cdb067927be5ba686a3343376900b5",
+      "frozen_active_checkout_status": "different_sha256",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_with_reviewed_corrections",
+      "corrections": [
+        "Updated current local integration/checker commands, typed projection boundaries, preserved historical staging status, unperformed remote gates and the initial failed HTTP test scope."
+      ],
+      "reason_added": "Document immutable import/publication order, actual local checks, source-rights and deployment boundaries while retaining historical staging context.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/rayon-public/migrations/0002_snapshot_publication.sql",
+      "source_bytes": 947,
+      "source_sha256": "b2922c5c9e9f3bbd2d193e3332df26aa93ce90e0dcdb6399a0522f81cbdd0e67",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/rayon-public/migrations/0002_snapshot_publication.sql",
+      "zip_member_sha256": "b2922c5c9e9f3bbd2d193e3332df26aa93ce90e0dcdb6399a0522f81cbdd0e67",
+      "active_sha256": "b2922c5c9e9f3bbd2d193e3332df26aa93ce90e0dcdb6399a0522f81cbdd0e67",
+      "active_bytes": 947,
+      "before_sha256": null,
+      "frozen_active_checkout_status": "missing_active_path",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "reason_added": "Preserve forward-only legacy snapshot grouping and existing source rows before immutable migration.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/rayon-public/migrations/0003_immutable_public_snapshots.sql",
+      "source_bytes": 5917,
+      "source_sha256": "9e2afd4f88d19b23ab12c7e60e649a336504cb413d2ed4255183a34a6c0cec42",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/rayon-public/migrations/0003_immutable_public_snapshots.sql",
+      "zip_member_sha256": "9e2afd4f88d19b23ab12c7e60e649a336504cb413d2ed4255183a34a6c0cec42",
+      "active_sha256": "9e2afd4f88d19b23ab12c7e60e649a336504cb413d2ed4255183a34a6c0cec42",
+      "active_bytes": 5917,
+      "before_sha256": null,
+      "frozen_active_checkout_status": "missing_active_path",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "reason_added": "Add versioned records/media, immutable seals, retained history and atomic publication head without approving source rows.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/rayon-public/migrations/0004_operator_publication.sql",
+      "source_bytes": 6696,
+      "source_sha256": "6f01ed1c26ee1fa30e58957befa8dcb5b6fde63f1032c961693559638703cf94",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/rayon-public/migrations/0004_operator_publication.sql",
+      "zip_member_sha256": "6f01ed1c26ee1fa30e58957befa8dcb5b6fde63f1032c961693559638703cf94",
+      "active_sha256": "6f01ed1c26ee1fa30e58957befa8dcb5b6fde63f1032c961693559638703cf94",
+      "active_bytes": 6696,
+      "before_sha256": null,
+      "frozen_active_checkout_status": "missing_active_path",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "reason_added": "Add disabled tenant/principal/grant authorization, expiring reviews, idempotent receipts and immutable operator audit in the same public database.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/rayon-public/migrations/0005_operator_candidate_index.sql",
+      "source_bytes": 347,
+      "source_sha256": "1404b8173f68331326dc6c91b8dab7a22e2fc99ad94e862b7d219aad4f1fbe23",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/rayon-public/migrations/0005_operator_candidate_index.sql",
+      "zip_member_sha256": "1404b8173f68331326dc6c91b8dab7a22e2fc99ad94e862b7d219aad4f1fbe23",
+      "active_sha256": "1404b8173f68331326dc6c91b8dab7a22e2fc99ad94e862b7d219aad4f1fbe23",
+      "active_bytes": 347,
+      "before_sha256": null,
+      "frozen_active_checkout_status": "missing_active_path",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "reason_added": "Bound and optimize tenant candidate inspection without changing publication authority or business rows.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/authorized-publication-worker.mjs",
+      "source_bytes": 1560,
+      "source_sha256": "d890e839cf25cb8d0bbacbd9c5e873e3cb418c6c7ff20e77c212351106f0c855",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/rayon-public/src/authorized-publication-worker.mjs",
+      "zip_member_sha256": "d890e839cf25cb8d0bbacbd9c5e873e3cb418c6c7ff20e77c212351106f0c855",
+      "active_sha256": "d890e839cf25cb8d0bbacbd9c5e873e3cb418c6c7ff20e77c212351106f0c855",
+      "active_bytes": 1560,
+      "before_sha256": null,
+      "frozen_active_checkout_status": "missing_active_path",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "reason_added": "Provide private Access-derived operator review/confirm service methods; HTTP routes stay unavailable and enablement defaults false.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/index.mjs",
+      "source_bytes": 14956,
+      "source_sha256": "fb9700694ffbb2821c97a4bd1074e522565d846d7604cd0525e99b73e27f061d",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/rayon-public/src/index.mjs",
+      "zip_member_sha256": "fb9700694ffbb2821c97a4bd1074e522565d846d7604cd0525e99b73e27f061d",
+      "active_sha256": "5381bf6abddd2625a3686a8acb299d18552425a847cc1e56ff9724616b3540b4",
+      "active_bytes": 15486,
+      "before_sha256": "e4c9faaa4818e07a3983af36323a0de87b7c680583287e2a22d73c7f1d74d49d",
+      "frozen_active_checkout_status": "different_sha256",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_with_reviewed_corrections",
+      "corrections": [
+        "Reject non-string or credential-bearing HTTPS URLs; project only string membership benefits/activity entries and valid nonnegative integer public member counts. Four new regression cases failed before this correction."
+      ],
+      "reason_added": "Serve the existing nine transaction-disabled public routes only from a fresh approved immutable head, with response-boundary checks and typed public fields.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/operator-publication.mjs",
+      "source_bytes": 22046,
+      "source_sha256": "7e3f7a27401e529ea7bd62f86a97310dec52f8dd980ba8e29b1ad5087c447a44",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/rayon-public/src/operator-publication.mjs",
+      "zip_member_sha256": "7e3f7a27401e529ea7bd62f86a97310dec52f8dd980ba8e29b1ad5087c447a44",
+      "active_sha256": "7e3f7a27401e529ea7bd62f86a97310dec52f8dd980ba8e29b1ad5087c447a44",
+      "active_bytes": 22046,
+      "before_sha256": null,
+      "frozen_active_checkout_status": "missing_active_path",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "reason_added": "Recheck live operator grants, exact tenant mapping, expiring reviewed snapshot, head compare-and-swap and replay receipt at atomic publication commit.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/publication-worker.mjs",
+      "source_bytes": 1221,
+      "source_sha256": "88fa0c475f490884e76ddfb847d8f11af7da4bcd5213ab2f4165f51940ad7e3f",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/rayon-public/src/publication-worker.mjs",
+      "zip_member_sha256": "88fa0c475f490884e76ddfb847d8f11af7da4bcd5213ab2f4165f51940ad7e3f",
+      "active_sha256": "88fa0c475f490884e76ddfb847d8f11af7da4bcd5213ab2f4165f51940ad7e3f",
+      "active_bytes": 1221,
+      "before_sha256": null,
+      "frozen_active_checkout_status": "missing_active_path",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "reason_added": "Preserve a separately disabled private approval capability without public HTTP routes or caller-supplied clock.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/snapshot-publication.mjs",
+      "source_bytes": 10153,
+      "source_sha256": "9239895ecfc8538d7e157e23c3c25f35f131ccd39f9cdb15e9844dd8efa4b69f",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/rayon-public/src/snapshot-publication.mjs",
+      "zip_member_sha256": "9239895ecfc8538d7e157e23c3c25f35f131ccd39f9cdb15e9844dd8efa4b69f",
+      "active_sha256": "9239895ecfc8538d7e157e23c3c25f35f131ccd39f9cdb15e9844dd8efa4b69f",
+      "active_bytes": 10153,
+      "before_sha256": null,
+      "frozen_active_checkout_status": "missing_active_path",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "reason_added": "Verify complete manifest/row/media integrity and source tenant before immutable snapshot publication; preserve prior head on failed commit.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/rayon-public/tests/response-boundary.test.mjs",
+      "source_bytes": 1964,
+      "source_sha256": "a50c13c9189352e41b30303c278b1f6762902312d4dd444832b0e9fb4c3cb907",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/rayon-public/tests/response-boundary.test.mjs",
+      "zip_member_sha256": "a50c13c9189352e41b30303c278b1f6762902312d4dd444832b0e9fb4c3cb907",
+      "active_sha256": "a50c13c9189352e41b30303c278b1f6762902312d4dd444832b0e9fb4c3cb907",
+      "active_bytes": 1964,
+      "before_sha256": null,
+      "frozen_active_checkout_status": "missing_active_path",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "reason_added": "Prove concurrent head changes, removed approvals and corrupted media cannot escape the final public response boundary.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/rayon-public/tests/snapshot.test.mjs",
+      "source_bytes": 13498,
+      "source_sha256": "02ee93824056c2e34a702b7a3748f5bce721dbeb3ef4a7ea0ded14a62aeba584",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/rayon-public/tests/snapshot.test.mjs",
+      "zip_member_sha256": "02ee93824056c2e34a702b7a3748f5bce721dbeb3ef4a7ea0ded14a62aeba584",
+      "active_sha256": "cf0f31a5eef6c3bbdb69de4cbd3b1e34dbe1f71a65290a55114b3a4674943962",
+      "active_bytes": 15917,
+      "before_sha256": null,
+      "frozen_active_checkout_status": "missing_active_path",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_with_reviewed_corrections",
+      "corrections": [
+        "Added five real published-snapshot projection regressions; four failed before correction and all five pass afterward."
+      ],
+      "reason_added": "Prove immutable lifecycle, nine-route projections, hash/rights/freshness boundaries, atomic failure and public field shape regressions.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/rayon-public/tests/support/d1-sqlite-adapter.mjs",
+      "source_bytes": 1524,
+      "source_sha256": "24441631e0e727562fe8daeadf133b75630eff49e049411957fffaedb860134f",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/rayon-public/tests/support/d1-sqlite-adapter.mjs",
+      "zip_member_sha256": "24441631e0e727562fe8daeadf133b75630eff49e049411957fffaedb860134f",
+      "active_sha256": "24441631e0e727562fe8daeadf133b75630eff49e049411957fffaedb860134f",
+      "active_bytes": 1524,
+      "before_sha256": null,
+      "frozen_active_checkout_status": "missing_active_path",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "reason_added": "Run real isolated SQLite migrations/transactions as a local D1 test adapter with injected commit failures; no cloud actions.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/rayon-public/wrangler.authorized-publisher.staging.jsonc",
+      "source_bytes": 657,
+      "source_sha256": "e575deba1e4e8326873c871f1e15ad075cd10bac97788b8edcade8c55a0e714d",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/rayon-public/wrangler.authorized-publisher.staging.jsonc",
+      "zip_member_sha256": "e575deba1e4e8326873c871f1e15ad075cd10bac97788b8edcade8c55a0e714d",
+      "active_sha256": "e575deba1e4e8326873c871f1e15ad075cd10bac97788b8edcade8c55a0e714d",
+      "active_bytes": 657,
+      "before_sha256": null,
+      "frozen_active_checkout_status": "missing_active_path",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "reason_added": "Preserve source-specified private publisher bindings with disabled URLs, disabled publication and empty operator authentication values.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "cloudflare/rayon-public/wrangler.publisher.staging.jsonc",
+      "source_bytes": 557,
+      "source_sha256": "22c9ccf6c0e063599f702dd152d2920d0cb21148a54f156540399a804814a954",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/rayon-public/wrangler.publisher.staging.jsonc",
+      "zip_member_sha256": "22c9ccf6c0e063599f702dd152d2920d0cb21148a54f156540399a804814a954",
+      "active_sha256": "22c9ccf6c0e063599f702dd152d2920d0cb21148a54f156540399a804814a954",
+      "active_bytes": 557,
+      "before_sha256": null,
+      "frozen_active_checkout_status": "missing_active_path",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "reason_added": "Preserve source-specified private basic publisher resources with disabled publication, worker URL and preview.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "tools/scripts/seed_rayon_public_d1_local.py",
+      "source_bytes": 10541,
+      "source_sha256": "c16a871d02d5dc8a7fdac6c3d9203fda353ce94f5eea23a8e9d6b69242b55b45",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/tools/scripts/seed_rayon_public_d1_local.py",
+      "zip_member_sha256": "c16a871d02d5dc8a7fdac6c3d9203fda353ce94f5eea23a8e9d6b69242b55b45",
+      "active_sha256": "c16a871d02d5dc8a7fdac6c3d9203fda353ce94f5eea23a8e9d6b69242b55b45",
+      "active_bytes": 10541,
+      "before_sha256": "ad40d8110709c80e9b715930080cbc503f58a1ca33dc7552fda331b5b4630c36",
+      "frozen_active_checkout_status": "different_sha256",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "reason_added": "Replace destructive legacy DELETE seed with deterministic bounded immutable inserts, complete source hashes, tenant/media/rights checks and an unpublished state.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "tools/scripts/snapshot_gikundiro_public_for_cloudflare.py",
+      "source_bytes": 4751,
+      "source_sha256": "abece0387309f9f184b6144e479502f6e7f01b2f953bfae4bf01cdcf8cbb2335",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/tools/scripts/snapshot_gikundiro_public_for_cloudflare.py",
+      "zip_member_sha256": "abece0387309f9f184b6144e479502f6e7f01b2f953bfae4bf01cdcf8cbb2335",
+      "active_sha256": "40624317b9d8d233408357f8f64ed618ff3947090af5679746a6c7f8fc5bfd9b",
+      "active_bytes": 5795,
+      "before_sha256": "2000ee01c0e9211a128edec0037a510b9e4297aba1327811669d47cedcdbf941",
+      "frozen_active_checkout_status": "different_sha256",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_with_reviewed_corrections",
+      "corrections": [
+        "Validate exact fixed HTTPS base without URL credentials, alternate ports/path/query/fragment; restrict source tables; refuse redirects before urllib can forward API headers. Eight captured negative cases failed before correction."
+      ],
+      "reason_added": "Preserve read-only source export and truthful nontransactional capture timestamps; restrict fixed HTTPS origin and reject redirect credential forwarding.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "tools/scripts/stage_rayon_public_media_r2.py",
+      "source_bytes": 4050,
+      "source_sha256": "55f4936bd2b97ff81602fac47e0a318fadef0948fcf4c46afc7fd48a45182d51",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/tools/scripts/stage_rayon_public_media_r2.py",
+      "zip_member_sha256": "55f4936bd2b97ff81602fac47e0a318fadef0948fcf4c46afc7fd48a45182d51",
+      "active_sha256": "55f4936bd2b97ff81602fac47e0a318fadef0948fcf4c46afc7fd48a45182d51",
+      "active_bytes": 4050,
+      "before_sha256": "3048638aad2c4e14d56e398a61d336d9a0d83f53fcc3b844e38ec46894c36777",
+      "frozen_active_checkout_status": "different_sha256",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "reason_added": "Replace automatic source-ID object writes with verified content-addressed keys, dry-run default and explicit isolated staging upload/readback switch.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "tools/scripts/verify_rayon_public_api_local.py",
+      "source_bytes": 6333,
+      "source_sha256": "48eadbdec68f870b8f69cc715e8a35ac3031c0d7da8677a2a88b1aa424258ba5",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/tools/scripts/verify_rayon_public_api_local.py",
+      "zip_member_sha256": "48eadbdec68f870b8f69cc715e8a35ac3031c0d7da8677a2a88b1aa424258ba5",
+      "active_sha256": "48eadbdec68f870b8f69cc715e8a35ac3031c0d7da8677a2a88b1aa424258ba5",
+      "active_bytes": 6333,
+      "before_sha256": "cbdc13acfff9e6760f6a0aa5d150b538551e3b72ab23be67079863d82315dab3",
+      "frozen_active_checkout_status": "different_sha256",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "reason_added": "Verify immutable route snapshot identity, source freshness, transaction-disabled projections and stable head across the smoke test.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    },
+    {
+      "path": "tools/scripts/verify_rayon_public_d1_local.py",
+      "source_bytes": 5500,
+      "source_sha256": "2742999e79c1fb5c186f189415b76c5e125562e47d9d519935e4697c0ca33928",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/tools/scripts/verify_rayon_public_d1_local.py",
+      "zip_member_sha256": "2742999e79c1fb5c186f189415b76c5e125562e47d9d519935e4697c0ca33928",
+      "active_sha256": "2742999e79c1fb5c186f189415b76c5e125562e47d9d519935e4697c0ca33928",
+      "active_bytes": 5500,
+      "before_sha256": "c25a3e9b7347c993a9767d30d5cccbbbdbb8cbfcff92ad22ca89892231443da4",
+      "frozen_active_checkout_status": "different_sha256",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "imported_exact",
+      "corrections": [],
+      "reason_added": "Verify imported manifest/record/media rights parity, SQLite integrity/FK state and optional approved active head without changing the source database.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    }
+  ],
+  "unchanged_source_context": [
+    {
+      "path": "cloudflare/rayon-public/migrations/0001_source_staging.sql",
+      "source_bytes": 986,
+      "source_sha256": "f8a22ff0472812c1f6a751624a923064ecdfbc35f2614ede04e547f8675ee9d1",
+      "zip_member": "AFRICLUB_Implementation_08_2026-09-28/source/cloudflare/rayon-public/migrations/0001_source_staging.sql",
+      "zip_member_sha256": "f8a22ff0472812c1f6a751624a923064ecdfbc35f2614ede04e547f8675ee9d1",
+      "active_sha256": "f8a22ff0472812c1f6a751624a923064ecdfbc35f2614ede04e547f8675ee9d1",
+      "active_bytes": 986,
+      "before_sha256": "f8a22ff0472812c1f6a751624a923064ecdfbc35f2614ede04e547f8675ee9d1",
+      "frozen_active_checkout_status": "same_sha256",
+      "source_verification": "frozen_tsv_and_original_zip_match",
+      "integration_disposition": "unchanged_context",
+      "corrections": [],
+      "reason_added": "Preserve existing source staging migration without mutation.",
+      "review_status": "fully_read_source_and_reconciled_applicable_local_tests"
+    }
+  ],
+  "new_files": [
+    {
+      "path": "cloudflare/rayon-public/scripts/check-deployment.mjs",
+      "active_sha256": "6992b17439847392e0f5f437e8aa1213888464f664cbd59c4eb34448ecc2f3ac",
+      "active_bytes": 2494,
+      "integration_disposition": "new_local_control_or_regression",
+      "reason_added": "Verify exact disabled publisher templates/resources and reject added routes, URL exposure, wrong databases/buckets, unexpected authority or plaintext credentials without claiming readiness.",
+      "review_status": "fully_read_and_locally_verified"
+    },
+    {
+      "path": "cloudflare/rayon-public/tests/deployment.test.mjs",
+      "active_sha256": "80ebd71c39c56c66aae6380d676037bc3346bfb0a0f3e86dc3ddcac9d89a98c4",
+      "active_bytes": 1685,
+      "integration_disposition": "new_local_control_or_regression",
+      "reason_added": "Exercise21 concrete disabled-template positive/negative controls for both publishers.",
+      "review_status": "fully_read_and_locally_verified"
+    },
+    {
+      "path": "cloudflare/rayon-public/tests/source_capture_test.py",
+      "active_sha256": "d979fe7991648c812ca0921c898a0af0aefd3e09a5bb878547175affced1f69f",
+      "active_bytes": 3820,
+      "integration_disposition": "new_local_control_or_regression",
+      "reason_added": "Exercise actual urllib redirect handling with both HTTP/HTTPS transports mocked; verify cross-host redirects and7 malformed origin cases reject before network, with sanitized HTTP errors.",
+      "review_status": "fully_read_and_locally_verified"
+    }
+  ],
+  "preserved_existing_configs": [
+    {
+      "path": "cloudflare/rayon-public/wrangler.local.jsonc",
+      "active_sha256": "25421da2e4fa593b3ccd603dc2f6527a55ce4084fb4285ba3f5666a4b460a6f0",
+      "preserved_head_sha256": "25421da2e4fa593b3ccd603dc2f6527a55ce4084fb4285ba3f5666a4b460a6f0",
+      "changed": false
+    },
+    {
+      "path": "cloudflare/rayon-public/wrangler.staging.jsonc",
+      "active_sha256": "f043fc2fde60ac63e0b9f75b5585d88c43abc8ed7edd8fe4efcf941a515edd50",
+      "preserved_head_sha256": "f043fc2fde60ac63e0b9f75b5585d88c43abc8ed7edd8fe4efcf941a515edd50",
+      "changed": false
+    }
+  ],
+  "import_summary": {
+    "previously_absent_candidate_paths_added": 13,
+    "existing_candidate_conflicts_reconciled": 7,
+    "exact_candidate_integrations": 16,
+    "reviewed_candidate_corrections": 4,
+    "new_local_control_and_test_paths": 3,
+    "unchanged_candidate_context_paths": 1,
+    "report_metadata_path": "docs/release/public-snapshot-integration-2026-09-30.json"
+  },
+  "runtime_readiness": {
+    "production_ready": false,
+    "release_authorized": false,
+    "publisher_enabled": false,
+    "operator_authentication_configured": false,
+    "source_import_approved": false,
+    "remote_schema_migrated": false,
+    "media_uploaded": false,
+    "worker_deployed": false,
+    "public_clients_switched": false
+  },
+  "validation": {
+    "node_version": "22.23.2",
+    "wrangler_version": "4.120.0",
+    "public_node_bank": {
+      "tests": 57,
+      "passed": 57,
+      "failed": 0,
+      "skipped": 0
+    },
+    "python_import_bank": {
+      "tests": 20,
+      "passed": 20
+    },
+    "python_source_capture_bank": {
+      "tests": 4,
+      "passed": 4,
+      "negative_cases_failed_before_fix": 8,
+      "network_calls_final_accepted_bank": 0
+    },
+    "public_projection_regressions": {
+      "added": 5,
+      "failed_before_fix": 4,
+      "passed_after_fix": 5
+    },
+    "disabled_config_checker": "both exact templates pass;21 test controls",
+    "wrangler_dry_run": "all three actual entrypoints bundle; no upload; both publishers disabled",
+    "fresh_isolated_sqlite": {
+      "migrations": 5,
+      "integrity_check": "ok",
+      "foreign_key_violations": 0,
+      "actual_retained_source_rows": 2628,
+      "media_metadata_rows": 11,
+      "active_head_rows": 0,
+      "publication_state": "importing"
+    },
+    "local_media_dry_run": {
+      "objects": 11,
+      "verified_original_bytes": true,
+      "remote_changes": false
+    },
+    "retained_actual_source_replay": {
+      "capture_date": "2026-09-25",
+      "expected_exit_code": 1,
+      "error": "source_stale",
+      "source_database_sha256_unchanged": true,
+      "approval_granted": false
+    },
+    "python_compile": "all five tools plus capture regression compile",
+    "javascript_syntax": "reader, snapshot and operator modules pass",
+    "git_diff_check": "pass",
+    "logs": [
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-authorized-publisher-dryrun-20260930.log",
+        "sha256": "70b5d10814fe320fbce4de9f9e4a05da7459131e9349b7316eae8477fca04a70",
+        "bytes": 969
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-publisher-dryrun-20260930.log",
+        "sha256": "0e5f3535a5d5b4aadaa8842bcf04707f5d4c64caf89fa2ff8aa673941dd38aba",
+        "bytes": 687
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-reader-dryrun-20260930.log",
+        "sha256": "46d9c3a196e59e9d3854816fc78046d23570c48089be2ed350c20a4b5f2b03a3",
+        "bytes": 725
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-snapshot-baseline-20260930.log",
+        "sha256": "4f510ddd837e6cdf31b035e3331a11d1c74295bfd683b142805c1cb3fe38c215",
+        "bytes": 4599
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-snapshot-disabled-config-20260930.json",
+        "sha256": "52449642d529812d09972b114d24a77f57bde22ffd8489bfd3395e71c7fc353c",
+        "bytes": 620
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-snapshot-disabled-regressions-20260930.log",
+        "sha256": "455e19e0615184da252e39cf188da4654b703a2c7be5a86f973263905588b9ba",
+        "bytes": 4377
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-snapshot-full-bank-20260930.log",
+        "sha256": "478c8958f26c803bd104d29ae6d110fe3a874ddc156afa3084a9cad3fba4695f",
+        "bytes": 11050
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-snapshot-isolated-saved-db-20260930.json",
+        "sha256": "ee195cfbb2356479046989ba90e77e3eb07e421e4f445d8bea8034835aca556f",
+        "bytes": 1197
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-snapshot-media-dryrun-20260930.log",
+        "sha256": "9655443bec0c677b5462c9907ba781e6a79a7178505974330bbdf411533611e9",
+        "bytes": 74
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-snapshot-projection-after-20260930.log",
+        "sha256": "f7b5d5cd82ae8bc85271398998dca2d55db937f54b867ad4e0ec72b2aa8a0ad5",
+        "bytes": 5700
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-snapshot-projection-before-20260930.log",
+        "sha256": "221206f03f9c7b2e18bea4bb88054759849e67cd230afac7e1f6e5618d218c14",
+        "bytes": 9831
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-snapshot-python-import-20260930.log",
+        "sha256": "68cfb4d1c7070600ec5addf095f7f245d9cf41042130711f0bcb452e3cd1548b",
+        "bytes": 2311
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-snapshot-python-import-final-20260930.log",
+        "sha256": "6eed2b36b36f435318bf18ca8050bdbd33192bdc437ad9fbafc0746b01cf1173",
+        "bytes": 2311
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-snapshot-saved-parity-20260930.log",
+        "sha256": "083562a87e622704499ea46d09b0c9934f43cc7ee507fe3d5f6c237f5364878b",
+        "bytes": 244
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-snapshot-saved-seed-20260930.log",
+        "sha256": "80d7aa85fd1c1073f7275c9a3bf1b2e8f837282197003c144c91e5d4b482f923",
+        "bytes": 125
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-snapshot-stale-replay-20260930.json",
+        "sha256": "63610ce36a5f95680ed3fbe62eaa2778129c1c5a6bfe58aa845f6c50a715cc15",
+        "bytes": 347
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-snapshot-stale-replay-20260930.log",
+        "sha256": "01b6155273ad8a36a99f984be4297d03825a1cc0e93679094416892cc91d560f",
+        "bytes": 182
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-source-capture-after-20260930.log",
+        "sha256": "d21dbba83087d5cb042773625a4031245c860cf94c89ad3456c03e21c9443c51",
+        "bytes": 722
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-source-capture-before-20260930.log",
+        "sha256": "4968a6c9d2816444a231599c880e104577949fdb9678b17f7eddaa914809fe5d",
+        "bytes": 7046
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/public-source-capture-initial-harness-20260930.log",
+        "sha256": "08e8f9cfa990989e8d251c7e980c65ee5b5b431a2dab824ae0207038d58bc0f4",
+        "bytes": 7046
+      }
+    ]
+  },
+  "initial_failed_test_harness": {
+    "log": "output/qa/full-stack-20260914/production-goal-20260929/public-source-capture-initial-harness-20260930.log",
+    "cause": "initial mock intercepted HTTPS only; negative plain-HTTP URL case used urllib HTTP transport",
+    "observed_external_request": "one read-only HTTP request to fixed source host with synthetic key returned HTTP403",
+    "real_credentials_used": false,
+    "source_rows_retrieved": false,
+    "remote_mutations": false,
+    "correction": "accepted before/after regression bank intercepts both protocols; both final transports are mocked"
+  },
+  "remaining_acceptance": [
+    "Approve fresh source capture and immutable import with rights provenance; retained25Sept export is stale and cannot publish.",
+    "Provision and approve scoped staff Access identity/grants, explicit authenticated private service bindings and controlled enablement.",
+    "Verify deployed D1/R2 concurrency, source-refresh operations, cache purge/revocation, regional/performance behavior and restore/rollback under an authorized release candidate.",
+    "Run hosted CI and full declared surface/device/provider/store checks; local SQLite/transport/Worker bundles are scoped implementation evidence.",
+    "Obtain named institutional and release approvals before deployment/client cutover."
+  ],
+  "review_references": [
+    "cloudflare/rayon-public/README.md",
+    "docs/release/production-readiness-remaining-2026-09-29.md"
+  ],
+  "report_self_description": "This report is newly generated evidence metadata; it does not hash itself or count itself as a candidate source implementation."
+}
