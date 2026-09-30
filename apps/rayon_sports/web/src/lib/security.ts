@@ -69,18 +69,18 @@ function hasCsrfMutationHeader(request: NextRequest) {
 }
 
 export function isSameOriginMutation(request: NextRequest) {
-  if (hasCsrfMutationHeader(request) && isAllowedFetchSite(request)) {
-    return true;
-  }
-
+  if (!isAllowedFetchSite(request)) return false;
   const requestOrigin = request.nextUrl.origin;
   const origin = request.headers.get("origin");
-  if (origin) {
+  if (origin != null) {
     try {
-      return new URL(origin).origin === requestOrigin;
+      return new URL(origin).origin === requestOrigin && origin === requestOrigin;
     } catch {
       return false;
     }
+  }
+  if (hasCsrfMutationHeader(request) && isAllowedFetchSite(request)) {
+    return true;
   }
 
   const referer = request.headers.get("referer");

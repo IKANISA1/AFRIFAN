@@ -1,3 +1,5 @@
+
+import { recordProductDiagnostic } from "./privacy-safe-diagnostics";
 import { NextResponse } from "next/server";
 import { getActiveClubReference } from "./club-context";
 import { getAdminSupabase } from "./supabase/admin";
@@ -133,7 +135,7 @@ export async function enforceFeatureState(
     });
 
     if (error) {
-      console.error(`[feature-guard] RPC error for ${featureKey}:`, error.message);
+      recordProductDiagnostic("feature_guard_rpc_failed");
       return { allowed: false, error: "Feature access could not be verified." };
     }
 
@@ -143,8 +145,8 @@ export async function enforceFeatureState(
     }
 
     return resolveGuardResult(state, mode);
-  } catch (err) {
-    console.error(`[feature-guard] Unexpected error for ${featureKey}:`, err);
+  } catch {
+    recordProductDiagnostic("feature_guard_unavailable");
     return { allowed: false, error: "Feature access could not be verified." };
   }
 }

@@ -28,9 +28,31 @@ void main() {
           .map((r) => r.path)
           .toList();
 
-      expect(paths, hasLength(2));
+      expect(paths, hasLength(3));
+      expect(paths, contains('native'));
       expect(paths, contains('fans'));
       expect(paths, contains('tier/:tierId'));
+    });
+
+    test('native sign-in route has its own authentication boundary', () {
+      expect(module.independentlyAuthenticatedPaths, {'/membership/native'});
+      expect(
+        MembershipModule(
+          nativeMembershipSelected: true,
+        ).independentlyAuthenticatedPaths,
+        {'/membership', '/membership/native'},
+      );
+      expect(
+        module.independentlyAuthenticatedPaths,
+        isNot(contains('/membership/tier/:tierId')),
+      );
+      expect(
+        module.routes
+            .whereType<GoRoute>()
+            .firstWhere((r) => r.path == 'native')
+            .name,
+        'membership-native',
+      );
     });
 
     test('/membership/fans route is a compatibility redirect', () {

@@ -43,10 +43,13 @@ short-lived retry credentials use AES-256-GCM with random nonces and associated
 data. Configure distinct random 32-byte encryption and HMAC keys as Worker secrets
 `AUTH_ENCRYPTION_KEY` and `AUTH_HMAC_KEY`, lower-case hexadecimal. Never put them
 in Wrangler vars, app bundles, logs, private plans shared publicly, or this repo.
-Both workers must receive the same securely provisioned key version. Version 1
-is the only implemented key format. Online multi-key rotation and re-encryption
-are still required operational work; replacing the lookup key without a governed
-migration will break identity mapping and may create duplicate users.
+All identity workers must receive the same approved current key version. Version-one
+disabled templates retain the original secret pair; rotated candidates use a bounded
+multi-version policy and secret keyring. Immutable key fingerprints, phone aliases,
+paused bounded rewrapping, original receipt recovery and retirement preflight are
+implemented and rehearsed locally in [KEY_ROTATION.md](KEY_ROTATION.md). Replacing a
+secret under an existing version fails closed. Live secret custody, registration,
+rotation authority and deployment acceptance remain separate release evidence.
 
 Every live session check uses the direct D1 binding, not a replica or cached JWT
 claim. Queries verify account state/epoch, club state/revision, session revocation
@@ -218,7 +221,7 @@ no schedule, and disabled invocation logging. The local checker accepts these
 disabled shapes only; it refuses `--ready` and never approves an enabled candidate.
 
 For separately approved isolated staging, provision a **new** identity D1,
-apply all four ordered identity migrations, configure the direct native gateway domain and exclusive
+apply all five ordered identity migrations, configure the direct native gateway domain and exclusive
 private verifier bindings, supply distinct secret keys, verify/import the identity
 mapping, approve club/template mappings, configure a namespace-isolated rate binding
 and the one-minute drain schedule, then run real runtime/concurrency/provider tests.

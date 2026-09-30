@@ -250,3 +250,18 @@ Playwright and an explicitly supplied installed Chromium executable; original
 Python harnesses remain available. See
 `docs/release/operator-exceptions-integration-2026-09-30.json` for per-path source
 hashes, local changes, command evidence and remaining live acceptance gates.
+
+## Private telemetry integration
+
+The gateway retains one allowlisted HTTP observation and its locally generated
+response correlation ID. When explicitly configured private telemetry is enabled,
+the existing observation is projected into the shared service metric and sent to
+the separate private sink once. It contains no operator, case, order, token,
+phone, body or raw URL. A failed mutating response remains `unknown`, because
+permission revocation or reply loss can follow commit. The response and command
+are independent of metric or clock failure. There is no default console sink or
+legacy fallback when private retention configuration is missing. The explicitly
+injected legacy test sink remains supported.
+
+See `cloudflare/shared-telemetry/README.md` and the separate backend telemetry
+report for source inventory, bounded sink behavior and local verification.

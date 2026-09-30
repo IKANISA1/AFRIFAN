@@ -8,6 +8,8 @@ import { beginProductionBuild, markProductionCompilationComplete, productionSour
 
 const sharedPrefix = "../../../cloudflare/supporter-browser-api/";
 const sharedFiles = ["client.ts", "portal-controller.ts", "browser-platform.ts"];
+const observationPrefix = "../../../cloudflare/web-observations/";
+const observationFiles = ["contracts.mjs", "contracts.d.mts", "http.mjs", "http.d.mts"];
 
 function fixture(t) {
   const repository = fs.mkdtempSync(path.join(os.tmpdir(), "africlub-build-proof-"));
@@ -36,6 +38,31 @@ function portalFixture(t) {
   for (const file of sharedFiles) result.put(`${sharedPrefix}${file}`, "export const shared = true;");
   return result;
 }
+
+function observationFixture(t) {
+  const result = fixture(t);
+  result.put("src/lib/web-observation-client.ts", "export const reporter = true;");
+  for (const file of observationFiles) result.put(`${observationPrefix}${file}`, "export const shared = true;");
+  return result;
+}
+
+for (const file of observationFiles) test(`the web build binds external observation ${file}`, t => {
+  const { root, put, build } = observationFixture(t);
+  const sealed = build();
+  assert.ok(sealed.source.files.some(entry => entry.file === `${observationPrefix}${file}`));
+  put(`${observationPrefix}${file}`, "changed observation runtime");
+  assert.throws(() => validateProductionBuild(root), /stale for the current source/);
+});
+
+test("missing and relocated observation dependencies prevent compilation", t => {
+  const { root } = observationFixture(t);
+  fs.unlinkSync(path.join(root, observationPrefix, "http.mjs"));
+  assert.throws(() => beginProductionBuild(root, ["synthetic-fixture-compiler"]), /Missing required web observation/);
+  const other = observationFixture(t);
+  const declared = path.resolve(other.root, observationPrefix), relocated = `${declared}-foreign`;
+  fs.renameSync(declared, relocated); fs.symlinkSync(relocated, declared);
+  assert.throws(() => beginProductionBuild(other.root, ["synthetic-fixture-compiler"]), /directory symlink escapes/);
+});
 
 test("sealed production source, build and artifacts stay linked without exposing dotenv values", (t) => {
   const { root, build } = fixture(t);

@@ -1,0 +1,538 @@
+{
+  "schemaVersion": 1,
+  "recordDateKigali": "2026-09-30",
+  "generatedAt": "2026-09-30T13:38:55.087361+00:00",
+  "baselineCommit": "9f2a658cc49c212f780b7906bbd37edd215e60bf",
+  "scope": "complete owned local delivery operations capabilities and executed synthetic verification; expanded service telemetry integration is tracked separately",
+  "productionReady": false,
+  "releaseApproved": false,
+  "localSourceCheckpointComplete": true,
+  "sourceFreeze": {
+    "path": "output/qa/full-stack-20260914/production-goal-20260929/local-ops-owned-source-freeze-20260930.json",
+    "sha256": "e9a5719c404e20f339b418f6c67a7cecf196d7e7c4404f9ee1c80b055d955956",
+    "sourceFiles": 39,
+    "added": 31,
+    "modified": 8
+  },
+  "files": [
+    {
+      "path": "cloudflare/allocation-delivery/RECOVERY.md",
+      "action": "added",
+      "bytes": 4783,
+      "sha256": "f044fe8b18af510b5041d674c3abc8d2e496ea7ccf9971b88571814f70779055",
+      "why": "Documents forward-only recovery, durable private-client operation and executed local restore/rollback limits."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/migrations_source/0007_approved_recovery.sql",
+      "action": "added",
+      "bytes": 6879,
+      "sha256": "568509027a53611cc36463d1d085078a67047a9242c5383a74ce5587d8e774c0",
+      "why": "Adds disabled same-database prepared decisions; fresh separate maker/checker confirmation and retained original redrive command commit or roll back atomically."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/recovery-client.ts",
+      "action": "added",
+      "bytes": 11283,
+      "sha256": "91fa4c0885abf9244b190075a1fd736c500186ca9d9117d457cf8513dd48fa72",
+      "why": "Provides durable stage/readback-before-send, original-key uncertainty recovery, explicit GET reconciliation, wrong-event receipt validation and scope fencing."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/scripts/check-recovery-deployment.mjs",
+      "action": "added",
+      "bytes": 2682,
+      "sha256": "9420958e5e24c1498a41eb984d7bdb5725f64429f6efac3adced0284a1eaba67",
+      "why": "Validates disabled private recovery configuration and rejects unresolved/same reviewer identities in ready inspection."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/dispatch-worker.mjs",
+      "action": "modified",
+      "bytes": 535,
+      "sha256": "78338008d08f14b6bd98634d7216a97ea6a7fd2320ae0ae320271033f4f728c8",
+      "why": "Retains bounded observation promises in Worker lifetime context without changing named delivery capabilities."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/dispatcher.mjs",
+      "action": "modified",
+      "bytes": 4608,
+      "sha256": "4489c800546ccc2816eaea214ec6f9d1322df7c707b4fcfbf7e4461e0f87d7e3",
+      "why": "Observes bounded drain and per-club fairness/unknown outcomes while keeping existing original-event keys, deadlines and acknowledgment behavior."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/recovery-worker.mjs",
+      "action": "added",
+      "bytes": 1198,
+      "sha256": "0e5ddce0bbcf17ebf58fc2c156d908a92de7d4ebb04d08f9d97dd7d1b195b8a3",
+      "why": "Binds maker and checker identities to separate trusted entrypoints instead of request-selected principals."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/recovery.mjs",
+      "action": "added",
+      "bytes": 6957,
+      "sha256": "14e43cb4448a6f1398abac1a303b8e246663f8f4647035bfc4d8195b58b32122",
+      "why": "Implements exact event inspection and immutable prepare/confirm receipts with fresh grants, revisions, configured expiry and no dispatch during review."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/source-worker.mjs",
+      "action": "modified",
+      "bytes": 1050,
+      "sha256": "0c85034030d95e74aee0ec1dcf7966f82f7ce3f97757fc5e892c82952185ebe9",
+      "why": "Retains bounded observation promises in Worker lifetime context without changing named delivery capabilities."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/source.mjs",
+      "action": "modified",
+      "bytes": 12017,
+      "sha256": "c76598fe1e480e9895e4821ae80127755d3583a8dad775e24ba18eabd40f3550",
+      "why": "Adds best-effort bounded queue-age observations without changing the existing private health response or review authority."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/tests/recovery-client.test.mjs",
+      "action": "added",
+      "bytes": 9184,
+      "sha256": "2b9f978b5d48ba843cde3879c4f08695fa464fde19d3f500880910ee93773b84",
+      "why": "Executes the strict compiled client with real private SQLite journal, crash/lost-ack, storage failure, CAS race, wrong-event and deadline tests."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/tests/recovery-config.test.mjs",
+      "action": "added",
+      "bytes": 2028,
+      "sha256": "b897c1261998e35a06a971af0ce49e6352b5a409f0f86bb9f0ade61699dc9cad",
+      "why": "Exercises disabled configuration and real queue/acknowledgment telemetry without leaking domain identifiers or triggering retries."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/tests/recovery.test.mjs",
+      "action": "added",
+      "bytes": 11681,
+      "sha256": "8158edd56646ed640ef163eac82317149fe9ee7d9eaf488510d02578ec7dfece",
+      "why": "Exercises transaction-boundary revocation, separation, expired/stale decisions, direct-path denial, lost acknowledgments, rollback and independent reviewer races."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/tests/recovery/fixture.mjs",
+      "action": "added",
+      "bytes": 1979,
+      "sha256": "f58b2924507854cdd23043e8c4e30be8d0d1b73f13f665fd43817e13f7f43a95",
+      "why": "Supplies real SQLite recovery fixtures and independent worker connections for concurrent decision/receipt validation."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/tests/recovery/recovery-race-worker.mjs",
+      "action": "added",
+      "bytes": 617,
+      "sha256": "605cccb4da3b6db11dc4601dca624ad5dd575e32ef2bb8bef3355d0b3f8ea6ef",
+      "why": "Supplies real SQLite recovery fixtures and independent worker connections for concurrent decision/receipt validation."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/tests/telemetry.test.mjs",
+      "action": "added",
+      "bytes": 2542,
+      "sha256": "dc64a68ea8cfe63a91017429efe4123b7ef963eb04f7f11a512846c02a6c4a43",
+      "why": "Exercises disabled configuration and real queue/acknowledgment telemetry without leaking domain identifiers or triggering retries."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/wrangler.recovery.staging.jsonc",
+      "action": "added",
+      "bytes": 805,
+      "sha256": "6cd155140b1b876eb750833ef01ad3f35b8e22de296900a11bff89ee87dda25e",
+      "why": "Adds disabled recovery deployment input with two unresolved reviewers, existing source database, no dispatcher/provider binding and blank retention policy."
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/README.md",
+      "action": "modified",
+      "bytes": 9686,
+      "sha256": "d07c8aba9081de9503489edbfa062b91c7a5b3702841bccd0f86741a54fd1984",
+      "why": "Records the private read-only inspection, telemetry and existing no-resend boundary."
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/scripts/check-review-deployment.mjs",
+      "action": "added",
+      "bytes": 2015,
+      "sha256": "7ce5c7bc238d9efa8c45e71b94d5a214d98cff939626b86e7ab665e4a3965575",
+      "why": "Validates a disabled read-only claim-review template without provider credentials or unlisted capabilities."
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/review-worker.mjs",
+      "action": "added",
+      "bytes": 677,
+      "sha256": "a44507eb99bf4ce7a303a72549b9266d6814e64d6780cef5f208deb54ac0c23d",
+      "why": "Exposes only named private read methods and sanitizes storage failures while preserving hidden no-store HTTP."
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/review.mjs",
+      "action": "added",
+      "bytes": 3866,
+      "sha256": "a2f60cd1d089082983f3720c595fff527279850b84f1fd4aa128d5b820aded85",
+      "why": "Adds bounded authorized private aggregate age/count and claim inspection, explicitly denying any provider-claim resend capability."
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/service.mjs",
+      "action": "modified",
+      "bytes": 5679,
+      "sha256": "dbffe951e2d15f2fd3298fa2b288081f89760a63285386e83d703dc8edb67966",
+      "why": "Instruments one existing dispatch operation without changing its durable claim, deadline, acceptance or no-resend protocol."
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/status-aware-worker.mjs",
+      "action": "modified",
+      "bytes": 721,
+      "sha256": "305340e27b8dbd2cc50cba86a9b91f11ad72c6285a76cefe73c5a716f6492e99",
+      "why": "Passes the Worker lifetime context for bounded best-effort metrics without changing RPC behavior or dispatch outcomes."
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/worker.mjs",
+      "action": "modified",
+      "bytes": 791,
+      "sha256": "63649a29c633b6f0072f9a46751605276603ab6add694b95984cb1a6952d1158",
+      "why": "Passes the Worker lifetime context for bounded best-effort metrics without changing RPC behavior or dispatch outcomes."
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/review-config.test.mjs",
+      "action": "added",
+      "bytes": 903,
+      "sha256": "7dedb988efe931bfd92e1dd37c42ac60280f843b445b0af16088a3423900297a",
+      "why": "Proves actual provider dispatch is not repeated by metric failures; bounds private claim inspection and rejects public/configuration/secret-field widening."
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/review-telemetry.test.mjs",
+      "action": "added",
+      "bytes": 4295,
+      "sha256": "2b064d4a342ca6facca19201552fedcbd1ad5d30612e63d4583cdd25bc12a045",
+      "why": "Proves actual provider dispatch is not repeated by metric failures; bounds private claim inspection and rejects public/configuration/secret-field widening."
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/wrangler.review.staging.jsonc",
+      "action": "added",
+      "bytes": 621,
+      "sha256": "ceee6b99285deafb70546ceb7377cad22c227433e8a9a1348ffe2d1e0725a7f4",
+      "why": "Adds a disabled private review reader with no schedule, public route or provider credential."
+    },
+    {
+      "path": "cloudflare/shared-telemetry/README.md",
+      "action": "added",
+      "bytes": 3864,
+      "sha256": "0e5e3ab1fe4e5c780a1ad0718895a1b4c529f57a35a842f0cfe674b3704cc39c",
+      "why": "Documents finite schemas, explicit private binding/retention controls and the limits of locally verified telemetry."
+    },
+    {
+      "path": "cloudflare/shared-telemetry/migrations/0001_private_metrics.sql",
+      "action": "added",
+      "bytes": 1145,
+      "sha256": "782e883ed9a6cd3ad3090360a58141459538971fc18cf738137441c1acada317",
+      "why": "Adds a separate bounded observation schema with expiry indexes; grants no financial, queue, identity or provider effect."
+    },
+    {
+      "path": "cloudflare/shared-telemetry/scripts/check-deployment.mjs",
+      "action": "added",
+      "bytes": 1560,
+      "sha256": "3750d3668ecc2632112b93ab6bd1229eab3569076e5acb9e19be073796a6243d",
+      "why": "Rejects unknown configuration capabilities, public routes, implicit logging and enabled or unreviewed retention defaults."
+    },
+    {
+      "path": "cloudflare/shared-telemetry/sink.mjs",
+      "action": "added",
+      "bytes": 3585,
+      "sha256": "6aee1199f97aaa0e63a8ad4f882458211eafd424ec27defe33c02e0782f075aa",
+      "why": "Implements private sanitized observation storage, recent-time validation, server-fixed retention, trace reads and bounded explicit expiry."
+    },
+    {
+      "path": "cloudflare/shared-telemetry/telemetry.mjs",
+      "action": "added",
+      "bytes": 6952,
+      "sha256": "29ee113ca32b0e6f4bc99eb2d885d0c0acdf0615398508e937f535ae5c66ebd7",
+      "why": "Provides exact finite privacy-safe metrics, bounded queue ages, locally generated traces and one-attempt non-disruptive private emission."
+    },
+    {
+      "path": "cloudflare/shared-telemetry/tests/sink.test.mjs",
+      "action": "added",
+      "bytes": 5828,
+      "sha256": "a74935293222db9eb2c8b95d486a39e80d608bdfabd85a934b265037c506c7ab",
+      "why": "Executes actual SQLite retention, expired-read exclusion, bounded deletion, configuration, secret-field injection and projection invariants."
+    },
+    {
+      "path": "cloudflare/shared-telemetry/tests/telemetry.test.mjs",
+      "action": "added",
+      "bytes": 6179,
+      "sha256": "d80962eda9daa73e20bb50965721a7100f6b65516047f37b86b66dfe0889c254",
+      "why": "Rejects sensitive or malformed telemetry and proves sink, clock, classifier and lifecycle-context faults cannot change or retry a service operation."
+    },
+    {
+      "path": "cloudflare/shared-telemetry/worker.mjs",
+      "action": "added",
+      "bytes": 711,
+      "sha256": "45829231c6f9d27a8e6d5b1c1ee1644b59546b7c90c0026fbfd545633afa8d76",
+      "why": "Separates private writer, trace reader and retention capabilities; ordinary HTTP remains hidden."
+    },
+    {
+      "path": "cloudflare/shared-telemetry/wrangler.staging.jsonc",
+      "action": "added",
+      "bytes": 528,
+      "sha256": "90b4ca1dd5b07a57398142961fae1c59d2f0fd134285c4205866626c27f3517d",
+      "why": "Supplies disabled private metrics configuration with one separate unresolved database and no invented retention policy."
+    },
+    {
+      "path": "tools/scripts/local_ops_rehearsal.mjs",
+      "action": "added",
+      "bytes": 17845,
+      "sha256": "1779cfaeaf5fb844c18d9030be2dd39db5822f82dfdd78232b0dea4556adcc5a",
+      "why": "Executes five-club synthetic load and faults, real independent-connection races, hash-verified forward restore, one-writer cutover and actual old-dispatcher rollback."
+    },
+    {
+      "path": "tools/scripts/local_ops_rehearsal_journal.mjs",
+      "action": "added",
+      "bytes": 3936,
+      "sha256": "7fdcc0d347a86fdac214b09696ff3a7ae238add56b3730e8f056322e6b99ddab",
+      "why": "Provides a real private-file SQLite CAS journal with retained immutable history and authenticated host scope binding."
+    },
+    {
+      "path": "tools/scripts/local_ops_rehearsal_no_network.cjs",
+      "action": "added",
+      "bytes": 1326,
+      "sha256": "fcac22f02fe10167b316b32174f537dc796378f067df3602bc6c285067a810df",
+      "why": "Denies outbound fetch, DNS and Internet sockets during local bundling and reports only blocked-attempt counts."
+    }
+  ],
+  "verification": {
+    "ownedNodeBank": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/local-ops-owned-bank-verified-20260930.log",
+      "sha256": "9b6e0faa849043ed391f868ac4765925b04e73df0de33071d6cbd9a2fdc2602d",
+      "exitCode": 0,
+      "tests": 440,
+      "passed": 440,
+      "failed": 0,
+      "skipped": 0
+    },
+    "strictTypeScriptClient": "included in executed bank; TypeScript 5.9.3, strict NodeNext/ES2022",
+    "offlineWranglerBundles": [
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/local-ops-allocation-dispatch-wrangler-offline-20260930.log",
+        "sha256": "01fdc66b968ecf8642f0574452f125f1c8a30b30e547b67a91cb6c39729c5af4",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/local-ops-allocation-source-wrangler-offline-20260930.log",
+        "sha256": "2d782e3e79f290175099d33960c476567516ac27e2622d326a55cf6a1a9a21ea",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/local-ops-auth-review-wrangler-offline-20260930.log",
+        "sha256": "c6bb1d282528613a5ddfe9d90f55a1f78d2cdc6ed01f84e6cb3ea027895d1d07",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/local-ops-auth-sender-wrangler-offline-20260930.log",
+        "sha256": "f566608c1da470857cd87d2ce7ae46d0f2049efd960c53efe3aa4e7c5283f0f1",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/local-ops-auth-status-sender-wrangler-offline-20260930.log",
+        "sha256": "7bd3cc3282f789844d8865acafd7adcf4fcbc9cb1d6092ad3aef640cb615e551",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/local-ops-metrics-wrangler-offline-20260930.log",
+        "sha256": "a4501a58cbf71396431a56eeaed3a28662be34fee0585382fd154e33a8460249",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/local-ops-recovery-wrangler-offline-20260930.log",
+        "sha256": "1dc1dd85caef22dc6dcdfacca6b3116dd4c5f4f28e9ebb7f4b425fc6a8c01645",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      }
+    ],
+    "wranglerVersion": "4.120.0",
+    "nodeVersion": "22.23.2",
+    "diffCheck": "passed",
+    "executedRehearsal": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/local-ops-rehearsal-verified-20260930.json",
+      "sha256": "04b64fd54ae8fa37638d04193eec386fed44c23d01a93a86b201b120d87edb6e",
+      "result": {
+        "schemaVersion": 1,
+        "generatedAt": "2026-09-30T13:33:09.400Z",
+        "scope": "executed disposable SQLite/private-binding/synthetic-only rehearsal",
+        "program": {
+          "name": "AFRICLUB_DISPOSABLE_LOCAL_SQLITE_V1",
+          "clubIds": [
+            24,
+            25,
+            26,
+            27,
+            28
+          ],
+          "eventsPerClub": 12,
+          "concurrentDrains": 4,
+          "maxDrainCycles": 50,
+          "maxDrainP95Ms": 1000,
+          "maxRestoreMs": 5000,
+          "scope": "synthetic fixture budgets, not production traffic or approved SLOs"
+        },
+        "passed": true,
+        "productionReady": false,
+        "externalNetworkAttempts": 0,
+        "providerCalls": 0,
+        "liveChanges": 0,
+        "load": {
+          "allocatedEvents": 66,
+          "drainCalls": 60,
+          "cycles": 15,
+          "concurrentDrains": 4,
+          "drainP95Ms": 19.529,
+          "drainMaximumMs": 115.442,
+          "unknownSummaries": 1,
+          "retrySummaries": 2,
+          "perClubInboxCounts": {
+            "24": 14,
+            "25": 13,
+            "26": 13,
+            "27": 13,
+            "28": 13
+          },
+          "financialConservation": {
+            "ledger_count": 66,
+            "ledger_amount": 660000,
+            "allocation_count": 66,
+            "external_claim_count": 66,
+            "receipt_count": 66,
+            "outbox_count": 66
+          },
+          "financialHashesBefore": {
+            "pa_allocations": "e724261ad4566febe762ee70a9dc4cce9f360fefd035418e46e9aa706ead0d8e",
+            "pa_external_claims": "70cb1b9343afa41409b85937c6684f2c327f547d9fb82b427814f21cc74c812d",
+            "pa_ledger": "0ba1fc08f898550a73922b6ffd775355dad9470a1ec8d13586538f939aad614d",
+            "pa_memberships": "9600e610e261809478509ce3a3aeb906854a0a119fd518d9f84d8757b41bc828",
+            "pa_orders": "3b9f024fb36ac0894ba38ee8fc65e5f3e8b5c81b7e1239441b1db6bc136739db",
+            "pa_outbox": "8b571b19704b52f8f78a697d6f196528ec717ab629249694f1bfe5932891f6c7",
+            "pa_receipts": "9e9efbc5d9ffd4bdb48a1dbcd07a0a3daa064478ba7d630bbee01f4e230f8bba"
+          },
+          "financialHashesAfter": {
+            "pa_allocations": "e724261ad4566febe762ee70a9dc4cce9f360fefd035418e46e9aa706ead0d8e",
+            "pa_external_claims": "70cb1b9343afa41409b85937c6684f2c327f547d9fb82b427814f21cc74c812d",
+            "pa_ledger": "0ba1fc08f898550a73922b6ffd775355dad9470a1ec8d13586538f939aad614d",
+            "pa_memberships": "9600e610e261809478509ce3a3aeb906854a0a119fd518d9f84d8757b41bc828",
+            "pa_orders": "3b9f024fb36ac0894ba38ee8fc65e5f3e8b5c81b7e1239441b1db6bc136739db",
+            "pa_outbox": "8b571b19704b52f8f78a697d6f196528ec717ab629249694f1bfe5932891f6c7",
+            "pa_receipts": "9e9efbc5d9ffd4bdb48a1dbcd07a0a3daa064478ba7d630bbee01f4e230f8bba"
+          },
+          "telemetryEvents": 366,
+          "sinkLostAck": true,
+          "sourceLostAck": true,
+          "ignoredSinkDeadlineWithLateCommit": true
+        },
+        "restore": {
+          "restoredMs": 12.741,
+          "integrity": "ok",
+          "foreignKeyViolations": 0,
+          "olderBackupMissingPostBackupAllocations": 5,
+          "olderBackupStayedQuarantined": true,
+          "forwardCheckpointByteHashesVerified": true,
+          "forwardFinancialHashesVerified": true,
+          "sourceAndSinkOriginalEventReceiptPairsVerified": 66,
+          "singleWriterModesAtCutover": [
+            "disabled",
+            "disabled",
+            "isolated-staging"
+          ],
+          "artifacts": {
+            "olderSource": {
+              "file": "/var/folders/yx/gzgvttgj2ljd6n_vs2qzdjq80000gn/T/africlub-local-ops-MNjMKQ/older-source.sqlite",
+              "bytes": 598016,
+              "sha256": "5a63bee573060a0610d9df0dcaf382674c484c7a4e46bc6481726bedbb037767"
+            },
+            "olderInbox": {
+              "file": "/var/folders/yx/gzgvttgj2ljd6n_vs2qzdjq80000gn/T/africlub-local-ops-MNjMKQ/older-inbox.sqlite",
+              "bytes": 24576,
+              "sha256": "4ebac7f3e4b42a5a0e4e4d68a25654cd1950d11c770f3ef78dbd9a1e058e3e5e"
+            },
+            "forwardSource": {
+              "file": "/var/folders/yx/gzgvttgj2ljd6n_vs2qzdjq80000gn/T/africlub-local-ops-MNjMKQ/forward-source-frozen.sqlite",
+              "bytes": 716800,
+              "sha256": "e3501b0538c83128fc44ce20f8cf4156f75c877d03e06e6f57d004afcdbbc603"
+            },
+            "forwardInbox": {
+              "file": "/var/folders/yx/gzgvttgj2ljd6n_vs2qzdjq80000gn/T/africlub-local-ops-MNjMKQ/forward-inbox.sqlite",
+              "bytes": 61440,
+              "sha256": "637749337c434a41520ba7398d7d400567fcbaec7eda97ca40316a7423afe082"
+            }
+          }
+        },
+        "independentConnections": {
+          "tests": 29,
+          "passed": 29,
+          "failed": 0,
+          "log": {
+            "file": "/var/folders/yx/gzgvttgj2ljd6n_vs2qzdjq80000gn/T/africlub-local-ops-MNjMKQ/independent-connection-tests.log",
+            "sha256": "f919f71658c384d911fa10a9cec529d6dd18c0ba328f67727be9af6ee48276be"
+          },
+          "scope": "real SQLite files and distinct Node workers; financial same-key/different-key/provider races and recovery reviewer races"
+        },
+        "rollback": {
+          "baselineCommit": "9f2a658cc49c212f780b7906bbd37edd215e60bf",
+          "baselineDispatcherSha256": "d64ea56c47a2d6bf664a3f12a4bec3d4c3eee63c9c5d96b6665713cf2135d4af",
+          "executedBodySha256": "f634e33761fb86d76a1cffb0cb6849dbfc3135fb3de096e5392e02e276055d68",
+          "relativeImportRebindings": 1,
+          "previousDispatcherActuallyExecuted": true,
+          "forwardDataRetainedBeforeRollback": {
+            "pa_allocations": "e724261ad4566febe762ee70a9dc4cce9f360fefd035418e46e9aa706ead0d8e",
+            "pa_external_claims": "70cb1b9343afa41409b85937c6684f2c327f547d9fb82b427814f21cc74c812d",
+            "pa_ledger": "0ba1fc08f898550a73922b6ffd775355dad9470a1ec8d13586538f939aad614d",
+            "pa_memberships": "9600e610e261809478509ce3a3aeb906854a0a119fd518d9f84d8757b41bc828",
+            "pa_orders": "3b9f024fb36ac0894ba38ee8fc65e5f3e8b5c81b7e1239441b1db6bc136739db",
+            "pa_outbox": "8b571b19704b52f8f78a697d6f196528ec717ab629249694f1bfe5932891f6c7",
+            "pa_receipts": "9e9efbc5d9ffd4bdb48a1dbcd07a0a3daa064478ba7d630bbee01f4e230f8bba"
+          },
+          "newEventDeliveredAfterRollback": true,
+          "finalConservation": {
+            "ledger_count": 67,
+            "ledger_amount": 670000,
+            "allocation_count": 67,
+            "external_claim_count": 67,
+            "receipt_count": 67,
+            "outbox_count": 67
+          },
+          "finalEnabledWriterCount": 0,
+          "killSwitchRejected": true
+        },
+        "privateFixtureDirectory": "/var/folders/yx/gzgvttgj2ljd6n_vs2qzdjq80000gn/T/africlub-local-ops-MNjMKQ",
+        "totalMs": 693.288,
+        "limitations": [
+          "SQLite fixtures are not D1/workerd/provider/device acceptance",
+          "Measured budgets are synthetic local bounds, not approved production SLOs",
+          "Forward reconciliation restores an authenticated current local checkpoint; production backup provenance and access require separate verification",
+          "The old dispatcher body is executed with one import-path rebinding, on current private source and inbox adapters",
+          "No schema or financial history was downgraded or deleted"
+        ]
+      }
+    }
+  },
+  "historicalFailures": [
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/local-ops-delivery-bank-20260930.log",
+      "reason": "Initial full bank omitted installed TypeScript from PATH; client harness could not launch tsc. Correct pinned run passed without modifying that test."
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/local-ops-rehearsal-20260930.log",
+      "reason": "Initial rehearsal verification used JSON insertion order instead of the domain canonical envelope hash; corrected to the existing domain hash and reran."
+    },
+    {
+      "reason": "Earlier Wrangler dry-runs used tool defaults and showed telemetry/update behavior; they are not offline proofs. All seven were repeated with telemetry/update checks disabled and an outbound-network guard, observing zero blocked attempts."
+    }
+  ],
+  "limits": [
+    "Synthetic fixture principal approvals are explicitly not human approvals. No real provider calls, D1 migration application, deployment, ACL or production flags were changed.",
+    "Runtime bindings, staff authorization, live backup authenticity and legal retention selection remain separate external acceptance.",
+    "No-resend authentication provider claims are inspected, never redriven; allocation redrive only schedules the original operations inbox event.",
+    "Applying the optional 0007 source migration blocks the old direct redrive path and requires the reviewed maker/checker protocol; do not downgrade the schema.",
+    "Root and peer-agent telemetry integrations, whole-system CI inventory, app/device/store acceptance are outside this owned checkpoint."
+  ]
+}

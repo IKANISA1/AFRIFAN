@@ -34,6 +34,48 @@ void main() {
       ColorTokens.init();
     });
 
+    for (final signedIn in [false, true]) {
+      testWidgets(
+        'independent identity entry stays reachable without a Supabase grant ($signedIn)',
+        (tester) async {
+          await tester.pumpWidget(
+            AfriClubApp(
+              config: config,
+              modules: [
+                _HomeModule(),
+                _OnboardingModule(),
+                _SettingsModule(),
+                _IndependentIdentityModule(),
+              ],
+              authRepository: FakeAuthRepository(
+                restoreResult: signedIn
+                    ? const UserProfile(
+                        id: 'user-1',
+                        clubId: '1',
+                        publicUserId: '483912',
+                      )
+                    : null,
+              ),
+              initialLocation: '/native-identity-entry',
+            ),
+          );
+          await tester.pumpAndSettle();
+          expect(find.text('Independent identity entry'), findsOneWidget);
+          expect(find.byType(_FakeOnboardingScreen), findsNothing);
+          expect(find.byType(_FakeHomeScreen), findsNothing);
+          final context = tester.element(
+            find.text('Independent identity entry'),
+          );
+          GoRouter.of(context).go('/settings');
+          await tester.pumpAndSettle();
+          expect(
+            find.byType(signedIn ? _FakeSettingsScreen : _FakeOnboardingScreen),
+            findsOneWidget,
+          );
+        },
+      );
+    }
+
     for (final hasMomo in [true, false]) {
       testWidgets(
         'startup restores a user from the retired splash alias (MOMO: $hasMomo)',
@@ -592,6 +634,23 @@ Future<ByteData> _loadFlutterArtifactFont(String fileName) async {
     ).readAsBytes();
     return ByteData.sublistView(bytes);
   }
+}
+
+class _IndependentIdentityModule extends FeatureModule {
+  @override
+  String get featureKey => 'membership';
+  @override
+  Set<String> get independentlyAuthenticatedPaths => const {
+    '/native-identity-entry',
+  };
+  @override
+  List<RouteBase> get routes => [
+    GoRoute(
+      path: '/native-identity-entry',
+      builder: (context, state) =>
+          const Scaffold(body: Text('Independent identity entry')),
+    ),
+  ];
 }
 
 class _FakeOnboardingScreen extends StatelessWidget {

@@ -1,11 +1,12 @@
 import { AuthenticationCodeDeliveryService } from './service.mjs';
 import { configuration, inputRequest, exact, demand } from './policy.mjs';
 import { receiptRoutes, receiptKey, recipientCommitment, hmac, receiptDb, requireReceipt } from './receipts-policy.mjs';
+import {traceOperation} from '../../shared-telemetry/telemetry.mjs';
 /** Opt-in decorator. Existing sender remains the only owner of external submission. */
 export class StatusAwareDeliveryService {
   constructor(env, options = {}) {
-    this.env = env; this.clock = options.clock ?? Date.now;
-    this.sender = new AuthenticationCodeDeliveryService(env, options);
+    this.env = env; this.clock = options.clock ?? Date.now;this.context=options.ctx;
+    this.sender = new AuthenticationCodeDeliveryService(env, {...options,observe:false});
   }
   async bind(raw) {
     requireReceipt(this.env.RECEIPT_BINDING_ENABLED === 'true', 'receipt_binding_disabled', 503);
@@ -29,13 +30,17 @@ export class StatusAwareDeliveryService {
       row.phone_number_id === route.phoneNumberId && row.key_version === '1', 'receipt_binding_conflict', 409);
     return input;
   }
-  async deliver(raw) { const input = await this.bind(raw); return this.sender.deliver(input); }
+  observeDelivery(raw,work){return traceOperation(this.env,{service:'auth_code_delivery',operation:'credential_delivery',clubId:Number.isSafeInteger(raw?.clubId)?raw.clubId:null},work,
+    {clock:this.clock,ctx:this.context,selectOutcome:result=>result.accepted?'completed':'unknown'});}
+  async deliver(raw) {return this.observeDelivery(raw,async()=>{const input=await this.bind(raw);return this.sender.deliver(input);});}
   async deliverWithReceipt(raw) {
+    return this.observeDelivery(raw,async()=>{
     exact(raw, ['challengeId','clubId','phone','code','expiresAt','channel','template']);
     const { template, ...input } = raw;
     const route = configuration(this.env, this.clock()).routes.find(r => r.clubId === input.clubId);
     demand(route && route.templateName === template, 'template_not_approved');
     await this.bind(input);
     return this.sender.deliverWithReceipt(raw);
+    });
   }
 }

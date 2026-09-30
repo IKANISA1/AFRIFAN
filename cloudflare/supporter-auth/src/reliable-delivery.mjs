@@ -1,3 +1,4 @@
+import {assertRegisteredKeyPolicy} from './key-state.mjs';
 import {IdentityService} from './identity-service.mjs';
 import {sendPrivateWhatsAppOtp} from './private-delivery-sender.mjs';
 import {deliveryPolicy,queuePolicy,deliveryDemand,OtpDispatchError,boundedDelivery} from './delivery-policy.mjs';
@@ -78,7 +79,9 @@ async function drain(env,{clock=Date.now,sender=sendPrivateWhatsAppOtp,rpcTimeou
  const callMs=rpcTimeoutMs??p.rpcTimeoutMs;
  deliveryDemand(Number.isInteger(callMs)&&callMs>0&&callMs<=p.rpcTimeoutMs,'invalid_delivery_timeout');
  deliveryDemand(typeof env.AUTH_DB?.withSession==='function','primary_database_required');
- const s=new IdentityService({...env,AUTH_DB:env.AUTH_DB.withSession('first-primary')},{clock});
+ const s=new IdentityService({...env,AUTH_DB:env.AUTH_DB.withSession('first-primary')},{clock}),
+  keyReady=ready.replace("x.key_version='1'",`x.key_version='${s.vault.currentVersion}'`);
+ await assertRegisteredKeyPolicy(s.db,s.vault);
  const control=await s.stmt('SELECT revision FROM auth_delivery_control WHERE singleton=1 AND enabled=1').first();
  deliveryDemand(control,'delivery_control_disabled');
  const started=monotonic(),counts=new Map();
@@ -89,13 +92,13 @@ async function drain(env,{clock=Date.now,sender=sendPrivateWhatsAppOtp,rpcTimeou
   const allowed=p.clubIds.filter(id=>(counts.get(id)??0)<p.perClubLimit);if(!allowed.length)break;
   const c=await s.stmt(`SELECT q.*,c.auth_template,d.revision delivery_revision FROM ${joins}
    LEFT JOIN auth_delivery_turns t ON t.club_id=q.club_id
-   WHERE q.club_id IN(${slots(allowed)}) AND ${ready} AND ${subject} AND ${due}
+   WHERE q.club_id IN(${slots(allowed)}) AND ${keyReady} AND ${subject} AND ${due}
    AND NOT EXISTS(SELECT 1 FROM auth_delivery_quarantine z WHERE z.challenge_id=q.challenge_id)
    ORDER BY COALESCE(t.last_sequence,0),q.next_attempt_ms,q.challenge_id LIMIT 1`,...allowed).first();
   if(!c)break;
   const lease=crypto.randomUUID();counts.set(c.club_id,(counts.get(c.club_id)??0)+1);
   try {await transact(s,[
-   s.assertion(`EXISTS(SELECT 1 FROM ${joins} WHERE q.challenge_id=? AND ${ready} AND ${subject}
+   s.assertion(`EXISTS(SELECT 1 FROM ${joins} WHERE q.challenge_id=? AND ${keyReady} AND ${subject}
     AND d.revision=? AND ${due})`,c.challenge_id,control.revision),
    statement(s,`UPDATE auth_challenges SET delivery_state='leased',lease_id=?,lease_until_ms=${NOW}+?,delivery_attempts=delivery_attempts+1
     WHERE challenge_id=? AND delivery_state IN('queued','retry') AND delivery_attempts=? AND next_attempt_ms<=${NOW}`,lease,p.leaseMs,c.challenge_id,c.delivery_attempts),
@@ -112,7 +115,7 @@ async function drain(env,{clock=Date.now,sender=sendPrivateWhatsAppOtp,rpcTimeou
    const payload=await s.vault.open(c.delivery_cipher,`challenge:${c.challenge_id}`);
    const live=await env.AUTH_DB.withSession('first-primary').prepare(`SELECT 1 ok FROM ${joins} WHERE q.challenge_id=? AND q.lease_id=? AND q.delivery_state='leased'
     AND q.state='open' AND q.expires_at_ms>${NOW}+30000 AND q.lease_until_ms>${NOW}+?
-    AND ${ready} AND ${subject} AND d.revision=?`).bind(c.challenge_id,lease,callMs+1000,control.revision).first();
+    AND ${keyReady} AND ${subject} AND d.revision=?`).bind(c.challenge_id,lease,callMs+1000,control.revision).first();
    deliveryDemand(live&&env.AUTH_DELIVERY_ENABLED==='true'&&env.AUTH_SERVICE_ENABLED==='true'&&
     env.AUTH_DELIVERY_POLICY_JSON===policyBytes&&env.AUTH_DELIVERY_MODE==='private-deduplicated','delivery_invalidated');
    const remaining=p.runBudgetMs-(monotonic()-started);deliveryDemand(remaining>0,'delivery_budget_expired');
@@ -122,7 +125,7 @@ async function drain(env,{clock=Date.now,sender=sendPrivateWhatsAppOtp,rpcTimeou
     /^wamid\.[A-Za-z0-9+/_=:.-]+$/.test(accepted.messageId),'private_delivery_unconfirmed');
   }catch(error){result[await endUnconfirmed(s,p,c,lease,error?.code==='delivery_invalidated')]++;continue;}
   try{await transact(s,[
-   s.assertion(`EXISTS(SELECT 1 FROM ${joins} WHERE q.challenge_id=? AND q.lease_id=? AND ${ready}
+   s.assertion(`EXISTS(SELECT 1 FROM ${joins} WHERE q.challenge_id=? AND q.lease_id=? AND ${keyReady}
     AND ${subject} AND d.revision=? AND q.state='open' AND q.expires_at_ms>${NOW} AND q.lease_until_ms>${NOW})`,c.challenge_id,lease,control.revision),
    statement(s,`UPDATE auth_challenges SET delivery_state='accepted',provider_message_id=?,delivery_cipher=NULL,lease_id=NULL,lease_until_ms=NULL
     WHERE challenge_id=? AND lease_id=? AND delivery_state='leased'`,accepted.messageId,c.challenge_id,lease),s.assertion('changes()=1'),

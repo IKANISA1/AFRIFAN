@@ -1,3 +1,4 @@
+import {httpOperation} from '../../shared-telemetry/entrypoints.mjs';
 /** Same-origin edge composition. The original Cloudflare Request goes directly to the browser
  * API service binding: no synthetic CF context or browser-supplied identity is manufactured. */
 export function routerConfig(env){
@@ -22,7 +23,7 @@ async function boundedFetch(binding,request,timeoutMs){
 }
 export function createWebRouter({rpcMs=8000}={}){
  if(!Number.isInteger(rpcMs)||rpcMs<=0||rpcMs>8000)throw Error('invalid_timeout');
- return {async fetch(request,env){
+ const route=async(request,env)=>{
  let api=false,invoked=false;
  try{
   const cfg=routerConfig(env),url=new URL(request.url);
@@ -45,5 +46,6 @@ export function createWebRouter({rpcMs=8000}={}){
   return privateResponse(new Response(JSON.stringify({error:'service_unavailable',...(api&&request.method==='POST'?{outcome:invoked?'unknown':'not_dispatched'}:{})}),
    {status:503,headers:{'content-type':'application/json; charset=utf-8'}}));
  }
-}};}
+};
+ return {fetch(request,env,ctx){return httpOperation(env,{service:'frontend_router',operation:'route'},request,()=>route(request,env),ctx);}};}
 export default createWebRouter();

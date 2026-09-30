@@ -1,5 +1,6 @@
 import {readFileSync} from 'node:fs';import {pathToFileURL} from 'node:url';
 import {origin,UUID} from '../src/policy.mjs';
+import {publicKeyPolicy} from '../../supporter-auth/src/crypto.mjs';
 const expected=[['IDENTITY','africlub-supporter-identity-verifier-staging','SupporterIdentityVerifier'],['CHECKOUT','africlub-membership-checkout-staging','MembershipCheckout'],['CHECKOUT_READER','africlub-membership-checkout-staging','MembershipCheckoutReader'],['PAYMENT_RECEIPTS','africlub-payment-allocation-staging','PaymentReceiptReader']];
 function must(v,why){if(!v)throw Error(`configuration_rejected:${why}`);}
 function keys(o,ks){must(o&&typeof o==='object'&&!Array.isArray(o)&&Object.keys(o).length===ks.length&&ks.every(k=>Object.hasOwn(o,k)),'fields');}
@@ -26,7 +27,9 @@ export function checkDeployment(g,upstreams={},ready=false){
   keys(upstreams,['identity','checkout','allocation']);const {identity:i,checkout:c,allocation:a}=upstreams;
   for(const x of [i,c,a])must(x.account_id===g.account_id,'account_mismatch');closed(i,'src/identity-verifier-worker.mjs');closed(c,'src/checkout-worker.mjs');closed(a,'src/worker.mjs');
   must(i.name===expected[0][1]&&c.name===expected[1][1]&&a.name===expected[3][1],'upstream_identity');
-  must(i.vars.AUTH_SERVICE_ENABLED==='true'&&i.vars.AUTH_KEY_VERSION==='1','identity_enabled');
+  must(i.vars.AUTH_SERVICE_ENABLED==='true','identity_enabled');
+  for(const field of ['AUTH_KEYRING_JSON','AUTH_HMAC_KEY','AUTH_ENCRYPTION_KEY'])must(!Object.hasOwn(i.vars,field),'identity_secret_in_public_config');
+  try{publicKeyPolicy(i.vars);}catch{must(false,'identity_key_policy');}
   must(c.vars.MEMBERSHIP_CHECKOUT_ENABLED==='true'&&c.vars.PAYMENT_ALLOCATION_ENABLED==='true'&&c.vars.ALLOCATION_ENVIRONMENT==='isolated-staging'&&a.vars.PAYMENT_ALLOCATION_ENABLED==='true'&&a.vars.ALLOCATION_ENVIRONMENT==='isolated-staging','allocation_environment');
   must(g.vars.MEMBERSHIP_HANDOFF_JOURNAL_ENABLED!=='true'||c.vars.HANDOFF_JOURNAL_ENABLED==='true','journal_binding_disabled');
   must(g.vars.MEMBERSHIP_HANDOFF_RELEASE_ENABLED!=='true'||c.vars.HANDOFF_RELEASE_ENABLED==='true','release_binding_disabled');

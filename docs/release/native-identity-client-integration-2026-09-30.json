@@ -1,0 +1,375 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-09-29T23:26:06.859569+00:00",
+  "status": "DISABLED_LOCAL_NATIVE_IDENTITY_FOUNDATION_IMPLEMENTED",
+  "release_authorized": false,
+  "production_readiness": "NO_GO",
+  "supabase_authority_unchanged": true,
+  "existing_app_auth_selected": "Supabase",
+  "deployment_performed": false,
+  "external_provider_calls": 0,
+  "native_protected_credential_store_implemented": false,
+  "default_store": "UnavailableNativeCredentialStore",
+  "default_enabled": false,
+  "baseline_commit_at_verification": "43e1f0d9cf29f54c397dec1c408563978b108b41",
+  "ownership": [
+    "packages/core/core_auth/lib/native_identity.dart",
+    "packages/core/core_auth/lib/src/native_identity/**",
+    "packages/core/core_auth/test/native_identity/**",
+    "docs/release/native-identity-client-integration-2026-09-30.json"
+  ],
+  "files": [
+    {
+      "path": "packages/core/core_auth/lib/native_identity.dart",
+      "bytes": 506,
+      "sha256": "3d3e249ff87d580181aafbaf1bcdb644698b6786d94ee0d33360e2368a6da483",
+      "disposition": "new_local_implementation",
+      "why_added": "Provides a separate explicit native identity entrypoint without changing Supabase repository, providers or app flows."
+    },
+    {
+      "path": "packages/core/core_auth/lib/src/native_identity/controller.dart",
+      "bytes": 20456,
+      "sha256": "848d874184ada15c819ffbf009382d3b56b44fd28993137e25b1052143b95981",
+      "disposition": "new_local_implementation",
+      "why_added": "Coordinates protected durable prepare/readback/send recovery, generation invalidation, explicit rotation and server versus local signout."
+    },
+    {
+      "path": "packages/core/core_auth/lib/src/native_identity/io_transport.dart",
+      "bytes": 3228,
+      "sha256": "41ba4cbe51571b05de8bad21566c6641e4f07344f2b63261de3ae5c13ea8f3ac",
+      "disposition": "new_local_implementation",
+      "why_added": "Supplies one-submission native HTTP with trusted TLS, no redirects/cookies and bounded uncompressed request/response bodies."
+    },
+    {
+      "path": "packages/core/core_auth/lib/src/native_identity/journal.dart",
+      "bytes": 8080,
+      "sha256": "1fed00d5796ebadd70165f4baf085cf62b3d527814467b5c07111d2fda39884b",
+      "disposition": "new_local_implementation",
+      "why_added": "Defines a versioned application/origin/club-bound protected CAS journal preserving original challenge, verification and refresh material."
+    },
+    {
+      "path": "packages/core/core_auth/lib/src/native_identity/models.dart",
+      "bytes": 12348,
+      "sha256": "c551acb77b88b0a368b5954d469d3de5583a962a469915333efcac6a57c6d35a",
+      "disposition": "new_local_implementation",
+      "why_added": "Enforces exact wire fields/types, canonical tokens, numeric scope, supporter-only identity and duplicate JSON rejection; errors and protected objects are redacted."
+    },
+    {
+      "path": "packages/core/core_auth/lib/src/native_identity/ports.dart",
+      "bytes": 5026,
+      "sha256": "548f1d89345e8bb6dd43fab8406b6383a8dcd7094ad9e543ac96a0f46e41fa23",
+      "disposition": "new_local_implementation",
+      "why_added": "Requires independently accepted OS protection, durable atomic CAS, process-safe exclusivity and bounded replies; unavailable store is the production default."
+    },
+    {
+      "path": "packages/core/core_auth/lib/src/native_identity/wire_client.dart",
+      "bytes": 9224,
+      "sha256": "c50dce5bb8a49336197268094d615e39f3fdb12d2a80f2566e5192c0396bc6ff",
+      "disposition": "new_local_implementation",
+      "why_added": "Implements exact current native challenge 202, verify/session/refresh/revoke 200 contracts, explicit native headers and no automatic retry."
+    },
+    {
+      "path": "packages/core/core_auth/test/native_identity/controller_test.dart",
+      "bytes": 25653,
+      "sha256": "26048054a9214816af63f8ff956f84eaa2e6cd161beece7db472048c44e1726b",
+      "disposition": "new_local_implementation",
+      "why_added": "Exercises durable-before-send ordering, storage failure/unknown acknowledgement, restart recovery, deadlines, two controllers and every asynchronous identity publication fence."
+    },
+    {
+      "path": "packages/core/core_auth/test/native_identity/offline_contract_check.dart",
+      "bytes": 2248,
+      "sha256": "fb3b080c022a13c2b4ca8e6ab89bfdff427a30d742bcaf131990da0be939769b",
+      "disposition": "new_local_implementation",
+      "why_added": "Runs a portable Dart-only contract smoke without Flutter initialization, Supabase, a native channel or external network calls."
+    },
+    {
+      "path": "packages/core/core_auth/test/native_identity/support.dart",
+      "bytes": 7214,
+      "sha256": "e891f596215cf1be538f8fc5f738e7a2bc86da19abb5f0182393dab9b9c73906",
+      "disposition": "new_local_implementation",
+      "why_added": "Provides synthetic wire fixtures and a clearly test-only in-memory store/mutex; its declared capabilities do not demonstrate OS protection."
+    },
+    {
+      "path": "packages/core/core_auth/test/native_identity/wire_client_test.dart",
+      "bytes": 16280,
+      "sha256": "0a384a0b6fcda17f80689169e3eb122b6fca3132c1f578efc59045417dfb0927",
+      "disposition": "new_local_implementation",
+      "why_added": "Rejects invalid scope, tokens, response status/headers/fields, expired/future proof, duplicate keys and redirect/body/cancellation hazards."
+    }
+  ],
+  "file_count_excluding_self": 11,
+  "self_description": "This report describes its own addition. Its hash is excluded here to prevent self-reference; the root candidate manifest must hash it independently.",
+  "why_report_added": "Records each new source/test file, exact contract provenance, local verification and remaining release limits for review.",
+  "contract_sources": [
+    {
+      "path": "cloudflare/supporter-auth/src/index.mjs",
+      "bytes": 2087,
+      "sha256": "6e1dcd928f09158b2a4b600bf83690155bda65a429e444ba0a7f987676363844"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/http.mjs",
+      "bytes": 3003,
+      "sha256": "07caca9b88c0cb750ab7ada8bdf4586c59fd4f47d7fa1f34db210fbdc1e5b2d9"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/errors.mjs",
+      "bytes": 1220,
+      "sha256": "ca6bcab5e215589f060f0acf825709c0383fbd6d656b43b17832919167fd2901"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/crypto.mjs",
+      "bytes": 3239,
+      "sha256": "16a0a6b502554c50597f6510edeecbedf00c3316951883f31c42def17146452f"
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/identity-service.mjs",
+      "bytes": 17909,
+      "sha256": "7887dcfeb8bd015bf508b24d37e0a338de03edfafb51da9029e01c5be58cd299"
+    }
+  ],
+  "wire_contracts": {
+    "prefix": "/v1/auth/clubs/{positive_numeric_club}/",
+    "client_marker": "X-AFRICLUB-Client: native-v1",
+    "challenge": {
+      "method": "POST",
+      "suffix": "otp/challenges",
+      "status": 202,
+      "body_fields": [
+        "phone",
+        "clientSecret"
+      ],
+      "response_fields": [
+        "schemaVersion",
+        "challengeId",
+        "clubId",
+        "expiresAt",
+        "delivery"
+      ]
+    },
+    "verification": {
+      "method": "POST",
+      "suffix": "otp/verifications",
+      "status": 200,
+      "body_fields": [
+        "challengeId",
+        "code",
+        "clientSecret"
+      ]
+    },
+    "credential_response_fields": [
+      "schemaVersion",
+      "sessionId",
+      "accessToken",
+      "refreshToken",
+      "userId",
+      "clubId",
+      "accessExpiresAt",
+      "refreshExpiresAt",
+      "authenticatedAt"
+    ],
+    "session": {
+      "method": "GET",
+      "suffix": "session",
+      "status": 200,
+      "response_fields": [
+        "schemaVersion",
+        "userId",
+        "clubId",
+        "sessionId",
+        "phoneVerified",
+        "role",
+        "authenticatedAt"
+      ],
+      "membership_conversion": "Explicit four-field map after matching saved credential bundle; seven auth fields are never passed into membership parsing."
+    },
+    "rotation": {
+      "method": "POST",
+      "suffix": "sessions/refresh",
+      "status": 200,
+      "body_fields": [
+        "refreshToken"
+      ],
+      "same_original_key_recovery_seconds": 60,
+      "authenticated_at_preserved": true
+    },
+    "revoke": {
+      "method": "POST",
+      "suffix": "sessions/revoke",
+      "status": 200,
+      "body_fields": [
+        "scope"
+      ],
+      "scope_values": [
+        "current",
+        "others",
+        "all"
+      ],
+      "has_replay_receipt": false,
+      "unknown_acknowledgement_retained": true
+    },
+    "forbidden_native_headers": [
+      "Cookie",
+      "Origin",
+      "Sec-Fetch-Site"
+    ],
+    "post_autoretry": false,
+    "construction_or_timeout_mutation": false,
+    "json_duplicate_keys": "Rejected at every nesting level, including escaped-equivalent names, with bounded32-level structural scan."
+  },
+  "local_verification": [
+    {
+      "name": "native_identity_flutter_fixture_bank",
+      "command": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter test test/native_identity --reporter expanded",
+      "cwd": "packages/core/core_auth",
+      "exit_code": 0,
+      "passed": 118,
+      "failed": 0,
+      "skipped": 0,
+      "log": "output/qa/full-stack-20260914/production-goal-20260929/africlub-native-identity-client-tests-accepted-20260930.log"
+    },
+    {
+      "name": "strict_static_analysis",
+      "command": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/dart analyze --fatal-infos packages/core/core_auth/lib/native_identity.dart packages/core/core_auth/lib/src/native_identity packages/core/core_auth/test/native_identity",
+      "exit_code": 0,
+      "issues": 0,
+      "log": "output/qa/full-stack-20260914/production-goal-20260929/africlub-native-identity-client-analyze-20260930.log"
+    },
+    {
+      "name": "portable_dart_contract_smoke",
+      "command": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/dart run packages/core/core_auth/test/native_identity/offline_contract_check.dart",
+      "exit_code": 0,
+      "external_calls": 0,
+      "log": "output/qa/full-stack-20260914/production-goal-20260929/africlub-native-identity-portable-20260930.log"
+    },
+    {
+      "name": "duplicate_json_regression_before_fix",
+      "command": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter test test/native_identity/wire_client_test.dart --plain-name duplicat --reporter expanded",
+      "cwd": "packages/core/core_auth",
+      "exit_code": 1,
+      "failed": 3,
+      "passed": 0,
+      "expected_defect_demonstration": true,
+      "log": "output/qa/full-stack-20260914/production-goal-20260929/africlub-native-identity-duplicate-before-20260930.log"
+    },
+    {
+      "name": "independent_complete_core_auth_package",
+      "command": "env PATH=\"/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin:$PATH\" bash /Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/tools/scripts/run_package_tests.sh --reporter expanded",
+      "cwd": "packages/core/core_auth",
+      "exit_code": 0,
+      "passed": 218,
+      "failed": 0,
+      "skipped": 0,
+      "includes_existing_tests": 100,
+      "includes_new_native_identity_tests": 118,
+      "log": "output/qa/full-stack-20260914/production-goal-20260929/core-auth-full-native-identity-20260930.log",
+      "counting_note": "Separate post-addition package checkpoint; not added to earlier full-workspace totals.",
+      "underlying_wrapper_behavior": "Runs pinned Flutter from the workspace root with --no-pub --concurrency=1 and the complete core_auth test directory."
+    }
+  ],
+  "logs": [
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/africlub-native-identity-client-tests-20260930.log",
+      "bytes": 26322,
+      "sha256": "43622928c6e6cf8e7c081cdf570be9ded2ee255e1888be7631f7fff177d4826b",
+      "original_path": "/tmp/africlub-native-identity-client-tests-20260930.log",
+      "copied_readback_verified": true,
+      "redaction_required": false
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/africlub-native-identity-duplicate-before-20260930.log",
+      "bytes": 7532,
+      "sha256": "09c7ab9430afac0737c01242739a33dfd6b4d57ee7b074d04748331102dedba6",
+      "original_path": "/tmp/africlub-native-identity-duplicate-before-20260930.log",
+      "copied_readback_verified": true,
+      "redaction_required": false
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/africlub-native-identity-client-tests-accepted-20260930.log",
+      "bytes": 28244,
+      "sha256": "af820bb8c5aef9a9d51a137d266e01259812663e25101b69c52d74d17f006c5b",
+      "original_path": "/tmp/africlub-native-identity-client-tests-accepted-20260930.log",
+      "copied_readback_verified": true,
+      "redaction_required": false
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/africlub-native-identity-client-analyze-20260930.log",
+      "bytes": 85,
+      "sha256": "dde848aec5f2ebc9ff0ffc4d5e122f8cbc4fc47f79bcb23699be4f35fe4d491f",
+      "original_path": "/tmp/africlub-native-identity-client-analyze-20260930.log",
+      "copied_readback_verified": true,
+      "redaction_required": false
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/africlub-native-identity-portable-20260930.log",
+      "bytes": 112,
+      "sha256": "e6b7c6d28f3eb4e866a194ef60a1e7ab3a7f9acab70cc8f21d059404b222d765",
+      "original_path": "/tmp/africlub-native-identity-portable-20260930.log",
+      "copied_readback_verified": true,
+      "redaction_required": false
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/core-auth-full-native-identity-20260930.log",
+      "bytes": 44371,
+      "sha256": "50ab1f6b3d56f13bf6126f7b07120d89ffb975570b24cfe262452447cd23b6f7",
+      "origin": "independent root complete-package run",
+      "copied_readback_verified": true,
+      "redaction_required": false
+    }
+  ],
+  "coverage_scope": [
+    "synthetic current worker wire fixtures",
+    "prepared journal and readback before every POST",
+    "lost preparation/sending/credential CAS acknowledgements",
+    "crash/restart explicit same-body same-key recovery",
+    "60-second boundary and clock rollback",
+    "zero-network token callback",
+    "serial two-controller store contract",
+    "whole-operation/transport/store deadlines",
+    "disposed or identity-changed fences after each awaited storage/network stage",
+    "strict schema/type/club/user/session/token/proof matching",
+    "duplicate literal/escaped JSON fields",
+    "local signout versus confirmed/unknown revoke",
+    "actual mixed-case iOS application identifiers"
+  ],
+  "protected_store_contract": {
+    "namespace": "dedicated native identity credentials; never financial marker namespaces",
+    "binding": "exact host-confirmed applicationId plus approved HTTPS origin plus numeric server club",
+    "maximum_journal_bytes": 8192,
+    "compare_and_set": "durable atomic exact-string replacement followed by readback",
+    "exclusive": "all isolates/processes; hold through work and all issued native operations, including late CAS acknowledgement",
+    "deadlines": "bounded caller-observed replies and acquisition including each channel attempt; no lease TTL forced unlock",
+    "engine_teardown": "requires native old-owner abort fence, draining of issued CAS, then release; adapter not implemented"
+  },
+  "risks_and_unverified_limits": [
+    "No dedicated Android/iOS credential channel or production OS store exists in this batch. Test memory storage and mutex are not secure storage evidence. Existing checkout marker storage is never used for credentials.",
+    "Keystore/Keychain protection, backup exclusion, rollback/reinstall/key-loss policy, cross-process locking, engine destruction, physical-device lifecycle and passcode requirements remain to implement and validate.",
+    "An unreadable or lost-key OS vault cannot be reset by this controller. abandonPendingForFreshVerification requires a readable journal; explicit vault retirement and recovered-file retention need a separate governed policy.",
+    "Current Flutter Supabase auth, profile, anonymous identity, phone-change, admin-role and paid-membership flows remain selected. The new standalone controller is not wired into app UI or the membership composition; only an invalidation callback port is supplied.",
+    "Identity import, anonymous upgrade/linking, authenticated contact change/recovery, profile compatibility, notification unlink, staff migration and complete account erasure are outside this foundation and remain open.",
+    "Fixture responses derive from reviewed current local workers; no real Cloudflare ingress context, D1, rate limiter, DNS/TLS endpoint, WhatsApp delivery, native OS API or provider/device acceptance was performed.",
+    "Physical clock trust is not implemented. Local bounded checks allow at most5 seconds of future phone proof and reject expired access; recovery refuses clock rollback and age>=60 seconds. Real device/server clock behavior remains unverified.",
+    "Explicit abandon discards local recovery, makes no claim of server revocation, and may leave a previously issued server session active. It is never invoked on launch, timeout or read-only access.",
+    "Identity is a point-in-time server observation fenced within this controller. Cross-process identity-change notification and launch policy remain adapter/composition work; every protected membership operation still requires its separate server authority check.",
+    "Wire native HTTP uses normal platform TLS trust; actual network and transport runtime acceptance remain open. No provider or financial entitlement is granted by a supporter identity.",
+    "No original production readiness task is declared fully accepted by this report. All runtime selection, provenance/import, named approvals, hosted CI and governed release gates remain open."
+  ],
+  "evidence_privacy": {
+    "fixture_phone_or_credential_values_in_retained_logs": false,
+    "report_contains_credentials": false,
+    "automated_log_checks": "exact synthetic phone and token format absence checked; complete root evidence privacy scanner remains required",
+    "human_review": "PENDING"
+  },
+  "independent_source_review": {
+    "reviewers": "root and boundary_gate local source review",
+    "findings_addressed": [
+      "Preserve exact mixed-case real iOS application IDs and bind them independently on the native host.",
+      "Reject duplicate JSON fields, including escaped-equivalent names, before parsing journal or publishing identity.",
+      "Bound caller-observed native replies while retaining the lease and sequencing release behind every issued OS operation."
+    ],
+    "limitations": "Local source review and synthetic regression evidence; no native adapter acceptance or production/security signoff."
+  },
+  "post_verification_metadata_correction": {
+    "previous_report_sha256": "c55186d29a0c12266399f3c3c07ddd3d5181be107d154041c9b5bb19f5e6cb6b",
+    "reason": "Recorded exact root package-wrapper launch command; source/test bytes and218-test evidence unchanged."
+  }
+}

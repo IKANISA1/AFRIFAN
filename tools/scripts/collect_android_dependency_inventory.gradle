@@ -1,0 +1,128 @@
+// Read-only dependency observation. Run offline; this task never builds or signs an app.
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+import org.gradle.api.artifacts.component.ModuleComponentIdentifier
+import org.gradle.api.artifacts.result.ResolvedDependencyResult
+import org.gradle.api.artifacts.result.UnresolvedDependencyResult
+import java.security.MessageDigest
+
+gradle.projectsEvaluated {
+    def root = gradle.rootProject
+    // Init scripts also run inside Flutter's included tooling build. Its SDK
+    // source revision is inventoried separately; do not change its repositories.
+    if (!new File(root.projectDir, 'app/build.gradle.kts').isFile()) return
+    def mirrorPath = root.findProperty('afriInventoryMavenMirror')
+    if (mirrorPath) {
+        root.allprojects.each { project ->
+            [project.repositories, project.buildscript.repositories].each { repositories ->
+                def mirror = repositories.maven {
+                    name = 'afriImmutableInventoryMirror'
+                    url = new File(mirrorPath.toString()).toURI()
+                    metadataSources { gradleMetadata(); mavenPom(); artifact() }
+                }
+                repositories.remove(mirror)
+                repositories.addFirst(mirror)
+            }
+        }
+    }
+    def inputFiles = root.allprojects.collect { it.buildFile } +
+        [new File(root.projectDir, 'settings.gradle.kts'), new File(root.projectDir, 'gradle.properties'),
+         new File(root.projectDir, 'gradle/wrapper/gradle-wrapper.properties'),
+         new File(root.projectDir.parentFile.parentFile.parentFile, 'pubspec.lock'),
+         new File(root.projectDir.parentFile, '.flutter-plugins-dependencies')]
+    def inputHashes = {
+        inputFiles.findAll { it.isFile() }.unique().sort { it.absolutePath }.collectEntries {
+            [(it.absolutePath): MessageDigest.getInstance('SHA-256').digest(it.bytes).encodeHex().toString()]
+        }
+    }
+    def initialInputs = inputHashes()
+    def frozenInput = root.findProperty('afriInventoryFreezeInput')
+    def frozen = [:]
+    if (frozenInput) {
+        def prior = new JsonSlurper().parse(new File(frozenInput.toString()))
+        prior.configurations.each { observation ->
+            frozen[observation.project + ':' + observation.configuration] = observation.components.findAll { it.group }
+                .collectEntries { [(it.group + ':' + it.name): it.version] }
+        }
+        root.allprojects.each { project ->
+            (project.configurations.toList() + project.buildscript.configurations.toList()).each { config ->
+                def versions = frozen[project.path + ':' + config.name] ?: [:]
+                config.resolutionStrategy.eachDependency { dependency ->
+                    def version = versions[dependency.requested.group + ':' + dependency.requested.name]
+                    if (version) dependency.useVersion(version.toString())
+                }
+            }
+        }
+    }
+    root.tasks.register('collectAfriDependencyInventory') {
+        doLast {
+            def output = root.findProperty('afriInventoryOutput')
+            if (!output) throw new GradleException('afriInventoryOutput is required')
+            def observations = []
+            def inspect = { project, config, kind ->
+                def observation = [project: project.path, projectDirectory: project.projectDir.absolutePath,
+                    configuration: config.name, kind: kind, components: [], edges: [], artifacts: [], unresolved: []]
+                try {
+                    def graph = config.incoming.resolutionResult
+                    graph.allComponents.each { component ->
+                        def id = component.id
+                        def item = [id: id.displayName]
+                        if (id instanceof ModuleComponentIdentifier) {
+                            item.group = id.group; item.name = id.module; item.version = id.version
+                        } else { item.localProject = true }
+                        observation.components << item
+                    }
+                    graph.allDependencies.each { dependency ->
+                        if (dependency instanceof ResolvedDependencyResult) {
+                            observation.edges << [from: dependency.from.id.displayName,
+                                to: dependency.selected.id.displayName, requested: dependency.requested.displayName,
+                                constraint: dependency.constraint]
+                        } else if (dependency instanceof UnresolvedDependencyResult) {
+                            observation.unresolved << [requested: dependency.requested.displayName,
+                                from: dependency.from.id.displayName, failureType: dependency.failure.class.simpleName]
+                        }
+                    }
+                    def view = config.incoming.artifactView {
+                        lenient true
+                        if (kind == 'target') {
+                            attributes { attribute(org.gradle.api.attributes.Attribute.of('artifactType', String), 'android-classes-jar') }
+                        }
+                    }
+                    view.artifacts.artifacts.each { artifact ->
+                        observation.artifacts << [component: artifact.id.componentIdentifier.displayName,
+                            file: artifact.file.absolutePath]
+                    }
+                    view.artifacts.failures.each { failure ->
+                        observation.unresolved << [failureType: failure.class.simpleName, stage: 'artifactView']
+                    }
+                } catch (Exception failure) {
+                    observation.unresolved << [failureType: failure.class.simpleName, stage: 'configuration']
+                }
+                ['components', 'edges', 'artifacts', 'unresolved'].each { key ->
+                    observation[key] = observation[key].unique().sort { JsonOutput.toJson(it) }
+                }
+                observations << observation
+            }
+            root.allprojects.sort { it.path }.each { project ->
+                project.configurations.findAll { it.canBeResolved &&
+                    (it.name.toLowerCase() ==~ /(?:qa)?(?:debug|release|profile)(?:compile|runtime)classpath/) }
+                    .sort { it.name }.each { inspect(project, it, 'target') }
+                project.buildscript.configurations.findAll { it.canBeResolved && it.name == 'classpath' }
+                    .each { inspect(project, it, 'buildscript') }
+            }
+            if (inputHashes() != initialInputs) throw new GradleException('Dependency input changed during collection')
+            def file = new File(output.toString())
+            file.parentFile.mkdirs()
+            file.setText(JsonOutput.prettyPrint(JsonOutput.toJson([schemaVersion: 1, offline: gradle.startParameter.offline,
+                gradleVersion: gradle.gradleVersion, rootDirectory: root.projectDir.absolutePath,
+                javaVersion: System.getProperty('java.version'), javaVendor: System.getProperty('java.vendor'),
+                javaHome: System.getProperty('java.home'),
+                frozenInput: frozenInput ? new File(frozenInput.toString()).absolutePath : null,
+                mavenMirror: mirrorPath ? new File(mirrorPath.toString()).absolutePath : null,
+                sourceInputs: initialInputs,
+                configurations: observations])) + '\n', 'UTF-8')
+            println('AFRI_DEPENDENCY_INVENTORY configurations=' + observations.size() + ' unresolved=' +
+                observations.sum { it.unresolved.size() })
+        }
+    }
+}

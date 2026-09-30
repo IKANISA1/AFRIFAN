@@ -4,6 +4,28 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  testWidgets('single-action buttons expose one named accessible tap target', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    try {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: AfriButton(label: 'Review payment', onTap: () {}),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
+      await expectLater(tester, meetsGuideline(androidTapTargetGuideline));
+      expect(find.bySemanticsLabel('Review payment'), findsOneWidget);
+    } finally {
+      semantics.dispose();
+    }
+  });
   testWidgets('outlined choices honor their card shape and custom insets', (
     tester,
   ) async {

@@ -28,7 +28,7 @@ jobs:
     runs-on: [self-hosted, macOS, ARM64, africlub-free]
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           clean: true
 
@@ -47,15 +47,15 @@ jobs:
     runs-on: [self-hosted, macOS, ARM64, africlub-free]
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           clean: true
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version-file: '.nvmrc'
 
-      - uses: denoland/setup-deno@v2
+      - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
         with:
           deno-version: v2.x
 
@@ -95,11 +95,11 @@ jobs:
     env:
       NEXT_PUBLIC_ANDROID_APP_LINK_SHA256_FINGERPRINTS: B8:B4:84:C9:3D:80:83:12:9C:90:1B:D4:9C:BE:35:65:7B:C1:4D:38:F3:D9:19:04:75:45:83:B5:AB:BC:E5:D9
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           clean: true
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version-file: '.nvmrc'
           cache: npm
@@ -136,19 +136,15 @@ jobs:
     runs-on: [self-hosted, macOS, ARM64, africlub-free]
     timeout-minutes: 180
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           clean: true
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version-file: '.nvmrc'
 
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version-file: .fvmrc
-          channel: stable
-          cache: true
+      - uses: ./.github/actions/setup-flutter
 
       - name: Resolve and bootstrap the workspace
         run: |

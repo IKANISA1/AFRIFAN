@@ -36,13 +36,27 @@ export function controlledApiJson(
   status = 200,
   extraHeaders: HeadersInit = {},
 ) {
+  const headers = new Headers(extraHeaders);
+  headers.set("Cache-Control", "no-store");
+  headers.set("CDN-Cache-Control", "no-store");
+  headers.set("Cloudflare-CDN-Cache-Control", "no-store");
   return NextResponse.json(body, {
     status,
-    headers: {
-      "Cache-Control": "no-store",
-      ...Object.fromEntries(new Headers(extraHeaders)),
-    },
+    headers,
   });
+}
+
+/** Only explicitly sanitized public GET projections may select these bounded cache policies. */
+export function controlledPublicApiJson(body: unknown, status: number, extraHeaders: HeadersInit) {
+  const headers = new Headers(extraHeaders);
+  const allowed = [
+    "public, max-age=0, s-maxage=60, stale-while-revalidate=120",
+    "public, max-age=0, s-maxage=120, stale-while-revalidate=300",
+    "public, max-age=0, s-maxage=300, stale-while-revalidate=600",
+  ];
+  if (status !== 200 || [...headers.keys()].length !== 1 ||
+    !allowed.includes(headers.get("cache-control") ?? "")) throw Error("invalid_public_cache_policy");
+  return NextResponse.json(body, { status, headers });
 }
 
 function isConflict(error: unknown) {

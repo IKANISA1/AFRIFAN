@@ -1,3 +1,4 @@
+import {observeBrowserRequest} from '../../supporter-auth/src/entrypoint-telemetry.mjs';
 import {parseHistoryCursor,projectHistory,projectHistoryReceipt} from '../../shared/membership-history.mjs';
 import {projectOffers} from './offers.mjs';
 import {config,need,UUID,exactKeys,bounded,unwrap,session,rateKey,publicError,BrowserError,upstreamFields} from './policy.mjs';
@@ -26,6 +27,9 @@ function route(request,url){
   if(m&&UUID.test(m[1])){orderId=m[1];p=['GET',m[2]?'receipt':'checkout'];}}
  need(p&&request.method===p[0],'not_found',404);return {operation:p[1],orderId};
 }
+const METRIC_OPERATIONS=new Map([['start','session_start'],['bootstrap','session_bootstrap'],['challenge','otp_challenge'],['verify','otp_verify'],['rotate','session_refresh'],['logout','session_revoke'],['session','session_read'],['prepare','checkout_create'],['history','membership_history'],['history_receipt','membership_history'],['membership_status','membership_read'],['offers','checkout_offers'],['lookup','checkout_read'],['checkout','checkout_read'],['receipt','checkout_read']]);
+const METRIC_MUTATIONS=new Set(['start','challenge','verify','rotate','logout','prepare']);
+function metricOperation(request){try{return METRIC_OPERATIONS.get(route(request,new URL(request.url)).operation)??'route';}catch{return 'route';}}
 function same(a,b){return a.userId===b.userId&&a.clubId===b.clubId&&a.sessionId===b.sessionId&&a.authenticatedAt===b.authenticatedAt;}
 function bootstrapView(v,id,now){
  upstreamFields(v,['schemaVersion','clubId','csrfToken','expiresAt']);
@@ -36,8 +40,9 @@ function bootstrapView(v,id,now){
 /** Dedicated browser ingress. No native-header translation, public DB or provider capability. */
 export function createBrowserGateway({clock=Date.now,rpcMs=8000,bodyMs=3000}={}){
  need(Number.isInteger(rpcMs)&&rpcMs>0&&rpcMs<=8000&&Number.isInteger(bodyMs)&&bodyMs>0&&bodyMs<=3000);
- return {async fetch(request,env){
-  let invoked=false,kind=null,requestId=null;
+ return {async fetch(request,env,ctx){
+  let invoked=false,kind=null,requestId=null,metricOutcome='unknown';
+  return observeBrowserRequest(env,metricOperation(request),async()=>{
   try{
    const cfg=config(env),{url,ip}=ingress(request,cfg),r=route(request,url),c=cookies(request);
    const historyCursor=request.headers.get('x-africlub-history-cursor');
@@ -151,14 +156,14 @@ export function createBrowserGateway({clock=Date.now,rpcMs=8000,bodyMs=3000}={})
     if(kind==='offers')output=projectOffers({...output,userId:actor.userId},actor,clock());
     if(output.status==='pending_current'&&output.expiresAt<=clock())output={...output,status:'expired',paymentInstruction:null};
    }
-   return response(output,200,setCookies);
+   metricOutcome='completed';return response(output,200,setCookies);
   }catch(e){
    const error=publicError(e);
    // Timeouts do not cancel remote work. Retain the original key, never infer failed payment.
-   if(invoked&&(kind==='prepare'||error.status>=500||error.code==='session_changed'))
-    return response({schemaVersion:1,error:kind==='prepare'?'checkout_outcome_unknown':'identity_outcome_unknown',outcome:'unknown',requestId},503);
-   return response({schemaVersion:1,error:error.code},error.status);
-  }
+   if(invoked&&(kind==='prepare'||error.status>=500||error.code==='session_changed')){
+    metricOutcome='unknown';return response({schemaVersion:1,error:kind==='prepare'?'checkout_outcome_unknown':'identity_outcome_unknown',outcome:'unknown',requestId},503);}
+   metricOutcome=invoked&&METRIC_MUTATIONS.has(kind)?'unknown':error.status>=500?'unavailable':[401,403].includes(error.status)?'denied':'rejected';return response({schemaVersion:1,error:error.code},error.status);
+  }},{clock,ctx,selectOutcome:()=>metricOutcome});
  }};
 }
 export default createBrowserGateway();

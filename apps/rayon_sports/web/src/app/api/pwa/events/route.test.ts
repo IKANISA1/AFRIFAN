@@ -1,196 +1,80 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-const mocks = vi.hoisted(() => ({
-  getActiveClubReference: vi.fn(),
-  getAdminSupabase: vi.fn(),
-  getServerSupabase: vi.fn(),
-  rejectInsecureMutation: vi.fn(),
-  rejectRateLimitedRequest: vi.fn(),
-}));
-
-vi.mock("@/lib/club-context", () => ({
-  getActiveClubReference: mocks.getActiveClubReference,
-}));
-vi.mock("@/lib/supabase/admin", () => ({
-  getAdminSupabase: mocks.getAdminSupabase,
-}));
-vi.mock("@/lib/supabase/server", () => ({
-  getServerSupabase: mocks.getServerSupabase,
-}));
-vi.mock("@/lib/security", () => ({
-  rejectInsecureMutation: mocks.rejectInsecureMutation,
-  rejectRateLimitedRequest: mocks.rejectRateLimitedRequest,
-}));
-
+const mocks = vi.hoisted(() => ({ environment: vi.fn(), record: vi.fn() }));
+vi.mock("@/lib/web-observation-server", () => ({ webObservationEnvironment: mocks.environment }));
 import { POST } from "./route";
+import { POST as VITALS } from "../../telemetry/vitals/route";
 
-function request(body: unknown) {
-  return new NextRequest("https://gikundiro.com/api/pwa/events", {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      "user-agent": "test-agent",
-      "x-africlub-csrf": "1",
-    },
-    body: JSON.stringify(body),
-  });
+const pwa = { schemaVersion: 1, event: "pwa_event", eventType: "install-completed",
+  surface: "site", displayMode: "standalone" };
+const vital = { schemaVersion: 1, event: "web_vital", name: "LCP", value: 1200, rating: "good" };
+const configured = () => ({ WEB_OBSERVATIONS_ENABLED: "true", WEB_OBSERVATIONS_ENVIRONMENT: "isolated-staging",
+  WEB_OBSERVATIONS_ORIGIN: "https://synthetic.invalid", WEB_OBSERVATIONS_CLUB_ID: "24",
+  WEB_OBSERVATIONS_RETENTION_MS: "3600000", WEB_OBSERVATIONS_POLICY_REF: "SYNTHETIC_TEST_POLICY",
+  WEB_OBSERVATIONS: { record: mocks.record } });
+function request(body: unknown = pwa, path = "/api/pwa/events", headers: Record<string,string> = {}) {
+  return new NextRequest("https://synthetic.invalid" + path, { method: "POST",
+    headers: { "content-type": "application/json", origin: "https://synthetic.invalid", ...headers },
+    body: JSON.stringify(body) });
 }
+beforeEach(() => {
+  vi.clearAllMocks(); mocks.environment.mockResolvedValue(configured());
+  mocks.record.mockResolvedValue({ schemaVersion: 1, recorded: true });
+});
+afterEach(() => vi.useRealTimers());
 
-function adminClient(
-  result: Promise<{ error: { code?: string; message: string } | null }>,
-) {
-  return {
-    from: vi.fn(() => ({
-      insert: vi.fn(() => result),
-    })),
-  };
-}
-
-describe("POST /api/pwa/events", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    vi.useRealTimers();
-    mocks.rejectInsecureMutation.mockReturnValue(null);
-    mocks.rejectRateLimitedRequest.mockResolvedValue(null);
-    mocks.getActiveClubReference.mockResolvedValue({ slug: "rayon-sports" });
-    mocks.getServerSupabase.mockResolvedValue({
-      auth: {
-        getUser: vi.fn().mockResolvedValue({
-          data: { user: { id: "user-1" } },
-        }),
-      },
-    });
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
-  it("returns a controlled empty-state response for invalid input", async () => {
-    const response = await POST(request({}));
-
-    expect(response.status).toBe(400);
-    await expect(response.json()).resolves.toMatchObject({
-      code: "PWA_EVENT_EMPTY",
-    });
-    expect(mocks.getAdminSupabase).not.toHaveBeenCalled();
-  });
-
-  it("honors the permission boundary before reading the body", async () => {
-    mocks.rejectInsecureMutation.mockReturnValue(
-      NextResponse.json(
-        { code: "PWA_EVENT_ACCESS_DENIED", error: "Mutation blocked." },
-        { status: 403 },
-      ),
-    );
-
-    const response = await POST(
-      request({ eventType: "push-subscribed", surface: "site" }),
-    );
-
-    expect(response.status).toBe(403);
-    expect(mocks.getAdminSupabase).not.toHaveBeenCalled();
-  });
-
-  it("stores a bounded privacy-sanitized event", async () => {
-    const insert = vi.fn().mockResolvedValue({ error: null });
-    mocks.getAdminSupabase.mockReturnValue({
-      from: vi.fn(() => ({ insert })),
-    });
-
-    const response = await POST(
-      request({
-        eventType: "push-preview-sent",
-        surface: "site",
-        displayMode: "standalone",
-        path: "/supporters",
-        payload: {
-          success: true,
-          phone: "+250788000000",
-          accessToken: "secret-token",
-        },
-      }),
-    );
-
+describe("private PWA and vitals route wiring", () => {
+  it("finite PWA events invoke only the selected private binding", async () => {
+    const response = await POST(request());
     expect(response.status).toBe(201);
-    expect(response.headers.get("cache-control")).toBe("no-store");
-    expect(insert).toHaveBeenCalledWith(
-      expect.objectContaining({
-        payload: { success: true },
-        user_id: "user-1",
-      }),
-    );
-    expect(JSON.stringify(insert.mock.calls)).not.toContain("+250788000000");
-    expect(JSON.stringify(insert.mock.calls)).not.toContain("secret-token");
+    expect(response.headers.get("cache-control")).toBe("no-store, private");
+    expect(mocks.record).toHaveBeenCalledExactlyOnceWith({
+      observation: pwa, clubId: 24, retentionMs: 3600000, policyRef: "SYNTHETIC_TEST_POLICY" });
+    expect(mocks.environment).toHaveBeenCalledTimes(1);
   });
-
-  it("does not report completion while storage is still syncing", async () => {
-    let release: ((value: { error: null }) => void) | undefined;
-    const pending = new Promise<{ error: null }>((resolve) => {
-      release = resolve;
-    });
-    mocks.getAdminSupabase.mockReturnValue(adminClient(pending));
-
-    let settled = false;
-    const responsePromise = POST(
-      request({ eventType: "install-completed", surface: "site" }),
-    ).finally(() => {
-      settled = true;
-    });
-    await Promise.resolve();
-
-    expect(settled).toBe(false);
-    release?.({ error: null });
-    expect((await responsePromise).status).toBe(201);
+  it("the vitals route uses the same private contract with a distinct finite event", async () => {
+    const response = await VITALS(request(vital, "/api/telemetry/vitals"));
+    expect(response.status).toBe(201);
+    expect(mocks.record.mock.calls[0][0].observation).toEqual(vital);
   });
-
-  it("returns a stable conflict response", async () => {
-    mocks.getAdminSupabase.mockReturnValue(
-      adminClient(
-        Promise.resolve({
-          error: { code: "23505", message: "raw duplicate data" },
-        }),
-      ),
-    );
-
-    const response = await POST(
-      request({ eventType: "install-completed", surface: "site" }),
-    );
-
-    expect(response.status).toBe(409);
-    expect(JSON.stringify(await response.json())).not.toContain("raw duplicate");
+  it("disabled collection reads no body and invokes no provider", async () => {
+    mocks.environment.mockResolvedValue({});
+    const raw = request();
+    Object.defineProperty(raw, "body", { get: () => { throw Error("private body inspected"); } });
+    expect((await POST(raw)).status).toBe(503); expect(mocks.record).not.toHaveBeenCalled();
   });
-
-  it("returns a sanitized provider-error response", async () => {
-    mocks.getAdminSupabase.mockReturnValue(
-      adminClient(
-        Promise.resolve({
-          error: { message: "database.internal password=secret" },
-        }),
-      ),
-    );
-
-    const response = await POST(
-      request({ eventType: "install-completed", surface: "site" }),
-    );
-
-    expect(response.status).toBe(502);
-    expect(JSON.stringify(await response.json())).not.toContain("database.internal");
+  it.each([{ userId: "private" }, { path: "/private/actor" }, { user_agent: "private" },
+    { payload: { note: "+250700000099" } }, { clubId: 26 }])("rejects foreign context", async extra => {
+    expect((await POST(request({ ...pwa, ...extra }))).status).toBe(400);
+    expect(mocks.record).not.toHaveBeenCalled();
   });
-
-  it("returns a stable timeout when storage does not settle", async () => {
-    vi.useFakeTimers();
-    mocks.getAdminSupabase.mockReturnValue(
-      adminClient(new Promise(() => {})),
-    );
-
-    const responsePromise = POST(
-      request({ eventType: "install-completed", surface: "site" }),
-    );
-    const expectation = expect(responsePromise).resolves.toMatchObject({
-      status: 504,
-    });
-    await vi.advanceTimersByTimeAsync(8_000);
-    await expectation;
+  it("cookies and bearer credentials cannot enter the anonymous observation sink", async () => {
+    const candidates: Record<string, string>[] = [{ cookie: "private-session" }, { authorization: "Bearer private" }];
+    for (const headers of candidates)
+      expect((await POST(request(pwa, "/api/pwa/events", headers))).status).toBe(403);
+    expect(mocks.record).not.toHaveBeenCalled();
+  });
+  it("foreign origin is denied even with a CSRF marker", async () => {
+    expect((await POST(request(pwa, "/api/pwa/events", {
+      origin: "https://foreign.invalid", "x-africlub-csrf": "1" }))).status).toBe(403);
+    expect(mocks.record).not.toHaveBeenCalled();
+  });
+  it("server errors never expose storage details or retry a failed call", async () => {
+    mocks.record.mockRejectedValue(Error("private phone=+250700000099 token=private"));
+    const response = await POST(request());
+    expect(response.status).toBe(503);
+    expect(await response.json()).toEqual({ schemaVersion: 1, error: "web_observation_unavailable" });
+    expect(mocks.record).toHaveBeenCalledTimes(1);
+  });
+  it("an unresponsive binding has a finite deadline and cannot report completion", async () => {
+    vi.useFakeTimers(); mocks.record.mockReturnValue(new Promise(() => {}));
+    const pending = POST(request());
+    await vi.advanceTimersByTimeAsync(250);
+    expect((await pending).status).toBe(503); expect(mocks.record).toHaveBeenCalledTimes(1);
+  });
+  it("a PWA event cannot be routed through the vitals namespace", async () => {
+    expect((await VITALS(request(pwa, "/api/telemetry/vitals"))).status).toBe(400);
+    expect(mocks.record).not.toHaveBeenCalled();
   });
 });

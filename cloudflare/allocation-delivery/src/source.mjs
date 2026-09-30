@@ -1,13 +1,15 @@
 import {PaymentAllocationService} from '../../payment-allocation/src/service.mjs';
 import {AllocationError,club,uuid,exact,demand,hash,NOW_SQL,envelope,failure} from './policy.mjs';
+import {queueMetric,emitMetricDetached,telemetryConfiguration} from '../../shared-telemetry/telemetry.mjs';
 
 /** The source of truth is the existing allocation DB. No provider or identity write capability. */
 export class DeliverySource extends PaymentAllocationService {
- constructor(env,principalId){
+ constructor(env,principalId,{ctx}={}){
   super(env,principalId);
   demand(env.ALLOCATION_DELIVERY_ENABLED==='true','service_disabled');
   demand(uuid(env.DELIVERY_CONSUMER_ID),'invalid_configuration');
   this.consumerId=env.DELIVERY_CONSUMER_ID;
+  this.context=ctx;
  }
  async access(clubId,role='dispatch'){
   demand(this.env.ALLOCATION_DELIVERY_ENABLED==='true','service_disabled');
@@ -129,6 +131,20 @@ export class DeliverySource extends PaymentAllocationService {
    capped||=legacy.n>1000;
    const observed=await this.first(`SELECT ${NOW_SQL} observed_at_ms`);
    await this.access(input.clubId,'review');
+   // Optional aggregate observation; it adds no dispatch capability and does not alter the health response contract.
+   if(telemetryConfiguration(this.env)){
+    for(const state of ['pending','leased','retry','dead','delivered']){
+     // Telemetry reads and sinks are independent of the caller's read. A timeout is not cancellation; this is read-only.
+     const observation=(async()=>{let timer;try{
+      const oldest=await Promise.race([this.first(`SELECT min(recorded_at_ms) oldest_at FROM (SELECT o.recorded_at_ms FROM pa_delivery_jobs j
+       JOIN pa_outbox o ON o.event_id=j.event_id WHERE j.club_id=? AND j.consumer_id=? AND j.state=? ORDER BY o.recorded_at_ms LIMIT 1001)`,input.clubId,this.consumerId,state),
+       new Promise(resolve=>{timer=setTimeout(()=>resolve(null),25);})]);
+      if(oldest)emitMetricDetached(this.env,queueMetric({service:'allocation_delivery',clubId:input.clubId,observedAt:observed.observed_at_ms,
+       state,count:counts[state],oldestAt:oldest.oldest_at===null?null:Math.min(oldest.oldest_at,observed.observed_at_ms),capped:counts[state]===1000}),this.context);
+     }catch{/* Preserve health result. */}finally{clearTimeout(timer);}})();
+     try{this.context?.waitUntil(observation);}catch{/* Preserve health result. */}
+    }
+   }
    return {schemaVersion:1,clubId:input.clubId,observedAt:observed.observed_at_ms,counts,
     unmanagedLegacyAttempted:Math.min(legacy.n,1000),capped,snapshot:false,
     meaning:'operations inbox records, not financial settlement or handset delivery'};

@@ -1,0 +1,9 @@
+{
+ "compatibility_date":"2026-09-01","name":"africlub-allocation-recovery-staging","main":"src/recovery-worker.mjs",
+ "workers_dev":false,"preview_urls":false,"routes":[],"observability":{"enabled":false},"logpush":false,
+ "vars":{"PAYMENT_ALLOCATION_ENABLED":"false","ALLOCATION_DELIVERY_ENABLED":"false","ALLOCATION_RECOVERY_ENABLED":"false",
+  "ALLOCATION_ENVIRONMENT":"isolated-staging","DELIVERY_CONSUMER_ID":"REVIEW_REQUIRED",
+  "RECOVERY_MAKER_PRINCIPAL_ID":"REVIEW_REQUIRED","RECOVERY_CHECKER_PRINCIPAL_ID":"REVIEW_REQUIRED",
+  "PRIVATE_METRICS_ENABLED":"false","PRIVATE_METRICS_RETENTION_MS":"","PRIVATE_METRICS_POLICY_REF":""},
+ "d1_databases":[{"binding":"ALLOCATION_DB","database_name":"EXISTING_REVIEWED_ALLOCATION_DB","database_id":"REVIEW_REQUIRED","migrations_dir":"migrations_source"}]
+}

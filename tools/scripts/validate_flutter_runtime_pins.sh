@@ -29,40 +29,27 @@ if ! [[ "$PINNED_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   exit 1
 fi
 
-WORKFLOWS=()
-while IFS= read -r workflow; do
-  WORKFLOWS+=("$workflow")
-done < <(grep -R -l --include='*.yml' --include='*.yaml' \
-  'subosito/flutter-action@' "$WORKFLOW_DIR" | sort)
-
-if [ "${#WORKFLOWS[@]}" -eq 0 ]; then
-  echo "No Flutter workflow setup actions were found." >&2
-  exit 1
-fi
-
+SETUP_FILE="$ROOT/.github/actions/setup-flutter/action.yml"
 ERRORS=0
 SETUP_COUNT=0
-for workflow in "${WORKFLOWS[@]}"; do
-  while IFS=: read -r line_number _; do
-    SETUP_COUNT=$((SETUP_COUNT + 1))
-    block_end=$((line_number + 8))
-    block="$(sed -n "${line_number},${block_end}p" "$workflow")"
-    if ! grep -Eq \
-      'flutter-version-file:[[:space:]]*["'"'"']?\.fvmrc["'"'"']?[[:space:]]*$' \
-      <<< "$block"; then
-      echo "$workflow:$line_number does not source Flutter from .fvmrc." >&2
-      ERRORS=$((ERRORS + 1))
-    fi
-    if grep -Eq '^[[:space:]]*flutter-version:' <<< "$block"; then
-      echo "$workflow:$line_number contains a competing Flutter version." >&2
-      ERRORS=$((ERRORS + 1))
-    fi
-  done < <(grep -n 'subosito/flutter-action@' "$workflow")
+if [ ! -f "$SETUP_FILE" ] ||
+   ! grep -Fq 'flutter-version: ${{ steps.pin.outputs.version }}' "$SETUP_FILE" ||
+   ! grep -Fq '$GITHUB_WORKSPACE/.fvmrc' "$SETUP_FILE" ||
+   ! grep -Fq 'subosito/flutter-action@fd55f4c5af5b953cc57a2be44cb082c8f6635e8e' "$SETUP_FILE"; then
+  echo "Controlled Flutter setup action is missing or does not read the exact repository pin." >&2
+  ERRORS=$((ERRORS + 1))
+fi
+for workflow in "$WORKFLOW_DIR"/*.yml "$WORKFLOW_DIR"/*.yaml; do
+  [ -f "$workflow" ] || continue
+  count=$(grep -c 'uses: ./.github/actions/setup-flutter' "$workflow" || true)
+  SETUP_COUNT=$((SETUP_COUNT + count))
+  if grep -Eq 'subosito/flutter-action@|flutter-version-file:|^[[:space:]]*flutter-version:' "$workflow"; then
+    echo "$workflow bypasses the controlled Flutter setup action." >&2
+    ERRORS=$((ERRORS + 1))
+  fi
 done
-
-if grep -R -n --include='*.yml' --include='*.yaml' \
-  '^[[:space:]]*flutter-version:' "$WORKFLOW_DIR"; then
-  echo "Workflow-local Flutter versions must not compete with .fvmrc." >&2
+if [ "$SETUP_COUNT" -eq 0 ]; then
+  echo "No controlled Flutter workflow setup actions were found." >&2
   ERRORS=$((ERRORS + 1))
 fi
 

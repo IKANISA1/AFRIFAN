@@ -1,3 +1,5 @@
+
+import { recordProductDiagnostic } from "./privacy-safe-diagnostics";
 /**
  * Web Share API helpers.
  *
@@ -43,10 +45,10 @@ export async function shareContent(data: ShareData): Promise<boolean> {
       return true;
     } catch (error) {
       // User cancelled or share failed
-      if (error instanceof Error && error.name === "AbortError") {
+      if ((error instanceof Error || error instanceof DOMException) && error.name === "AbortError") {
         return false; // User cancelled — not an error
       }
-      console.warn("[share] Web Share failed, falling back to clipboard:", error);
+      recordProductDiagnostic("share_fallback");
     }
   }
 
@@ -102,9 +104,11 @@ async function copyToClipboard(text: string): Promise<boolean> {
     textarea.style.opacity = "0";
     document.body.appendChild(textarea);
     textarea.select();
-    document.execCommand("copy");
-    document.body.removeChild(textarea);
-    return true;
+    try {
+      return document.execCommand("copy");
+    } finally {
+      document.body.removeChild(textarea);
+    }
   } catch {
     return false;
   }

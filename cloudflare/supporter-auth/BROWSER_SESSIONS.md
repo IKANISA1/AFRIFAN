@@ -25,7 +25,7 @@ sessions. Logging out retires the linked identity session as well as the browser
 The native access token's five-minute deadline is not the lifetime of this separate browser
 credential. Browser lifetime is governed by reviewed browser policy, capped initial identity
 refresh deadline and original absolute session deadline; all native bearer endpoints retain
-their original access-token expiration checks. Existing custom-key rotation remains separate.
+their original access-token expiration checks. Vault key rotation and original receipt recovery across retained versions are documented in `KEY_ROTATION.md`.
 
 ## Temporary secret cleanup
 

@@ -327,6 +327,7 @@ void main() {
           '/tickets',
           '/e-ticket/:id',
           '/membership',
+          '/membership/native',
           '/shop',
         }),
       );

@@ -7,8 +7,18 @@ class ConvergedInventoryTests(unittest.TestCase):
     def setUp(self): self.text = (ROOT/'tools/scripts/verify_converged_source.py').read_text()
     def test_allocation_delivery_tests_are_registered(self):
         self.assertIn("'cloudflare/allocation-delivery/tests'", self.text)
+    def test_shared_telemetry_contract_and_recovery_configuration_are_registered(self):
+        self.assertIn("'cloudflare/shared-telemetry/tests'", self.text)
+        for path in ['cloudflare/shared-telemetry/scripts/check-deployment.mjs',
+                     'cloudflare/auth-code-delivery/scripts/check-review-deployment.mjs',
+                     'cloudflare/allocation-delivery/scripts/check-recovery-deployment.mjs']:
+            self.assertIn(path, self.text)
+        self.assertIn("'test_local_native_ci'", self.text)
     def test_allocation_delivery_templates_checked(self):
         self.assertIn('cloudflare/allocation-delivery/scripts/check-deployment.mjs', self.text)
+    def test_private_web_observations_are_in_the_converged_gate(self):
+        self.assertIn("'cloudflare/web-observations/tests'", self.text)
+        self.assertIn('cloudflare/web-observations/scripts/check-deployment.mjs', self.text)
     def test_case_backend_is_in_pinned_gate(self):
         self.assertIn("'cloudflare/payment-exceptions/tests'", self.text)
     def test_browser_backend_is_in_pinned_gate(self):

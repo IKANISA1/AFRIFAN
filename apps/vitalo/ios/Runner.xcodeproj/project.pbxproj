@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E52A27EB5DF33F6472DC1125 /* CredentialDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 770FE8C6F65245D80A610086 /* CredentialDispatcher.swift */; };
+		CD5DC2BC00F3FEECA21450B6 /* CredentialFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C5074CE47F92D9C0C56E0A /* CredentialFiles.swift */; };
+		96C8540235FA31629ABF6D37 /* CredentialHostGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52B219C1379FE09AD0DE85AF /* CredentialHostGate.swift */; };
+		4FB3462B2E4F8ABB70C0E787 /* CredentialProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC8B915276345DB3BC2795A /* CredentialProtocol.swift */; };
+		718A90E37ECA15559241D394 /* CredentialStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BC0C825FD94CFF8C61CA8E4 /* CredentialStore.swift */; };
+		53D645236144B8F2194BCCA6 /* IOSNativeCredentialHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FFFD6C2CE91670C19338BE /* IOSNativeCredentialHost.swift */; };
+		4DFBD0BD5FE5CF8F167FF89D /* IOSNativeCredentialRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80076C6E9D18CB6A7B6CE51 /* IOSNativeCredentialRegistration.swift */; };
+		858B6546C948F5CD6AF015B9 /* KeychainCredentialBlob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F68A48C652744A30828FAFB /* KeychainCredentialBlob.swift */; };
 		7B1A4599B955E5B2515355BC /* IOSNativeRecoveryHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7045A5A6FDB9A88AC2D1D3D2 /* IOSNativeRecoveryHost.swift */; };
 		5B68A5474B34E23774730628 /* IOSNativeRecoveryRegistration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28E206DD660FD28350D544B4 /* IOSNativeRecoveryRegistration.swift */; };
 		0F1310F03940D70CCD8217C6 /* KeychainRecoveryBlob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D5032A29D33062E95C084AB /* KeychainRecoveryBlob.swift */; };
@@ -50,6 +58,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		770FE8C6F65245D80A610086 /* CredentialDispatcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../../packages/core/core_auth/native/ios/IdentityCredentials/Sources/CredentialDispatcher.swift"; sourceTree = SOURCE_ROOT; };
+		16C5074CE47F92D9C0C56E0A /* CredentialFiles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../../packages/core/core_auth/native/ios/IdentityCredentials/Sources/CredentialFiles.swift"; sourceTree = SOURCE_ROOT; };
+		52B219C1379FE09AD0DE85AF /* CredentialHostGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../../packages/core/core_auth/native/ios/IdentityCredentials/Sources/CredentialHostGate.swift"; sourceTree = SOURCE_ROOT; };
+		4AC8B915276345DB3BC2795A /* CredentialProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../../packages/core/core_auth/native/ios/IdentityCredentials/Sources/CredentialProtocol.swift"; sourceTree = SOURCE_ROOT; };
+		1BC0C825FD94CFF8C61CA8E4 /* CredentialStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../../packages/core/core_auth/native/ios/IdentityCredentials/Sources/CredentialStore.swift"; sourceTree = SOURCE_ROOT; };
+		B6FFFD6C2CE91670C19338BE /* IOSNativeCredentialHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../../packages/core/core_auth/native/ios/IdentityCredentials/Sources/IOSNativeCredentialHost.swift"; sourceTree = SOURCE_ROOT; };
+		D80076C6E9D18CB6A7B6CE51 /* IOSNativeCredentialRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../../packages/core/core_auth/native/ios/IdentityCredentials/Sources/IOSNativeCredentialRegistration.swift"; sourceTree = SOURCE_ROOT; };
+		2F68A48C652744A30828FAFB /* KeychainCredentialBlob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../../packages/core/core_auth/native/ios/IdentityCredentials/Sources/KeychainCredentialBlob.swift"; sourceTree = SOURCE_ROOT; };
 		7045A5A6FDB9A88AC2D1D3D2 /* IOSNativeRecoveryHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../../packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryHost.swift"; sourceTree = SOURCE_ROOT; };
 		28E206DD660FD28350D544B4 /* IOSNativeRecoveryRegistration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../../packages/features/feat_membership/native/ios/Sources/IOSNativeRecoveryRegistration.swift"; sourceTree = SOURCE_ROOT; };
 		1D5032A29D33062E95C084AB /* KeychainRecoveryBlob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "../../../packages/features/feat_membership/native/ios/Sources/KeychainRecoveryBlob.swift"; sourceTree = SOURCE_ROOT; };
@@ -181,6 +197,14 @@
 				1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */,
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
+				770FE8C6F65245D80A610086 /* CredentialDispatcher.swift */,
+				16C5074CE47F92D9C0C56E0A /* CredentialFiles.swift */,
+				52B219C1379FE09AD0DE85AF /* CredentialHostGate.swift */,
+				4AC8B915276345DB3BC2795A /* CredentialProtocol.swift */,
+				1BC0C825FD94CFF8C61CA8E4 /* CredentialStore.swift */,
+				B6FFFD6C2CE91670C19338BE /* IOSNativeCredentialHost.swift */,
+				D80076C6E9D18CB6A7B6CE51 /* IOSNativeCredentialRegistration.swift */,
+				2F68A48C652744A30828FAFB /* KeychainCredentialBlob.swift */,
 				7045A5A6FDB9A88AC2D1D3D2 /* IOSNativeRecoveryHost.swift */,
 				28E206DD660FD28350D544B4 /* IOSNativeRecoveryRegistration.swift */,
 				1D5032A29D33062E95C084AB /* KeychainRecoveryBlob.swift */,
@@ -403,6 +427,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
+				E52A27EB5DF33F6472DC1125 /* CredentialDispatcher.swift in Sources */,
+				CD5DC2BC00F3FEECA21450B6 /* CredentialFiles.swift in Sources */,
+				96C8540235FA31629ABF6D37 /* CredentialHostGate.swift in Sources */,
+				4FB3462B2E4F8ABB70C0E787 /* CredentialProtocol.swift in Sources */,
+				718A90E37ECA15559241D394 /* CredentialStore.swift in Sources */,
+				53D645236144B8F2194BCCA6 /* IOSNativeCredentialHost.swift in Sources */,
+				4DFBD0BD5FE5CF8F167FF89D /* IOSNativeCredentialRegistration.swift in Sources */,
+				858B6546C948F5CD6AF015B9 /* KeychainCredentialBlob.swift in Sources */,
 				7B1A4599B955E5B2515355BC /* IOSNativeRecoveryHost.swift in Sources */,
 				5B68A5474B34E23774730628 /* IOSNativeRecoveryRegistration.swift in Sources */,
 				0F1310F03940D70CCD8217C6 /* KeychainRecoveryBlob.swift in Sources */,

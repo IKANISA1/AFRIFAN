@@ -79,6 +79,10 @@ if (isReleaseBuildRequested && !hasReleaseSigning) {
 }
 
 android {
+    // Dedicated identity credentials never use checkout marker storage.
+    sourceSets.getByName("main").java.srcDir(
+        "../../../../packages/core/core_auth/native/android/identity_credentials/src/main/kotlin",
+    )
     // Compile one shared protected recovery host; each engine owns its dispatcher.
     sourceSets.getByName("main").java.srcDir(
         "../../../../packages/features/feat_membership/native/android/src/main/kotlin",

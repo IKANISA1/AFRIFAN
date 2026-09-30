@@ -104,6 +104,15 @@ final class NativeMembershipClient
                 .toLowerCase() ==
             'application/json',
       );
+      requireContract(
+        (response.headers['cache-control'] ?? '')
+                .split(',')
+                .map((directive) => directive.trim().toLowerCase())
+                .contains('no-store') &&
+            !response.headers.containsKey('set-cookie') &&
+            (!response.headers.containsKey('content-encoding') ||
+                response.headers['content-encoding'] == 'identity'),
+      );
       final value = decodeWire(response.body);
       if (response.status != 200) {
         if (method == 'POST' &&

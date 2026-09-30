@@ -1,6 +1,6 @@
 import {
   controlledApiFailureResponse,
-  controlledApiJson,
+  controlledPublicApiJson,
   withControlledApiTimeout,
 } from "@/lib/controlled-api-response";
 import { getSiteSearchIndex } from "@/lib/data/public";
@@ -10,7 +10,7 @@ export const revalidate = 300;
 export async function GET() {
   try {
     const items = await withControlledApiTimeout(getSiteSearchIndex());
-    return controlledApiJson(
+    return controlledPublicApiJson(
       {
         code: items.length === 0 ? "SEARCH_INDEX_EMPTY" : "SEARCH_INDEX_READY",
         items,

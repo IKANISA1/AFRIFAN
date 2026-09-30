@@ -102,10 +102,12 @@ const gateway = {
 
 /** Injectable sink/clock for deterministic tests; defaults emit no private data. */
 export function createOperatorGateway({sink,clock=()=>performance.now()}={}){
+ const observe=()=>{try{return clock();}catch{return null;}};
  return {async fetch(request,env,ctx){
-  const requestId=crypto.randomUUID(),started=clock();
+  const requestId=crypto.randomUUID(),started=observe();
   const response=await gateway.fetch(request,env,ctx,requestId);
-  emitRequestMetric(env,request,response,requestId,clock()-started,sink);
+  const ended=observe();
+  emitRequestMetric(env,request,response,requestId,typeof started==='number'&&typeof ended==='number'?ended-started:NaN,sink,ctx);
   return response;
  }};
 }

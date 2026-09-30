@@ -30,4 +30,16 @@ dependencies:
   flutter_cache_manager: ^3.3.1
   file: ^7.0.1
 
+dev_dependencies:
+  club_as_vita:
+    path: ../../clubs/club_as_vita
+  club_costa_do_sol:
+    path: ../../clubs/club_costa_do_sol
+  club_nkana:
+    path: ../../clubs/club_nkana
+  club_rayon_sports:
+    path: ../../clubs/club_rayon_sports
+  club_vitalo:
+    path: ../../clubs/club_vitalo
+
 resolution: workspace

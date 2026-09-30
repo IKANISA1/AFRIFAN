@@ -1,0 +1,49 @@
+{
+  "targets": [
+    {
+      "club": "as_vita",
+      "platform": "android"
+    },
+    {
+      "club": "as_vita",
+      "platform": "ios"
+    },
+    {
+      "club": "costa_do_sol",
+      "platform": "android"
+    },
+    {
+      "club": "costa_do_sol",
+      "platform": "ios"
+    },
+    {
+      "club": "nkana",
+      "platform": "android"
+    },
+    {
+      "club": "nkana",
+      "platform": "ios"
+    },
+    {
+      "club": "rayon_sports",
+      "platform": "android"
+    },
+    {
+      "club": "rayon_sports",
+      "platform": "ios"
+    },
+    {
+      "club": "vitalo",
+      "platform": "android"
+    },
+    {
+      "club": "vitalo",
+      "platform": "ios"
+    }
+  ],
+  "configurationVerified": true,
+  "hostedJobsExecuted": false,
+  "releaseAccepted": false,
+  "flutterSetupActionSha256": "65a5de1a79363b989a6613cd6e61a920ae1309ee7e0d1a7cae7e08ae514b670c",
+  "workflowSha256": "0dfe0f5111cfb3f9fc1e9b8977f4f111272b769768d10169f843f64ef4c20d1a"
+}

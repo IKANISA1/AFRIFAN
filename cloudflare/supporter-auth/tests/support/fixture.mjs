@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync, readdirSync } from 'node:fs';
 import { IdentityService } from '../../src/identity-service.mjs';
@@ -28,6 +29,7 @@ export function fixture(t){const clock={now:Date.now()};const db=new Database(cl
   AUTH_SERVICE_ENABLED:'true',AUTH_DELIVERY_ENABLED:'true',AUTH_KEY_VERSION:'1',AUTH_HMAC_KEY:'a'.repeat(64),AUTH_ENCRYPTION_KEY:'b'.repeat(64),AUTH_DB:db,
   AUTH_ISSUANCE_POLICY_JSON:JSON.stringify({version:1,globalPerMinute:20,perIpPerMinute:10,phonePer15Minutes:3,clubs:{24:10,26:10}}),
   AUTH_ORIGIN:'https://identity.example.invalid',AUTH_EDGE_LIMIT:{async limit(){return {success:true};}}};
+ db.sqlite.prepare('INSERT INTO auth_key_versions VALUES(?,?,?,?,?)').run('1',createHash('sha256').update(env.AUTH_HMAC_KEY).digest('hex'),createHash('sha256').update(env.AUTH_ENCRYPTION_KEY).digest('hex'),'synthetic-local-fixture',clock.now);
  db.sqlite.exec('UPDATE auth_delivery_control SET enabled=1 WHERE singleton=1');
  db.sqlite.exec("UPDATE auth_settings SET import_ready=1,import_evidence='synthetic-local-test' WHERE singleton=1");
  db.sqlite.exec("INSERT INTO auth_clubs(club_id,club_slug,enabled,allow_signup,auth_template) VALUES(24,'rayon_sports_rw',1,1,'synthetic_auth'),(26,'nkana_zm',1,1,'synthetic_auth')");

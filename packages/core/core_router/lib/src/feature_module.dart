@@ -98,6 +98,11 @@ abstract class FeatureModule {
   /// For non-tab modules, these become top-level standalone routes.
   List<RouteBase> get routes => const [];
 
+  /// Exact routes whose feature owns a separate authentication journey. Their
+  /// screen must authenticate before reading private data or invoking commands.
+  /// This does not grant the shell's Supabase identity or any privileged role.
+  Set<String> get independentlyAuthenticatedPaths => const {};
+
   /// Product-level presentation decisions for this module's routes.
   ///
   /// This metadata keeps the route tree honest: a route can remain registered

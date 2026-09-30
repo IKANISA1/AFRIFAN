@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../tokens/color_tokens.dart';
+import '../extensions.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 
@@ -40,8 +40,13 @@ class AfriCheckbox extends StatelessWidget {
           value: value,
           tristate: tristate,
           onChanged: onChanged,
-          title: Text(label, style: TypographyTokens.bodyLarge()),
-          subtitle: _supportingText,
+          title: Text(
+            label,
+            style: TypographyTokens.bodyLarge(
+              context.afriSemanticColors.primaryText,
+            ),
+          ),
+          subtitle: _supportingText(context),
         ),
       ),
     );
@@ -65,7 +70,7 @@ class AfriCheckbox extends StatelessWidget {
     return parts.join('. ');
   }
 
-  Widget? get _supportingText {
+  Widget? _supportingText(BuildContext context) {
     final error = errorText?.trim();
     final subtitleText = subtitle?.trim();
     if (error?.isNotEmpty == true) {
@@ -73,12 +78,17 @@ class AfriCheckbox extends StatelessWidget {
         padding: const EdgeInsets.only(top: SpacingTokens.spacing1),
         child: Text(
           error!,
-          style: TypographyTokens.bodySmall(ColorTokens.error),
+          style: TypographyTokens.bodySmall(context.afriSemanticColors.danger),
         ),
       );
     }
     if (subtitleText?.isNotEmpty == true) {
-      return Text(subtitleText!, style: TypographyTokens.bodySmall());
+      return Text(
+        subtitleText!,
+        style: TypographyTokens.bodySmall(
+          context.afriSemanticColors.secondaryText,
+        ),
+      );
     }
     return null;
   }
@@ -133,14 +143,19 @@ class AfriRadio<T> extends StatelessWidget {
             contentPadding: EdgeInsets.zero,
             value: value,
             enabled: enabled,
-            title: Text(label, style: TypographyTokens.bodyLarge()),
+            title: Text(
+              label,
+              style: TypographyTokens.bodyLarge(
+                context.afriSemanticColors.primaryText,
+              ),
+            ),
             subtitle: supporting?.isNotEmpty == true
                 ? Text(
                     supporting!,
                     style: TypographyTokens.bodySmall(
                       errorText?.trim().isNotEmpty == true
-                          ? ColorTokens.error
-                          : null,
+                          ? context.afriSemanticColors.danger
+                          : context.afriSemanticColors.secondaryText,
                     ),
                   )
                 : null,

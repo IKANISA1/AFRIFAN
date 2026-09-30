@@ -9726,4 +9726,167 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get homeViewMatch => 'View match';
+
+  @override
+  String get nativeMembershipTitle => 'Membership payment';
+
+  @override
+  String get nativeMembershipUnavailable => 'Membership payment is unavailable';
+
+  @override
+  String get nativeMembershipUnavailableBody =>
+      'Return to Membership or contact the club for help.';
+
+  @override
+  String get nativeMembershipSignIn => 'Sign in to continue';
+
+  @override
+  String get nativeMembershipPhone => 'Phone number with country code';
+
+  @override
+  String get nativeMembershipRequestCode => 'Request verification code';
+
+  @override
+  String get nativeMembershipCode => 'Verification code';
+
+  @override
+  String get nativeMembershipVerify => 'Verify code';
+
+  @override
+  String get nativeMembershipCheckSession => 'Check saved sign-in';
+
+  @override
+  String get nativeMembershipRecoverSignIn =>
+      'Recover previous sign-in request';
+
+  @override
+  String get nativeMembershipChoose => 'Choose a membership plan';
+
+  @override
+  String get nativeMembershipNoPlans => 'No membership plans are available.';
+
+  @override
+  String get nativeMembershipPrepare => 'Prepare payment';
+
+  @override
+  String get nativeMembershipPrepared => 'Your payment request is prepared';
+
+  @override
+  String get nativeMembershipReview => 'Review payment';
+
+  @override
+  String get nativeMembershipConfirm => 'Confirm payment details';
+
+  @override
+  String get nativeMembershipContinue => 'Continue to confirmation';
+
+  @override
+  String get nativeMembershipAcknowledgement =>
+      'I checked the amount, currency, provider and recipient.';
+
+  @override
+  String get nativeMembershipOpenDialer => 'Open payment dialer';
+
+  @override
+  String get nativeMembershipDialerNotice =>
+      'Opening the dialer does not confirm payment. Check the payment status before making another payment.';
+
+  @override
+  String get nativeMembershipUnresolved => 'Payment status needs checking';
+
+  @override
+  String get nativeMembershipUnresolvedBody =>
+      'A previous request may have completed. Check its status before paying again.';
+
+  @override
+  String get nativeMembershipCheckStatus => 'Check payment status';
+
+  @override
+  String get nativeMembershipRetryOriginal => 'Retry original payment request';
+
+  @override
+  String get nativeMembershipRelease => 'Release unclaimed payment reservation';
+
+  @override
+  String get nativeMembershipReleaseAcknowledgement =>
+      'I understand this only releases an unclaimed reservation and does not cancel or refund a payment.';
+
+  @override
+  String get nativeMembershipAllocationRecorded =>
+      'Payment allocation recorded';
+
+  @override
+  String get nativeMembershipAllocationBody =>
+      'The server recorded a payment allocation. Check current membership separately.';
+
+  @override
+  String get nativeMembershipReceipt => 'View historical receipt';
+
+  @override
+  String get nativeMembershipReceiptNotice =>
+      'This receipt records the allocation at that time. It does not prove current membership access.';
+
+  @override
+  String get nativeMembershipSignOut => 'Sign out';
+
+  @override
+  String get nativeMembershipRefreshSignIn => 'Refresh sign-in';
+
+  @override
+  String get nativeMembershipCancel => 'Cancel review';
+
+  @override
+  String get nativeMembershipWorking => 'Checking your request';
+
+  @override
+  String get nativeMembershipInvalidInput =>
+      'Check the phone number or verification code and try again.';
+
+  @override
+  String get nativeMembershipChanged =>
+      'Your session changed. Check your sign-in and review the details again.';
+
+  @override
+  String get nativeMembershipDenied =>
+      'This account cannot access this membership request.';
+
+  @override
+  String get nativeMembershipStorage =>
+      'Secure recovery is unavailable. Unlock your device and try again.';
+
+  @override
+  String get nativeMembershipRetry =>
+      'The request could not be completed. Check your connection and try again.';
+
+  @override
+  String get nativeMembershipAmount => 'Amount';
+
+  @override
+  String get nativeMembershipCurrency => 'Currency';
+
+  @override
+  String get nativeMembershipProvider => 'Payment provider';
+
+  @override
+  String get nativeMembershipRecipient => 'Recipient';
+
+  @override
+  String get nativeMembershipPlan => 'Membership plan';
+
+  @override
+  String get nativeMembershipRecordedAt => 'Recorded at';
+
+  @override
+  String get nativeMembershipReference => 'Receipt reference';
+
+  @override
+  String get nativeMembershipRestart => 'Start sign-in again';
+
+  @override
+  String get nativeMembershipRestartBody =>
+      'If the earlier sign-in cannot be recovered, you can request a new code. Any previous session may still be active. Your unresolved payment status will be kept.';
+
+  @override
+  String get nativeMembershipRestartAcknowledgement =>
+      'I understand that this starts a new sign-in and does not confirm payment or close earlier sessions.';
 }

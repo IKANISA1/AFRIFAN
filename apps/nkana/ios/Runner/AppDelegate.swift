@@ -4,6 +4,7 @@ import UIKit
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
   private var nativeRecoveryRegistration: IOSNativeRecoveryRegistration?
+  private var nativeCredentialRegistration: IOSNativeCredentialRegistration?
 
   override func application(
     _ application: UIApplication,
@@ -18,6 +19,12 @@ import UIKit
     MainActor.assumeIsolated {
       GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
       nativeRecoveryRegistration?.dispose()
+      nativeCredentialRegistration?.dispose()
+      if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "AFRICLUBNativeIdentityCredentials") {
+        nativeCredentialRegistration = IOSNativeCredentialRegistration(
+          messenger: registrar.messenger(), enabled: false, approvedScopes: []
+        )
+      }
       if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "AFRICLUBNativeCheckoutRecovery") {
         nativeRecoveryRegistration = IOSNativeRecoveryRegistration(messenger: registrar.messenger())
       }

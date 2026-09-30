@@ -13,6 +13,7 @@ import {
   shouldBypassSubdomainRewrite,
 } from "@/lib/host-routing";
 import { controlledAdminEvidenceRequestHeader } from "@/lib/controlled-admin-evidence";
+import { contentSecurityPolicy, createCspNonce, isHtmlCspPath } from "./content-security-policy";
 
 export function routeHostRequest(request: NextRequest) {
   const hostname = resolveRoutingHostname(
@@ -31,6 +32,18 @@ export function routeHostRequest(request: NextRequest) {
     ? getRequestedAdminClubId(request.nextUrl.searchParams)
     : null;
   const forwardedRequestHeaders = new Headers(request.headers);
+  forwardedRequestHeaders.delete("x-africlub-csp-nonce");
+  forwardedRequestHeaders.delete("content-security-policy");
+  const csp = isHtmlCspPath(pathname) ? contentSecurityPolicy({
+    nonce: createCspNonce(), development: process.env.NODE_ENV === "development",
+    allowHttpPreview: process.env.AFRICLUB_ALLOW_HTTP_PREVIEW === "1",
+    supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  }) : null;
+  if (csp) {
+    const nonce = csp.match(/'nonce-([^']+)'/)![1];
+    forwardedRequestHeaders.set("x-africlub-csp-nonce", nonce);
+    forwardedRequestHeaders.set("content-security-policy", csp);
+  }
   forwardedRequestHeaders.delete(controlledAdminEvidenceRequestHeader);
   if (isAdminRequest && request.nextUrl.searchParams.has("evidence")) {
     forwardedRequestHeaders.set(controlledAdminEvidenceRequestHeader, "1");
@@ -42,6 +55,13 @@ export function routeHostRequest(request: NextRequest) {
     });
 
   const applyAdminScopeCookie = (response: NextResponse) => {
+    if (csp) {
+      response.headers.set("Content-Security-Policy", csp);
+      // A nonce-bearing HTML document cannot be reused for another request.
+      response.headers.set("Cache-Control", "private, no-store");
+      response.headers.set("CDN-Cache-Control", "no-store");
+      response.headers.set("Cloudflare-CDN-Cache-Control", "no-store");
+    }
     if (isWorkersPreviewHostname(hostname)) {
       response.headers.set(
         "X-Robots-Tag",

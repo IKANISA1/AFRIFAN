@@ -1,3 +1,4 @@
+import { assertRegisteredKeyPolicy } from './key-state.mjs';
 import { IdentityService, POLICY } from './identity-service.mjs';
 import { AuthError, requireValue as need, exactKeys, UUID, phoneNumber } from './errors.mjs';
 import { randomSecret, splitToken, sha256 } from './crypto.mjs';
@@ -41,6 +42,7 @@ export class BrowserSessionService {
   need(typeof env.AUTH_DB?.withSession==='function','browser_not_configured',503);
   this.identity=new IdentityService({...env,AUTH_DB:env.AUTH_DB.withSession('first-primary')},{clock});
   this.db=this.identity.db; this.vault=this.identity.vault;
+  this.live=LIVE.replace("key_version='1'",`key_version='${this.vault.currentVersion}'`);
  }
  stmt(sql,...args) { return this.db.prepare(sql).bind(...args); }
  async ready() {
@@ -50,7 +52,7 @@ export class BrowserSessionService {
    WHERE o.origin=? AND o.club_id=? AND o.enabled=1 AND x.singleton=1 AND x.enabled=1`,origin,clubId).first();
   need(row,'browser_disabled',503); return row;
  }
- hashCookie(cookie) { splitToken(cookie); return this.vault.hash('browser-session',cookie); }
+ hashCookie(cookie,version=this.vault.currentVersion) { splitToken(cookie); return this.vault.hash('browser-session',cookie,version); }
  csrf(cookie) { return this.vault.hash('browser-csrf',cookie); }
  async checkCsrf(cookie,csrf) {
   need(await this.vault.verifyHash('browser-csrf',cookie,csrf),'csrf_rejected',403);
@@ -65,7 +67,9 @@ export class BrowserSessionService {
    TIME(b.issuedAt) && TIME(b.expiresAt) && b.issuedAt<=this.clock() &&
    b.expiresAt===b.issuedAt+BOOT_MS && b.expiresAt>this.clock(),'bootstrap_required',401);
   if(csrf!==undefined) await this.checkCsrf(cookie,csrf);
-  return {...b,hash:await this.vault.hash('browser-bootstrap',cookie)};
+  const hashes=(await this.vault.hashes('browser-bootstrap',cookie)).map(v=>v.hash),slots=hashes.map(()=>'?').join(',');
+  const bound=await this.stmt(`SELECT bootstrap_hash FROM auth_browser_challenges WHERE bootstrap_hash IN(${slots})`,...hashes).first();
+  return {...b,hash:bound?.bootstrap_hash??await this.vault.hash('browser-bootstrap',cookie)};
  }
  async start({sessionCookie=null}={}) {
   await this.ready();
@@ -86,7 +90,8 @@ export class BrowserSessionService {
  async challenge({bootstrapCookie,csrfToken,requestId,ipKey,input}) {
   exactKeys(input,['phone']); phoneNumber(input.phone); key(requestId);
   const policy=await this.ready(),b=await this.bootstrap(bootstrapCookie,csrfToken);
-  const issueHash=await this.identity.key(requestId),phoneHash=await this.vault.hash('phone',input.phone);
+  const issueHash=await this.identity.key(requestId),account=await this.identity.accountForPhone(input.phone),
+   phoneHash=account?.phone_hash??await this.vault.hash('phone',input.phone);
   need(!await this.stmt('SELECT 1 FROM auth_browser_sessions WHERE bootstrap_hash=?',b.hash).first(),
    'bootstrap_consumed',409);
   // Reserve ONE issuance identity before dispatch; retries cannot change phone or key.
@@ -99,7 +104,8 @@ export class BrowserSessionService {
      policy.control_revision,issueHash,phoneHash,b.expiresAt,this.clock())
   ]);
   const bound=await this.stmt('SELECT * FROM auth_browser_challenges WHERE bootstrap_hash=?',b.hash).first();
-  need(bound && bound.request_key_hash===issueHash && bound.phone_hash===phoneHash &&
+  need(bound && await this.vault.verifyHash('request-key',requestId,bound.request_key_hash) &&
+   (bound.phone_hash===account?.phone_hash||await this.vault.verifyHash('phone',input.phone,bound.phone_hash)) &&
    bound.origin_revision===policy.origin_revision && bound.control_revision===policy.control_revision,
    'idempotency_conflict',409);
   const result=await this.identity.challenge(b.clubId,{phone:input.phone,clientSecret:b.clientSecret},requestId,ipKey);
@@ -109,7 +115,7 @@ export class BrowserSessionService {
  async row(browserId,live=true) {
   const {origin,clubId}=this.config;
   return this.stmt(`SELECT b.*,s.user_id,s.authenticated_at_ms FROM ${JOIN}
-   WHERE b.browser_id=? AND b.origin=? AND b.club_id=? ${live?`AND ${LIVE}`:''}`,
+   WHERE b.browser_id=? AND b.origin=? AND b.club_id=? ${live?`AND ${this.live}`:''}`,
     browserId,origin,clubId).first();
  }
  async view(row,cookie) {
@@ -118,17 +124,17 @@ export class BrowserSessionService {
    role:'supporter',phoneVerified:true,csrfToken:await this.csrf(cookie)};
  }
  async current(cookie) {
-  await this.ready(); const {id}=splitToken(cookie),hash=await this.hashCookie(cookie),row=await this.row(id);
-  need(row && row.cookie_hash===hash,'unauthenticated',401); return this.view(row,cookie);
+  await this.ready(); const {id}=splitToken(cookie),row=await this.row(id);
+  need(row && row.cookie_hash===await this.hashCookie(cookie,row.cookie_key_version),'unauthenticated',401); return this.view(row,cookie);
  }
  async loginReplay(row,requestHash,keyHash,sessionCookie) {
-  need(row.verify_key_hash===keyHash && row.verify_request_hash===requestHash,'idempotency_conflict',409);
+  need(keyHash.includes(row.verify_key_hash) && requestHash.includes(row.verify_request_hash),'idempotency_conflict',409);
   const head=await this.row(row.browser_id);
   need(head && head.generation===0 && head.cookie_response_cipher && head.replay_until_ms>this.clock(),
    'reauthentication_required',401);
-  if(sessionCookie) need(await this.hashCookie(sessionCookie)===head.cookie_hash,'session_changed',409);
-  const data=await this.vault.open(head.cookie_response_cipher,`browser-login:${head.browser_id}:${keyHash}`);
-  need(await this.hashCookie(data.cookie)===head.cookie_hash,'service_unavailable',503);
+  if(sessionCookie) need(await this.hashCookie(sessionCookie,head.cookie_key_version)===head.cookie_hash,'session_changed',409);
+  const data=await this.vault.open(head.cookie_response_cipher,`browser-login:${head.browser_id}:${head.verify_key_hash}`);
+  need(await this.hashCookie(data.cookie,head.cookie_key_version)===head.cookie_hash,'service_unavailable',503);
   return {sessionCookie:data.cookie,view:await this.view(head,data.cookie)};
  }
  async verify({bootstrapCookie,csrfToken,requestId,input,sessionCookie=null}) {
@@ -136,10 +142,11 @@ export class BrowserSessionService {
   need(typeof input.challengeId==='string' && UUID.test(input.challengeId));
   need(typeof input.code==='string' && /^[0-9]{6}$/.test(input.code));
   const policy=await this.ready(),b=await this.bootstrap(bootstrapCookie,csrfToken);
-  const keyHash=await this.identity.key(requestId);
-  const requestHash=await this.vault.hash('browser-verification',JSON.stringify([b.hash,input.challengeId,input.code]));
+  const keyHash=await this.identity.key(requestId),keyHashes=await this.identity.keyHashes(requestId);
+  const requestBody=JSON.stringify([b.hash,input.challengeId,input.code]),requestHash=await this.vault.hash('browser-verification',requestBody),
+   requestHashes=(await this.vault.hashes('browser-verification',requestBody)).map(v=>v.hash);
   const prior=await this.stmt('SELECT * FROM auth_browser_sessions WHERE bootstrap_hash=?',b.hash).first();
-  if(prior) return this.loginReplay(prior,requestHash,keyHash,sessionCookie);
+  if(prior) return this.loginReplay(prior,requestHashes,keyHashes,sessionCookie);
   if(sessionCookie) {
    try { await this.current(sessionCookie); throw new AuthError('already_authenticated',409); }
    catch(e) { if(e.code!=='unauthenticated') throw e; }
@@ -162,45 +169,48 @@ export class BrowserSessionService {
      WHERE s.session_id=? AND s.club_id=? AND s.access_hash=? AND s.access_expires_ms>${NOW}
      AND s.revoked_at_ms IS NULL AND s.account_epoch=a.auth_epoch AND a.status='active'
      AND c.enabled=1 AND c.revision=s.club_revision AND x.singleton=1 AND x.import_ready=1
-     AND length(x.import_evidence)>0 AND x.key_version='1' AND o.origin=? AND o.club_id=s.club_id
+     AND length(x.import_evidence)>0 AND x.key_version='${this.vault.currentVersion}' AND o.origin=? AND o.club_id=s.club_id
      AND o.enabled=1 AND o.revision=? AND bc.singleton=1 AND bc.enabled=1 AND bc.revision=?)`,
      tokens.sessionId,b.clubId,await sha256(tokens.accessToken),b.origin,policy.origin_revision,policy.control_revision),
     this.stmt(`INSERT INTO auth_browser_sessions(browser_id,auth_session_id,origin,club_id,origin_revision,
      control_revision,bootstrap_hash,verify_key_hash,verify_request_hash,cookie_hash,expires_ms,absolute_ms,
-     created_ms,cookie_response_cipher,replay_until_ms) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+     created_ms,cookie_response_cipher,replay_until_ms,cookie_key_version) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
      browserId,tokens.sessionId,b.origin,b.clubId,policy.origin_revision,policy.control_revision,b.hash,keyHash,
-     requestHash,hash,expires,absolute,now,cipher,now+POLICY.replayMs),
+     requestHash,hash,expires,absolute,now,cipher,now+POLICY.replayMs,this.vault.currentVersion),
     this.identity.audit('browser_session_created',tokens.userId,b.clubId,tokens.sessionId)
    ]);
   } catch(e) {
    const raced=await this.stmt('SELECT * FROM auth_browser_sessions WHERE bootstrap_hash=?',b.hash).first();
-   if(raced) return this.loginReplay(raced,requestHash,keyHash,sessionCookie);
+   if(raced) return this.loginReplay(raced,requestHashes,keyHashes,sessionCookie);
    throw e;
   }
-  return this.loginReplay(await this.row(browserId),requestHash,keyHash,sessionCookie);
+  return this.loginReplay(await this.row(browserId),requestHashes,keyHashes,sessionCookie);
  }
  async rotationReplay(receipt,row,hash) {
   need(row && [receipt.old_cookie_hash,receipt.new_cookie_hash].includes(hash) &&
    row.generation===receipt.generation && row.cookie_hash===receipt.new_cookie_hash &&
    receipt.replay_until_ms>this.clock() && receipt.response_cipher,'reauthentication_required',401);
   const data=await this.vault.open(receipt.response_cipher,`browser-rotation:${row.browser_id}:${receipt.request_key_hash}`);
-  need(await this.hashCookie(data.cookie)===row.cookie_hash,'service_unavailable',503);
+  need(await this.hashCookie(data.cookie,row.cookie_key_version)===row.cookie_hash,'service_unavailable',503);
   return {sessionCookie:data.cookie,view:await this.view(row,data.cookie)};
  }
  async rotate({sessionCookie,csrfToken,requestId}) {
   key(requestId); const policy=await this.ready(); await this.checkCsrf(sessionCookie,csrfToken);
-  const {id}=splitToken(sessionCookie),hash=await this.hashCookie(sessionCookie),keyHash=await this.identity.key(requestId);
-  const row=await this.row(id),prior=await this.stmt('SELECT * FROM auth_browser_rotations WHERE browser_id=? AND request_key_hash=?',id,keyHash).first();
-  if(prior) return this.rotationReplay(prior,row,hash);
+  const {id}=splitToken(sessionCookie),keyHash=await this.identity.key(requestId),keys=await this.identity.keyHashes(requestId),slots=keys.map(()=>'?').join(',');
+  const row=await this.row(id),prior=await this.stmt(`SELECT * FROM auth_browser_rotations WHERE browser_id=? AND request_key_hash IN(${slots})`,id,...keys).first();
+  const hashes=(await this.vault.hashes('browser-session',sessionCookie)).map(v=>v.hash);
+  if(prior){const replayHash=hashes.find(hash=>[prior.old_cookie_hash,prior.new_cookie_hash].includes(hash));
+   return this.rotationReplay(prior,row,replayHash);}
+  const hash=row?await this.hashCookie(sessionCookie,row.cookie_key_version):null;
   need(row && row.cookie_hash===hash,'unauthenticated',401);
   const cookie=`${id}.${randomSecret()}`,nextHash=await this.hashCookie(cookie),now=this.clock();
   const cipher=await this.vault.seal({cookie},`browser-rotation:${id}:${keyHash}`);
   try {
    await this.identity.batch([
-    this.identity.assertion(`EXISTS(SELECT 1 FROM ${JOIN} WHERE b.browser_id=? AND b.cookie_hash=? AND ${LIVE})`,id,hash),
+    this.identity.assertion(`EXISTS(SELECT 1 FROM ${JOIN} WHERE b.browser_id=? AND b.cookie_hash=? AND ${this.live}) AND (? IS NULL OR ${NOW}<?)`,id,hash,this.vault.readDeadline(row.cookie_key_version),this.vault.readDeadline(row.cookie_key_version)),
     this.stmt(`UPDATE auth_browser_sessions SET cookie_hash=?,generation=generation+1,
-     expires_ms=MIN(?,absolute_ms),cookie_response_cipher=NULL WHERE browser_id=? AND cookie_hash=? AND revoked_ms IS NULL`,
-     nextHash,now+policy.idle_ms,id,hash),this.identity.assertion('changes()=1'),
+     expires_ms=MIN(?,absolute_ms),cookie_response_cipher=NULL,cookie_key_version=? WHERE browser_id=? AND cookie_hash=? AND revoked_ms IS NULL`,
+     nextHash,now+policy.idle_ms,this.vault.currentVersion,id,hash),this.identity.assertion('changes()=1'),
     this.stmt('INSERT INTO auth_browser_rotations VALUES(?,?,?,?,?,?,?,?)',id,keyHash,hash,nextHash,row.generation+1,cipher,now+POLICY.replayMs,now),
     this.identity.audit('browser_session_rotated',row.user_id,row.club_id,row.auth_session_id)
    ]);
@@ -212,12 +222,12 @@ export class BrowserSessionService {
   return this.rotationReplay(await this.stmt('SELECT * FROM auth_browser_rotations WHERE browser_id=? AND request_key_hash=?',id,keyHash).first(),await this.row(id),hash);
  }
  async logout({sessionCookie,csrfToken,requestId}) {
-  key(requestId);await this.checkCsrf(sessionCookie,csrfToken);
-  const {id}=splitToken(sessionCookie),hash=await this.hashCookie(sessionCookie),keyHash=await this.identity.key(requestId);
-  const row=await this.row(id,false);
+  key(requestId);await assertRegisteredKeyPolicy(this.db,this.vault);await this.checkCsrf(sessionCookie,csrfToken);
+  const {id}=splitToken(sessionCookie),keyHash=await this.identity.key(requestId),keys=await this.identity.keyHashes(requestId);
+  const row=await this.row(id,false),hash=row?await this.hashCookie(sessionCookie,row.cookie_key_version):null;
   need(row && row.cookie_hash===hash,'unauthenticated',401);
   if(row.revoked_ms!==null) {
-   need(row.logout_key_hash===keyHash,'unauthenticated',401);
+   need(keys.includes(row.logout_key_hash),'unauthenticated',401);
    return {schemaVersion:1,loggedOut:true,scope:'current'};
   }
   // Revocation remains possible for an expired/paused cookie, but only its exact owner credential.
@@ -233,7 +243,7 @@ export class BrowserSessionService {
    ]);
   } catch(e) {
    const head=await this.row(id,false);
-   if(!(head?.cookie_hash===hash && head.logout_key_hash===keyHash && head.revoked_ms!==null)) throw e;
+   if(!(head?.cookie_hash===hash && keys.includes(head.logout_key_hash) && head.revoked_ms!==null)) throw e;
   }
   return {schemaVersion:1,loggedOut:true,scope:'current'};
  }

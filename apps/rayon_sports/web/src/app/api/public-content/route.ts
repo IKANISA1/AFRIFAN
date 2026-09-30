@@ -1,6 +1,7 @@
 import {
   controlledApiFailureResponse,
   controlledApiJson,
+  controlledPublicApiJson,
   withControlledApiTimeout,
 } from "@/lib/controlled-api-response";
 import {
@@ -227,7 +228,7 @@ export async function GET(request: Request) {
         news.length > 0 ||
         products.length > 0 ||
         memberships.length > 0;
-      return controlledApiJson(
+      return controlledPublicApiJson(
         {
           code: hasContent ? "PUBLIC_HOME_READY" : "PUBLIC_HOME_EMPTY",
           matches,
@@ -279,7 +280,7 @@ export async function GET(request: Request) {
               matchSummary: match.matchSummary,
             };
 
-      return controlledApiJson(
+      return controlledPublicApiJson(
         {
           code:
             item == null
@@ -325,7 +326,7 @@ export async function GET(request: Request) {
         )
         .slice(0, 20);
 
-      return controlledApiJson(
+      return controlledPublicApiJson(
         {
           code:
             items.length === 0
@@ -406,7 +407,7 @@ export async function GET(request: Request) {
         })
         .slice(0, 12);
 
-      return controlledApiJson(
+      return controlledPublicApiJson(
         {
           code:
             groups.length === 0 && chapters.length === 0
@@ -478,7 +479,7 @@ export async function GET(request: Request) {
         .sort((a, b) => a.sortOrder - b.sortOrder)
         .slice(0, 6);
 
-      return controlledApiJson(
+      return controlledPublicApiJson(
         {
           code:
             packages.length === 0
@@ -514,7 +515,7 @@ export async function GET(request: Request) {
         getProductByIdStrict(productId),
       );
       const item = product == null ? null : projectPublicProduct(product);
-      return controlledApiJson(
+      return controlledPublicApiJson(
         {
           code:
             item == null
@@ -542,7 +543,7 @@ export async function GET(request: Request) {
         })
         .slice(0, 12);
 
-      return controlledApiJson(
+      return controlledPublicApiJson(
         {
           code: items.length === 0 ? "PUBLIC_SHOP_EMPTY" : "PUBLIC_SHOP_READY",
           items,
@@ -588,7 +589,7 @@ export async function GET(request: Request) {
               author: article.author,
             };
 
-      return controlledApiJson(
+      return controlledPublicApiJson(
         {
           code:
             item == null
@@ -628,7 +629,7 @@ export async function GET(request: Request) {
         )
         .slice(0, 100);
 
-      return controlledApiJson(
+      return controlledPublicApiJson(
         {
           code: items.length === 0 ? "PUBLIC_NEWS_EMPTY" : "PUBLIC_NEWS_READY",
           items,
@@ -666,7 +667,7 @@ export async function GET(request: Request) {
         )
         .slice(0, 24);
 
-      return controlledApiJson(
+      return controlledPublicApiJson(
         {
           code:
             items.length === 0
@@ -707,7 +708,7 @@ export async function GET(request: Request) {
         )
         .slice(0, 40);
 
-      return controlledApiJson(
+      return controlledPublicApiJson(
         {
           code:
             items.length === 0 ? "PUBLIC_SQUAD_EMPTY" : "PUBLIC_SQUAD_READY",
@@ -796,7 +797,7 @@ export async function GET(request: Request) {
         .sort((a, b) => a.rank - b.rank)
         .slice(0, 10);
 
-      return controlledApiJson(
+      return controlledPublicApiJson(
         {
           code:
             catalog.length === 0 && leaderboard.length === 0
@@ -825,7 +826,7 @@ export async function GET(request: Request) {
       .filter((item) => item.id.trim() && item.title.trim() && item.body.trim())
       .slice(0, 24);
 
-    return controlledApiJson(
+    return controlledPublicApiJson(
       {
         code:
           items.length === 0 ? "PUBLIC_HISTORY_EMPTY" : "PUBLIC_HISTORY_READY",

@@ -1,3 +1,5 @@
+
+import { recordProductDiagnostic } from "./privacy-safe-diagnostics";
 /**
  * Web Push subscription helpers.
  *
@@ -11,7 +13,7 @@
 function getVapidPublicKey(): string {
   const key = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ?? "";
   if (!key) {
-    console.warn("[push] NEXT_PUBLIC_VAPID_PUBLIC_KEY is not set — push disabled.");
+    recordProductDiagnostic("push_unconfigured");
   }
   return key;
 }
@@ -45,8 +47,8 @@ export async function subscribeToPush(
     });
 
     return subscription;
-  } catch (error) {
-    console.error("[push] Subscription failed:", error);
+  } catch {
+    recordProductDiagnostic("push_subscription_failed");
     return null;
   }
 }
@@ -96,7 +98,7 @@ export async function sendSubscriptionToServer(
     });
     return response.ok;
   } catch {
-    console.error("[push] Failed to send subscription to server");
+    recordProductDiagnostic("push_registration_failed");
     return false;
   }
 }

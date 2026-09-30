@@ -50,6 +50,7 @@ final class Transport implements NativeMembershipTransport {
     calls.add(r);
     return NativeWireResponse(200, {
       'content-type': 'application/json',
+      'cache-control': 'no-store, private',
     }, jsonEncode(page()));
   }
 }

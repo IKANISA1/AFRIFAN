@@ -15,10 +15,26 @@ final class NativeWireRequest {
 
 final class NativeWireResponse {
   NativeWireResponse(this.status, Map<String, String> headers, this.body)
-    : headers = Map.unmodifiable(headers);
+    : headers = _normalizedResponseHeaders(headers);
   final int status;
   final Map<String, String> headers;
   final String body;
+}
+
+Map<String, String> _normalizedResponseHeaders(Map<String, String> headers) {
+  final normalized = <String, String>{};
+  for (final entry in headers.entries) {
+    final key = entry.key.toLowerCase();
+    requireContract(
+      key.isNotEmpty &&
+          key.trim() == key &&
+          !normalized.containsKey(key) &&
+          !entry.value.contains('\r') &&
+          !entry.value.contains('\n'),
+    );
+    normalized[key] = entry.value;
+  }
+  return Map.unmodifiable(normalized);
 }
 
 abstract interface class NativeMembershipTransport {

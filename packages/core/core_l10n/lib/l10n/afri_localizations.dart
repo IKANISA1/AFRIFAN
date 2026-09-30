@@ -16567,6 +16567,300 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'View match'**
   String get homeViewMatch;
+
+  /// No description provided for @nativeMembershipTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Membership payment'**
+  String get nativeMembershipTitle;
+
+  /// No description provided for @nativeMembershipUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Membership payment is unavailable'**
+  String get nativeMembershipUnavailable;
+
+  /// No description provided for @nativeMembershipUnavailableBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Return to Membership or contact the club for help.'**
+  String get nativeMembershipUnavailableBody;
+
+  /// No description provided for @nativeMembershipSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to continue'**
+  String get nativeMembershipSignIn;
+
+  /// No description provided for @nativeMembershipPhone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number with country code'**
+  String get nativeMembershipPhone;
+
+  /// No description provided for @nativeMembershipRequestCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Request verification code'**
+  String get nativeMembershipRequestCode;
+
+  /// No description provided for @nativeMembershipCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code'**
+  String get nativeMembershipCode;
+
+  /// No description provided for @nativeMembershipVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify code'**
+  String get nativeMembershipVerify;
+
+  /// No description provided for @nativeMembershipCheckSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Check saved sign-in'**
+  String get nativeMembershipCheckSession;
+
+  /// No description provided for @nativeMembershipRecoverSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Recover previous sign-in request'**
+  String get nativeMembershipRecoverSignIn;
+
+  /// No description provided for @nativeMembershipChoose.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a membership plan'**
+  String get nativeMembershipChoose;
+
+  /// No description provided for @nativeMembershipNoPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'No membership plans are available.'**
+  String get nativeMembershipNoPlans;
+
+  /// No description provided for @nativeMembershipPrepare.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare payment'**
+  String get nativeMembershipPrepare;
+
+  /// No description provided for @nativeMembershipPrepared.
+  ///
+  /// In en, this message translates to:
+  /// **'Your payment request is prepared'**
+  String get nativeMembershipPrepared;
+
+  /// No description provided for @nativeMembershipReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Review payment'**
+  String get nativeMembershipReview;
+
+  /// No description provided for @nativeMembershipConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm payment details'**
+  String get nativeMembershipConfirm;
+
+  /// No description provided for @nativeMembershipContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue to confirmation'**
+  String get nativeMembershipContinue;
+
+  /// No description provided for @nativeMembershipAcknowledgement.
+  ///
+  /// In en, this message translates to:
+  /// **'I checked the amount, currency, provider and recipient.'**
+  String get nativeMembershipAcknowledgement;
+
+  /// No description provided for @nativeMembershipOpenDialer.
+  ///
+  /// In en, this message translates to:
+  /// **'Open payment dialer'**
+  String get nativeMembershipOpenDialer;
+
+  /// No description provided for @nativeMembershipDialerNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening the dialer does not confirm payment. Check the payment status before making another payment.'**
+  String get nativeMembershipDialerNotice;
+
+  /// No description provided for @nativeMembershipUnresolved.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment status needs checking'**
+  String get nativeMembershipUnresolved;
+
+  /// No description provided for @nativeMembershipUnresolvedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A previous request may have completed. Check its status before paying again.'**
+  String get nativeMembershipUnresolvedBody;
+
+  /// No description provided for @nativeMembershipCheckStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Check payment status'**
+  String get nativeMembershipCheckStatus;
+
+  /// No description provided for @nativeMembershipRetryOriginal.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry original payment request'**
+  String get nativeMembershipRetryOriginal;
+
+  /// No description provided for @nativeMembershipRelease.
+  ///
+  /// In en, this message translates to:
+  /// **'Release unclaimed payment reservation'**
+  String get nativeMembershipRelease;
+
+  /// No description provided for @nativeMembershipReleaseAcknowledgement.
+  ///
+  /// In en, this message translates to:
+  /// **'I understand this only releases an unclaimed reservation and does not cancel or refund a payment.'**
+  String get nativeMembershipReleaseAcknowledgement;
+
+  /// No description provided for @nativeMembershipAllocationRecorded.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment allocation recorded'**
+  String get nativeMembershipAllocationRecorded;
+
+  /// No description provided for @nativeMembershipAllocationBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The server recorded a payment allocation. Check current membership separately.'**
+  String get nativeMembershipAllocationBody;
+
+  /// No description provided for @nativeMembershipReceipt.
+  ///
+  /// In en, this message translates to:
+  /// **'View historical receipt'**
+  String get nativeMembershipReceipt;
+
+  /// No description provided for @nativeMembershipReceiptNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'This receipt records the allocation at that time. It does not prove current membership access.'**
+  String get nativeMembershipReceiptNotice;
+
+  /// No description provided for @nativeMembershipSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get nativeMembershipSignOut;
+
+  /// No description provided for @nativeMembershipRefreshSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh sign-in'**
+  String get nativeMembershipRefreshSignIn;
+
+  /// No description provided for @nativeMembershipCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel review'**
+  String get nativeMembershipCancel;
+
+  /// No description provided for @nativeMembershipWorking.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking your request'**
+  String get nativeMembershipWorking;
+
+  /// No description provided for @nativeMembershipInvalidInput.
+  ///
+  /// In en, this message translates to:
+  /// **'Check the phone number or verification code and try again.'**
+  String get nativeMembershipInvalidInput;
+
+  /// No description provided for @nativeMembershipChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Your session changed. Check your sign-in and review the details again.'**
+  String get nativeMembershipChanged;
+
+  /// No description provided for @nativeMembershipDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'This account cannot access this membership request.'**
+  String get nativeMembershipDenied;
+
+  /// No description provided for @nativeMembershipStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Secure recovery is unavailable. Unlock your device and try again.'**
+  String get nativeMembershipStorage;
+
+  /// No description provided for @nativeMembershipRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'The request could not be completed. Check your connection and try again.'**
+  String get nativeMembershipRetry;
+
+  /// No description provided for @nativeMembershipAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount'**
+  String get nativeMembershipAmount;
+
+  /// No description provided for @nativeMembershipCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency'**
+  String get nativeMembershipCurrency;
+
+  /// No description provided for @nativeMembershipProvider.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment provider'**
+  String get nativeMembershipProvider;
+
+  /// No description provided for @nativeMembershipRecipient.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipient'**
+  String get nativeMembershipRecipient;
+
+  /// No description provided for @nativeMembershipPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Membership plan'**
+  String get nativeMembershipPlan;
+
+  /// No description provided for @nativeMembershipRecordedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Recorded at'**
+  String get nativeMembershipRecordedAt;
+
+  /// No description provided for @nativeMembershipReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Receipt reference'**
+  String get nativeMembershipReference;
+
+  /// No description provided for @nativeMembershipRestart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start sign-in again'**
+  String get nativeMembershipRestart;
+
+  /// No description provided for @nativeMembershipRestartBody.
+  ///
+  /// In en, this message translates to:
+  /// **'If the earlier sign-in cannot be recovered, you can request a new code. Any previous session may still be active. Your unresolved payment status will be kept.'**
+  String get nativeMembershipRestartBody;
+
+  /// No description provided for @nativeMembershipRestartAcknowledgement.
+  ///
+  /// In en, this message translates to:
+  /// **'I understand that this starts a new sign-in and does not confirm payment or close earlier sessions.'**
+  String get nativeMembershipRestartAcknowledgement;
 }
 
 class _AfriLocalizationsDelegate

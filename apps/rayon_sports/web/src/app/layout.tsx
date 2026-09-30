@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
 import { getClubProfile } from "@/lib/data/public";
 import { buildSiteJsonLd, getClubWebsiteIdentity, renderJsonLdScriptContent } from "@/lib/metadata";
+import { validCspNonce } from "@/lib/content-security-policy";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -83,6 +85,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const siteJsonLd = buildSiteJsonLd(await getClubProfile());
+  const requestNonce = (await headers()).get("x-africlub-csp-nonce");
+  const nonce = validCspNonce(requestNonce) ? requestNonce : undefined;
 
   return (
     <html
@@ -93,6 +97,7 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col">
         <script
           type="application/ld+json"
+          nonce={nonce}
           dangerouslySetInnerHTML={{
             __html: renderJsonLdScriptContent(siteJsonLd),
           }}

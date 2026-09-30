@@ -67,8 +67,28 @@ export function productionSourceSnapshot(root) {
   for (const file of [".env", ".env.local", ".env.production", ".env.production.local"]) {
     if (fs.existsSync(path.join(root, file))) entries.push(file);
   }
-  const files = [...inventory(root, entries).files, ...sharedPortalInputs(root)];
+  for (const file of ["open-next.config.ts", "wrangler.jsonc"]) {
+    if (fs.existsSync(path.join(root, file))) entries.push(file);
+  }
+  const files = [...inventory(root, entries).files, ...sharedPortalInputs(root), ...sharedObservationInputs(root)];
   return { sha256: sha256(JSON.stringify(files)), files };
+}
+
+function sharedObservationInputs(root) {
+  if (!["src/lib/web-observation-client.ts", "src/lib/web-observation-server.ts"]
+    .some(file => fs.existsSync(path.join(root, file)))) return [];
+  const relativeDirectory = "../../../cloudflare/web-observations";
+  const declaredDirectory = path.resolve(root, relativeDirectory);
+  const repository = fs.realpathSync(path.resolve(root, "../../.."));
+  const expectedDirectory = path.join(repository, "cloudflare/web-observations");
+  requireValue(fs.existsSync(declaredDirectory), "Missing required web observation build input directory");
+  requireValue(fs.realpathSync(declaredDirectory) === expectedDirectory,
+    "Web observation build input directory symlink escapes declared repository location");
+  const entries = ["contracts.mjs", "contracts.d.mts", "http.mjs", "http.d.mts"];
+  for (const file of entries) requireValue(fs.existsSync(path.join(expectedDirectory, file)),
+    `Missing required web observation build input: ${file}`);
+  return inventory(expectedDirectory, entries, "web observation root").files.map(entry =>
+    ({ ...entry, file: `${relativeDirectory}/${entry.file}` }));
 }
 
 export function productionArtifactSnapshot(root) {

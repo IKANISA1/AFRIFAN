@@ -1,61 +1,29 @@
 "use client";
 
+import { projectPwaEvent } from "../../../../../cloudflare/web-observations/contracts.mjs";
+import { recordWebObservation } from "./web-observation-client";
+
 type PwaEventPayload = {
   eventType: string;
   surface: "site" | "portal" | "live" | "admin" | "ios-guide";
-  path?: string;
-  displayMode?: string;
-  payload?: Record<string, unknown>;
+  // Legacy arguments are accepted for source compatibility and never inspected.
+  path?: string; displayMode?: string; payload?: Record<string, unknown>;
 };
 
 export function currentDisplayMode() {
-  if (typeof window === "undefined") {
-    return "browser";
-  }
-
-  if (window.matchMedia("(display-mode: standalone)").matches) {
-    return "standalone";
-  }
-
-  if (window.matchMedia("(display-mode: minimal-ui)").matches) {
-    return "minimal-ui";
-  }
-
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return "browser";
+  if (window.matchMedia("(display-mode: standalone)").matches) return "standalone";
+  if (window.matchMedia("(display-mode: minimal-ui)").matches) return "minimal-ui";
   return "browser";
 }
 
-export function trackPwaEvent({
-  eventType,
-  surface,
-  path,
-  displayMode,
-  payload,
-}: PwaEventPayload) {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  const body = JSON.stringify({
-    eventType,
-    surface,
-    path: path ?? window.location.pathname,
-    displayMode: displayMode ?? currentDisplayMode(),
-    payload,
-  });
-
-  if (navigator.sendBeacon) {
-    navigator.sendBeacon("/api/pwa/events", body);
-    return;
-  }
-
-  fetch("/api/pwa/events", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-Africlub-CSRF": "1",
-    },
-    body,
-    keepalive: true,
-    credentials: "same-origin",
-  }).catch(() => {});
+export function trackPwaEvent(input: PwaEventPayload) {
+  if (typeof window === "undefined") return;
+  try {
+    const observation = projectPwaEvent({
+      eventType: input.eventType, surface: input.surface,
+      displayMode: input.displayMode ?? currentDisplayMode(),
+    });
+    if (observation) void recordWebObservation(observation);
+  } catch { /* Diagnostics cannot change the original interaction or retry it. */ }
 }

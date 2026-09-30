@@ -369,6 +369,11 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
 
   String? _handleRedirect(BuildContext context, GoRouterState state) {
     final location = state.matchedLocation;
+    if (widget.modules.any(
+      (module) => module.independentlyAuthenticatedPaths.contains(location),
+    )) {
+      return null;
+    }
     final authState = ref.read(authStateProvider);
 
     if (PublicReadRoutes.allows(state.uri)) return null;

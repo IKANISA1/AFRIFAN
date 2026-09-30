@@ -1,3 +1,5 @@
+
+import { recordProductDiagnostic } from "./privacy-safe-diagnostics";
 import { cache } from "react";
 import { getActiveClubReference } from "@/lib/club-context";
 import { getReadOnlySupabase } from "@/lib/supabase/admin";
@@ -647,7 +649,7 @@ export const getPlatformConfig = cache(
       });
 
       if (error) {
-        console.error("[feature-config] RPC error:", error.message);
+        recordProductDiagnostic("feature_config_rpc_failed");
         return (
           getLastKnownConfig(club.numericId, "web") ??
           emptyConfigSnapshot("web")
@@ -665,8 +667,8 @@ export const getPlatformConfig = cache(
       return rememberConfig(
         normalizePlatformConfigPayload(payload, club.numericId),
       );
-    } catch (error) {
-      console.error("[feature-config] Unexpected error:", error);
+    } catch {
+      recordProductDiagnostic("feature_config_unavailable");
       try {
         const club = await getActiveClubReference();
         return (

@@ -1,0 +1,1043 @@
+{
+  "schemaVersion": 1,
+  "recordDateKigali": "2026-09-30",
+  "generatedAt": "2026-09-30T14:01:53.857050+00:00",
+  "baselineCommit": "9f2a658cc49c212f780b7906bbd37edd215e60bf",
+  "scope": "Complete owned backend entrypoint telemetry integration and current source verification; identity/browser/membership integration is owned by other agents.",
+  "localSourceCheckpointComplete": true,
+  "productionReady": false,
+  "releaseApproved": false,
+  "priorImmutableCheckpoint": {
+    "path": "docs/release/local-operations-recovery-2026-09-30.json",
+    "sha256": "c2407910c69b2bcef5630f8373fd812ea72c21400d7fbea4952d9d0c27ed9a08",
+    "frozenSourceFiles": 39,
+    "historicalEvidencePreserved": true
+  },
+  "sourceFreeze": {
+    "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-source-freeze-20260930.json",
+    "sha256": "e3f40364e146695d0a2097f1a6baeefa3b24760dcbf13f502a6f690edbe406d6",
+    "files": 25,
+    "newSinceOwnedCheckpoint": 3,
+    "existingUpdated": 22
+  },
+  "files": [
+    {
+      "path": "cloudflare/shared-telemetry/telemetry.mjs",
+      "repositoryAction": "added",
+      "checkpointAction": "updated",
+      "bytes": 7897,
+      "sha256": "effae381afb7c1347540af8453b8392a104091034a90eded755a12d4806853b0",
+      "why": "Extends the finite operation vocabulary, conservatively classifies mutating permission failures as unknown and isolates configuration getters.",
+      "previousOwnedCheckpointSha256": "29ee113ca32b0e6f4bc99eb2d885d0c0acdf0615398508e937f535ae5c66ebd7"
+    },
+    {
+      "path": "cloudflare/shared-telemetry/entrypoints.mjs",
+      "repositoryAction": "added",
+      "checkpointAction": "added",
+      "bytes": 1049,
+      "sha256": "eb1ac532dca8b93fd740fe1ec83851f2d4d35203fb5fb96f6f8d65ba6e6b7d91",
+      "why": "Adds one-invocation private RPC and HTTP projections; reads only a bounded club scalar, fixed operation and response status."
+    },
+    {
+      "path": "cloudflare/shared-telemetry/README.md",
+      "repositoryAction": "added",
+      "checkpointAction": "updated",
+      "bytes": 5508,
+      "sha256": "0d0cd56b8468f9873a4877cc0887a01a829a3f096d3118d5869f8d9da6e140b0",
+      "why": "Documents exact covered capabilities, outcome meaning, absent console fallback and explicit retention/deployment boundaries.",
+      "previousOwnedCheckpointSha256": "0e5e3ab1fe4e5c780a1ad0718895a1b4c529f57a35a842f0cfe674b3704cc39c"
+    },
+    {
+      "path": "cloudflare/shared-telemetry/tests/workers-loader.mjs",
+      "repositoryAction": "added",
+      "checkpointAction": "added",
+      "bytes": 389,
+      "sha256": "725d2d70134e7d33b15f6e6d87468e624437da8de6e54b810dd37e386f9b24df",
+      "why": "Loads actual private entrypoint source for local JavaScript tests without claiming hosted RPC or workerd emulation."
+    },
+    {
+      "path": "cloudflare/shared-telemetry/tests/entrypoints.test.mjs",
+      "repositoryAction": "added",
+      "checkpointAction": "added",
+      "bytes": 24136,
+      "sha256": "c371f09c2b1dc6dbef1abba73b4d66e1a5ddf0e244e9bbc28f35391a288a9948",
+      "why": "Exercises actual financial/case/publication/receipt/source/inbox/recovery entrypoints against real SQLite, secret omission, lost acknowledgement, revocation, timeout, exact operation counts and isolated sink readback."
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/worker.mjs",
+      "repositoryAction": "modified",
+      "checkpointAction": "updated",
+      "bytes": 1923,
+      "sha256": "b1d5abf9a8709f778d533829660680e71e267fb99a636ed1395cdd9b2cd21083",
+      "why": "Observes the five financial ingest/allocation/receipt/outbox capabilities without changing fixed principal authority or adding a writer."
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "repositoryAction": "modified",
+      "checkpointAction": "updated",
+      "bytes": 3016,
+      "sha256": "b4ac48567ba32b1907db0c5aca836981f964c32e424d82fd6598ce060bdd1be1",
+      "why": "Observes all eleven checkout/read/handoff capabilities without copying user, order, operation or dialer values."
+    },
+    {
+      "path": "cloudflare/payment-exceptions/src/worker.mjs",
+      "repositoryAction": "modified",
+      "checkpointAction": "updated",
+      "bytes": 1598,
+      "sha256": "ebd7d4e08b7e09675a2417c5b280bc9d7c713d42ecf568748fc370c50ad10958",
+      "why": "Observes all six private case methods while preserving sanitized RPC envelopes and treating failed commands as unknown."
+    },
+    {
+      "path": "cloudflare/operator-api/src/index.mjs",
+      "repositoryAction": "modified",
+      "checkpointAction": "updated",
+      "bytes": 6750,
+      "sha256": "04c16834be4501cca7f1b1a442102d257369a0d50b269fc765319dc97be14f6d",
+      "why": "Keeps one existing request observation and makes injected clock failure independent of the committed response."
+    },
+    {
+      "path": "cloudflare/operator-api/src/telemetry.mjs",
+      "repositoryAction": "modified",
+      "checkpointAction": "updated",
+      "bytes": 3287,
+      "sha256": "4c0a9ce721b5bdd32f4531285db7760bb37ede0e1e8ecd6a2ef47e33c4726433",
+      "why": "Reuses existing route classification and generated response correlation for one private metric; suppresses legacy duplicates and removes default console emission."
+    },
+    {
+      "path": "cloudflare/operator-api/tests/telemetry.test.mjs",
+      "repositoryAction": "modified",
+      "checkpointAction": "updated",
+      "bytes": 7405,
+      "sha256": "8529813b18a88f01a0ca38ea5279447e0307cc627c23ff88cb8c8392afa40a0a",
+      "why": "Proves one private emission, missing-policy suppression, safe async legacy failures and preservation of committed operator commands after sink/clock/permission failure."
+    },
+    {
+      "path": "cloudflare/operator-api/README.md",
+      "repositoryAction": "modified",
+      "checkpointAction": "updated",
+      "bytes": 16043,
+      "sha256": "bdd975c7ff7f784400bd410fc5fdcac6bac06e896ab3b678fffbe58a54fa2e76",
+      "why": "Records private observation configuration and conservative mutating outcomes without claiming enabled hosted telemetry."
+    },
+    {
+      "path": "cloudflare/rayon-public/src/index.mjs",
+      "repositoryAction": "modified",
+      "checkpointAction": "updated",
+      "bytes": 15724,
+      "sha256": "742df537317d160cb62b6c2ebdc0305d29026f4d546c7354870138495fed4e8c",
+      "why": "Observes public snapshot/media HTTP reads using fixed classification without recording request URLs, content or source IDs."
+    },
+    {
+      "path": "cloudflare/rayon-public/src/publication-worker.mjs",
+      "repositoryAction": "modified",
+      "checkpointAction": "updated",
+      "bytes": 1415,
+      "sha256": "e90ade78019793b2775f9114c1f8163bc1c6d1688848abd6a1d188c1d6ed46e5",
+      "why": "Observes the private approved-snapshot publisher once around validation and publication."
+    },
+    {
+      "path": "cloudflare/rayon-public/src/authorized-publication-worker.mjs",
+      "repositoryAction": "modified",
+      "checkpointAction": "updated",
+      "bytes": 2410,
+      "sha256": "6a66ad68afe0749133713fd695d85ded449c3cfe6f96181718e08d7b739add3f",
+      "why": "Observes all nine Access-derived publication inspection/review/publish methods without copying operator, snapshot, review or media identities."
+    },
+    {
+      "path": "cloudflare/supporter-web-router/src/index.mjs",
+      "repositoryAction": "modified",
+      "checkpointAction": "updated",
+      "bytes": 3782,
+      "sha256": "d6622839c5d01498983c6a3317b25cf7b8004d191867b5288c7970e02ff2b422",
+      "why": "Observes same-origin routing once while preserving original browser Request identity, cache rules and existing single bounded dispatch."
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipt-reader-worker.mjs",
+      "repositoryAction": "modified",
+      "checkpointAction": "updated",
+      "bytes": 671,
+      "sha256": "674bab4cfd7623cdb520acb947bf4d69ec0621e1c21eb9ca9b354ade31c690b3",
+      "why": "Observes the private receipt reader once without copying challenge, message, recipient or signing values."
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipts-webhook-worker.mjs",
+      "repositoryAction": "modified",
+      "checkpointAction": "updated",
+      "bytes": 832,
+      "sha256": "230832654558135fcf1ef0534491151b27cebbe8af14128b23de5842e2d4ba66",
+      "why": "Observes webhook and bounded scheduled reconciliation independently of durable acknowledgement and without metric-triggered webhook replay."
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/service.mjs",
+      "repositoryAction": "modified",
+      "checkpointAction": "updated",
+      "bytes": 5930,
+      "sha256": "3a0c7592effe2ef9e5e512d883e881e0bcb79f0c0bbcce9735cc24caa6b9ca0d",
+      "why": "Moves the existing single sender observation around complete receipt validation and durable dispatch; suppresses internal observation only for the trusted decorator.",
+      "previousOwnedCheckpointSha256": "dbffe951e2d15f2fd3298fa2b288081f89760a63285386e83d703dc8edb67966"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/status-aware-service.mjs",
+      "repositoryAction": "modified",
+      "checkpointAction": "updated",
+      "bytes": 3468,
+      "sha256": "f3b0a2ee62c563f079b9772d2ae50d001f644fc7e7646a4c54517bb2ba895a00",
+      "why": "Observes receipt binding and sender completion once; suppresses nested sender emissions and covers denial before any provider call."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/source-worker.mjs",
+      "repositoryAction": "modified",
+      "checkpointAction": "updated",
+      "bytes": 1699,
+      "sha256": "eb6b5985ee0829ba7b87604f31decbcf9621b3a0939f5307a775018e9b04aa4e",
+      "why": "Observes all six source/review capabilities once, alongside existing bounded queue aggregates.",
+      "previousOwnedCheckpointSha256": "0c85034030d95e74aee0ec1dcf7966f82f7ce3f97757fc5e892c82952185ebe9"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/inbox-worker.mjs",
+      "repositoryAction": "modified",
+      "checkpointAction": "updated",
+      "bytes": 899,
+      "sha256": "422a36e63968333c75bde09d2e2f937ac1983c6733514e62cbe400e6e9a7054a",
+      "why": "Observes concrete inbox acceptance and private inspection once without copying event/user/order envelopes."
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/recovery-worker.mjs",
+      "repositoryAction": "added",
+      "checkpointAction": "updated",
+      "bytes": 2021,
+      "sha256": "8d031a873aabef159b3529ac9c00db0447a097bb8d61005b5a540290b191273e",
+      "why": "Observes all six maker/checker capabilities around fixed-principal construction and work; suppresses internal duplicate decision metrics.",
+      "previousOwnedCheckpointSha256": "0e5ddce0bbcf17ebf58fc2c156d908a92de7d4ebb04d08f9d97dd7d1b195b8a3"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/recovery.mjs",
+      "repositoryAction": "added",
+      "checkpointAction": "updated",
+      "bytes": 7116,
+      "sha256": "5daec851651c055c2bb6a586cf3488bf0ebf77f664a14e6614313cf88e734578",
+      "why": "Retains direct-service observation while allowing trusted entrypoint suppression and bounded context lifetime; durable decision logic remains unchanged.",
+      "previousOwnedCheckpointSha256": "14e43cb4448a6f1398abac1a303b8e246663f8f4647035bfc4d8195b58b32122"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/dispatcher.mjs",
+      "repositoryAction": "modified",
+      "checkpointAction": "updated",
+      "bytes": 4695,
+      "sha256": "97f6fca7b38f99dbecbd2180272a1708d013057e95c1e7e4955b84338fe10d41",
+      "why": "Ensures failure of supplemental per-club fairness observation cannot override a completed drain.",
+      "previousOwnedCheckpointSha256": "4489c800546ccc2816eaea214ec6f9d1322df7c707b4fcfbf7e4461e0f87d7e3"
+    }
+  ],
+  "operationInventory": [
+    {
+      "path": "cloudflare/payment-allocation/src/worker.mjs",
+      "entrypoint": "PaymentEvidenceIngestor/PaymentAllocator/PaymentReceiptReader/PaymentAllocationOutbox",
+      "method": "ingest",
+      "service": "payment_allocation",
+      "operation": "payment_ingest",
+      "sourceLine": 11,
+      "behavioralEvidence": "entrypoints.test.mjs: actual financial entrypoints preserve one allocation, receipt and delivery while emitting five isolated projections"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/worker.mjs",
+      "entrypoint": "PaymentEvidenceIngestor/PaymentAllocator/PaymentReceiptReader/PaymentAllocationOutbox",
+      "method": "allocate",
+      "service": "payment_allocation",
+      "operation": "payment_allocate",
+      "sourceLine": 15,
+      "behavioralEvidence": "entrypoints.test.mjs: actual financial entrypoints preserve one allocation, receipt and delivery while emitting five isolated projections"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/worker.mjs",
+      "entrypoint": "PaymentEvidenceIngestor/PaymentAllocator/PaymentReceiptReader/PaymentAllocationOutbox",
+      "method": "readReceipt",
+      "service": "payment_allocation",
+      "operation": "payment_receipt",
+      "sourceLine": 19,
+      "behavioralEvidence": "entrypoints.test.mjs: actual financial entrypoints preserve one allocation, receipt and delivery while emitting five isolated projections"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/worker.mjs",
+      "entrypoint": "PaymentEvidenceIngestor/PaymentAllocator/PaymentReceiptReader/PaymentAllocationOutbox",
+      "method": "claim",
+      "service": "payment_allocation",
+      "operation": "delivery_claim",
+      "sourceLine": 23,
+      "behavioralEvidence": "entrypoints.test.mjs: actual financial entrypoints preserve one allocation, receipt and delivery while emitting five isolated projections"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/worker.mjs",
+      "entrypoint": "PaymentEvidenceIngestor/PaymentAllocator/PaymentReceiptReader/PaymentAllocationOutbox",
+      "method": "acknowledge",
+      "service": "payment_allocation",
+      "operation": "delivery_acknowledge",
+      "sourceLine": 24,
+      "behavioralEvidence": "entrypoints.test.mjs: actual financial entrypoints preserve one allocation, receipt and delivery while emitting five isolated projections"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "entrypoint": "MembershipCheckout/MembershipCheckoutReader",
+      "method": "lookupPreparedOperation",
+      "service": "payment_allocation",
+      "operation": "checkout_read",
+      "sourceLine": 10,
+      "behavioralEvidence": "entrypoints.test.mjs: all eleven checkout and handoff entrypoints project no user, order, dialer or operation keys"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "entrypoint": "MembershipCheckout/MembershipCheckoutReader",
+      "method": "prepare",
+      "service": "payment_allocation",
+      "operation": "checkout_create",
+      "sourceLine": 11,
+      "behavioralEvidence": "entrypoints.test.mjs: all eleven checkout and handoff entrypoints project no user, order, dialer or operation keys"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "entrypoint": "MembershipCheckout/MembershipCheckoutReader",
+      "method": "reserveHandoff",
+      "service": "payment_allocation",
+      "operation": "handoff_reserve",
+      "sourceLine": 12,
+      "behavioralEvidence": "entrypoints.test.mjs: all eleven checkout and handoff entrypoints project no user, order, dialer or operation keys"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "entrypoint": "MembershipCheckout/MembershipCheckoutReader",
+      "method": "releaseHandoff",
+      "service": "payment_allocation",
+      "operation": "handoff_release",
+      "sourceLine": 13,
+      "behavioralEvidence": "entrypoints.test.mjs: all eleven checkout and handoff entrypoints project no user, order, dialer or operation keys"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "entrypoint": "MembershipCheckout/MembershipCheckoutReader",
+      "method": "claimHandoff",
+      "service": "payment_allocation",
+      "operation": "handoff_claim",
+      "sourceLine": 14,
+      "behavioralEvidence": "entrypoints.test.mjs: all eleven checkout and handoff entrypoints project no user, order, dialer or operation keys"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "entrypoint": "MembershipCheckout/MembershipCheckoutReader",
+      "method": "read",
+      "service": "payment_allocation",
+      "operation": "membership_read",
+      "sourceLine": 18,
+      "behavioralEvidence": "entrypoints.test.mjs: all eleven checkout and handoff entrypoints project no user, order, dialer or operation keys"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "entrypoint": "MembershipCheckout/MembershipCheckoutReader",
+      "method": "history",
+      "service": "payment_allocation",
+      "operation": "membership_history",
+      "sourceLine": 19,
+      "behavioralEvidence": "entrypoints.test.mjs: all eleven checkout and handoff entrypoints project no user, order, dialer or operation keys"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "entrypoint": "MembershipCheckout/MembershipCheckoutReader",
+      "method": "historicalReceipt",
+      "service": "payment_allocation",
+      "operation": "payment_receipt",
+      "sourceLine": 20,
+      "behavioralEvidence": "entrypoints.test.mjs: all eleven checkout and handoff entrypoints project no user, order, dialer or operation keys"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "entrypoint": "MembershipCheckout/MembershipCheckoutReader",
+      "method": "offers",
+      "service": "payment_allocation",
+      "operation": "checkout_offers",
+      "sourceLine": 21,
+      "behavioralEvidence": "entrypoints.test.mjs: all eleven checkout and handoff entrypoints project no user, order, dialer or operation keys"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "entrypoint": "MembershipCheckout/MembershipCheckoutReader",
+      "method": "membershipStatus",
+      "service": "payment_allocation",
+      "operation": "membership_read",
+      "sourceLine": 22,
+      "behavioralEvidence": "entrypoints.test.mjs: all eleven checkout and handoff entrypoints project no user, order, dialer or operation keys"
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "entrypoint": "MembershipCheckout/MembershipCheckoutReader",
+      "method": "currentHandoff",
+      "service": "payment_allocation",
+      "operation": "handoff_read",
+      "sourceLine": 23,
+      "behavioralEvidence": "entrypoints.test.mjs: all eleven checkout and handoff entrypoints project no user, order, dialer or operation keys"
+    },
+    {
+      "path": "cloudflare/payment-exceptions/src/worker.mjs",
+      "entrypoint": "PaymentExceptionCases",
+      "method": "access",
+      "service": "payment_exceptions",
+      "operation": "case_read",
+      "sourceLine": 7,
+      "behavioralEvidence": "entrypoints.test.mjs: case entrypoints emit one metric each with identity and financial references omitted"
+    },
+    {
+      "path": "cloudflare/payment-exceptions/src/worker.mjs",
+      "entrypoint": "PaymentExceptionCases",
+      "method": "operation",
+      "service": "payment_exceptions",
+      "operation": "case_read",
+      "sourceLine": 8,
+      "behavioralEvidence": "entrypoints.test.mjs: case entrypoints emit one metric each with identity and financial references omitted"
+    },
+    {
+      "path": "cloudflare/payment-exceptions/src/worker.mjs",
+      "entrypoint": "PaymentExceptionCases",
+      "method": "get",
+      "service": "payment_exceptions",
+      "operation": "case_read",
+      "sourceLine": 9,
+      "behavioralEvidence": "entrypoints.test.mjs: case entrypoints emit one metric each with identity and financial references omitted"
+    },
+    {
+      "path": "cloudflare/payment-exceptions/src/worker.mjs",
+      "entrypoint": "PaymentExceptionCases",
+      "method": "list",
+      "service": "payment_exceptions",
+      "operation": "case_read",
+      "sourceLine": 10,
+      "behavioralEvidence": "entrypoints.test.mjs: case entrypoints emit one metric each with identity and financial references omitted"
+    },
+    {
+      "path": "cloudflare/payment-exceptions/src/worker.mjs",
+      "entrypoint": "PaymentExceptionCases",
+      "method": "history",
+      "service": "payment_exceptions",
+      "operation": "case_read",
+      "sourceLine": 11,
+      "behavioralEvidence": "entrypoints.test.mjs: case entrypoints emit one metric each with identity and financial references omitted"
+    },
+    {
+      "path": "cloudflare/payment-exceptions/src/worker.mjs",
+      "entrypoint": "PaymentExceptionCases",
+      "method": "command",
+      "service": "payment_exceptions",
+      "operation": "case_command",
+      "sourceLine": 12,
+      "behavioralEvidence": "entrypoints.test.mjs: case entrypoints emit one metric each with identity and financial references omitted"
+    },
+    {
+      "path": "cloudflare/operator-api/src/index.mjs",
+      "entrypoint": "default HTTP",
+      "method": "fetch",
+      "service": "operator_api",
+      "operation": "case_read/case_command/publication_read/publication_command/route",
+      "sourceLine": 106,
+      "behavioralEvidence": "operator-api/tests/telemetry.test.mjs: private duplicate-suppression, correlation, commit/sink/clock/revocation cases; complete affected bank covers publication HTTP routing"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/publication-worker.mjs",
+      "entrypoint": "PublicSourcePublisher",
+      "method": "publish",
+      "service": "rayon_public",
+      "operation": "publication_command",
+      "sourceLine": 11,
+      "behavioralEvidence": "entrypoints.test.mjs: private legacy publisher and public content route isolate sink failure from approved snapshot"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/authorized-publication-worker.mjs",
+      "entrypoint": "AuthorizedPublicSourcePublisher",
+      "method": "session",
+      "service": "rayon_public",
+      "operation": "publication_read",
+      "sourceLine": 9,
+      "behavioralEvidence": "entrypoints.test.mjs: all nine authorized publication entrypoints retain one publication and exclude actor, media and review identity"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/authorized-publication-worker.mjs",
+      "entrypoint": "AuthorizedPublicSourcePublisher",
+      "method": "candidates",
+      "service": "rayon_public",
+      "operation": "publication_read",
+      "sourceLine": 10,
+      "behavioralEvidence": "entrypoints.test.mjs: all nine authorized publication entrypoints retain one publication and exclude actor, media and review identity"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/authorized-publication-worker.mjs",
+      "entrypoint": "AuthorizedPublicSourcePublisher",
+      "method": "candidate",
+      "service": "rayon_public",
+      "operation": "publication_read",
+      "sourceLine": 11,
+      "behavioralEvidence": "entrypoints.test.mjs: all nine authorized publication entrypoints retain one publication and exclude actor, media and review identity"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/authorized-publication-worker.mjs",
+      "entrypoint": "AuthorizedPublicSourcePublisher",
+      "method": "preview",
+      "service": "rayon_public",
+      "operation": "publication_read",
+      "sourceLine": 12,
+      "behavioralEvidence": "entrypoints.test.mjs: all nine authorized publication entrypoints retain one publication and exclude actor, media and review identity"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/authorized-publication-worker.mjs",
+      "entrypoint": "AuthorizedPublicSourcePublisher",
+      "method": "reviewStatus",
+      "service": "rayon_public",
+      "operation": "publication_read",
+      "sourceLine": 13,
+      "behavioralEvidence": "entrypoints.test.mjs: all nine authorized publication entrypoints retain one publication and exclude actor, media and review identity"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/authorized-publication-worker.mjs",
+      "entrypoint": "AuthorizedPublicSourcePublisher",
+      "method": "review",
+      "service": "rayon_public",
+      "operation": "publication_command",
+      "sourceLine": 14,
+      "behavioralEvidence": "entrypoints.test.mjs: all nine authorized publication entrypoints retain one publication and exclude actor, media and review identity"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/authorized-publication-worker.mjs",
+      "entrypoint": "AuthorizedPublicSourcePublisher",
+      "method": "publish",
+      "service": "rayon_public",
+      "operation": "publication_command",
+      "sourceLine": 15,
+      "behavioralEvidence": "entrypoints.test.mjs: all nine authorized publication entrypoints retain one publication and exclude actor, media and review identity"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/authorized-publication-worker.mjs",
+      "entrypoint": "AuthorizedPublicSourcePublisher",
+      "method": "head",
+      "service": "rayon_public",
+      "operation": "publication_read",
+      "sourceLine": 16,
+      "behavioralEvidence": "entrypoints.test.mjs: all nine authorized publication entrypoints retain one publication and exclude actor, media and review identity"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/authorized-publication-worker.mjs",
+      "entrypoint": "AuthorizedPublicSourcePublisher",
+      "method": "publication",
+      "service": "rayon_public",
+      "operation": "publication_read",
+      "sourceLine": 17,
+      "behavioralEvidence": "entrypoints.test.mjs: all nine authorized publication entrypoints retain one publication and exclude actor, media and review identity"
+    },
+    {
+      "path": "cloudflare/rayon-public/src/index.mjs",
+      "entrypoint": "default HTTP",
+      "method": "fetch",
+      "service": "rayon_public",
+      "operation": "publication_read",
+      "sourceLine": 303,
+      "behavioralEvidence": "entrypoints.test.mjs: published snapshot HTTP and unavailable redaction cases; rayon-public/tests snapshot and response boundary suites"
+    },
+    {
+      "path": "cloudflare/supporter-web-router/src/index.mjs",
+      "entrypoint": "default HTTP/createWebRouter",
+      "method": "fetch",
+      "service": "frontend_router",
+      "operation": "route",
+      "sourceLine": 50,
+      "behavioralEvidence": "entrypoints.test.mjs: original request forwarding and timeout/late commit; supporter-web-router/tests router/privacy suites"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipt-reader-worker.mjs",
+      "entrypoint": "AuthenticationDeliveryReceiptReader",
+      "method": "readDeliveryStatus",
+      "service": "receipt_delivery",
+      "operation": "delivery_receipt",
+      "sourceLine": 5,
+      "behavioralEvidence": "entrypoints.test.mjs: receipt webhook commit, reconciliation and private reader emit once"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipts-webhook-worker.mjs",
+      "entrypoint": "default HTTP/scheduled",
+      "method": "fetch",
+      "service": "receipt_delivery",
+      "operation": "delivery_receipt",
+      "sourceLine": 6,
+      "behavioralEvidence": "entrypoints.test.mjs: receipt webhook commit/reconciliation/reader and lost acknowledgement; receipts HTTP/store/integration suites"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipts-webhook-worker.mjs",
+      "entrypoint": "default HTTP/scheduled",
+      "method": "scheduled",
+      "service": "receipt_delivery",
+      "operation": "delivery_receipt",
+      "sourceLine": 7,
+      "behavioralEvidence": "entrypoints.test.mjs: receipt webhook commit/reconciliation/reader and lost acknowledgement; receipts HTTP/store/integration suites"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/worker.mjs",
+      "entrypoint": "AuthenticationCodeDelivery",
+      "method": "deliver",
+      "service": "auth_code_delivery",
+      "operation": "credential_delivery",
+      "sourceLine": 4,
+      "behavioralEvidence": "Observation is retained in the called concrete service: entrypoints.test.mjs covers sender receipt validation, status-aware single emission and binding denial; original delivery/receipt tests execute private provider adapters"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/worker.mjs",
+      "entrypoint": "AuthenticationCodeDelivery",
+      "method": "deliverWithReceipt",
+      "service": "auth_code_delivery",
+      "operation": "credential_delivery",
+      "sourceLine": 8,
+      "behavioralEvidence": "Observation is retained in the called concrete service: entrypoints.test.mjs covers sender receipt validation, status-aware single emission and binding denial; original delivery/receipt tests execute private provider adapters"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/status-aware-worker.mjs",
+      "entrypoint": "AuthenticationCodeDelivery",
+      "method": "deliver",
+      "service": "auth_code_delivery",
+      "operation": "credential_delivery",
+      "sourceLine": 4,
+      "behavioralEvidence": "Observation is retained in the called concrete service: entrypoints.test.mjs covers sender receipt validation, status-aware single emission and binding denial; original delivery/receipt tests execute private provider adapters"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/status-aware-worker.mjs",
+      "entrypoint": "AuthenticationCodeDelivery",
+      "method": "deliverWithReceipt",
+      "service": "auth_code_delivery",
+      "operation": "credential_delivery",
+      "sourceLine": 8,
+      "behavioralEvidence": "Observation is retained in the called concrete service: entrypoints.test.mjs covers sender receipt validation, status-aware single emission and binding denial; original delivery/receipt tests execute private provider adapters"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/review-worker.mjs",
+      "entrypoint": "AuthenticationDispatchReviewReader",
+      "method": "health",
+      "service": "auth_code_delivery",
+      "operation": "queue_health",
+      "sourceLine": 7,
+      "behavioralEvidence": "Observation is retained in concrete review service: review-telemetry.test.mjs executes unknown/age inspection, four aggregate states, denial and no resend checks"
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/review-worker.mjs",
+      "entrypoint": "AuthenticationDispatchReviewReader",
+      "method": "inspect",
+      "service": "auth_code_delivery",
+      "operation": "delivery_inspection",
+      "sourceLine": 8,
+      "behavioralEvidence": "Observation is retained in concrete review service: review-telemetry.test.mjs executes unknown/age inspection, four aggregate states, denial and no resend checks"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/source-worker.mjs",
+      "entrypoint": "AllocationEventSource/AllocationDeliveryReview",
+      "method": "take",
+      "service": "allocation_delivery",
+      "operation": "delivery_claim",
+      "sourceLine": 8,
+      "behavioralEvidence": "entrypoints.test.mjs: source and inbox capability boundaries emit exactly one operation each alongside bounded queue aggregates"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/source-worker.mjs",
+      "entrypoint": "AllocationEventSource/AllocationDeliveryReview",
+      "method": "readForDispatch",
+      "service": "allocation_delivery",
+      "operation": "delivery_read",
+      "sourceLine": 9,
+      "behavioralEvidence": "entrypoints.test.mjs: source and inbox capability boundaries emit exactly one operation each alongside bounded queue aggregates"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/source-worker.mjs",
+      "entrypoint": "AllocationEventSource/AllocationDeliveryReview",
+      "method": "finish",
+      "service": "allocation_delivery",
+      "operation": "delivery_acknowledge",
+      "sourceLine": 10,
+      "behavioralEvidence": "entrypoints.test.mjs: source and inbox capability boundaries emit exactly one operation each alongside bounded queue aggregates"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/source-worker.mjs",
+      "entrypoint": "AllocationEventSource/AllocationDeliveryReview",
+      "method": "health",
+      "service": "allocation_delivery",
+      "operation": "queue_health",
+      "sourceLine": 14,
+      "behavioralEvidence": "entrypoints.test.mjs: source and inbox capability boundaries emit exactly one operation each alongside bounded queue aggregates"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/source-worker.mjs",
+      "entrypoint": "AllocationEventSource/AllocationDeliveryReview",
+      "method": "inspect",
+      "service": "allocation_delivery",
+      "operation": "delivery_inspection",
+      "sourceLine": 15,
+      "behavioralEvidence": "entrypoints.test.mjs: source and inbox capability boundaries emit exactly one operation each alongside bounded queue aggregates"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/source-worker.mjs",
+      "entrypoint": "AllocationEventSource/AllocationDeliveryReview",
+      "method": "redrive",
+      "service": "allocation_delivery",
+      "operation": "delivery_redrive",
+      "sourceLine": 16,
+      "behavioralEvidence": "entrypoints.test.mjs: source and inbox capability boundaries emit exactly one operation each alongside bounded queue aggregates"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/inbox-worker.mjs",
+      "entrypoint": "AllocationEventInbox/AllocationInboxReader",
+      "method": "accept",
+      "service": "allocation_delivery",
+      "operation": "delivery_accept",
+      "sourceLine": 8,
+      "behavioralEvidence": "entrypoints.test.mjs: source and inbox capability boundaries; actual inbox SQL effects and secret omission"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/inbox-worker.mjs",
+      "entrypoint": "AllocationEventInbox/AllocationInboxReader",
+      "method": "list",
+      "service": "allocation_delivery",
+      "operation": "delivery_inspection",
+      "sourceLine": 13,
+      "behavioralEvidence": "entrypoints.test.mjs: source and inbox capability boundaries; actual inbox SQL effects and secret omission"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/recovery-worker.mjs",
+      "entrypoint": "AllocationRecoveryMaker",
+      "method": "inspectEvent",
+      "service": "allocation_delivery",
+      "operation": "delivery_inspection",
+      "sourceLine": 9,
+      "behavioralEvidence": "entrypoints.test.mjs: all recovery capability methods observe once; recovery SQL race/revocation/lost-ack suite"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/recovery-worker.mjs",
+      "entrypoint": "AllocationRecoveryMaker",
+      "method": "prepare",
+      "service": "allocation_delivery",
+      "operation": "delivery_prepare",
+      "sourceLine": 10,
+      "behavioralEvidence": "entrypoints.test.mjs: all recovery capability methods observe once; recovery SQL race/revocation/lost-ack suite"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/recovery-worker.mjs",
+      "entrypoint": "AllocationRecoveryMaker",
+      "method": "decision",
+      "service": "allocation_delivery",
+      "operation": "delivery_inspection",
+      "sourceLine": 11,
+      "behavioralEvidence": "entrypoints.test.mjs: all recovery capability methods observe once; recovery SQL race/revocation/lost-ack suite"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/recovery-worker.mjs",
+      "entrypoint": "AllocationRecoveryChecker",
+      "method": "inspectEvent",
+      "service": "allocation_delivery",
+      "operation": "delivery_inspection",
+      "sourceLine": 15,
+      "behavioralEvidence": "entrypoints.test.mjs: all recovery capability methods observe once; recovery SQL race/revocation/lost-ack suite"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/recovery-worker.mjs",
+      "entrypoint": "AllocationRecoveryChecker",
+      "method": "decision",
+      "service": "allocation_delivery",
+      "operation": "delivery_inspection",
+      "sourceLine": 16,
+      "behavioralEvidence": "entrypoints.test.mjs: all recovery capability methods observe once; recovery SQL race/revocation/lost-ack suite"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/recovery-worker.mjs",
+      "entrypoint": "AllocationRecoveryChecker",
+      "method": "confirm",
+      "service": "allocation_delivery",
+      "operation": "delivery_confirm",
+      "sourceLine": 17,
+      "behavioralEvidence": "entrypoints.test.mjs: all recovery capability methods observe once; recovery SQL race/revocation/lost-ack suite"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/dispatch-worker.mjs",
+      "entrypoint": "AllocationDeliveryRunner/default scheduled",
+      "method": "run",
+      "service": "allocation_delivery",
+      "operation": "delivery_drain",
+      "sourceLine": 13,
+      "behavioralEvidence": "Observation is retained in drain: allocation-delivery/tests/telemetry.test.mjs and actual concurrent five-club restore rehearsal; one invocation plus one supplemental per configured club fairness observation"
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/dispatch-worker.mjs",
+      "entrypoint": "AllocationDeliveryRunner/default scheduled",
+      "method": "scheduled",
+      "service": "allocation_delivery",
+      "operation": "delivery_drain",
+      "sourceLine": 6,
+      "behavioralEvidence": "Observation is retained in drain: allocation-delivery/tests/telemetry.test.mjs and actual concurrent five-club restore rehearsal; one invocation plus one supplemental per configured club fairness observation"
+    }
+  ],
+  "observedCapabilityCount": 60,
+  "scopeBoundaries": {
+    "frontendRouterActualPath": "cloudflare/supporter-web-router/src/index.mjs",
+    "receiptDeliveryActualPaths": [
+      "cloudflare/auth-code-delivery/src/receipts-webhook-worker.mjs",
+      "cloudflare/auth-code-delivery/src/receipt-reader-worker.mjs"
+    ],
+    "excludedOtherOwners": [
+      "cloudflare/supporter-auth/**",
+      "cloudflare/supporter-browser-api/**",
+      "cloudflare/supporter-membership-api/**",
+      "native/UI/CI files"
+    ],
+    "noRecursiveSinkInstrumentation": [
+      "PrivateServiceMetrics.record",
+      "PrivateMetricsTraceReader.readTrace",
+      "PrivateMetricsRetention.expire"
+    ],
+    "fixedHttp404Guards": "No business work occurs on private named-entrypoint default HTTP 404 routes; they are deliberately not operation telemetry.",
+    "disabledReceiptSchedule": "When explicit reconciliation enablement is false, the unchanged scheduled handler exits before work and emits no metric."
+  },
+  "oneInvocationBoundary": {
+    "singleMetric": "New standalone RPC and HTTP wrappers invoke business work once and emit one service_operation per invocation.",
+    "preservedExistingObservations": "Sender, status-aware decorator, auth review and drain retain their concrete service observation. Trusted decorator/recovery entrypoints suppress inner duplicate observations.",
+    "supplementalAggregates": "Auth review health has four queue-state aggregates; allocation source health has five. Drain adds one finite per configured club fairness observation alongside its invocation record.",
+    "operatorExistingEmitter": "Uses the pre-existing route classification and generated response correlation; private mode suppresses legacy emission. No default console or missing-retention fallback."
+  },
+  "verification": {
+    "affectedNodeBank": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-bank-20260930.log",
+      "sha256": "b8b451168a438c73ec125cb398606d73656f31f6dfb5d4ac8d7ad7b02b32cc6d",
+      "exitCode": 0,
+      "tests": 1560,
+      "pass": 1560,
+      "fail": 0,
+      "skipped": 0,
+      "outboundNetworkAttemptsBlocked": 0,
+      "command": "Pinned Node 22.23.2 and TypeScript 5.9.3 PATH; outbound-network-denying NODE_OPTIONS; node --test cloudflare/{shared-telemetry,payment-allocation,payment-exceptions,operator-api,rayon-public,supporter-web-router,auth-code-delivery,allocation-delivery}/tests/*.test.mjs"
+    },
+    "focusedTelemetryBank": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-expanded-focused-20260930.log",
+      "sha256": "a98aa9786f8e0358e0e6ba1e4f5316e01a387462b65f50687a5130d373fb127b",
+      "tests": 87,
+      "pass": 87,
+      "fail": 0,
+      "skipped": 0
+    },
+    "offlineWranglerBundles": [
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-allocation-dispatch-wrangler-offline-20260930.log",
+        "sha256": "b4d46f0854cf8aac4c78e814aaecb47053007d2aa33c82f38debb02718ddffd8",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-allocation-inbox-wrangler-offline-20260930.log",
+        "sha256": "48c2f5878ebc47a616201ef59cd3c781e33f6c68ab8c92a80ba8c254089ddeac",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-allocation-recovery-wrangler-offline-20260930.log",
+        "sha256": "654512ed67bbd125dad7a3d3d7b3f3d53d0b3224c06f9d3a06af20a47a919c4c",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-allocation-source-wrangler-offline-20260930.log",
+        "sha256": "06b6ce37125ca5ee9b8562f880e10f253c287ec154adc29aacccd3ea8147adc8",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-auth-review-wrangler-offline-20260930.log",
+        "sha256": "a20b2df5aa6fdd0fe172eb54f5e9cdd64788bced12855820f58a35ed4188d0fb",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-auth-sender-wrangler-offline-20260930.log",
+        "sha256": "febd1f20b7d755f63819c0be08f67653d3ac3e0b3b7d39307716daf336fb476a",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-auth-status-sender-wrangler-offline-20260930.log",
+        "sha256": "a1b87a73ff32e17337f4523b5a79304105e84b401bd73eb12cf027231a575729",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-authorized-publisher-wrangler-offline-20260930.log",
+        "sha256": "6d9f0215de98f9350e4f2f3dbdfcc576ac9b966751ec16868d01b630718dc628",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-cases-wrangler-offline-20260930.log",
+        "sha256": "fb6e6e52ed85db8fc2987f1691725899c69ad1a1828e4d97379d9946c3eb9165",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-checkout-wrangler-offline-20260930.log",
+        "sha256": "3ee00dbd80e2353f14683aea6ecb2dea7cdbdadfe9121664684d58e2564ffe49",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-financial-wrangler-offline-20260930.log",
+        "sha256": "dc4a10bf494e2e4f0cb84eb7c59b9899de55bcb00a1ba022de251eb720fd7361",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-metrics-wrangler-offline-20260930.log",
+        "sha256": "f07c625f8d1b1a29fb8fb89e3d04132c38221d767b82d89a9439b9724c4550a7",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-operator-wrangler-offline-20260930.log",
+        "sha256": "f8598c220ebf8a8625d587b97a8272162c24b70a93531f2120278fdfc03f91b4",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-public-content-wrangler-offline-20260930.log",
+        "sha256": "3a8d30826be2e31af35dbafbf59db4a1ef0934b60a47a5b6f6d797f6606e989b",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-publisher-wrangler-offline-20260930.log",
+        "sha256": "10a5cad00671d2783e08b7d4a8f0eed67b2ed6aab59ee0f4d4b9c2ba48448c2f",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-receipt-reader-wrangler-offline-20260930.log",
+        "sha256": "b5368803b9533784b4e280f2ca4423d11dd5320cae5bafc37b39d9f90df22979",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-receipt-webhook-wrangler-offline-20260930.log",
+        "sha256": "04d15e0092b7a24efda71be1ddd5cb21411c1b25912574942cacc1a739e8753f",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-router-wrangler-offline-20260930.log",
+        "sha256": "f99e05d291ff1536ab427c66793e3d46b225bd176757061fb93c5d86e654e8c7",
+        "exitCode": 0,
+        "guardProcesses": 2,
+        "outboundNetworkAttemptsBlocked": 0
+      }
+    ],
+    "currentSourceRehearsal": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/backend-telemetry-rehearsal-20260930.json",
+      "sha256": "7318b9e5615dc68c4d5be7b207e763858f4daa00f526840af803b29b616a0844",
+      "passed": true,
+      "allocatedEvents": 66,
+      "drainCalls": 60,
+      "restore": {
+        "restoredMs": 13.19,
+        "integrity": "ok",
+        "foreignKeyViolations": 0,
+        "olderBackupMissingPostBackupAllocations": 5,
+        "olderBackupStayedQuarantined": true,
+        "forwardCheckpointByteHashesVerified": true,
+        "forwardFinancialHashesVerified": true,
+        "sourceAndSinkOriginalEventReceiptPairsVerified": 66,
+        "singleWriterModesAtCutover": [
+          "disabled",
+          "disabled",
+          "isolated-staging"
+        ],
+        "artifacts": {
+          "olderSource": {
+            "file": "/var/folders/yx/gzgvttgj2ljd6n_vs2qzdjq80000gn/T/africlub-local-ops-n85AY7/older-source.sqlite",
+            "bytes": 598016,
+            "sha256": "600412404feb0e729a5540ae827a90c4afffdd5af4879fc81ac6578c70d858af"
+          },
+          "olderInbox": {
+            "file": "/var/folders/yx/gzgvttgj2ljd6n_vs2qzdjq80000gn/T/africlub-local-ops-n85AY7/older-inbox.sqlite",
+            "bytes": 24576,
+            "sha256": "4ebac7f3e4b42a5a0e4e4d68a25654cd1950d11c770f3ef78dbd9a1e058e3e5e"
+          },
+          "forwardSource": {
+            "file": "/var/folders/yx/gzgvttgj2ljd6n_vs2qzdjq80000gn/T/africlub-local-ops-n85AY7/forward-source-frozen.sqlite",
+            "bytes": 716800,
+            "sha256": "972b3eb2f61a739f57a583d340556d7999d082a8d4a9f0f9efea2bdc46ab4137"
+          },
+          "forwardInbox": {
+            "file": "/var/folders/yx/gzgvttgj2ljd6n_vs2qzdjq80000gn/T/africlub-local-ops-n85AY7/forward-inbox.sqlite",
+            "bytes": 61440,
+            "sha256": "8ef17805ab17735541116bd640d5ac24c720d1f9e36481f10478f3c1cecf5d5c"
+          }
+        }
+      },
+      "independentConnections": {
+        "tests": 29,
+        "passed": 29,
+        "failed": 0,
+        "log": {
+          "file": "/var/folders/yx/gzgvttgj2ljd6n_vs2qzdjq80000gn/T/africlub-local-ops-n85AY7/independent-connection-tests.log",
+          "sha256": "b06854c151aaeb5f44df277cca4985f3dd9ee4f9b15748e9e56a11a889c05a70"
+        },
+        "scope": "real SQLite files and distinct Node workers; financial same-key/different-key/provider races and recovery reviewer races"
+      },
+      "rollback": {
+        "baselineCommit": "9f2a658cc49c212f780b7906bbd37edd215e60bf",
+        "baselineDispatcherSha256": "d64ea56c47a2d6bf664a3f12a4bec3d4c3eee63c9c5d96b6665713cf2135d4af",
+        "executedBodySha256": "f634e33761fb86d76a1cffb0cb6849dbfc3135fb3de096e5392e02e276055d68",
+        "relativeImportRebindings": 1,
+        "previousDispatcherActuallyExecuted": true,
+        "forwardDataRetainedBeforeRollback": {
+          "pa_allocations": "9b8a846bb9af5760e27407738825d913b0aaa3363aeac95b24aacfd72a3ca497",
+          "pa_external_claims": "b346aebc5ebd52fc0f033c24274b9077a45a1a74dad04782ae90f70448b285ad",
+          "pa_ledger": "2963fa98500777758457e83642098887527732eff94b3af77c2cc1f55a52f9da",
+          "pa_memberships": "532d1e4c054c6adaa38eccfa6d5f1c2018ad861dea9752517521f93d80521681",
+          "pa_orders": "2ca44f231c8c43321271c370a683d539d4f823ce29976b5b173e14b2aba9e20f",
+          "pa_outbox": "37e2752c7cbba00d81d9916cf105e22381aed7337375a7edd74128740e4a2074",
+          "pa_receipts": "317707edb80466022d948d56134bbda82dc88b4860cfde37bd99876effa70fad"
+        },
+        "newEventDeliveredAfterRollback": true,
+        "finalConservation": {
+          "ledger_count": 67,
+          "ledger_amount": 670000,
+          "allocation_count": 67,
+          "external_claim_count": 67,
+          "receipt_count": 67,
+          "outbox_count": 67
+        },
+        "finalEnabledWriterCount": 0,
+        "killSwitchRejected": true
+      },
+      "externalNetworkAttempts": 0
+    },
+    "diffCheck": {
+      "exitCode": 0,
+      "scope": "25 explicit owned source paths; no peer paths"
+    }
+  },
+  "limitations": [
+    "Local WorkerEntrypoint test loader runs actual entrypoint JavaScript with real SQLite fixtures; it does not emulate hosted RPC, workerd or D1.",
+    "The distributed disabled templates have no private telemetry binding or retention value; restrictive deployment guards remain unchanged and reject unapproved capabilities.",
+    "Retention, sink binding exclusivity, hosted ACL/storage/provider/device behavior and production SLO acceptance require separately approved configuration and evidence.",
+    "Only finite aggregate club scalars, generated traces, timestamps, bounded duration and finite outcomes enter metrics; no metric receipt establishes provider, financial or business acceptance.",
+    "The current-source test counts overlap earlier delivery and operator banks; they must not be added as unique assertions. No external network call, deploy, commit or push was performed."
+  ]
+}

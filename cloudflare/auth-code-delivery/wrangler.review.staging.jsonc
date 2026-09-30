@@ -1,0 +1,7 @@
+{
+ "compatibility_date":"2026-09-01","name":"africlub-auth-dispatch-review-staging","main":"src/review-worker.mjs",
+ "workers_dev":false,"preview_urls":false,"routes":[],"observability":{"enabled":false},"logpush":false,
+ "vars":{"AUTH_DISPATCH_REVIEW_ENABLED":"false","AUTH_DISPATCH_REVIEW_ENVIRONMENT":"isolated-staging","AUTH_DISPATCH_REVIEW_CLUB_IDS":"[]",
+  "PRIVATE_METRICS_ENABLED":"false","PRIVATE_METRICS_RETENTION_MS":"","PRIVATE_METRICS_POLICY_REF":""},
+ "d1_databases":[{"binding":"DELIVERY_DB","database_name":"EXISTING_REVIEWED_DISPATCH_DB","database_id":"REVIEW_REQUIRED","migrations_dir":"migrations"}]
+}

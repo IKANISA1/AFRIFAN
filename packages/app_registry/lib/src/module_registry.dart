@@ -46,7 +46,12 @@ abstract final class AppModuleRegistry {
     ClubConfig config, {
     Map<String, dynamic>? configSnapshot,
     bool allowInternalMobileAdmin = internalMobileAdminBuild,
+    NativeSupporterJourney? nativeSupporterJourney,
   }) {
+    if (nativeSupporterJourney != null &&
+        !nativeSupporterJourney.matchesClub(config.clubId)) {
+      throw ArgumentError('Native membership scope does not match the club.');
+    }
     if (!isFeatureSnapshotForClub(
       clubId: config.clubId,
       snapshot: configSnapshot,
@@ -54,6 +59,13 @@ abstract final class AppModuleRegistry {
       return const <FeatureModule>[];
     }
     return _allModules
+        .map(
+          (module) =>
+              module is MembershipModule &&
+                  nativeSupporterJourney?.enabled == true
+              ? MembershipModule(nativeMembershipSelected: true)
+              : module,
+        )
         .where((module) {
           // A feature implementation or remote flag cannot expand the club's
           // explicitly disabled capability set.

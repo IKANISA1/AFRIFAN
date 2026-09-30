@@ -1,0 +1,261 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-30T13:38:14.057057+00:00",
+  "clientDate": "2026-09-30",
+  "baselineCommit": "9f2a658cc49c212f780b7906bbd37edd215e60bf",
+  "scope": "local objective items 6 and 7: isolated supporter identity key lifecycle and authorization-isolation tests",
+  "localImplementationComplete": true,
+  "productionReady": false,
+  "releaseAuthorized": false,
+  "deploymentPerformed": false,
+  "providerCalls": 0,
+  "secretProvisioningPerformed": false,
+  "runtimeTemplatesEnabled": false,
+  "existingSupabaseAuthReplaced": false,
+  "toolchain": {
+    "node": "22.23.2",
+    "tsc": "5.9.3",
+    "wrangler": "4.120.0"
+  },
+  "results": {
+    "newScopedTests": {
+      "pass": 54,
+      "fail": 0,
+      "skip": 0,
+      "includedInFinalBoundaryBank": true
+    },
+    "finalBoundaryBank": {
+      "pass": 1215,
+      "fail": 0,
+      "skip": 0,
+      "services": [
+        "supporter-auth",
+        "auth-code-delivery",
+        "supporter-browser-api",
+        "supporter-membership-api"
+      ]
+    },
+    "disabledConfigCheckers": 2,
+    "actualLocalWorkerBundles": 3,
+    "freshMigrations": 5,
+    "freshForeignKeyAndIntegrityPassed": true
+  },
+  "publicPolicyApi": {
+    "module": "cloudflare/supporter-auth/src/crypto.mjs",
+    "export": "publicKeyPolicy(env)",
+    "inputs": [
+      "AUTH_KEY_VERSION",
+      "AUTH_KEY_POLICY_JSON"
+    ],
+    "secretMaterialRequired": false,
+    "currentWriter": "one version",
+    "maximumVersions": 4,
+    "minimumRetentionMs": 900000,
+    "maximumRetentionMs": 604800000
+  },
+  "files": [
+    {
+      "path": "cloudflare/supporter-auth/src/crypto.mjs",
+      "status": "modified",
+      "bytes": 8446,
+      "sha256": "6851db057a89117ce0de13e15e9174be25928186a7b8bc01f8056b7e8c1c8ccb",
+      "baselineSha256": "16a0a6b502554c50597f6510edeecbedf00c3316951883f31c42def17146452f",
+      "why": "Implement public policy validation, one current crypto writer, bounded retained read versions, version-bound AES-GCM, fixed-version HMAC verification and immutable key fingerprints without exposing secret material."
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/key-state.mjs",
+      "status": "added",
+      "bytes": 2025,
+      "sha256": "0b91de4ff58b555e61ba860b326db4c33ea1453fcb4e6dee489420f6bf23c211",
+      "baselineSha256": null,
+      "why": "Fail closed when a key version is unregistered, secret material changes, retention bounds change, an obsolete writer runs, or a live old key is removed early."
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/key-rotation.mjs",
+      "status": "added",
+      "bytes": 18719,
+      "sha256": "9f081bf6ce58a3e437489a5f1bdc790a747278337832e8b30b49742b8f5ed4bd",
+      "baselineSha256": null,
+      "why": "Provide explicit paused bounded registration/rewrap/activation/retirement inspection and old-browser revocation, preserve identity and original receipt lineage, sanitize storage failures and reconcile unknown commits."
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/identity-service.mjs",
+      "status": "modified",
+      "bytes": 21866,
+      "sha256": "c978f71cf55aab47dff7f095bce5e516b9363ba279c06f9860730934749c6103",
+      "baselineSha256": "7887dcfeb8bd015bf508b24d37e0a338de03edfafb51da9029e01c5be58cd299",
+      "why": "Use approved current SQL gates, current phone aliases and preserved canonical UUIDs; charge retained phone budgets; recover original request/response receipts; retain epoch and recent-phone checks."
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/browser-session-service.mjs",
+      "status": "modified",
+      "bytes": 18153,
+      "sha256": "af94450b931147df0932a69b5a1f6d9e0ebd9c885c3913de7b9704e701051575",
+      "baselineSha256": "6cd15eb16a0b9bd0f990c0a403c437df91aba2573ad260bae15984533a64a97e",
+      "why": "Support old/current cookie and bootstrap crypto without changing origin/club binding, original retry keys, latest-generation checks, CSRF, auth timestamps or explicit logout semantics."
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/reliable-delivery.mjs",
+      "status": "modified",
+      "bytes": 12911,
+      "sha256": "92f672151d47bb3e573bed3c48e701a1e6ba9eb1a036aa27d382d2f971bb5181",
+      "baselineSha256": "4c1bfe3ed292999e84e1e59032ceaf4793e30e668e273986e6b2c86acfc3c0bb",
+      "why": "Replace the hardcoded version-one delivery gate with the registered current version and validate key material/policy before leasing or decrypting; preserve the existing private deduplicated delivery contract."
+    },
+    {
+      "path": "cloudflare/supporter-auth/migrations/0005_identity_key_rotation.sql",
+      "status": "added",
+      "bytes": 3190,
+      "sha256": "1b626a12cbac54860723e9b6eaeb0bda8a361dab16ea223d200ca2843fedf0ae",
+      "baselineSha256": null,
+      "why": "Add immutable key fingerprints, phone aliases and lifecycle records plus explicit OTP/cookie issuing versions; prohibit key-version rollback; leave every service disabled and create no keys or identities."
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/support/fixture.mjs",
+      "status": "modified",
+      "bytes": 6489,
+      "sha256": "11daba6386a663558c6d8b3682c2e29659f7699984b4832090d4bb0a646552a5",
+      "baselineSha256": "eaa2f856e17d33a39db1b71cd115abc55ad5074d3ffac977ab0695e5ecc9d8e1",
+      "why": "Register only synthetic version-one fingerprints in the shared local SQLite fixture before its explicit test import gate opens."
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/support/key-rotation-fixture.mjs",
+      "status": "added",
+      "bytes": 2557,
+      "sha256": "6810324bc67461302f43690695cbc6e4409d762f032f6b8c680ad646f8b1b80c",
+      "baselineSha256": null,
+      "why": "Centralize synthetic key policies and explicit paused rotation helpers; use actual service calls and retained original request keys."
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/key-rotation.test.mjs",
+      "status": "added",
+      "bytes": 15021,
+      "sha256": "82022847d41a1460af28b6a0e715ea81a012e35de92dff8ea3522f3926e0131f",
+      "baselineSha256": null,
+      "why": "Verify public/runtime schemas, version tampering, strict retention, key loss/substitution, bounded migration, unknown commits, original receipts and canonical identity preservation."
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/key-isolation-native.test.mjs",
+      "status": "added",
+      "bytes": 6613,
+      "sha256": "94bbafbbdb0c5720c345f73bd3d586e117558d49f13253861fb126dac1c567eb",
+      "baselineSha256": null,
+      "why": "Exercise five repository club IDs, cross-user/session-family isolation, refresh reuse, scope revocation, recent-phone semantics, mutation epoch checks and immutable key/alias lineage."
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/key-isolation-browser.test.mjs",
+      "status": "added",
+      "bytes": 10559,
+      "sha256": "0ecca61e839519ede9545a37fb6fd09862b5dc596b9cd12d8fea0a8ff57110a8",
+      "baselineSha256": null,
+      "why": "Exercise retained bootstrap/cookie/CSRF/retry behavior, origin/club isolation, retirement and explicit old-cookie revocation, and two independent-SQLite races under current keys."
+    },
+    {
+      "path": "cloudflare/supporter-auth/KEY_ROTATION.md",
+      "status": "added",
+      "bytes": 10098,
+      "sha256": "6380594275975c6c4439c65d490dc7d0fbf6aa34d93489c00f33d9278741f7f8",
+      "baselineSha256": null,
+      "why": "Document exact key bindings, paused local procedures, retry/retirement limits and irrecoverable-key-loss handling without claiming approval or fabricating recovery."
+    },
+    {
+      "path": "cloudflare/supporter-auth/README.md",
+      "status": "modified",
+      "bytes": 16493,
+      "sha256": "8b423f36ebb12959887b3a078edb9dad47b0420bde5dc9fdbb0213277d4c7ec2",
+      "baselineSha256": "72b44d53c517c9bb08b58ff601b6ee12196c91d475bc0733c3a240cf1c602d06",
+      "why": "Replace the obsolete version-one-only claim with the implemented local lifecycle and five-migration order while retaining disabled and external acceptance boundaries."
+    },
+    {
+      "path": "cloudflare/supporter-auth/BROWSER_SESSIONS.md",
+      "status": "modified",
+      "bytes": 3009,
+      "sha256": "d6071433915fa58f6512d359444e0b987c043d3cdfa5e3e94976fa004ebc53e1",
+      "baselineSha256": "90da3fccd3ad41821773462c7776ac32ecc2fd8d25b1369579fa83bad890a563",
+      "why": "Link the browser original-receipt/key-rotation behavior to its scoped lifecycle procedure."
+    }
+  ],
+  "fileCounts": {
+    "total": 15,
+    "added": 8,
+    "modified": 7
+  },
+  "evidence": [
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-key-rotation-before-20260930.log",
+      "sha256": "8a6c12143cdb8e4f43d5181d34a2734d25886f200f08e8e0b7a780d39aeee94d",
+      "bytes": 1575,
+      "result": "missing-implementation baseline"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-key-rotation-expanded-20260930.log",
+      "sha256": "f81e46d00e5a553d7491db04f89e0d3f0fb2027fff2bff2878e1a94ef6e0c500",
+      "bytes": 7369,
+      "result": "29/30 intermediate; removed policy retained an extra secret-key entry and was rejected before the intended database assertion; fixture corrected"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-key-rotation-full-boundaries-20260930.log",
+      "sha256": "6f192459212c9d151eb17f27ddf1241f232fd6efc59e6542206bd3eb6f77bc51",
+      "bytes": 228948,
+      "result": "912 pass /39 compiler-hook failures; locked tsc was absent from PATH"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-key-isolation-final-gates-20260930.log",
+      "sha256": "5019e5e9783045b5561e113a0c4582b51fbd40b66e3a8f08a72e57e0459a5522",
+      "bytes": 13135,
+      "result": "54 local new tests passed; subset of final boundary bank"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-key-rotation-final-boundaries-20260930.log",
+      "sha256": "f4c5845fd0e8049c2ac6316da785da650016031d1178dfe97462e17a9956223a",
+      "bytes": 229037,
+      "result": "1215 pass /0 fail /0 skip with locked tsc PATH"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-key-rotation-disabled-config-20260930.json",
+      "sha256": "32eba0c042d01215f135558a2870bd482de1153a489cceb59177b4ae9f93b2f8",
+      "bytes": 353,
+      "result": "disabled native/verifier templates passed"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-key-rotation-browser-disabled-config-20260930.log",
+      "sha256": "681fc1d3c1a31ea4b96faf41025b0842b7b547017ceff2d2a47c52611b8aa5cf",
+      "bytes": 132,
+      "result": "disabled browser gateway/identity templates passed"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-key-native-dryrun-20260930.log",
+      "sha256": "a85380b6a9769618b7da6264608ced1be556066504bf33ba4ad4be0b4f3fe1cc",
+      "bytes": 1709,
+      "result": "actual installed Wrangler native Worker local bundle passed; no upload"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-key-verifier-dryrun-20260930.log",
+      "sha256": "e36e86ac5eafa125820c1506ecb56db33c7914451a630a36379a966743c136f0",
+      "bytes": 691,
+      "result": "actual installed Wrangler private verifier local bundle passed; no upload"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-key-browser-dryrun-20260930.log",
+      "sha256": "09015dd1d2fa913e148777c07b388f33f603565cdfc51483d07f8f7e617c3255",
+      "bytes": 1395,
+      "result": "actual installed Wrangler private browser identity local bundle passed; no upload"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-key-fresh-schema-20260930.json",
+      "sha256": "995a574761ab6151adda1b6a3c88b05c9dcfde09b1d2fa1b300505efb957cd24",
+      "bytes": 408,
+      "result": "five fresh ordered migrations; empty keys/identities; gates disabled; FK/integrity passed"
+    }
+  ],
+  "limitations": [
+    "Tests use genuine local SQLite/Web Crypto and synthetic keys/contacts; they do not establish actual D1 runtime acceptance.",
+    "Initial fingerprint registration requires an empty paused database. Existing data without a registry cannot silently adopt replacement keys.",
+    "Irrecoverable contact encryption keys cannot be reconstructed by re-authentication; preserve evidence and keep affected services gated.",
+    "Subsequent key rotations wait for preceding retained read versions to retire; existing old deadlines cannot be extended.",
+    "Retirement inspection does not delete Worker secrets or authorize an external change.",
+    "Native device storage, real provider/template behavior, backup custody and named release authorization remain separate evidence.",
+    "Test subset totals must not be added to the final combined bank.",
+    "Evidence records preserve failed baselines and compiler-hook failures; final bank covers the actual corrected pinned command."
+  ]
+}

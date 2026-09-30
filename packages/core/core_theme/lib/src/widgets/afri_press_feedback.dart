@@ -228,7 +228,7 @@ class _AfriPressFeedbackState extends State<AfriPressFeedback>
       content = Tooltip(message: widget.tooltip!, child: content);
     }
 
-    return Semantics(
+    final semantics = Semantics(
       button: widget.button,
       enabled: _isInteractive,
       selected: widget.selected,
@@ -237,5 +237,11 @@ class _AfriPressFeedbackState extends State<AfriPressFeedback>
       onTap: _isInteractive ? _handleTap : null,
       child: content,
     );
+    // An explicitly labeled single action excludes its visual child semantics.
+    // Merge the gesture/focus nodes too, so assistive technology sees one named
+    // control. Composite content keeps its independent descendant controls.
+    return widget.excludeChildSemantics
+        ? MergeSemantics(child: semantics)
+        : semantics;
   }
 }

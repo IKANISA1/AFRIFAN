@@ -1,5 +1,6 @@
 import {configuration,inputRequest,demand,exact,DeliveryError,LIMITS} from './policy.mjs';
 import {inspectTemplate,graphJson,payload,acceptedMessage,withDeadline} from './graph.mjs';
+import {traceOperation} from '../../shared-telemetry/telemetry.mjs';
 const encode=new TextEncoder();
 async function commitment(key,value) {
   const bytes=Uint8Array.from(key.match(/../g),h=>parseInt(h,16));
@@ -7,8 +8,8 @@ async function commitment(key,value) {
   return Array.from(new Uint8Array(await crypto.subtle.sign('HMAC',k,encode.encode(JSON.stringify(value)))),n=>n.toString(16).padStart(2,'0')).join('');
 }
 export class AuthenticationCodeDeliveryService {
-  constructor(env,{clock=()=>Date.now(),fetcher=(...a)=>fetch(...a),deadlineMs=LIMITS.deadlineMs}={}) {
-    this.env=env;this.clock=clock;this.fetcher=fetcher;
+  constructor(env,{clock=()=>Date.now(),fetcher=(...a)=>fetch(...a),deadlineMs=LIMITS.deadlineMs,ctx,observe=true}={}) {
+    this.env=env;this.clock=clock;this.fetcher=fetcher;this.context=ctx;this.observe=observe;
     demand(Number.isInteger(deadlineMs)&&deadlineMs>0&&deadlineMs<=LIMITS.deadlineMs,'invalid_delivery_config');this.deadlineMs=deadlineMs;
   }
   first(sql,...args){return this.env.DELIVERY_DB.withSession('first-primary').prepare(sql).bind(...args).first();}
@@ -20,18 +21,30 @@ export class AuthenticationCodeDeliveryService {
   /** Current queued-auth adapter: enforce its server-selected template and return
    * the durable provider acceptance receipt. No delivery-to-handset claim. */
   async deliverWithReceipt(raw) {
+    return this.observeDelivery(raw,()=>this.receiptDispatch(raw));
+  }
+  async receiptDispatch(raw) {
     exact(raw,['challengeId','clubId','phone','code','expiresAt','channel','template']);
     const {template,...request}=raw;
     demand(typeof template==='string'&&/^[a-z][a-z0-9_]{0,511}$/.test(template));
     const route=configuration(this.env,this.clock()).routes.find(r=>r.clubId===request.clubId);
     demand(route&&route.templateName===template,'template_not_approved');
-    const result=await this.deliver(request);
+    const result=await this.dispatch(request);
     if(!result.accepted)return result;
     const row=await this.first('SELECT * FROM delivery_dispatches WHERE challenge_id=?',request.challengeId);
     demand(row?.state==='accepted'&&row.club_id===request.clubId&&typeof row.provider_message_id==='string','delivery_unavailable');
     return {...result,messageId:row.provider_message_id};
   }
   async deliver(raw) {
+    return this.observeDelivery(raw,()=>this.dispatch(raw));
+  }
+  observeDelivery(raw,work) {
+    if(!this.observe)return work();
+    const clubId=Number.isSafeInteger(raw?.clubId)&&raw.clubId>0?raw.clubId:null;
+    return traceOperation(this.env,{service:'auth_code_delivery',operation:'credential_delivery',clubId},work,
+      {clock:this.clock,ctx:this.context,selectOutcome:result=>result.accepted?'completed':'unknown'});
+  }
+  async dispatch(raw) {
     const now=this.clock(),input=inputRequest(raw,now),config=configuration(this.env,now);
     const route=config.routes.find(r=>r.clubId===input.clubId);demand(route,'unmapped_club');
     const key=this.env.DISPATCH_HMAC_KEY;

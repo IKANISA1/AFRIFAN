@@ -10,15 +10,15 @@
 		"global_fetch_strictly_public"
 	],
 	"observability": {
-		"enabled": true,
+		"enabled": false,
 		"logs": {
-			"enabled": true,
-			"invocation_logs": true,
-			"head_sampling_rate": 1
+			"enabled": false,
+			"invocation_logs": false,
+			"head_sampling_rate": 0
 		},
 		"traces": {
-			"enabled": true,
-			"head_sampling_rate": 0.05
+			"enabled": false,
+			"head_sampling_rate": 0
 		}
 	},
 	"routes": [

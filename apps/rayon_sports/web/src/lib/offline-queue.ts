@@ -1,169 +1,139 @@
-/**
- * IndexedDB-backed offline mutation queue.
- *
- * When the app is offline, failed POST/PUT/DELETE requests are saved here.
- * The service worker replays them via Background Sync when connectivity returns.
- */
+import { recordProductDiagnostic } from "./privacy-safe-diagnostics";
 
+/** Inspect retained legacy requests. New requests are never persisted or replayed. */
 const DB_NAME = "gikundiro-offline-queue";
 const DB_VERSION = 1;
 const STORE_NAME = "requests";
-const DEFAULT_SYNC_TAG = "gikundiro-mutation-sync";
 
-interface QueuedRequest {
-  id?: number;
-  url: string;
-  method: string;
-  headers: Record<string, string>;
-  body: string | null;
-  timestamp: number;
+type OfflineFailureCode = "offline_queue_disabled" | "offline_queue_unavailable" |
+  "mutation_outcome_unknown" | "read_unavailable";
+
+export class OfflineRequestFailure extends Error {
+  constructor(
+    readonly code: OfflineFailureCode,
+    readonly requestOutcome: "unknown" | "unavailable" | "not_sent",
+  ) {
+    super(code);
+    this.name = "OfflineRequestFailure";
+  }
+}
+
+function unavailable() {
+  return new OfflineRequestFailure("offline_queue_unavailable", "unavailable");
 }
 
 function openDB(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
-    request.onupgradeneeded = () => {
-      const db = request.result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        db.createObjectStore(STORE_NAME, { keyPath: "id", autoIncrement: true });
-      }
+    let settled = false;
+    const fail = () => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      reject(unavailable());
     };
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
+    const timer = setTimeout(fail, 5000);
+    try {
+      const request = indexedDB.open(DB_NAME, DB_VERSION);
+      request.onupgradeneeded = () => {
+        if (settled) { request.transaction?.abort(); return; }
+        const db = request.result;
+        if (!db.objectStoreNames.contains(STORE_NAME)) {
+          db.createObjectStore(STORE_NAME, { keyPath: "id", autoIncrement: true });
+        }
+      };
+      request.onsuccess = () => {
+        if (settled) { request.result.close(); return; }
+        settled = true;
+        clearTimeout(timer);
+        resolve(request.result);
+      };
+      request.onerror = fail;
+      request.onblocked = fail;
+    } catch {
+      fail();
+    }
   });
 }
 
-/**
- * Queue a failed mutation for later replay via Background Sync.
- */
+/** Compatibility boundary: credentials, request bodies and mutations cannot enter IndexedDB. */
 export async function queueOfflineMutation(
   url: string,
   method: string,
   headers: Record<string, string>,
   body: string | null,
-  syncTag = DEFAULT_SYNC_TAG,
+  syncTag = "gikundiro-mutation-sync",
 ): Promise<void> {
-  try {
-    const db = await openDB();
-    const tx = db.transaction(STORE_NAME, "readwrite");
-    const store = tx.objectStore(STORE_NAME);
-
-    const entry: QueuedRequest = {
-      url,
-      method,
-      headers,
-      body,
-      timestamp: Date.now(),
-    };
-
-    store.add(entry);
-
-    await new Promise<void>((resolve, reject) => {
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
-
-    // Register for Background Sync
-    if ("serviceWorker" in navigator && "SyncManager" in window) {
-      const registration = await navigator.serviceWorker.ready;
-      await (registration as ServiceWorkerRegistration & { sync: { register: (tag: string) => Promise<void> } })
-        .sync.register(syncTag);
-    }
-  } catch (error) {
-    console.error("[offline-queue] Failed to queue mutation:", error);
-  }
+  // Do not inspect or serialize private caller input, including header getters.
+  void url; void method; void headers; void body; void syncTag;
+  throw new OfflineRequestFailure("offline_queue_disabled", "not_sent");
 }
 
-/**
- * Get the count of queued mutations.
- */
-export async function getQueuedMutationCount(): Promise<number> {
+async function inspectOrClear(clear: boolean): Promise<number> {
+  const db = await openDB();
   try {
-    const db = await openDB();
-    const tx = db.transaction(STORE_NAME, "readonly");
-    const store = tx.objectStore(STORE_NAME);
-
-    return new Promise((resolve, reject) => {
-      const request = store.count();
-      request.onsuccess = () => resolve(request.result);
-      request.onerror = () => reject(request.error);
+    return await new Promise<number>((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, clear ? "readwrite" : "readonly");
+      const store = tx.objectStore(STORE_NAME);
+      let settled = false;
+      const fail = () => {
+        if (settled) return;
+        settled = true; clearTimeout(timer); reject(unavailable());
+      };
+      const timer = setTimeout(() => {
+        try { tx.abort(); } catch { /* The transaction may already be terminal. */ }
+        fail();
+      }, 5000);
+      let count: number | undefined = clear ? 0 : undefined;
+      const request = clear ? store.clear() : store.count();
+      request.onsuccess = () => {
+        if (!clear) count = request.result as number;
+      };
+      request.onerror = fail;
+      tx.onerror = fail;
+      tx.onabort = fail;
+      tx.oncomplete = () => {
+        if (settled) return;
+        if (!Number.isSafeInteger(count) || count! < 0) { fail(); return; }
+        settled = true; clearTimeout(timer);
+        resolve(count!);
+      };
     });
   } catch {
-    return 0;
+    throw unavailable();
+  } finally {
+    db.close();
   }
 }
 
-/**
- * Clear all queued mutations (e.g., after manual sync).
- */
+/** Count retained quarantined requests. Failure is not a verified empty queue. */
+export async function getQueuedMutationCount(): Promise<number> {
+  return inspectOrClear(false);
+}
+
+/** Explicit caller-requested deletion only; this operation does not submit requests. */
 export async function clearOfflineQueue(): Promise<void> {
   try {
-    const db = await openDB();
-    const tx = db.transaction(STORE_NAME, "readwrite");
-    tx.objectStore(STORE_NAME).clear();
-
-    await new Promise<void>((resolve, reject) => {
-      tx.oncomplete = () => resolve();
-      tx.onerror = () => reject(tx.error);
-    });
+    await inspectOrClear(true);
   } catch {
-    console.error("[offline-queue] Failed to clear queue");
+    recordProductDiagnostic("offline_queue_clear_failed");
+    throw unavailable();
   }
 }
 
-/**
- * Fetch wrapper that queues failed mutations for offline replay.
- */
+/** Exactly one attempt. A lost mutation response preserves an unknown server outcome. */
 export async function fetchWithOfflineQueue(
   url: string,
   init: RequestInit = {},
 ): Promise<Response> {
   try {
-    const response = await fetch(url, init);
-    return response;
-  } catch (error) {
-    const method = init.method ?? "GET";
-
-    // Only queue mutations, not reads
-    if (["POST", "PUT", "PATCH", "DELETE"].includes(method.toUpperCase())) {
-      const headers: Record<string, string> = {};
-      if (init.headers) {
-        if (init.headers instanceof Headers) {
-          init.headers.forEach((value, key) => {
-            headers[key] = value;
-          });
-        } else if (Array.isArray(init.headers)) {
-          for (const [key, value] of init.headers) {
-            headers[key] = value;
-          }
-        } else {
-          const h = init.headers as Record<string, string>;
-          for (const key of Object.keys(h)) {
-            headers[key] = h[key];
-          }
-        }
-      }
-
-      await queueOfflineMutation(
-        url,
-        method,
-        headers,
-        typeof init.body === "string" ? init.body : null,
-        DEFAULT_SYNC_TAG,
-      );
-
-      // Return a synthetic response indicating queued
-      return new Response(
-        JSON.stringify({
-          data: {
-            queued: true,
-            message: "Saved offline — will sync when connected",
-          },
-        }),
-        { status: 202, headers: { "Content-Type": "application/json" } },
-      );
-    }
-
-    throw error;
+    return await fetch(url, init);
+  } catch {
+    const method = typeof init.method === "string" ? init.method.toUpperCase() : "GET";
+    const mutation = !["GET", "HEAD", "OPTIONS"].includes(method);
+    if (mutation) recordProductDiagnostic("offline_mutation_outcome_unknown");
+    throw new OfflineRequestFailure(
+      mutation ? "mutation_outcome_unknown" : "read_unavailable",
+      mutation ? "unknown" : "unavailable",
+    );
   }
 }

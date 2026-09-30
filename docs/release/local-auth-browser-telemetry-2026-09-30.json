@@ -1,0 +1,247 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-30T13:54:47.686850+00:00",
+  "baselineCommit": "9f2a658cc49c212f780b7906bbd37edd215e60bf",
+  "scope": "Supporter-auth and supporter-browser-api entrypoint aggregate telemetry only",
+  "localImplementationComplete": true,
+  "productionReady": false,
+  "releaseAuthorized": false,
+  "deploymentPerformed": false,
+  "providerCalls": 0,
+  "realSecretsChanged": false,
+  "runtimeTemplatesEnabled": false,
+  "toolchain": {
+    "node": "22.23.2",
+    "tsc": "5.9.3",
+    "wrangler": "4.120.0"
+  },
+  "files": [
+    {
+      "path": "cloudflare/supporter-auth/src/entrypoint-telemetry.mjs",
+      "status": "added",
+      "bytes": 3121,
+      "sha256": "6508b60b68eef73ce49a6ff01a5ebd4d6754ef5b5c067a44531da5b0d7a00a13",
+      "baselineSha256": null,
+      "why": "Project finite operations and outcomes into the reviewed aggregate schema; ignore native caller club/trace values, use only server-configured browser club, and conservatively mark invoked mutation failures unknown."
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/entrypoint-rpc.mjs",
+      "status": "added",
+      "bytes": 1105,
+      "sha256": "0f8fffbb14de331fb3572fa8008d5742c3200170f96049d3b2633126a5b015f9",
+      "baselineSha256": null,
+      "why": "Expose Node-testable private capability execution so the actual identity services run once under the entrypoint observation; preserve sanitized RPC results and keep public ingress free of identity execution imports."
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/index.mjs",
+      "status": "modified",
+      "bytes": 2512,
+      "sha256": "09c8514eed8d6f32b96001a20dddc3a2ebd6bacfc00a32efcb87b54675730c81",
+      "baselineSha256": "6e1dcd928f09158b2a4b600bf83690155bda65a429e444ba0a7f987676363844",
+      "why": "Observe each native request and scheduled maintenance once, retaining original response, authorization, receipt and cleanup behavior; a refresh-reuse revocation or lost mutation acknowledgement remains unknown in telemetry."
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/identity-verifier-worker.mjs",
+      "status": "modified",
+      "bytes": 522,
+      "sha256": "bdc21bafd00e91c9b0c34bd97ba0f531698b1effc48aa7d97e2acf45353ae33c",
+      "baselineSha256": "543403b191806ff14aac53533898aed5b941ec6c6b2ea2af8d06305f434f25f1",
+      "why": "Delegate the private read capability to the tested wrapper and register detached metrics with the actual Worker execution context."
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/browser-identity-worker.mjs",
+      "status": "modified",
+      "bytes": 1326,
+      "sha256": "61b00863f04b38b1aaeb972304537194d74dfce862b72f75fb7c658cd2141dee",
+      "baselineSha256": "a18059a7c83ac7e97aa79ba289955de45a0117d1a96bceb1889693371785bba3",
+      "why": "Observe each private browser identity capability once and scheduled secret expiry once with the Worker execution context; preserve cookie, CSRF, session and receipt behavior."
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/delivery-health-worker.mjs",
+      "status": "modified",
+      "bytes": 590,
+      "sha256": "d5b4110aabb07ed7581193f0a9a7c8f92260548c4d344f760e1958fd71f6481e",
+      "baselineSha256": "07c8a10db1f5bf3243988488aeb9385b3c84fab26df2bf8eb82d4b8e533b24ce",
+      "why": "Observe the existing aggregate health read once without identity key provisioning or sender retries."
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/src/index.mjs",
+      "status": "modified",
+      "bytes": 13412,
+      "sha256": "13e1e5719990ca306348482707bfccddaa8ebda9462acdc990fdcfb921d9ed18",
+      "baselineSha256": "cfc2a263fe70db69e3aaee8a536741615ae882ac3870bafb33150bb1ee5a1d55",
+      "why": "Record finite browser identity, history and checkout operations at public ingress without private request fields; preserve original unknown financial/identity responses, keys and cookies."
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/entrypoint-telemetry.test.mjs",
+      "status": "added",
+      "bytes": 10174,
+      "sha256": "cab5c3c32ea112657ce4a0c527d9bc9ca67689eb02b56a48dfed1b86e56e1980",
+      "baselineSha256": null,
+      "why": "Exercise actual SQLite-backed native/private-browser services, privacy, caller-controlled routes, refresh-reuse revocation, lost acknowledgement, scheduled cleanup and disabled/throwing/rejecting/hung sink behavior."
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/tests/telemetry.test.mjs",
+      "status": "added",
+      "bytes": 4792,
+      "sha256": "ca814a26aaa65f6d9fe124b88aa4765c7545a73c331b6a1318ee5ef219bb8050",
+      "baselineSha256": null,
+      "why": "Exercise actual browser session/CSRF ingress, one observation per boundary, a real checkout commit followed by lost acknowledgement, no repeated domain writes, privacy and independent sink failures."
+    }
+  ],
+  "results": {
+    "scopedTelemetryAndSharedBank": {
+      "pass": 77,
+      "fail": 0,
+      "skip": 0,
+      "includedInFinalBank": true
+    },
+    "finalAuthDeliveryBrowserMembershipSharedBank": {
+      "pass": 1299,
+      "fail": 0,
+      "skip": 0
+    },
+    "disabledConfigurationChecks": 2,
+    "actualLocalWorkerBundles": 5,
+    "scopedDiffCheckPassed": true
+  },
+  "retainedFailureEvidence": [
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-browser-telemetry-initial-20260930.log",
+      "pass": 57,
+      "fail": 1,
+      "skip": 0,
+      "cause": "Test expected 503 for an unauthenticated request; the existing authenticated transport correctly returned 401. Corrected the test expectation; no authentication behavior weakened."
+    }
+  ],
+  "policy": {
+    "traceAuthority": "Locally generated UUID only; incoming traces and request IDs are omitted.",
+    "nativeClub": "Null; arbitrary caller route IDs are never copied to metrics.",
+    "browserClub": "Canonical positive bounded BROWSER_CLUB_ID from server configuration only.",
+    "privacy": "Finite service/operation/outcome and bounded timing/club projection only. No phone, user/session IDs, credentials, cookie/CSRF, IP, URL, request/response body, SQL or error diagnostics.",
+    "boundaryCounting": "One observation per invoked entrypoint; public gateway and private identity capability are distinct boundaries. No domain-service instrumentation or repeated domain execution.",
+    "failures": "Disabled/unreviewed telemetry emits nothing; one detached sink attempt, shared default 25 ms deadline, no retry or raw console fallback. Throwing, rejecting and hung sinks cannot change identity/financial response.",
+    "mutationOutcomes": "Any failure after an identity mutation is invoked is conservatively unknown, including refresh reuse that revokes a family before returning 401. No rollback or retry is inferred.",
+    "configuration": "Distributed configurations remain disabled and contain no metrics binding, retention or approved policy. Local fixtures explicitly enable synthetic settings only."
+  },
+  "previousRotationEvidence": {
+    "path": "docs/release/local-auth-rotation-isolation-2026-09-30.json",
+    "sha256": "6c437c360005be6bb10047910af76233778fff4c0d6f8f3409e6b4013c159dd8",
+    "originalSourceHashesVerified": 15,
+    "originalSourceHashMismatches": []
+  },
+  "evidence": [
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-browser-telemetry-initial-20260930.log",
+      "bytes": 13291,
+      "sha256": "f60e3c82ab70b5b4f56a540ff9c6e7036b33fbc848a5f0d2b649e88fd7672a5b"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-browser-telemetry-scoped-20260930.log",
+      "bytes": 17670,
+      "sha256": "90d72f06fb18e4b51d02257563d9874f4d0a5b5c2721d10eb4a8df0e268831df"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-browser-telemetry-full-boundaries-20260930.log",
+      "bytes": 248542,
+      "sha256": "bd0564d90e8dea71ef496dc096b09abc37d5d4393811527091f3721e780da875"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-telemetry-disabled-native-config-20260930.json",
+      "bytes": 353,
+      "sha256": "32eba0c042d01215f135558a2870bd482de1153a489cceb59177b4ae9f93b2f8"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-telemetry-disabled-browser-config-20260930.json",
+      "bytes": 132,
+      "sha256": "681fc1d3c1a31ea4b96faf41025b0842b7b547017ceff2d2a47c52611b8aa5cf"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-telemetry-native-dryrun-20260930.log",
+      "bytes": 1709,
+      "sha256": "87125a3973fcf8b517419635247f332a1c5c8dee910150822eda0484ad7528a0"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-telemetry-verifier-dryrun-20260930.log",
+      "bytes": 692,
+      "sha256": "6b0ec3bcf29b7e32329c876b40e9893cb65e616a307e3216f0ed58c311bfc5e1"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-telemetry-private-browser-dryrun-20260930.log",
+      "bytes": 1421,
+      "sha256": "206d17b748080ea1905b36be153870dbce98d995166a2e919a7eb6308f66d1c4"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-telemetry-health-dryrun-20260930.log",
+      "bytes": 1134,
+      "sha256": "9a7eca3c0a2f5392534a25fb4e288d72bfc351c5630dea344e1c9132a7a63c34"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-telemetry-public-browser-dryrun-20260930.log",
+      "bytes": 2027,
+      "sha256": "27b2c890a0cc1051843e3c5f0eec3ab54aa5ebed172c50a9d319093853b38a51"
+    }
+  ],
+  "localBundles": [
+    {
+      "entrypoint": "native",
+      "exitCode": 0,
+      "files": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-telemetry-native-dryrun-20260930/README.md",
+          "bytes": 136,
+          "sha256": "0a54821a67339214dff95493f1716b8c4211c9f3d0fc071ced98ce14ebf02c4a"
+        }
+      ]
+    },
+    {
+      "entrypoint": "verifier",
+      "exitCode": 0,
+      "files": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-telemetry-verifier-dryrun-20260930/README.md",
+          "bytes": 145,
+          "sha256": "abca3f4a858b1d46326ba4e728ee4c7b2dea06a7d6d5968f77e86dfa383dfe1a"
+        }
+      ]
+    },
+    {
+      "entrypoint": "private-browser",
+      "exitCode": 0,
+      "files": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-telemetry-private-browser-dryrun-20260930/README.md",
+          "bytes": 134,
+          "sha256": "d7350527eda6bfb5c780dd432af2ba232c0ba74291dbe00dc31b31a196e3fe3e"
+        }
+      ]
+    },
+    {
+      "entrypoint": "health",
+      "exitCode": 0,
+      "files": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-telemetry-health-dryrun-20260930/README.md",
+          "bytes": 134,
+          "sha256": "267f148bdfffe958f2228d6018f2a33378eb7f7b72d3a2708c8a1db28d04c985"
+        }
+      ]
+    },
+    {
+      "entrypoint": "public-browser",
+      "exitCode": 0,
+      "files": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260929/auth-telemetry-public-browser-dryrun-20260930/README.md",
+          "bytes": 139,
+          "sha256": "0045f7b5f3a9b3d2bc9f8aedb72b76c551e3a7f6cfe9e1cc03aeb876d5872f1c"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "SQLite fixtures exercise actual domain services, not deployed D1/workerd or live Worker RPC. Thin WorkerEntrypoint wrappers were locally bundled with Wrangler.",
+    "No metrics sink was deployed or bound, no accountable retention policy selected, and no provider, store or production acceptance was performed.",
+    "Metric completion describes an observed capability result; it is not proof of OTP delivery, payment settlement, account erasure or production readiness."
+  ]
+}

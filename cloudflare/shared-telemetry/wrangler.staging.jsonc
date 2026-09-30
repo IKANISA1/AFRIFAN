@@ -1,0 +1,6 @@
+{
+ "compatibility_date":"2026-09-01","name":"africlub-private-metrics-staging","main":"worker.mjs",
+ "workers_dev":false,"preview_urls":false,"routes":[],"observability":{"enabled":false},"logpush":false,
+ "vars":{"PRIVATE_METRICS_STORE_ENABLED":"false","PRIVATE_METRICS_ENVIRONMENT":"isolated-staging","PRIVATE_METRICS_RETENTION_MS":"","PRIVATE_METRICS_POLICY_REF":""},
+ "d1_databases":[{"binding":"METRICS_DB","database_name":"NEW_REVIEWED_PRIVATE_METRICS_DB","database_id":"REVIEW_REQUIRED","migrations_dir":"migrations"}]
+}

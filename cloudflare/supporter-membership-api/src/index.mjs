@@ -4,10 +4,11 @@ import {handoffProjection} from './handoff-projection.mjs';
 import {config,need,UUID,bounded,rateKey,errorCode,GatewayError,LIMITS} from './policy.mjs';
 import {route,ingress,token,prepareBody,response} from './http.mjs';
 import {identity,prepared,current,receipt} from './projection.mjs';
+import {traceOperation} from '../../shared-telemetry/telemetry.mjs';
 /** Direct native ingress. No cookie auth, DB, provider, payment allocation or caching. */
 export function createGateway({clock=Date.now,rpcMs=LIMITS.rpcMs,bodyMs=LIMITS.bodyMs}={}){
   need(Number.isInteger(rpcMs)&&rpcMs>0&&rpcMs<=LIMITS.rpcMs && Number.isInteger(bodyMs)&&bodyMs>0&&bodyMs<=LIMITS.bodyMs);
-  return {async fetch(request,env){
+  const handle=async(request,env)=>{
     let writeInvoked=false,requestId=null,journalWrite=false;
     try {
       const r=route(request),routes=config(env);
@@ -98,6 +99,22 @@ export function createGateway({clock=Date.now,rpcMs=LIMITS.rpcMs,bodyMs=LIMITS.b
       const status=code==='not_found'?404:['permission_denied','checkout_permission_denied'].includes(code)?403:code==='checkout_rate_limited'?429:503;
       return response({schemaVersion:1,error:status===403?'permission_denied':status===429?'rate_limited':code},status);
     }
+  };
+  return {async fetch(request,env,ctx){
+    // Only finite route classes and numeric public club scope reach telemetry.
+    // No raw URL, headers, actor, idempotency key, instruction or response body.
+    let operation='route',clubId=null;
+    try {
+      const r=route(request);clubId=r.clubId;
+      operation=({session:'session_read',history:'membership_history',history_receipt:'membership_history',
+        prepare:'checkout_create',handoff_reserve:'checkout_confirm',handoff_claim:'checkout_confirm',
+        handoff_release:'checkout_confirm'})[r.operation]??'membership_read';
+    } catch { /* Malformed ingress still receives the ordinary sanitized response. */ }
+    return traceOperation(env,{service:'supporter_membership',operation,clubId},()=>handle(request,env),{
+      clock,ctx,selectOutcome:response=>response.status<400?'completed':
+        [401,403].includes(response.status)?'denied':response.status<500?'rejected':
+        ['checkout_create','checkout_confirm'].includes(operation)?'unknown':'unavailable',
+    });
   }};
 }
 function sameActor(a,b){return a.userId===b.userId&&a.clubId===b.clubId&&a.sessionId===b.sessionId&&a.authenticatedAt===b.authenticatedAt;}

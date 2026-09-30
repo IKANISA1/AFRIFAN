@@ -149,3 +149,18 @@ been deployed or tested with a live provider. The earlier statement that status
 processing is unimplemented describes the original transport-only batch; alerts,
 retention/erasure, subscription approval and real staging acceptance remain pending.
 The original acceptance ledger and all no-resend rules above are preserved.
+
+## Local operations review and metrics (30 September 2026)
+
+The optional `AuthenticationDispatchReviewReader` adds private bounded health and
+inspection of reserved, accepted, rejected and unknown claims. Its separate
+template is disabled, without a route, schedule or provider credential. Aggregate
+queue ages and random service traces use `../shared-telemetry`; unknown fields,
+phones, codes, bodies, tokens, raw URLs and provider IDs are rejected from metrics.
+Retention and the private metrics binding must be configured explicitly.
+
+Inspection never sends, resets a claim or offers a re-drive action. The returned
+records explicitly set `replayAllowed:false`. Reserved and unknown provider
+dispatches keep their original no-resend boundary; request a new authentication
+challenge through the existing user flow if another code is needed. Metrics sink
+failure cannot retry the provider submission or change its durable outcome.

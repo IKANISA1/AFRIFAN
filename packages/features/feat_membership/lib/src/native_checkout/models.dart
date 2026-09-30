@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'package:core_auth/native_identity.dart' show identityDecode;
 
 /// Public contract values only. None is evidence of current paid entitlement.
 enum RequestOutcome { notSent, rejected, unknown }
@@ -40,7 +40,9 @@ Map<String, Object?> exactObject(Object? value, List<String> keys) {
 
 Object? decodeWire(String text) {
   try {
-    return jsonDecode(text);
+    // Share the bounded parser with native identity: ambiguous duplicate keys,
+    // escaped alternate keys and excessive nesting must fail before projection.
+    return identityDecode(text);
   } catch (_) {
     throw const NativeMembershipException('invalid_membership_contract');
   }

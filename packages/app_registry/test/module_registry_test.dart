@@ -1,12 +1,94 @@
 import 'package:app_registry/app_registry.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
+import 'package:feat_membership/feat_membership.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/feat_membership/test/native_supporter_journey_fixture.dart';
+
 void main() {
   group('AppModuleRegistry', () {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    for (final scope in <(String, String)>[
+      ('6', 'cd.ikanisa.as_vita'),
+      ('24', 'rw.gikundiro.app'),
+      ('26', 'zm.ikanisa.nkana'),
+      ('44', 'bi.ikanisa.vitalo'),
+      ('1001', 'mz.ikanisa.costadosol'),
+    ]) {
+      test('native selection is scoped and passive for club ${scope.$1}', () {
+        final f = JourneyFixture();
+        final journey = NativeSupporterJourney(
+          identityClient: NativeIdentityWireClient(
+            scope: NativeIdentityScope(
+              applicationId: scope.$2,
+              approvedOrigin: Uri.parse('https://synthetic.invalid'),
+              clubId: int.parse(scope.$1),
+            ),
+            transport: f.identity.transport,
+            enabled: true,
+          ),
+          credentialStore: f.identity.store,
+          identityEntropy: f.identity.entropy,
+          membershipTransport: f.transport,
+          recoveryChannel: f.channel,
+          dialer: f.dialer,
+          plans: [NativeMembershipPlan('gold', 'Synthetic gold')],
+          enabled: true,
+        );
+        addTearDown(journey.dispose);
+        addTearDown(f.journey.dispose);
+        final modules = AppModuleRegistry.build(
+          _FakeClubConfig(clubId: scope.$1),
+          nativeSupporterJourney: journey,
+        );
+        expect(
+          modules.whereType<MembershipModule>().single.nativeMembershipSelected,
+          isTrue,
+        );
+        expect(f.identity.transport.requests, isEmpty);
+        expect(f.transport.requests, isEmpty);
+        expect(f.identity.store.reads, 0);
+        expect(f.dialer.opens, 0);
+      });
+    }
+    test(
+      'native tab selection requires an explicitly enabled matching journey',
+      () {
+        final enabled = JourneyFixture(),
+            disabled = JourneyFixture(enabled: false);
+        addTearDown(enabled.journey.dispose);
+        addTearDown(disabled.journey.dispose);
+        MembershipModule module([NativeSupporterJourney? journey]) =>
+            AppModuleRegistry.build(
+              const _FakeClubConfig(clubId: '24'),
+              nativeSupporterJourney: journey,
+            ).whereType<MembershipModule>().single;
+        expect(module().nativeMembershipSelected, isFalse);
+        expect(module(disabled.journey).nativeMembershipSelected, isFalse);
+        expect(module(enabled.journey).nativeMembershipSelected, isTrue);
+        expect(enabled.identity.transport.requests, isEmpty);
+        expect(enabled.transport.requests, isEmpty);
+      },
+    );
+    test(
+      'foreign native journey fails registry selection before any request',
+      () {
+        final f = JourneyFixture();
+        addTearDown(f.journey.dispose);
+        expect(
+          () => AppModuleRegistry.build(
+            const _FakeClubConfig(clubId: '25'),
+            nativeSupporterJourney: f.journey,
+          ),
+          throwsArgumentError,
+        );
+        expect(f.identity.transport.requests, isEmpty);
+        expect(f.transport.requests, isEmpty);
+      },
+    );
     test('filters disabled optional modules from club feature flags', () {
       final modules = AppModuleRegistry.build(
         const _FakeClubConfig(
@@ -242,6 +324,7 @@ void main() {
           '/tickets',
           '/e-ticket/:id',
           '/membership',
+          '/membership/native',
           '/shop',
         }),
       );
@@ -458,6 +541,7 @@ void _collectGoRoutePaths(
 
 class _FakeClubConfig implements ClubConfig {
   const _FakeClubConfig({
+    this.clubId = '1',
     this.hasFanClubs = true,
     this.hasShop = true,
     this.hasTicketing = true,
@@ -477,7 +561,7 @@ class _FakeClubConfig implements ClubConfig {
   @override
   String get appName => 'AFRICLUB Test';
   @override
-  String get clubId => '1';
+  final String clubId;
   @override
   String get clubName => 'AFRICLUB Test Club';
   @override

@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-09-30T13:19:40.541742+00:00",
+  "status": "local_candidate_artifact_sealed_verified_and_extracted",
+  "candidate_commit": "9f2a658cc49c212f780b7906bbd37edd215e60bf",
+  "local_execution_id": "1790774375474",
+  "execution_id_is_github_run": false,
+  "archive": {
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-opennext-9f2a658c-1790774375474.zip",
+    "sha256": "77e460ea4d21fcca11d9735d082a56dafa5dbd0cadaadeb4ec2045af7510eaa5",
+    "bytes": 16425317,
+    "files": 2598,
+    "candidateSha": "9f2a658cc49c212f780b7906bbd37edd215e60bf",
+    "runId": "1790774375474"
+  },
+  "verification": {
+    "verified": true,
+    "candidateSha": "9f2a658cc49c212f780b7906bbd37edd215e60bf",
+    "runId": "1790774375474",
+    "files": 2598,
+    "extracted": true
+  },
+  "extracted_file_hashes_verified": 2598,
+  "extraction_path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/verified-extraction-1790774375474",
+  "compile_source_sha256": "a194bbb09785bd020daa45043591722e41c87d1d1dae2c1225ff4e62e04ea5ce",
+  "compile_source_files_verified": 615,
+  "build_id": "XCZ1mT_x2wqjkIkqENIDJ",
+  "scope": "Existing verified phase 3 Next/OpenNext build; frozen source and control files match the local commit. Later native/auth/ops work is excluded from this web build.",
+  "deployment_performed": false,
+  "hosted_ci_accepted": false,
+  "release_authorized": false,
+  "per_file_inventory": {
+    "path": "docs/release/local-phase3-artifact-files-2026-09-30.tsv",
+    "sha256": "dad49b773562b2d27e3fb3781641233e2389c6826177853958504a1ecbdca146",
+    "rows": 2598,
+    "format": "TSV path, bytes, SHA-256; immutable extracted artifact metadata"
+  }
+}

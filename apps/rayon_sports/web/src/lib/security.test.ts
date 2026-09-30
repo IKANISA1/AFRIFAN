@@ -105,12 +105,31 @@ describe("security helpers", () => {
       code: "MUTATION_ACCESS_DENIED",
     });
   });
+  it.each(["https://foreign.invalid", "null", "https://gikundiro.com/private", "not an origin"])(
+    "a CSRF marker cannot override explicit foreign or malformed origin %s", origin => {
+      const request = makeRequest({ origin, "x-africlub-csrf": "1", "sec-fetch-site": "same-origin" });
+      expect(isSameOriginMutation(request)).toBe(false);
+      expect(rejectInsecureMutation(request)?.status).toBe(403);
+    });
+  it("an exact same-origin mutation preserves the valid browser contract", () => {
+    expect(isSameOriginMutation(makeRequest({ origin: "https://gikundiro.com",
+      "sec-fetch-site": "same-origin", "x-africlub-csrf": "1" }))).toBe(true);
+  });
 });
 
 describe("isolated preview connection policy", () => {
   afterEach(() => {
     vi.unstubAllEnvs();
     vi.resetModules();
+  });
+  it("an obsolete analytics endpoint cannot expand the production CSP", async () => {
+    vi.stubEnv("NEXT_PUBLIC_VITALS_ENDPOINT", "https://foreign.invalid/?token=synthetic");
+    vi.resetModules();
+    const { default: config } = await import("../../next.config");
+    const policy = (await config.headers?.())?.find(entry => entry.source === "/(.*)")
+      ?.headers.find(header => header.key === "Content-Security-Policy")?.value;
+    expect(policy).not.toContain("foreign.invalid");
+    expect(policy).not.toContain("synthetic");
   });
 
   it.each([

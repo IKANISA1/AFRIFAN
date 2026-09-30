@@ -8,6 +8,16 @@ function ready(){const g=template(),id=()=>crypto.randomUUID();g.account_id='12'
  const allocation={...common,name:'africlub-payment-allocation-staging',main:'src/worker.mjs',vars:{PAYMENT_ALLOCATION_ENABLED:'true',ALLOCATION_ENVIRONMENT:'isolated-staging',INGEST_PRINCIPAL_ID:id(),ALLOCATE_PRINCIPAL_ID:id(),READ_PRINCIPAL_ID:id(),OUTBOX_PRINCIPAL_ID:id()},d1_databases:[{binding:'ALLOCATION_DB',database_id:db}]};return {g,u:{identity,checkout,allocation}};}
 test('shipped template remains disabled',()=>{const r=checkDeployment(template());assert.equal(r.mode,'disabled-template');assert.equal(r.productionApproved,false);});
 test('configured staging check is never live authorization',()=>{const {g,u}=ready(),r=checkDeployment(g,u,true);for(const k of ['liveBindingsVerified','sourceReconciliationVerified','nativeStorageVerified','atomicRevocationVerified','productionApproved'])assert.equal(r[k],false);});
+test('configured rotated identity accepts reviewed public policy without secret material',()=>{
+ const {g,u}=ready();u.identity.vars.AUTH_KEY_VERSION='2';u.identity.vars.AUTH_KEY_POLICY_JSON=JSON.stringify({schemaVersion:1,currentVersion:'2',activatedAt:1790700000000,versions:[{version:'1',notBefore:0,readUntil:1790700900000},{version:'2',notBefore:1790700000000,readUntil:null}]});
+ const r=checkDeployment(g,u,true);assert.equal(r.configurationValid,true);assert.equal(r.requiredSecretsVerified,false);assert.equal(r.productionApproved,false);
+});
+for(const [name,policy] of [['missing',undefined],['invalid','{}'],['wrong_version',JSON.stringify({schemaVersion:1,currentVersion:'3',activatedAt:1790700000000,versions:[{version:'3',notBefore:1790700000000,readUntil:null}]})]])test(`rotated public policy rejects ${name}`,()=>{
+ const {g,u}=ready();u.identity.vars.AUTH_KEY_VERSION='2';if(policy!==undefined)u.identity.vars.AUTH_KEY_POLICY_JSON=policy;assert.throws(()=>checkDeployment(g,u,true));
+});
+for(const field of ['AUTH_KEYRING_JSON','AUTH_HMAC_KEY','AUTH_ENCRYPTION_KEY'])test(`readiness refuses ${field} material in public vars`,()=>{
+ const {g,u}=ready();u.identity.vars[field]='synthetic-private-material';assert.throws(()=>checkDeployment(g,u,true));
+});
 for(const [label,mutate] of [
  ['environment',g=>g.vars.MEMBERSHIP_ENVIRONMENT='production'],['extra vars',g=>g.vars.GATEWAY_RATE_KEY='secret'],['direct db',g=>g.d1_databases=[]],['environment override',g=>g.env={}],['public preview',g=>g.workers_dev=true],['logging',g=>g.observability.enabled=true],['wrong service',g=>g.services[1].entrypoint='PaymentAllocator'],['extra service',g=>g.services.push(g.services[0])],['duplicate rates',g=>g.ratelimits[1].namespace_id=g.ratelimits[0].namespace_id],['missing limiter',g=>g.ratelimits.pop()],['rate policy',g=>g.ratelimits[0].simple.limit=10000],['wildcard ingress',g=>g.routes[0].pattern='*'],['http origin',g=>g.vars.NATIVE_ORIGIN='http://stage.africlub.test'],['duplicate club',g=>g.vars.CLUB_ROUTES_JSON='[{"clubId":24,"clubSlug":"rayon"},{"clubId":24,"clubSlug":"other"}]'],['secret field',g=>g.vars.token='x'],['wrong main',g=>g.main='src/other.mjs']])test(`configuration rejects ${label}`,()=>{const {g,u}=ready();mutate(g);assert.throws(()=>checkDeployment(g,u,true));});
 for(const [label,mutate] of [

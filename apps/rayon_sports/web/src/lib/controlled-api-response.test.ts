@@ -2,6 +2,7 @@ import {
   ControlledApiTimeoutError,
   controlledApiFailureResponse,
   controlledApiJson,
+  controlledPublicApiJson,
   withControlledApiTimeout,
 } from "./controlled-api-response";
 
@@ -22,6 +23,25 @@ describe("controlled API responses", () => {
     await expect(
       withControlledApiTimeout(Promise.resolve("complete"), 10),
     ).resolves.toBe("complete");
+  });
+  it("public projections retain only a bounded explicit policy without cookie/header authority", () => {
+    const policy = "public, max-age=0, s-maxage=120, stale-while-revalidate=300";
+    expect(controlledPublicApiJson({ public: true }, 200, { "cache-control": policy })
+      .headers.get("cache-control")).toBe(policy);
+    expect(() => controlledPublicApiJson({}, 403, { "cache-control": policy })).toThrow("invalid_public_cache_policy");
+    expect(() => controlledPublicApiJson({}, 200, { "cache-control": policy,
+      "set-cookie": "private" })).toThrow("invalid_public_cache_policy");
+    expect(() => controlledPublicApiJson({}, 200, { "cache-control": "public, max-age=86400" }))
+      .toThrow("invalid_public_cache_policy");
+  });
+  it("caller headers cannot make a private response cacheable at either CDN", () => {
+    const response = controlledApiJson({ private: true }, 200, {
+      "cache-control": "public, max-age=86400",
+      "cdn-cache-control": "public, max-age=86400",
+      "cloudflare-cdn-cache-control": "public, max-age=86400",
+    });
+    for (const key of ["cache-control", "cdn-cache-control", "cloudflare-cdn-cache-control"])
+      expect(response.headers.get(key)).toBe("no-store");
   });
 
   it("returns a stable security-timeout response", async () => {

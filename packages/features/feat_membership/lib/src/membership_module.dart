@@ -3,10 +3,13 @@ import 'package:core_theme/core_theme.dart';
 import 'package:go_router/go_router.dart';
 
 import 'screens/membership_screen.dart';
+import 'screens/native_membership_journey_screen.dart';
 import 'screens/tier_detail_screen.dart';
 
 /// Membership feature module — the supporter identity and revenue tab.
 class MembershipModule extends FeatureModule {
+  MembershipModule({this.nativeMembershipSelected = false});
+  final bool nativeMembershipSelected;
   static const String _moduleName = 'Membership';
 
   @override
@@ -27,11 +30,33 @@ class MembershipModule extends FeatureModule {
     label: _moduleName,
     icon: AfriIcons.membership,
     activeIcon: AfriIcons.membership,
-    builder: (context, state) => const MembershipScreen(),
+    builder: (context, state) => nativeMembershipSelected
+        ? NativeMembershipJourneyScreen(
+            configuredClubId: state.uri.hasQuery || state.uri.hasFragment
+                ? ''
+                : ClubConfigScope.of(context).clubId,
+          )
+        : const MembershipScreen(),
   );
 
   @override
+  Set<String> get independentlyAuthenticatedPaths => {
+    '/membership/native',
+    if (nativeMembershipSelected) '/membership',
+  };
+
+  @override
   List<RouteBase> get routes => [
+    GoRoute(
+      path: 'native',
+      name: 'membership-native',
+      builder: (context, state) => NativeMembershipJourneyScreen(
+        // Noncanonical query-bearing links fail the screen's exact scope check.
+        configuredClubId: state.uri.hasQuery || state.uri.hasFragment
+            ? ''
+            : ClubConfigScope.of(context).clubId,
+      ),
+    ),
     GoRoute(
       path: 'fans',
       name: 'membership-fans',
@@ -49,6 +74,13 @@ class MembershipModule extends FeatureModule {
 
   @override
   List<RoutePresentationDecision> get routePresentationDecisions => const [
+    RoutePresentationDecision(
+      path: '/membership/native',
+      presentation: RoutePresentation.fullScreen,
+      recommendation: 'keep',
+      rationale:
+          'Explicit native sign-in, payment review and uncertain recovery for one club.',
+    ),
     RoutePresentationDecision(
       path: '/membership',
       presentation: RoutePresentation.fullScreen,

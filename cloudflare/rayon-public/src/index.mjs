@@ -1,4 +1,5 @@
 import { activeSnapshot, primarySession, sha256, MAX_MEDIA_BYTES, PublicationError } from "./snapshot-publication.mjs";
+import {httpOperation} from '../../shared-telemetry/entrypoints.mjs';
 
 const routes = new Set([
   "fixtures", "news", "squad", "fanclubs", "partners", "shop",
@@ -272,8 +273,7 @@ async function media(request, env, assetId, db, snapshot) {
   return new Response(bytes, { headers });
 }
 
-export default {
-  async fetch(request, env) {
+async function fetchPublic(request, env) {
     const url = new URL(request.url);
     const mediaMatch = /^\/v1\/public\/rayon\/media\/([0-9a-f-]{36})$/.exec(url.pathname);
     const match = /^\/v1\/public\/rayon\/([a-z-]+)$/.exec(url.pathname);
@@ -298,5 +298,9 @@ export default {
         ["source_stale", "source_unpublished", "source_changed"].includes(error.code) ? error.code : "service_unavailable";
       return json({ error: code }, 503);
     }
+}
+export default {
+  fetch(request,env,ctx) {
+    return httpOperation(env,{service:'rayon_public',operation:'publication_read'},request,()=>fetchPublic(request,env),ctx);
   },
 };

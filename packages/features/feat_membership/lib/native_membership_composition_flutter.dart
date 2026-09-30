@@ -24,6 +24,7 @@ final class NativeMembershipComposition with WidgetsBindingObserver {
     this.enabled = false,
     RecoveryPlatformChannel? channel,
     MembershipDialer? dialer,
+    int Function()? monotonicNow,
   }) {
     requireContract(
       clubId > 0 && clubId <= 9007199254740991,
@@ -53,6 +54,7 @@ final class NativeMembershipComposition with WidgetsBindingObserver {
         this,
       ),
       enabled: enabled,
+      monotonicNow: monotonicNow,
     );
     WidgetsBinding.instance.addObserver(this);
   }
