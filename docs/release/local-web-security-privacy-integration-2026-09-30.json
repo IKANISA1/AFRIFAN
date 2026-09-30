@@ -1,0 +1,420 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-30T16:40:35.606408+00:00",
+  "head": "90df5065000c870b063811dec724fa69b18c26e9",
+  "scope": "Current local web security/privacy and native response hardening; source remains an uncommitted candidate.",
+  "checks": {
+    "backendTests": {
+      "passed": 2671,
+      "failed": 0,
+      "skipped": 0,
+      "verification": "output/qa/full-stack-20260914/production-goal-20260930-phase4/backend-locked-typescript/verification.json"
+    },
+    "webUnits": {
+      "passed": 1079,
+      "failed": 0,
+      "skipped": 1,
+      "skip": "Explicit external live Gikundiro source smoke; local adapter paths exercised with controlled transports."
+    },
+    "cacheCspRegressions": {
+      "passed": 95,
+      "failed": 0
+    },
+    "privateObservationSQLite": {
+      "passed": 86,
+      "failed": 0,
+      "skipped": 0
+    },
+    "privateObservationWrangler": {
+      "exitCode": 0,
+      "networkGuardBlockedAttempts": 1,
+      "outboundConnectionsPermitted": false
+    },
+    "strictTypecheck": {
+      "exitCode": 0
+    },
+    "fullWebLint": {
+      "exitCode": 0
+    }
+  },
+  "sourceFiles": [
+    {
+      "path": "apps/rayon_sports/web/next.config.ts",
+      "sha256": "ae68368fcc742a3c0fc17999f707f7fe6e574ea4152d0ab7dad739827afc0862",
+      "bytes": 4017,
+      "rationale": "Use the same strict CSP builder; obsolete analytics URL cannot add an origin."
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/web-build-provenance.mjs",
+      "sha256": "91efc48339a8595189a5c26f3cdf5820c3ce119d1faaf9007f95b8dff763c92a",
+      "bytes": 9637,
+      "rationale": "Bind external observation runtime/declarations and deployment adapter configurations to the source seal."
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/web-build-provenance.node-test.mjs",
+      "sha256": "63ec92a2d4214dbc5fac4df679ff6ced2ae407b851013a714b99760f73af8df9",
+      "bytes": 11001,
+      "rationale": "Missing, tampered and relocated shared observation inputs invalidate compilation/sealing."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/app/api/public-content/route.ts",
+      "sha256": "6d039ffdd455b162de0627af570b0c1301fe76e2183ebc02671a75fa29187f2f",
+      "bytes": 27083,
+      "rationale": "Declare the thirteen sanitized public GET projections explicitly."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/app/api/pwa/events/route.test.ts",
+      "sha256": "0e3cc89b31df41d8a9dc79b0f26c3ef1c5c41b8aa083acf59d4b7f77f0f1cf36",
+      "bytes": 4635,
+      "rationale": "Both Next route wrappers require selected configuration and private bounded acknowledgement."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/app/api/pwa/events/route.ts",
+      "sha256": "c955eb36602d5e14bc73bb3d90d06e2c9c0c3fc60d65632aea8e9d1d46b4dba5",
+      "bytes": 353,
+      "rationale": "Private finite PWA binding replaces actor/path/user-agent/arbitrary payload collection."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/app/api/search-index/route.ts",
+      "sha256": "6cad3f786d9e389f73c9157254b63b3273407eec7a25d7948b4313632b65e9f9",
+      "bytes": 706,
+      "rationale": "Declare the sanitized public search projection explicitly."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/app/api/telemetry/vitals/route.ts",
+      "sha256": "98c05193c67bbdcadff3833439b10e36be18d13ecda5649dc8936005a141a63c",
+      "bytes": 353,
+      "rationale": "Wire the finite vitals namespace to private ingress."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/app/layout.tsx",
+      "sha256": "2da27a269387ce54c5ae9e44aa84af07229baccb03536bc4cee2d8d8c5f28f3f",
+      "bytes": 2888,
+      "rationale": "Apply request nonce to JSON-LD and participate in dynamic rendering."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/content-security-policy.test.ts",
+      "sha256": "98256d6527706c5f858f23fe222b207246d1bc992c4a3033604685cd4c1fded8",
+      "bytes": 2245,
+      "rationale": "Nonce uniqueness, malformed-policy rejection and asset/API applicability."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/content-security-policy.ts",
+      "sha256": "02235fd2d8e0f5bb67b1a05a470c4601d71e0757c46c7912107d38898a9d77f0",
+      "bytes": 2265,
+      "rationale": "Unpredictable per-request nonce; production script/eval/attribute limits; bounded preview origins."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/controlled-api-response.test.ts",
+      "sha256": "4db545b1fa54c4c595fb6c4afcfbb911296707c6de488830785f5d350436663c",
+      "bytes": 4262,
+      "rationale": "Reject private cache override and uncontrolled public cache/header authority."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/controlled-api-response.ts",
+      "sha256": "8db8cfb86e25d2bf5b97a9e1834c12d33fd519390bf850fa1cc5a3b10c217f86",
+      "bytes": 3536,
+      "rationale": "Private/error responses enforce CDN no-store; explicit sanitized public projections retain bounded policy."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/feature-config.ts",
+      "sha256": "48f8e1be597dfaf3e318cbad59e1ed5d0e1ebc17f0c852d060980092f214e7fe",
+      "bytes": 19169,
+      "rationale": "Remove raw RPC/provider error logs."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/host-request-routing.ts",
+      "sha256": "9a9e148fd1e05840ecfcb43eff34b92f3b035fbf559be8b297b02607e7a8047c",
+      "bytes": 3864,
+      "rationale": "Replace inbound nonce/CSP; forward trusted nonce and prevent HTML nonce cache reuse."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/offline-queue.test.ts",
+      "sha256": "125eb202f74aa673c59143bd31774d0ea89c3c38a5c748b0c55b4d0050935a78",
+      "bytes": 6415,
+      "rationale": "Lost acknowledgement, no-storage/no-sync, legacy inspection/clear and deadline tests."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/offline-queue.ts",
+      "sha256": "2db04c51016ecaa33d059df7716e81298d33559a10d080881a37f4df45d4274d",
+      "bytes": 4525,
+      "rationale": "Prevent credential/request persistence and automatic replay; preserve unknown mutation outcomes; bounded legacy inspection and explicit clearing."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/privacy-safe-diagnostics.test.ts",
+      "sha256": "da9a1bed486ec49bf9f5241f701794c0157bcc8f7c78eb9cb7a284ce01fb1cbd",
+      "bytes": 1583,
+      "rationale": "Reject arbitrary diagnostic input and serialization."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/privacy-safe-diagnostics.ts",
+      "sha256": "033c2a2193fa338a11ce7db874c7595ce96039b1e6535f1e8268844584bb8d9f",
+      "bytes": 1000,
+      "rationale": "Finite diagnostic labels only; sink failure cannot change a command."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/push.ts",
+      "sha256": "29708e2d7d516d79291531102c34e43ec062cace529c5e007038d00bc173cfbe",
+      "bytes": 5254,
+      "rationale": "Remove raw subscription/registration errors from logs."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/pwa-analytics.test.ts",
+      "sha256": "fc6bdf70dcc37cc7e85ccf77ca1f09f5b0a798baccf1b3cba1c7f2db063b4c04",
+      "bytes": 1348,
+      "rationale": "Prove private legacy fields are never read or forwarded."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/pwa-analytics.ts",
+      "sha256": "f58338f694d2eacda80c4d67e6855bb90e17d74a5cc4d6789c265f06a8ba0cd1",
+      "bytes": 1195,
+      "rationale": "Replace path/payload collection with finite event projection."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/security.test.ts",
+      "sha256": "e6d643bdf40cef41e5abff6ba4c87e989278bdcd509e26f91b18999a4db300da",
+      "bytes": 6037,
+      "rationale": "Foreign/malformed origins and obsolete external analytics destinations fail."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/security.ts",
+      "sha256": "4b6d331700a81ac3e55aeda1d0543750b07b59551e99380a338ca155608da4de",
+      "bytes": 4583,
+      "rationale": "Explicit canonical Origin is authoritative before CSRF-marker fallback."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/server-feature-guard.ts",
+      "sha256": "ab1086bec1feb5ebccc4433fe92e581bc1000e0b40c4e86844f25191c1ffdbb6",
+      "bytes": 5194,
+      "rationale": "Remove raw guard/provider error logs."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/share.test.ts",
+      "sha256": "3e5ba0bfca578c5bb4e9593480266560134b84b6f8480e1d9b356c3c56db2043",
+      "bytes": 2388,
+      "rationale": "Prove cancellation, single fallback, redaction and temporary-field cleanup."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/share.ts",
+      "sha256": "d8b9ea65dcca70e932617c79dc9d411d7d0d99a19bd4b2c41369982fd0717a50",
+      "bytes": 2671,
+      "rationale": "Preserve cancellation and clipboard outcome; finite diagnostics without private content."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/vitals.test.ts",
+      "sha256": "7ee36bd086e93c06e817c96d651325518adce669bff9c80e369b0fa2b8381b58",
+      "bytes": 2381,
+      "rationale": "Prove minimized logging/submission and listener deduplication."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/vitals.ts",
+      "sha256": "8ed49363f2951c10045e9fdaefc121a855c5fa18b6b604f51ff97dc37e451031",
+      "bytes": 914,
+      "rationale": "Project bounded rounded vitals; omit raw IDs/context; register listeners once."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/web-observation-client.test.ts",
+      "sha256": "733a33c5dbb376cbec12d19d5dbc1ddc8f2387217f6607d6e266c6645502df81",
+      "bytes": 5175,
+      "rationale": "Adversarial origins/context, quota, deduplication and lost/unresponsive acknowledgements."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/web-observation-client.ts",
+      "sha256": "9e2e624679feb1547d05cf0d87469e5dadaf4818d32399db43a3720d682976ef",
+      "bytes": 2410,
+      "rationale": "Disabled default; fixed same-origin endpoints; no credentials/referrer/cache/redirects; bounded one-attempt transport."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/lib/web-observation-server.ts",
+      "sha256": "a5837aca195aa1859d50e936bb34dfb6c7d2a4cea3040d0eea2064e911530079",
+      "bytes": 401,
+      "rationale": "Resolve only private selected Workers bindings; unavailable previews fail closed."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/middleware.test.ts",
+      "sha256": "a164b276438d6390258f915e4ee16e13336e36f9013bf0001bf8d40704961529",
+      "bytes": 3063,
+      "rationale": "Verify routing preserves its contract and inbound nonce injection cannot override policy."
+    },
+    {
+      "path": "apps/rayon_sports/web/wrangler.jsonc",
+      "sha256": "9928d41fa7b805aae069e95fb6e7762606ce5c57373870d319aa859b26677b0d",
+      "bytes": 1521,
+      "rationale": "Disable implicit invocation logs and traces in source configuration."
+    },
+    {
+      "path": "cloudflare/web-observations/README.md",
+      "sha256": "bc4ed7d207c6cc5b7eca0c22b744bc76fe911aab83cf69c880034f8f1c87977b",
+      "bytes": 2613,
+      "rationale": "Narrow shared private observation contract, ingress, independent retention/quota store, disabled binding template, configuration check or actual SQLite tests."
+    },
+    {
+      "path": "cloudflare/web-observations/contracts.d.mts",
+      "sha256": "16146611ad1f90ee15a6d0ec6eb9e332ff3371987a30a69da197bd5b61946f82",
+      "bytes": 972,
+      "rationale": "Narrow shared private observation contract, ingress, independent retention/quota store, disabled binding template, configuration check or actual SQLite tests."
+    },
+    {
+      "path": "cloudflare/web-observations/contracts.mjs",
+      "sha256": "cda4c5591355e35ed4f465c697d4afe1819abebfa247a6944ef0b6b2adab9180",
+      "bytes": 3517,
+      "rationale": "Narrow shared private observation contract, ingress, independent retention/quota store, disabled binding template, configuration check or actual SQLite tests."
+    },
+    {
+      "path": "cloudflare/web-observations/http.d.mts",
+      "sha256": "d57f76145300c3dbde79f2aa72a6961211722e6fa2b816c2a60b6110258d9d94",
+      "bytes": 117,
+      "rationale": "Narrow shared private observation contract, ingress, independent retention/quota store, disabled binding template, configuration check or actual SQLite tests."
+    },
+    {
+      "path": "cloudflare/web-observations/http.mjs",
+      "sha256": "3cf65d7b20bd4a6fab3147681f9e5d51802548d53f510a9460bd7b26c158d342",
+      "bytes": 3210,
+      "rationale": "Narrow shared private observation contract, ingress, independent retention/quota store, disabled binding template, configuration check or actual SQLite tests."
+    },
+    {
+      "path": "cloudflare/web-observations/migrations/0001_private_web_observations.sql",
+      "sha256": "ac797a4649c016ef984c56ae9086117b91538fb8aca36176d9213033df057411",
+      "bytes": 880,
+      "rationale": "Narrow shared private observation contract, ingress, independent retention/quota store, disabled binding template, configuration check or actual SQLite tests."
+    },
+    {
+      "path": "cloudflare/web-observations/scripts/check-deployment.mjs",
+      "sha256": "161619be7085538f322c9e37708749fcc79055082966c69c72df33cef6e742a0",
+      "bytes": 1413,
+      "rationale": "Narrow shared private observation contract, ingress, independent retention/quota store, disabled binding template, configuration check or actual SQLite tests."
+    },
+    {
+      "path": "cloudflare/web-observations/sink.mjs",
+      "sha256": "82cfeeb4130f04b7b1bbaf92d56ed2fc029456c9aed2c0f4484f9e52c0161fd4",
+      "bytes": 2311,
+      "rationale": "Narrow shared private observation contract, ingress, independent retention/quota store, disabled binding template, configuration check or actual SQLite tests."
+    },
+    {
+      "path": "cloudflare/web-observations/tests/observations.test.mjs",
+      "sha256": "ec35655dbd58fe89cfc889cfe05573bf684cc3f9d9e32e2852229916ded4ed87",
+      "bytes": 11886,
+      "rationale": "Narrow shared private observation contract, ingress, independent retention/quota store, disabled binding template, configuration check or actual SQLite tests."
+    },
+    {
+      "path": "cloudflare/web-observations/worker.mjs",
+      "sha256": "edcc3698fce21e9cedda158c13092a001db866f5e2038cda11add22839b8f3ac",
+      "bytes": 582,
+      "rationale": "Narrow shared private observation contract, ingress, independent retention/quota store, disabled binding template, configuration check or actual SQLite tests."
+    },
+    {
+      "path": "cloudflare/web-observations/wrangler.staging.jsonc",
+      "sha256": "13a48544737ff6e1c0962bbe785c88f4bf29cc1c0a4cc9d5536eb626da66439f",
+      "bytes": 653,
+      "rationale": "Narrow shared private observation contract, ingress, independent retention/quota store, disabled binding template, configuration check or actual SQLite tests."
+    },
+    {
+      "path": "packages/app_registry/test/module_registry_test.dart",
+      "sha256": "eecaf6cc978cfe17cdae0af64f4a80c25e4ffb4a560c4d0eb8c1d2da9f4c61d1",
+      "bytes": 18306,
+      "rationale": "Add explicit passive selection checks for all five declared club scopes; pending final Flutter execution."
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/membership_module.dart",
+      "sha256": "e084d99023d0f932cb8f7242d073d03d2a79b80c1d9e26d4890e00a6901a72fc",
+      "bytes": 3310,
+      "rationale": "Reject query/fragment-bearing selected native tab scope."
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/client.dart",
+      "sha256": "18385e10abab450dd78be0dba26f578e503490fceab630bae0a47d42da19ee65",
+      "bytes": 11120,
+      "rationale": "Require private no-store JSON without cookies or compressed response before accepting state."
+    },
+    {
+      "path": "packages/features/feat_membership/lib/src/native_checkout/ports.dart",
+      "sha256": "f12752424d1432b44b10d94d1f988c901fb1fa4bbdc1cfa0d69c99a1169f62b2",
+      "bytes": 2644,
+      "rationale": "Normalize response header case and reject ambiguous or multiline headers."
+    },
+    {
+      "path": "packages/features/feat_membership/test/native_checkout/history_harness.dart",
+      "sha256": "374948dcb4461dfcdc2cf2de46414a8bd17c053b823cb34aadccb5ba25283d75",
+      "bytes": 3147,
+      "rationale": "History fixture obeys the private gateway response contract."
+    },
+    {
+      "path": "packages/features/feat_membership/test/native_membership_journey_screen_test.dart",
+      "sha256": "ebc273eb991f8dcca7b67e4972f0b4c0bf071388fa1e049eef5b0679f1998719",
+      "bytes": 12684,
+      "rationale": "Add disabled platform-factory no-channel-work proof; pending final Flutter execution."
+    },
+    {
+      "path": "packages/features/feat_membership/test/native_membership_private_response_test.dart",
+      "sha256": "7c012f0eda19d66c9a8ff3f7689a7f26960b7e284617b309666b024dba112952",
+      "bytes": 3886,
+      "rationale": "Read/write uncertainty tests for untrusted response policy; pending Flutter execution."
+    },
+    {
+      "path": "tools/scripts/test_converged_suite_inventory.py",
+      "sha256": "6b989d1968f86ee77cc70c3ab068000365389376640a0ee19fb43968f159be49",
+      "bytes": 4917,
+      "rationale": "Check the new bank/config are part of the aggregate gate."
+    },
+    {
+      "path": "tools/scripts/verify_converged_source.py",
+      "sha256": "5731562ab49f751865db04e70fd0ab15d289b4b54ab4c61c4da8ebe7c0aa0d00",
+      "bytes": 6430,
+      "rationale": "Register private observation bank/config and select the repository locked TypeScript compiler."
+    }
+  ],
+  "evidenceLogs": [
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/web-offline-private-boundaries-20260930.log",
+      "sha256": "713795df995e72d7b29cd9b6b01daaae06f94c99add73b0cf365cbc7f1333a80"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/private-web-observations-node-final-20260930.log",
+      "sha256": "adb15cbf238fc5d6fdb608e61bc7e3ce32196cdaea892a1f9c62f78c550c2d94"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/private-web-observations-bundle-20260930.log",
+      "sha256": "c6db9ad459dbf255cb403a4d46ea83ba1c19ff30178128b0f01049ab18a8555c"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/web-observation-focused-20260930.log",
+      "sha256": "87e5b7c3e54f7e860f9f78d5a7da5a8ee8a530056233cc9f2c2a1321d3099a41"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/web-security-typecheck-cache-corrected-20260930.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/web-security-lint-cache-corrected-20260930.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/web-cache-csp-regressions-20260930.log",
+      "sha256": "d583311c4729e120b11662122925f028fb8d552d1a88d3a1878c0a038bfd1c36"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/web-full-unit-cache-corrected-20260930.log",
+      "sha256": "244c63b0ff3cf167248a432bec247dfa7e7858955d1aea729b9bda54ba42b278"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/web-build-provenance-runtime-config-20260930.log",
+      "sha256": "01db15f8c7ca5c4f87954660309b854a721ad306fcb8d7e2ea3ffdf7d8d97729"
+    }
+  ],
+  "retainedFailures": [
+    "web-observation-typecheck-final-20260930.log: two fixture typing errors, corrected.",
+    "web-full-unit-security-final-20260930.log: nine public cache regressions, corrected through an explicit public projection helper.",
+    "backend-web-observations/backend-contracts.log: TypeScript missing from PATH caused 90 failures; locked compiler selection corrected."
+  ],
+  "pending": [
+    "Current production compilation, actual rendered nonce/CSP/hydration checks and fresh artifact seal/extraction.",
+    "Final Flutter execution for new private-response, five-club selection and platform-factory cases.",
+    "Supabase Edge raw diagnostic/failure-event privacy hardening remains a separate active implementation task.",
+    "Full route/state/accessibility coverage, final secret scan, exact dependency inventory and final candidate commit evidence remain active."
+  ],
+  "providerCalls": 0,
+  "deploymentActions": 0,
+  "signingActions": 0,
+  "releaseAccepted": false,
+  "goalComplete": false
+}
