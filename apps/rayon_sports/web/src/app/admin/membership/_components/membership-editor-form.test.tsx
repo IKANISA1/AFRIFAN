@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import { act, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -10,7 +10,8 @@ import { emptyForm, type MembershipForm } from "./membership-state";
 
 const saveAdminMembershipPackage = vi.fn();
 
-vi.mock("@/lib/data/admin/membership", () => ({
+vi.mock("@/lib/data/admin/membership", async (importOriginal) => ({
+  ...await importOriginal<typeof import("@/lib/data/admin/membership")>(),
   saveAdminMembershipPackage: (...args: unknown[]) =>
     saveAdminMembershipPackage(...args),
 }));
@@ -24,6 +25,7 @@ describe("MembershipEditorForm accessibility recovery", () => {
     saveAdminMembershipPackage.mockRejectedValue(
       new Error("Membership service is temporarily unavailable."),
     );
+
     const user = userEvent.setup();
 
     render(
@@ -33,6 +35,8 @@ describe("MembershipEditorForm accessibility recovery", () => {
       </>,
     );
 
+    await user.selectOptions(screen.getByRole("combobox", { name: "Current club partner" }), partner.id);
+    await user.type(screen.getByRole("textbox", { name: "Subtitle" }), "Family supporter membership");
     const title = screen.getByRole("textbox", { name: "Title" });
     await user.type(title, "Family tier");
     await user.type(
@@ -76,6 +80,8 @@ describe("MembershipEditorForm accessibility recovery", () => {
       </>,
     );
 
+    await user.selectOptions(screen.getByRole("combobox", { name: "Current club partner" }), partner.id);
+    await user.type(screen.getByRole("textbox", { name: "Subtitle" }), "Family supporter membership");
     await user.type(screen.getByRole("textbox", { name: "Title" }), "Family tier");
     await user.type(
       screen.getByRole("textbox", { name: "Description" }),
@@ -107,6 +113,8 @@ describe("MembershipEditorForm accessibility recovery", () => {
   it("refuses a zero-price membership tier", async () => {
     const user = userEvent.setup();
     render(<Harness />);
+    await user.selectOptions(screen.getByRole("combobox", { name: "Current club partner" }), partner.id);
+    await user.type(screen.getByRole("textbox", { name: "Subtitle" }), "Gold supporter membership");
     await user.type(screen.getByRole("textbox", { name: "Title" }), "Gold");
     await user.type(screen.getByRole("textbox", { name: "Description" }), "Gold benefits");
     const price = screen.getByRole("spinbutton", { name: "Annual price (RWF)" });
@@ -157,9 +165,48 @@ describe("MembershipEditorForm accessibility recovery", () => {
       within(actions as HTMLElement).getByRole("button", { name: "Save tier" }),
     ).toBeEnabled();
   });
+  it("retains the original creation reference and required partner/subtitle after an unknown save", async () => {
+    saveAdminMembershipPackage.mockRejectedValueOnce(new Error("Committed response was lost")).mockResolvedValueOnce(partner.id);
+    const user = userEvent.setup(); render(<Harness />);
+    await user.selectOptions(screen.getByRole("combobox", { name: "Current club partner" }), partner.id);
+    await user.type(screen.getByRole("textbox", { name: "Title" }), "Family tier");
+    await user.type(screen.getByRole("textbox", { name: "Subtitle" }), "Family supporter membership");
+    await user.type(screen.getByRole("textbox", { name: "Description" }), "Annual supporter access");
+    await user.type(screen.getByRole("spinbutton", { name: "Annual price (RWF)" }), "1000");
+    await user.click(screen.getByRole("button", { name: "Create tier" })); await screen.findByRole("alert");
+    const original = saveAdminMembershipPackage.mock.calls[0][2];
+    expect(original).toMatchObject({ partnerId: partner.id, subtitle: "Family supporter membership", isActive: false });
+    expect(original.creationId).toMatch(/^[0-9a-f-]{36}$/);
+    await user.click(screen.getByRole("button", { name: "Create tier" }));
+    await waitFor(() => expect(saveAdminMembershipPackage).toHaveBeenCalledTimes(2));
+    expect(saveAdminMembershipPackage.mock.calls[1][2]).toEqual(original);
+  });
+  it("locks creation when no current club partner is configured and keeps moderators read-only", () => {
+    const view = render(<Harness partners={[]} />);
+    expect(screen.getByRole("button", { name: "Create tier" })).toBeDisabled();
+    expect(screen.getByText(/No active partner is configured/)).toBeVisible();
+    view.rerender(<Harness grantedAccess={{ ...access, role: "club_moderator" }} />);
+    expect(screen.getByRole("button", { name: "Create tier" })).toBeDisabled();
+    expect(screen.getByRole("textbox", { name: "Title" })).toBeDisabled();
+    expect(saveAdminMembershipPackage).not.toHaveBeenCalled();
+  });
+  it("does not publish an old-owner save completion after its form has unmounted", async () => {
+    let resolveSave: () => void = () => {};
+    saveAdminMembershipPackage.mockImplementation(() => new Promise<void>(resolve => { resolveSave = resolve; }));
+    const user = userEvent.setup(); const view = render(<><Harness /><AdminToastProvider /></>);
+    await user.selectOptions(screen.getByRole("combobox", { name: "Current club partner" }), partner.id);
+    await user.type(screen.getByRole("textbox", { name: "Title" }), "Old owner tier");
+    await user.type(screen.getByRole("textbox", { name: "Subtitle" }), "Annual supporter tier");
+    await user.type(screen.getByRole("textbox", { name: "Description" }), "Supporter benefits");
+    await user.type(screen.getByRole("spinbutton", { name: "Annual price (RWF)" }), "1000");
+    await user.click(screen.getByRole("button", { name: "Create tier" }));
+    view.rerender(<AdminToastProvider />); await act(async () => resolveSave());
+    expect(screen.queryByText("Membership tier saved.")).toBeNull();
+  });
 });
 
-function Harness() {
+const partner = { id: "99967000-0000-4000-8000-000000000100", name: "Current club partner", slug: "club-partner", category: "football" };
+function Harness({ partners = [partner], grantedAccess = access } = {}) {
   const [form, setForm] = useState<MembershipForm>(emptyForm);
   return (
     <MembershipEditorForm
@@ -167,7 +214,8 @@ function Harness() {
       setForm={setForm}
       currencyCode="RWF"
       client={{} as SupabaseClient}
-      access={access}
+      access={grantedAccess}
+      partners={partners}
       onSaved={vi.fn()}
       onConflict={vi.fn()}
     />
@@ -187,6 +235,7 @@ function EditHarness() {
       currencyCode="RWF"
       client={{} as SupabaseClient}
       access={access}
+      partners={[partner]}
       onSaved={vi.fn()}
       onConflict={vi.fn()}
     />

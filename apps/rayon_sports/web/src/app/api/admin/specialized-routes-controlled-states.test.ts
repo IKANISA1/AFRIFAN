@@ -4,8 +4,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => {
   const getUser = vi.fn();
+  const getClaims = vi.fn();
   return {
     getUser,
+    getClaims,
     resolveAdminAccess: vi.fn(),
     rejectInsecureMutation: vi.fn(),
     rejectRateLimitedRequest: vi.fn(),
@@ -20,7 +22,7 @@ const mocks = vi.hoisted(() => {
     adminClient: { kind: "admin-client" },
     serverClient: {
       kind: "server-client",
-      auth: { getUser },
+      auth: { getUser, getClaims },
     },
   };
 });
@@ -84,6 +86,7 @@ function request(path: string, body?: unknown) {
 describe("specialized admin route controlled states", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mocks.getClaims.mockImplementation(async () => ({ data: { claims: { sub: "admin-1", role: "authenticated", is_anonymous: false, aal: "aal2", exp: Math.floor(Date.now() / 1000) + 600, amr: [{ method: "totp", timestamp: Math.floor(Date.now() / 1000) }] } }, error: null }));
     mocks.getUser.mockResolvedValue({
       data: { user: { id: "admin-1" } },
       error: null,
@@ -397,6 +400,7 @@ const localFailures = ["error", "permission_denied", "conflict", "security_timeo
 describe("actual specialized handler failure boundaries", () => {
   beforeEach(() => {
     vi.clearAllMocks(); vi.useRealTimers();
+    mocks.getClaims.mockImplementation(async () => ({ data: { claims: { sub: "admin-1", role: "authenticated", is_anonymous: false, aal: "aal2", exp: Math.floor(Date.now() / 1000) + 600, amr: [{ method: "totp", timestamp: Math.floor(Date.now() / 1000) }] } }, error: null }));
     mocks.getUser.mockResolvedValue({ data: { user: { id: "admin-1" } }, error: null });
     mocks.resolveAdminAccess.mockResolvedValue({ hasAccess: true, isAuthenticated: true,
       isSuperAdmin: false, userId: "admin-1", role: "club_admin", clubId: httpFixtureClubId(),

@@ -142,6 +142,8 @@ export interface AdminMatchItem extends MatchItem {
 
 export interface AdminMembershipPackage extends MembershipPackage {
   clubId: number | null;
+  partnerId?: string | null;
+  subtitle?: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;

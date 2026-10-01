@@ -1,12 +1,22 @@
 import { registerLocalHttpAssertions, httpFixtureOrigin, httpFixtureClubId } from "../../../../../e2e/fixtures/local-http-route-assertions";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
+import { withFeatureGuard } from "@/lib/server-feature-guard";
+import { AdminMembershipValidationError } from "@/lib/data/admin/membership";
 
 const {
   getUser,
+  getClaims,
   resolveAdminAccessMock,
   saveAdminContributionGroupMock,
   saveAdminClubProfileMock,
+  saveAdminMatchMock,
+  saveAdminProductMock,
+  saveAdminMembershipPackageMock,
+  saveAdminPredictionMarketMock,
+  saveAdminCompetitionMock,
+  saveAdminSeasonMock,
+  saveAdminFixtureMock,
   saveAdminPartnerPredictionPoolMock,
   settleAdminPartnerPredictionPoolMock,
   getAdminLiveScoreCompetitionSourcesMock,
@@ -26,11 +36,20 @@ const {
   serverClient,
 } = vi.hoisted(() => {
   const getUser = vi.fn();
+  const getClaims = vi.fn();
   return {
     getUser,
+    getClaims,
     resolveAdminAccessMock: vi.fn(),
     saveAdminContributionGroupMock: vi.fn(),
     saveAdminClubProfileMock: vi.fn(),
+    saveAdminMatchMock: vi.fn(),
+    saveAdminProductMock: vi.fn(),
+    saveAdminMembershipPackageMock: vi.fn(),
+    saveAdminPredictionMarketMock: vi.fn(),
+    saveAdminCompetitionMock: vi.fn(),
+    saveAdminSeasonMock: vi.fn(),
+    saveAdminFixtureMock: vi.fn(),
     saveAdminPartnerPredictionPoolMock: vi.fn(),
     settleAdminPartnerPredictionPoolMock: vi.fn(),
     getAdminLiveScoreCompetitionSourcesMock: vi.fn(),
@@ -51,6 +70,7 @@ const {
       kind: "server",
       auth: {
         getUser,
+        getClaims,
       },
     },
   };
@@ -121,23 +141,23 @@ vi.mock("@/lib/data/admin", () => {
     saveAdminArticle: noop,
     saveAdminBanner: noop,
     saveAdminClubProfile: saveAdminClubProfileMock,
-    saveAdminCompetition: noop,
+    saveAdminCompetition: saveAdminCompetitionMock,
     saveAdminConfigEntry: noop,
     saveAdminContentBlock: noop,
     saveAdminContributionGroup: saveAdminContributionGroupMock,
     saveAdminFanClub: noop,
     saveAdminFanEngagementToken: noop,
-    saveAdminFixture: noop,
+    saveAdminFixture: saveAdminFixtureMock,
     saveAdminLiveScoreCompetitionSource:
       saveAdminLiveScoreCompetitionSourceMock,
     saveAdminPlatformRoute: saveAdminPlatformRouteMock,
-    saveAdminMatch: noop,
-    saveAdminMembershipPackage: noop,
+    saveAdminMatch: saveAdminMatchMock,
+    saveAdminMembershipPackage: saveAdminMembershipPackageMock,
     saveAdminOffer: noop,
-    saveAdminPredictionMarket: noop,
+    saveAdminPredictionMarket: saveAdminPredictionMarketMock,
     saveAdminPartnerPredictionPool: saveAdminPartnerPredictionPoolMock,
-    saveAdminProduct: noop,
-    saveAdminSeason: noop,
+    saveAdminProduct: saveAdminProductMock,
+    saveAdminSeason: saveAdminSeasonMock,
     saveAdminSquadPlayer: noop,
     saveAdminStandingRow: noop,
     sendAdminNotification: noop,
@@ -157,6 +177,17 @@ vi.mock("@/lib/data/admin", () => {
     saveAdminSiteSearchItem: noop,
   };
 });
+
+const predictOperations = vi.hoisted(() => ({
+  dashboard: vi.fn(), mutate: vi.fn(), legacy: vi.fn(), legacyConfirm: vi.fn(),
+}));
+vi.mock("@/lib/data/admin/predict-free", async (importOriginal) => ({
+  ...await importOriginal<typeof import("@/lib/data/admin/predict-free")>(),
+  getAdminFreePredictDashboardResponse: predictOperations.dashboard,
+  mutateAdminFreePredict: predictOperations.mutate,
+  settleAdminLegacyPredictForActor: predictOperations.legacy,
+  confirmAdminLegacyPredictResultForActor: predictOperations.legacyConfirm,
+}));
 
 vi.mock("@/lib/security", () => ({
   rejectInsecureMutation: rejectInsecureMutationMock,
@@ -186,10 +217,23 @@ describe("admin resource route", () => {
   });
 
   beforeEach(() => {
+    predictOperations.dashboard.mockReset();
+    predictOperations.mutate.mockReset();
+    predictOperations.legacy.mockReset();
+    predictOperations.legacyConfirm.mockReset();
     getUser.mockReset();
+    getClaims.mockReset();
+    getClaims.mockImplementation(async () => ({ data: { claims: { sub: "user-1", role: "authenticated", is_anonymous: false, aal: "aal2", exp: Math.floor(Date.now() / 1000) + 600, amr: [{ method: "totp", timestamp: Math.floor(Date.now() / 1000) }] } }, error: null }));
     resolveAdminAccessMock.mockReset();
     saveAdminContributionGroupMock.mockReset();
     saveAdminClubProfileMock.mockReset();
+    saveAdminMatchMock.mockReset();
+    saveAdminProductMock.mockReset();
+    saveAdminMembershipPackageMock.mockReset();
+    saveAdminPredictionMarketMock.mockReset();
+    saveAdminCompetitionMock.mockReset();
+    saveAdminSeasonMock.mockReset();
+    saveAdminFixtureMock.mockReset();
     saveAdminPartnerPredictionPoolMock.mockReset();
     settleAdminPartnerPredictionPoolMock.mockReset();
     getAdminLiveScoreCompetitionSourcesMock.mockReset();
@@ -363,7 +407,67 @@ describe("admin resource route", () => {
     expect(response.status).toBe(200);
   });
 
-  it("uses the server client for partner WDW pool creation", async () => {
+  it.each([
+    ["matches", saveAdminMatchMock],
+    ["shop", saveAdminProductMock],
+    ["membership", saveAdminMembershipPackageMock],
+    ["predictions-markets", saveAdminPredictionMarketMock],
+    ["predictions-competitions", saveAdminCompetitionMock],
+    ["predictions-seasons", saveAdminSeasonMock],
+    ["predictions-fixtures", saveAdminFixtureMock],
+    ["livescore-sources", saveAdminLiveScoreCompetitionSourceMock],
+  ] as const)("carries the verified caller JWT into protected %s configuration writes", async (resource, mutation) => {
+    if (resource.startsWith("predictions-")) {
+      resolveAdminAccessMock.mockResolvedValue({ hasAccess: true, isAuthenticated: true, isSuperAdmin: true,
+        userId: "user-1", role: "super_admin", clubId: httpFixtureClubId() });
+    }
+    mutation.mockResolvedValue("saved-record");
+    const response = await POST(new NextRequest(`${httpFixtureOrigin()}/api/admin/${resource}`, {
+      method: "POST", body: JSON.stringify({ name: "Synthetic configuration" }),
+      headers: { "content-type": "application/json" },
+    }), { params: Promise.resolve({ resource }) });
+    expect(response?.status).toBe(200);
+    expect(mutation).toHaveBeenCalledWith(serverClient, expect.objectContaining({ userId: "user-1" }), expect.any(Object));
+  });
+
+  it.each([
+    ["shop", "club_moderator", saveAdminProductMock],
+    ["membership", "club_moderator", saveAdminMembershipPackageMock],
+    ["livescore-sources", "club_moderator", saveAdminLiveScoreCompetitionSourceMock],
+    ["predictions-markets", "club_admin", saveAdminPredictionMarketMock],
+    ["predictions-fixtures", "club_admin", saveAdminFixtureMock],
+  ] as const)("denies %s configuration to %s before the actual writer", async (resource, role, mutation) => {
+    resolveAdminAccessMock.mockResolvedValue({ hasAccess: true, isAuthenticated: true, isSuperAdmin: false,
+      userId: "user-1", role, clubId: httpFixtureClubId() });
+    const response = await POST(new NextRequest(`${httpFixtureOrigin()}/api/admin/${resource}`, {
+      method: "POST", body: "{}", headers: { "content-type": "application/json" },
+    }), { params: Promise.resolve({ resource }) });
+    expect(response?.status).toBe(403);
+    expect(await response?.json()).toMatchObject({ code: "ADMIN_ACCESS_DENIED", change_confirmed: false });
+    expect(mutation).not.toHaveBeenCalled();
+  });
+
+  it("returns a correctable membership validation response from the actual configuration route", async () => {
+    saveAdminMembershipPackageMock.mockRejectedValueOnce(new AdminMembershipValidationError());
+    const response = await POST(new NextRequest(`${httpFixtureOrigin()}/api/admin/membership`, {
+      method: "POST", body: "{}", headers: { "content-type": "application/json" },
+    }), { params: Promise.resolve({ resource: "membership" }) });
+    expect(response?.status).toBe(400);
+    expect(await response?.json()).toMatchObject({
+      code: "ADMIN_MEMBERSHIP_INPUT_INVALID", retryable: false, change_confirmed: false,
+    });
+    expect(saveAdminMembershipPackageMock).toHaveBeenCalledWith(serverClient, expect.any(Object), {});
+  });
+
+  it("denies the actual protected shop caller before mutation when staff step-up expired", async () => {
+    getClaims.mockResolvedValue({ data: { claims: { sub: "user-1", role: "authenticated", is_anonymous: false, aal: "aal2", exp: Math.floor(Date.now() / 1000) + 600, amr: [{ method: "totp", timestamp: Math.floor(Date.now() / 1000) - 301 }] } }, error: null });
+    const response = await POST(new NextRequest(`${httpFixtureOrigin()}/api/admin/shop`, { method: "POST", body: "{}" }), { params: Promise.resolve({ resource: "shop" }) });
+    expect(response?.status).toBe(403);
+    expect(await response?.json()).toMatchObject({ code: "STAFF_STEP_UP_REQUIRED", change_confirmed: false });
+    expect(saveAdminProductMock).not.toHaveBeenCalled();
+  });
+
+  it("retires partner WDW pool creation before any mutation", async () => {
     const request = new NextRequest(
       `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/partner-prediction-pools`,
       {
@@ -387,19 +491,8 @@ describe("admin resource route", () => {
       params: Promise.resolve({ resource: "partner-prediction-pools" }),
     })) as Response;
 
-    expect(saveAdminPartnerPredictionPoolMock).toHaveBeenCalledWith(
-      serverClient,
-      expect.objectContaining({ clubId: httpFixtureClubId() }),
-      expect.objectContaining({
-        partnerId: "partner-1",
-        fixtureId: "fixture-1",
-        title: "Partner Derby Pool",
-        partnerStakeFet: 5000,
-        fanEntryFet: 100,
-        eligibilityMode: "partner_earn_required",
-      }),
-    );
-    expect(response.status).toBe(200);
+    expect(saveAdminPartnerPredictionPoolMock).not.toHaveBeenCalled();
+    expect(response.status).toBe(410);
   });
 
   it("loads the prediction workspace through one mixed-client boundary", async () => {
@@ -430,7 +523,7 @@ describe("admin resource route", () => {
     });
   });
 
-  it("uses the server client for partner WDW pool settlement", async () => {
+  it("retires unattributed partner WDW pool settlement", async () => {
     const request = new NextRequest(
       `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/partner-prediction-pool-settlement`,
       {
@@ -449,12 +542,81 @@ describe("admin resource route", () => {
       }),
     })) as Response;
 
-    expect(settleAdminPartnerPredictionPoolMock).toHaveBeenCalledWith(
-      serverClient,
-      expect.objectContaining({ clubId: httpFixtureClubId() }),
-      "pool-1",
-    );
+    expect(settleAdminPartnerPredictionPoolMock).not.toHaveBeenCalled();
+    expect(response.status).toBe(410);
+  });
+
+  it("uses the caller JWT for free dashboard and writes", async () => {
+    predictOperations.dashboard.mockResolvedValue({ settings: { entry_fet: 0 }, fixtures: [] });
+    const url = `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/predict-operations`;
+    const read = await GET(new NextRequest(url), { params: Promise.resolve({ resource: "predict-operations" }) });
+    expect(read.status).toBe(200);
+    expect(predictOperations.dashboard).toHaveBeenCalledWith(serverClient, expect.objectContaining({ clubId: httpFixtureClubId() }));
+    predictOperations.mutate.mockResolvedValue({ enabled: true, entry_fet: 0, economics_version: "free_v1" });
+    const response = await POST(new NextRequest(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action: "settings", enabled: true }) }), { params: Promise.resolve({ resource: "predict-operations" }) });
     expect(response.status).toBe(200);
+    expect(predictOperations.mutate).toHaveBeenCalledWith(serverClient, expect.objectContaining({ clubId: httpFixtureClubId() }), { action: "settings", enabled: true });
+  });
+
+  it.each(["origin", "rate"] as const)("keeps %s rejection before authentication or Predict dispatch", async (guard) => {
+    if (guard === "origin") rejectInsecureMutationMock.mockReturnValue(new Response(null, { status: 403 }));
+    else rejectRateLimitedRequestMock.mockResolvedValue(new Response(null, { status: 429 }));
+    const response = await POST(new NextRequest(`${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/predict-operations`, {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ action: "settings", enabled: true }),
+    }), { params: Promise.resolve({ resource: "predict-operations" }) });
+    expect(response.status).toBe(guard === "origin" ? 403 : 429);
+    expect(getUser).not.toHaveBeenCalled();
+    expect(predictOperations.mutate).not.toHaveBeenCalled();
+    expect(predictOperations.legacy).not.toHaveBeenCalled();
+    expect(predictOperations.legacyConfirm).not.toHaveBeenCalled();
+  });
+
+  it("rejects a paid setting without calling an RPC", async () => {
+    const response = await POST(new NextRequest(`${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/predict-operations`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action: "settings", enabled: true, entryFet: 100 }) }), { params: Promise.resolve({ resource: "predict-operations" }) });
+    expect(response.status).toBe(400);
+    expect(predictOperations.mutate).not.toHaveBeenCalled();
+  });
+
+  it("keeps the approved Predict activation guard before the caller mutation", async () => {
+    vi.mocked(withFeatureGuard).mockImplementationOnce(async (feature, _handler, platform, mode, scope) => {
+      expect(feature).toBe("predict");
+      expect(platform).toBe("web");
+      expect(mode).toBe("action");
+      expect(scope).toEqual({ clubId: httpFixtureClubId(), isAuthenticated: true, roles: ["club_admin"] });
+      return new Response(JSON.stringify({ code: "FEATURE_DISABLED", change_confirmed: false }), { status: 403 }) as never;
+    });
+    const response = await POST(new NextRequest(`${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/predict-operations`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action: "settings", enabled: true }) }), { params: Promise.resolve({ resource: "predict-operations" }) });
+    expect(response.status).toBe(403);
+    expect(predictOperations.mutate).not.toHaveBeenCalled();
+  });
+
+  it("denies historical service settlement for a club administrator", async () => {
+    const response = await POST(new NextRequest(`${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/predict-legacy-settlement`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ engine: "predict", poolId: "private-pool", operationId: "operation" }) }), { params: Promise.resolve({ resource: "predict-legacy-settlement" }) });
+    expect(response.status).toBe(403);
+    expect(predictOperations.legacy).not.toHaveBeenCalled();
+  });
+
+  it("passes validated global actor access to the separate service boundary", async () => {
+    resolveAdminAccessMock.mockResolvedValue({ hasAccess: true, isAuthenticated: true, isSuperAdmin: true, userId: "user-1", role: "super_admin", clubId: httpFixtureClubId() });
+    predictOperations.legacy.mockResolvedValue({ operation_id: "operation", economics_version: "legacy_paid_v1" });
+    const response = await POST(new NextRequest(`${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/predict-legacy-settlement`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ engine: "predict", poolId: "pool", operationId: "operation", actorId: "spoofed" }) }), { params: Promise.resolve({ resource: "predict-legacy-settlement" }) });
+    expect(response.status).toBe(200);
+    expect(predictOperations.legacy).toHaveBeenCalledWith(adminClient, serverClient, expect.objectContaining({ userId: "user-1", isSuperAdmin: true }), expect.objectContaining({ operationId: "operation" }));
+  });
+
+  it("requires a global actor for the separate historical result command", async () => {
+    const url = `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/predict-legacy-confirm-result`;
+    const body = { poolId: "pool", operationId: "operation", homeScore: 1, awayScore: 0, sourceUrl: "https://league.example/result" };
+    const request = () => new NextRequest(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+    const denied = await POST(request(), { params: Promise.resolve({ resource: "predict-legacy-confirm-result" }) });
+    expect(denied.status).toBe(403);
+    expect(predictOperations.legacyConfirm).not.toHaveBeenCalled();
+    resolveAdminAccessMock.mockResolvedValue({ hasAccess: true, isAuthenticated: true, isSuperAdmin: true, userId: "user-1", role: "super_admin", clubId: httpFixtureClubId() });
+    predictOperations.legacyConfirm.mockResolvedValue({ result: "home", operation_id: "operation", economics_version: "legacy_paid_v1" });
+    const confirmed = await POST(request(), { params: Promise.resolve({ resource: "predict-legacy-confirm-result" }) });
+    expect(confirmed.status).toBe(200);
+    expect(predictOperations.legacyConfirm).toHaveBeenCalledWith(adminClient, serverClient, expect.objectContaining({ userId: "user-1", isSuperAdmin: true }), body);
   });
 
   it("uses the admin client for LiveScore source saves", async () => {
@@ -481,7 +643,7 @@ describe("admin resource route", () => {
     })) as Response;
 
     expect(saveAdminLiveScoreCompetitionSourceMock).toHaveBeenCalledWith(
-      adminClient,
+      serverClient,
       expect.objectContaining({ clubId: httpFixtureClubId() }),
       expect.objectContaining({ sourceKey: "rwanda-premier-league" }),
     );
@@ -611,7 +773,7 @@ describe("admin resource route", () => {
     expect(deleteAdminContributionGroupMock).not.toHaveBeenCalled();
   });
 
-  it("uses the admin client for LiveScore source deletion", async () => {
+  it("retains the caller JWT for LiveScore source deletion", async () => {
     const request = new NextRequest(
       `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/livescore-sources?id=source-1&expected_updated_at=2026-07-24T18%3A00%3A00Z`,
       {
@@ -627,7 +789,7 @@ describe("admin resource route", () => {
     })) as Response;
 
     expect(deleteAdminLiveScoreCompetitionSourceMock).toHaveBeenCalledWith(
-      adminClient,
+      serverClient,
       expect.objectContaining({ clubId: httpFixtureClubId() }),
       "source-1",
       "2026-07-24T18:00:00Z",

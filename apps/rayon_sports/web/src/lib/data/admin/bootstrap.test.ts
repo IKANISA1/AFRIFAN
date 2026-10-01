@@ -4,9 +4,14 @@ import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   headers: vi.fn(), cookies: vi.fn(), getServerSupabase: vi.fn(),
+  resolveAccess: vi.fn(), clubOptions: vi.fn(),
 }));
 vi.mock("next/headers", () => ({ headers: mocks.headers, cookies: mocks.cookies }));
 vi.mock("@/lib/supabase/server", () => ({ getServerSupabase: mocks.getServerSupabase }));
+vi.mock("@/lib/data/admin/access", async (original) => ({
+  ...await original<typeof import("@/lib/data/admin/access")>(), resolveAdminAccess: mocks.resolveAccess,
+}));
+vi.mock("@/lib/data/admin/settings", () => ({ getAdminClubScopeOptions: mocks.clubOptions }));
 import { getAdminPortalInitialState } from "./bootstrap";
 
 describe("controlled five club admin bootstrap", () => {
@@ -76,5 +81,58 @@ describe("controlled five club admin bootstrap", () => {
   it("requires the explicit request header", async () => {
     mocks.headers.mockResolvedValue(new Headers({ host: "127.0.0.1:3200" }));
     expect((await getAdminPortalInitialState()).controlledEvidence).not.toBe(true);
+  });
+});
+
+describe("actual staff bootstrap privacy", () => {
+  const user = { id: "current-staff" };
+  const access = { hasAccess: true, isAuthenticated: true, userId: user.id, role: "club_admin", clubId: "24" };
+  beforeEach(() => {
+    vi.resetAllMocks();
+    mocks.headers.mockResolvedValue(new Headers({ host: "admin.gikundiro.com" }));
+    mocks.cookies.mockResolvedValue({ get: () => undefined });
+    mocks.resolveAccess.mockResolvedValue(access);
+    mocks.clubOptions.mockResolvedValue([{ id: "24", clubName: "Synthetic club" }]);
+  });
+  function client(claims: unknown) {
+    const value = { auth: {
+      getSession: vi.fn().mockResolvedValue({ data: { session: { user } }, error: null }),
+      getUser: vi.fn().mockResolvedValue({ data: { user }, error: null }),
+      getClaims: vi.fn().mockResolvedValue({ data: { claims }, error: null }),
+    } };
+    mocks.getServerSupabase.mockResolvedValue(value);
+    return value;
+  }
+  const fresh = () => ({ sub: user.id, role: "authenticated", is_anonymous: false, aal: "aal2",
+    exp: Math.floor(Date.now() / 1000) + 600, amr: [{ method: "totp", timestamp: Math.floor(Date.now() / 1000) }] });
+
+  it.each(["aal1", "foreign-subject", "expired"])("does not load private club options before %s assurance is corrected", async (failure) => {
+    const claims = fresh();
+    if (failure === "aal1") claims.aal = "aal1";
+    if (failure === "foreign-subject") claims.sub = "other-staff";
+    if (failure === "expired") claims.amr[0].timestamp -= 300;
+    const value = client(claims);
+    const state = await getAdminPortalInitialState();
+    expect(state.user).toEqual(user);
+    expect(state.access).toEqual(access);
+    expect(state.clubOptions).toEqual([]);
+    expect(value.auth.getUser).toHaveBeenCalledOnce();
+    expect(mocks.clubOptions).not.toHaveBeenCalled();
+  });
+
+  it("loads options only after provider identity, current grants and same-subject recent MFA", async () => {
+    client(fresh());
+    expect((await getAdminPortalInitialState()).clubOptions).toEqual([{ id: "24", clubName: "Synthetic club" }]);
+    expect(mocks.clubOptions).toHaveBeenCalledOnce();
+  });
+
+  it("rejects cached identity mismatch before grants or private options", async () => {
+    const value = client(fresh());
+    value.auth.getUser.mockResolvedValueOnce({ data: { user: { id: "other-staff" } }, error: null });
+    const state = await getAdminPortalInitialState();
+    expect(state.user).toBeNull();
+    expect(state.access.hasAccess).toBe(false);
+    expect(mocks.resolveAccess).not.toHaveBeenCalled();
+    expect(mocks.clubOptions).not.toHaveBeenCalled();
   });
 });

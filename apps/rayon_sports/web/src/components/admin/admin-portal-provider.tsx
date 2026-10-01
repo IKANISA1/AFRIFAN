@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
   startTransition,
   type ReactNode,
@@ -33,6 +34,7 @@ import {
 import { emptyAdminAccess, resolveAdminAccess } from "@/lib/data/admin/access";
 import { getAdminClubScopeOptions } from "@/lib/data/admin/settings";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
+import { inspectStaffAssurance } from "@/lib/staff-assurance";
 import type { AdminAccess, AdminClubScopeOption, AdminPortalInitialState } from "@/lib/types";
 
 const pendingPhoneStorageKey = "gikundiro.admin.pending-phone";
@@ -62,6 +64,8 @@ interface AdminPortalContextValue {
   error: string | null;
   notice: string | null;
   pendingPhone: string | null;
+  controlledEvidence: boolean;
+  accessUnavailable: boolean;
   refresh: () => Promise<void>;
   setClubScope: (clubId: string) => Promise<void>;
   requestPhoneCode: (phone: string) => Promise<void>;
@@ -174,6 +178,12 @@ export function AdminPortalProvider({
   const [error, setError] = useState<string | null>(initialState?.error ?? null);
   const [notice, setNotice] = useState<string | null>(null);
   const [pendingPhone, setPendingPhone] = useState<string | null>(null);
+  const [accessUnavailable, setAccessUnavailable] = useState(false);
+  const refreshGeneration = useRef(0);
+  const authGeneration = useRef(0);
+  const sessionIdentity = useRef(initialState?.user?.id ?? null);
+  // This owner identifies retained UI drafts, never permission to execute work.
+  const verifiedWorkspaceOwner = useRef(initialState?.access.hasAccess ? initialState.user?.id ?? null : null);
 
   const syncPendingPhone = useCallback((value: string | null) => {
     setPendingPhone(value);
@@ -191,10 +201,15 @@ export function AdminPortalProvider({
   }, []);
 
   const runRefresh = useCallback(async ({ blocking = true }: { blocking?: boolean } = {}) => {
+    const generation = ++refreshGeneration.current;
+    const current = () => refreshGeneration.current === generation;
+    const previousOwner = sessionIdentity.current;
+    let identityRejected = false;
     if (client == null) {
       setLoading(false);
       setError("Supabase browser configuration is missing.");
       setAccess(emptyAdminAccess);
+      setAccessUnavailable(false);
       setClubOptions([]);
       return;
     }
@@ -209,47 +224,79 @@ export function AdminPortalProvider({
         client.auth.getSession(),
         "Admin session refresh",
       );
+      if (!current()) return;
+      if (result.error) throw result.error;
       const nextSession = result.data.session ?? null;
-      const nextUser = nextSession?.user ?? null;
-      startTransition(() => {
-        setSession(nextSession);
-        setUser(nextUser);
-      });
+      if (!nextSession || nextSession.user.id !== previousOwner) identityRejected = true;
+      let nextUser: User | null = null;
+      if (nextSession) {
+        const verified = await withAdminOperationTimeout(client.auth.getUser(), "Admin identity check");
+        if (!current()) return;
+        if (verified.error) {
+          if ([400, 401, 403].includes(verified.error.status ?? 0)) identityRejected = true;
+          throw new Error("Admin identity could not be verified. Try again.");
+        }
+        if (!verified.data.user || verified.data.user.id !== nextSession.user.id) {
+          identityRejected = true;
+          throw new Error("Admin identity could not be verified. Sign in again.");
+        }
+        nextUser = verified.data.user;
+      }
       const nextAccess = await withAdminOperationTimeout(
         resolveAdminAccess(client, nextUser, {
           requestedClubId: getRequestedClubIdFromLocation(),
         }),
         "Admin access check",
       );
-      startTransition(() => {
-        setAccess(nextAccess);
-      });
+      if (!current()) return;
+      let nextClubOptions: AdminClubScopeOption[] = [];
       if (nextAccess.hasAccess) {
         try {
-          const nextClubOptions = await withAdminOperationTimeout(
-            getAdminClubScopeOptions(client, nextAccess),
-            "Admin club scope loading",
-          );
-          startTransition(() => {
-            setClubOptions(nextClubOptions);
-          });
+          const claims = await withAdminOperationTimeout(client.auth.getClaims(), "Staff authentication check");
+          if (!current()) return;
+          if (!claims.error && nextUser && inspectStaffAssurance(claims.data?.claims ?? null, nextUser.id).allowed) {
+            nextClubOptions = await withAdminOperationTimeout(
+              getAdminClubScopeOptions(client, nextAccess),
+              "Admin club scope loading",
+            );
+          }
         } catch {
-          startTransition(() => {
-            setClubOptions([]);
-          });
+          nextClubOptions = [];
         }
-      } else {
-        startTransition(() => {
-          setClubOptions([]);
-        });
       }
+      if (!current()) return;
+      sessionIdentity.current = nextUser?.id ?? null;
+      verifiedWorkspaceOwner.current = nextAccess.hasAccess ? nextUser?.id ?? null : null;
+      startTransition(() => {
+        if (!current()) return;
+        setSession(nextSession);
+        setUser(nextUser);
+        setAccess(nextAccess);
+        setAccessUnavailable(false);
+        setClubOptions(nextClubOptions);
+      });
       if (nextUser != null) {
         syncPendingPhone(null);
       }
       setError(nextUser == null ? urlError : null);
     } catch (caught) {
+      if (!current()) return;
+      const retainDrafts = !identityRejected && previousOwner != null
+        && sessionIdentity.current === previousOwner && verifiedWorkspaceOwner.current === previousOwner;
       startTransition(() => {
-        setAccess(emptyAdminAccess);
+        if (!current()) return;
+        if (retainDrafts) {
+          // Keep the same owner/club/role key so drafts survive, but deny all
+          // workspace access until current provider identity and grants recover.
+          setAccess((previous) => ({ ...previous, hasAccess: false, isSuperAdmin: false }));
+        } else {
+          sessionIdentity.current = null;
+          verifiedWorkspaceOwner.current = null;
+          setSession(null);
+          setUser(null);
+          setAccess(emptyAdminAccess);
+        }
+        setAccessUnavailable(retainDrafts);
         setClubOptions([]);
       });
       setError(
@@ -258,14 +305,14 @@ export function AdminPortalProvider({
           : "Could not initialize admin workspace.",
       );
     } finally {
-      if (blocking) {
+      if (current()) {
         setLoading(false);
       }
     }
   }, [client, syncPendingPhone]);
 
   const refresh = useCallback(async () => {
-    await runRefresh();
+    await runRefresh({ blocking: false });
   }, [runRefresh]);
 
   const requestPhoneCode = useCallback(
@@ -275,6 +322,7 @@ export function AdminPortalProvider({
       }
 
       const normalizedPhone = normalizeAdminPhone(phone);
+      const generation = ++authGeneration.current;
       setError(null);
       setNotice(null);
       setAuthBusy(true);
@@ -297,6 +345,7 @@ export function AdminPortalProvider({
         const eligibilityPayload = (await eligibilityResponse
           .json()
           .catch(() => ({}))) as { error?: string };
+        if (authGeneration.current !== generation) return;
 
         if (!eligibilityResponse.ok) {
           throw new Error(
@@ -309,7 +358,7 @@ export function AdminPortalProvider({
           `If ${formatAdminPhoneForDisplay(normalizedPhone)} is approved, a verification code will arrive shortly.`,
         );
       } finally {
-        setAuthBusy(false);
+        if (authGeneration.current === generation) setAuthBusy(false);
       }
     },
     [client, syncPendingPhone],
@@ -333,6 +382,7 @@ export function AdminPortalProvider({
       setError(null);
       setNotice(null);
       setAuthBusy(true);
+      const generation = ++authGeneration.current;
 
       try {
         const { error: authError } = await withAdminOperationTimeout(
@@ -343,6 +393,7 @@ export function AdminPortalProvider({
           }),
           "Admin code verification",
         );
+        if (authGeneration.current !== generation) return;
 
         if (authError) {
           throw authError;
@@ -352,7 +403,7 @@ export function AdminPortalProvider({
         setNotice("Admin access verified.");
         await runRefresh({ blocking: false });
       } finally {
-        setAuthBusy(false);
+        if (authGeneration.current === generation) setAuthBusy(false);
       }
     },
     [client, pendingPhone, runRefresh, syncPendingPhone],
@@ -391,14 +442,29 @@ export function AdminPortalProvider({
       return;
     }
 
-    await withAdminOperationTimeout(
+    ++refreshGeneration.current;
+    ++authGeneration.current;
+    sessionIdentity.current = null;
+    verifiedWorkspaceOwner.current = null;
+    setSession(null);
+    setUser(null);
+    setAccess(emptyAdminAccess);
+    setAccessUnavailable(false);
+    setClubOptions([]);
+    setLoading(false);
+    setAuthBusy(false);
+    setNotice(null);
+    syncPendingPhone(null);
+    const result = await withAdminOperationTimeout(
       client.auth.signOut(),
       "Admin sign-out",
     );
-    syncPendingPhone(null);
+    if (result.error) {
+      setError("Sign-out could not be confirmed. Try again.");
+      throw new Error("Sign-out could not be confirmed. Try again.");
+    }
     setNotice("Signed out of admin workspace.");
-    await runRefresh({ blocking: false });
-  }, [client, runRefresh, syncPendingPhone]);
+  }, [client, syncPendingPhone]);
 
   useEffect(() => {
     if (controlledEvidence) {
@@ -411,6 +477,9 @@ export function AdminPortalProvider({
       setError("Supabase browser configuration is missing.");
       return;
     }
+
+    const ownedRefreshGeneration = refreshGeneration;
+    const ownedAuthGeneration = authGeneration;
 
     if (typeof window !== "undefined") {
       syncPendingPhone(
@@ -431,8 +500,24 @@ export function AdminPortalProvider({
       data: { subscription },
     } = client.auth.onAuthStateChange(
       (_event: AuthChangeEvent, nextSession: Session | null) => {
+        ++refreshGeneration.current;
+        const sameAccount = sessionIdentity.current === nextSession?.user.id;
+        sessionIdentity.current = nextSession?.user.id ?? null;
+        if (_event === "SIGNED_OUT" || _event === "SIGNED_IN") {
+          ++authGeneration.current;
+          setAuthBusy(false);
+          syncPendingPhone(null);
+        }
         setSession(nextSession);
         setUser(nextSession?.user ?? null);
+        // Discard old-account grants immediately. A same-account token refresh
+        // preserves drafts while the server still reauthorizes every request.
+        if (!sameAccount || nextSession == null) {
+          verifiedWorkspaceOwner.current = null;
+          setAccess(emptyAdminAccess);
+          setAccessUnavailable(false);
+          setClubOptions([]);
+        }
         queueMicrotask(() => {
           runRefresh({ blocking: false }).catch(() => {});
         });
@@ -440,6 +525,8 @@ export function AdminPortalProvider({
     );
 
     return () => {
+      ++ownedRefreshGeneration.current;
+      ++ownedAuthGeneration.current;
       subscription.unsubscribe();
     };
   }, [
@@ -482,6 +569,8 @@ export function AdminPortalProvider({
         error,
         notice,
         pendingPhone,
+        controlledEvidence,
+        accessUnavailable,
         refresh,
         setClubScope,
         requestPhoneCode,

@@ -89,6 +89,7 @@ export const adminNavigation = [
   { href: "/admin/standings", label: "Standings" },
   { href: "/admin/notifications", label: "Notifications" },
   { href: "/admin/sms-monitor", label: "SMS" },
+  { href: "/admin/refunds", label: "Refunds" },
   { href: "/admin/football-sync", label: "Football Sync" },
   { href: "/admin/settings/features", label: "Features" },
   { href: "/admin/settings/runtime", label: "Runtime" },

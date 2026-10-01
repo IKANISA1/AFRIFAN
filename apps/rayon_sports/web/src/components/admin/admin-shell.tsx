@@ -38,6 +38,7 @@ import {
 } from "lucide-react";
 import { AdminDialogFrame } from "@/components/admin/admin-dialog-frame";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
+import { AdminStaffStepUpGate } from "@/components/admin/admin-staff-step-up-gate";
 import { formatAdminPhoneForDisplay } from "@/lib/admin-auth";
 import { withAdminClubScope } from "@/lib/admin-club-scope";
 import { adminNavigation } from "@/lib/content";
@@ -68,6 +69,7 @@ const navIcons: Record<string, LucideIcon> = {
   "/admin/standings": ListOrdered,
   "/admin/notifications": Bell,
   "/admin/sms-monitor": Smartphone,
+  "/admin/refunds": Wallet,
   "/admin/football-sync": Database,
   "/admin/settings/runtime": SlidersHorizontal,
 };
@@ -81,6 +83,7 @@ const sidebarSections = [
       "/admin/matches",
       "/admin/notifications",
       "/admin/sms-monitor",
+      "/admin/refunds",
     ],
   },
   {
@@ -629,6 +632,7 @@ function SidebarNavigation({
   selectedClubId: string | null;
   collapsed: boolean;
 }) {
+  const { access } = useAdminPortal();
   const contextualSections = pathname.startsWith("/admin/cms")
     ? [{ title: "CMS views", items: cmsViews }]
     : [];
@@ -637,7 +641,7 @@ function SidebarNavigation({
     <div key={title}>
       {!collapsed ? <p className="admin-nav-section-label">{title}</p> : null}
       <div className="grid gap-1.5">
-        {items.map((href) => {
+        {items.filter((href) => href !== "/admin/refunds" || access.isSuperAdmin).map((href) => {
           const item = resolveNavItem(href);
           const Icon = navIcons[href] ?? LayoutDashboard;
           const active = isActivePath(href, pathname);
@@ -682,6 +686,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   const hydrated = useHydrated();
   const {
     access,
+    accessUnavailable,
     activeClub,
     clubOptions,
     error,
@@ -734,7 +739,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
     return <AdminAuthCard />;
   }
 
-  if (!access.hasAccess) {
+  if (!access.hasAccess && !accessUnavailable) {
     return <AdminUnauthorizedCard />;
   }
 
@@ -755,6 +760,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
   }).format(new Date()) : null;
 
   return (
+    <AdminStaffStepUpGate key={user?.id ?? "staff"}>
     <div className="min-h-screen">
       <a
         href="#admin-main-content"
@@ -910,6 +916,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
         selectedClubId={selectedClubId}
       />
     </div>
+    </AdminStaffStepUpGate>
   );
 }
 
@@ -924,6 +931,7 @@ function AdminMobileNav({
   onSignOut,
   selectedClubId,
 }: AdminMobileNavProps) {
+  const { access } = useAdminPortal();
   const [sheetOpen, setSheetOpen] = useState(false);
   const primaryItems = primaryMobileTabs.map(resolveNavItem);
   const overflowSections = [
@@ -931,7 +939,7 @@ function AdminMobileNav({
       .map((section) => ({
         ...section,
         items: section.items.filter(
-          (href) => !primaryMobileTabs.includes(href),
+          (href) => !primaryMobileTabs.includes(href) && (href !== "/admin/refunds" || access.isSuperAdmin),
         ),
       }))
       .filter((section) => section.items.length > 0),

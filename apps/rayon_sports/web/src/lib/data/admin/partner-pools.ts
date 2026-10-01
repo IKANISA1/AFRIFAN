@@ -1,6 +1,6 @@
 /**
- * Admin partner WDW pools — strict, club-scoped operations for fixed-outcome
- * partner-funded prediction pools.
+ * Historical partner pools — strict, club-scoped read models.
+ * Financial settlement remains a service reconciliation operation.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AdminAccess } from "@/lib/types";
@@ -59,18 +59,6 @@ export interface AdminPartnerPredictionPool {
   totalEntries: number;
   totalFanEntryFet: number;
   settlement: AdminPartnerPredictionPoolSettlement | null;
-}
-
-export interface AdminPartnerPredictionPoolInput {
-  partnerId: string;
-  fixtureId: string;
-  title: string;
-  partnerStakeFet: number;
-  fanEntryFet: number;
-  initiativeId?: string | null;
-  eligibilityMode?: AdminPartnerPoolEligibilityMode;
-  maxEntries?: number | null;
-  idempotencyKey?: string | null;
 }
 
 export interface AdminPartnerOption {
@@ -319,43 +307,24 @@ export function normalizeAdminPartnerPredictionPools(value: unknown) {
   return pools;
 }
 
-function requireText(value: unknown, label: string, maxLength: number) {
-  const text = boundedText(value, maxLength);
-  if (text == null) {
-    throw new Error(
-      `${label} is required and must be within ${maxLength} characters.`,
-    );
-  }
-  return text;
-}
-
-function requireInteger(
-  value: unknown,
-  label: string,
-  minimum: number,
-  maximum: number,
-) {
-  const number = boundedInteger(value, minimum, maximum);
-  if (number == null) {
-    throw new Error(
-      `${label} must be a whole number from ${minimum} to ${maximum}.`,
-    );
-  }
-  return number;
-}
-
 export async function getAdminPartnerOptions(
   client: SupabaseClient,
-  _access: AdminAccess,
+  access: AdminAccess,
 ): Promise<AdminPartnerOption[]> {
   if (typeof window !== "undefined") {
     const result = await requestAdminApi<unknown>("partner-options");
     return normalizeAdminPartnerOptions(result);
   }
+  const clubId = requireAdminClubId(access, "load current club partners");
+  const resolved = await client.rpc("resolve_partner_ids_for_club", { p_club_id: clubId });
+  if (resolved.error) throw new Error(resolved.error.message);
+  if (!Array.isArray(resolved.data) || resolved.data.some(id => typeof id !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id))) throw new Error("Current club partner scope could not be verified.");
+  if (resolved.data.length === 0) return [];
   const { data, error } = await client
     .from("partners")
     .select("id,name,slug,category")
     .eq("is_active", true)
+    .in("id", resolved.data)
     .order("sort_order", { ascending: true })
     .order("name", { ascending: true })
     .limit(MAX_PARTNER_OPTIONS);
@@ -380,101 +349,4 @@ export async function getAdminPartnerPredictionPools(
   });
   if (error) throw new Error(error.message);
   return normalizeAdminPartnerPredictionPools(data);
-}
-
-export async function saveAdminPartnerPredictionPool(
-  client: SupabaseClient,
-  access: AdminAccess,
-  input: AdminPartnerPredictionPoolInput,
-): Promise<AdminPartnerPredictionPool> {
-  if (typeof window !== "undefined") {
-    const result = await requestAdminApi<unknown>("partner-prediction-pools", {
-      method: "POST",
-      body: input,
-    });
-    const pool = normalizeAdminPartnerPredictionPool(result);
-    if (pool == null) {
-      throw new Error("The saved partner pool could not be confirmed.");
-    }
-    return pool;
-  }
-  const clubId = requireAdminClubId(access, "create partner prediction pools");
-  const partnerId = requireText(input.partnerId, "Partner", 128);
-  const fixtureId = requireText(input.fixtureId, "Fixture", 128);
-  const title = requireText(input.title, "Pool title", 160);
-  const partnerStakeFet = requireInteger(
-    input.partnerStakeFet,
-    "Partner-funded FET",
-    1,
-    MAX_FET_VALUE,
-  );
-  const fanEntryFet = requireInteger(
-    input.fanEntryFet,
-    "Fan entry FET",
-    1,
-    MAX_FET_VALUE,
-  );
-  const initiativeId = nullableText(input.initiativeId, 128);
-  const eligibilityMode = input.eligibilityMode ?? "open_to_all";
-  const maxEntries =
-    input.maxEntries == null
-      ? null
-      : requireInteger(input.maxEntries, "Entry limit", 1, MAX_FET_VALUE);
-  const idempotencyKey = nullableText(input.idempotencyKey, 240);
-  if (initiativeId === undefined || idempotencyKey === undefined) {
-    throw new Error("Partner-pool identifiers are invalid.");
-  }
-  if (!eligibilityModes.includes(eligibilityMode)) {
-    throw new Error("Choose a supported eligibility mode.");
-  }
-  if (eligibilityMode === "initiative_earn_required" && initiativeId == null) {
-    throw new Error("Initiative eligibility requires an initiative.");
-  }
-  const { data, error } = await client.rpc("partner_prediction_pool_create", {
-    p_partner_id: partnerId,
-    p_fixture_id: fixtureId,
-    p_title: title,
-    p_partner_stake_fet: partnerStakeFet,
-    p_fan_entry_fet: fanEntryFet,
-    p_initiative_id: initiativeId,
-    p_eligibility_mode: eligibilityMode,
-    p_max_entries: maxEntries,
-    p_idempotency_key: idempotencyKey,
-    p_metadata: {},
-    p_club_id: clubId,
-  });
-  if (error) throw new Error(error.message);
-  const pool = normalizeAdminPartnerPredictionPool(data);
-  if (pool == null) {
-    throw new Error("The saved partner pool could not be confirmed.");
-  }
-  return pool;
-}
-
-export async function settleAdminPartnerPredictionPool(
-  client: SupabaseClient,
-  _access: AdminAccess,
-  poolId: string,
-): Promise<AdminPartnerPredictionPool> {
-  const id = requireText(poolId, "Partner pool", 128);
-  if (typeof window !== "undefined") {
-    const result = await requestAdminApi<unknown>(
-      "partner-prediction-pool-settlement",
-      { method: "POST", body: { poolId: id } },
-    );
-    const pool = normalizeAdminPartnerPredictionPool(result);
-    if (pool == null) {
-      throw new Error("The partner-pool settlement could not be confirmed.");
-    }
-    return pool;
-  }
-  const { data, error } = await client.rpc("partner_prediction_pool_settle", {
-    p_pool_id: id,
-  });
-  if (error) throw new Error(error.message);
-  const pool = normalizeAdminPartnerPredictionPool(data);
-  if (pool == null) {
-    throw new Error("The partner-pool settlement could not be confirmed.");
-  }
-  return pool;
 }

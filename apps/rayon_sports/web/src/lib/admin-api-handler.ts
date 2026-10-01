@@ -12,6 +12,7 @@ import {
 } from "@/lib/security";
 import { getAdminSupabase } from "@/lib/supabase/admin";
 import { getServerSupabase } from "@/lib/supabase/server";
+import { rejectStaffWithoutStepUp } from "@/lib/staff-assurance-server";
 import {
   AdminMutationAuthorizationError,
   AdminMutationConflictError,
@@ -187,6 +188,11 @@ export async function handleAdminApiRoute<T>(
         403,
       );
     }
+
+    const rejectedAssurance = await withAdminApiOperationTimeout(
+      rejectStaffWithoutStepUp(serverClient, user.id), operationTimeoutMs,
+    );
+    if (rejectedAssurance) return rejectedAssurance;
 
     if (options.featureGuard) {
       const featureState = await withAdminApiOperationTimeout(

@@ -92,6 +92,8 @@ firebase-debug.log
 .gemini/
 node_modules/
 .next/
+# Isolated Computer preview output; authored source remains outside this path.
+apps/rayon_sports/web/.next-computer-review/
 
 # Release artifacts (too large for GitHub)
 *.aab

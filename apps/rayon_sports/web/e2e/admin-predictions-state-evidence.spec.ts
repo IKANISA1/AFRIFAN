@@ -209,7 +209,7 @@ async function runMatrix(browser: Browser) {
   await context.route("**/api/admin/**", async (route: Route) => {
     if (route.request().method() !== "GET") {
       const requestUrl = route.request().url();
-      const settled = requestUrl.includes("partner-prediction-pool-settlement");
+      const settled = requestUrl.includes("predict-legacy-settlement");
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -247,7 +247,9 @@ async function runMatrix(browser: Browser) {
         contentType: "application/json",
         body: JSON.stringify({
           data:
-            responseMode === "empty"
+            route.request().url().includes("predict-operations")
+              ? { settings: { enabled: false, entry_fet: 0, welcome_fet: 0, economics_version: "free_v1" }, fixtures: [] }
+              : responseMode === "empty"
               ? {
                   markets: [],
                   competitions: [],
@@ -329,7 +331,7 @@ async function runMatrix(browser: Browser) {
   await expectStatus("empty", /no prediction records in this scope/i);
   await expect(
     page.getByRole("button", { name: /create WDW pool/i }),
-  ).toBeDisabled();
+  ).toHaveCount(0);
   await capture("empty");
 
   responseMode = "error";
@@ -349,14 +351,13 @@ async function runMatrix(browser: Browser) {
   ).toBeVisible();
   await expect(
     page.getByRole("button", { name: /create WDW pool/i }),
-  ).toBeDisabled();
+  ).toHaveCount(0);
   await capture("offline");
   await context.setOffline(false);
 
   responseMode = "ready";
   await open("permission-preparation");
   await expectStatus("ready", /prediction workspace confirmed/i);
-  await page.getByLabel("Pool title").fill("Unsaved private pool draft");
   await page.getByLabel("Search partner prediction pools").fill("private");
   responseMode = "permission_denied";
   await page
@@ -461,15 +462,10 @@ async function runMatrix(browser: Browser) {
   await expect(page.getByRole("button", { name: "View fixture Home 1 versus Away 1", exact: true })).toBeVisible();
   await capture("dark");
 
-  await page.getByRole("button", { name: "Partner Pools" }).click();
-  let confirmation = "";
-  page.once("dialog", async (dialog) => {
-    confirmation = dialog.message();
-    await dialog.dismiss();
-  });
-  await page.getByRole("button", { name: "Settle" }).first().click();
-  expect(confirmation).toContain("Verified derby pool 1");
-  expect(confirmation).toContain("This action cannot be undone.");
+  await page.getByRole("button", { name: "Historical pools" }).click();
+  await expect(page.getByRole("button", { name: "Settle", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Reconcile historical partner pool", exact: true })).toHaveCount(0);
+  await expect(page.getByText("Awaiting service reconciliation").first()).toBeVisible();
 
   await page.emulateMedia({ colorScheme: "light" });
   await open("light");

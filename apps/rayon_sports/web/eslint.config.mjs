@@ -31,6 +31,7 @@ const eslintConfig = defineConfig([
     // Default ignores of eslint-config-next:
     "node_modules/**",
     ".next/**",
+    ".next-computer-review/**",
     ".open-next/**",
     "out/**",
     "build/**",

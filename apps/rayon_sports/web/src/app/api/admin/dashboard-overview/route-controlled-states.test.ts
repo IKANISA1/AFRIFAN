@@ -2,8 +2,8 @@ import { NextRequest } from "next/server";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { httpFixtureClubId, httpFixtureOrigin, registerLocalHttpAssertions } from "../../../../../e2e/fixtures/local-http-route-assertions";
 
-const mocks = vi.hoisted(() => ({ getUser: vi.fn(), access: vi.fn(), snapshot: vi.fn(), actions: vi.fn() }));
-vi.mock("@/lib/supabase/server", () => ({ getServerSupabase: vi.fn(async () => ({ auth: { getUser: mocks.getUser } })) }));
+const mocks = vi.hoisted(() => ({ getUser: vi.fn(), getClaims: vi.fn(), access: vi.fn(), snapshot: vi.fn(), actions: vi.fn() }));
+vi.mock("@/lib/supabase/server", () => ({ getServerSupabase: vi.fn(async () => ({ auth: { getUser: mocks.getUser, getClaims: mocks.getClaims } })) }));
 vi.mock("@/lib/supabase/admin", () => ({ getAdminSupabase: vi.fn(() => ({ kind: "controlled-admin" })) }));
 vi.mock("@/lib/data/admin/access", () => ({ resolveAdminAccess: mocks.access }));
 vi.mock("@/lib/data/admin", () => ({ getAdminDashboardSnapshot: mocks.snapshot, getAdminDashboardActions: mocks.actions }));
@@ -17,6 +17,7 @@ describe("dashboard actual authenticated response states", () => {
   beforeEach(() => {
     vi.clearAllMocks(); vi.useRealTimers();
     mocks.getUser.mockResolvedValue({ data: { user: { id: "admin-1" } }, error: null });
+    mocks.getClaims.mockImplementation(async () => ({ data: { claims: { sub: "admin-1", role: "authenticated", is_anonymous: false, aal: "aal2", exp: Math.floor(Date.now() / 1000) + 600, amr: [{ method: "totp", timestamp: Math.floor(Date.now() / 1000) }] } }, error: null }));
     mocks.access.mockResolvedValue({ hasAccess: true, isAuthenticated: true, isSuperAdmin: false,
       role: "club_admin", userId: "admin-1", clubId: httpFixtureClubId(), availableClubIds: [httpFixtureClubId()] });
     mocks.snapshot.mockResolvedValue(empty); mocks.actions.mockResolvedValue([]);
@@ -33,7 +34,7 @@ describe("dashboard actual authenticated response states", () => {
     const responsePromise = GET(new NextRequest(`${httpFixtureOrigin()}${path}`, { headers: { cookie: `africlub_admin_club=${httpFixtureClubId()}` } }))
       .then((response) => { settled = true; return response; });
     if (state === "syncing") {
-      for (let i = 0; i < 12; i++) await Promise.resolve();
+      await vi.waitFor(() => expect(mocks.snapshot).toHaveBeenCalledTimes(1));
       expect(mocks.snapshot).toHaveBeenCalledTimes(1); expect(settled).toBe(false); release?.(empty);
     }
     if (state === "security_timeout") await vi.advanceTimersByTimeAsync(12000);

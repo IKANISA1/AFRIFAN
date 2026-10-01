@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { useState } from "react";
+import type { AuthChangeEvent, Session } from "@supabase/supabase-js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import {
@@ -12,6 +13,11 @@ import { getBrowserSupabase } from "@/lib/supabase/browser";
 vi.mock("@/lib/supabase/browser", () => ({
   getBrowserSupabase: vi.fn(),
 }));
+const ownershipMocks = vi.hoisted(() => ({ resolveAccess: vi.fn(), clubOptions: vi.fn() }));
+vi.mock("@/lib/data/admin/access", async (original) => ({
+  ...await original<typeof import("@/lib/data/admin/access")>(), resolveAdminAccess: ownershipMocks.resolveAccess,
+}));
+vi.mock("@/lib/data/admin/settings", () => ({ getAdminClubScopeOptions: ownershipMocks.clubOptions }));
 
 function TimeoutHarness() {
   const { authBusy, notice, requestPhoneCode } = useAdminPortal();
@@ -41,6 +47,25 @@ function TimeoutHarness() {
 function ClientAvailabilityHarness() {
   const { client } = useAdminPortal();
   return <output aria-label="client-state">{client == null ? "missing" : "ready"}</output>;
+}
+
+function OwnershipHarness() {
+  const { refresh, signOut, user, access, error, notice } = useAdminPortal();
+  return <>
+    <button onClick={() => void refresh()}>Refresh identity</button>
+    <button onClick={() => void signOut().catch(() => {})}>Sign out identity</button>
+    <output aria-label="current-owner">{user?.id ?? "signed-out"}</output>
+    <output aria-label="current-access">{access.hasAccess ? "granted" : "denied"}</output>
+    <output aria-label="logout-error">{error ?? ""}</output>
+    <output aria-label="logout-notice">{notice ?? ""}</output>
+  </>;
+}
+
+function ownedSession(id: string) {
+  return { access_token: `token-${id}`, user: { id, app_metadata: {}, user_metadata: {} } } as Session;
+}
+function ownedAccess(id: string) {
+  return { ...emptyAdminAccess, isAuthenticated: true, hasAccess: true, userId: id, role: "club_admin" as const, clubId: "24", assignmentCount: 1 };
 }
 
 describe("AdminPortalProvider", () => {
@@ -234,5 +259,80 @@ describe("AdminPortalProvider", () => {
     );
 
     expect(screen.getByLabelText("client-state")).toHaveTextContent("ready");
+  });
+
+  it("does not restore an old cached session when refresh completes after sign-out", async () => {
+    let finish!: (value: unknown) => void;
+    const session = ownedSession("staff-a");
+    const client = { auth: {
+      onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe: vi.fn() } } })),
+      getSession: vi.fn(() => new Promise((resolve) => { finish = resolve; })),
+      getUser: vi.fn(), signOut: vi.fn().mockResolvedValue({ error: null }),
+    } };
+    vi.mocked(getBrowserSupabase).mockReturnValue(client as unknown as ReturnType<typeof getBrowserSupabase>);
+    render(<AdminPortalProvider initialState={{ session, user: session.user, access: ownedAccess("staff-a"), clubOptions: [], error: null }}><OwnershipHarness /></AdminPortalProvider>);
+    fireEvent.click(screen.getByRole("button", { name: "Refresh identity" }));
+    await waitFor(() => expect(client.auth.getSession).toHaveBeenCalledOnce());
+    fireEvent.click(screen.getByRole("button", { name: "Sign out identity" }));
+    await act(async () => finish({ data: { session }, error: null }));
+    expect(screen.getByLabelText("current-owner")).toHaveTextContent("signed-out");
+    expect(screen.getByLabelText("current-access")).toHaveTextContent("denied");
+    expect(client.auth.getUser).not.toHaveBeenCalled();
+    expect(ownershipMocks.resolveAccess).not.toHaveBeenCalled();
+  });
+
+  it("discards an old role query after a new account becomes current", async () => {
+    let event!: (event: AuthChangeEvent, value: Session | null) => void;
+    let finishRole!: (value: unknown) => void;
+    let currentSession = ownedSession("staff-a");
+    ownershipMocks.resolveAccess.mockImplementation(async (_client, user) => user.id === "staff-a" ? new Promise((resolve) => { finishRole = resolve; }) : ownedAccess("staff-b"));
+    ownershipMocks.clubOptions.mockResolvedValue([]);
+    const client = { auth: {
+      onAuthStateChange: vi.fn((callback) => { event = callback; return { data: { subscription: { unsubscribe: vi.fn() } } }; }),
+      getSession: vi.fn(async () => ({ data: { session: currentSession }, error: null })),
+      getUser: vi.fn(async () => ({ data: { user: currentSession.user }, error: null })),
+    } };
+    vi.mocked(getBrowserSupabase).mockReturnValue(client as unknown as ReturnType<typeof getBrowserSupabase>);
+    render(<AdminPortalProvider initialState={{ session: currentSession, user: currentSession.user, access: ownedAccess("staff-a"), clubOptions: [], error: null }}><OwnershipHarness /></AdminPortalProvider>);
+    fireEvent.click(screen.getByRole("button", { name: "Refresh identity" }));
+    await waitFor(() => expect(ownershipMocks.resolveAccess).toHaveBeenCalledOnce());
+    currentSession = ownedSession("staff-b");
+    await act(async () => event("SIGNED_IN", currentSession));
+    await waitFor(() => expect(screen.getByLabelText("current-owner")).toHaveTextContent("staff-b"));
+    await act(async () => finishRole(ownedAccess("staff-a")));
+    expect(screen.getByLabelText("current-owner")).toHaveTextContent("staff-b");
+    expect(screen.getByLabelText("current-access")).toHaveTextContent("granted");
+  });
+
+  it("rejects cached session identity that differs from provider getUser", async () => {
+    const session = ownedSession("staff-a");
+    const client = { auth: {
+      onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe: vi.fn() } } })),
+      getSession: vi.fn(async () => ({ data: { session }, error: null })),
+      getUser: vi.fn(async () => ({ data: { user: ownedSession("staff-b").user }, error: null })),
+    } };
+    vi.mocked(getBrowserSupabase).mockReturnValue(client as unknown as ReturnType<typeof getBrowserSupabase>);
+    render(<AdminPortalProvider initialState={{ session, user: session.user, access: ownedAccess("staff-a"), clubOptions: [], error: null }}><OwnershipHarness /></AdminPortalProvider>);
+    fireEvent.click(screen.getByRole("button", { name: "Refresh identity" }));
+    await waitFor(() => expect(screen.getByLabelText("current-owner")).toHaveTextContent("signed-out"));
+    expect(screen.getByLabelText("current-access")).toHaveTextContent("denied");
+    expect(ownershipMocks.resolveAccess).not.toHaveBeenCalled();
+  });
+
+  it("keeps SDK-style logout errors unresolved instead of announcing successful sign-out", async () => {
+    const session = ownedSession("staff-a");
+    const client = { auth: {
+      onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe: vi.fn() } } })),
+      getSession: vi.fn(), getUser: vi.fn(),
+      signOut: vi.fn().mockResolvedValue({ error: new Error("private provider logout failure") }),
+    } };
+    vi.mocked(getBrowserSupabase).mockReturnValue(client as unknown as ReturnType<typeof getBrowserSupabase>);
+    render(<AdminPortalProvider initialState={{ session, user: session.user, access: ownedAccess("staff-a"), clubOptions: [], error: null }}><OwnershipHarness /></AdminPortalProvider>);
+    fireEvent.click(screen.getByRole("button", { name: "Sign out identity" }));
+    await waitFor(() => expect(screen.getByLabelText("logout-error")).toHaveTextContent("Sign-out could not be confirmed"));
+    expect(screen.getByLabelText("logout-notice")).toBeEmptyDOMElement();
+    expect(screen.getByLabelText("current-owner")).toHaveTextContent("signed-out");
+    expect(screen.getByLabelText("current-access")).toHaveTextContent("denied");
+    expect(client.auth.getSession).not.toHaveBeenCalled();
   });
 });

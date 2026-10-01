@@ -26,7 +26,9 @@ import {
   deleteAdminMembershipPackage,
   getAdminMembershipPackages,
   normalizeAdminMembershipPackages,
+  canConfigureAdminMembership,
 } from "@/lib/data/admin/membership";
+import { getAdminPartnerOptions, normalizeAdminPartnerOptions, type AdminPartnerOption } from "@/lib/data/admin/partner-pools";
 import {
   getAdminSupporterRegistry,
   normalizeAdminSupporters,
@@ -51,11 +53,13 @@ type MembershipTab = "tiers" | "registry";
 type MembershipSnapshot = {
   packages: AdminMembershipPackage[];
   supporters: AdminSupporter[];
+  partners: AdminPartnerOption[];
 };
 
 const emptyMembershipSnapshot: MembershipSnapshot = {
   packages: [],
   supporters: [],
+  partners: [],
 };
 
 const membershipSnapshotIsEmpty = (snapshot: MembershipSnapshot) =>
@@ -70,6 +74,7 @@ function normalizeMembershipSnapshot(value: unknown): MembershipSnapshot {
   return {
     packages: normalizeAdminMembershipPackages(snapshot.packages),
     supporters: normalizeAdminSupporters(snapshot.supporters),
+    partners: normalizeAdminPartnerOptions(snapshot.partners),
   };
 }
 
@@ -118,6 +123,11 @@ const statusCopy: Record<
 };
 
 export default function AdminMembershipPage() {
+  const { access } = useAdminPortal();
+  return <MembershipWorkspace key={`${access.userId}:${access.clubId}:${access.role}`} />;
+}
+
+function MembershipWorkspace() {
   const { access, activeClub, client } = useAdminPortal();
   const hydrated = useHydrated();
   const [activeTab, setActiveTab] = useState<MembershipTab>("tiers");
@@ -132,11 +142,12 @@ export default function AdminMembershipPage() {
   const loadMembership = useCallback(
     async (signal: AbortSignal) => {
       if (client == null) return emptyMembershipSnapshot;
-      const [packages, supporters] = await Promise.all([
+      const [packages, supporters, partners] = await Promise.all([
         getAdminMembershipPackages(client, access, { signal }),
         getAdminSupporterRegistry(client, access, { signal }),
+        getAdminPartnerOptions(client, access),
       ]);
-      return { packages, supporters };
+      return { packages, supporters, partners };
     },
     [access, client],
   );
@@ -167,7 +178,7 @@ export default function AdminMembershipPage() {
     resourceLabel: "membership operations",
   });
 
-  const { packages, supporters } = snapshot;
+  const { packages, supporters, partners } = snapshot;
 
   const supporterCollection = useAdminCollection({
     records: supporters,
@@ -204,7 +215,8 @@ export default function AdminMembershipPage() {
 
 
 
-  const mutationLocked = status !== "ready" && status !== "empty";
+  const resourceLocked = status !== "ready" && status !== "empty";
+  const mutationLocked = !canConfigureAdminMembership(access) || resourceLocked;
   const unrecoveredFailure =
     !hasConfirmed &&
     (status === "error" ||
@@ -214,11 +226,15 @@ export default function AdminMembershipPage() {
       status === "security_timeout");
 
   function beginEdit(pkg: AdminMembershipPackage) {
+    if (mutationLocked) return;
     setForm({
       id: pkg.id,
+      creationId: "",
+      partnerId: pkg.partnerId ?? "",
       expectedUpdatedAt: pkg.updatedAt,
       tier: pkg.tier,
       title: pkg.title,
+      subtitle: pkg.subtitle ?? "",
       description: pkg.description,
       annualPrice: String(pkg.annualPrice),
       perks: pkg.perks.join("\n"),
@@ -256,7 +272,7 @@ export default function AdminMembershipPage() {
                 setDrawerOpen(true);
               }}
               className="admin-membership-new-tier admin-action-button"
-              disabled={mutationLocked}
+              disabled={mutationLocked || partners.length === 0}
             >
               <Plus size={16} aria-hidden="true" />
               New tier
@@ -339,7 +355,7 @@ export default function AdminMembershipPage() {
                   aria-selected={activeTab === tab}
                   aria-controls="membership-panel"
                   tabIndex={activeTab === tab ? 0 : -1}
-                  disabled={mutationLocked && status !== "error"}
+                  disabled={resourceLocked && status !== "error"}
                   onKeyDown={handleAdminTabKeyDown}
                   onClick={() => {
                     setActiveTab(tab);
@@ -523,6 +539,7 @@ export default function AdminMembershipPage() {
           currencyCode={activeClub?.currencyCode ?? "USD"}
           client={client}
           access={access}
+          partners={partners}
           disabled={mutationLocked}
           onSaved={async () => {
             setDrawerOpen(false);

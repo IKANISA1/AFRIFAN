@@ -1,8 +1,6 @@
+import { getAdminRequestContext, parseJsonBody, requiresPlatformAdmin, runAdminResourceOperation, withScopedFeatureGuard } from "@/lib/admin-resource-transport";
+import { adminPredictFailureResponse, handleAdminPredictDelete, handleAdminPredictGet, handleAdminPredictPost } from "@/lib/data/admin/predict-resource-handler";
 import { NextRequest, NextResponse } from "next/server";
-import {
-  adminClubScopeCookieName,
-  getRequestedAdminClubId,
-} from "@/lib/admin-club-scope";
 import {
   adjustAdminFetWalletBalance,
   assignAdminRole,
@@ -47,7 +45,6 @@ import {
   getAdminTicketOrders,
   findAdminUserCandidate,
   rejectAdminSmsManualReview,
-  resolveAdminAccess,
   revokeAdminRole,
   saveAdminArticle,
   saveAdminBanner,
@@ -66,30 +63,12 @@ import {
   getAdminOffers,
   saveAdminOffer,
   deleteAdminOffer,
-  getAdminPredictionsWorkspace,
-  getAdminPredictionMarkets,
-  saveAdminPredictionMarket,
   saveAdminPlatformOptionSet,
   saveAdminPlatformOptionValue,
   saveAdminPlatformRoute,
   saveAdminRuntimeCopyEntry,
   saveAdminSiteNavigationItem,
   saveAdminSiteSearchItem,
-  getAdminCompetitions,
-  saveAdminCompetition,
-  getAdminSeasons,
-  saveAdminSeason,
-  getAdminFixtures,
-  saveAdminFixture,
-  getAdminSyncLogs,
-  getAdminSyncOverview,
-  getAdminLiveScoreCompetitionSources,
-  saveAdminLiveScoreCompetitionSource,
-  deleteAdminLiveScoreCompetitionSource,
-  getAdminPartnerOptions,
-  getAdminPartnerPredictionPools,
-  saveAdminPartnerPredictionPool,
-  settleAdminPartnerPredictionPool,
   deleteAdminPlatformOptionSet,
   deleteAdminPlatformOptionValue,
   deleteAdminPlatformRoute,
@@ -100,6 +79,7 @@ import {
 import { AdminMutationConflictError } from "@/lib/data/admin/helpers";
 import { AdminRuntimeRegistryValidationError } from "@/lib/data/admin/runtime-registries";
 import { AdminShopValidationError } from "@/lib/data/admin/shop";
+import { AdminMembershipValidationError } from "@/lib/data/admin/membership";
 import { AdminSmsValidationError } from "@/lib/data/admin/sms";
 import {
   getAdminDestructivePermission,
@@ -109,99 +89,31 @@ import {
   rejectInsecureMutation,
   rejectRateLimitedRequest,
 } from "@/lib/security";
-import { withFeatureGuard } from "@/lib/server-feature-guard";
-import { getAdminSupabase } from "@/lib/supabase/admin";
-import { getServerSupabase } from "@/lib/supabase/server";
 import {
   controlledApiFailureResponse,
   controlledApiJson,
-  withControlledApiTimeout,
 } from "@/lib/controlled-api-response";
 
 export const dynamic = "force-dynamic";
 
-function getRequestedClubId(request: NextRequest) {
-  return getRequestedAdminClubId(
-    request.nextUrl.searchParams,
-    request.cookies.get(adminClubScopeCookieName)?.value ?? null,
-  );
-}
+// These actual configuration writers must carry the caller JWT into SQL,
+// where current assignments and assurance are rechecked after row waits.
+const staffConfigurationResources = new Set([
+  "matches", "cms", "cms-banners", "cms-config", "cms-content", "membership", "shop",
+]);
+const globalConfigurationResources = new Set([
+  "cms-banners", "predictions-markets", "predictions-competitions", "predictions-seasons", "predictions-fixtures",
+]);
+const clubAdminConfigurationResources = new Set(["membership", "shop", "livescore-sources"]);
 
-async function getAdminRequestContext(request: NextRequest) {
-  const serverClient = await getServerSupabase();
-  if (serverClient == null) {
-    return {
-      response: controlledApiJson(
-        {
-          code: "ADMIN_RESOURCE_FAILED",
-          error: "The admin resource could not be loaded.",
-          retryable: true,
-          change_confirmed: false,
-        },
-        502,
-      ),
-    };
+function rejectConfigurationWrite(resource: string, access: { isSuperAdmin: boolean; role: string | null }) {
+  if (access.isSuperAdmin) return null;
+  const globalRequired = globalConfigurationResources.has(resource);
+  if (globalRequired || (clubAdminConfigurationResources.has(resource) && access.role !== "club_admin")) {
+    return controlledApiJson({ code: "ADMIN_ACCESS_DENIED", change_confirmed: false,
+      error: globalRequired ? "Platform admin access is required." : "Club-admin access is required." }, 403);
   }
-
-  const {
-    data: { user },
-    error: authError,
-  } = await serverClient.auth.getUser();
-  if (authError || user == null) {
-    return {
-      response: controlledApiJson(
-        {
-          code: "ADMIN_AUTHENTICATION_REQUIRED",
-          error: "Admin authentication is required.",
-        },
-        401,
-      ),
-    };
-  }
-
-  const access = await resolveAdminAccess(serverClient, user, {
-    requestedClubId: getRequestedClubId(request),
-  });
-  if (!access.hasAccess) {
-    return {
-      response: controlledApiJson(
-        {
-          code: "ADMIN_ACCESS_DENIED",
-          error: "Admin access denied.",
-        },
-        403,
-      ),
-    };
-  }
-
-  const adminClient = getAdminSupabase();
-  if (adminClient == null) {
-    return {
-      response: controlledApiJson(
-        {
-          code: "ADMIN_RESOURCE_FAILED",
-          error: "The admin resource could not be loaded.",
-          retryable: true,
-          change_confirmed: false,
-        },
-        502,
-      ),
-    };
-  }
-
-  return { access, adminClient, serverClient };
-}
-
-function requiresPlatformAdmin(resource: string) {
-  return (
-    resource === "access" ||
-    resource === "access-users" ||
-    resource === "sms-manual-reviews"
-  );
-}
-
-async function parseJsonBody(request: NextRequest) {
-  return (await request.json().catch(() => ({}))) as Record<string, unknown>;
+  return null;
 }
 
 function missingIdResponse() {
@@ -265,59 +177,6 @@ function adminSmsInvalidResponse() {
   );
 }
 
-async function runAdminResourceOperation(
-  operation: () => Promise<NextResponse | undefined>,
-) {
-  try {
-    const response = await withControlledApiTimeout(
-      Promise.resolve().then(operation),
-    );
-    if (response == null) {
-      return controlledApiFailureResponse(
-        new Error("Admin resource returned no response."),
-        "ADMIN_RESOURCE",
-      );
-    }
-    response.headers.set("Cache-Control", "no-store");
-
-    if (response.status === 200) {
-      const body = (await response
-        .clone()
-        .json()
-        .catch(() => null)) as {
-        data?: unknown;
-      } | null;
-      if (Array.isArray(body?.data) && body.data.length === 0) {
-        return controlledApiJson({
-          code: "ADMIN_RESOURCE_EMPTY",
-          state: "empty",
-          data: [],
-        });
-      }
-    }
-
-    return response;
-  } catch (error) {
-    return controlledApiFailureResponse(error, "ADMIN_RESOURCE");
-  }
-}
-
-function withScopedFeatureGuard(
-  access: {
-    clubId: string | null;
-    isAuthenticated: boolean;
-    role: string | null;
-  },
-  featureKey: string,
-  handler: () => Promise<NextResponse>,
-) {
-  return withFeatureGuard(featureKey, handler, "web", "action", {
-    clubId: access.clubId,
-    isAuthenticated: access.isAuthenticated,
-    roles: access.role ? [access.role] : [],
-  });
-}
-
 async function handleGet(
   request: NextRequest,
   context: { params: Promise<{ resource: string }> },
@@ -340,6 +199,9 @@ async function handleGet(
         403,
       );
     }
+
+    const predictResponse = await handleAdminPredictGet(resource, requestContext, request.nextUrl.searchParams.get("limit"));
+    if (predictResponse) return predictResponse;
 
     switch (resource) {
       case "access":
@@ -466,55 +328,9 @@ async function handleGet(
         return NextResponse.json({
           data: await getAdminOffers(adminClient, access),
         });
-      case "predictions":
-        return NextResponse.json({
-          data: await getAdminPredictionsWorkspace(adminClient, access, {
-            poolClient: serverClient,
-          }),
-        });
-      case "predictions-markets":
-        return NextResponse.json({
-          data: await getAdminPredictionMarkets(adminClient, access),
-        });
-      case "predictions-competitions":
-        return NextResponse.json({
-          data: await getAdminCompetitions(adminClient, access),
-        });
-      case "predictions-seasons":
-        return NextResponse.json({
-          data: await getAdminSeasons(adminClient, access),
-        });
-      case "predictions-fixtures":
-        return NextResponse.json({
-          data: await getAdminFixtures(adminClient, access),
-        });
-      case "partner-options":
-        return NextResponse.json({
-          data: await getAdminPartnerOptions(adminClient, access),
-        });
-      case "partner-prediction-pools":
-        return NextResponse.json({
-          data: await getAdminPartnerPredictionPools(serverClient, access),
-        });
       case "runtime-registry":
         return NextResponse.json({
           data: await getAdminRuntimeRegistrySnapshot(adminClient, access),
-        });
-      case "football-sync-logs":
-        return NextResponse.json({
-          data: await getAdminSyncLogs(
-            adminClient,
-            access,
-            Number(request.nextUrl.searchParams.get("limit") ?? 50),
-          ),
-        });
-      case "football-sync-overview":
-        return NextResponse.json({
-          data: await getAdminSyncOverview(adminClient, access),
-        });
-      case "livescore-sources":
-        return NextResponse.json({
-          data: await getAdminLiveScoreCompetitionSources(adminClient, access),
         });
       default:
         return adminResourceEmptyResponse();
@@ -549,9 +365,12 @@ async function handlePost(
       return requestContext.response;
     }
 
-    const { access, adminClient, serverClient } = requestContext;
+    const { access, adminClient: serviceClient, serverClient } = requestContext;
     const { resource } = await context.params;
+    const adminClient = staffConfigurationResources.has(resource) ? serverClient : serviceClient;
     const body = await parseJsonBody(request);
+    const configurationDenied = rejectConfigurationWrite(resource, access);
+    if (configurationDenied) return configurationDenied;
 
     if (requiresPlatformAdmin(resource) && !access.isSuperAdmin) {
       return controlledApiJson(
@@ -562,6 +381,9 @@ async function handlePost(
         403,
       );
     }
+
+    const predictResponse = await handleAdminPredictPost(resource, requestContext, body);
+    if (predictResponse) return predictResponse;
 
     switch (resource) {
       case "access":
@@ -681,54 +503,6 @@ async function handlePost(
         return NextResponse.json({
           data: await saveAdminOffer(adminClient, access, body as never),
         });
-      case "predictions-markets":
-        return NextResponse.json({
-          data: await saveAdminPredictionMarket(
-            adminClient,
-            access,
-            body as never,
-          ),
-        });
-      case "predictions-competitions":
-        return NextResponse.json({
-          data: await saveAdminCompetition(adminClient, access, body as never),
-        });
-      case "predictions-seasons":
-        return NextResponse.json({
-          data: await saveAdminSeason(adminClient, access, body as never),
-        });
-      case "predictions-fixtures":
-        return NextResponse.json({
-          data: await saveAdminFixture(adminClient, access, body as never),
-        });
-      case "partner-prediction-pools":
-        return withScopedFeatureGuard(access, "predict", async () =>
-          NextResponse.json({
-            data: await saveAdminPartnerPredictionPool(
-              serverClient,
-              access,
-              body as never,
-            ),
-          }),
-        );
-      case "partner-prediction-pool-settlement":
-        return withScopedFeatureGuard(access, "predict", async () =>
-          NextResponse.json({
-            data: await settleAdminPartnerPredictionPool(
-              serverClient,
-              access,
-              String(body.poolId ?? ""),
-            ),
-          }),
-        );
-      case "livescore-sources":
-        return NextResponse.json({
-          data: await saveAdminLiveScoreCompetitionSource(
-            adminClient,
-            access,
-            body as never,
-          ),
-        });
       case "runtime-routes":
         return NextResponse.json({
           data: await saveAdminPlatformRoute(
@@ -784,6 +558,8 @@ async function handlePost(
     if (error instanceof AdminMutationConflictError) {
       return adminResourceConflictResponse();
     }
+    const predictFailure = adminPredictFailureResponse(error);
+    if (predictFailure) return predictFailure;
     if (error instanceof AdminRuntimeRegistryValidationError) {
       return controlledApiJson(
         {
@@ -798,6 +574,14 @@ async function handlePost(
     }
     if (error instanceof AdminShopValidationError) {
       return adminShopInvalidResponse();
+    }
+    if (error instanceof AdminMembershipValidationError) {
+      return controlledApiJson({
+        code: "ADMIN_MEMBERSHIP_INPUT_INVALID",
+        error: "Review the membership package and correct invalid values.",
+        retryable: false,
+        change_confirmed: false,
+      }, 400);
     }
     if (error instanceof AdminSmsValidationError) {
       return adminSmsInvalidResponse();
@@ -831,12 +615,15 @@ async function handleDelete(
       return requestContext.response;
     }
 
-    const { access, adminClient } = requestContext;
+    const { access, adminClient: serviceClient, serverClient } = requestContext;
     const { resource } = await context.params;
+    const adminClient = staffConfigurationResources.has(resource) ? serverClient : serviceClient;
     const id = request.nextUrl.searchParams.get("id");
     const expectedUpdatedAt = request.nextUrl.searchParams.get(
       "expected_updated_at",
     );
+    const configurationDenied = rejectConfigurationWrite(resource, access);
+    if (configurationDenied) return configurationDenied;
 
     if (requiresPlatformAdmin(resource) && !access.isSuperAdmin) {
       return controlledApiJson(
@@ -869,6 +656,9 @@ async function handleDelete(
     if (!id) {
       return missingIdResponse();
     }
+
+    const predictResponse = await handleAdminPredictDelete(resource, requestContext, id, expectedUpdatedAt ?? "");
+    if (predictResponse) return predictResponse;
 
     switch (resource) {
       case "access":
@@ -972,14 +762,6 @@ async function handleDelete(
         break;
       case "offers":
         await deleteAdminOffer(
-          adminClient,
-          access,
-          id,
-          expectedUpdatedAt ?? "",
-        );
-        break;
-      case "livescore-sources":
-        await deleteAdminLiveScoreCompetitionSource(
           adminClient,
           access,
           id,

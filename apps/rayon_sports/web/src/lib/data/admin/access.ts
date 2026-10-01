@@ -166,6 +166,7 @@ export function deriveAdminAccess(
     return emptyAdminAccess;
   }
 
+  assignments = assignments.filter((row) => row.is_active === true && row.revoked_at == null);
   const currentClubId = userClubId(user);
   const requestedClubId = normalizeClubId(options?.requestedClubId ?? null);
   const scopedClubId = requestedClubId ?? currentClubId;
@@ -224,9 +225,10 @@ export async function resolveAdminAccess(
   try {
     const { data, error } = await client
       .from("admin_role_assignments")
-      .select("role, club_id, is_active")
+      .select("role, club_id, is_active, revoked_at")
       .eq("user_id", user.id)
-      .eq("is_active", true);
+      .eq("is_active", true)
+      .is("revoked_at", null);
 
     if (error) {
       throw error;

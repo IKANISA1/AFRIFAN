@@ -12,6 +12,8 @@ import { getAdminClubScopeOptions } from "@/lib/data/admin/settings";
 import { getServerSupabase } from "@/lib/supabase/server";
 import { getSupportedClubProfile } from "@/lib/content";
 import type { AdminPortalInitialState } from "@/lib/types";
+import { withControlledApiTimeout } from "@/lib/controlled-api-response";
+import { inspectStaffAssurance } from "@/lib/staff-assurance";
 
 function controlledAdminEvidenceState(requestedClubId: string | null): AdminPortalInitialState {
   const clubId = requestedClubId ?? "24";
@@ -105,12 +107,18 @@ export async function getAdminPortalInitialState(): Promise<AdminPortalInitialSt
     );
     const {
       data: { session },
-    } = await serverClient.auth.getSession();
-    const user = session?.user ?? null;
+    } = await withControlledApiTimeout(serverClient.auth.getSession());
+    const { data: { user }, error: userError } = await withControlledApiTimeout(serverClient.auth.getUser());
+    if (userError) throw new Error("Staff authentication could not be verified.");
+    if (!session || !user || session.user.id !== user.id) {
+      return { session: null, user: null, access: emptyAdminAccess, clubOptions: [], error: null };
+    }
     const access = await resolveAdminAccess(serverClient, user, {
       requestedClubId,
     });
-    const clubOptions = access.hasAccess
+    const claims = access.hasAccess ? await withControlledApiTimeout(serverClient.auth.getClaims()) : null;
+    const staffVerified = claims != null && !claims.error && inspectStaffAssurance(claims.data?.claims ?? null, user.id).allowed;
+    const clubOptions = staffVerified
       ? await getAdminClubScopeOptions(serverClient, access).catch(() => [])
       : [];
 

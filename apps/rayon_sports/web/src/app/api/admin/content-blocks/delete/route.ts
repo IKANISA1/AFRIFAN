@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   return handleAdminApiRoute(
     request,
-    async (client, access) => {
+    async (_serviceClient, access, client) => {
       const body = (await request.json().catch(() => ({}))) as Record<
         string,
         unknown

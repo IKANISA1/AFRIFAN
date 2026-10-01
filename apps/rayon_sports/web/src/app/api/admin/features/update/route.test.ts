@@ -6,6 +6,7 @@ const mocks = vi.hoisted(() => ({
   normalizeAdminFeatureUpdate: vi.fn(),
   updateAdminFeature: vi.fn(),
   adminClient: { kind: "admin" },
+  callerClient: { kind: "caller-jwt" },
   access: {
     hasAccess: true,
     isAuthenticated: true,
@@ -70,8 +71,9 @@ describe("admin feature update route", () => {
         handler: (
           client: typeof mocks.adminClient,
           access: typeof mocks.access,
+          callerClient: typeof mocks.callerClient,
         ) => Promise<unknown>,
-      ) => handler(mocks.adminClient, mocks.access),
+      ) => handler(mocks.adminClient, mocks.access, mocks.callerClient),
     );
 
     await expect(
@@ -85,7 +87,7 @@ describe("admin feature update route", () => {
     ).resolves.toEqual({ success: true });
     expect(mocks.normalizeAdminFeatureUpdate).toHaveBeenCalledWith(normalized);
     expect(mocks.updateAdminFeature).toHaveBeenCalledWith(
-      mocks.adminClient,
+      mocks.callerClient,
       mocks.access,
       "feature-1",
       "2026-07-30T09:00:00.000Z",
@@ -101,8 +103,9 @@ describe("admin feature update route", () => {
         handler: (
           client: typeof mocks.adminClient,
           access: typeof mocks.access,
+          callerClient: typeof mocks.callerClient,
         ) => Promise<unknown>,
-      ) => handler(mocks.adminClient, mocks.access),
+      ) => handler(mocks.adminClient, mocks.access, mocks.callerClient),
     );
 
     await expect(
@@ -128,8 +131,9 @@ describe("admin feature update route", () => {
         handler: (
           client: typeof mocks.adminClient,
           access: typeof mocks.access,
+          callerClient: typeof mocks.callerClient,
         ) => Promise<unknown>,
-      ) => handler(mocks.adminClient, mocks.access),
+      ) => handler(mocks.adminClient, mocks.access, mocks.callerClient),
     );
 
     await expect(POST(request({}))).rejects.toMatchObject({

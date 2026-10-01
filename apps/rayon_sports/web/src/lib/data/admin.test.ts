@@ -77,6 +77,16 @@ describe("admin data helpers", () => {
     expect(formatAdminRoleLabel(access.role)).toBe("super admin");
   });
 
+  it("denies revoked and inactive grants even when stale metadata still names a global role", () => {
+    const user = { app_metadata: { role: "super_admin", club_id: "24" } };
+    for (const grant of [
+      { role: "super_admin", club_id: null, is_active: false },
+      { role: "super_admin", club_id: null, is_active: true, revoked_at: "2026-10-01T12:00:00Z" },
+    ]) {
+      expect(deriveAdminAccess(user, [grant])).toMatchObject({ hasAccess: false, isSuperAdmin: false, assignmentCount: 0 });
+    }
+  });
+
   it("grants access when assignment exists even with empty metadata", () => {
     const access = deriveAdminAccess(
       {

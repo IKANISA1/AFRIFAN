@@ -187,8 +187,6 @@ export {
 export {
   getAdminPartnerOptions,
   getAdminPartnerPredictionPools,
-  saveAdminPartnerPredictionPool,
-  settleAdminPartnerPredictionPool,
 } from "./partner-pools";
 
 export {
@@ -210,5 +208,4 @@ export {
 export type {
   AdminPartnerOption,
   AdminPartnerPredictionPool,
-  AdminPartnerPredictionPoolInput,
 } from "./partner-pools";

@@ -3,6 +3,7 @@ import { NextRequest } from "next/server";
 
 const {
   getUser,
+  getClaims,
   resolveAdminAccessMock,
   enforceFeatureStateMock,
   rejectInsecureMutationMock,
@@ -11,8 +12,10 @@ const {
   serverClient,
 } = vi.hoisted(() => {
   const getUser = vi.fn();
+  const getClaims = vi.fn();
   return {
     getUser,
+    getClaims,
     resolveAdminAccessMock: vi.fn(),
     enforceFeatureStateMock: vi.fn(),
     rejectInsecureMutationMock: vi.fn(),
@@ -21,6 +24,7 @@ const {
     serverClient: {
       auth: {
         getUser,
+        getClaims,
       },
     },
   };
@@ -61,6 +65,8 @@ describe("handleAdminApiRoute", () => {
 
   beforeEach(() => {
     getUser.mockReset();
+    getClaims.mockReset();
+    getClaims.mockImplementation(async () => ({ data: { claims: { sub: "user-1", role: "authenticated", is_anonymous: false, aal: "aal2", exp: Math.floor(Date.now() / 1000) + 600, amr: [{ method: "totp", timestamp: Math.floor(Date.now() / 1000) }] } }, error: null }));
     resolveAdminAccessMock.mockReset();
     enforceFeatureStateMock.mockReset();
     rejectInsecureMutationMock.mockReset();
@@ -85,6 +91,31 @@ describe("handleAdminApiRoute", () => {
     });
     rejectInsecureMutationMock.mockReturnValue(null);
     rejectRateLimitedRequestMock.mockResolvedValue(null);
+  });
+
+  it.each([
+    { aal: "aal1" },
+    { sub: "different-user" },
+    { amr: [{ method: "otp", timestamp: Math.floor(Date.now() / 1000) }] },
+    { amr: [{ method: "totp", timestamp: Math.floor(Date.now() / 1000) - 301 }] },
+    { amr: [{ method: "totp", timestamp: Math.floor(Date.now() / 1000) + 61 }] },
+  ])("denies a current staff assignment with insufficient token assurance %j", async (override) => {
+    getClaims.mockResolvedValue({ data: { claims: { sub: "user-1", role: "authenticated", is_anonymous: false, aal: "aal2", exp: Math.floor(Date.now() / 1000) + 600, amr: [{ method: "totp", timestamp: Math.floor(Date.now() / 1000) }], ...override } }, error: null });
+    const operation = vi.fn();
+    const response = await handleAdminApiRoute(new NextRequest("https://admin.gikundiro.com/api/admin/content-blocks"), operation);
+    expect(response.status).toBe(403);
+    expect(await response.json()).toMatchObject({ code: "STAFF_STEP_UP_REQUIRED", change_confirmed: false });
+    expect(operation).not.toHaveBeenCalled();
+    expect(enforceFeatureStateMock).not.toHaveBeenCalled();
+  });
+
+  it("fails closed before dispatch when the Auth issuer cannot verify staff claims", async () => {
+    getClaims.mockResolvedValue({ data: null, error: new Error("Auth issuer unavailable") });
+    const operation = vi.fn();
+    const response = await handleAdminApiRoute(new NextRequest("https://admin.gikundiro.com/api/admin/content-blocks"), operation);
+    expect(response.status).toBe(503);
+    expect(await response.json()).toMatchObject({ code: "STAFF_ASSURANCE_UNAVAILABLE", retryable: true, change_confirmed: false });
+    expect(operation).not.toHaveBeenCalled();
   });
 
   it("returns a non-retryable 403 when the data layer denies a record's club scope", async () => {

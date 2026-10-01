@@ -48,7 +48,6 @@ describe("admin optimistic-concurrency adoption", () => {
     "gamification/page.tsx",
     "matches/page.tsx",
     "offers/page.tsx",
-    "predictions/page.tsx",
     "settings/runtime/page.tsx",
     "shop/page.tsx",
     "squad/page.tsx",
@@ -56,6 +55,12 @@ describe("admin optimistic-concurrency adoption", () => {
   ])("%s retains loaded version tokens and handles conflicts", (file) => {
     const value = source(appRoot, file);
     expect(value).toMatch(/expectedUpdatedAt|\.updatedAt/);
+    expect(value).toContain("isAdminMutationConflict");
+  });
+
+  it("the extracted predictions controller retains loaded version tokens and handles conflicts", () => {
+    const value = source(resolve(process.cwd(), "src/components/admin/predictions"), "use-predictions-workspace.ts");
+    expect(value).toContain("expectedUpdatedAt");
     expect(value).toContain("isAdminMutationConflict");
   });
 

@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { showAdminToast } from "@/components/admin/admin-toast";
-import { saveAdminMembershipPackage } from "@/lib/data/admin/membership";
+import { canConfigureAdminMembership, saveAdminMembershipPackage } from "@/lib/data/admin/membership";
+import type { AdminPartnerOption } from "@/lib/data/admin/partner-pools";
 import { isAdminMutationConflict } from "@/lib/data/admin/http";
 import type { AdminAccess, AdminMembershipPackage } from "@/lib/types";
 import { emptyForm, type MembershipForm } from "./membership-state";
@@ -12,6 +13,7 @@ interface MembershipEditorFormProps {
   currencyCode: string;
   client: SupabaseClient | null;
   access: AdminAccess;
+  partners: AdminPartnerOption[];
   disabled?: boolean;
   onSaved: () => Promise<void>;
   onFailure?: (error: unknown) => void;
@@ -24,6 +26,7 @@ export function MembershipEditorForm({
   currencyCode,
   client,
   access,
+  partners,
   disabled = false,
   onSaved,
   onFailure,
@@ -33,6 +36,9 @@ export function MembershipEditorForm({
   const [submitting, setSubmitting] = useState(false);
   const errorRef = useRef<HTMLDivElement>(null);
   const submittingRef = useRef(false);
+  const mountedRef = useRef(false);
+  const locked = disabled || !canConfigureAdminMembership(access) || partners.length === 0;
+  useEffect(() => { mountedRef.current = true; return () => { mountedRef.current = false; }; }, []);
 
   useEffect(() => {
     if (errorMessage != null) {
@@ -41,7 +47,7 @@ export function MembershipEditorForm({
   }, [errorMessage]);
 
   async function submitForm(formData: FormData) {
-    if (client == null || disabled || submittingRef.current) return;
+    if (client == null || locked || submittingRef.current) return;
 
     submittingRef.current = true;
     setSubmitting(true);
@@ -49,6 +55,8 @@ export function MembershipEditorForm({
     showAdminToast(form.id ? "Saving tier..." : "Creating tier...", "info");
     try {
       const title = String(formData.get("title") ?? "").trim();
+      const subtitle = String(formData.get("subtitle") ?? "").trim();
+      const partnerId = String(formData.get("partnerId") ?? "");
       const description = String(formData.get("description") ?? "").trim();
       const annualPrice = Number(formData.get("annualPrice") ?? 0);
       const sortOrder = Number(formData.get("sortOrder") ?? 0);
@@ -59,6 +67,8 @@ export function MembershipEditorForm({
       if (
         title.length === 0 ||
         title.length > 160 ||
+        subtitle.length === 0 || subtitle.length > 240 ||
+        !partners.some(partner => partner.id === partnerId) ||
         description.length === 0 ||
         description.length > 2_000 ||
         !Number.isInteger(annualPrice) ||
@@ -73,27 +83,35 @@ export function MembershipEditorForm({
         throw new Error("invalid_membership_tier_input");
       }
 
+      const creationId = form.id ? null : form.creationId || crypto.randomUUID();
+      if (creationId && !form.creationId) setForm(current => ({ ...current, creationId }));
       await saveAdminMembershipPackage(client, access, {
         id: form.id || null,
+        creationId,
+        partnerId,
         expectedUpdatedAt: form.expectedUpdatedAt || null,
         tier: String(
           formData.get("tier") ?? "imena",
         ) as AdminMembershipPackage["tier"],
         title,
+        subtitle,
         description,
         annualPrice,
         perks,
         sortOrder,
         isActive: formData.get("isActive") === "on",
       });
+      if (!mountedRef.current) return;
       setForm(emptyForm);
-      await onSaved();
       showAdminToast("Membership tier saved.", "success");
+      await onSaved();
     } catch (caught) {
+      if (!mountedRef.current) return;
       onFailure?.(caught);
       if (isAdminMutationConflict(caught)) {
         await onConflict();
       }
+      if (!mountedRef.current) return;
       const message =
         caught instanceof Error &&
         caught.message === "invalid_membership_tier_input"
@@ -103,7 +121,7 @@ export function MembershipEditorForm({
       showAdminToast(message, "error");
     } finally {
       submittingRef.current = false;
-      setSubmitting(false);
+      if (mountedRef.current) setSubmitting(false);
     }
   }
 
@@ -140,11 +158,17 @@ export function MembershipEditorForm({
       ) : null}
 
       <div className="grid gap-4 sm:grid-cols-2">
+        <label className="grid gap-2 text-sm">Current club partner
+          <select name="partnerId" required value={form.partnerId} disabled={locked || submitting}
+            onChange={event => setForm(current => ({ ...current, partnerId: event.target.value }))} className="dashboard-input scroll-mb-24">
+            <option value="">Select a configured partner</option>{partners.map(partner => <option key={partner.id} value={partner.id}>{partner.name}</option>)}
+          </select>
+        </label>
         <label className="grid gap-2 text-sm">
           Tier
           <select
             name="tier"
-            disabled={disabled || submitting}
+            disabled={locked || submitting}
             value={form.tier}
             onChange={(event) =>
               setForm((current) => ({
@@ -168,7 +192,7 @@ export function MembershipEditorForm({
             name="title"
             required
             maxLength={160}
-            disabled={disabled || submitting}
+            disabled={locked || submitting}
             value={form.title}
             onChange={(event) =>
               setForm((current) => ({
@@ -181,13 +205,21 @@ export function MembershipEditorForm({
         </label>
       </div>
 
+      <label className="grid gap-2 text-sm">Subtitle
+        <input name="subtitle" required maxLength={240} value={form.subtitle} disabled={locked || submitting}
+          onChange={event => setForm(current => ({ ...current, subtitle: event.target.value }))} className="dashboard-input scroll-mb-24" />
+      </label>
+      {partners.length === 0 && <p role="status">No active partner is configured for this club. Configure the club partner before creating a membership tier.</p>}
+      {form.creationId && <p className="break-all text-xs text-muted">Original creation reference: {form.creationId}. Keep this draft while recovering an unconfirmed save.</p>}
+      <p className="text-sm text-muted">Visibility does not approve commercial classification or platform billing. New tiers retain the unclassified policy until separately reviewed.</p>
+
       <label className="grid gap-2 text-sm">
         Description
         <textarea
           name="description"
           required
           maxLength={2_000}
-          disabled={disabled || submitting}
+          disabled={locked || submitting}
           rows={3}
           value={form.description}
           onChange={(event) =>
@@ -210,7 +242,7 @@ export function MembershipEditorForm({
             max={1_000_000_000}
             step="any"
             required
-            disabled={disabled || submitting}
+            disabled={locked || submitting}
             value={form.annualPrice}
             onChange={(event) =>
               setForm((current) => ({
@@ -230,7 +262,7 @@ export function MembershipEditorForm({
             max={1_000_000}
             step={1}
             required
-            disabled={disabled || submitting}
+            disabled={locked || submitting}
             value={form.sortOrder}
             onChange={(event) =>
               setForm((current) => ({
@@ -253,7 +285,7 @@ export function MembershipEditorForm({
         <textarea
           name="perks"
           maxLength={4_800}
-          disabled={disabled || submitting}
+          disabled={locked || submitting}
           rows={5}
           value={form.perks}
           onChange={(event) =>
@@ -270,7 +302,7 @@ export function MembershipEditorForm({
         <input
           type="checkbox"
           name="isActive"
-          disabled={disabled || submitting}
+          disabled={locked || submitting}
           checked={form.isActive}
           onChange={(event) =>
             setForm((current) => ({
@@ -289,7 +321,7 @@ export function MembershipEditorForm({
         {form.id ? (
           <button
             type="button"
-            disabled={disabled || submitting}
+            disabled={locked || submitting}
             onClick={() => setForm(emptyForm)}
             className="rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)] disabled:cursor-not-allowed disabled:opacity-60"
           >
@@ -298,7 +330,7 @@ export function MembershipEditorForm({
         ) : null}
         <button
           type="submit"
-          disabled={disabled || submitting || client == null}
+          disabled={locked || submitting || client == null}
           aria-busy={submitting}
           className="rounded-full bg-action-blue px-5 py-3 font-semibold text-white transition hover:bg-action-blue-hover disabled:cursor-not-allowed disabled:opacity-60"
         >
