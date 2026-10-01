@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { ChevronDown, Globe, Search, User, Menu } from "lucide-react";
 import { useCallback, useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { resolveFanAppHref } from "@/lib/config";
 import { MobileNavDrawer } from "@/components/mobile-nav-drawer";
 import { useHydrated } from "@/lib/use-hydrated";
 import type { ClubProfile } from "@/lib/types";
@@ -60,6 +59,7 @@ export function GlobalNav({
   const desktopLinksRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLAnchorElement>(null);
   const portalRef = useRef<HTMLAnchorElement>(null);
+  const menuTriggers = useRef<Record<string, HTMLButtonElement | null>>({});
   const closeMobileMenu = useCallback(
     () => setMobileMenuOpen(false),
     [setMobileMenuOpen],
@@ -147,6 +147,16 @@ export function GlobalNav({
           : "bg-transparent",
       )}
       onMouseLeave={() => setActiveMenu(null)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setActiveMenu(null);
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Escape" && activeMenu) {
+          event.preventDefault();
+          menuTriggers.current[activeMenu]?.focus();
+          setActiveMenu(null);
+        }
+      }}
     >
       {!scrolled && ribbon}
       <div className={cn("hidden border-b border-white/10 bg-black/20", !scrolled && "xl:block")}>
@@ -198,11 +208,11 @@ export function GlobalNav({
         </Link>
 
         {/* Desktop Links */}
-        <div ref={desktopLinksRef} aria-hidden={!desktopFits} className="site-desktop-links hidden flex-1 items-center justify-center gap-1 xl:flex">
+        <div ref={desktopLinksRef} aria-hidden={!desktopFits} inert={!desktopFits} className="site-desktop-links hidden flex-1 items-center justify-center gap-1 xl:flex">
           {navItems.map((item) => (
             <div
               key={item.href}
-              className="relative py-4"
+              className="relative flex items-center py-4"
               onMouseEnter={() =>
                 item.hasMega
                   ? setActiveMenu(item.featureKey)
@@ -211,22 +221,39 @@ export function GlobalNav({
             >
               <Link
                 href={item.href}
+                aria-current={pathname === item.href || pathname.startsWith(`${item.href}/`) ? "page" : undefined}
                 className={cn(
                   "flex min-h-[48px] items-center gap-1.5 px-4 py-2 text-sm font-medium normal-case tracking-normal text-white/80 transition-all hover:text-white",
                   pathname.startsWith(item.href) && "text-white",
                 )}
               >
                 {item.label}
-                {item.hasMega && (
+              </Link>
+              {item.hasMega && (
+                <button type="button"
+                  ref={(element) => { menuTriggers.current[item.featureKey] = element; }}
+                  aria-label={`${activeMenu === item.featureKey ? "Close" : "Open"} ${item.label} navigation`}
+                  aria-expanded={activeMenu === item.featureKey}
+                  aria-controls="site-mega-menu"
+                  className="flex min-h-[48px] min-w-[48px] items-center justify-center text-white/80 focus-ring"
+                  onClick={() => setActiveMenu(current => current === item.featureKey ? null : item.featureKey)}
+                  onKeyDown={(event) => {
+                    if (event.key === "ArrowDown") {
+                      event.preventDefault();
+                      setActiveMenu(item.featureKey);
+                      requestAnimationFrame(() => document.querySelector<HTMLAnchorElement>("#site-mega-menu a[href]")?.focus());
+                    }
+                  }}>
                   <ChevronDown
+                    aria-hidden="true"
                     size={14}
                     className={cn(
                       "transition-transform duration-300",
                       activeMenu === item.featureKey && "rotate-180",
                     )}
                   />
-                )}
-              </Link>
+                </button>
+              )}
               {pathname.startsWith(item.href) && (
                 <div className="absolute inset-x-4 bottom-0 h-0.5 bg-[var(--action-neutral)]" />
               )}
@@ -246,7 +273,7 @@ export function GlobalNav({
           </Link>
           <Link
             ref={portalRef}
-            href={resolveFanAppHref()}
+            href="/membership"
             aria-label="Fan Portal"
             className="site-portal-link flex min-h-[48px] min-w-[48px] items-center gap-[8px] rounded-full bg-[var(--action-neutral)] px-[20px] py-[10px] text-xs font-medium normal-case tracking-normal text-[var(--on-action-neutral)] shadow-lg transition-transform hover:scale-105 active:scale-95"
           >
@@ -270,6 +297,11 @@ export function GlobalNav({
 
       {/* Mega Menu Overlay */}
       <div
+        id="site-mega-menu"
+        role="region"
+        aria-label={`${navItems.find(item => item.featureKey === activeMenu)?.label ?? "Club"} navigation`}
+        aria-hidden={!activeMenu || !desktopFits}
+        inert={!activeMenu || !desktopFits}
         className={cn(
           "absolute inset-x-0 top-full border-t border-white/10 bg-[var(--surface)] shadow-2xl transition-all duration-500 ease-in-out",
           activeMenu
@@ -278,6 +310,9 @@ export function GlobalNav({
         )}
       >
         <div className="page-shell p-8 lg:p-12">
+          {activeMenu && !["live", "squad"].includes(activeMenu) ? (
+            <Link href={navItems.find(item => item.featureKey === activeMenu)?.href ?? "/"} className="inline-flex min-h-[48px] items-center text-white underline">Open {navItems.find(item => item.featureKey === activeMenu)?.label ?? "club page"}</Link>
+          ) : null}
           {activeMenu === "live" && (
             <div className="grid grid-cols-4 gap-12">
               <div className="col-span-2">

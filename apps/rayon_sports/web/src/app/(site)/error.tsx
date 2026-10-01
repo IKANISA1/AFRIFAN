@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { resolveFanAppHref } from "@/lib/config";
 
 export default function SiteError({
   reset,
@@ -34,10 +33,10 @@ export default function SiteError({
             Return home
           </Link>
           <Link
-            href={resolveFanAppHref()}
+            href="/membership"
             className="recovery-action recovery-action-secondary"
           >
-            Open fan app
+            Open member area
           </Link>
         </div>
       </section>

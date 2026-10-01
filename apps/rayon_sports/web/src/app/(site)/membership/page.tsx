@@ -4,7 +4,7 @@ import {BrowserMembershipPortal} from '@/components/browser-membership-portal';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 import { MembershipSurface } from "@/components/membership-surface";
-import { resolveFanAppHref, siteConfig } from "@/lib/config";
+import { resolveFanAppHref, hasFanAppDestination } from "@/lib/config";
 import { getClubProfile } from "@/lib/data/public";
 import { getFeaturePageGuard } from "@/lib/feature-page-guard";
 import { buildPageMetadata } from "@/lib/metadata";
@@ -41,8 +41,8 @@ export default async function MembershipPage() {
       clubId={club.id}
       countryCode={club.countryCode}
       currencyCode={club.currencyCode}
-      fanAppHref={resolveFanAppHref()}
-      hasExternalAppUrl={siteConfig.fanAppUrl.length > 0}
+      fanAppHref={resolveFanAppHref(club.clubSlug)}
+      hasExternalAppUrl={hasFanAppDestination(club.clubSlug)}
     />
   );
 }

@@ -73,7 +73,7 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
       { name: "Home", short_name: "Home", url: "/" },
       { name: "Tickets", short_name: "Tickets", url: "/tickets" },
       { name: "Support Groups", short_name: "Groups", url: "/Groups" },
-      { name: "Fan App", short_name: "Fan App", url: resolveFanAppHref() },
+      { name: "Fan App", short_name: "Fan App", url: resolveFanAppHref(club.clubSlug) },
     ],
     icons,
     share_target: {

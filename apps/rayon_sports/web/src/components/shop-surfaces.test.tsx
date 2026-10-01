@@ -58,6 +58,12 @@ function readyProduct(product = products[0]) {
   return response(200, { code: "PUBLIC_SHOP_PRODUCT_READY", item: product });
 }
 
+function deferred<T>() {
+  let resolve!: (value: T) => void;
+  const promise = new Promise<T>(accept => { resolve = accept; });
+  return { promise, resolve };
+}
+
 function renderShop(locale = "en") {
   return render(
     <ShopSurface
@@ -123,6 +129,18 @@ describe("ShopSurface", () => {
 
   afterEach(() => vi.useRealTimers());
 
+  it.each(["RWF", "BIF", "ZMW", "CDF", "MZN"])("uses %s for catalog prices and product details", async (currencyCode) => {
+    const expected = new Intl.NumberFormat("en", { style: "currency", currency: currencyCode, maximumFractionDigits: 0 }).format(products[0].price);
+    vi.spyOn(globalThis, "fetch").mockImplementation(readyCatalog);
+    const catalog = render(<ShopSurface locale="en" clubShortName="Selected club" currencyCode={currencyCode} fanAppHref="/app" hasExternalAppUrl={false} />);
+    expect((await screen.findAllByText(expected.replace(/\s+/g, " "))).length).toBeGreaterThan(0);
+    catalog.unmount();
+    vi.spyOn(globalThis, "fetch").mockImplementation(() => readyProduct());
+    render(<ShopProductSurface locale="en" clubShortName="Selected club" currencyCode={currencyCode} fanAppHref="/app" hasExternalAppUrl={false} productId="home-shirt" />);
+    expect(await screen.findByText(expected.replace(/\s+/g, " "))).toBeVisible();
+    if (currencyCode !== "RWF") expect(screen.queryByText(/RWF/)).not.toBeInTheDocument();
+  });
+
   it("renders confirmed products and supports real selection", async () => {
     vi.spyOn(globalThis, "fetch").mockImplementation(readyCatalog);
     const { container } = renderShop();
@@ -140,6 +158,44 @@ describe("ShopSurface", () => {
       "data-shop-interaction",
       "selected",
     );
+  });
+
+  it("clears the previous club catalog and ignores its late denied response", async () => {
+    const previous = deferred<unknown>();
+    const next = deferred<Response>();
+    vi.spyOn(globalThis, "fetch")
+      .mockImplementationOnce(readyCatalog)
+      .mockResolvedValueOnce({ ok: false, status: 403, json: () => previous.promise } as Response)
+      .mockReturnValueOnce(next.promise);
+    const view = renderShop();
+    await screen.findAllByText("Home shirt");
+    fireEvent.click(screen.getByRole("button", { name: "Refresh products" }));
+    view.rerender(<ShopSurface locale="en" clubShortName="Nkana" clubId={26} currencyCode="ZMW" fanAppHref="/app" hasExternalAppUrl={false} />);
+    expect(screen.queryByText("Home shirt")).not.toBeInTheDocument();
+    expect(view.container.querySelector(".shop-surface")).toHaveAttribute("data-shop-status", "loading");
+    await act(async () => { next.resolve(await response(200, { items: [{ ...products[0], name: "Nkana shirt" }] })); });
+    await screen.findAllByText("Nkana shirt");
+    await act(async () => { previous.resolve({ items: products }); });
+    expect(view.container.querySelector(".shop-surface")).toHaveAttribute("data-shop-status", "ready");
+    expect(screen.queryByText("Home shirt")).not.toBeInTheDocument();
+    expect(screen.getAllByText("Nkana shirt").length).toBeGreaterThan(0);
+  });
+
+  it("ignores an aborted refresh body after a newer catalog arrives", async () => {
+    const previous = deferred<unknown>();
+    vi.spyOn(globalThis, "fetch")
+      .mockImplementationOnce(readyCatalog)
+      .mockResolvedValueOnce({ ok: false, status: 403, json: () => previous.promise } as Response)
+      .mockImplementationOnce(() => response(200, { items: [{ ...products[0], name: "Latest shirt" }] }));
+    const view = renderShop();
+    await screen.findAllByText("Home shirt");
+    fireEvent.click(screen.getByRole("button", { name: "Refresh products" }));
+    fireEvent(window, new Event("online"));
+    await screen.findAllByText("Latest shirt");
+    await act(async () => { previous.resolve({ items: products }); });
+    expect(view.container.querySelector(".shop-surface")).toHaveAttribute("data-shop-status", "ready");
+    expect(screen.getAllByText("Latest shirt").length).toBeGreaterThan(0);
+    expect(screen.queryByText("Home shirt")).not.toBeInTheDocument();
   });
 
   it("renders the controlled empty state", async () => {
@@ -290,6 +346,25 @@ describe("ShopProductSurface", () => {
       "data-shop-product-interaction",
       "selected",
     );
+  });
+
+  it("clears the previous product and ignores its late refresh after the route changed", async () => {
+    const previous = deferred<unknown>();
+    const next = deferred<Response>();
+    vi.spyOn(globalThis, "fetch")
+      .mockImplementationOnce(() => readyProduct())
+      .mockResolvedValueOnce({ ok: true, status: 200, json: () => previous.promise } as Response)
+      .mockReturnValueOnce(next.promise);
+    const view = renderProduct();
+    await screen.findAllByText("Home shirt");
+    fireEvent.click(screen.getByRole("button", { name: "Refresh products" }));
+    view.rerender(<ShopProductSurface locale="en" clubShortName="Rayon Sports" fanAppHref="/app" hasExternalAppUrl={false} productId="club-scarf" />);
+    expect(screen.queryByText("Home shirt")).not.toBeInTheDocument();
+    await act(async () => { next.resolve(await readyProduct(products[1])); });
+    await screen.findAllByText("Club scarf");
+    await act(async () => { previous.resolve({ item: products[0] }); });
+    expect(screen.queryByText("Home shirt")).not.toBeInTheDocument();
+    expect(screen.getAllByText("Club scarf").length).toBeGreaterThan(0);
   });
 
   it("renders a truthful unavailable product with disabled size choices", async () => {

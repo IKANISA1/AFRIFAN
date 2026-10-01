@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { MemberPortal } from "./member-portal";
 import { getBrowserSupabase } from "@/lib/supabase/browser";
-import { launchPaidMembership } from "@/lib/membership-payment";
+import { confirmPaidMembership, MembershipPaymentChangedError, preparePaidMembership, type MembershipPaymentReview } from "@/lib/membership-payment";
 import {
   resolveFixturesFailureStatus,
   type FixturesSurfaceStatus,
@@ -50,11 +50,16 @@ type MembershipSurfaceProps = {
   hasExternalAppUrl: boolean;
 };
 
+type CatalogPaymentReview = MembershipPaymentReview & {
+  catalogTitle: string;
+  catalogPrice: number;
+};
+
 type MembershipCopy = {
   status: Record<FixturesSurfaceStatus, { label: string; detail: string }>;
   eyebrow: string;
   title: (club: string) => string;
-  description: string;
+  description: (club: string) => string;
   openApp: string;
   appPending: string;
   tickets: string;
@@ -119,8 +124,8 @@ const en: MembershipCopy = {
   },
   eyebrow: "Supporter membership",
   title: () => "Own the belonging.",
-  description:
-    "Join the Blue Wall with WhatsApp-secured access, a private member number, confirmed contribution history, and the club-approved MoMo route.",
+  description: (club) =>
+    `Join ${club} with WhatsApp-secured access, a private member number, confirmed contribution history, and an available club-approved payment route.`,
   openApp: "Open supporter app",
   appPending: "App links coming soon",
   tickets: "Browse tickets",
@@ -135,13 +140,13 @@ const en: MembershipCopy = {
   included: "Included benefits",
   directory: "Confirmed membership catalog",
   directoryDetail:
-    "Choose any paid tier to open MoMo and complete payment.",
+    "Select a tier, then review the current amount and recipient before opening payment.",
   noTiers: "No public membership tiers",
   noTiersDetail: "Tiers appear only after club confirmation.",
   boundaryEyebrow: "Paid membership",
-  boundaryTitle: "Choose. Pay. Your membership activates automatically.",
+  boundaryTitle: "Choose. Review. Confirm your payment route.",
   boundaryDetail:
-    "Sign in to your club account and choose any paid tier. MoMo opens for payment; your card and benefits update automatically when payment is matched.",
+    "Sign in to your club account and choose a paid tier. Review the server-confirmed amount, currency and recipient before opening MoMo. Opening the dialer does not confirm payment; your membership updates only after a matched payment.",
 };
 
 function localizedCopy(_locale: string): MembershipCopy {
@@ -231,7 +236,16 @@ function formatPrice(value: number, currencyCode: string) {
   }
 }
 
-export function MembershipSurface({
+export function MembershipSurface(props: MembershipSurfaceProps) {
+  return (
+    <ClubMembershipSurface
+      key={`${props.clubId ?? 24}:${props.countryCode ?? "RW"}:${props.currencyCode ?? "RWF"}`}
+      {...props}
+    />
+  );
+}
+
+function ClubMembershipSurface({
   locale,
   clubShortName,
   clubId = 24,
@@ -242,6 +256,8 @@ export function MembershipSurface({
 }: MembershipSurfaceProps) {
   const [paymentBusy, setPaymentBusy] = useState(false);
   const [paymentMessage, setPaymentMessage] = useState<string | null>(null);
+  const [paymentReview, setPaymentReview] = useState<CatalogPaymentReview | null>(null);
+  const reviewHeading = useRef<HTMLHeadingElement>(null);
   const [memberRefresh, setMemberRefresh] = useState(0);
   const paymentRequest = useRef(0);
   const paymentInFlight = useRef<number | null>(null);
@@ -260,7 +276,17 @@ export function MembershipSurface({
       document.removeEventListener("visibilitychange", refresh);
     };
   }, [clubId]);
-  async function payTier(tier: PublicMembershipTier) {
+  useEffect(() => {
+    if (paymentReview) reviewHeading.current?.focus();
+  }, [paymentReview]);
+  function selectTier(tier: PublicMembershipTier) {
+    paymentRequest.current++;
+    setPaymentReview(null);
+    setPaymentMessage(null);
+    setSelectedId(tier.id);
+    setInteraction("selected");
+  }
+  async function reviewTier(tier: PublicMembershipTier) {
     if (paymentInFlight.current === paymentRequest.current) return;
     setSelectedId(tier.id);
     setInteraction("selected");
@@ -271,10 +297,33 @@ export function MembershipSurface({
     setPaymentBusy(true);
     setPaymentMessage(null);
     try {
-      const launched = await launchPaidMembership(client, tier.tier, clubId,
+      const review = await preparePaidMembership(client, tier.tier, clubId, currencyCode, () => request === paymentRequest.current);
+      if (request !== paymentRequest.current || !review) return;
+      setPaymentReview({ ...review, catalogTitle: tier.title, catalogPrice: tier.annualPrice });
+    } catch (error) {
+      if (request !== paymentRequest.current) return;
+      setPaymentMessage(error instanceof Error && error.message === "MEMBER_AUTH_REQUIRED"
+        ? "Sign in above, then review your selected tier."
+        : "Payment instructions could not be verified. No dialer was opened. Refresh the tiers or try again when connected.");
+    } finally {
+      if (paymentInFlight.current === request) paymentInFlight.current = null;
+      if (request === paymentRequest.current) setPaymentBusy(false);
+    }
+  }
+  async function confirmPayment() {
+    if (!paymentReview || paymentInFlight.current === paymentRequest.current) return;
+    const client = getBrowserSupabase();
+    if (!client) { setPaymentMessage("Member payments are unavailable. Try again when connected."); return; }
+    const request = ++paymentRequest.current;
+    paymentInFlight.current = request;
+    setPaymentBusy(true);
+    setPaymentMessage(null);
+    try {
+      const launched = await confirmPaidMembership(client, paymentReview,
         href => window.location.assign(href), () => request === paymentRequest.current);
       if (request !== paymentRequest.current || !launched) return;
-      setPaymentMessage("Complete your MoMo payment. Your membership updates automatically.");
+      setPaymentReview(null);
+      setPaymentMessage("MoMo was opened. Payment is not confirmed. Check your member area for the matched result before paying again.");
       if (paymentPolling.current) clearInterval(paymentPolling.current);
       let checks = 0;
       paymentPolling.current = setInterval(() => {
@@ -283,9 +332,15 @@ export function MembershipSurface({
       }, 5000);
     } catch (error) {
       if (request !== paymentRequest.current) return;
+      if (error instanceof MembershipPaymentChangedError) {
+        setPaymentReview({ ...error.review, catalogTitle: paymentReview.catalogTitle, catalogPrice: paymentReview.catalogPrice });
+        setPaymentMessage("Payment instructions changed. Review the updated details and confirm again. No dialer was opened.");
+        return;
+      }
+      setPaymentReview(null);
       setPaymentMessage(error instanceof Error && error.message === "MEMBER_AUTH_REQUIRED"
-        ? "Sign in above, then choose any paid tier."
-        : "Payment could not be opened. Check your connection and try the tier again.");
+        ? "Your account changed or signed out. Sign in above and review the tier again."
+        : "Payment could not be opened. No payment is confirmed. Check your member area before reviewing the tier again.");
     } finally {
       if (paymentInFlight.current === request) paymentInFlight.current = null;
       if (request === paymentRequest.current) setPaymentBusy(false);
@@ -313,6 +368,7 @@ export function MembershipSurface({
     const timeout = window.setTimeout(() => {
       timedOut = true;
       controller.abort();
+      if (isMounted.current && activeRequest.current === controller) setStatus("security_timeout");
     }, MEMBERSHIP_TIMEOUT_MS);
     try {
       const response = await fetch("/api/public-content?resource=membership", {
@@ -321,9 +377,12 @@ export function MembershipSurface({
         signal: controller.signal,
       });
       const payload: unknown = await response.json().catch(() => null);
+      if (!isMounted.current || activeRequest.current !== controller || controller.signal.aborted) return;
       if (!response.ok) {
         if (!isMounted.current) return;
         if (response.status === 403) {
+          paymentRequest.current++;
+          setPaymentReview(null);
           setPackages([]);
           setSelectedId(null);
           hasConfirmed.current = false;
@@ -348,7 +407,7 @@ export function MembershipSurface({
       hasConfirmed.current = next.length > 0;
       setStatus(next.length > 0 ? "ready" : "empty");
     } catch {
-      if (!isMounted.current || (controller.signal.aborted && !timedOut))
+      if (!isMounted.current || activeRequest.current !== controller || (controller.signal.aborted && !timedOut))
         return;
       if (typeof navigator !== "undefined" && !navigator.onLine) {
         setStatus("offline");
@@ -405,7 +464,7 @@ export function MembershipSurface({
           <div>
             <p className="circles-eyebrow">{copy.eyebrow}</p>
             <h1>{copy.title(clubShortName)}</h1>
-            <p className="circles-description">{copy.description}</p>
+            <p className="circles-description">{copy.description(clubShortName)}</p>
           </div>
           <aside
             className="membership-status circles-status"
@@ -492,6 +551,33 @@ export function MembershipSurface({
         ) : null}
 
         <section className="circles-content" aria-busy={isBusy}>
+          <h2 id="membership-tiers" tabIndex={-1}>{copy.directory}</h2>
+          {paymentReview && paymentReview.clubId === clubId ? (
+            <section className="circles-featured" aria-labelledby="membership-payment-review-title">
+              <div>
+                <h3 id="membership-payment-review-title" ref={reviewHeading} tabIndex={-1}>Review membership payment</h3>
+                <p>{paymentReview.catalogTitle} · {clubShortName}</p>
+                {paymentReview.amount !== paymentReview.catalogPrice ? (
+                  <p role="status">The payment amount changed from the catalog price of {formatPrice(paymentReview.catalogPrice, paymentReview.currency)} to {formatPrice(paymentReview.amount, paymentReview.currency)}. Confirm only if you agree to the updated amount.</p>
+                ) : null}
+                <dl className="circles-featured-stats">
+                  <div><dt>Amount</dt><dd>{formatPrice(paymentReview.amount, paymentReview.currency)}</dd></div>
+                  <div><dt>Currency</dt><dd>{paymentReview.currency}</dd></div>
+                  <div><dt>Recipient code</dt><dd>{paymentReview.recipientCode}</dd></div>
+                  <div><dt>Payment country</dt><dd>{paymentReview.country}</dd></div>
+                  <div><dt>Dialer instruction</dt><dd>{paymentReview.ussdCode}</dd></div>
+                </dl>
+                <p>Payment request: {paymentReview.id}</p>
+                <p>Opening MoMo does not confirm payment. Your membership updates only after the payment is matched.</p>
+                <button type="button" disabled={paymentBusy} onClick={() => void confirmPayment()} className="membership-action circles-action circles-action-primary">
+                  {paymentBusy ? "Checking payment instructions…" : "Confirm and open MoMo"}
+                </button>
+                <button type="button" disabled={paymentBusy} className="membership-action circles-action circles-action-secondary" onClick={() => {
+                  paymentRequest.current++; setPaymentReview(null); setPaymentMessage("Payment review closed. No dialer was opened. A prepared request does not confirm payment.");
+                }}>Cancel payment review</button>
+              </div>
+            </section>
+          ) : null}
           {selected ? (
             <article className="circles-featured">
               <span className="circles-featured-mark" aria-hidden="true">
@@ -524,9 +610,9 @@ export function MembershipSurface({
                   ))}
                 </ul>
                 <button type="button" disabled={isBusy || paymentBusy}
-                  onClick={() => void payTier(selected)}
+                  onClick={() => void reviewTier(selected)}
                   className="membership-action circles-action circles-action-primary">
-                  {paymentBusy ? "Opening MoMo…" : `Pay for ${selected.title}`}
+                  {paymentBusy ? "Preparing payment review…" : `Review payment for ${selected.title}`}
                   <ArrowRight aria-hidden="true" />
                 </button>
               </div>
@@ -566,7 +652,7 @@ export function MembershipSurface({
                     className="membership-card circles-card"
                     aria-pressed={membershipPackage.id === selected?.id}
                     disabled={isBusy || paymentBusy}
-                    onClick={() => void payTier(membershipPackage)}
+                    onClick={() => selectTier(membershipPackage)}
                     onFocus={() => setInteraction("focused")}
                     onBlur={() =>
                       setInteraction((current) =>

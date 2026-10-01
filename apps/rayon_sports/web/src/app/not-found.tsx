@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { resolveFanAppHref } from "@/lib/config";
 
 export default function NotFound() {
   return (
@@ -10,7 +9,7 @@ export default function NotFound() {
           Page not found
         </h1>
         <p className="recovery-description">
-          This page may have moved. Return home, check the fixtures, or open the fan app.
+          This page may have moved. Return home, check the fixtures, or open the member area.
         </p>
         <div className="recovery-actions">
           <Link
@@ -26,10 +25,10 @@ export default function NotFound() {
             Fixtures
           </Link>
           <Link
-            href={resolveFanAppHref()}
+            href="/membership"
             className="recovery-action recovery-action-secondary"
           >
-            Fan app
+            Member area
           </Link>
         </div>
       </section>

@@ -25,8 +25,8 @@ test('actual immutable guard permits reuse and rejects source/artifact writes', 
   const seal=JSON.stringify({build_id:'fixture-build',source:{files:[{file:'input.txt'}]},artifacts:{files:[{file:'output.txt'}]}});
   fs.writeFileSync(path.join(next,'africlub-build-provenance.json'),seal);
   const guard=path.resolve('e2e/fixtures/local-evidence-inputs-readonly.cjs');
-  const module=path.resolve('e2e/fixtures/local-build-proof-cache.mjs');
-  const script=`import assert from 'node:assert/strict';import fs from 'node:fs';import {checkedProductionBuild} from ${JSON.stringify(module)};
+  const cacheModule=path.resolve('e2e/fixtures/local-build-proof-cache.mjs');
+  const script=`import assert from 'node:assert/strict';import fs from 'node:fs';import {checkedProductionBuild} from ${JSON.stringify(cacheModule)};
     let calls=0;const check=()=>({build_id:'fixture-build',provenance_sha256:${JSON.stringify(createHash('sha256').update(seal).digest('hex'))},calls:++calls});
     const a=checkedProductionBuild(${JSON.stringify(root)},check),b=checkedProductionBuild(${JSON.stringify(root)},check);assert.equal(calls,1);assert.equal(a,b);
     for(const name of ['input.txt','.next/output.txt'])assert.throws(()=>fs.writeFileSync(${JSON.stringify(root)}+'/'+name,'mutated'),{code:'AFRICLUB_INSTALLED_WRITE_REJECTED'});

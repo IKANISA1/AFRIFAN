@@ -6,7 +6,6 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { X, User, Ticket, ShoppingBag } from "lucide-react";
 import { ui } from "@/ui-kit";
-import { resolveFanAppHref } from "@/lib/config";
 import type { ClubProfile } from "@/lib/types";
 import type { SiteNavigationItem } from "@/lib/feature-config";
 import { cn } from "@/lib/utils";
@@ -191,13 +190,13 @@ export function MobileNavDrawer({
           {/* Quick access row */}
           <div className="site-drawer-shortcuts grid gap-3">
             <Link
-              href={resolveFanAppHref()}
+              href="/membership"
               prefetch={false}
               className={`${ui.drawerShortcut} focus-ring min-w-0 rounded-[24px] p-3`}
             >
               <User size={20} className="text-action-blue-hover" />
               <span className="text-xs normal-case tracking-normal font-semibold">
-                Fan App
+                Member area
               </span>
             </Link>
             <Link

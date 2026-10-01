@@ -11,6 +11,27 @@ import yaml from "js-yaml";
 
 // Exercise the installed transitive packages, not a copied implementation.
 // Advisory IDs and dependency chains are documented in the remediation report.
+test("locked Next and every brace-expansion copy retain the October security floors", async () => {
+  // GHSA-vcvr-r3jv-pc5j; GHSA-q2hr-2g5m-vwhr, GHSA-qhr7-859c-m2p7,
+  // GHSA-6j4f-fj2g-mc7p. Unknown branches require a fresh reviewed floor.
+  const lock = JSON.parse(await readFile(new URL("../package-lock.json", import.meta.url), "utf8"));
+  const floors = { next: { 16: [3, 6] }, "brace-expansion": { 1: [1, 21], 2: [1, 7], 5: [0, 12] } };
+  for (const [name, branches] of Object.entries(floors)) {
+    const copies = Object.entries(lock.packages).filter(([location]) => location.endsWith(`node_modules/${name}`));
+    assert.ok(copies.length, `${name} must be present in the governed graph`);
+    for (const [location, { version }] of copies) {
+      assert.match(version, /^\d+\.\d+\.\d+$/, `${location} must use a reviewed stable release`);
+      const [major, minor, patch] = version.split(".").map(Number);
+      const minimum = branches[major];
+      assert.ok(minimum, `${location}: ${version} requires a reviewed branch floor`);
+      assert.ok(minor > minimum[0] || (minor === minimum[0] && patch >= minimum[1]),
+        `${location}: ${version} predates the security patch`);
+      const installed = JSON.parse(await readFile(new URL(`../${location}/package.json`, import.meta.url), "utf8"));
+      assert.equal(installed.version, version, `${location}: installed dependency must match the reviewed lockfile`);
+    }
+  }
+});
+
 // Undici's September 2026 advisories patch the maintained branches at these
 // floors: https://github.com/nodejs/undici/releases/tag/v7.29.1
 test("every locked undici copy meets its maintained security patch floor", async () => {

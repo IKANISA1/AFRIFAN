@@ -46,6 +46,8 @@ type ShopInteraction = "idle" | "focused" | "pressed" | "selected";
 type ShopSurfaceProps = {
   locale: string;
   clubShortName: string;
+  clubId?: number;
+  currencyCode?: string;
   fanAppHref: string;
   hasExternalAppUrl: boolean;
 };
@@ -244,15 +246,15 @@ export function resolveShopCopy(locale: string) {
   return localizedCopy(locale);
 }
 
-function formatPrice(value: number, _locale: string) {
+function formatPrice(value: number, currencyCode: string) {
   try {
     return new Intl.NumberFormat("en", {
       style: "currency",
-      currency: "RWF",
+      currency: currencyCode,
       maximumFractionDigits: 0,
     }).format(value);
   } catch {
-    return `${value.toLocaleString()} RWF`;
+    return `${value.toLocaleString("en")} ${currencyCode}`;
   }
 }
 
@@ -276,6 +278,7 @@ function useShopResource(productId?: string) {
     const timeout = window.setTimeout(() => {
       timedOut = true;
       controller.abort();
+      if (isMounted.current && activeRequest.current === controller) setStatus("security_timeout");
     }, SHOP_TIMEOUT_MS);
     const query =
       productId == null
@@ -288,6 +291,7 @@ function useShopResource(productId?: string) {
         signal: controller.signal,
       });
       const payload: unknown = await response.json().catch(() => null);
+      if (!isMounted.current || activeRequest.current !== controller || controller.signal.aborted) return;
       if (!response.ok) {
         if (!isMounted.current) return;
         if (response.status === 403) {
@@ -315,7 +319,7 @@ function useShopResource(productId?: string) {
       hasConfirmed.current = next.length > 0;
       setStatus(next.length > 0 ? "ready" : "empty");
     } catch {
-      if (!isMounted.current || (controller.signal.aborted && !timedOut))
+      if (!isMounted.current || activeRequest.current !== controller || (controller.signal.aborted && !timedOut))
         return;
       if (typeof navigator !== "undefined" && !navigator.onLine) {
         setStatus("offline");
@@ -430,9 +434,14 @@ function AppShopAction({
   );
 }
 
-export function ShopSurface({
+export function ShopSurface(props: ShopSurfaceProps) {
+  return <ClubShopSurface key={`${props.clubId ?? props.clubShortName}:${props.currencyCode ?? "RWF"}`} {...props} />;
+}
+
+function ClubShopSurface({
   locale,
   clubShortName,
+  currencyCode = "RWF",
   fanAppHref,
   hasExternalAppUrl,
 }: ShopSurfaceProps) {
@@ -550,7 +559,7 @@ export function ShopSurface({
                 <dl className="circles-featured-stats">
                   <div>
                     <dt>{copy.price}</dt>
-                    <dd>{formatPrice(selected.price, locale)}</dd>
+                    <dd>{formatPrice(selected.price, currencyCode)}</dd>
                   </div>
                   <div>
                     <dt>{copy.sizes}</dt>
@@ -625,7 +634,7 @@ export function ShopSurface({
                     <span>
                       <strong>{product.name}</strong>
                       <small>
-                        {formatPrice(product.price, locale)}
+                        {formatPrice(product.price, currencyCode)}
                         {" · "}
                         {product.isAvailable ? copy.available : copy.unavailable}
                       </small>
@@ -643,9 +652,14 @@ export function ShopSurface({
   );
 }
 
-export function ShopProductSurface({
+export function ShopProductSurface(props: ShopProductSurfaceProps) {
+  return <ClubShopProductSurface key={`${props.clubId ?? props.clubShortName}:${props.currencyCode ?? "RWF"}:${props.productId}`} {...props} />;
+}
+
+function ClubShopProductSurface({
   locale,
   clubShortName,
+  currencyCode = "RWF",
   fanAppHref,
   hasExternalAppUrl,
   productId,
@@ -759,7 +773,7 @@ export function ShopProductSurface({
                 <dl className="circles-featured-stats">
                   <div>
                     <dt>{copy.price}</dt>
-                    <dd>{formatPrice(product.price, locale)}</dd>
+                    <dd>{formatPrice(product.price, currencyCode)}</dd>
                   </div>
                   <div>
                     <dt>{copy.availability}</dt>

@@ -1,5 +1,5 @@
 import { ContactSurface } from "@/components/contact-surface";
-import { resolveFanAppHref } from "@/lib/config";
+import { hasFanAppDestination, resolveFanAppHref } from "@/lib/config";
 import { getClubProfile, getCmsContent } from "@/lib/data/public";
 import { buildPageMetadata } from "@/lib/metadata";
 import { getSiteCopy } from "@/lib/site-copy";
@@ -16,7 +16,7 @@ export async function generateMetadata() {
 }
 
 const fallbackSupportBlocks = [
-  "Membership, tickets, and orders stay in the fan app for authenticated follow-up.",
+  "Membership and confirmed contribution history are available in the member area. Other account follow-up depends on the released supporter features.",
   "Public contact stays focused on club communication, media, and general supporter questions.",
 ];
 
@@ -56,8 +56,8 @@ export default async function ContactPage() {
       eyebrow={copy.pages.contact.eyebrow}
       title={copy.pages.contact.title}
       description={copy.pages.contact.description}
-      fanAppHref={resolveFanAppHref()}
-      openFanAppLabel={copy.openFanApp}
+      fanAppHref={resolveFanAppHref(club.clubSlug)}
+      openFanAppLabel={hasFanAppDestination(club.clubSlug) ? copy.openFanApp : "Check supporter app availability"}
       membershipSupportLabel={copy.pages.contact.membershipSupport}
       officialContact={club.officialContact}
       languages={club.supportedLanguages}

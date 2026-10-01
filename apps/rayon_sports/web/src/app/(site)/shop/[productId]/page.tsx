@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ShopProductSurface } from "@/components/shop-surfaces";
-import { resolveFanAppHref, siteConfig } from "@/lib/config";
+import { resolveFanAppHref, hasFanAppDestination } from "@/lib/config";
 import { getClubProfile, getProductById } from "@/lib/data/public";
 import { getFeaturePageGuard } from "@/lib/feature-page-guard";
 import { buildPageMetadata } from "@/lib/metadata";
@@ -41,8 +41,10 @@ export default async function ProductPage({
     <ShopProductSurface
       locale={club.defaultLanguage}
       clubShortName={club.shortName}
-      fanAppHref={resolveFanAppHref()}
-      hasExternalAppUrl={siteConfig.fanAppUrl.length > 0}
+      clubId={club.id}
+      currencyCode={club.currencyCode}
+      fanAppHref={resolveFanAppHref(club.clubSlug)}
+      hasExternalAppUrl={hasFanAppDestination(club.clubSlug)}
       productId={productId}
     />
   );

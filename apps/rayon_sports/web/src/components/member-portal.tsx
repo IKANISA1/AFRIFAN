@@ -187,6 +187,30 @@ export function MemberPortal({ refreshKey = 0, clubShortName, clubId = 24, count
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [authFieldError, setAuthFieldError] = useState<"phone" | "otp" | null>(null);
+  const [authNotice, setAuthNotice] = useState<string | null>(null);
+  const [resendAt, setResendAt] = useState(0);
+  const [resendSeconds, setResendSeconds] = useState(0);
+  const phoneInput = useRef<HTMLInputElement>(null);
+  const otpInput = useRef<HTMLInputElement>(null);
+  const previousStep = useRef<AuthStep>("loading");
+  const authRequest = useRef(false);
+
+  useEffect(() => {
+    if (previousStep.current !== step) {
+      if (step === "otp") otpInput.current?.focus();
+      else if (step === "phone" && previousStep.current !== "loading") phoneInput.current?.focus();
+      previousStep.current = step;
+    }
+  }, [step]);
+
+  useEffect(() => {
+    if (step !== "otp" || !resendAt) return;
+    const update = () => setResendSeconds(Math.max(0, Math.ceil((resendAt - Date.now()) / 1000)));
+    update();
+    const timer = window.setInterval(update, 1000);
+    return () => window.clearInterval(timer);
+  }, [step, resendAt]);
 
   const identity = useRef<string | null>(null);
   const identityVersion = useRef(0);
@@ -209,6 +233,10 @@ export function MemberPortal({ refreshKey = 0, clubShortName, clubId = 24, count
     setCopied(false);
     setBusy(false);
     setMessage(null);
+    setAuthFieldError(null);
+    setAuthNotice(null);
+    setResendAt(0);
+    setResendSeconds(0);
   }, []);
 
   const loadMemberArea = useCallback(async () => {
@@ -382,10 +410,13 @@ export function MemberPortal({ refreshKey = 0, clubShortName, clubId = 24, count
     }
   }
 
-  async function requestOtp() {
-    const normalizedPhone = normalizeMemberPhone(phone, countryCode);
+  async function requestOtp(resend = false) {
+    if (authRequest.current || (resend && Date.now() < resendAt)) return;
+    const normalizedPhone = resend ? verifiedPhone : normalizeMemberPhone(phone, countryCode);
     if (!normalizedPhone) {
+      setAuthFieldError("phone");
       setMessage("Enter your WhatsApp number in international format, including + and the country code.");
+      phoneInput.current?.focus();
       return;
     }
 
@@ -395,8 +426,11 @@ export function MemberPortal({ refreshKey = 0, clubShortName, clubId = 24, count
       return;
     }
 
+    authRequest.current = true;
     setBusy(true);
     setMessage(null);
+    setAuthFieldError(null);
+    setAuthNotice(null);
     const version = identityVersion.current;
     try {
       const { error } = await boundedMemberRequest(supabase.auth.signInWithOtp({
@@ -409,26 +443,37 @@ export function MemberPortal({ refreshKey = 0, clubShortName, clubId = 24, count
         return;
       }
       setVerifiedPhone(normalizedPhone);
+      setOtp("");
+      setResendAt(Date.now() + 60_000);
+      setResendSeconds(60);
+      if (resend) { setAuthNotice("A new code was requested. Enter the latest code sent to WhatsApp."); otpInput.current?.focus(); }
       setStep("otp");
     } catch {
       if (version === identityVersion.current) {
         setMessage("The code request could not be confirmed. Please retry when connected.");
       }
     } finally {
+      authRequest.current = false;
       if (version === identityVersion.current) setBusy(false);
     }
   }
 
   async function verifyOtp() {
+    if (authRequest.current) return;
     if (!/^\d{6}$/.test(otp)) {
+      setAuthFieldError("otp");
       setMessage("Enter the six-digit code sent to WhatsApp.");
+      otpInput.current?.focus();
       return;
     }
     const supabase = getBrowserSupabase();
     if (!supabase) return;
 
+    authRequest.current = true;
     setBusy(true);
     setMessage(null);
+    setAuthFieldError(null);
+    setAuthNotice(null);
     const version = identityVersion.current;
     try {
       const { error } = await boundedMemberRequest(supabase.auth.verifyOtp({
@@ -438,6 +483,7 @@ export function MemberPortal({ refreshKey = 0, clubShortName, clubId = 24, count
       }));
       if (version !== identityVersion.current) return;
       if (error) {
+        if (/invalid|expired/i.test(error.message)) setAuthFieldError("otp");
         setMessage(cleanError(error.message));
         return;
       }
@@ -447,6 +493,7 @@ export function MemberPortal({ refreshKey = 0, clubShortName, clubId = 24, count
         setMessage("Verification could not be confirmed. Please retry when connected.");
       }
     } finally {
+      authRequest.current = false;
       if (version === identityVersion.current) setBusy(false);
     }
   }
@@ -536,9 +583,9 @@ export function MemberPortal({ refreshKey = 0, clubShortName, clubId = 24, count
         <p className="member-portal-kicker">{clubId === 24 ? "Gikundiro" : clubShortName} member area</p>
         <h2 id="member-portal-title">{clubId === 24 ? "Your place in the Blue Wall." : `Your place at ${clubShortName}.`}</h2>
         <p>
-          WhatsApp is your key. Sign in once to receive a private six-digit
-          member number, see confirmed contributions, and support {clubShortName}{" "}
-          through the official MoMo route.
+          Sign in with WhatsApp to check your membership. An active, confirmed
+          paid membership provides your private member number and contribution
+          history. Payments use an available club-approved route for {clubShortName}.
         </p>
         <div className="member-trust-row" role="group" aria-label="Member portal safeguards">
           <span><ShieldCheck aria-hidden="true" /> WhatsApp OTP</span>
@@ -572,6 +619,7 @@ export function MemberPortal({ refreshKey = 0, clubShortName, clubId = 24, count
         {step === "phone" ? (
           <form
             className="member-auth-form"
+            noValidate
             onSubmit={(event) => {
               event.preventDefault();
               void requestOtp();
@@ -584,16 +632,20 @@ export function MemberPortal({ refreshKey = 0, clubShortName, clubId = 24, count
             <div className="member-input-shell">
               <Phone aria-hidden="true" />
               <input
+                ref={phoneInput}
                 id="member-phone"
                 type="tel"
                 inputMode="tel"
                 autoComplete="tel"
                 value={phone}
-                onChange={(event) => setPhone(event.target.value.slice(0, 24))}
+                onChange={(event) => { setPhone(event.target.value.slice(0, 24)); if (authFieldError === "phone") { setAuthFieldError(null); setMessage(null); } }}
+                aria-invalid={authFieldError === "phone" || undefined}
+                aria-describedby={authFieldError === "phone" ? "member-phone-error" : undefined}
                 placeholder={countryCode === "RW" ? "+250 788 123 456" : "+country code and number"}
                 required
               />
             </div>
+            {authFieldError === "phone" && message ? <p id="member-phone-error" className="member-message" role="alert">{message}</p> : null}
             <button className="member-primary-action" type="submit" disabled={busy}>
               {busy ? <LoaderCircle className="member-spinner" aria-hidden="true" /> : <Smartphone aria-hidden="true" />}
               Send code on WhatsApp
@@ -605,6 +657,7 @@ export function MemberPortal({ refreshKey = 0, clubShortName, clubId = 24, count
         {step === "otp" ? (
           <form
             className="member-auth-form"
+            noValidate
             onSubmit={(event) => {
               event.preventDefault();
               void verifyOtp();
@@ -615,6 +668,7 @@ export function MemberPortal({ refreshKey = 0, clubShortName, clubId = 24, count
             <p>We sent a six-digit code via WhatsApp to {verifiedPhone}.</p>
             <label htmlFor="member-otp">WhatsApp verification code</label>
             <input
+              ref={otpInput}
               id="member-otp"
               className="member-otp-input"
               type="text"
@@ -623,15 +677,23 @@ export function MemberPortal({ refreshKey = 0, clubShortName, clubId = 24, count
               pattern="[0-9]{6}"
               maxLength={6}
               value={otp}
-              onChange={(event) => setOtp(event.target.value.replace(/\D/g, ""))}
+              onChange={(event) => { setOtp(event.target.value.replace(/\D/g, "").slice(0, 6)); if (authFieldError === "otp") { setAuthFieldError(null); setMessage(null); } }}
+              aria-invalid={authFieldError === "otp" || undefined}
+              aria-describedby={authFieldError === "otp" ? "member-otp-help member-otp-error" : "member-otp-help"}
               placeholder="000000"
               required
             />
+            <p id="member-otp-help">Paste or use autofill to enter your code. If it has expired or did not arrive, request a new one.</p>
+            {authFieldError === "otp" && message ? <p id="member-otp-error" className="member-message" role="alert">{message}</p> : null}
             <button className="member-primary-action" type="submit" disabled={busy}>
               {busy ? <LoaderCircle className="member-spinner" aria-hidden="true" /> : <LockKeyhole aria-hidden="true" />}
               Verify code
             </button>
-            <button className="member-text-action" type="button" onClick={() => setStep("phone")}>
+            <button className="member-text-action" type="button" disabled={busy || resendSeconds > 0} aria-describedby="member-resend-help" onClick={() => void requestOtp(true)}>
+              Resend WhatsApp code
+            </button>
+            <p id="member-resend-help">{resendSeconds > 0 ? `You can request another code in ${resendSeconds} seconds.` : "You can request a new code for the same verified number."}</p>
+            <button className="member-text-action" type="button" disabled={busy} onClick={() => { setOtp(""); setVerifiedPhone(""); setMessage(null); setAuthFieldError(null); setAuthNotice(null); setStep("phone"); }}>
               Use another number
             </button>
           </form>
@@ -645,7 +707,10 @@ export function MemberPortal({ refreshKey = 0, clubShortName, clubId = 24, count
               Choose a paid {clubShortName} membership tier. Your membership
               activates automatically when your payment is matched.
             </p>
-            <a className="member-primary-action" href="/membership">
+            <a className="member-primary-action" href="/membership#membership-tiers" onClick={(event) => {
+              const tiers = document.getElementById("membership-tiers");
+              if (tiers) { event.preventDefault(); tiers.focus(); tiers.scrollIntoView?.({ block: "start" }); window.history.replaceState(null, "", "#membership-tiers"); }
+            }}>
               Choose a membership tier
               <ArrowRight aria-hidden="true" />
             </a>
@@ -790,7 +855,8 @@ export function MemberPortal({ refreshKey = 0, clubShortName, clubId = 24, count
           </div>
         ) : null}
 
-        {message ? <p className="member-message" role="alert">{message}</p> : null}
+        {authNotice ? <p className="member-message" role="status">{authNotice}</p> : null}
+        {message && !authFieldError ? <p className="member-message" role="alert">{message}</p> : null}
       </div>
     </section>
   );

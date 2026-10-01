@@ -31,6 +31,52 @@ beforeEach(()=>{
 });
 afterEach(()=>{cleanup();setMemberSignOutPending(false);vi.useRealTimers();});
 describe('member portal authenticated data lifecycle',()=>{
+ it('focuses the code step and associates correctable errors with their fields',async()=>{
+   mocks.getUser.mockResolvedValue({data:{user:null},error:null});
+   render(<MemberPortal clubShortName="Rayon"/>);
+   const phone=await screen.findByLabelText('WhatsApp number');
+   fireEvent.change(phone,{target:{value:'not a number'}});
+   fireEvent.click(screen.getByRole('button',{name:'Send code on WhatsApp'}));
+   expect(phone).toHaveFocus();expect(phone).toHaveAttribute('aria-invalid','true');
+   expect(phone).toHaveAttribute('aria-describedby','member-phone-error');
+   expect(mocks.signInWithOtp).not.toHaveBeenCalled();
+   fireEvent.change(phone,{target:{value:'+250788123456'}});
+   expect(phone).not.toHaveAttribute('aria-invalid');
+   fireEvent.click(screen.getByRole('button',{name:'Send code on WhatsApp'}));
+   const code=await screen.findByLabelText('WhatsApp verification code');
+   expect(code).toHaveFocus();expect(code).toHaveAttribute('autocomplete','one-time-code');
+   fireEvent.change(code,{target:{value:'123'}});fireEvent.click(screen.getByRole('button',{name:'Verify code'}));
+   expect(code).toHaveAttribute('aria-invalid','true');
+   expect(code).toHaveAttribute('aria-describedby','member-otp-help member-otp-error');
+   expect(mocks.verifyOtp).not.toHaveBeenCalled();
+ });
+ it('recovers expired codes through a bounded resend to the same destination and preserves autofill',async()=>{
+   mocks.getUser.mockResolvedValue({data:{user:null},error:null});render(<MemberPortal clubShortName="Rayon"/>);
+   fireEvent.change(await screen.findByLabelText('WhatsApp number'),{target:{value:'+250788123456'}});
+   vi.useFakeTimers(); await act(async()=>fireEvent.click(screen.getByRole('button',{name:'Send code on WhatsApp'})));
+   const code=screen.getByLabelText('WhatsApp verification code');
+   const resend=screen.getByRole('button',{name:'Resend WhatsApp code'});
+   expect(resend).toBeDisabled();fireEvent.click(resend);expect(mocks.signInWithOtp).toHaveBeenCalledTimes(1);
+   mocks.verifyOtp.mockResolvedValueOnce({error:{message:'Token has expired'}});
+   fireEvent.change(code,{target:{value:'123456'}});await act(async()=>fireEvent.click(screen.getByRole('button',{name:'Verify code'})));
+   expect(screen.getByRole('alert')).toHaveTextContent('invalid or expired');
+   expect(code).toHaveAttribute('aria-invalid','true');
+   await act(async()=>{await vi.advanceTimersByTimeAsync(60001);});
+   expect(resend).toBeEnabled();
+   await act(async()=>fireEvent.click(resend));
+   expect(mocks.signInWithOtp).toHaveBeenCalledTimes(2);
+   expect(mocks.signInWithOtp.mock.calls[1]).toEqual(mocks.signInWithOtp.mock.calls[0]);
+   expect(code).toHaveValue('');expect(code).toHaveFocus();expect(code).not.toHaveAttribute('aria-invalid');
+   expect(resend).toBeDisabled();expect(screen.getByRole('status')).toHaveTextContent('latest code');
+ });
+ it('moves activation to the existing tier heading without losing member authentication',async()=>{
+   rows.fan_memberships={data:null,error:null};
+   render(<><MemberPortal clubShortName="Rayon"/><h2 id="membership-tiers" tabIndex={-1}>Available tiers</h2></>);
+   const choose=await screen.findByRole('link',{name:'Choose a membership tier'});
+   fireEvent.click(choose);
+   expect(screen.getByRole('heading',{name:'Available tiers'})).toHaveFocus();
+   expect(window.location.hash).toBe('#membership-tiers');expect(mocks.signOut).not.toHaveBeenCalled();
+ });
  it('preserves confirmed history and reports a failed refresh',async()=>{await mount();rows.initiative_contributions={data:null,error:{message:'backend unavailable'}};refresh();await screen.findByRole('alert');expect(screen.getByText('QA-confirmed')).toBeVisible();expect(screen.getAllByText(/1,000/).length).toBeGreaterThan(0);expect(screen.queryByText('No contribution intents recorded yet.')).not.toBeInTheDocument();});
  it('does not present a campaign failure as an empty catalogue',async()=>{rows.initiatives={data:null,error:{message:'permission denied'}};render(<MemberPortal clubShortName="Rayon"/>);await screen.findByRole('alert');expect(screen.queryByText('No active campaign confirmed')).not.toBeInTheDocument();expect(screen.getByRole('button',{name:'Retry member area'})).toBeVisible();});
  it('recovers an initial data failure without reactivating membership',async()=>{rows.initiative_contributions={data:null,error:{message:'unavailable'}};render(<MemberPortal clubShortName="Rayon"/>);await screen.findByRole('alert');rows.initiative_contributions={data:[contribution],error:null};fireEvent.click(screen.getByRole('button',{name:'Retry member area'}));await screen.findByText('QA-confirmed');expect(mocks.rpc.mock.calls.some(([name])=>name==='activate_free_fan_membership_for_club')).toBe(false);});
@@ -225,7 +271,7 @@ describe('member portal authenticated data lifecycle',()=>{
  });
  it('opens paid tier selection without free activation',async()=>{
    rows.fan_memberships={data:null,error:null};render(<MemberPortal clubId={26} clubShortName="Nkana FC" countryCode="ZM" currencyCode="ZMW"/>);
-   expect(await screen.findByRole('link',{name:'Choose a membership tier'})).toHaveAttribute('href','/membership');
+   expect(await screen.findByRole('link',{name:'Choose a membership tier'})).toHaveAttribute('href','/membership#membership-tiers');
    expect(mocks.rpc.mock.calls.some(([name])=>name==='activate_free_fan_membership_for_club')).toBe(false);
  });
 

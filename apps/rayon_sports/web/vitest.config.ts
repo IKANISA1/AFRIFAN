@@ -12,8 +12,10 @@ export default defineConfig({
     exclude: ["e2e/**", "node_modules/**", ".next/**", ".open-next/**", "tmp/**", "coverage/**"],
     coverage: {
       provider: "v8",
-      reporter: ["text", "html", "json-summary"],
-      include: ["src/lib/**/*.ts", "src/components/**/*.tsx"],
+      reporter: ["text", "html", "json", "json-summary"],
+      // Keep routes/pages visible in the denominator. Async server-page task
+      // acceptance is exercised by E2E; a zero here must remain visible.
+      include: ["src/lib/**/*.ts", "src/components/**/*.tsx", "src/app/**/*.ts", "src/app/**/*.tsx"],
     },
   },
   resolve: {

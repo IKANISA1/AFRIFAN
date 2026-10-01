@@ -7,7 +7,7 @@ import { getClubProfile, getCmsContentBlock } from "@/lib/data/public";
 import { getSiteCopy } from "@/lib/site-copy";
 import {
   policyLastUpdated,
-  privacyPolicySections,
+  getPrivacyPolicySections,
   supportEmail,
 } from "@/lib/release-legal-content";
 
@@ -43,7 +43,7 @@ export default async function PrivacyPage() {
       content={content}
       documentKind="privacy"
       lastUpdated={policyLastUpdated}
-      sections={privacyPolicySections}
+      sections={getPrivacyPolicySections(club.clubName)}
       actions={[
         { href: "/account-deletion", label: "Request account deletion" },
         { href: `mailto:${supportEmail}`, label: "Contact privacy support" },

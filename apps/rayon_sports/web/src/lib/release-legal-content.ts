@@ -3,11 +3,11 @@ import type { LegalDocumentSection } from "@/components/legal-document";
 export const policyLastUpdated = "9 August 2026";
 export const supportEmail = "support@ikanisa.com";
 
-export const privacyPolicySections: LegalDocumentSection[] = [
+export function getPrivacyPolicySections(clubName: string): LegalDocumentSection[] { return [
   {
     heading: "Information we process",
     paragraphs: [
-      "Gikundiro supports guest and authenticated supporter journeys. The information processed depends on the features a supporter chooses to use.",
+      `${clubName} supports guest and authenticated supporter journeys. The information processed depends on the features a supporter chooses to use.`,
     ],
     items: [
       "Optional profile details, including display name and phone number.",
@@ -58,15 +58,15 @@ export const privacyPolicySections: LegalDocumentSection[] = [
   {
     heading: "Children, changes, and contact",
     paragraphs: [
-      "Gikundiro is not directed to children under 13. If you believe a child has provided personal information contrary to this policy, contact support.",
+      `${clubName} is not directed to children under 13. If you believe a child has provided personal information contrary to this policy, contact support.`,
       `Policy or data-rights questions can be sent to ${supportEmail}. Material changes will be reflected by updating the date on this page.`,
     ],
   },
-];
+]; }
 
-export const termsSections: LegalDocumentSection[] = [
+export function getTermsSections(clubName: string): LegalDocumentSection[] { return [
   {
-    heading: "Using Gikundiro",
+    heading: `Using ${clubName}`,
     paragraphs: [
       "By using the website or mobile app, you agree to use the service lawfully, provide accurate information for protected transactions, and follow the published club, community, and product rules that apply to the journey you select.",
     ],
@@ -112,4 +112,4 @@ export const termsSections: LegalDocumentSection[] = [
       "Access may be restricted for material rule violations, fraud, security threats, legal requirements, or misuse. Supporters may delete their account using the mobile-app flow or the public deletion-request route, subject to the retention terms described in the Privacy Policy.",
     ],
   },
-];
+]; }

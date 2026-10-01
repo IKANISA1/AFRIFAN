@@ -34,7 +34,7 @@ export default async function ShareTargetPage({
 
   return (
     <ShareTargetContent
-      appHref={resolveFanAppHref()}
+      appHref={resolveFanAppHref(club.clubSlug)}
       query={query}
       sharedTitle={title}
       sharedText={text}

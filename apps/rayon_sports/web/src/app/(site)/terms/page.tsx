@@ -8,7 +8,7 @@ import { getSiteCopy } from "@/lib/site-copy";
 import {
   policyLastUpdated,
   supportEmail,
-  termsSections,
+  getTermsSections,
 } from "@/lib/release-legal-content";
 
 export async function generateMetadata() {
@@ -43,7 +43,7 @@ export default async function TermsPage() {
       content={content}
       documentKind="terms"
       lastUpdated={policyLastUpdated}
-      sections={termsSections}
+      sections={getTermsSections(club.clubName)}
       actions={[
         { href: "/privacy", label: "Read the Privacy Policy" },
         { href: `mailto:${supportEmail}`, label: "Contact support" },
