@@ -8,6 +8,7 @@ import { beginProductionBuild, markProductionCompilationComplete, productionSour
 
 const sharedPrefix = "../../../cloudflare/supporter-browser-api/";
 const sharedFiles = ["client.ts", "portal-controller.ts", "browser-platform.ts"];
+const artifactGuard = '../../../tools/scripts/local_ops_rehearsal_no_network.cjs';
 const observationPrefix = "../../../cloudflare/web-observations/";
 const observationFiles = ["contracts.mjs", "contracts.d.mts", "http.mjs", "http.d.mts"];
 
@@ -20,7 +21,7 @@ function fixture(t) {
     fs.writeFileSync(path.join(root, name), value);
   };
   for (const file of ["src/page.tsx", "public/crest.svg", "next.config.ts", "postcss.config.mjs", "tsconfig.json", "package-lock.json",
-    "scripts/run-next-build-stable.mjs", "scripts/ensure-next-build-artifacts.mjs", "scripts/fix-route-group-manifests.mjs", "scripts/web-build-provenance.mjs"]) put(file);
+    "scripts/run-next-build-stable.mjs", "scripts/ensure-next-build-artifacts.mjs", "scripts/fix-route-group-manifests.mjs", "scripts/web-build-provenance.mjs", "scripts/artifact-installed-inputs.mjs"]) put(file);
   put("package.json", JSON.stringify({ packageManager: "npm@12.0.2" }));
   put("node_modules/next/package.json", JSON.stringify({ version: "synthetic-test-version" }));
   put(".env.local", "SECRET=private-fixture-value\n");
@@ -45,6 +46,46 @@ function observationFixture(t) {
   for (const file of observationFiles) result.put(`${observationPrefix}${file}`, "export const shared = true;");
   return result;
 }
+
+test('isolated adapter provenance binds the exact external Node network guard',t=>{
+ const f=fixture(t);f.put('scripts/build-opennext-isolated.mjs');f.put(artifactGuard,'synthetic-denial-control');
+ const record=f.build();assert(record.source.files.some(entry=>entry.file===artifactGuard));
+ f.put(artifactGuard,'changed-denial-control');
+ assert.throws(()=>validateProductionBuild(f.root),/stale for the current source/);
+});
+test('isolated adapter refuses a missing or externally linked network control',t=>{
+ const f=fixture(t);f.put('scripts/build-opennext-isolated.mjs');
+ assert.throws(()=>beginProductionBuild(f.root,['synthetic-fixture-compiler']),/Missing required artifact network control/);
+ f.put(artifactGuard,'synthetic-denial-control');
+ const controls=path.dirname(path.resolve(f.root,artifactGuard)),foreign=controls+'-foreign';
+ fs.renameSync(controls,foreign);fs.symlinkSync(foreign,controls,'dir');
+ assert.throws(()=>beginProductionBuild(f.root,['synthetic-fixture-compiler']),/directory symlink escapes/);
+});
+test('installed compiler code cannot change under the same declared package version',t=>{
+ const f=fixture(t);f.put('scripts/build-opennext-isolated.mjs');f.put(artifactGuard,'synthetic-denial-control');
+ f.put('node_modules/next/compiler.js','original compiler code');
+ const record=f.build();assert.equal(record.source.installedInputs.fileCount,2);
+ f.put('node_modules/next/compiler.js','modified compiler code');
+ assert.throws(()=>validateProductionBuild(f.root),/stale for the current source/);
+});
+test('installed compiler mutation during compilation cannot be sealed',t=>{
+ const f=fixture(t);f.put('scripts/build-opennext-isolated.mjs');f.put(artifactGuard,'synthetic-denial-control');
+ beginProductionBuild(f.root,['synthetic-fixture-compiler']);
+ f.put('node_modules/next/unreviewed.js','added compiler input');
+ assert.throws(f.compile,/source changed during compilation/);
+});
+test('isolated adapter requires its attributed installed-input helper',t=>{
+ const f=fixture(t);f.put('scripts/build-opennext-isolated.mjs');f.put(artifactGuard,'synthetic-denial-control');
+ fs.unlinkSync(path.join(f.root,'scripts/artifact-installed-inputs.mjs'));
+ assert.throws(()=>beginProductionBuild(f.root,['synthetic-fixture-compiler']),/Missing required installed artifact input helper/);
+});
+test('a tampered installed input proof cannot retain a valid source digest',t=>{
+ const f=fixture(t);f.put('scripts/build-opennext-isolated.mjs');f.put(artifactGuard,'synthetic-denial-control');f.build();
+ const seal=path.join(f.root,'.next/africlub-build-provenance.json'),record=JSON.parse(fs.readFileSync(seal,'utf8'));
+ record.source.installedInputs.totalBytes++;
+ fs.writeFileSync(seal,JSON.stringify(record));
+ assert.throws(()=>validateProductionBuild(f.root),/installed input inventory differs/);
+});
 
 for (const file of observationFiles) test(`the web build binds external observation ${file}`, t => {
   const { root, put, build } = observationFixture(t);
@@ -80,7 +121,7 @@ test("same build ID cannot conceal a source change", (t) => {
 });
 
 test("a changed public asset or build dotenv file invalidates the source link", (t) => {
-  for (const changed of ["public/crest.svg", ".env.local"]) {
+  for (const changed of ["public/crest.svg", ".env.local", ".env.development", ".env.development.local", ".env.test", ".env.test.local"]) {
     const { root, put, build } = fixture(t); build(); put(changed, "changed input");
     assert.throws(() => validateProductionBuild(root), /stale for the current source/);
   }
@@ -91,6 +132,14 @@ test("modified or missing compiled code invalidates artifact proof despite a mat
   assert.throws(() => validateProductionBuild(root), /artifacts changed/);
   build(); fs.unlinkSync(path.join(root, ".next/standalone/server.js"));
   assert.throws(() => validateProductionBuild(root), /Incomplete production artifacts/);
+});
+for (const section of ["source", "artifacts"]) test(`an altered ${section} copy list cannot retain its aggregate proof`, (t) => {
+  const { root, build } = fixture(t); build();
+  const file = path.join(root, ".next/africlub-build-provenance.json");
+  const record = JSON.parse(fs.readFileSync(file, "utf8"));
+  record[section].files.push({ file: "../../private-input", bytes: 1, sha256: "0".repeat(64) });
+  fs.writeFileSync(file, JSON.stringify(record));
+  assert.throws(() => validateProductionBuild(root), /inventory differs from its digest/);
 });
 
 test("source changes during compilation cannot be sealed", (t) => {

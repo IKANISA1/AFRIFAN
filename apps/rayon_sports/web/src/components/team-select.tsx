@@ -19,7 +19,7 @@ export function TeamSelect({ name, value, onChange, label = 'Team' }: { name: st
     </button>
     {open ? <div className="grid gap-2 rounded-2xl border border-border-soft p-3">
       <input autoFocus className="dashboard-input" aria-label="Search teams" placeholder="Search teams" value={query} onChange={event => setQuery(event.target.value)} />
-      <div className="grid max-h-64 grid-cols-2 gap-2 overflow-y-auto" aria-label="Choose team">
+      <div className="grid max-h-64 grid-cols-2 gap-2 overflow-y-auto" role="group" aria-label="Choose team">
         {options.map((team, index) => <button type="button" key={`${team.name}-${index}`} className="min-h-12 rounded-2xl text-left" aria-label={team.name} aria-pressed={value === team.name} onClick={() => { onChange(team.name); close(); }}><TeamCard name={team.name} /></button>)}
       </div>
       {!options.length ? <p role="status">No matching team</p> : null}

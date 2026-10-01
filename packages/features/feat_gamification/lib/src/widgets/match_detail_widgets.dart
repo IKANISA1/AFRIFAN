@@ -161,6 +161,8 @@ class MatchMetaLink extends StatelessWidget {
   Widget build(BuildContext context) {
     return AfriPressFeedback(
       onTap: onTap,
+      semanticsLabel: label,
+      excludeChildSemantics: true,
       builder: (context, _) => Container(
         padding: const EdgeInsets.symmetric(
           horizontal: SpacingTokens.spacing3,

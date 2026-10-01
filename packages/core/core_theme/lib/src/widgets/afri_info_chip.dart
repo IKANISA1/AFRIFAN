@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../extensions.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/component_size_tokens.dart';
 import '../tokens/shape_tokens.dart';
@@ -35,6 +36,9 @@ class AfriInfoChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final chipColor = color ?? ColorTokens.primaryContainer;
+    // The tint conveys status. Text must remain readable on the route canvas
+    // beneath the translucent chip, including the membership gradient.
+    final foreground = context.afriSemanticColors.primaryText;
 
     final child = Container(
       padding: const EdgeInsets.symmetric(
@@ -49,7 +53,7 @@ class AfriInfoChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[
-            Icon(icon, size: SizeTokens.iconXxs, color: chipColor),
+            Icon(icon, size: SizeTokens.iconXxs, color: foreground),
             const SizedBox(width: SpacingTokens.spacing1),
           ],
           Flexible(
@@ -58,7 +62,7 @@ class AfriInfoChip extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TypographyTokens.labelSmall(
-                chipColor,
+                foreground,
               ).copyWith(height: TypographyTokens.lineHeightSolid),
             ),
           ),

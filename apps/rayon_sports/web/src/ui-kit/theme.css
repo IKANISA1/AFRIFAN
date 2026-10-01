@@ -88,17 +88,17 @@ body {
   --recovery-background:
     radial-gradient(
       circle at 18% 10%,
-      rgba(111, 160, 255, 0.22),
+      color-mix(in srgb, var(--accent) 22%, transparent),
       transparent 34%
     ),
     linear-gradient(180deg, var(--background) 0%, var(--surface) 100%);
-  --recovery-panel: rgba(22, 22, 24, 0.9);
-  --recovery-panel-border: rgba(111, 160, 255, 0.22);
+  --recovery-panel: color-mix(in srgb, var(--surface) 90%, transparent);
+  --recovery-panel-border: color-mix(in srgb, var(--accent) 22%, transparent);
   --recovery-heading: var(--foreground);
   --recovery-copy: var(--foreground-muted);
   --recovery-eyebrow: var(--accent);
-  --recovery-secondary: rgba(255, 255, 255, 0.06);
-  --recovery-secondary-hover: rgba(255, 255, 255, 0.12);
+  --recovery-secondary: color-mix(in srgb, var(--inverse-surface) 6%, transparent);
+  --recovery-secondary-hover: color-mix(in srgb, var(--inverse-surface) 12%, transparent);
 
   min-height: 100vh;
   min-height: 100dvh;
@@ -204,7 +204,7 @@ body {
 .recovery-action:focus-visible {
   outline: 3px solid var(--outline-focus);
   outline-offset: 4px;
-  box-shadow: 0 0 0 6px rgba(111, 160, 255, 0.18);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 .recovery-action:active {
@@ -217,17 +217,17 @@ body {
     --recovery-background:
       radial-gradient(
         circle at 18% 10%,
-        rgba(111, 160, 255, 0.14),
+        color-mix(in srgb, var(--accent) 14%, transparent),
         transparent 34%
       ),
       linear-gradient(180deg, var(--accent-wash) 0%, var(--foreground) 100%);
-    --recovery-panel: rgba(255, 255, 255, 0.94);
-    --recovery-panel-border: rgba(111, 160, 255, 0.24);
+    --recovery-panel: color-mix(in srgb, var(--inverse-surface) 94%, transparent);
+    --recovery-panel-border: color-mix(in srgb, var(--accent) 24%, transparent);
     --recovery-heading: var(--inverse-foreground);
     --recovery-copy: var(--inverse-muted);
     --recovery-eyebrow: var(--inverse-accent);
-    --recovery-secondary: rgba(111, 160, 255, 0.05);
-    --recovery-secondary-hover: rgba(111, 160, 255, 0.1);
+    --recovery-secondary: color-mix(in srgb, var(--accent) 5%, transparent);
+    --recovery-secondary-hover: color-mix(in srgb, var(--accent) 10%, transparent);
   }
 }
 
@@ -246,15 +246,15 @@ body {
   --legal-background:
     radial-gradient(
       circle at 14% 4%,
-      rgba(22, 22, 24, 0.2),
+      color-mix(in srgb, var(--surface) 20%, transparent),
       transparent 30rem
     ),
     linear-gradient(180deg, var(--background) 0%, var(--background) 100%);
   --legal-heading: var(--foreground);
   --legal-copy: var(--foreground-muted);
   --legal-eyebrow: var(--accent);
-  --legal-panel: rgba(22, 22, 24, 0.86);
-  --legal-border: rgba(111, 160, 255, 0.22);
+  --legal-panel: color-mix(in srgb, var(--surface) 86%, transparent);
+  --legal-border: color-mix(in srgb, var(--accent) 22%, transparent);
 
   min-height: 100%;
   overflow-x: hidden;
@@ -366,15 +366,15 @@ body {
       linear-gradient(180deg, var(--background) 0, var(--background) 7.25rem, transparent 7.25rem),
       radial-gradient(
         circle at 14% 4%,
-        rgba(22, 22, 24, 0.12),
+        color-mix(in srgb, var(--surface) 12%, transparent),
         transparent 30rem
       ),
       linear-gradient(180deg, var(--inverse-surface) 0%, var(--foreground) 100%);
     --legal-heading: var(--inverse-foreground);
     --legal-copy: var(--inverse-muted);
     --legal-eyebrow: var(--inverse-accent);
-    --legal-panel: rgba(255, 255, 255, 0.88);
-    --legal-border: rgba(22, 22, 24, 0.2);
+    --legal-panel: color-mix(in srgb, var(--inverse-surface) 88%, transparent);
+    --legal-border: color-mix(in srgb, var(--surface) 20%, transparent);
   }
 }
 
@@ -393,15 +393,15 @@ body {
   --release-support-background:
     radial-gradient(
       circle at 12% 3%,
-      rgba(22, 22, 24, 0.22),
+      color-mix(in srgb, var(--surface) 22%, transparent),
       transparent 30rem
     ),
     linear-gradient(180deg, var(--background) 0%, var(--background) 100%);
   --release-support-heading: var(--foreground);
   --release-support-copy: var(--foreground-muted);
   --release-support-accent: var(--accent);
-  --release-support-panel: rgba(22, 22, 24, 0.88);
-  --release-support-border: rgba(111, 160, 255, 0.24);
+  --release-support-panel: color-mix(in srgb, var(--surface) 88%, transparent);
+  --release-support-border: color-mix(in srgb, var(--accent) 24%, transparent);
   --release-support-focus: var(--outline-focus);
 
   min-height: 100%;
@@ -571,15 +571,15 @@ body {
       linear-gradient(180deg, var(--background) 0, var(--background) 7.25rem, transparent 7.25rem),
       radial-gradient(
         circle at 12% 3%,
-        rgba(22, 22, 24, 0.12),
+        color-mix(in srgb, var(--surface) 12%, transparent),
         transparent 30rem
       ),
       linear-gradient(180deg, var(--inverse-surface) 0%, var(--foreground) 100%);
     --release-support-heading: var(--inverse-foreground);
     --release-support-copy: var(--inverse-muted);
     --release-support-accent: var(--inverse-accent);
-    --release-support-panel: rgba(255, 255, 255, 0.9);
-    --release-support-border: rgba(22, 22, 24, 0.24);
+    --release-support-panel: color-mix(in srgb, var(--inverse-surface) 90%, transparent);
+    --release-support-border: color-mix(in srgb, var(--surface) 24%, transparent);
     --release-support-focus: var(--inverse-accent);
   }
 
@@ -604,19 +604,19 @@ body {
   --contact-background:
     radial-gradient(
       circle at 12% 4%,
-      rgba(111, 160, 255, 0.22),
+      color-mix(in srgb, var(--accent) 22%, transparent),
       transparent 30rem
     ),
     linear-gradient(180deg, var(--background) 0%, var(--background) 100%);
   --contact-heading: var(--foreground);
   --contact-copy: var(--foreground-muted);
   --contact-eyebrow: var(--accent);
-  --contact-panel: rgba(22, 22, 24, 0.88);
-  --contact-panel-strong: rgba(22, 22, 24, 0.9);
-  --contact-border: rgba(111, 160, 255, 0.22);
+  --contact-panel: color-mix(in srgb, var(--surface) 88%, transparent);
+  --contact-panel-strong: color-mix(in srgb, var(--surface) 90%, transparent);
+  --contact-border: color-mix(in srgb, var(--accent) 22%, transparent);
   --contact-primary: var(--accent);
   --contact-primary-ink: var(--background);
-  --contact-secondary: rgba(255, 255, 255, 0.06);
+  --contact-secondary: color-mix(in srgb, var(--inverse-surface) 6%, transparent);
   --contact-focus: var(--outline-focus);
 
   min-height: 100%;
@@ -825,19 +825,19 @@ body {
     --contact-background:
       radial-gradient(
         circle at 12% 4%,
-        rgba(111, 160, 255, 0.12),
+        color-mix(in srgb, var(--accent) 12%, transparent),
         transparent 30rem
       ),
       linear-gradient(180deg, var(--inverse-surface) 0%, var(--foreground) 100%);
     --contact-heading: var(--inverse-foreground);
     --contact-copy: var(--inverse-muted);
     --contact-eyebrow: var(--inverse-accent);
-    --contact-panel: rgba(255, 255, 255, 0.9);
+    --contact-panel: color-mix(in srgb, var(--inverse-surface) 90%, transparent);
     --contact-panel-strong: var(--accent-wash);
-    --contact-border: rgba(22, 22, 24, 0.24);
+    --contact-border: color-mix(in srgb, var(--surface) 24%, transparent);
     --contact-primary: var(--inverse-accent);
     --contact-primary-ink: var(--foreground);
-    --contact-secondary: rgba(255, 255, 255, 0.72);
+    --contact-secondary: color-mix(in srgb, var(--inverse-surface) 72%, transparent);
     --contact-focus: var(--inverse-accent);
   }
 }
@@ -868,20 +868,19 @@ a:not([class]) {
 }
 
 ::selection {
-  background: rgba(111, 160, 255, 0.32);
+  background: color-mix(in srgb, var(--accent) 32%, transparent);
   color: var(--foreground);
 }
 
-.ui-glass-header {
+.ui-header {
   border-bottom: var(--border-hairline) solid var(--outline-ghost);
   backdrop-filter: blur(var(--blur-heavy));
   -webkit-backdrop-filter: blur(var(--blur-heavy));
-  background: var(--glass-fill);
+  background: var(--chrome-surface);
   box-shadow: none;
 }
 
-.ui-panel,
-.glass-panel {
+.ui-panel {
   position: relative;
   border: 0;
   background: var(--surface);
@@ -891,8 +890,7 @@ a:not([class]) {
   -webkit-backdrop-filter: none;
 }
 
-.ui-panel-elevated,
-.glass-panel-elevated {
+.ui-panel-elevated {
   position: relative;
   border: 0;
   background: var(--surface-elevated);
@@ -902,8 +900,7 @@ a:not([class]) {
   -webkit-backdrop-filter: none;
 }
 
-.ui-panel-inset,
-.clay-card {
+.ui-panel-inset {
   position: relative;
   transition:
     box-shadow var(--duration-hover) var(--ease-smooth),
@@ -916,9 +913,8 @@ a:not([class]) {
   -webkit-backdrop-filter: none;
 }
 
-.ui-panel-inset:hover,
-.clay-card:hover {
-  border-color: rgba(255, 255, 255, 0.14);
+.ui-panel-inset:hover {
+  border-color: color-mix(in srgb, var(--inverse-surface) 14%, transparent);
   border: 0;
   background: var(--surface);
   border-radius: var(--radius-lg);
@@ -983,7 +979,7 @@ a:not([class]) {
   font-weight: 500;
   text-transform: none;
   border: 1px solid var(--border-soft);
-  background: rgba(255, 255, 255, 0.05);
+  background: color-mix(in srgb, var(--inverse-surface) 5%, transparent);
   border-radius: var(--radius-pill);
   font-size: 0.875rem;
   letter-spacing: normal;
@@ -1049,7 +1045,7 @@ a:not([class]) {
 }
 
 .ui-chip-signal {
-  background: rgba(111, 160, 255, 0.18);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
   color: var(--action-neutral);
 }
 
@@ -1060,7 +1056,7 @@ a:not([class]) {
     var(--action-blue)
   );
   color: white;
-  border-color: rgba(255, 255, 255, 0.14);
+  border-color: color-mix(in srgb, var(--inverse-surface) 14%, transparent);
 }
 
 .ui-stat-card {
@@ -1089,17 +1085,6 @@ a:not([class]) {
   letter-spacing: normal;
   text-transform: none;
   color: var(--foreground-soft);
-}
-
-.ui-monolith-bleed {
-  font-family: var(--font-display), sans-serif;
-  font-size: clamp(4.8rem, 16vw, 13rem);
-  font-weight: 500;
-  letter-spacing: -0.06em;
-  line-height: 0.82;
-  text-transform: none;
-  color: rgba(248, 244, 255, 0.08);
-  text-shadow: 0 0 48px rgba(111, 160, 255, 0.1);
 }
 
 .ui-input,
@@ -1143,7 +1128,7 @@ a:not([class]) {
 
 .ui-brand-mark {
   border: var(--border-hairline) solid var(--outline-ghost);
-  background: rgba(248, 244, 255, 0.06);
+  background: color-mix(in srgb, var(--inverse-surface) 6%, transparent);
   box-shadow: none;
 }
 
@@ -1151,7 +1136,7 @@ a:not([class]) {
   border-top: var(--border-hairline) solid var(--outline-ghost);
   backdrop-filter: blur(var(--blur-atmospheric));
   -webkit-backdrop-filter: blur(var(--blur-atmospheric));
-  background: var(--glass-fill);
+  background: var(--chrome-surface);
   box-shadow: none;
 }
 
@@ -1201,7 +1186,7 @@ a:not([class]) {
 }
 
 .ui-drawer-scrim {
-  background: rgba(22, 22, 24, 0.68);
+  background: color-mix(in srgb, var(--surface) 68%, transparent);
   backdrop-filter: blur(var(--blur-soft));
   -webkit-backdrop-filter: blur(var(--blur-soft));
 }
@@ -1210,8 +1195,8 @@ a:not([class]) {
   border-left: var(--border-hairline) solid var(--outline-ghost);
   background: linear-gradient(
     180deg,
-    rgba(22, 22, 24, 0.94),
-    rgba(22, 22, 24, 0.92)
+    color-mix(in srgb, var(--surface) 94%, transparent),
+    color-mix(in srgb, var(--surface) 92%, transparent)
   );
   box-shadow: var(--shadow-card-hover);
   backdrop-filter: blur(var(--blur-atmospheric));
@@ -1225,15 +1210,15 @@ a:not([class]) {
 .ui-drawer-shortcut {
   border: var(--border-hairline) solid var(--outline-ghost);
   background:
-    linear-gradient(180deg, rgba(22, 22, 24, 0.24), rgba(22, 22, 24, 0.22)),
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 24%, transparent), color-mix(in srgb, var(--surface) 22%, transparent)),
     radial-gradient(
       circle at top left,
-      rgba(111, 160, 255, 0.08),
+      color-mix(in srgb, var(--accent) 8%, transparent),
       transparent 55%
     );
   box-shadow:
-    0 16px 28px -24px rgba(22, 22, 24, 0.92),
-    inset 1px 1px 0 rgba(255, 255, 255, 0.1);
+    0 16px 28px -24px color-mix(in srgb, var(--surface) 92%, transparent),
+    inset 1px 1px 0 color-mix(in srgb, var(--inverse-surface) 10%, transparent);
   transition:
     transform var(--duration-hover) var(--ease-out-expo),
     background var(--duration-hover) ease;
@@ -1242,10 +1227,10 @@ a:not([class]) {
 .ui-drawer-shortcut:hover {
   transform: translateY(-2px);
   background:
-    linear-gradient(180deg, rgba(22, 22, 24, 0.32), rgba(22, 22, 24, 0.26)),
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 32%, transparent), color-mix(in srgb, var(--surface) 26%, transparent)),
     radial-gradient(
       circle at top left,
-      rgba(111, 160, 255, 0.1),
+      color-mix(in srgb, var(--accent) 10%, transparent),
       transparent 55%
     );
 }
@@ -1267,7 +1252,7 @@ a:not([class]) {
 }
 
 .ui-drawer-link:hover {
-  background: rgba(22, 22, 24, 0.18);
+  background: color-mix(in srgb, var(--surface) 18%, transparent);
   color: var(--foreground);
 }
 
@@ -1276,9 +1261,9 @@ a:not([class]) {
 }
 
 .ui-drawer-link-active {
-  background: rgba(111, 160, 255, 0.18);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
   color: var(--foreground);
-  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: inset 1px 1px 0 color-mix(in srgb, var(--inverse-surface) 8%, transparent);
 }
 
 .ui-drawer-active-bar {
@@ -1297,7 +1282,7 @@ a:not([class]) {
 
 .ui-utility-pill {
   border: var(--border-hairline) solid var(--outline-ghost);
-  background: rgba(22, 22, 24, 0.16);
+  background: color-mix(in srgb, var(--surface) 16%, transparent);
   color: var(--foreground-soft);
   transition:
     background var(--duration-hover) ease,
@@ -1305,12 +1290,12 @@ a:not([class]) {
 }
 
 .ui-utility-pill:hover {
-  background: rgba(22, 22, 24, 0.24);
+  background: color-mix(in srgb, var(--surface) 24%, transparent);
   color: var(--foreground);
 }
 
 .ui-ribbon-live {
-  border-bottom: var(--border-hairline) solid rgba(255, 255, 255, 0.14);
+  border-bottom: var(--border-hairline) solid color-mix(in srgb, var(--inverse-surface) 14%, transparent);
   background: linear-gradient(
     135deg,
     var(--action-blue),
@@ -1324,17 +1309,17 @@ a:not([class]) {
   border-bottom: var(--border-hairline) solid var(--outline-ghost);
   background: linear-gradient(
     180deg,
-    rgba(22, 22, 24, 0.78),
-    rgba(22, 22, 24, 0.72)
+    color-mix(in srgb, var(--surface) 78%, transparent),
+    color-mix(in srgb, var(--surface) 72%, transparent)
   );
   backdrop-filter: blur(var(--blur-standard));
   -webkit-backdrop-filter: blur(var(--blur-standard));
 }
 
 .ui-ribbon-pill {
-  border: var(--border-hairline) solid rgba(255, 255, 255, 0.14);
-  background: rgba(22, 22, 24, 0.18);
-  box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.08);
+  border: var(--border-hairline) solid color-mix(in srgb, var(--inverse-surface) 14%, transparent);
+  background: color-mix(in srgb, var(--surface) 18%, transparent);
+  box-shadow: inset 1px 1px 0 color-mix(in srgb, var(--inverse-surface) 8%, transparent);
 }
 
 .ui-ribbon-action {
@@ -1342,8 +1327,8 @@ a:not([class]) {
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-pill);
-  border: var(--border-hairline) solid rgba(255, 255, 255, 0.14);
-  background: rgba(22, 22, 24, 0.18);
+  border: var(--border-hairline) solid color-mix(in srgb, var(--inverse-surface) 14%, transparent);
+  background: color-mix(in srgb, var(--surface) 18%, transparent);
   padding: 0.375rem 0.875rem;
   font-family: var(--font-inter), system-ui, sans-serif;
   font-size: 11px;
@@ -1357,7 +1342,7 @@ a:not([class]) {
 }
 
 .ui-ribbon-action:hover {
-  background: rgba(22, 22, 24, 0.28);
+  background: color-mix(in srgb, var(--surface) 28%, transparent);
 }
 
 .ui-ribbon-action:active {
@@ -1442,14 +1427,14 @@ textarea:focus-visible,
     -45deg,
     transparent,
     transparent 10px,
-    rgba(111, 160, 255, 0.04) 10px,
-    rgba(111, 160, 255, 0.04) 13px
+    color-mix(in srgb, var(--accent) 4%, transparent) 10px,
+    color-mix(in srgb, var(--accent) 4%, transparent) 13px
   );
   z-index: 0;
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent 70%);
+  mask-image: linear-gradient(to bottom, color-mix(in srgb, var(--void) 60%, transparent), transparent 70%);
   -webkit-mask-image: linear-gradient(
     to bottom,
-    rgba(0, 0, 0, 0.6),
+    color-mix(in srgb, var(--void) 60%, transparent),
     transparent 70%
   );
 }
@@ -1536,9 +1521,9 @@ textarea:focus-visible,
 .skeleton {
   background: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.05) 25%,
-    rgba(255, 255, 255, 0.16) 50%,
-    rgba(255, 255, 255, 0.05) 75%
+    color-mix(in srgb, var(--inverse-surface) 5%, transparent) 25%,
+    color-mix(in srgb, var(--inverse-surface) 16%, transparent) 50%,
+    color-mix(in srgb, var(--inverse-surface) 5%, transparent) 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.8s ease-in-out infinite;
@@ -1638,7 +1623,7 @@ textarea:focus-visible,
 
 .progress-track {
   height: 8px;
-  background: rgba(248, 244, 255, 0.08);
+  background: color-mix(in srgb, var(--inverse-surface) 8%, transparent);
   border-radius: 999px;
   overflow: hidden;
   position: relative;
@@ -1666,7 +1651,7 @@ textarea:focus-visible,
   width: 12px;
   border-radius: 999px;
   background: var(--action-neutral);
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--inverse-surface) 80%, transparent);
 }
 
 .badge-live,
@@ -1684,8 +1669,8 @@ textarea:focus-visible,
 }
 
 .badge-live {
-  background: rgba(255, 83, 99, 0.12);
-  border: 1px solid rgba(255, 83, 99, 0.22);
+  background: color-mix(in srgb, var(--error) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--error) 22%, transparent);
   color: var(--error);
 }
 
@@ -1917,13 +1902,13 @@ textarea:focus-visible,
   --search-background:
     radial-gradient(
       circle at 14% 3%,
-      rgba(111, 160, 255, 0.22),
+      color-mix(in srgb, var(--accent) 22%, transparent),
       transparent 32rem
     ),
     linear-gradient(180deg, var(--background) 0%, var(--background) 100%);
-  --search-panel: rgba(22, 22, 24, 0.9);
-  --search-panel-strong: rgba(22, 22, 24, 0.94);
-  --search-border: rgba(111, 160, 255, 0.24);
+  --search-panel: color-mix(in srgb, var(--surface) 90%, transparent);
+  --search-panel-strong: color-mix(in srgb, var(--surface) 94%, transparent);
+  --search-border: color-mix(in srgb, var(--accent) 24%, transparent);
   --search-heading: var(--foreground);
   --search-copy: var(--foreground-muted);
   --search-muted: var(--foreground-muted);
@@ -1934,12 +1919,13 @@ textarea:focus-visible,
   --search-secondary-hover: var(--inverse-muted);
   --search-focus: var(--accent);
   --search-warning: var(--warning);
-  --search-warning-surface: rgba(161, 161, 163, 0.28);
-  --search-warning-border: rgba(255, 159, 10, 0.5);
-  --search-skeleton: rgba(111, 160, 255, 0.14);
-  --search-skeleton-highlight: rgba(255, 255, 255, 0.24);
+  --search-warning-surface: color-mix(in srgb, var(--foreground-muted) 28%, transparent);
+  --search-warning-border: color-mix(in srgb, var(--warning) 50%, transparent);
+  --search-skeleton: color-mix(in srgb, var(--accent) 14%, transparent);
+  --search-skeleton-highlight: color-mix(in srgb, var(--inverse-surface) 24%, transparent);
 
   min-height: 100%;
+  padding-block-start: var(--site-header-block-size, 8rem);
   overflow-x: hidden;
   background: var(--search-background);
   color: var(--search-heading);
@@ -2049,7 +2035,7 @@ textarea:focus-visible,
   padding: 0 1rem;
   border: 1px solid var(--search-border);
   border-radius: 999px;
-  background: rgba(22, 22, 24, 0.44);
+  background: color-mix(in srgb, var(--surface) 44%, transparent);
   transition:
     border-color 150ms ease,
     box-shadow 150ms ease;
@@ -2057,7 +2043,7 @@ textarea:focus-visible,
 
 .search-field:focus-within {
   border-color: var(--search-focus);
-  box-shadow: 0 0 0 4px rgba(111, 160, 255, 0.2);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
 .search-field > svg {
@@ -2142,7 +2128,7 @@ textarea:focus-visible,
 .search-result:focus-visible {
   outline: 3px solid var(--search-focus);
   outline-offset: 4px;
-  box-shadow: 0 0 0 7px rgba(111, 160, 255, 0.2);
+  box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
 .search-submit:active,
@@ -2176,7 +2162,7 @@ textarea:focus-visible,
   border-color: var(--search-accent);
   color: var(--background);
   background: var(--search-accent);
-  box-shadow: 0 0 0 3px rgba(111, 160, 255, 0.16);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
 }
 
 .search-recovery {
@@ -2342,13 +2328,13 @@ textarea:focus-visible,
     --search-background:
       radial-gradient(
         circle at 14% 3%,
-        rgba(111, 160, 255, 0.13),
+        color-mix(in srgb, var(--accent) 13%, transparent),
         transparent 32rem
       ),
       linear-gradient(180deg, var(--accent-wash) 0%, var(--foreground) 100%);
-    --search-panel: rgba(255, 255, 255, 0.94);
+    --search-panel: color-mix(in srgb, var(--inverse-surface) 94%, transparent);
     --search-panel-strong: var(--foreground);
-    --search-border: rgba(111, 160, 255, 0.24);
+    --search-border: color-mix(in srgb, var(--accent) 24%, transparent);
     --search-heading: var(--inverse-foreground);
     --search-copy: var(--inverse-muted);
     --search-muted: var(--inverse-muted);
@@ -2361,8 +2347,8 @@ textarea:focus-visible,
     --search-warning: var(--warning-ink);
     --search-warning-surface: var(--warning-wash);
     --search-warning-border: var(--warning-ink);
-    --search-skeleton: rgba(111, 160, 255, 0.18);
-    --search-skeleton-highlight: rgba(255, 255, 255, 0.7);
+    --search-skeleton: color-mix(in srgb, var(--accent) 18%, transparent);
+    --search-skeleton-highlight: color-mix(in srgb, var(--inverse-surface) 70%, transparent);
   }
 
   .search-field {
@@ -2411,18 +2397,18 @@ textarea:focus-visible,
   --history-background:
     radial-gradient(
       circle at 85% 4%,
-      rgba(111, 160, 255, 0.16),
+      color-mix(in srgb, var(--accent) 16%, transparent),
       transparent 30rem
     ),
     radial-gradient(
       circle at 12% 18%,
-      rgba(111, 160, 255, 0.2),
+      color-mix(in srgb, var(--accent) 20%, transparent),
       transparent 32rem
     ),
     linear-gradient(180deg, var(--background) 0%, var(--background) 100%);
-  --history-panel: rgba(22, 22, 24, 0.9);
-  --history-panel-strong: rgba(22, 22, 24, 0.95);
-  --history-border: rgba(111, 160, 255, 0.25);
+  --history-panel: color-mix(in srgb, var(--surface) 90%, transparent);
+  --history-panel-strong: color-mix(in srgb, var(--surface) 95%, transparent);
+  --history-border: color-mix(in srgb, var(--accent) 25%, transparent);
   --history-heading: var(--foreground);
   --history-copy: var(--foreground-muted);
   --history-muted: var(--foreground-muted);
@@ -2433,10 +2419,10 @@ textarea:focus-visible,
   --history-secondary-hover: var(--inverse-muted);
   --history-focus: var(--accent);
   --history-warning: var(--warning);
-  --history-warning-surface: rgba(161, 161, 163, 0.28);
-  --history-warning-border: rgba(255, 159, 10, 0.55);
-  --history-skeleton: rgba(111, 160, 255, 0.14);
-  --history-skeleton-highlight: rgba(255, 255, 255, 0.24);
+  --history-warning-surface: color-mix(in srgb, var(--foreground-muted) 28%, transparent);
+  --history-warning-border: color-mix(in srgb, var(--warning) 55%, transparent);
+  --history-skeleton: color-mix(in srgb, var(--accent) 14%, transparent);
+  --history-skeleton-highlight: color-mix(in srgb, var(--inverse-surface) 24%, transparent);
 
   min-height: 100%;
   overflow-x: hidden;
@@ -2599,7 +2585,7 @@ textarea:focus-visible,
 .history-chapters button:focus-visible {
   outline: 3px solid var(--history-focus);
   outline-offset: 4px;
-  box-shadow: 0 0 0 7px rgba(111, 160, 255, 0.2);
+  box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
 .history-action:active:not(:disabled),
@@ -2618,7 +2604,7 @@ textarea:focus-visible,
   padding: 1rem;
   border: 1px solid var(--history-border);
   border-radius: 1rem;
-  background: rgba(22, 22, 24, 0.22);
+  background: color-mix(in srgb, var(--surface) 22%, transparent);
 }
 
 .history-stats dd {
@@ -2692,7 +2678,7 @@ textarea:focus-visible,
   border-color: var(--history-accent);
   color: var(--background);
   background: var(--history-accent);
-  box-shadow: 0 0 0 3px rgba(111, 160, 255, 0.16);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
 }
 
 .history-chapters button[aria-pressed="true"] > span {
@@ -2828,18 +2814,18 @@ textarea:focus-visible,
     --history-background:
       radial-gradient(
         circle at 85% 4%,
-        rgba(111, 160, 255, 0.12),
+        color-mix(in srgb, var(--accent) 12%, transparent),
         transparent 30rem
       ),
       radial-gradient(
         circle at 12% 18%,
-        rgba(111, 160, 255, 0.12),
+        color-mix(in srgb, var(--accent) 12%, transparent),
         transparent 32rem
       ),
       linear-gradient(180deg, var(--accent-wash) 0%, var(--foreground) 100%);
-    --history-panel: rgba(255, 255, 255, 0.94);
+    --history-panel: color-mix(in srgb, var(--inverse-surface) 94%, transparent);
     --history-panel-strong: var(--foreground);
-    --history-border: rgba(111, 160, 255, 0.25);
+    --history-border: color-mix(in srgb, var(--accent) 25%, transparent);
     --history-heading: var(--inverse-foreground);
     --history-copy: var(--inverse-muted);
     --history-muted: var(--inverse-muted);
@@ -2852,8 +2838,8 @@ textarea:focus-visible,
     --history-warning: var(--warning-ink);
     --history-warning-surface: var(--warning-wash);
     --history-warning-border: var(--warning-ink);
-    --history-skeleton: rgba(111, 160, 255, 0.18);
-    --history-skeleton-highlight: rgba(255, 255, 255, 0.7);
+    --history-skeleton: color-mix(in srgb, var(--accent) 18%, transparent);
+    --history-skeleton-highlight: color-mix(in srgb, var(--inverse-surface) 70%, transparent);
   }
 
   .history-stats > div {

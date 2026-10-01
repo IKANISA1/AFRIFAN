@@ -79,7 +79,7 @@ export function IosSafariInstallGuide({
       aria-label="Install the club site on your device"
       className="pointer-events-none fixed inset-x-4 bottom-24 z-50 sm:bottom-6 sm:left-auto sm:max-w-md"
     >
-      <div className="pointer-events-auto glass-panel rounded-[28px] px-5 py-5 shadow-2xl">
+      <div className="pointer-events-auto ui-panel rounded-[28px] px-5 py-5 shadow-2xl">
         <p className="font-mono text-[11px] normal-case tracking-normal text-action-neutral">
           Install the club site
         </p>

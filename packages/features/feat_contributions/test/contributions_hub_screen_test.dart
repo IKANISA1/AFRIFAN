@@ -3,21 +3,27 @@ import 'dart:async';
 import 'package:club_data/club_data.dart';
 import 'package:core_auth/core_auth.dart';
 import 'package:core_network/core_network.dart';
+import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
+import 'package:feat_contributions/feat_contributions.dart';
 import 'package:feat_contributions/src/screens/contributions_hub_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:test_support/app_font_loader.dart';
 import 'package:test_support/predict_fixture_images.dart';
 import 'package:test_support/touch_target_audit.dart';
 
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
 class MockClubRepository extends Mock implements ClubRepository {}
 
-void main() {
+void main({bool localStateCoverage = false}) {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadAppFonts);
   late MockClubRepository repository;
@@ -31,6 +37,8 @@ void main() {
     Widget child, {
     Brightness brightness = Brightness.dark,
     Key? goldenKey,
+    bool blocked = false,
+    bool? reducedMotion,
   }) {
     return ProviderScope(
       overrides: [
@@ -38,21 +46,210 @@ void main() {
         currentUserProvider.overrideWithValue(null),
       ],
       child: MaterialApp.router(
-        theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
-        routerConfig: GoRouter(
-          initialLocation: '/contribute',
-          routes: [
-            GoRoute(
-              path: '/contribute',
-              builder: (context, state) => ClubConfigScope(
-                config: ClubConfig.fallback(),
-                child: RepaintBoundary(key: goldenKey, child: child),
-              ),
-            ),
-          ],
+        theme: ClubTheme.from(
+          localRouteConfigOrFallback(),
+          brightness: brightness,
         ),
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            disableAnimations:
+                reducedMotion ?? MediaQuery.of(context).disableAnimations,
+          ),
+          child: ClubConfigScope(
+            config: localRouteConfigOrFallback(),
+            child: RepaintBoundary(
+              key: blocked ? goldenKey : null,
+              child: child!,
+            ),
+          ),
+        ),
+        routerConfig: blocked
+            ? AppRouter(
+                modules: [ContributionsModule()],
+                initialLocation: '/contribute',
+                shellBuilder: (_, shell) => Scaffold(body: shell),
+                isFeatureEnabled: (path) => path != '/contribute',
+              ).router
+            : GoRouter(
+                initialLocation: '/contribute',
+                routes: [
+                  GoRoute(
+                    path: '/contribute',
+                    builder: (context, state) => ClubConfigScope(
+                      config: localRouteConfigOrFallback(),
+                      child: RepaintBoundary(key: goldenKey, child: child),
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
+  }
+
+  if (localStateCoverage) {
+    for (final state in [
+      'loading',
+      'empty',
+      'error',
+      'offline',
+      'permission_denied',
+      'disabled',
+      'focused',
+      'pressed',
+      'selected',
+      'large_text',
+      'reduced_motion',
+      'dark',
+      'light',
+      'syncing',
+      'conflict',
+      'security_timeout',
+    ]) {
+      testWidgets('local Contributions actual $state state', (tester) async {
+        _setGoldenSurface(tester, const Size(390, 1000));
+        // Match the actual root's active color scope and the existing golden
+        // fixture's loaded Android font; the test binding defaults to Ahem.
+        ColorTokens.setBrightness(
+          state == 'light' ? Brightness.light : Brightness.dark,
+        );
+        TypographyTokens.debugUseFallbackFonts = true;
+        addTearDown(() {
+          ColorTokens.setBrightness(Brightness.dark);
+          TypographyTokens.debugUseFallbackFonts = false;
+        });
+        if (state == 'large_text') {
+          tester.platformDispatcher.textScaleFactorTestValue = 2;
+          addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+        }
+        final pending = Completer<List<ContributionGroup>>();
+        addTearDown(() {
+          if (!pending.isCompleted) pending.complete([]);
+        });
+        var calls = 0;
+        when(() => repository.getContributionGroups()).thenAnswer((_) {
+          calls++;
+          if (state == 'loading' || (state == 'syncing' && calls > 1)) {
+            return pending.future;
+          }
+          if (state == 'security_timeout') {
+            return pending.future.timeout(const Duration(milliseconds: 100));
+          }
+          if (state == 'error') {
+            return Future.error(StateError('private query details'));
+          }
+          if (state == 'permission_denied' || state == 'conflict') {
+            return Future.error(
+              PostgrestException(
+                message: 'private query details',
+                code: state == 'conflict' ? '40001' : '42501',
+              ),
+            );
+          }
+          return Future.value(state == 'empty' ? [] : [_cachedCampaign]);
+        });
+        ConnectivityService.setOnlineForTest(state != 'offline');
+        addTearDown(() => ConnectivityService.setOnlineForTest(true));
+        await tester.pumpWidget(
+          createSubject(
+            const ContributionsHubScreen(),
+            brightness: state == 'light' ? Brightness.light : Brightness.dark,
+            blocked: state == 'disabled',
+            reducedMotion: state == 'reduced_motion',
+            goldenKey: const ValueKey('contribution-state'),
+          ),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 300));
+        if (!['loading', 'syncing'].contains(state)) {
+          await tester.pumpAndSettle();
+        }
+        if (state == 'disabled') {
+          expect(calls, 0);
+          expect(
+            tester
+                .widget<RouteRecoveryScreen>(find.byType(RouteRecoveryScreen))
+                .visualState,
+            RouteRecoveryVisualState.disabled,
+          );
+        } else if (state == 'offline') {
+          expect(calls, 0);
+          expect(
+            find.text('Connect to load contribution initiatives.'),
+            findsOneWidget,
+          );
+        } else if (state == 'loading') {
+          expect(pending.isCompleted, isFalse);
+          expect(find.byType(AfriSkeletonList), findsOneWidget);
+        } else if (state == 'syncing') {
+          ConnectivityService.setOnlineForTest(false);
+          await tester.pump();
+          ConnectivityService.setOnlineForTest(true);
+          await tester.pump();
+          expect(calls, 2);
+          expect(find.text('Refreshing contributions'), findsOneWidget);
+          expect(find.text('Cached campaign'), findsWidgets);
+        } else if (state == 'selected') {
+          await tester.tap(find.text('Team projects'));
+          await tester.pumpAndSettle();
+          expect(
+            GoRouter.of(
+              tester.element(find.byType(ContributionsHubScreen)),
+            ).routeInformationProvider.value.uri.queryParameters['type'],
+            'project',
+          );
+          expect(
+            tester
+                .widget<AfriChoiceChip>(
+                  find.widgetWithText(AfriChoiceChip, 'Team projects'),
+                )
+                .selected,
+            isTrue,
+          );
+        } else if (state == 'focused') {
+          await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+          await tester.pump();
+          expect(FocusManager.instance.primaryFocus?.context, isNotNull);
+        }
+        TestGesture? held;
+        if (state == 'pressed') {
+          held = await tester.startGesture(
+            tester.getCenter(
+              find.widgetWithText(AfriChoiceChip, 'Team projects'),
+            ),
+          );
+          await tester.pump(const Duration(milliseconds: 120));
+        }
+        if ([
+          'error',
+          'permission_denied',
+          'conflict',
+          'security_timeout',
+        ].contains(state)) {
+          expect(calls, 1);
+          expect(
+            find.text('Contribution initiatives are temporarily unavailable.'),
+            findsOneWidget,
+          );
+          expect(find.text('Cached campaign'), findsNothing);
+        }
+        if (state == 'empty') {
+          expect(calls, 1);
+          expect(find.byType(AfriStateView), findsOneWidget);
+          expect(find.text('Cached campaign'), findsNothing);
+        }
+        expect(find.textContaining('private query details'), findsNothing);
+        await expectGoldenOrClubAssertions(
+          tester,
+          find.byKey(const ValueKey('contribution-state')),
+          'contribution_state_$state.png',
+          route: '/contribute',
+          kind: 'route',
+        );
+        await held?.cancel();
+        if (!pending.isCompleted) pending.complete([]);
+        await tester.pumpWidget(const SizedBox.shrink());
+      });
+    }
   }
 
   group('ContributionsHubScreen Empty State', () {
@@ -284,9 +481,13 @@ void main() {
       expect(routePosition.pixels, routePosition.minScrollExtent);
 
       expect(tester.takeException(), isNull);
-      await expectLater(
+      await expectGoldenOrClubAssertions(
+        tester,
         find.byKey(const ValueKey<String>('contributions-route-golden')),
-        matchesGoldenFile('goldens/contributions_${profile.id}.png'),
+        'goldens/contributions_${profile.id}.png',
+        route: '/contribute',
+        kind: 'route',
+        surface: 'mobile',
       );
     });
   }

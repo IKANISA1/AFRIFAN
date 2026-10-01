@@ -6,6 +6,338 @@ import 'package:flutter_test/flutter_test.dart';
 import '../tool/generate_route_inventory.dart';
 
 void main() {
+  test(
+    'legal action controls require focus and press without invented async states',
+    () {
+      final workspace = resolveRouteInventoryWorkspace(Directory.current);
+      final temporary = Directory.systemTemp.createTempSync(
+        'africlub-legal-actions-',
+      );
+      addTearDown(() => temporary.deleteSync(recursive: true));
+      final payload = generateRouteInventory(
+        workspace: workspace,
+        outputDirectory: temporary,
+      );
+      final closure = payload['state_closure']! as Map<String, Object?>;
+      final rows =
+          (jsonDecode(File(closure['json']! as String).readAsStringSync())
+                  as Map<String, dynamic>)['routes']!
+              as List<dynamic>;
+      final legal = rows
+          .where(
+            (route) =>
+                route['rendered_state_contract'] == 'static_legal_document',
+          )
+          .toList();
+      expect(legal.map((route) => route['path']).toSet(), {
+        '/privacy',
+        '/terms',
+      });
+      for (final route in legal) {
+        final states = route['states'] as Map<String, dynamic>;
+        expect(
+          states.entries
+              .where((entry) => entry.value['applicability'] == 'applicable')
+              .map((entry) => entry.key)
+              .toSet(),
+          {
+            'focused',
+            'pressed',
+            'large_text',
+            'reduced_motion',
+            'dark',
+            'light',
+          },
+        );
+        expect(
+          states['focused']['rationale'],
+          contains('actual legal-document-actions'),
+        );
+        for (final state in [
+          'loading',
+          'error',
+          'syncing',
+          'conflict',
+          'security_timeout',
+        ]) {
+          expect(states[state]['applicability'], 'not_applicable');
+        }
+      }
+    },
+  );
+
+  test(
+    'native registration preserves every enabled destination and finite disabled scope',
+    () {
+      final workspace = resolveRouteInventoryWorkspace(Directory.current);
+      final temporary = Directory.systemTemp.createTempSync(
+        'africlub-registration-',
+      );
+      addTearDown(() => temporary.deleteSync(recursive: true));
+      const features = {
+        'home',
+        'club',
+        'live',
+        'predict',
+        'settings',
+        'onboarding',
+        'membership',
+        'contributions',
+        'ticketing',
+        'fan_clubs',
+        'admin',
+        'shop',
+      };
+      final scopes = <String, Set<String>>{
+        for (final club in [
+          'as_vita',
+          'costa_do_sol',
+          'nkana',
+          'rayon_sports',
+          'vitalo',
+        ])
+          club: club == 'costa_do_sol'
+              ? features.difference({'fan_clubs', 'shop', 'ticketing'})
+              : features,
+      };
+      final payload = generateRouteInventory(
+        workspace: workspace,
+        outputDirectory: temporary,
+        registeredNativeFeaturesByClub: scopes,
+      );
+      final routes = payload['routes']! as List<Map<String, Object?>>;
+      final disabled = routes
+          .where(
+            (route) =>
+                ((route['native_registration']
+                        as Map<String, Object?>?)?['costa_do_sol']
+                    as Map<String, Object?>?)?['registered'] ==
+                false,
+          )
+          .toList();
+      expect(disabled.map((route) => route['source']).toSet(), {
+        'FanClubsModule',
+        'ShopModule',
+        'TicketingModule',
+      });
+      for (final route in routes.where(
+        (route) => route['native_registration'] != null,
+      )) {
+        final registration =
+            route['native_registration']! as Map<String, Object?>;
+        for (final club in scopes.keys.where(
+          (club) => club != 'costa_do_sol',
+        )) {
+          expect(
+            (registration[club]! as Map<String, Object?>)['registered'],
+            isTrue,
+          );
+        }
+      }
+      final membership = routes.singleWhere(
+        (route) => route['path'] == '/membership/fans',
+      );
+      expect(
+        ((membership['native_registration']
+                as Map<String, Object?>)['costa_do_sol']
+            as Map<String, Object?>)['registered'],
+        isTrue,
+      );
+      expect(
+        () => generateRouteInventory(
+          workspace: workspace,
+          outputDirectory: temporary,
+          registeredNativeFeaturesByClub: {'costa_do_sol': {}},
+        ),
+        throwsArgumentError,
+      );
+    },
+  );
+
+  test(
+    'only actual append-only observation endpoints have no conflict response contract',
+    () {
+      final workspace = resolveRouteInventoryWorkspace(Directory.current);
+      final temporary = Directory.systemTemp.createTempSync(
+        'africlub-observation-contract-',
+      );
+      addTearDown(() => temporary.deleteSync(recursive: true));
+      final payload = generateRouteInventory(
+        workspace: workspace,
+        outputDirectory: temporary,
+      );
+      final closure = payload['state_closure']! as Map<String, Object?>;
+      final rows =
+          (jsonDecode(File(closure['json']! as String).readAsStringSync())
+                  as Map<String, dynamic>)['routes']!
+              as List<dynamic>;
+      final api = rows.where((route) => route['surface'] == 'web_api').toList();
+      final withoutConflict = <String>[];
+      for (final route in api) {
+        final states = route['states']! as Map<String, Object?>;
+        final conflict = states['conflict']! as Map<String, Object?>;
+        if (conflict['applicability'] == 'not_applicable') {
+          withoutConflict.add(route['path']! as String);
+        }
+        for (final state in [
+          'empty',
+          'error',
+          'permission_denied',
+          'syncing',
+          'security_timeout',
+        ]) {
+          expect(
+            (states[state]! as Map<String, Object?>)['applicability'],
+            'applicable',
+            reason: '${route['path']} $state',
+          );
+        }
+      }
+      expect(withoutConflict..sort(), [
+        '/api/pwa/events',
+        '/api/telemetry/vitals',
+      ]);
+      expect(api.any((route) => route['path'] == '/api/pwa/vitals'), isFalse);
+    },
+  );
+
+  test(
+    'finite alias contracts preserve destination and unknown-route obligations',
+    () {
+      final workspace = resolveRouteInventoryWorkspace(Directory.current);
+      final temporary = Directory.systemTemp.createTempSync(
+        'africlub-alias-contract-',
+      );
+      addTearDown(() => temporary.deleteSync(recursive: true));
+      final missingEvidence = File('${temporary.path}/no-evidence.json');
+      final payload = generateRouteInventory(
+        workspace: workspace,
+        outputDirectory: temporary,
+        routeStateEvidenceFile: missingEvidence,
+      );
+      final routes = payload['routes']! as List<Map<String, Object?>>;
+      final closure = payload['state_closure']! as Map<String, Object?>;
+      final rows =
+          (jsonDecode(File(closure['json']! as String).readAsStringSync())
+                  as Map<String, dynamic>)['routes']!
+              as List<dynamic>;
+      Set<String> applicable(Map<String, dynamic> route) =>
+          (route['states'] as Map<String, dynamic>).entries
+              .where((entry) => entry.value['applicability'] == 'applicable')
+              .map((entry) => entry.key)
+              .toSet();
+      const synchronous = <String, bool>{
+        '/club/partners/:partnerId': false,
+        '/club/results': false,
+        '/club/projects': true,
+        '/club/projects/:projectId': true,
+        '/contribute/groups': true,
+        '/contribute/projects': true,
+        '/fan-clubs/:clubId': false,
+        '/live': true,
+        '/live-match': true,
+        '/live/news/:articleId': true,
+        '/membership/fans': true,
+        '/my-tickets': true,
+        '/splash': false,
+        '/admin/settle': true,
+      };
+      final aliases = rows
+          .where(
+            (route) =>
+                route['kind'] == 'redirect' &&
+                ['mobile', 'mobile_internal_admin'].contains(route['surface']),
+          )
+          .toList();
+      expect(aliases, hasLength(15));
+      for (final alias in synchronous.entries) {
+        final row =
+            aliases.singleWhere((route) => route['path'] == alias.key)
+                as Map<String, dynamic>;
+        expect(
+          applicable(row),
+          alias.value ? {'permission_denied'} : <String>{},
+          reason: alias.key,
+        );
+        for (final state in (row['states'] as Map<String, dynamic>).values) {
+          expect(state['rationale'], contains('synchronously'));
+          expect(state['rationale'], contains('core_app/app.dart'));
+        }
+      }
+      final openWeb =
+          aliases.singleWhere((route) => route['path'] == '/club/open-web')
+              as Map<String, dynamic>;
+      expect(applicable(openWeb), {
+        'loading',
+        'empty',
+        'error',
+        'offline',
+        'permission_denied',
+        'conflict',
+        'security_timeout',
+      });
+      final adminAlias =
+          rows.singleWhere(
+                (route) =>
+                    route['surface'] == 'admin_pwa' &&
+                    route['path'] == '/admin/contributions',
+              )
+              as Map<String, dynamic>;
+      expect(applicable(adminAlias), {'permission_denied'});
+      // Finite mappings cannot remove the canonical screen's independent UI work.
+      for (final target in [
+        '/club/partners',
+        '/club/fixtures',
+        '/contribute',
+        '/contribute/group/:groupId',
+        '/fan-clubs',
+        '/club/news/:articleId',
+        '/tickets',
+        '/onboarding',
+      ]) {
+        final row =
+            rows.singleWhere(
+                  (route) =>
+                      route['surface'] == 'mobile' && route['path'] == target,
+                )
+                as Map<String, dynamic>;
+        expect(row['kind'], isNot('redirect'));
+        expect(
+          applicable(row),
+          containsAll(['dark', 'light', 'large_text', 'reduced_motion']),
+          reason: 'Destination retains rendered obligations: $target',
+        );
+      }
+      final unreviewed = <String, Object?>{
+        ...routes.firstWhere((route) => route['kind'] == 'redirect'),
+        'route_key': 'mobile|/new-unreviewed-alias|redirect',
+        'source': 'NewUnreviewedModule',
+        'path': '/new-unreviewed-alias',
+      };
+      final unknownClosure = generateRouteStateClosure(
+        routes: [unreviewed],
+        workspace: workspace,
+        outputDirectory: temporary,
+        evidenceFile: missingEvidence,
+      );
+      final unknown =
+          (unknownClosure['routes'] as List<Map<String, Object?>>).single;
+      final states = unknown['states'] as Map<String, Object?>;
+      expect(
+        states.entries
+            .where(
+              (entry) =>
+                  (entry.value as Map<String, Object?>)['applicability'] ==
+                  'applicable',
+            )
+            .map((entry) => entry.key)
+            .toSet(),
+        {'error', 'permission_denied', 'security_timeout'},
+      );
+      expect(unknownClosure['evidenced_cell_count'], 0);
+    },
+  );
+
   test('generates a complete multi-surface route inventory', () {
     final workspace = resolveRouteInventoryWorkspace(Directory.current);
     final temporaryRoot = Directory.systemTemp.createTempSync(
@@ -249,6 +581,8 @@ void main() {
       <String>{'/privacy', '/terms'},
     );
     const expectedStaticLegalDocumentStates = <String>{
+      'focused',
+      'pressed',
       'large_text',
       'reduced_motion',
       'dark',

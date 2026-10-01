@@ -54,13 +54,13 @@ function render(s){
  setHidden('review-form',!!s.pending);setHidden('review-section',!s.review||s.phase==='published');
  setHidden('confirm-section',!s.pending||s.phase==='published');setHidden('receipt-section',!s.receipt);setHidden('recovery-note',s.pending?.phase!=='unknown');
  $('reload').disabled=s.busy;$('inspect').disabled=s.busy||!!s.pending;
- const buttons=[];for(const c of s.candidates){const b=el('button',undefined,'secondary');b.type='button';b.disabled=s.busy||!!s.pending;b.setAttribute('aria-label',`Inspect snapshot ${c.snapshotId.slice(0,12)}`);
+ const buttons=[];for(const c of s.candidates){const b=el('button',undefined,'secondary');b.type='button';b.disabled=s.busy||!!s.pending;b.setAttribute('aria-label',`Inspect snapshot ${c.snapshotId.slice(0,12)}`);b.setAttribute('aria-current',String(c.snapshotId===s.candidate?.snapshotId));
  b.append(el('span',`${displayDate(c.capturedAt)} · ${c.fresh?'Fresh':'Stale'}`),el('span',`${c.status} · ${c.snapshotId.slice(0,16)}…`,'small hash'));
  b.addEventListener('click',()=>controller.inspect(c.snapshotId));buttons.push(b);}
  $('candidates').replaceChildren(...(buttons.length?buttons:[el('p','No reviewable snapshots are available. Import a complete approved source first.','muted')]));setHidden('more',!s.hasMore);
  if(s.candidate){const c=s.candidate;details($('candidate-details'),[['Snapshot ID',c.snapshotId,'hash'],['Manifest hash',c.manifestHash,'hash'],['Captured',displayDate(c.capturedAt)],['Import state',c.status],['Source records',c.rowCount],['Registered media',c.mediaCount],['Freshness',c.fresh?'Fresh':'Stale']]);
    const table=el('table',undefined,'table-counts');const caption=el('caption','Imported record counts');caption.className='small muted';table.append(caption);
-   const h=el('tr');h.append(el('th','Source table'),el('th','Records'));const head=el('thead');head.append(h);table.append(head);const body=el('tbody');
+   const h=el('tr');const sourceHeader=el('th','Source table'),countHeader=el('th','Records');sourceHeader.scope='col';countHeader.scope='col';h.append(sourceHeader,countHeader);const head=el('thead');head.append(h);table.append(head);const body=el('tbody');
    for(const t of c.tables){const row=el('tr');row.append(el('td',readable(t.name)),el('td',t.count));body.append(row);}table.append(body);$('table-counts').replaceChildren(table);
  }
  $('review').disabled=s.busy||!s.canMutate||!s.session?.canReview||!s.candidate?.fresh||!['importing','sealed','verified'].includes(s.candidate?.status)||s.candidate?.snapshotId!==s.candidate?.manifestHash;

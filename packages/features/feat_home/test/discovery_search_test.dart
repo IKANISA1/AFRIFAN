@@ -16,6 +16,8 @@ import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
 import 'package:test_support/touch_target_audit.dart';
 
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadAppFonts);
@@ -636,9 +638,13 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       expect(tester.takeException(), isNull);
-      await expectLater(
+      await expectGoldenOrClubAssertions(
+        tester,
         find.byKey(const ValueKey<String>('search-route-golden')),
-        matchesGoldenFile('goldens/search_${profile.id}.png'),
+        'goldens/search_${profile.id}.png',
+        route: '/search',
+        kind: 'route',
+        surface: 'mobile',
       );
     });
   }
@@ -672,11 +678,14 @@ void main() {
 
         expect(find.text(testCase.expectedTitle), findsNWidgets(2));
         expect(tester.takeException(), isNull);
-        await expectLater(
+        await expectGoldenOrClubAssertions(
+          tester,
           find.byKey(const ValueKey<String>('search-localized-golden')),
-          matchesGoldenFile(
-            'goldens/search_locale_${testCase.id}_large_text_dark_320x760.png',
-          ),
+
+          'goldens/search_locale_${testCase.id}_large_text_dark_320x760.png',
+          route: '/search',
+          kind: 'route',
+          surface: 'mobile',
         );
       },
     );
@@ -731,9 +740,13 @@ void main() {
         findsOneWidget,
       );
       expect(tester.takeException(), isNull);
-      await expectLater(
+      await expectGoldenOrClubAssertions(
+        tester,
         find.byKey(const ValueKey<String>('search-route-state-golden')),
-        matchesGoldenFile('goldens/search_state_${state}_dark_390x844.png'),
+        'goldens/search_state_${state}_dark_390x844.png',
+        route: '/search',
+        kind: 'route',
+        surface: 'mobile',
       );
       if (state == 'loading') {
         await tester.pump(const Duration(seconds: 13));
@@ -751,9 +764,13 @@ void main() {
       findsOneWidget,
     );
     expect(tester.takeException(), isNull);
-    await expectLater(
+    await expectGoldenOrClubAssertions(
+      tester,
       find.byKey(const ValueKey<String>('search-route-state-golden')),
-      matchesGoldenFile('goldens/search_state_large_text_dark_320x720.png'),
+      'goldens/search_state_large_text_dark_320x720.png',
+      route: '/search',
+      kind: 'route',
+      surface: 'mobile',
     );
   });
 
@@ -766,9 +783,13 @@ void main() {
 
     expect(FocusManager.instance.primaryFocus?.hasFocus, isTrue);
     expect(tester.takeException(), isNull);
-    await expectLater(
+    await expectGoldenOrClubAssertions(
+      tester,
       find.byKey(const ValueKey<String>('search-route-state-golden')),
-      matchesGoldenFile('goldens/search_state_focused_dark_390x844.png'),
+      'goldens/search_state_focused_dark_390x844.png',
+      route: '/search',
+      kind: 'route',
+      surface: 'mobile',
     );
   });
 
@@ -784,9 +805,13 @@ void main() {
       DiscoveryCategory.values.indexOf(DiscoveryCategory.supporters),
     );
     expect(tester.takeException(), isNull);
-    await expectLater(
+    await expectGoldenOrClubAssertions(
+      tester,
       find.byKey(const ValueKey<String>('search-route-state-golden')),
-      matchesGoldenFile('goldens/search_state_selected_dark_390x844.png'),
+      'goldens/search_state_selected_dark_390x844.png',
+      route: '/search',
+      kind: 'route',
+      surface: 'mobile',
     );
   });
 
@@ -803,9 +828,13 @@ void main() {
       findsOneWidget,
     );
     expect(tester.takeException(), isNull);
-    await expectLater(
+    await expectGoldenOrClubAssertions(
+      tester,
       find.byKey(const ValueKey<String>('search-route-state-golden')),
-      matchesGoldenFile('goldens/search_state_disabled_dark_390x844.png'),
+      'goldens/search_state_disabled_dark_390x844.png',
+      route: '/search',
+      kind: 'route',
+      surface: 'mobile',
     );
   });
 
@@ -835,9 +864,13 @@ void main() {
     await tester.pump(const Duration(milliseconds: 120));
 
     expect(tester.takeException(), isNull);
-    await expectLater(
+    await expectGoldenOrClubAssertions(
+      tester,
       find.byKey(const ValueKey<String>('search-route-state-golden')),
-      matchesGoldenFile('goldens/search_state_pressed_dark_390x844.png'),
+      'goldens/search_state_pressed_dark_390x844.png',
+      route: '/search',
+      kind: 'route',
+      surface: 'mobile',
     );
     await heldGesture.up();
   });
@@ -860,11 +893,14 @@ void main() {
     expect(find.textContaining('account 491'), findsNothing);
     expect(find.text('Retry'), findsNothing);
     expect(tester.takeException(), isNull);
-    await expectLater(
+    await expectGoldenOrClubAssertions(
+      tester,
       find.byKey(const ValueKey<String>('search-route-state-golden')),
-      matchesGoldenFile(
-        'goldens/search_state_permission_denied_dark_390x844.png',
-      ),
+
+      'goldens/search_state_permission_denied_dark_390x844.png',
+      route: '/search',
+      kind: 'route',
+      surface: 'mobile',
     );
   });
 
@@ -888,9 +924,13 @@ void main() {
       findsOneWidget,
     );
     expect(tester.takeException(), isNull);
-    await expectLater(
+    await expectGoldenOrClubAssertions(
+      tester,
       find.byKey(const ValueKey<String>('search-route-state-golden')),
-      matchesGoldenFile('goldens/search_state_syncing_dark_390x844.png'),
+      'goldens/search_state_syncing_dark_390x844.png',
+      route: '/search',
+      kind: 'route',
+      surface: 'mobile',
     );
 
     repository.completePending();
@@ -915,9 +955,13 @@ void main() {
     expect(find.textContaining('revision 491'), findsNothing);
     expect(find.text('Retry'), findsOneWidget);
     expect(tester.takeException(), isNull);
-    await expectLater(
+    await expectGoldenOrClubAssertions(
+      tester,
       find.byKey(const ValueKey<String>('search-route-state-golden')),
-      matchesGoldenFile('goldens/search_state_conflict_dark_390x844.png'),
+      'goldens/search_state_conflict_dark_390x844.png',
+      route: '/search',
+      kind: 'route',
+      surface: 'mobile',
     );
   });
 
@@ -942,11 +986,14 @@ void main() {
     );
     expect(find.text('Retry'), findsOneWidget);
     expect(tester.takeException(), isNull);
-    await expectLater(
+    await expectGoldenOrClubAssertions(
+      tester,
       find.byKey(const ValueKey<String>('search-route-state-golden')),
-      matchesGoldenFile(
-        'goldens/search_state_security_timeout_dark_390x844.png',
-      ),
+
+      'goldens/search_state_security_timeout_dark_390x844.png',
+      route: '/search',
+      kind: 'route',
+      surface: 'mobile',
     );
   });
 }
@@ -1002,7 +1049,10 @@ Widget _buildSearchApp({
         discoverySearchTimeoutProvider.overrideWithValue(searchTimeout),
     ],
     child: MaterialApp.router(
-      theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
+      theme: ClubTheme.from(
+        localRouteConfigOrFallback(),
+        brightness: brightness,
+      ),
       routerConfig: router,
       builder: (context, child) => AfriLocalizationsScope(
         locale: appCopyLocale,

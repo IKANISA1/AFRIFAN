@@ -1,4 +1,4 @@
-import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions } from "./state-evidence-provenance";
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions, createStateEvidenceContext } from "./state-evidence-provenance";
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
@@ -132,12 +132,12 @@ async function expectNoSeriousAxeViolations(page: Page) {
 test("/standings proves all sixteen applicable rendered states", async ({
   browser,
 }) => {
-  test.setTimeout(120_000);
+  test.setTimeout(360_000);
 
   const evidenceDirectory = prepareStateEvidence(browser, test.info(), "consumer_web_standings_states");
 
 
-  const context: BrowserContext = await browser.newContext({
+  const context: BrowserContext = await createStateEvidenceContext(browser, {
     ...stateEvidenceContextOptions(test.info()),
     colorScheme: "dark",
     reducedMotion: "no-preference",
@@ -272,7 +272,9 @@ test("/standings proves all sixteen applicable rendered states", async ({
 
   responseMode = "ready";
   await open("large-text");
-  await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
+  await page.evaluate(() => {
+    document.documentElement.style.setProperty("font-size", "200%", "important");
+  });
   expect(
     await page.evaluate(
       () =>

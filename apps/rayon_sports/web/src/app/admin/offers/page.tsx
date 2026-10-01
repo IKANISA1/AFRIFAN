@@ -297,7 +297,7 @@ function OffersWorkspace({
       <AdminSurface
         title={form.id ? "Review partner offer" : "Create partner offer"}
       >
-        <p className="text-sm leading-6 text-[var(--admin-zinc-400)]">
+        <p className="text-sm leading-6 text-[var(--admin-secondary)]">
           Link one confirmed FET item to one active partner. Reward definitions
           remain governed in the FET catalogue.
         </p>
@@ -535,7 +535,7 @@ function OffersWorkspace({
       <AdminSurface
         title="Partner-offer catalogue"
       >
-        <p className="text-sm leading-6 text-[var(--admin-zinc-400)]">
+        <p className="text-sm leading-6 text-[var(--admin-secondary)]">
           Strict source-owned reward values and partner identities; no
           synthetic stock or claim totals.
         </p>
@@ -796,7 +796,7 @@ export default function AdminOffersPage() {
             {Array.from({ length: 4 }).map((_, index) => (
               <div
                 key={index}
-                className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] p-4"
+                className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-widget)] p-4"
               >
                 <Skeleton className="skeleton-text h-5 w-1/3" />
                 <Skeleton className="skeleton-text mt-3 h-24 w-full" />

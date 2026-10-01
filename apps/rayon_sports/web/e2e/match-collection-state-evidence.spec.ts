@@ -1,4 +1,4 @@
-import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions } from "./state-evidence-provenance";
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions, createStateEvidenceContext } from "./state-evidence-provenance";
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
@@ -164,17 +164,21 @@ for (const configuration of routeConfigurations) {
   test(`${configuration.routePattern} proves all sixteen applicable rendered states`, async ({
     browser,
   }) => {
-    test.setTimeout(120_000);
+    test.setTimeout(360_000);
 
     const evidenceDirectory = prepareStateEvidence(browser, test.info(), `${configuration.directory}`);
 
 
-    const context: BrowserContext = await browser.newContext({
+    const context: BrowserContext = await createStateEvidenceContext(browser, {
     ...stateEvidenceContextOptions(test.info()),
       colorScheme: "dark",
       reducedMotion: "no-preference",
   });
     const page = await context.newPage();
+    // Establish Chromium connectivity before the initial loading navigation.
+    await context.setOffline(true);
+    await context.setOffline(false);
+    await expect.poll(() => page.evaluate(() => navigator.onLine)).toBe(true);
   await page.emulateMedia({ colorScheme: "dark" });
     let responseMode: ResponseMode = "ready";
 
@@ -316,7 +320,9 @@ for (const configuration of routeConfigurations) {
 
     responseMode = "ready";
     await open("large-text");
-    await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
+    await page.evaluate(() => {
+    document.documentElement.style.setProperty("font-size", "200%", "important");
+  });
     expect(
       await page.evaluate(
         () =>

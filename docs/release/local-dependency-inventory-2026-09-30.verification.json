@@ -1,0 +1,1924 @@
+{
+  "android": {
+    "changedPreviouslySelectedVersions": 0,
+    "configurations": {
+      "as_vita": 106,
+      "costa_do_sol": 106,
+      "nkana": 106,
+      "rayon_sports": 113,
+      "vitalo": 106
+    },
+    "nativeObserverReuse": {
+      "allBroaderInputsUnchangedSinceOriginalObservation": false,
+      "broaderSourceInputsChangedSinceOriginalObservation": [
+        {
+          "current": {
+            "bytes": 47097,
+            "path": ".dart_tool/package_graph.json",
+            "sha256": "44e4f3fd924a6a9cb5a7938ae9123811bb707657d0ca04dda1d97fe01f7a3f4a"
+          },
+          "path": ".dart_tool/package_graph.json",
+          "previous": {
+            "bytes": 47049,
+            "path": ".dart_tool/package_graph.json",
+            "sha256": "54e7562259c28620fab90500e92e897d76f4dd943e69b33aac07b3c9f723d24b"
+          }
+        },
+        {
+          "current": {
+            "bytes": 33612,
+            "path": ".github/workflows/ci.yaml",
+            "sha256": "4460ea80679ea611d1b123e70942d03b62a67992e2bb36c9642e06706b6b5ada"
+          },
+          "path": ".github/workflows/ci.yaml",
+          "previous": {
+            "bytes": 33345,
+            "path": ".github/workflows/ci.yaml",
+            "sha256": "fc4bf9341fa498d8a32a58503d48bc69bfd1f0810914b200437c81748cd8eaf5"
+          }
+        },
+        {
+          "current": {
+            "bytes": 1127,
+            "path": "packages/testing/test_support/pubspec.yaml",
+            "sha256": "74a430356d8940c56fadd9ea6f9a7b40b87a95715b6d83c09812371b197ff435"
+          },
+          "path": "packages/testing/test_support/pubspec.yaml",
+          "previous": {
+            "bytes": 1023,
+            "path": "packages/testing/test_support/pubspec.yaml",
+            "sha256": "d699afed8f49cc25ee2e97a78bb0726b6c0ee0837e8807266dbf1b13485ae352"
+          }
+        }
+      ],
+      "collectorSourceEqual": true,
+      "currentBroadSourceInputsBoundSeparately": 181,
+      "nativeSourceInputCount": 22,
+      "nativeSourceInputs": {
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/app_links-7.0.0/android/build.gradle": "cf74b6d9a729dbad13d1acbd87332cad6262b1b5a587060e9dfbfadda69978e0",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.5/android/build.gradle": "3c343089242ccda6037df2d75fd813f122fa905234166f552d5e52b748972c78",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics-12.2.0/android/build.gradle": "a144843e8065b6ce4042954f72114cb163b9685e7f33b3902ed432d67c7a3c7e",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_app_check-0.4.2/android/build.gradle": "9803525fad17bcd34204b5c8e3c003ab8cd9ff0103550790439a831cdd94734d",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/android/build.gradle": "760219911b257857a814dc9bc0237c262f4bd3f0ffa1e27db7ddebd8bc328c27",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.1.0/android/build.gradle": "31289bce8a72ad33c77e9c9e14b87d45d420c042c524c447eb3e296cab110519",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_messaging-16.1.3/android/build.gradle": "c2598140aac8ffd58d42ad7d149c8d5b331c1c9b7e3eb3277e0386f35d2425c0",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/build.gradle": "960dbc23a97748cc9b6f7c0caa2cdf8335e56fb74bec15ff09869010e474ef21",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.3.1/android/build.gradle": "5c4a6b3dee00a19ae77083ded682324b1fd7a62dfb25e1146051d926c0c5b995",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/path_provider_android-2.2.23/android/build.gradle.kts": "6e965b8d9f2b76bdf02bf390d1a2d4ec70c2d908dfb501dc0d5880311ab41f5f",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/share_plus-11.1.0/android/build.gradle": "b3571246114239c8e63a8332ff05b1de594ab320736bfb6434462a34411859d9",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.23/android/build.gradle.kts": "da70c2c309867579219fcf6e9d5ed206a66e261792906271903900dc49693e78",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/sqflite_android-2.4.2+3/android/build.gradle": "5238b6d2e464795594a7bf8443b11a0fee55f31aa56e831c91b161c92cebf4d4",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.29/android/build.gradle.kts": "08a9b42356a3eab27d6cc3623e08b9ead5415953913ac72f09758fd55abc0bc5",
+        "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/packages/integration_test/android/build.gradle.kts": "0839288b76144c10774df10c04161f58c8f4c75a9a3eac12dab4fc3c4c9e8f9b",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/.flutter-plugins-dependencies": "7dfab6be96775e9237a5426b847d3cd8554889d1d1dc46f814aefcd33be4e259",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/app/build.gradle.kts": "ccb935c02f19c851fc27928db26c88d79faeae03f4cfad9848a1164afd39de20",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/build.gradle.kts": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/gradle.properties": "1e972aab14714887ccb35633fee6f867616f334482e3e2a1d61112575616d1e6",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/gradle/wrapper/gradle-wrapper.properties": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/settings.gradle.kts": "51d50f8f3713eaa43e1353369de99668dd8c4522a5ab9b2091fd411b3019e7fd",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/pubspec.lock": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b"
+      },
+      "nativeSourceInputsEqual": true,
+      "ownerFreezeSha256": "0e660eed2c4a425de8a3bd97636eeb72569332da5564835145a73f136abe62f9",
+      "rayonReused": true,
+      "schemaVersion": 1
+    },
+    "noAppCompileOrSigningPerformed": true,
+    "offline": true,
+    "targets": 5,
+    "unresolved": 0
+  },
+  "boundedReadback": {
+    "androidSnapshotsExactlyEqual": true,
+    "encoding": "json-cells-tsv-v1",
+    "licenseAllFieldsEqual": true,
+    "licenseRows": 2265,
+    "maxShardBytes": 2097152,
+    "passed": true,
+    "shards": 32,
+    "tables": [
+      {
+        "document": "inventory",
+        "fieldPath": [
+          "components"
+        ],
+        "rows": 2265,
+        "sha256": "43d776627b37f37ab7d69c3a4273188a0bcf6c18a3b475f7c05d92cec2a20349",
+        "shards": 3
+      },
+      {
+        "document": "inventory",
+        "fieldPath": [
+          "edges"
+        ],
+        "rows": 7199,
+        "sha256": "5ddfef8524a1d9bd04e36c478838d5fc8d0f1f049a55defbcd46aaaaaf1375e6",
+        "shards": 5
+      },
+      {
+        "document": "inventory",
+        "fieldPath": [
+          "evidence"
+        ],
+        "rows": 8290,
+        "sha256": "91a5d6a2970338cb7012b645e9ec2f22f8513535f4a3daf57dfbf0a94e2d0afb",
+        "shards": 2
+      },
+      {
+        "document": "inventory",
+        "fieldPath": [
+          "unresolved"
+        ],
+        "rows": 304,
+        "sha256": "d69e6eceedaf5c81f58eea1f1493f76bd3e6d3f16b63cc8afdbf67e479322d4b",
+        "shards": 1
+      },
+      {
+        "document": "android",
+        "fieldPath": [
+          "targets",
+          "as_vita",
+          "configurations"
+        ],
+        "rows": 106,
+        "sha256": "1f4a7d487b0b79f973dcb09228dfe464e6b735977aa2fab1d15fecbbca6b6bfc",
+        "shards": 4
+      },
+      {
+        "document": "android",
+        "fieldPath": [
+          "targets",
+          "costa_do_sol",
+          "configurations"
+        ],
+        "rows": 106,
+        "sha256": "fe83f098f8af2b454b49158d7dd25407ab56d23debe9e6612f48905323b1baea",
+        "shards": 4
+      },
+      {
+        "document": "android",
+        "fieldPath": [
+          "targets",
+          "nkana",
+          "configurations"
+        ],
+        "rows": 106,
+        "sha256": "1b3e1025e4999d4dd5d7f1cb6deb3a4876b6d1dc2d773e306c8848036b2f0931",
+        "shards": 4
+      },
+      {
+        "document": "android",
+        "fieldPath": [
+          "targets",
+          "rayon_sports",
+          "configurations"
+        ],
+        "rows": 113,
+        "sha256": "f3237b9b7698b293c904c7f72fd8d185d6c286632bcb4b85806d9e5864f8d554",
+        "shards": 5
+      },
+      {
+        "document": "android",
+        "fieldPath": [
+          "targets",
+          "vitalo",
+          "configurations"
+        ],
+        "rows": 106,
+        "sha256": "01db64c1261e07643a34d9040d6537362e73663007241accad100e95b54d0803",
+        "shards": 4
+      }
+    ]
+  },
+  "currentSourceRebind": {
+    "acceptance": false,
+    "addedDirectEdges": [
+      {
+        "context": "dart:dev_dependencies",
+        "from": "core_auth",
+        "fromVersion": "0.1.0",
+        "to": "http",
+        "toVersion": "1.6.0"
+      },
+      {
+        "context": "dart:dev_dependencies",
+        "from": "test_support",
+        "fromVersion": "0.1.0",
+        "to": "go_router",
+        "toVersion": "14.8.1"
+      },
+      {
+        "context": "dart:dev_dependencies",
+        "from": "test_support",
+        "fromVersion": "0.1.0",
+        "to": "http",
+        "toVersion": "1.6.0"
+      },
+      {
+        "context": "dart:dev_dependencies",
+        "from": "test_support",
+        "fromVersion": "0.1.0",
+        "to": "supabase_flutter",
+        "toVersion": "2.17.2"
+      },
+      {
+        "context": "dart:dev_dependencies",
+        "from": "test_support",
+        "fromVersion": "0.1.0",
+        "to": "core_l10n",
+        "toVersion": "0.1.0"
+      },
+      {
+        "context": "dart:dev_dependencies",
+        "from": "test_support",
+        "fromVersion": "0.1.0",
+        "to": "feat_membership",
+        "toVersion": "0.1.0"
+      }
+    ],
+    "allUnresolvedRecordsUnchanged": true,
+    "changedExistingComponentAttributionCount": 806,
+    "changedInventoryEvidence": [
+      ".dart_tool/package_config.json",
+      ".github/workflows/ci.yaml",
+      "/Users/jeanbosco/.pub-cache/hosted/pub.dev/gotrue-2.27.2/LICENSE",
+      "/Users/jeanbosco/.pub-cache/hosted/pub.dev/gotrue-2.27.2/pubspec.yaml",
+      "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/as_vita.json",
+      "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/costa_do_sol.json",
+      "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/nkana.json",
+      "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/rayon_sports.json",
+      "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/vitalo.json",
+      "packages/core/core_auth/pubspec.yaml",
+      "packages/testing/test_support/pubspec.yaml",
+      "pubspec.lock",
+      "pubspec.yaml",
+      "tools/scripts/local_dependency_inventory.py",
+      "tools/scripts/test_local_dependency_inventory.py"
+    ],
+    "changedPreviouslySelectedMavenVersions": 0,
+    "checksReceipt": {
+      "bytes": 48077,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/checks-receipt.json",
+      "sha256": "bc30996e1f1e6627801a353099424da6501850898bd2f6d23020d203674b7880"
+    },
+    "command": {
+      "bytes": 525,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/generation-command.json",
+      "sha256": "f658a5c82e7b9c43edd0ebe167835375c7ee71e9bd8fd4bcc02ae03e5961d65f"
+    },
+    "dependencyEdgeOccurrencesUnchanged": false,
+    "dependencyEdgesUnchanged": false,
+    "finalDevEdgeOwnerFreeze": {
+      "bytes": 2364,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/final-dev-edge-owner-freeze.json",
+      "sha256": "0e660eed2c4a425de8a3bd97636eeb72569332da5564835145a73f136abe62f9"
+    },
+    "finalSixEdge900SecondSetupCheckpoint": {
+      "bytes": 1327,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-final-dev-edges-20260930T225504Z/finite-900-final-edge-setup-checkpoint.json",
+      "sha256": "5d6d250a032083fe81a7ba7a43cc56b4ac7914f3395f0e93c20f99ddf1ea92ca"
+    },
+    "finiteFirst900SecondSetupCheckpoint": {
+      "bytes": 10098,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-setup-retry-20260930T221226Z/finite-setup-timeout-checkpoint.json",
+      "sha256": "8cdfd0e93ca130eb8ad6f7505e097e2a8dd548d354776a6dae22f7285e03e6b1"
+    },
+    "generation": {
+      "bytes": 416,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/generation.log",
+      "sha256": "ac31428e8d841afd223c56bbeea2c1580604a3d1e9da2596b1c53af6a9f608b7"
+    },
+    "inventoryGenerationNetworkRequests": 0,
+    "inventoryInstalls": 0,
+    "nativeObserverReuseScope": {
+      "bytes": 5453,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/rayon-native-observer-reuse-scope.json",
+      "sha256": "329bf8ebbedb5737bc635e733dedb759ac617ffb17999a123c3285b37a03740f"
+    },
+    "nativeRuntimePrivacyScopeSeparation": {
+      "bytes": 602,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/native-runtime-privacy-scope-separation.json",
+      "sha256": "ebc7c1b9957c8a8749af1d3fabe81ddbcfef13322a97e4d7d79035f4f7f233a6"
+    },
+    "newInventoryEvidenceCount": 168,
+    "observerSetupDeadlineSecondsPerTarget": 1800,
+    "offlineNativeDependencyResolutionPerformed": true,
+    "ownerFreezeBeforeCiIntegrationPreserved": {
+      "bytes": 1829,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/owner-freeze-before-ci-integration.json",
+      "sha256": "06d2c551fa3b8606adf3adc0cb07ab1f23234a72c14411ba3a6ce25b9ecdd1b9"
+    },
+    "previousArtifactsCheckpoint": {
+      "bytes": 31533,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/before-checkpoint.json",
+      "sha256": "0f954b0ac5ea0c3e58931e315f3305642afb26d31a6ae6dfc5acfb586f3b068f"
+    },
+    "previousGraphRelationshipsPreservedUnderDeclaredSourceReplacement": true,
+    "previousVerificationPreserved": {
+      "bytes": 26176,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/before-artifacts/local-dependency-inventory-2026-09-30.verification.json",
+      "sha256": "0258adfe421833bd752a6f45434817122a728f9d3699f467e820947e0f3bbf7a"
+    },
+    "recoveredLicenseAssociationsUnchanged": true,
+    "rejected300SecondObserverSetup": {
+      "bytes": 30523,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-final-20260930T220437Z/checks-receipt.json",
+      "sha256": "65768194d905b87d909b99dd0432d46bfcf98b29be138f577f73dae75e2d1238"
+    },
+    "rejectedConcurrentGeneration": {
+      "bytes": 1110,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/checks-receipt.json",
+      "sha256": "824dc0d26af7e3250c0c661d0121812d0b89b1083e9975fefba921e12543207e"
+    },
+    "rejectedFinalSixEdge900SecondObserverSetup": {
+      "bytes": 38168,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-final-dev-edges-20260930T225504Z/checks-receipt.json",
+      "sha256": "2380ede051a156d06ee16e133717701de77726aced12c907dafc40f8b0038e40"
+    },
+    "rejectedFirst900SecondObserverSetup": {
+      "bytes": 37041,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-setup-retry-20260930T221226Z/checks-receipt.json",
+      "sha256": "c156822a5acaed8827bb080be67d99877ca72beabdec68292dec5f4bea9cc803"
+    },
+    "reportRebindDriver": {
+      "bytes": 21935,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/rebind-frozen-report.py",
+      "sha256": "a2e6a41bbdf091dc8d66a6970e38ccce3c5f3cc966a335b8bee2f4baf00098fc"
+    },
+    "runtimeAndTestDeadlineRequirementsChanged": false,
+    "schemaAndReadback": {
+      "bytes": 3540,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/schema-and-readback.json",
+      "sha256": "7e30059e9ebf8ff61bfc74f1adde14963fe1e952fbe967af4405ec4b626818f3"
+    },
+    "selectedVersionChanges": 0,
+    "sourceIdentityReplacements": [
+      {
+        "currentRef": "dependency:83fb24bbdd35616088c2a93b",
+        "currentSource": {
+          "contentSha256": "0a71c51b7f563df8d5837691fa6d2fb0880f2154a033f338536691ff60f44a22",
+          "kind": "path",
+          "patchManifestSha256": "9e759b77dd234baaa5a9206bf4a674f52660f7502f5b27ad180a46527d71b6bc",
+          "patched": true,
+          "path": "third_party/gotrue_2_27_2",
+          "upstreamProvenanceSha256": "0b12d78f1134ee29932ffbd40de33cae93120134a87df044577ade90097d90c8",
+          "upstreamVersion": "2.27.2"
+        },
+        "localSourceProvenance": {
+          "changedUpstreamFiles": [
+            "analysis_options.yaml",
+            "lib/src/gotrue_client.dart",
+            "pubspec.yaml"
+          ],
+          "contentManifestSha256": "0a71c51b7f563df8d5837691fa6d2fb0880f2154a033f338536691ff60f44a22",
+          "licenseByteEqualityVerified": true,
+          "patchManifestEvidence": "third_party/gotrue_2_27_2/LOCAL_PATCH_MANIFEST.json",
+          "regularFileCount": 82,
+          "upstreamArchiveByteEqualityClaimed": false,
+          "upstreamLicenseApprovalAssessed": false,
+          "upstreamPackage": "gotrue",
+          "upstreamProvenanceEvidence": "third_party/gotrue_2_27_2/UPSTREAM_PROVENANCE.json",
+          "upstreamRepository": "https://github.com/supabase/supabase-flutter/tree/main/packages/gotrue",
+          "upstreamVersion": "2.27.2"
+        },
+        "package": "gotrue",
+        "previousRef": "dependency:2bb2c120ff23d78eb72c9662",
+        "previousSource": {
+          "kind": "hosted",
+          "url": "https://pub.dev"
+        },
+        "version": "2.27.2"
+      }
+    ],
+    "supersededSourceStableSetupCheckpoint": {
+      "bytes": 5039,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-missing-targets-retry-20260930T224117Z/source-stable-superseded-checkpoint.json",
+      "sha256": "40f0b360d6386a29167a2408562dc8e61fee99f82dc015ef09b2476617a6a0cb"
+    }
+  },
+  "cycloneDxSchemaValidation": {
+    "cachedSchemaOnly": true,
+    "errors": 0,
+    "jsonschemaVersion": "4.26.0",
+    "networkFallbackRejected": true,
+    "schemaInputs": [
+      {
+        "bytes": 252625,
+        "path": "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/schema/bom-1.6.schema.json",
+        "sha256": "3e92dddbc30cf7f6a02b80f0942b1a4cfd4fb1c26f1dfc4310afa9d613cafb93"
+      },
+      {
+        "bytes": 8058,
+        "path": "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/schema/jsf-0.82.schema.json",
+        "sha256": "8bae002c25e723db7ee1f26afde680ae1a2b1a8f6b4b4b0fd65dc3becb090aae"
+      },
+      {
+        "bytes": 14269,
+        "path": "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/schema/spdx.schema.json",
+        "sha256": "baa9d3bd1ed57b6751b0887edead6b5063ff53ff7429cf85d476c6c94af0166e"
+      }
+    ],
+    "specVersion": "1.6"
+  },
+  "fullEvidenceValidation": {
+    "bytes": 50,
+    "passed": true,
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/full-validation.log",
+    "requireExact": true,
+    "sha256": "ee59b7f8f33e1eda89865675ccd9401b5a7782af6a8c638f9822de15dbc9529f"
+  },
+  "implementationFiles": [
+    {
+      "bytes": 130308,
+      "path": "tools/scripts/local_dependency_inventory.py",
+      "sha256": "86ff08a45009a4d298393f762553942dc78dbfbaafd63358fb3afdb98081557d",
+      "why": "Repeatable active dependency source/version/integrity/license reconciliation; exactness gate, bounded lossless TSV exports and strict row/hash/coverage readback"
+    },
+    {
+      "bytes": 7655,
+      "path": "tools/scripts/collect_android_dependency_inventory.gradle",
+      "sha256": "d0959902b8498110ef8057897097a803f0c2015311602a375cd20ce675a5c332",
+      "why": "Offline resolved five-target Android graphs; stable source inputs and preservation of every previously selected external version"
+    },
+    {
+      "bytes": 40378,
+      "path": "tools/scripts/test_local_dependency_inventory.py",
+      "sha256": "f7ed855c9da35f10fe95803f3c2f1987960296edc229219833064ea7eb6305ad",
+      "why": "54 local source/privacy/graph/integrity/license regressions, including canonical path, complete patch provenance, source-attribution races and exact portable exclusions"
+    },
+    {
+      "bytes": 251,
+      "path": "supabase/deno.import-map.json",
+      "sha256": "3f551a2a1ea4f2dc7e1db9710555046ce470aa617b0011b04ec8255dcc300866",
+      "why": "Three prior floating backend imports now explicitly selected at exact Supabase npm2.116.0, JSR functions2.110.7 and std/assert1.0.19 versions"
+    },
+    {
+      "bytes": 23936,
+      "path": "supabase/deno.lock",
+      "sha256": "19dc91a3f9606d1d2301693348a73e7be17b17ac7ca494597c6f69c9c89fc0d8",
+      "why": "Frozen npm/JSR/HTTP dependency and integrity graph; Edge checks run cached-only without modifying the lock"
+    }
+  ],
+  "inventorySummary": {
+    "byEcosystem": {
+      "backend-import": 7,
+      "cocoapods": 1,
+      "dart": 177,
+      "dart-local": 34,
+      "deno-jsr": 3,
+      "deno-npm": 46,
+      "deno-remote": 98,
+      "github-action": 7,
+      "maven": 802,
+      "npm": 1068,
+      "python": 1,
+      "sdk": 3,
+      "swift": 18
+    },
+    "components": 2265,
+    "componentsWithLicenseDeclaration": 1984,
+    "componentsWithLicenseText": 1412,
+    "dependencyEdgeOccurrences": 137849,
+    "dependencyEdges": 7199,
+    "evidenceItems": 8290,
+    "exactInventoryComplete": true,
+    "unresolvedFields": 304
+  },
+  "licenseRecovery": {
+    "allOriginalFindingsRetained": true,
+    "networkRequests": 0,
+    "originalGapCount": 41,
+    "partialEvidenceDoesNotClearPackageLicense": true,
+    "recoveredComponents": 19,
+    "remainingGapCount": 22,
+    "selectedVersionsChanged": 0
+  },
+  "limitations": [
+    "22 components lack exact package-wide license evidence in the inspected local caches/packages; all original finite findings remain and license approval is not assessed",
+    "282 native local plugin outputs remain unbuilt by inventory collection",
+    "GoTrue 2.27.2 uses explicitly patched local source with complete content/provenance binding; upstream archive equality and upstream approval of the local patch are not asserted",
+    "Dependency input freezing excludes AndroidManifest.xml, Info.plist and runtime/bootstrap privacy controls; native collector deactivation and runtime privacy outcomes require separate current evidence",
+    "Manifest/lock/cache dependency attribution differs from the separate installed converter byte inventory; neither asserts a clean-install comparison or production runtime outcome",
+    "Portable validation intentionally skips the exact hash-bound cache/object/output scope and generated Pub/plugin evidence confirmed ignored; full validation verifies those bytes",
+    "Font upstream package/version comes from the retained README; local font/license equality is freshly verified without upstream archive revalidation or an added npm selection",
+    "No online downloads, package upgrades, provider/deployed dependency or vulnerability clearance, device/store or production acceptance was performed by this rebind"
+  ],
+  "portableSourceValidation": {
+    "bytes": 98,
+    "exactGeneratedIgnoredExclusions": [
+      {
+        "path": ".dart_tool/package_config.json",
+        "reason": "exact generated Pub/plugin input confirmed ignored by Git",
+        "reference": ".dart_tool/package_config.json",
+        "sha256": "8bc8f1fab9321d11f62371f2416e7769c842cbcfe0289047721c0a4f59f2fd40"
+      },
+      {
+        "path": "apps/as_vita/.flutter-plugins-dependencies",
+        "reason": "exact generated Pub/plugin input confirmed ignored by Git",
+        "reference": "apps/as_vita/.flutter-plugins-dependencies",
+        "sha256": "815c4db226f4533a18c5492152f928ecf55877accb3ea8f68d697bdcbb9639a1"
+      },
+      {
+        "path": "apps/costa_do_sol/.flutter-plugins-dependencies",
+        "reason": "exact generated Pub/plugin input confirmed ignored by Git",
+        "reference": "apps/costa_do_sol/.flutter-plugins-dependencies",
+        "sha256": "26cb7dd1b1509f67c98476545f90b73f8d1e9da43f35a5b48ba49cff69c3da1a"
+      },
+      {
+        "path": "apps/nkana/.flutter-plugins-dependencies",
+        "reason": "exact generated Pub/plugin input confirmed ignored by Git",
+        "reference": "apps/nkana/.flutter-plugins-dependencies",
+        "sha256": "26a415fcd86279d34ef82b8c0e00c20b5056ffa057a80d447363b0e042bb218d"
+      },
+      {
+        "path": "apps/rayon_sports/.flutter-plugins-dependencies",
+        "reason": "exact generated Pub/plugin input confirmed ignored by Git",
+        "reference": "apps/rayon_sports/.flutter-plugins-dependencies",
+        "sha256": "7dfab6be96775e9237a5426b847d3cd8554889d1d1dc46f814aefcd33be4e259"
+      },
+      {
+        "path": "apps/vitalo/.flutter-plugins-dependencies",
+        "reason": "exact generated Pub/plugin input confirmed ignored by Git",
+        "reference": "apps/vitalo/.flutter-plugins-dependencies",
+        "sha256": "ef31fccd41fe2a99c6b15107f369b26d5e0993dff99f5bdedd581cd1b245a932"
+      }
+    ],
+    "excludedEvidenceCount": 6076,
+    "exclusionCountsByReason": {
+      "absolute author-machine cache/runtime evidence": 3336,
+      "exact generated Pub/plugin input confirmed ignored by Git": 6,
+      "existing ignored output evidence scope": 1884,
+      "non-file local cache/object evidence": 850
+    },
+    "localCachesAndIgnoredOutputsSkipped": true,
+    "passed": true,
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/portable-validation.log",
+    "requireExact": true,
+    "scopeReceipt": {
+      "bytes": 2986727,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/portable-evidence-scope.json",
+      "sha256": "1d372e5d128280682196bda1417725360b8780a3b625fcd8c89b6ab7c3f725e3"
+    },
+    "sha256": "c6bbf5cf173000126e1bcbd0b42481235e8dd0eb030d33ad3afd2af579a141ec",
+    "verifiedEvidenceCount": 2214
+  },
+  "projectAssetProvenance": [
+    {
+      "copies": [
+        {
+          "destination": {
+            "bytes": 48256,
+            "path": "apps/rayon_sports/web/public/fonts/inter-latin-wght-normal.woff2",
+            "sha256": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62"
+          },
+          "freshSha256Equal": true,
+          "source": {
+            "bytes": 48256,
+            "path": "cloudflare/operator-api/ui/fonts/inter-latin-wght-normal.woff2",
+            "sha256": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62"
+          }
+        },
+        {
+          "destination": {
+            "bytes": 4477,
+            "path": "apps/rayon_sports/web/public/fonts/LICENSE.txt",
+            "sha256": "3b0a5fca3d17942cde889069889dedbbbd075e9b599968c82a95f4d944e9b345"
+          },
+          "freshSha256Equal": true,
+          "source": {
+            "bytes": 4477,
+            "path": "cloudflare/operator-api/ui/fonts/LICENSE.txt",
+            "sha256": "3b0a5fca3d17942cde889069889dedbbbd075e9b599968c82a95f4d944e9b345"
+          }
+        }
+      ],
+      "destinationProvenanceReadme": {
+        "bytes": 813,
+        "path": "apps/rayon_sports/web/public/fonts/README.md",
+        "sha256": "61034f9832edbc03f4c3ed211d69d2eaa733e3249dd1f587522e50f950f6e40d"
+      },
+      "importingLayout": {
+        "bytes": 2949,
+        "path": "apps/rayon_sports/web/src/app/layout.tsx",
+        "sha256": "b230ee3fb2fbe98bfaa7560879c0a4a1afe0c893a1ede93f8bc1a9edacd7e61c"
+      },
+      "includedAsSelectedNpmComponent": false,
+      "licenseApprovalAssessed": false,
+      "licenseDeclaration": "SIL Open Font License 1.1",
+      "name": "Inter Latin variable WOFF2",
+      "scope": "Exact existing local source-to-project asset copy; no network fetching, package selection or font rebuild",
+      "sourceDistributionDeclaration": {
+        "basis": "Retained source folder README declaration; no npm selection or registry/archive identity added to the active package graph",
+        "package": "@fontsource-variable/inter",
+        "version": "5.3.0"
+      },
+      "sourceProvenanceReadme": {
+        "bytes": 727,
+        "path": "cloudflare/operator-api/ui/fonts/README.md",
+        "sha256": "99faa783e8ba38e9e7f208035345b2c26fc986acc59e608b3766f26394d9d195"
+      },
+      "upstreamDistributionIndependentlyReverified": false,
+      "versionSelectionChanged": false
+    }
+  ],
+  "regressions": {
+    "bytes": 153,
+    "passed": true,
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/regression-tests.log",
+    "sha256": "8a325b63561a46a429e1016b8865c896de124d081a1457c427805151520578a1",
+    "tests": 54
+  },
+  "remainingFields": {
+    "license-evidence-unavailable": 22,
+    "native-project-artifact-not-built": 282
+  },
+  "reportArtifacts": [
+    {
+      "bytes": 29233,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.json",
+      "sha256": "c7a01cb4d4ab39d0d3556432b1ad2faac82ee6a53aac5899b3b1dc4f88a08aca"
+    },
+    {
+      "bytes": 2011486,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-as_vita-configurations.001.tsv",
+      "sha256": "0840f3b184e47bd8499c2aaea079041d44c2c6822447abe09c0c9a11bbab97b3"
+    },
+    {
+      "bytes": 2066418,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-as_vita-configurations.002.tsv",
+      "sha256": "3dd3f9642eca3f949912c9bb0dfcf768655b148d2f9869b6d7f08a75f0a1ca35"
+    },
+    {
+      "bytes": 2055782,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-as_vita-configurations.003.tsv",
+      "sha256": "b83887a8dc8ee01c5a419e0ee50ced5a6e46ed7224f1076414356500723d243d"
+    },
+    {
+      "bytes": 1866921,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-as_vita-configurations.004.tsv",
+      "sha256": "6dfc6cc2951b1aa83e9e27a8c8e4668797ed47578878431751abbcea29a8af17"
+    },
+    {
+      "bytes": 2011961,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-costa_do_sol-configurations.001.tsv",
+      "sha256": "359719a1f18f00f0d5bc816bcb0d9d9f449858b1e16aaacbacea65e410f286f1"
+    },
+    {
+      "bytes": 2066503,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-costa_do_sol-configurations.002.tsv",
+      "sha256": "1d7a9dd35760de513461b6204df2db51f50c267f3037795bd50c9953aa7d05ea"
+    },
+    {
+      "bytes": 2055832,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-costa_do_sol-configurations.003.tsv",
+      "sha256": "1ca9c778be33a94b22f7177f4c54fbbe5e6df53cc9a954746f28d5207750d04a"
+    },
+    {
+      "bytes": 1866921,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-costa_do_sol-configurations.004.tsv",
+      "sha256": "6dfc6cc2951b1aa83e9e27a8c8e4668797ed47578878431751abbcea29a8af17"
+    },
+    {
+      "bytes": 2011296,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-nkana-configurations.001.tsv",
+      "sha256": "766ab782c9d84fcc06245d63f2e9474238b429625038e24983f082fc9704e2a8"
+    },
+    {
+      "bytes": 2066384,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-nkana-configurations.002.tsv",
+      "sha256": "1f8a5c06b7d99089642aab6aca1146cd8ec50bc5f65398e79c48ab2f788d006b"
+    },
+    {
+      "bytes": 2055762,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-nkana-configurations.003.tsv",
+      "sha256": "d711c8f27108638779c982db0356b4808a44f896ff09578a7097ed8cff60447e"
+    },
+    {
+      "bytes": 1866921,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-nkana-configurations.004.tsv",
+      "sha256": "6dfc6cc2951b1aa83e9e27a8c8e4668797ed47578878431751abbcea29a8af17"
+    },
+    {
+      "bytes": 2061727,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-rayon_sports-configurations.001.tsv",
+      "sha256": "be30d0da4b737614d6a35b4e423224f9a6f7f65055da8b7bfcf1222383a430c6"
+    },
+    {
+      "bytes": 2066503,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-rayon_sports-configurations.002.tsv",
+      "sha256": "df3b64f6012de02fbcf4344f2deaaefe283d604d9f2c5a5131fb284a04db4e35"
+    },
+    {
+      "bytes": 2070618,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-rayon_sports-configurations.003.tsv",
+      "sha256": "45746bd8f7363bd2429e120f2172ec008a96d7a3a38cdff67e5d5dad3efb4962"
+    },
+    {
+      "bytes": 2083845,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-rayon_sports-configurations.004.tsv",
+      "sha256": "1eab3728a1e6d959da0b7322fe89a748717f5b932732400dd7efc8df6b5e9870"
+    },
+    {
+      "bytes": 288255,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-rayon_sports-configurations.005.tsv",
+      "sha256": "a814b6390383f78a65e607cb277e71eaac8a07116b3d5489d81a338415d294e0"
+    },
+    {
+      "bytes": 2011391,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-vitalo-configurations.001.tsv",
+      "sha256": "c7c213e55c05acff49a1f9e6f62db2b6c48c84c4b130a4623fca33a00a95b049"
+    },
+    {
+      "bytes": 2066401,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-vitalo-configurations.002.tsv",
+      "sha256": "ad752f238447509f0b91905f56ecce276f9c2c80364b48032fdae6faaae8ec6e"
+    },
+    {
+      "bytes": 2055772,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-vitalo-configurations.003.tsv",
+      "sha256": "6c4f19c18b423e7020d7420771ae7c840be7ca2e2f595cee946f459ce82bf6b3"
+    },
+    {
+      "bytes": 1866921,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.android.targets-vitalo-configurations.004.tsv",
+      "sha256": "6dfc6cc2951b1aa83e9e27a8c8e4668797ed47578878431751abbcea29a8af17"
+    },
+    {
+      "bytes": 5550727,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.cdx.json",
+      "sha256": "916ce6db334cfa02d0ba93f8c58bb8dcc6e92f8ab9bce132a46d8984252739f4"
+    },
+    {
+      "bytes": 2095322,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.components.001.tsv",
+      "sha256": "e406173921233a33882b9025725588d051edaa7866607ad9eaea53c66e74934c"
+    },
+    {
+      "bytes": 2097106,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.components.002.tsv",
+      "sha256": "689c535f8dda8cd635ce0159069d0db5252069a70b5181b4e773284c77ee3735"
+    },
+    {
+      "bytes": 1468358,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.components.003.tsv",
+      "sha256": "ed99a5333df61a005ee28be6b11402460112dae2f6150bbc435f2b43c5918f56"
+    },
+    {
+      "bytes": 2096784,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.edges.001.tsv",
+      "sha256": "cfdb3ddfececb0eb6275be8439b5ee2d9e5f4b96c077d023dedfd9d3a720cafa"
+    },
+    {
+      "bytes": 2079249,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.edges.002.tsv",
+      "sha256": "ee91ed60be9cd7a3d9cd5b343ad213e33316961a8e56cc2906e076acc48a5bc1"
+    },
+    {
+      "bytes": 2081941,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.edges.003.tsv",
+      "sha256": "25ce7bb965b4b48b9c2d1076127676a5320caa651d302d62284b172369e75934"
+    },
+    {
+      "bytes": 2087299,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.edges.004.tsv",
+      "sha256": "73b811248dfcd0885325fdd3b5bed0ce11ded34414789efce7c6229507dccd58"
+    },
+    {
+      "bytes": 490367,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.edges.005.tsv",
+      "sha256": "2f71ea2bdb60315c23597a6a13b06498273d56e75381f3ae44e881de904e74d5"
+    },
+    {
+      "bytes": 2096882,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.evidence.001.tsv",
+      "sha256": "4f0b869d9195f43d205f02279b944ae0b13b568d0ee8a0ccce8ac1e9ee3a28e6"
+    },
+    {
+      "bytes": 1285248,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.evidence.002.tsv",
+      "sha256": "34963d92d4ea1f66913fde74bbb01894692d51cde4c986e8262b82df4b0eda08"
+    },
+    {
+      "bytes": 46507,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.json",
+      "sha256": "76a680586b50c978f920a8b6d1c04ef041c39a82c66faa35eccaaf1e1edc4cf2"
+    },
+    {
+      "bytes": 67601,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.license-recovery.json",
+      "sha256": "78d517ff8d4122e1bf71778f2806dc1cebc94509ff3c7d4158d8dc196f1cb4e7"
+    },
+    {
+      "bytes": 4306,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.license-recovery.md",
+      "sha256": "6594832b6790b599fa9b1fbe4134556f8ecc38014b492db9ffb1cfed1830f938"
+    },
+    {
+      "bytes": 612029,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.licenses.tsv",
+      "sha256": "51598e74fe8f5d9954b37c1df7b37b5afc4f8a3e4cf22616aedcaaf450e08685"
+    },
+    {
+      "bytes": 9475,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.md",
+      "sha256": "60f263c03277847d1f610a49365dd7736ce3cd3ceffa9c404b8d788818fa033c"
+    },
+    {
+      "bytes": 89217,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.unresolved.001.tsv",
+      "sha256": "bdb990ee67927ce6c0a2d0fa834b02a592e15fe6c358641cf08221892397f27f"
+    }
+  ],
+  "schemaVersion": 1,
+  "sourceCheckpoint": "7fa5292248d5776c6e255aa39ab7acdd658f24e9",
+  "sourceCheckpointRepresentsCompleteCommittedCandidate": false,
+  "sourceFreezeInputs": [
+    {
+      "bytes": 40560,
+      "path": ".dart_tool/package_config.json",
+      "sha256": "8bc8f1fab9321d11f62371f2416e7769c842cbcfe0289047721c0a4f59f2fd40",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 47097,
+      "path": ".dart_tool/package_graph.json",
+      "sha256": "44e4f3fd924a6a9cb5a7938ae9123811bb707657d0ca04dda1d97fe01f7a3f4a",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 7,
+      "path": ".fvmrc",
+      "sha256": "d25bb29fd83fe90c61d22b5f15767fabc0033d3ff98feb07d65d539b1400302f",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 33612,
+      "path": ".github/workflows/ci.yaml",
+      "sha256": "4460ea80679ea611d1b123e70942d03b62a67992e2bb36c9642e06706b6b5ada",
+      "why": "Current workspace/pubspec or web/CI release-wrapper source used at final local freeze"
+    },
+    {
+      "bytes": 5830,
+      "path": ".github/workflows/free_self_hosted_release.yml",
+      "sha256": "4125804b109895164e6a5ba28b2e42bbfdd99aede5eb3663305a9edd373ef70e",
+      "why": "Current workspace/pubspec or web/CI release-wrapper source used at final local freeze"
+    },
+    {
+      "bytes": 15293,
+      "path": "apps/as_vita/.flutter-plugins-dependencies",
+      "sha256": "815c4db226f4533a18c5492152f928ecf55877accb3ea8f68d697bdcbb9639a1",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 5022,
+      "path": "apps/as_vita/android/app/build.gradle.kts",
+      "sha256": "a3bd5af85749118a3e1effa808c1b2a98d815065c2df4f043fa675e58b68b665",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 537,
+      "path": "apps/as_vita/android/build.gradle.kts",
+      "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 260,
+      "path": "apps/as_vita/android/gradle.properties",
+      "sha256": "41969d939b4558ba8cb884a574f2bdcde05fc36f62183c5d46eebe15a2bf1156",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 201,
+      "path": "apps/as_vita/android/gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 772,
+      "path": "apps/as_vita/android/settings.gradle.kts",
+      "sha256": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 660,
+      "path": "apps/as_vita/pubspec.yaml",
+      "sha256": "4cd83d2765cfa594f7dc32d1b9b81fae86ef401d185b760ddbecabc8e835049b",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 15293,
+      "path": "apps/costa_do_sol/.flutter-plugins-dependencies",
+      "sha256": "26cb7dd1b1509f67c98476545f90b73f8d1e9da43f35a5b48ba49cff69c3da1a",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 5028,
+      "path": "apps/costa_do_sol/android/app/build.gradle.kts",
+      "sha256": "0b4d8b342217a9fb9eac0d78deb3eee038b7ceadf04598bb8137602006d6303d",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 537,
+      "path": "apps/costa_do_sol/android/build.gradle.kts",
+      "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 260,
+      "path": "apps/costa_do_sol/android/gradle.properties",
+      "sha256": "41969d939b4558ba8cb884a574f2bdcde05fc36f62183c5d46eebe15a2bf1156",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 201,
+      "path": "apps/costa_do_sol/android/gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 772,
+      "path": "apps/costa_do_sol/android/settings.gradle.kts",
+      "sha256": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 678,
+      "path": "apps/costa_do_sol/pubspec.yaml",
+      "sha256": "bf2ee4e2eb95ba1beda400d9b5c0870b32dc382947fdd9e3837c18975db00fbd",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 15293,
+      "path": "apps/nkana/.flutter-plugins-dependencies",
+      "sha256": "26a415fcd86279d34ef82b8c0e00c20b5056ffa057a80d447363b0e042bb218d",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 5006,
+      "path": "apps/nkana/android/app/build.gradle.kts",
+      "sha256": "58ec4bc1a21761cab44660072ca189a737e844797e491f5713ca706a5534e7a3",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 537,
+      "path": "apps/nkana/android/build.gradle.kts",
+      "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 320,
+      "path": "apps/nkana/android/gradle.properties",
+      "sha256": "4922e39cd2ea910bd97156fd4320b0be9217df262fc45435ce408bad534a20d0",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 201,
+      "path": "apps/nkana/android/gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 772,
+      "path": "apps/nkana/android/settings.gradle.kts",
+      "sha256": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 650,
+      "path": "apps/nkana/pubspec.yaml",
+      "sha256": "1500d9e9e01c1ce1cc68802cc9d64f41f0b8beaf9a18e091fbdd3e434df11354",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 15709,
+      "path": "apps/rayon_sports/.flutter-plugins-dependencies",
+      "sha256": "7dfab6be96775e9237a5426b847d3cd8554889d1d1dc46f814aefcd33be4e259",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 5714,
+      "path": "apps/rayon_sports/android/app/build.gradle.kts",
+      "sha256": "ccb935c02f19c851fc27928db26c88d79faeae03f4cfad9848a1164afd39de20",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 537,
+      "path": "apps/rayon_sports/android/build.gradle.kts",
+      "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 473,
+      "path": "apps/rayon_sports/android/gradle.properties",
+      "sha256": "1e972aab14714887ccb35633fee6f867616f334482e3e2a1d61112575616d1e6",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 201,
+      "path": "apps/rayon_sports/android/gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 841,
+      "path": "apps/rayon_sports/android/settings.gradle.kts",
+      "sha256": "51d50f8f3713eaa43e1353369de99668dd8c4522a5ab9b2091fd411b3019e7fd",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 1477,
+      "path": "apps/rayon_sports/pubspec.yaml",
+      "sha256": "ec36d40cd258505eb9a2aa0b7e686302a8fef764ce333bce8d80e4413e1a65f4",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 5173,
+      "path": "apps/rayon_sports/web/package.json",
+      "sha256": "749c63534880989556b22e048215032bc03c8a144ed7ced0c913dab3cd872c42",
+      "why": "Current workspace/pubspec or web/CI release-wrapper source used at final local freeze"
+    },
+    {
+      "bytes": 4477,
+      "path": "apps/rayon_sports/web/public/fonts/LICENSE.txt",
+      "sha256": "3b0a5fca3d17942cde889069889dedbbbd075e9b599968c82a95f4d944e9b345",
+      "why": "Unchanged retained SIL Open Font License 1.1 copy"
+    },
+    {
+      "bytes": 813,
+      "path": "apps/rayon_sports/web/public/fonts/README.md",
+      "sha256": "61034f9832edbc03f4c3ed211d69d2eaa733e3249dd1f587522e50f950f6e40d",
+      "why": "Explicit local font copy and source distribution provenance"
+    },
+    {
+      "bytes": 48256,
+      "path": "apps/rayon_sports/web/public/fonts/inter-latin-wght-normal.woff2",
+      "sha256": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62",
+      "why": "Local copied distribution; not a selected npm dependency component"
+    },
+    {
+      "bytes": 14905,
+      "path": "apps/rayon_sports/web/scripts/artifact-installed-inputs.mjs",
+      "sha256": "3e0baede37547137ce79e4c0b1ac454d614dea9f5580befb38b1357ade855c23",
+      "why": "Exact installed converter file/link byte attribution and independent staging implementation; no clean-install or converter-run outcome inferred from this source hash"
+    },
+    {
+      "bytes": 9133,
+      "path": "apps/rayon_sports/web/scripts/artifact-installed-inputs.node-test.mjs",
+      "sha256": "6fba02e8aa0c83be342f934fe3364307ea960c117e49d33c991cf0d47d743b7c",
+      "why": "Installed converter input and staging fault regressions source"
+    },
+    {
+      "bytes": 4617,
+      "path": "apps/rayon_sports/web/scripts/artifact-public-environment.mjs",
+      "sha256": "c4c81236470e89237eba0fe12aeb2b656e5ea25a2da17eed43a37d3fbd044610",
+      "why": "Passive public-only artifact environment input projection"
+    },
+    {
+      "bytes": 8150,
+      "path": "apps/rayon_sports/web/scripts/build-opennext-isolated.mjs",
+      "sha256": "0c531caf116ff031d85f40be360f95f06cfd6b744db6b3bd900df7aedce9f4be",
+      "why": "Guarded converter uses independently staged source, Next artifact and installed executable bytes"
+    },
+    {
+      "bytes": 11957,
+      "path": "apps/rayon_sports/web/scripts/web-build-provenance.mjs",
+      "sha256": "a7770d4e134c08475af7d46cc28af911292a1efefce2546b6db343507634c024",
+      "why": "Production source and artifact provenance includes installed input content binding"
+    },
+    {
+      "bytes": 2949,
+      "path": "apps/rayon_sports/web/src/app/layout.tsx",
+      "sha256": "b230ee3fb2fbe98bfaa7560879c0a4a1afe0c893a1ede93f8bc1a9edacd7e61c",
+      "why": "Actual next/font/local import of the retained Inter WOFF2 asset"
+    },
+    {
+      "bytes": 15293,
+      "path": "apps/vitalo/.flutter-plugins-dependencies",
+      "sha256": "ef31fccd41fe2a99c6b15107f369b26d5e0993dff99f5bdedd581cd1b245a932",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 5005,
+      "path": "apps/vitalo/android/app/build.gradle.kts",
+      "sha256": "9a90f04c41410366921ee6d5be651500a0d8b7e6def2f8b020a5d1039d4cf484",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 537,
+      "path": "apps/vitalo/android/build.gradle.kts",
+      "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 260,
+      "path": "apps/vitalo/android/gradle.properties",
+      "sha256": "41969d939b4558ba8cb884a574f2bdcde05fc36f62183c5d46eebe15a2bf1156",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 201,
+      "path": "apps/vitalo/android/gradle/wrapper/gradle-wrapper.properties",
+      "sha256": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 772,
+      "path": "apps/vitalo/android/settings.gradle.kts",
+      "sha256": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 655,
+      "path": "apps/vitalo/pubspec.yaml",
+      "sha256": "2500aff3768d53e31e4803bd3584920727a48bbc1acc9d633da3dd96da33e452",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 4477,
+      "path": "cloudflare/operator-api/ui/fonts/LICENSE.txt",
+      "sha256": "3b0a5fca3d17942cde889069889dedbbbd075e9b599968c82a95f4d944e9b345",
+      "why": "Actual retained source of the copied license bytes"
+    },
+    {
+      "bytes": 727,
+      "path": "cloudflare/operator-api/ui/fonts/README.md",
+      "sha256": "99faa783e8ba38e9e7f208035345b2c26fc986acc59e608b3766f26394d9d195",
+      "why": "Retained distribution declaration and source hash; upstream version declaration is not a selected lock component"
+    },
+    {
+      "bytes": 48256,
+      "path": "cloudflare/operator-api/ui/fonts/inter-latin-wght-normal.woff2",
+      "sha256": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62",
+      "why": "Actual retained source of the copied font bytes"
+    },
+    {
+      "bytes": 6693,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/action-sources/action-source-provenance.json",
+      "sha256": "136351d3ad04aa6b8d0eec345b145e3d7f71e0bade0565d4c96afba29de83f61",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 13130231,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/as_vita.json",
+      "sha256": "6ef4d39d467de3ed404649a693b397cd605f1bb15c473004a6d580bebf1c0549",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 13130881,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/costa_do_sol.json",
+      "sha256": "e99a3e841aa2e5650dfd6edfa9ceb18c9209117abb624a00f6897f29337c9c06",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 13129971,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/nkana.json",
+      "sha256": "f8e7b7068c6921b47dac9edd8d3b8fa0245ca9d8de0374108cdac416549c184e",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 14070609,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/rayon_sports.json",
+      "sha256": "2628239202537fda3f72de380404150a3a0cb300110e950c39329bbc3333dc89",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 13130101,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/vitalo.json",
+      "sha256": "a0fde290f375e90a2da929642e48509e1f57173653a94797a66b06ba8cc3919c",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 252625,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/schema/bom-1.6.schema.json",
+      "sha256": "3e92dddbc30cf7f6a02b80f0942b1a4cfd4fb1c26f1dfc4310afa9d613cafb93",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 8058,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/schema/jsf-0.82.schema.json",
+      "sha256": "8bae002c25e723db7ee1f26afde680ae1a2b1a8f6b4b4b0fd65dc3becb090aae",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 14269,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/schema/spdx.schema.json",
+      "sha256": "baa9d3bd1ed57b6751b0887edead6b5063ff53ff7429cf85d476c6c94af0166e",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 1161,
+      "path": "packages/app_registry/pubspec.yaml",
+      "sha256": "5d86dbc359d9622a6fa519126787463bf44732374f3a9f76195126e5f8a1c2e8",
+      "why": "Current workspace/pubspec or web/CI release-wrapper source used at final local freeze"
+    },
+    {
+      "bytes": 253,
+      "path": "packages/clubs/club_as_vita/pubspec.yaml",
+      "sha256": "d46c342c59ca07235d3e0972bfbbca7e631a2de1d3f7b2172ba4cb23f17c1608",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 261,
+      "path": "packages/clubs/club_costa_do_sol/pubspec.yaml",
+      "sha256": "0d625bf8363e0cda35f716286223dc73260c9e2fb3a5148dc2eeb71c5da6f35b",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 247,
+      "path": "packages/clubs/club_nkana/pubspec.yaml",
+      "sha256": "2f441916fd7d321b01846525892d6c87d5c4e26cc6a4d59e04de5b3117b6e96f",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 297,
+      "path": "packages/clubs/club_rayon_sports/pubspec.yaml",
+      "sha256": "0127d079aead32f077956c815a0f7fa2a74054d5c205519ac7e0d0abbeabe846",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 250,
+      "path": "packages/clubs/club_vitalo/pubspec.yaml",
+      "sha256": "e82cd32e9fc5db24422b95caea7b0cb3e4be5ceba99749578f4a798a21240282",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 776,
+      "path": "packages/core/core_app/pubspec.yaml",
+      "sha256": "5401f1f3995762170702978f08ea0da23392d1d4ea1c0c9e6b7d5c8293053a3e",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 483,
+      "path": "packages/core/core_auth/pubspec.yaml",
+      "sha256": "fa6f0e3b43a7852a3c56c81c90e30f834d4376591f5a889c79fcb6e16d9d0d69",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 575,
+      "path": "packages/core/core_feature_config/pubspec.yaml",
+      "sha256": "b45706cd06fd67502647d2f40f501350bf7fb809f0a45e82b0e86d8cc2da8605",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 410,
+      "path": "packages/core/core_l10n/pubspec.yaml",
+      "sha256": "d9c437b2b619574216220e40e513668e5174882f3c6704cd7eda50b30ecff278",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 788,
+      "path": "packages/core/core_network/pubspec.yaml",
+      "sha256": "0e626bb8775fcdc293a4424cec1f05a94ebf3ff428090d5d19c0071d65eeae90",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 357,
+      "path": "packages/core/core_router/pubspec.yaml",
+      "sha256": "929d46c2956c85e39c7bb608535d495ec49f8059bde960492a8168341a835e90",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 503,
+      "path": "packages/core/core_theme/pubspec.yaml",
+      "sha256": "8b2f762d2b971aa05c9ee72f6cfdba588cfe4b2ea9ece79c53e317830c10a1b2",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 450,
+      "path": "packages/core/core_utils/pubspec.yaml",
+      "sha256": "6a54dc39c2ec645e6039f55c2dbc76ddb7ae2770d2e8b57d17495af30fcfe9ef",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 539,
+      "path": "packages/data/club_data/pubspec.yaml",
+      "sha256": "59cce53a7d46870902436d37fe2572aa196007a4721af1abd166c7530150c25b",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 791,
+      "path": "packages/features/feat_admin/pubspec.yaml",
+      "sha256": "1ec742a73031b57794a493b3ba842b7f62d033d2bb4b13aab3682f60dab70cf6",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 745,
+      "path": "packages/features/feat_club/pubspec.yaml",
+      "sha256": "84387b4a14555f722caf4eb4701dc6f3e5c8e25e2aa8b68c945c93821c3c03e8",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 797,
+      "path": "packages/features/feat_contributions/pubspec.yaml",
+      "sha256": "9458a8a8dd8341fc3e4cb0494671943449170a5b86afb17cfebc6d4d1e58c56f",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 623,
+      "path": "packages/features/feat_fan_clubs/pubspec.yaml",
+      "sha256": "f1767d0ee771714debd7c5bf006677b7f0093d93d5b3be43e550dceb799debe7",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 917,
+      "path": "packages/features/feat_gamification/pubspec.yaml",
+      "sha256": "980b009a1e57296b9022f6cb33fc17d405a7d897eb9baf3a4799074c6275045c",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 1080,
+      "path": "packages/features/feat_home/pubspec.yaml",
+      "sha256": "bc6828b1d753e749b94cfbd8ede6f0ffe4aec2e82ba15322d5a9148cb4d720e4",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 681,
+      "path": "packages/features/feat_live/pubspec.yaml",
+      "sha256": "c3368dabe0a41827a8d2e7336b4c07ecb7cb191767e03bacc0071173420c62ad",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 906,
+      "path": "packages/features/feat_membership/pubspec.yaml",
+      "sha256": "19906e7de3c523ce9a036fa1df9cd9daf2bcc4c426fdcc6325d068d74c33de13",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 763,
+      "path": "packages/features/feat_onboarding/pubspec.yaml",
+      "sha256": "55e1139fcc8d45888876ab8b7c1efd528690a7a645f47d069183077ea2e87053",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 765,
+      "path": "packages/features/feat_settings/pubspec.yaml",
+      "sha256": "c3a634923f7ca8ec806f4f9a0eff56a9e364bfb3378bebebd7989d45abab8f83",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 867,
+      "path": "packages/features/feat_shop/pubspec.yaml",
+      "sha256": "3a4526d0007f57ff35b872438223c39fc91827d6229786635f2f63185b51b545",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 979,
+      "path": "packages/features/feat_ticketing/pubspec.yaml",
+      "sha256": "09f91c0700f3c49a6504141310c5b4fa1ecf4cea5693d51f6a5869a745f08459",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 1127,
+      "path": "packages/testing/test_support/pubspec.yaml",
+      "sha256": "74a430356d8940c56fadd9ea6f9a7b40b87a95715b6d83c09812371b197ff435",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 41649,
+      "path": "pubspec.lock",
+      "sha256": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 5237,
+      "path": "pubspec.yaml",
+      "sha256": "ed12b835abf4388e5da87e98272eb0c9cb4c7a4f5a38a374ed1c81196516252d",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 251,
+      "path": "supabase/deno.import-map.json",
+      "sha256": "3f551a2a1ea4f2dc7e1db9710555046ce470aa617b0011b04ec8255dcc300866",
+      "why": "Three prior floating backend imports now explicitly selected at exact Supabase npm2.116.0, JSR functions2.110.7 and std/assert1.0.19 versions"
+    },
+    {
+      "bytes": 23936,
+      "path": "supabase/deno.lock",
+      "sha256": "19dc91a3f9606d1d2301693348a73e7be17b17ac7ca494597c6f69c9c89fc0d8",
+      "why": "Frozen npm/JSR/HTTP dependency and integrity graph; Edge checks run cached-only without modifying the lock"
+    },
+    {
+      "bytes": 2111,
+      "path": "third_party/gotrue_2_27_2/AFRICLUB_PATCH.md",
+      "sha256": "aeda6a1df136f3fb0241b853c8a7627bc5eefa7258cfa67ac980623d07fa55b8",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 43873,
+      "path": "third_party/gotrue_2_27_2/CHANGELOG.md",
+      "sha256": "48f2f5c3c63cc6c113bf6a4c07965a188026be4d14e51cd1bd519142e8706dc7",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 1065,
+      "path": "third_party/gotrue_2_27_2/LICENSE",
+      "sha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 24277,
+      "path": "third_party/gotrue_2_27_2/LOCAL_PATCH_MANIFEST.json",
+      "sha256": "9e759b77dd234baaa5a9206bf4a674f52660f7502f5b27ad180a46527d71b6bc",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 1250,
+      "path": "third_party/gotrue_2_27_2/README.md",
+      "sha256": "3ffd1c1730af3ac3743af2887241e50e19ba579d76a34d9040d267da2f2bf3bd",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 13707,
+      "path": "third_party/gotrue_2_27_2/UPSTREAM_PROVENANCE.json",
+      "sha256": "0b12d78f1134ee29932ffbd40de33cae93120134a87df044577ade90097d90c8",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 804,
+      "path": "third_party/gotrue_2_27_2/UPSTREAM_PUBSPEC.yaml",
+      "sha256": "5d1d2f237e3ab3ece834f550b4c5aec5a6fb29328734b0dac358d945ded4d230",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 301,
+      "path": "third_party/gotrue_2_27_2/analysis_options.yaml",
+      "sha256": "bfdac46d0fffe29b47dfe619206a54d0fa0ab721789762999ba23c9b2783bd8c",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 101,
+      "path": "third_party/gotrue_2_27_2/example/README.md",
+      "sha256": "5561b5809a656952c98860674054066a930b4a473dd0c748320a76e35ad7356f",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 697,
+      "path": "third_party/gotrue_2_27_2/example/main.dart",
+      "sha256": "f3ed362c7ab446c80de81f78b68ccc02c36e910dad7276b88f8b22dd4a0b8946",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 849,
+      "path": "third_party/gotrue_2_27_2/lib/gotrue.dart",
+      "sha256": "afae6d4e1b084d1c121ca98a0087d10ef486fb23d124ff5d511cd29366734b3d",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 246,
+      "path": "third_party/gotrue_2_27_2/lib/src/broadcast_stub.dart",
+      "sha256": "8a9cdd61cc1b036c3c665c6d7893b593b4e1ecef56e965732d20c8b5638a6513",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 933,
+      "path": "third_party/gotrue_2_27_2/lib/src/broadcast_web.dart",
+      "sha256": "7546f4d263f5e80da7c5472a1cdb12d091d9d8c5d416b6e3dfb96b67c28d4c52",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 2952,
+      "path": "third_party/gotrue_2_27_2/lib/src/constants.dart",
+      "sha256": "131679776dde45e8f9e0603080812dac4508eb3c79b412acdc219abadc6453a8",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 6221,
+      "path": "third_party/gotrue_2_27_2/lib/src/fetch.dart",
+      "sha256": "91f10515d02dd3187385b264af6df63319da164bf28cfca309475cd8cb7df1f8",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 6981,
+      "path": "third_party/gotrue_2_27_2/lib/src/gotrue_admin_api.dart",
+      "sha256": "8e25c8c32b7266b6c2395ed485af68d969403899729b026a9f4a698002b59831",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 4225,
+      "path": "third_party/gotrue_2_27_2/lib/src/gotrue_admin_custom_providers_api.dart",
+      "sha256": "6497aa41d949b43e388c6d381a69d4dfc3faf7e859dc14771bfedea94d9fb3c4",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 1313,
+      "path": "third_party/gotrue_2_27_2/lib/src/gotrue_admin_mfa_api.dart",
+      "sha256": "0bec1d51d21698b1b9e8faebfdd59f9fc80c914fe0be0ba8d8ef4e6e4a17aed2",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 5446,
+      "path": "third_party/gotrue_2_27_2/lib/src/gotrue_admin_oauth_api.dart",
+      "sha256": "70f643aaf2ec47421daaaffa144252d51cb7c89ef14440913ef036ec5d3d443b",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 1847,
+      "path": "third_party/gotrue_2_27_2/lib/src/gotrue_admin_passkey_api.dart",
+      "sha256": "e1c8f1783c1be9f9a55edbe22d9f43bb79271f9be1f7ea561eef24f0bab2cce1",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 63047,
+      "path": "third_party/gotrue_2_27_2/lib/src/gotrue_client.dart",
+      "sha256": "963144ad26a221d90ca36e4e354a605702f8d1c542e0770ab00ccd9e66dd7a30",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 7739,
+      "path": "third_party/gotrue_2_27_2/lib/src/gotrue_mfa_api.dart",
+      "sha256": "a6014a6eaf8878f1d2c73b630b57e1eb408f0ef07f8f7116c32d3eac19bf6b5e",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 11044,
+      "path": "third_party/gotrue_2_27_2/lib/src/gotrue_oauth_api.dart",
+      "sha256": "0eb351b0af051deebdf909e9b1e5b2982c4be0c8cf6efa7f32a91ee03f98f6de",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 8502,
+      "path": "third_party/gotrue_2_27_2/lib/src/gotrue_passkey_api.dart",
+      "sha256": "9fc8301d629c7a8bbd80352f44cf6d55b855d924473a375294493bc6487957bf",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 2673,
+      "path": "third_party/gotrue_2_27_2/lib/src/helper.dart",
+      "sha256": "cc27ea3afb8b30bb46101f293bc1abdf06d9e22ad89965afdd5a5b5d5a3ff1f3",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 1302,
+      "path": "third_party/gotrue_2_27_2/lib/src/types/api_version.dart",
+      "sha256": "dc0f3ea30563473ef6bd045ecee3e11cdd09fedff6e494be0bac5bc74a0d3eac",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 3471,
+      "path": "third_party/gotrue_2_27_2/lib/src/types/auth_exception.dart",
+      "sha256": "43833048e8261a91b10884e61daabd80ba5afe9627015c620da35d16a0b261fa",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 2782,
+      "path": "third_party/gotrue_2_27_2/lib/src/types/auth_response.dart",
+      "sha256": "d3f8b59543cd7de4dfb26511816446fa26620837847e9eb6409027359583a102",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 1295,
+      "path": "third_party/gotrue_2_27_2/lib/src/types/auth_state.dart",
+      "sha256": "f506f12f18024585c61156671d347aa9909b97c4bcafa92efc3c83b18853cd7a",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 12525,
+      "path": "third_party/gotrue_2_27_2/lib/src/types/custom_oauth_provider.dart",
+      "sha256": "c9942ac90d295ceb2a1f719075ef82baf2d22b257a3cbb59b5006135d8690cde",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 4446,
+      "path": "third_party/gotrue_2_27_2/lib/src/types/error_code.dart",
+      "sha256": "00b1845c91bc51f12a01120ea5d93748d59c8522f2a7d5ca5a6c97ef5c893f15",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 515,
+      "path": "third_party/gotrue_2_27_2/lib/src/types/fetch_options.dart",
+      "sha256": "fb5e70f4f5e46d7bc17e146bbd1912ee123ff61e2c1b268a6ea2ee0ee1e33fbc",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 525,
+      "path": "third_party/gotrue_2_27_2/lib/src/types/gotrue_async_storage.dart",
+      "sha256": "05384d8524033042833f8b849c758c4ab93e2c2bceedb1ee2f747e7a852ee019",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 8038,
+      "path": "third_party/gotrue_2_27_2/lib/src/types/jwt.dart",
+      "sha256": "fc851a9250c1e79145e72b79351f0f4220b7c25dbb7d60da4a899c0bfe49c988",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 12369,
+      "path": "third_party/gotrue_2_27_2/lib/src/types/mfa.dart",
+      "sha256": "a9e41a4f3d25c290b53cb2bd22a6fb760790a0b65c12c9fe9bca79858e26b2dd",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 4617,
+      "path": "third_party/gotrue_2_27_2/lib/src/types/passkey.dart",
+      "sha256": "65a2541c7e147fc20806a0942f8a58e22c839c25d7a66480e1690fbca8ade9fd",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 4760,
+      "path": "third_party/gotrue_2_27_2/lib/src/types/session.dart",
+      "sha256": "5e35fe388e6d465d24f579cd4f484f7247f7af83341cec0c31b9597e60676bb9",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 820,
+      "path": "third_party/gotrue_2_27_2/lib/src/types/sign_out_reason.dart",
+      "sha256": "61ff1200cbf763372a503a14168691fee1a8de628a32a1479629990fd4cacaa1",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 9074,
+      "path": "third_party/gotrue_2_27_2/lib/src/types/types.dart",
+      "sha256": "5540866e2e8dd6dfa3a85ce97696d02be1201eca5de84ec9bf65b21a69eb725d",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 9143,
+      "path": "third_party/gotrue_2_27_2/lib/src/types/user.dart",
+      "sha256": "16d40a5903a15b0f83a2dc4ecc3d981e07a14d063234db27a2313f9d14733343",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 4802,
+      "path": "third_party/gotrue_2_27_2/lib/src/types/user_attributes.dart",
+      "sha256": "26cd1a2c35804229526df454cf976d586e94a313690492958036a6f8a4800c20",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 26,
+      "path": "third_party/gotrue_2_27_2/lib/src/version.dart",
+      "sha256": "5d8ff7fe15919238108367aca04ea5b72b4b95bdb5c582ec1fe3974f46882ba3",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 781,
+      "path": "third_party/gotrue_2_27_2/pubspec.yaml",
+      "sha256": "d08af3a79b850307be50e19c667afbb678c8c5d524f1b4c9c125d9fc58e20c92",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 1303,
+      "path": "third_party/gotrue_2_27_2/test/admin_delete_user_test.dart",
+      "sha256": "f5a4ed8f584790f95ef7c12692c290cc85d4f2b37244067746ddf5f9b6772f2a",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 6156,
+      "path": "third_party/gotrue_2_27_2/test/admin_test.dart",
+      "sha256": "7cddf381b480befc05997ea6e9fcc271fe80e1a8a9e629cbe4dc24af3cde06d0",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 1431,
+      "path": "third_party/gotrue_2_27_2/test/api_version_test.dart",
+      "sha256": "2641535a3f65830b8408728b89298b66e5879829274dc1312c05e2738ffc35e8",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 33016,
+      "path": "third_party/gotrue_2_27_2/test/client_test.dart",
+      "sha256": "4bdb86ee4499ba6332ba690ddfd9eb7990fdb0c2869c97af7f4563533319f6ee",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 8123,
+      "path": "third_party/gotrue_2_27_2/test/custom_http_client.dart",
+      "sha256": "a7d52e103a98399dc9bdea473c3602609d95afc512e79b12f49cff0e9845ce16",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 3375,
+      "path": "third_party/gotrue_2_27_2/test/custom_oauth_provider_test.dart",
+      "sha256": "952deccda2170a40084d33c4aedb5552ae019f2ca13e8b21e588bbf4b31570a6",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 4531,
+      "path": "third_party/gotrue_2_27_2/test/custom_providers_test.dart",
+      "sha256": "cd23b69794b16b63dd32d013d7c7f7147799cb45685c626e12779c36ddaaf3e6",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 2249,
+      "path": "third_party/gotrue_2_27_2/test/fetch_test.dart",
+      "sha256": "7945b6d0a4c59df85898991d1b9e9a221b149ef8eccecf4be675d2ff7d545a87",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 12148,
+      "path": "third_party/gotrue_2_27_2/test/get_claims_test.dart",
+      "sha256": "4172db82411fb90360f50af4a6e19abe0302d61530cf777043f0626ef58da6cb",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 5050,
+      "path": "third_party/gotrue_2_27_2/test/get_session_test.dart",
+      "sha256": "cba5852863514d256cb125df6e99448c7dafd2929d7abaed00ded42964446fec",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 2257,
+      "path": "third_party/gotrue_2_27_2/test/header_isolation_test.dart",
+      "sha256": "33bb4facab8eff9b3e204510639e2bfaa25ee50f4521307d058deff58077314e",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 1083,
+      "path": "third_party/gotrue_2_27_2/test/jwk_test.dart",
+      "sha256": "8e5a67ac99c62de3057f9df85e262731b767f56f55bec645cf5fa53fab714d73",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 1888,
+      "path": "third_party/gotrue_2_27_2/test/mfa_challenge_mock_test.dart",
+      "sha256": "285b13a4606ffbad0b780bbdec57918bf9767d2d75b8989d9f4e2790bc7493dd",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 2463,
+      "path": "third_party/gotrue_2_27_2/test/mfa_enroll_test.dart",
+      "sha256": "57fe9ef24d60b49c935727e9d3257c6fd8ae5c7352de68b48895cd3e6a37f418",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 15633,
+      "path": "third_party/gotrue_2_27_2/test/mocks/otp_mock_client.dart",
+      "sha256": "457140e72cf89d46fffc41994dc332b04397a3da75c3940182840f51f488dd98",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 6846,
+      "path": "third_party/gotrue_2_27_2/test/mocks/passkey_mock_client.dart",
+      "sha256": "3f0d3ab223bbb82322bfeb08cf354d67c725a1f38340c806e2adde4979119a31",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 3211,
+      "path": "third_party/gotrue_2_27_2/test/mocks/web3_mock_client.dart",
+      "sha256": "293ad09acf8c3fdf0c42bc04283eecba4754e864de26ef6edd4f2ac0a958057e",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 21998,
+      "path": "third_party/gotrue_2_27_2/test/otp_mock_test.dart",
+      "sha256": "aa29b8280fd8211ec372e949d6f66f9ef9784068d93f9fc3b4a111dccd589487",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 10953,
+      "path": "third_party/gotrue_2_27_2/test/passkey_test.dart",
+      "sha256": "f85704696aab81f865e703cf578ff1ffa784f359bb794bb904c620246baaec22",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 6948,
+      "path": "third_party/gotrue_2_27_2/test/provider_test.dart",
+      "sha256": "dfbbedafcbcc602cf460d49120a2da050ef85a083d46a38c0e4b75688b34d1d2",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 21438,
+      "path": "third_party/gotrue_2_27_2/test/refresh_token_race_test.dart",
+      "sha256": "f6ebe2f758de527ad1001bbee6820694a08032145e8961ba58cef20f01177d7a",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 1541,
+      "path": "third_party/gotrue_2_27_2/test/src/broadcast_web_test.dart",
+      "sha256": "02db77741d5c13ccfb81ca52888d97670de8e6eeb7394bb5930eaa9a6a417f9e",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 11015,
+      "path": "third_party/gotrue_2_27_2/test/src/constants_test.dart",
+      "sha256": "a4e067b3f96ac8895e612b5dc057ea51ef2f813fe1527a707f57defe1e68eebf",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 6115,
+      "path": "third_party/gotrue_2_27_2/test/src/gotrue_admin_custom_providers_api_test.dart",
+      "sha256": "e613195a27ac47eb121226be1eb47d18de50fdc587a766ee7a2810e074022d90",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 1581,
+      "path": "third_party/gotrue_2_27_2/test/src/gotrue_admin_mfa_api_test.dart",
+      "sha256": "a67afd24be4cde2ac323aee410110c7f77b49bf1bf67f9c5767fba2bb69f655b",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 5969,
+      "path": "third_party/gotrue_2_27_2/test/src/gotrue_admin_oauth_api_test.dart",
+      "sha256": "a63df52f2b98330071baa5c4dcfff6e74d6475304e1a2bcab64ab8b38a0ffa85",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 9824,
+      "path": "third_party/gotrue_2_27_2/test/src/gotrue_mfa_api_test.dart",
+      "sha256": "f8de64ef3e5674f58cec6b116412bf3ce227b1f1be5faeee3ad65f41fac3cf97",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 13499,
+      "path": "third_party/gotrue_2_27_2/test/src/gotrue_oauth_api_test.dart",
+      "sha256": "fd6f349392b303e81927639c465c2bff8cabe0ce6bc80eed90ad41891d02ceef",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 11115,
+      "path": "third_party/gotrue_2_27_2/test/src/helper_test.dart",
+      "sha256": "201ba34e0587e963743934b5f0f236eca8b04470dc506c85bb5c5a9806391f7f",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 8366,
+      "path": "third_party/gotrue_2_27_2/test/src/set_session_test.dart",
+      "sha256": "1e3089d506fe7a91c1ec6dba6d7956f6af2c82a69994a970fd607f4f859e439b",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 10302,
+      "path": "third_party/gotrue_2_27_2/test/src/token_refresh_race_test.dart",
+      "sha256": "46ab34f86f8bb5ccb3590cbce155f65099036efba3eb64c5eac5e8eabd9a3f45",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 16254,
+      "path": "third_party/gotrue_2_27_2/test/src/types/auth_exception_test.dart",
+      "sha256": "0381836eafd5a9fdd723d21ec990d421a33c4834ecb76cf0c021a198dbfa9b6d",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 1998,
+      "path": "third_party/gotrue_2_27_2/test/src/types/mfa_test.dart",
+      "sha256": "35d1de5f9e7d1c973d5d1fcfe74af39846594dc7c02035b480af76b589812481",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 3942,
+      "path": "third_party/gotrue_2_27_2/test/src/types/passkey_test.dart",
+      "sha256": "7f6e0d8cce9fa0e1635469c3741abb423b2b9e5360d63a0f47a8945299a7b6b8",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 17354,
+      "path": "third_party/gotrue_2_27_2/test/src/types/session_test.dart",
+      "sha256": "b68fdf4545efb3b108436e6b93185ec1b4e8854b331b21bc0e9dbd74e86708fc",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 4167,
+      "path": "third_party/gotrue_2_27_2/test/src/types/user_attributes_test.dart",
+      "sha256": "032deb0e5245e7f3e3cd14f2f4d40aa361a9ef471f1741a855d0277d33eee649",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 26628,
+      "path": "third_party/gotrue_2_27_2/test/src/types/user_test.dart",
+      "sha256": "0427fbd0f3f4358e7b96dbbcee9645fa84b6bd03cb92dafc4327d506ba69ff73",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 3183,
+      "path": "third_party/gotrue_2_27_2/test/utils.dart",
+      "sha256": "81056a4bbb2962d25a140fcee581f142b9fea804a2c517090c26a3ce1b2fa22b",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 3225,
+      "path": "third_party/gotrue_2_27_2/test/web3_auth_integration_test.dart",
+      "sha256": "08d5fcee2d6c5a4134afad73afeeab128a4f4142e1d053f44f471b536cf37a30",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 4735,
+      "path": "third_party/gotrue_2_27_2/test/web3_auth_test.dart",
+      "sha256": "ebc9a4a422aae085f518ef4fd973db705b625bf508c55f9eeb7a02ff8009fb1d",
+      "why": "Exact frozen manifest, resolved local selection, vendor source/provenance or offline native dependency evidence for this rebind"
+    },
+    {
+      "bytes": 7655,
+      "path": "tools/scripts/collect_android_dependency_inventory.gradle",
+      "sha256": "d0959902b8498110ef8057897097a803f0c2015311602a375cd20ce675a5c332",
+      "why": "Offline resolved five-target Android graphs; stable source inputs and preservation of every previously selected external version"
+    },
+    {
+      "bytes": 130308,
+      "path": "tools/scripts/local_dependency_inventory.py",
+      "sha256": "86ff08a45009a4d298393f762553942dc78dbfbaafd63358fb3afdb98081557d",
+      "why": "Repeatable active dependency source/version/integrity/license reconciliation; exactness gate, bounded lossless TSV exports and strict row/hash/coverage readback"
+    },
+    {
+      "bytes": 1725,
+      "path": "tools/scripts/local_ops_rehearsal_no_network.cjs",
+      "sha256": "bf5b463b5419d6296ed32295dcc99e204f908b4325088ff41b7df1ff6b794cc8",
+      "why": "Bound local converter Node API network guard"
+    },
+    {
+      "bytes": 40378,
+      "path": "tools/scripts/test_local_dependency_inventory.py",
+      "sha256": "f7ed855c9da35f10fe95803f3c2f1987960296edc229219833064ea7eb6305ad",
+      "why": "40 fault/privacy/corruption regressions including unsafe inputs, source drift, graph/coverage forgery, optional bundles, shard readback and exact local license source, identity, binary-equality and integrity rejection"
+    }
+  ],
+  "sourceFreezeScope": "Frozen current Pub/Gradle declaration, resolver, vendor, inventory tooling and finite font/control evidence; native runtime privacy controls and the complete candidate require separate current proof; existing HEAD alone does not identify the complete local candidate"
+}

@@ -61,7 +61,7 @@ export function AdminResourceStatusBanner({
           ? "border-error/30 bg-error/10"
           : status === "offline" || status === "conflict"
             ? "border-warning/30 bg-warning/10"
-            : "border-[var(--admin-border)] bg-[var(--admin-zinc-900)]",
+            : "border-[var(--admin-border)] bg-[var(--admin-widget)]",
         className,
       )}
       role={
@@ -82,7 +82,7 @@ export function AdminResourceStatusBanner({
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="min-w-0">
           <p className="font-medium text-[var(--admin-text-strong)]">{label}</p>
-          <p className="mt-1 text-sm leading-6 text-[var(--admin-zinc-400)]">
+          <p className="mt-1 text-sm leading-6 text-[var(--admin-secondary)]">
             {detail}
           </p>
         </div>
@@ -98,7 +98,7 @@ export function AdminResourceStatusBanner({
           onPointerUp={finishPointer}
           onPointerCancel={finishPointer}
           onLostPointerCapture={finishPointer}
-          className="admin-resource-control inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[var(--admin-border)] px-4 py-3 text-sm font-medium text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-zinc-800)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:bg-[var(--admin-zinc-800)] disabled:text-[var(--admin-text-strong)] motion-reduce:transition-none"
+          className="admin-resource-control inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[var(--admin-border)] px-4 py-3 text-sm font-medium text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-raised)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:bg-[var(--admin-raised)] disabled:text-[var(--admin-text-strong)] motion-reduce:transition-none"
         >
           <RefreshCw
             size={17}

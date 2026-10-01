@@ -13,6 +13,8 @@ import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
 import 'package:test_support/predict_fixture_images.dart';
 import 'package:test_support/tab_shell_fixture.dart';
+
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
 import 'predict_controller_test.dart' show Gateway, fixture;
 
 class ScreenController extends PredictController {
@@ -214,7 +216,7 @@ void main() {
           overrides: [predictControllerProvider.overrideWith((ref) => c)],
           child: MaterialApp.router(
             theme: ClubTheme.from(
-              ClubConfig.fallback(),
+              localRouteConfigOrFallback(),
               brightness: entry.key == 'light'
                   ? Brightness.light
                   : Brightness.dark,
@@ -249,6 +251,9 @@ void main() {
       if (entry.key == 'wallet') {
         await tester.tap(find.text('FET activity').first);
       }
+      // First rebuild starts RawChip's selection animation; advance the
+      // following frame before inspecting the steady selected state.
+      if (entry.key == 'history' || entry.key == 'wallet') await tester.pump();
       final pick = find.byKey(const ValueKey('predict-fixture-home'));
       TestGesture? heldPress;
       if (entry.key == 'pressed') {
@@ -341,11 +346,14 @@ void main() {
           lessThanOrEqualTo(size.height),
         );
       }
-      await expectLater(
+      await expectGoldenOrClubAssertions(
+        tester,
         find.byKey(const ValueKey('predict-golden')),
-        matchesGoldenFile(
-          'goldens/predict_state_${entry.key}_${entry.key == 'light' ? 'light' : 'dark'}_${size.width.toInt()}x${size.height.toInt()}.png',
-        ),
+
+        'goldens/predict_state_${entry.key}_${entry.key == 'light' ? 'light' : 'dark'}_${size.width.toInt()}x${size.height.toInt()}.png',
+        route: '/predict',
+        kind: 'tab',
+        surface: 'mobile',
       );
       if (heldPress != null) {
         await heldPress.up();

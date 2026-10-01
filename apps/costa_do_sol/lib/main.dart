@@ -2,13 +2,19 @@ import 'package:app_registry/app_registry.dart';
 import 'package:club_costa_do_sol/club_costa_do_sol.dart';
 import 'package:core_app/bootstrap.dart';
 
-void main() async {
+Future<void> startCostaDoSolApp({
+  NativeSupporterJourney? nativeSupporterJourney,
+}) async {
   const config = CostaDoSolConfig();
   await bootstrap(
     config,
-    options: AfriClubBootstrapOptions(
-      moduleBuilder: (snapshot) =>
-          AppModuleRegistry.build(config, configSnapshot: snapshot),
+    options: clubBootstrapOptions(
+      config,
+      nativeSupporterJourney: nativeSupporterJourney,
     ),
   );
+}
+
+void main() async {
+  await startCostaDoSolApp();
 }

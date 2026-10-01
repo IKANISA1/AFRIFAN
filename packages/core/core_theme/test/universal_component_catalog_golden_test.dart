@@ -451,19 +451,31 @@ void main() {
                           Row(
                             children: [
                               Expanded(child: Text('Enabled switch')),
-                              AfriSwitch(value: true, onChanged: _boolNoop),
+                              AfriSwitch(
+                                semanticsLabel: 'Enabled switch',
+                                value: true,
+                                onChanged: _boolNoop,
+                              ),
                             ],
                           ),
                           Row(
                             children: [
                               Expanded(child: Text('Default switch')),
-                              AfriSwitch(value: false, onChanged: _boolNoop),
+                              AfriSwitch(
+                                semanticsLabel: 'Default switch',
+                                value: false,
+                                onChanged: _boolNoop,
+                              ),
                             ],
                           ),
                           Row(
                             children: [
                               Expanded(child: Text('Disabled switch')),
-                              AfriSwitch(value: false, onChanged: null),
+                              AfriSwitch(
+                                semanticsLabel: 'Disabled switch',
+                                value: false,
+                                onChanged: null,
+                              ),
                             ],
                           ),
                           SizedBox(height: SpacingTokens.spacing3),

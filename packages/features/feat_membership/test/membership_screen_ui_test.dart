@@ -13,16 +13,23 @@ import 'package:test_support/app_font_loader.dart';
 import 'package:test_support/tab_shell_fixture.dart';
 import 'package:test_support/touch_target_audit.dart';
 
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadAppFonts);
   setUp(() {
     ConnectivityService.setOnlineForTest(true);
     RuntimeBranding.configure(
-      appName: 'Rayon Sports',
-      clubName: 'Rayon Sports FC',
+      appName: localRouteFixtureConfig?.appName ?? 'Rayon Sports',
+      clubName: localRouteFixtureConfig?.clubName ?? 'Rayon Sports FC',
+      homeTeamName: localRouteFixtureConfig?.clubName,
+      countryCode: localRouteFixtureConfig?.countryCode,
+      currencyCode: localRouteFixtureConfig?.currency,
+      currencySymbol: localRouteFixtureConfig?.currencySymbol,
     );
   });
+  tearDown(RuntimeBranding.resetForTest);
 
   testWidgets('matches the membership tier surface layout', (tester) async {
     _setMobileSurface(tester);
@@ -216,9 +223,13 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(tester.takeException(), isNull);
-      await expectLater(
+      await expectGoldenOrClubAssertions(
+        tester,
         find.byKey(const ValueKey<String>('membership-route-golden')),
-        matchesGoldenFile('goldens/membership_${profile.id}.png'),
+        'goldens/membership_${profile.id}.png',
+        route: '/membership',
+        kind: 'tab',
+        surface: 'mobile',
       );
     });
   }
@@ -487,16 +498,19 @@ Widget _buildMembershipApp(
   return ProviderScope(
     overrides: [
       currentUserProvider.overrideWith(
-        (ref) => const UserProfile(
+        (ref) => UserProfile(
           id: 'user-1',
-          clubId: '24',
+          clubId: localRouteFixtureConfig?.clubId ?? '24',
           publicUserId: '483912',
         ),
       ),
       membershipProvider.overrideWith(createNotifier),
     ],
     child: MaterialApp(
-      theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
+      theme: ClubTheme.from(
+        localRouteConfigOrFallback(),
+        brightness: brightness,
+      ),
       home: RepaintBoundary(
         key: goldenKey,
         child: TabShellFixture(
@@ -616,9 +630,13 @@ Future<void> _pumpMembershipStateGolden(
     isNotNull,
     reason: 'Missing Membership golden path for $id.',
   );
-  await expectLater(
+  await expectGoldenOrClubAssertions(
+    tester,
     find.byKey(const ValueKey<String>('membership-state-golden')),
-    matchesGoldenFile(goldenPath!),
+    goldenPath!,
+    route: '/membership',
+    kind: 'tab',
+    surface: 'mobile',
   );
   await afterCapture?.call();
 }

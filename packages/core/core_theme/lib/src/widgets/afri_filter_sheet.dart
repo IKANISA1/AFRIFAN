@@ -67,22 +67,6 @@ Future<AfriFilterSortResult?> showAfriFilterSortSheet({
               firstDate: DateTime(2024),
               lastDate: DateTime(2030),
               initialDateRange: dateRange,
-              builder: (context, child) {
-                return Theme(
-                  data: Theme.of(context).copyWith(
-                    colorScheme: Theme.of(context).colorScheme.copyWith(
-                      surface: ColorTokens.surface,
-                      onSurface: ColorTokens.onSurface,
-                      primary: Theme.of(context).colorScheme.primary,
-                      onPrimary: Colors.white,
-                    ),
-                    dialogTheme: DialogThemeData(
-                      backgroundColor: ColorTokens.surface,
-                    ),
-                  ),
-                  child: child!,
-                );
-              },
             );
             if (picked != null) {
               setState(() => dateRange = picked);

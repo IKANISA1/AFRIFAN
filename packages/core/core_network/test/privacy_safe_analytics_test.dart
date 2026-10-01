@@ -50,6 +50,108 @@ void main() {
       }
     });
 
+    test('opaque strings and booleans fail every declared value boundary', () {
+      for (final event in PrivacySafeAnalyticsPolicy.taxonomy.entries) {
+        for (final key in event.value) {
+          for (final unsafe in <Object>[
+            'opaque_private_supporter_alias',
+            true,
+            123,
+            'whatsapp_private',
+          ]) {
+            expect(
+              PrivacySafeAnalyticsPolicy.prepare(
+                event.key,
+                parameters: <String, Object>{key: unsafe},
+              ),
+              isNull,
+              reason: '${event.key}.$key: $unsafe',
+            );
+          }
+        }
+      }
+    });
+
+    test('current product caller values remain valid coarse signals', () {
+      final cases = <String, Map<String, Object>>{
+        'prediction_placed': {
+          'market': 'wdw',
+          'outcome': 'home',
+          'value_bucket': 'under_100',
+        },
+        'ticket_completion': {
+          'ticket_type': 'general',
+          'payment_channel': 'momo',
+        },
+        'contribution_completion': {
+          'payment_channel': 'momo',
+          'value_bucket': '100_999',
+        },
+        'support_access': {'channel': 'whatsapp'},
+        'home_action_selected': {'action': 'tickets', 'layer': 'primary'},
+        'search_success': {
+          'category': 'commerce',
+          'result_count_bucket': 'two_to_five',
+        },
+        'error_recovery': {
+          'surface': 'profile_settings',
+          'outcome': 'conflict_refresh',
+        },
+        'task_abandonment': {
+          'task': 'ticket_checkout',
+          'stage': 'checkout_review',
+        },
+      };
+      for (final entry in cases.entries) {
+        expect(
+          PrivacySafeAnalyticsPolicy.prepare(
+            entry.key,
+            parameters: entry.value,
+          ),
+          isNotNull,
+          reason: entry.key,
+        );
+      }
+    });
+
+    test(
+      'opaque screens and classes fail closed; dynamic labels are constant',
+      () {
+        for (final unsafe in <String>[
+          'opaque_private_supporter_alias',
+          '/opaque_private_supporter_alias',
+          '/home/private',
+          'https://example.invalid/home',
+          '/orders/../private',
+          '/support/private',
+        ]) {
+          expect(PrivacySafeAnalyticsPolicy.sanitizeScreenName(unsafe), isNull);
+        }
+        expect(
+          PrivacySafeAnalyticsPolicy.sanitizeScreenName('club-news-detail'),
+          '/club/news/:item',
+        );
+        expect(
+          PrivacySafeAnalyticsPolicy.sanitizeScreenName(
+            '/club/news/opaque_private_supporter_alias?private=value',
+          ),
+          '/club/news/:item',
+        );
+        expect(
+          PrivacySafeAnalyticsPolicy.sanitizeScreenName(
+            '/orders/opaque_private_supporter_alias',
+          ),
+          '/orders/:item',
+        );
+        expect(
+          PrivacySafeAnalyticsPolicy.sanitizeScreenClass(
+            'opaque_private_supporter_alias',
+          ),
+          isNull,
+        );
+      },
+    );
+
     test('buckets precise values and result counts', () {
       expect(PrivacySafeAnalyticsPolicy.valueBucket(0), 'zero');
       expect(PrivacySafeAnalyticsPolicy.valueBucket(99), 'under_100');

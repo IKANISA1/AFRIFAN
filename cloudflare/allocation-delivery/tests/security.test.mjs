@@ -1,8 +1,9 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {fixture,claimed,ids,CONSUMER} from './fixture.mjs';
+import {claimed,ids,CONSUMER} from './fixture.mjs';
+import {withTransportClock} from './transport-clock.mjs';
 import {DeliverySource} from '../src/source.mjs';import {AllocationInbox} from '../src/inbox.mjs';import {drain} from '../src/dispatcher.mjs';
 const deny=(fn,code)=>assert.rejects(fn,e=>e.code===code);
-async function use(t,fn){const f=await fixture();t.after(()=>f.close());await fn(f);}
+const use=withTransportClock;
 for(const [name,change] of [
  ['principal',f=>f.db.sql.prepare('UPDATE pa_principals SET enabled=0 WHERE principal_id=?').run(ids.outbox)],
  ['grant',f=>f.db.sql.prepare("UPDATE pa_grants SET enabled=0 WHERE principal_id=? AND capability='outbox'").run(ids.outbox)],

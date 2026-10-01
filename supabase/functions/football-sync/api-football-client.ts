@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 /**
  * API-Football v3 — Type-safe HTTP client
  *
@@ -84,9 +85,7 @@ async function apiFetch<T>(
   }
   if (lastKnownRateLimit.minuteRemaining <= 0) {
     // Wait 60s if minute limit exhausted
-    console.warn(
-      `[api-football] Minute limit exhausted, waiting 60s before ${endpoint}`,
-    );
+    logDiagnostic("warn", "football_sync_api_football_client__api_football_minute_limit_exhausted_waiting_60s_before", undefined, { retry_after_seconds: 60 });
     await sleep(60_000);
   }
 
@@ -99,9 +98,7 @@ async function apiFetch<T>(
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     if (attempt > 0) {
       const delay = retryDelayMs * Math.pow(2, attempt - 1);
-      console.warn(
-        `[api-football] Retry ${attempt}/${maxRetries} for ${endpoint} in ${delay}ms`,
-      );
+      logDiagnostic("warn", "football_sync_api_football_client__api_football_retry", undefined, { attempt, duration_ms: delay });
       await sleep(delay);
     }
 

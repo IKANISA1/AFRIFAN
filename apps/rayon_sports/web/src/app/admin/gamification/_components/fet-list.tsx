@@ -63,7 +63,7 @@ export function FetList({
   });
 
   return (
-    <section className="glass-panel rounded-[32px] p-6">
+    <section className="ui-panel rounded-[32px] p-6">
       <p className="font-display text-3xl font-medium normal-case leading-none">
         FET catalog
       </p>
@@ -164,7 +164,8 @@ export function FetList({
                     FET
                   </p>
                   {token.badgeName ? (
-                    <p className="mt-2 text-2xl" aria-label="Badge">
+                    <p className="mt-2 text-2xl">
+                      <span className="sr-only">Badge: </span>
                       {token.badgeName}
                     </p>
                   ) : null}

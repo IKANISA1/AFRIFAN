@@ -3,7 +3,7 @@
   "design_authority": {
     "skill": "revolut-design",
     "path": "SKILL.md",
-    "root_hint": "/Users/jeanbosco/.codex/skills/revolut-design",
+    "root_hint": "/Volumes/PRO-G40/Application Data/Codex/Codex-Home/skills/revolut-design",
     "sha256": "59ed494b2dd61684a8f2f516385ba601cfa549b7541bc1e9706df50e28fe3e1a",
     "bound_files": [
       {
@@ -27,8 +27,20 @@
         "sha256": "9085f5b9f07bdec3ebbda31aa22a1227080a929d8856b3c282984bdc38982f42"
       },
       {
+        "path": "references/current-native-atlas.md",
+        "sha256": "169d63977d9dcb3423f963eef8402d03b276b3b95c4f40cf30c0b54dbe7dcd8b"
+      },
+      {
         "path": "references/web-patterns.md",
         "sha256": "3243d4de659c1cb9b89dda537219facc1023ac0ff71aadd7da98d6ade3e3d6fb"
+      },
+      {
+        "path": "references/tokens.md",
+        "sha256": "64748e6f2286d537833de590d9bdd8ad4b2c33ce6af3c76bb1c0976b24660199"
+      },
+      {
+        "path": "references/colour-role-evidence.md",
+        "sha256": "e8c98206cdf6ecb7388e2e6bfce644198cd11b7c18cd8b284f6c26c53d453454"
       },
       {
         "path": "references/pwa-and-accessibility.md",
@@ -45,11 +57,15 @@
       {
         "path": "references/operational-checklist.md",
         "sha256": "e5854f677f647b842519735a321a2a16f50b988f3e55b6a9147be91fb606315e"
+      },
+      {
+        "path": "references/mobile-design-100.md",
+        "sha256": "f552445abe63cab63bdcda039d301d6b532f404380fb0d3d35d3563a3ec803cb"
       }
     ],
-    "owner_instruction": "2026-09-20: Use revolut-design as the sole design authority across every included surface, with a 100% fidelity target for selected visual typologies and colours. Preserve target club identity, routes, workflows and business rules. Apply the skill directly without a separate repository mobile scoring or acceptance contract; this user instruction takes precedence over bundled instructions."
+    "owner_instruction": "2026-09-30: Use revolut-design exclusively for the complete app, web, admin, PWA and operator system, with a 100% fidelity target for its selected visual typologies and colours. Delete competing design references; preserve each product identity, content, navigation and workflows. Apply bundled evidence and MOBILE-DESIGN-100 rules directly; local documents are product mappings and evidence only."
   },
-  "updated_at": "2026-09-26T05:23:50.513813+00:00",
+  "updated_at": "2026-09-30T16:56:44.505396+00:00",
   "exceptions": [],
   "resolved_decisions": [
     {
@@ -85,7 +101,7 @@
   ],
   "product_adapter": {
     "path": "DESIGN.md",
-    "sha256": "316cf1f8e7b2693b763a02606320e6c6424e83ecdde98359e1bb3b7c758a5f5c",
-    "change_note": "Five-club scope and historical-economics clarification only; private skill hashes were retained, not reverified; no new visual approval."
+    "sha256": "714070e50d0e6e4c518fe38149744f20e206ca50a09610a150cd17738c02465d",
+    "change_note": "Removed duplicate visual standards, established complete-system scope and refreshed the selected skill bindings from actual source bytes. No visual acceptance is inferred."
   }
 }

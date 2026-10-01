@@ -12,8 +12,8 @@
   min-height: clamp(32rem, 60vw, 47rem);
   align-content: end;
   padding: clamp(2rem, 6vw, 5.5rem);
-  color: white;
-  background: linear-gradient(145deg, #6219e5, #352b7d 55%, #161618);
+  color: var(--foreground);
+  background: var(--overview-membership);
   border: 0;
   border-radius: var(--radius-md);
   box-shadow: none;
@@ -24,7 +24,7 @@
 .membership-surface .circles-hero > div:first-child { max-width: 58rem; }
 .membership-surface .circles-hero h1 {
   max-width: 19ch;
-  color: white;
+  color: var(--foreground);
   font-family: var(--font-display), sans-serif;
   font-size: clamp(3rem, 6.6vw, 5.3rem);
   font-weight: 500;
@@ -96,8 +96,8 @@
   flex: 1.2 1 28rem;
   min-height: 34rem;
   padding: clamp(1.25rem, 3.5vw, 3rem);
-  color: white;
-  background: #000d19;
+  color: var(--foreground);
+  background: var(--surface-hero);
   border: 0;
   border-radius: var(--radius-lg);
   box-shadow: none;
@@ -143,7 +143,7 @@
   width: 100%;
   min-height: 3.7rem;
   padding: .8rem 1rem;
-  color: white;
+  color: var(--foreground);
   background: var(--surface);
   border: 1px solid var(--border-hover);
   border-radius: var(--radius-md);
@@ -192,7 +192,7 @@
 .member-pending-state { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .member-dashboard-header h3 { font-size: clamp(1.75rem, 3vw, 2.5rem); }
 .member-icon-action { display: grid; width: 3rem; height: 3rem; border-radius: var(--radius-pill); place-items: center; color: var(--foreground-muted); border: 1px solid var(--border-hover); }
-.member-icon-action:hover { color: white; border-color: var(--foreground-muted); }
+.member-icon-action:hover { color: var(--foreground); border-color: var(--foreground-muted); }
 .member-icon-action svg { width: 1.05rem; }
 
 .member-code-card {
@@ -201,9 +201,9 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 1.2rem;
-  background: linear-gradient(125deg, #8017ee, #6219e5);
+  background: var(--membership-code);
   border-radius: var(--radius-lg);
-  color: white;
+  color: var(--foreground);
 }
 .member-code-card span,
 .member-code-card button { font-size: .875rem; font-weight: 500; letter-spacing: normal; text-transform: none; }
@@ -224,7 +224,7 @@
 .member-contribution-heading > svg { width: 2rem; color: var(--member-card-accent); }
 .member-amount-presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; margin-top: .6rem; }
 .member-amount-presets button { min-height: 3rem; border-radius: var(--radius-pill); padding: .45rem; color: var(--foreground-muted); border: 1px solid var(--border-hover); font-size: .875rem; font-weight: 500; }
-.member-amount-presets button[aria-pressed="true"] { color: white; background: var(--surface-elevated); border-color: var(--member-blue); box-shadow: inset 0 0 0 1px var(--member-blue); }
+.member-amount-presets button[aria-pressed="true"] { color: var(--foreground); background: var(--surface-elevated); border-color: var(--member-blue); box-shadow: inset 0 0 0 1px var(--member-blue); }
 .member-payment-note { margin-top: .85rem; color: var(--foreground-muted); font-size: .875rem; line-height: 1.55; }
 
 .member-pending-state { padding: .9rem 1rem; border-radius: var(--radius-md); background: rgba(255, 159, 10, .08); border: 1px solid rgba(255, 159, 10, .28); }
@@ -233,7 +233,7 @@
 .member-pending-state strong,
 .member-pending-state span { display: block; }
 .member-pending-state span { margin-top: .15rem; color: var(--foreground-muted); font-size: .875rem; }
-.member-pending-state button { display: inline-flex; align-items: center; min-height: 3rem; gap: .4rem; color: white; font-size: .875rem; font-weight: 500; text-transform: none; }
+.member-pending-state button { display: inline-flex; align-items: center; min-height: 3rem; gap: .4rem; color: var(--foreground); font-size: .875rem; font-weight: 500; text-transform: none; }
 .member-pending-state button svg { width: .9rem; }
 
 .member-history ul { margin-top: .9rem; border-top: 1px solid var(--border-hover); }
@@ -279,3 +279,5 @@
 }
 
 .member-history > .member-text-action { min-height: 2.75rem; font-size: .875rem; }
+
+.member-portal :is(input[type="checkbox"], input[type="radio"]) { accent-color: var(--member-blue); }

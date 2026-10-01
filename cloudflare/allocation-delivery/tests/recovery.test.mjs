@@ -2,8 +2,9 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {Worker} from 'node:worker_threads';import {mkdtempSync,rmSync,readFileSync} from 'node:fs';import {tmpdir} from 'node:os';import {join} from 'node:path';
 import {recoveryFixture,TestD1,ids,MAKER,CHECKER,CHECKER2} from './recovery/fixture.mjs';
 import {DeliveryRecovery} from '../src/recovery.mjs';import {drain} from '../src/dispatcher.mjs';
+import {withTransportClock} from './transport-clock.mjs';
 const deny=(fn,code)=>assert.rejects(fn,e=>e.code===code);
-async function use(t,fn){const f=await recoveryFixture();t.after(()=>f.close());await fn(f);}
+const use=(t,fn)=>withTransportClock(t,fn,recoveryFixture);
 function effects(f){return {ledger:f.count('pa_ledger'),members:f.count('pa_memberships'),claims:f.count('pa_external_claims'),outbox:f.count('pa_outbox'),sink:f.sinkDb.sql.prepare('SELECT count(*) n FROM adi_events').get().n};}
 async function race(data){
  const workers=data.map(workerData=>new Worker(new URL('./recovery/recovery-race-worker.mjs',import.meta.url),{workerData}));

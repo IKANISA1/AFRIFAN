@@ -65,18 +65,46 @@ class CrashlyticsService {
   }) async {
     if (!_isAvailable) return;
 
+    await _recordDiagnostic(
+      _errorCategory(error),
+      reason: sanitizeDiagnosticMessage(reason) ?? 'runtime_error',
+      fatal: fatal,
+    );
+  }
+
+  // The installed SDK replaces an empty stack with StackTrace.current. This
+  // nonempty redaction marker parses into zero frames, as verified at its native
+  // payload boundary. It never contains caller frames or file paths.
+  static final _redactedStack = StackTrace.fromString(
+    'diagnostic_stack_redacted',
+  );
+
+  static Future<void> _recordDiagnostic(
+    String category, {
+    required String reason,
+    required bool fatal,
+  }) async {
     try {
-      final safeError = StateError('runtime_failure:${error.runtimeType}');
       await FirebaseCrashlytics.instance.recordError(
-        safeError,
-        stackTrace,
-        reason: sanitizeDiagnosticMessage(reason),
+        'runtime_failure:$category',
+        _redactedStack,
+        reason: reason,
         fatal: fatal,
+        printDetails: false,
       );
     } catch (_) {
       // Best-effort — never crash reporting the crash.
     }
   }
+
+  static String _errorCategory(Object error) => switch (error) {
+    TimeoutException() => 'timeout',
+    FormatException() => 'format',
+    ArgumentError() => 'argument',
+    StateError() => 'state',
+    UnsupportedError() => 'unsupported',
+    _ => 'failure',
+  };
 
   /// Record a Flutter framework error.
   ///
@@ -84,9 +112,8 @@ class CrashlyticsService {
   static Future<void> recordFlutterError(FlutterErrorDetails details) async {
     if (!_isAvailable) return;
 
-    await recordError(
-      StateError('flutter_framework_failure:${details.exception.runtimeType}'),
-      details.stack,
+    await _recordDiagnostic(
+      'framework',
       reason: 'flutter_framework_error',
       fatal: true,
     );
@@ -116,7 +143,7 @@ class CrashlyticsService {
     if (safeMessage == null) return;
 
     try {
-      unawaited(FirebaseCrashlytics.instance.log(safeMessage));
+      await FirebaseCrashlytics.instance.log(safeMessage);
     } catch (_) {
       // Best-effort.
     }
@@ -126,35 +153,13 @@ class CrashlyticsService {
 
   @visibleForTesting
   static String? sanitizeDiagnosticMessage(String? value) {
-    final normalized = value?.trim().replaceAll(RegExp(r'\s+'), ' ');
-    if (normalized == null || normalized.isEmpty) return null;
-
-    final lowered = normalized.toLowerCase();
-    const forbiddenFragments = <String>[
-      'access_token',
-      'authorization',
-      'bearer ',
-      'email=',
-      'jwt',
-      'phone=',
-      'refresh_token',
-      'service'
-          '_role',
-      'user_id',
-    ];
-    if (forbiddenFragments.any(lowered.contains) ||
-        normalized.contains('@') ||
-        lowered.contains('http://') ||
-        lowered.contains('https://') ||
-        RegExp(r'\b\+?\d{9,15}\b').hasMatch(normalized) ||
-        RegExp(
-          r'\b[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\b',
-          caseSensitive: false,
-        ).hasMatch(normalized)) {
-      return null;
-    }
-
-    final safe = normalized.replaceAll(RegExp(r'\d+'), '#');
-    return safe.length <= 96 ? safe : safe.substring(0, 96);
+    const codes = <String>{
+      'runtime_error',
+      'flutter_framework_error',
+      'network_error',
+      'parse_error',
+      'operation_failed',
+    };
+    return codes.contains(value) ? value : null;
   }
 }

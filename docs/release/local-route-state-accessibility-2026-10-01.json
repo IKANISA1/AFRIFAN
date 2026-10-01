@@ -1,0 +1,979 @@
+{
+  "schema_version": 1,
+  "status": "closed_user_revised_essential_scope",
+  "scope": "All five declared club fixtures; current product registration and source-specific route/state applicability; controlled synthetic local executions.",
+  "clubs": [
+    "as_vita",
+    "costa_do_sol",
+    "nkana",
+    "rayon_sports",
+    "vitalo"
+  ],
+  "catalog": {
+    "declared_routes": 135,
+    "declared_states": 16,
+    "clubs": 5,
+    "catalog_cells": 10800,
+    "counts": {
+      "assertions_missing": 3705,
+      "automated_accessibility_executed": 3607,
+      "automated_accessibility_missing": 3700,
+      "accessibility_not_applicable": 3493,
+      "contract_not_applicable": 2934,
+      "automated_assertions_executed": 4161
+    },
+    "inventory": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-route-state-inventory-remediated-20261001/route-inventory.json",
+      "sha256": "4f407791e582d85d32d0f41d7b30c9db84c39db434987e3a41cb29750db4b791"
+    },
+    "contracts": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-route-state-inventory-remediated-20261001/route-state-closure.json",
+      "sha256": "a74cf6df9a1cb337b642ead39ec59cd45efbfd7f5546aefd41aa62c0622a2d53"
+    }
+  },
+  "current_actual_results": {
+    "native_tests_passed": 4933,
+    "integration_tests_passed": 315,
+    "http_tests_passed": 895,
+    "typescript_exit": 0,
+    "strict_exit": 0,
+    "native_assertion_cells": 3691,
+    "native_a11y_cells": 3607,
+    "http_assertion_cells": 470,
+    "security_render_checks_passed": 13,
+    "current_full_browser_execution_complete": false,
+    "browser_tests_passed": 0,
+    "applicable_assertion_cells_executed": 4161,
+    "applicable_automated_accessibility_cells_executed": 3607
+  },
+  "browser_remaining": {
+    "browser_expected_tests": 305,
+    "browser_tests_remaining": 305,
+    "browser_assertion_cells": 3705,
+    "browser_a11y_cells": 3700
+  },
+  "current_evidence": {
+    "native_execution": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-five-club-complete-native-states-registration-remediated-20261001.receipt.json",
+      "sha256": "263a3e4ebf94757b998ab044227e382e9b20d616256fcabc13fd79907e8bacc7",
+      "bytes": 507653
+    },
+    "integration": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-integration-package-cwd-current/verification.json",
+      "sha256": "d24f284d471302a96c1518e4ea2bfd5101dc7989cf773e12dee7281f364c7eb8",
+      "bytes": 379998
+    },
+    "strict": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-workspace-strict-final-source-current.receipt.json",
+      "sha256": "51270347a57bea4ef8515e8410e1e99b7573e00dde62e5de25760b278d9348e0",
+      "bytes": 378477
+    },
+    "typescript": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-source-budget-signals-validation-20261001/verification.json",
+      "sha256": "99fb293c4f07b4b04983cf581b166b69ec38cd1e112ce5a230ad9b3e35e99eb6",
+      "bytes": 290521
+    },
+    "http": [
+      {
+        "club": "as_vita",
+        "verification": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-as_vita-remediated-budget-20261001-readonly.receipt.json",
+          "sha256": "4635dcf35b522812fdaadf270ec8379c4e4cc2a2e385315167404d083876a640",
+          "bytes": 184402
+        },
+        "readonlyProof": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-as_vita-remediated-budget-20261001-readonly-readonly-proof.json",
+          "sha256": "9bc137ab36a4cb13e9e1ca229c1d96e040f5e0ff1898a138c9927c650d4aa186",
+          "bytes": 5225
+        },
+        "counts": {
+          "passed": 179,
+          "failed": 0,
+          "skipped": 0,
+          "receipt": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-as_vita-remediated-budget-20261001-readonly.receipt.json",
+            "sha256": "4635dcf35b522812fdaadf270ec8379c4e4cc2a2e385315167404d083876a640"
+          },
+          "assertion_count": 94
+        }
+      },
+      {
+        "club": "costa_do_sol",
+        "verification": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-costa_do_sol-remediated-budget-20261001-readonly.receipt.json",
+          "sha256": "c693416c6ded5c13a788041ed5abb021b75e97771e64e5649a412446fdfb39e1",
+          "bytes": 184437
+        },
+        "readonlyProof": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-costa_do_sol-remediated-budget-20261001-readonly-readonly-proof.json",
+          "sha256": "9f1ce6de3faf4237584dac4748b1b710ad7ed753bb49c3ddae6568680df428f9",
+          "bytes": 5716
+        },
+        "counts": {
+          "passed": 179,
+          "failed": 0,
+          "skipped": 0,
+          "receipt": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-costa_do_sol-remediated-budget-20261001-readonly.receipt.json",
+            "sha256": "c693416c6ded5c13a788041ed5abb021b75e97771e64e5649a412446fdfb39e1"
+          },
+          "assertion_count": 94
+        }
+      },
+      {
+        "club": "nkana",
+        "verification": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-nkana-remediated-budget-20261001-readonly.receipt.json",
+          "sha256": "0c88e6731cbc6b950cfbe9cfb7c3a978276f7c76677bfd36c5368db917312ff7",
+          "bytes": 184388
+        },
+        "readonlyProof": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-nkana-remediated-budget-20261001-readonly-readonly-proof.json",
+          "sha256": "072c2d083ac1aeeb4061b0543703e76a7c01e9d84891ddf705d41d39ea472d65",
+          "bytes": 5213
+        },
+        "counts": {
+          "passed": 179,
+          "failed": 0,
+          "skipped": 0,
+          "receipt": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-nkana-remediated-budget-20261001-readonly.receipt.json",
+            "sha256": "0c88e6731cbc6b950cfbe9cfb7c3a978276f7c76677bfd36c5368db917312ff7"
+          },
+          "assertion_count": 94
+        }
+      },
+      {
+        "club": "rayon_sports",
+        "verification": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-rayon_sports-remediated-budget-20261001-readonly.receipt.json",
+          "sha256": "4919511c844373142fca47c97cd2dafdb560d1548cdbafe4ef770b9427c7d03f",
+          "bytes": 184437
+        },
+        "readonlyProof": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-rayon_sports-remediated-budget-20261001-readonly-readonly-proof.json",
+          "sha256": "35033e310c825786402779268b72b0689c894e740a467797380a6c522eedd35b",
+          "bytes": 5255
+        },
+        "counts": {
+          "passed": 179,
+          "failed": 0,
+          "skipped": 0,
+          "receipt": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-rayon_sports-remediated-budget-20261001-readonly.receipt.json",
+            "sha256": "4919511c844373142fca47c97cd2dafdb560d1548cdbafe4ef770b9427c7d03f"
+          },
+          "assertion_count": 94
+        }
+      },
+      {
+        "club": "vitalo",
+        "verification": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-vitalo-remediated-budget-20261001-readonly.receipt.json",
+          "sha256": "984fa306499d353ec757c91b15c11b89b4daa26f62a8a1fa373557544c4438e2",
+          "bytes": 184395
+        },
+        "readonlyProof": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-vitalo-remediated-budget-20261001-readonly-readonly-proof.json",
+          "sha256": "8e3a63467b150051c96265b7feb51e628a011967d9cf039dbd8b1e4f37dbc852",
+          "bytes": 5219
+        },
+        "counts": {
+          "passed": 179,
+          "failed": 0,
+          "skipped": 0,
+          "receipt": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-vitalo-remediated-budget-20261001-readonly.receipt.json",
+            "sha256": "984fa306499d353ec757c91b15c11b89b4daa26f62a8a1fa373557544c4438e2"
+          },
+          "assertion_count": 94
+        }
+      }
+    ],
+    "security_render": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-security-render-owned-loopback-20261001.json",
+      "sha256": "ed4f9cef214a1b25b143594f45b71bf0934f5234d7b17a907a20508e1d40a359",
+      "bytes": 9907
+    },
+    "compiled_build": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-exact-build-20261001/verification.json",
+      "sha256": "01a5bf08ed42a13a6c73964879fed8cd46e84320d4e167377415fbf738a390ce",
+      "bytes": 243936
+    },
+    "conversion": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-conversion-remediated-20261001/output-bound-conversion.json",
+      "sha256": "68727b2b1a9440546348379adccf99b6b0a9ab70c8c2529e86d55e4932f65217",
+      "bytes": 579329
+    },
+    "dry_run": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-dry-run-no-banner-remediated-20261001/output-bound-dry-run.json",
+      "sha256": "8b266bbadf80c881b604e1e1ca401db3b2d9f7043bca6588f6755c196150950d",
+      "bytes": 1195870
+    },
+    "native_http_overlay": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/root-goal-reports-budget-signals-pre-browser-published-20261001/actual-native-http-coverage-overlay.json",
+      "sha256": "75e3c79e8544a023c948d76344f060763d137eb2f0437e45e45a64e1030ad9e2",
+      "bytes": 18839632
+    }
+  },
+  "axe_policy": {
+    "tags": [
+      "wcag2a",
+      "wcag2aa",
+      "wcag21a",
+      "wcag21aa",
+      "wcag22aa"
+    ],
+    "installed_rule_count": 69,
+    "every_explicit_capture_requires_complete_raw_result": true,
+    "raw_artifacts_directly_hash_bound": true,
+    "failure_gate": "critical_and_serious_violations",
+    "moderate_minor_and_incomplete_results_retained": true,
+    "current_305_browser_execution_complete": false,
+    "automated_checks_establish_wcag_conformance": false
+  },
+  "source_binding": {
+    "native_selected_original_inputs": 1425,
+    "integration_and_strict_selected_sources_and_actual_masters": 1046,
+    "typescript_selected_inputs": 598,
+    "all_current_selected_source_hashes_rechecked": true,
+    "compiled_web_inputs": 645,
+    "two_e2e_helpers_excluded_from_compiled_inputs": true,
+    "installed_content_and_stat_binding_preserved": true,
+    "existing_artifact_resealed": false,
+    "reason": "Actual selected receipt/source hashes were independently checked against current bytes; final candidate binding is pending.",
+    "build_receipt_selected_source_inputs": 672
+  },
+  "baseline_scope": {
+    "mechanical_membership_golden_refresh_count": 8,
+    "normal_package_cwd_golden_comparisons_passed": true,
+    "original_master_actual_diff_hashes_preserved": true,
+    "human_or_design_acceptance": false
+  },
+  "provenance": {
+    "native_raw_records": 8501,
+    "native_unique_cell_test_execution_records": 8461,
+    "native_exact_identical_repeats_counted_once": 40,
+    "failed_raw_receipts_and_prior_checkpoints_retained": true,
+    "consumer_native_registration_uses_actual_club_flags": true,
+    "controlled_internal_admin_requires_mobile_admin_and_allow_internal_mobile_admin": true,
+    "static_component_and_unmapped_captures_receive_no_product_route_credit": true,
+    "navigation_only_outcomes_receive_no_rendered_dimensions_or_a11y_credit": true,
+    "all_registered_destination_obligations_retained": true
+  },
+  "governed_review_registry_modified": false,
+  "human_screen_reader_or_device_acceptance": false,
+  "provider_store_or_deployment_acceptance": false,
+  "latestBrowserRemediation": {
+    "generatedAt": 1790844584.768953,
+    "status": "historical_checkpoint_with_focused_ticket_correction_verified",
+    "priorBrowserExecution": {
+      "expectedTests": 305,
+      "passed": 25,
+      "failed": 280,
+      "skipped": 0,
+      "flaky": 0,
+      "accepted": false,
+      "evidence": {
+        "local-browser-five-club-final.receipt.json": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-browser-five-club-final.receipt.json",
+          "sha256": "9edf40a1849320ee34b26f00d4cde3bad4efccdf50f1d298826dc2e869c381fc"
+        },
+        "local-browser-five-club-final-artifact-manifest.json": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-browser-five-club-final-artifact-manifest.json",
+          "sha256": "400dc486d3853e7265b24bef6e3ee01ff7483d27d6aadccfd8ea16e44db0091d"
+        },
+        "recovered-browser-final-failure-analysis-20261001.json": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/recovered-browser-final-failure-analysis-20261001.json",
+          "sha256": "d090cb340dc58e647d72035f7a60ff7ddd36ba2017e131a7021ce63a268e9ed1"
+        },
+        "local-browser-five-club-final-server.json": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-browser-five-club-final-server.json",
+          "sha256": "9463db88451d2ff815034b9080d711a73c2a85abfea5785557c7712e50d227ad"
+        }
+      }
+    },
+    "sourceCorrectionsApplied": [
+      "strict CSP compatible large text test setup without changing product CSP",
+      "valid named loading and collection groups",
+      "persistent football sync panel linkage",
+      "keyboard focus for scrollable dialog content",
+      "selected club API fixture interception",
+      "standalone recovery query validation",
+      "finite runtime matrix deadline",
+      "contributions middleware redirect before admin layout",
+      "explicit real initial browser online precondition"
+    ],
+    "additionalSourceFindingsPending": [],
+    "oldCompiledEvidence": "Retained checkpoint; product source was intentionally corrected afterwards. A fresh exact build, conversion, dry run, render, HTTP and full browser execution are required.",
+    "goalComplete": false,
+    "productionReady": false,
+    "finalCandidateBound": false,
+    "running": [],
+    "pending": [],
+    "canceledWork": [
+      "Remaining full 305-case browser matrix and its aggregate route/accessibility admission.",
+      "Repeated full unit, native and verifier-method suites for unchanged implementation.",
+      "New production rebuild, conversion, artifact seal/extraction and artifact secret admission.",
+      "Final candidate commit and comprehensive all-16 candidate/evidence binding audit."
+    ],
+    "scopeRevision": {
+      "requestedAt": "2026-10-01",
+      "reason": "User requested immediate finish after prolonged execution and canceled nonessential work.",
+      "scope": "Apply diagnosed ticket overflow correction and verify the affected source page across all five clubs; publish truthful closeout.",
+      "complete": true,
+      "closedAt": "2026-10-01T11:29:03.879660+00:00",
+      "completed": [
+        "Scoped table containment correction applied.",
+        "Five clubs passed desktop dark/mobile light at 200 percent text, keyboard drawer recovery and ten Axe analyses.",
+        "Repeated broad validation runs stopped; prior receipts and staged/unstaged work preserved.",
+        "Closeout and file rationale published."
+      ],
+      "canceledWork": [
+        "Remaining full 305-case browser matrix and its aggregate route/accessibility admission.",
+        "Repeated full unit, native and verifier-method suites for unchanged implementation.",
+        "New production rebuild, conversion, artifact seal/extraction and artifact secret admission.",
+        "Final candidate commit and comprehensive all-16 candidate/evidence binding audit."
+      ],
+      "focusedEvidence": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/essential-ticket-five-club-pagination-corrected-20261001/verification.json",
+        "sha256": "6bb347f5f1580a1df3742cc3937ca3dbf7eac2928c4ced62d45bcb8bee94528c",
+        "bytes": 11262
+      },
+      "serverTerminationAndRestoration": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/essential-source-dev-emulator-free-20261001/configuration-restoration.json",
+        "sha256": "648b5f41281283fc6e84830ec2d98577e7f0c05481f983ac378af29454b6fefe",
+        "bytes": 1381
+      },
+      "originalFull16RequirementsVerified": false,
+      "productionReady": false,
+      "externalReleaseAcceptance": false
+    },
+    "oldCompiledEvidenceAttribution": "Historical compiled evidence; final ticket CSS source change has not been rebuilt or sealed."
+  },
+  "currentRemediatedSourceCheckpoint": {
+    "generatedAt": "2026-10-01T10:49:26.818468+00:00",
+    "status": "historical_checkpoint_with_focused_ticket_correction_verified",
+    "actualSourceValidation": {
+      "unitPassed": 1181,
+      "unitFailed": 0,
+      "externalOptInSkipped": 1,
+      "typescriptExitCode": 0,
+      "sourceInputs": 598,
+      "sourceBeforeAfterStable": true,
+      "installedContentAndStatBindingStable": true,
+      "installedWriteAttempts": 0
+    },
+    "allFourAdminTabKeyboardContractsImplemented": true,
+    "namedNativeTsxProhibitedCandidatesRemaining": 0,
+    "selectedTsxFilesReviewed": 182,
+    "perFileRemediation": {
+      "uniqueFiles": 76,
+      "addedHelpers": 2,
+      "modifiedFiles": 74,
+      "verifiedMutationSteps": 127
+    },
+    "historicalSupplementaryReports": [
+      "backend telemetry older25-source snapshot; later404 backend and406 operations bind current operator API and actual telemetry tests",
+      "auth authority older2-source snapshot; later585 test /1078 selected-input proof binds current auth_notifier"
+    ],
+    "running": [],
+    "pending": [],
+    "proofs": {
+      "unitAndTypescript": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-source-budget-signals-validation-20261001/verification.json",
+        "sha256": "99fb293c4f07b4b04983cf581b166b69ec38cd1e112ce5a230ad9b3e35e99eb6",
+        "bytes": 290521
+      },
+      "namingAstReview": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-tsx-accessible-name-review-20261001.json",
+        "sha256": "18f7bed9a679d5fb840662164cb7743cd3af999664b3c3c8db103fe85cc905d3"
+      },
+      "currentCheckpointDriftReadback": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/completed-checkpoint-drift-after-web-remediation-20261001.json",
+        "sha256": "fa85ca4f09e3e86e2b250654e4eb0666926d561284279baecdd431417a637134"
+      },
+      "historicalSupersession": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/completed-checkpoint-drift-historical-supersession-20261001.json",
+        "sha256": "111c39220614a727d0357d8543f3e938414dc778c88404d7a7fc76b0639493be"
+      },
+      "perFilePurposeJson": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/browser-remediation-per-file-purpose-budget-20261001.json",
+        "sha256": "1261c08106ecf15e625422838445e284970e0f930d6bace4178e79e5975cc542",
+        "bytes": 223870
+      },
+      "perFilePurposeMarkdown": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/browser-remediation-per-file-purpose-current-20261001.md",
+        "sha256": "823c6fa347b8eb5aa9c51c95a10244985e352ea2bc4d0d253da48fb15a2c45e3"
+      },
+      "sourceSealedProductionBuild": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-exact-build-20261001/verification.json",
+        "sha256": "01a5bf08ed42a13a6c73964879fed8cd46e84320d4e167377415fbf738a390ce",
+        "bytes": 243936
+      },
+      "currentConversion": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-conversion-remediated-20261001/output-bound-conversion.json",
+        "sha256": "68727b2b1a9440546348379adccf99b6b0a9ab70c8c2529e86d55e4932f65217",
+        "bytes": 579329
+      },
+      "actualPromotionCapture": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-conversion-remediated-20261001/actual-output-promotion.json",
+        "sha256": "3c5dfcdcd0aed650719012cdb8d01ef0e920e29f9ac6c26c5d84bcb873de5813",
+        "bytes": 1197647
+      },
+      "currentDryRun": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-dry-run-no-banner-remediated-20261001/output-bound-dry-run.json",
+        "sha256": "8b266bbadf80c881b604e1e1ca401db3b2d9f7043bca6588f6755c196150950d",
+        "bytes": 1195870
+      },
+      "currentNative": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-five-club-complete-native-states-registration-remediated-20261001.receipt.json",
+        "sha256": "263a3e4ebf94757b998ab044227e382e9b20d616256fcabc13fd79907e8bacc7",
+        "bytes": 507653
+      },
+      "currentNativeIntegration": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-integration-package-cwd-current/verification.json",
+        "sha256": "d24f284d471302a96c1518e4ea2bfd5101dc7989cf773e12dee7281f364c7eb8",
+        "bytes": 379998
+      },
+      "currentStrict": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-workspace-strict-final-source-current.receipt.json",
+        "sha256": "51270347a57bea4ef8515e8410e1e99b7573e00dde62e5de25760b278d9348e0",
+        "bytes": 378477
+      },
+      "securityRender": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-security-render-owned-loopback-20261001.json",
+        "sha256": "ed4f9cef214a1b25b143594f45b71bf0934f5234d7b17a907a20508e1d40a359",
+        "bytes": 9907
+      },
+      "currentHttp": [
+        {
+          "club": "as_vita",
+          "verification": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-as_vita-remediated-budget-20261001-readonly.receipt.json",
+            "sha256": "4635dcf35b522812fdaadf270ec8379c4e4cc2a2e385315167404d083876a640",
+            "bytes": 184402
+          },
+          "readonlyProof": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-as_vita-remediated-budget-20261001-readonly-readonly-proof.json",
+            "sha256": "9bc137ab36a4cb13e9e1ca229c1d96e040f5e0ff1898a138c9927c650d4aa186",
+            "bytes": 5225
+          },
+          "counts": {
+            "passed": 179,
+            "failed": 0,
+            "skipped": 0,
+            "receipt": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-as_vita-remediated-budget-20261001-readonly.receipt.json",
+              "sha256": "4635dcf35b522812fdaadf270ec8379c4e4cc2a2e385315167404d083876a640"
+            },
+            "assertion_count": 94
+          }
+        },
+        {
+          "club": "costa_do_sol",
+          "verification": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-costa_do_sol-remediated-budget-20261001-readonly.receipt.json",
+            "sha256": "c693416c6ded5c13a788041ed5abb021b75e97771e64e5649a412446fdfb39e1",
+            "bytes": 184437
+          },
+          "readonlyProof": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-costa_do_sol-remediated-budget-20261001-readonly-readonly-proof.json",
+            "sha256": "9f1ce6de3faf4237584dac4748b1b710ad7ed753bb49c3ddae6568680df428f9",
+            "bytes": 5716
+          },
+          "counts": {
+            "passed": 179,
+            "failed": 0,
+            "skipped": 0,
+            "receipt": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-costa_do_sol-remediated-budget-20261001-readonly.receipt.json",
+              "sha256": "c693416c6ded5c13a788041ed5abb021b75e97771e64e5649a412446fdfb39e1"
+            },
+            "assertion_count": 94
+          }
+        },
+        {
+          "club": "nkana",
+          "verification": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-nkana-remediated-budget-20261001-readonly.receipt.json",
+            "sha256": "0c88e6731cbc6b950cfbe9cfb7c3a978276f7c76677bfd36c5368db917312ff7",
+            "bytes": 184388
+          },
+          "readonlyProof": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-nkana-remediated-budget-20261001-readonly-readonly-proof.json",
+            "sha256": "072c2d083ac1aeeb4061b0543703e76a7c01e9d84891ddf705d41d39ea472d65",
+            "bytes": 5213
+          },
+          "counts": {
+            "passed": 179,
+            "failed": 0,
+            "skipped": 0,
+            "receipt": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-nkana-remediated-budget-20261001-readonly.receipt.json",
+              "sha256": "0c88e6731cbc6b950cfbe9cfb7c3a978276f7c76677bfd36c5368db917312ff7"
+            },
+            "assertion_count": 94
+          }
+        },
+        {
+          "club": "rayon_sports",
+          "verification": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-rayon_sports-remediated-budget-20261001-readonly.receipt.json",
+            "sha256": "4919511c844373142fca47c97cd2dafdb560d1548cdbafe4ef770b9427c7d03f",
+            "bytes": 184437
+          },
+          "readonlyProof": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-rayon_sports-remediated-budget-20261001-readonly-readonly-proof.json",
+            "sha256": "35033e310c825786402779268b72b0689c894e740a467797380a6c522eedd35b",
+            "bytes": 5255
+          },
+          "counts": {
+            "passed": 179,
+            "failed": 0,
+            "skipped": 0,
+            "receipt": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-rayon_sports-remediated-budget-20261001-readonly.receipt.json",
+              "sha256": "4919511c844373142fca47c97cd2dafdb560d1548cdbafe4ef770b9427c7d03f"
+            },
+            "assertion_count": 94
+          }
+        },
+        {
+          "club": "vitalo",
+          "verification": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-vitalo-remediated-budget-20261001-readonly.receipt.json",
+            "sha256": "984fa306499d353ec757c91b15c11b89b4daa26f62a8a1fa373557544c4438e2",
+            "bytes": 184395
+          },
+          "readonlyProof": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-vitalo-remediated-budget-20261001-readonly-readonly-proof.json",
+            "sha256": "8e3a63467b150051c96265b7feb51e628a011967d9cf039dbd8b1e4f37dbc852",
+            "bytes": 5219
+          },
+          "counts": {
+            "passed": 179,
+            "failed": 0,
+            "skipped": 0,
+            "receipt": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-vitalo-remediated-budget-20261001-readonly.receipt.json",
+              "sha256": "984fa306499d353ec757c91b15c11b89b4daa26f62a8a1fa373557544c4438e2"
+            },
+            "assertion_count": 94
+          }
+        }
+      ],
+      "inventory": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-route-state-inventory-remediated-20261001/route-inventory.json",
+        "sha256": "4f407791e582d85d32d0f41d7b30c9db84c39db434987e3a41cb29750db4b791"
+      },
+      "contracts": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-route-state-inventory-remediated-20261001/route-state-closure.json",
+        "sha256": "a74cf6df9a1cb337b642ead39ec59cd45efbfd7f5546aefd41aa62c0622a2d53"
+      },
+      "dryRunSupervisor": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/run_output_bound_dry_run_no_banner_20261001.py",
+        "sha256": "59e27e87e8f4ac448048e605d39d3e37a778acc053ea710dbfcb332ad1d083d5",
+        "bytes": 6449
+      },
+      "currentNativeHttpOverlay": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/root-goal-reports-budget-signals-pre-browser-published-20261001/actual-native-http-coverage-overlay.json",
+        "sha256": "75e3c79e8544a023c948d76344f060763d137eb2f0437e45e45a64e1030ad9e2",
+        "bytes": 18839632
+      },
+      "historicalPerFilePurposeJsonBeforeBudgetCorrection": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/browser-remediation-per-file-purpose-current-20261001.json",
+        "sha256": "0659a2d6f3d143494a3468ee5756c7f0a0fdd4d17c3d720fb1601008a1aff0f6"
+      }
+    },
+    "goalComplete": false,
+    "productionReady": false,
+    "providerActions": 0,
+    "deploymentActions": 0,
+    "phase": "pre-browser",
+    "finalCandidateBound": false,
+    "retainedRejectedPreBrowserAttempts": [
+      {
+        "verification": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-dry-run-remediated-20261001/output-bound-dry-run.json",
+          "sha256": "3a5c90d8fe62a6389490aa9136e5500e7ffea46252ef3021ff58fa77f1fb1e18",
+          "bytes": 598228
+        },
+        "acceptedAsCurrentPass": false,
+        "failure": "network_guard_unverified",
+        "exitCode": 0,
+        "scope": "Actual rejected earlier attempt; its bytes remain unchanged and are not admitted by the corrected receipt."
+      },
+      {
+        "verification": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-security-render-20261001.json",
+          "sha256": "8edb8cb86e8e4e399f3fc84708d0ead7af10b2035cfb6fdb9ea704585500edfd",
+          "bytes": 1735
+        },
+        "acceptedAsCurrentPass": false,
+        "failure": "production_server_not_ready",
+        "exitCode": null,
+        "scope": "Actual rejected earlier attempt; its bytes remain unchanged and are not admitted by the corrected receipt."
+      },
+      {
+        "verification": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-security-render-loopback-20261001.json",
+          "sha256": "8edb8cb86e8e4e399f3fc84708d0ead7af10b2035cfb6fdb9ea704585500edfd",
+          "bytes": 1735
+        },
+        "acceptedAsCurrentPass": false,
+        "failure": "production_server_not_ready",
+        "exitCode": null,
+        "scope": "Actual rejected earlier attempt; its bytes remain unchanged and are not admitted by the corrected receipt."
+      }
+    ],
+    "currentUnitValidation": {
+      "unitPassed": 1181,
+      "unitFailed": 0,
+      "externalOptInSkipped": 1,
+      "typescriptExitCode": 0,
+      "sourceInputs": 598,
+      "sourceBeforeAfterStable": true,
+      "installedContentAndStatBindingStable": true,
+      "installedWriteAttempts": 0
+    },
+    "actualCompletedLocalExecutions": {
+      "nativePassed": 4933,
+      "integrationPassed": 315,
+      "strictExitCode": 0,
+      "httpPassed": 895,
+      "httpAssertionCells": 470,
+      "securityRenderChecksPassed": 13,
+      "currentBrowserExecutionComplete": false,
+      "currentBrowserTestsPassed": 0,
+      "applicableAssertionCellsExecuted": 4161,
+      "applicableAutomatedAccessibilityCellsExecuted": 3607
+    },
+    "historicalPerFileRemediationBeforeBudgetCorrection": {
+      "uniqueFiles": 66,
+      "addedHelpers": 2,
+      "modifiedFiles": 64,
+      "verifiedMutationSteps": 81
+    },
+    "canceledWork": [
+      "Remaining full 305-case browser matrix and its aggregate route/accessibility admission.",
+      "Repeated full unit, native and verifier-method suites for unchanged implementation.",
+      "New production rebuild, conversion, artifact seal/extraction and artifact secret admission.",
+      "Final candidate commit and comprehensive all-16 candidate/evidence binding audit."
+    ],
+    "scopeRevision": {
+      "requestedAt": "2026-10-01",
+      "reason": "User requested immediate finish after prolonged execution and canceled nonessential work.",
+      "scope": "Apply diagnosed ticket overflow correction and verify the affected source page across all five clubs; publish truthful closeout.",
+      "complete": true,
+      "closedAt": "2026-10-01T11:29:03.879660+00:00",
+      "completed": [
+        "Scoped table containment correction applied.",
+        "Five clubs passed desktop dark/mobile light at 200 percent text, keyboard drawer recovery and ten Axe analyses.",
+        "Repeated broad validation runs stopped; prior receipts and staged/unstaged work preserved.",
+        "Closeout and file rationale published."
+      ],
+      "canceledWork": [
+        "Remaining full 305-case browser matrix and its aggregate route/accessibility admission.",
+        "Repeated full unit, native and verifier-method suites for unchanged implementation.",
+        "New production rebuild, conversion, artifact seal/extraction and artifact secret admission.",
+        "Final candidate commit and comprehensive all-16 candidate/evidence binding audit."
+      ],
+      "focusedEvidence": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/essential-ticket-five-club-pagination-corrected-20261001/verification.json",
+        "sha256": "6bb347f5f1580a1df3742cc3937ca3dbf7eac2928c4ced62d45bcb8bee94528c",
+        "bytes": 11262
+      },
+      "serverTerminationAndRestoration": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/essential-source-dev-emulator-free-20261001/configuration-restoration.json",
+        "sha256": "648b5f41281283fc6e84830ec2d98577e7f0c05481f983ac378af29454b6fefe",
+        "bytes": 1381
+      },
+      "originalFull16RequirementsVerified": false,
+      "productionReady": false,
+      "externalReleaseAcceptance": false
+    },
+    "historicalCheckpointSourceHashMismatches": 0,
+    "historicalBuildBeforeFinalTicketCssCorrection": {
+      "build_id": "CWMOWy0PHpiOwfhebqpUY",
+      "source_sha256": "64f8fb6903390dfa04640b6f295fcd2a093eeaba2099e9924598baa102fbef53",
+      "artifact_sha256": "977956349cf499c4080ea375cf871af6c0bc0cff2ecc4c8a3a4f6924552abdaa",
+      "installed_inputs_sha256": "922f42b1b989d05210aabfa334b2763ca0a33c52a83495c523cdb7cf18e1ad2b",
+      "installed_inputs_binding_sha256": "42005be8510119ec99a18b4671093ae63df5f86507e0ad741dac5c2f2f86075e",
+      "provenance_sha256": "b2a19c9502c00580a5212006981779cfeb6f5334cf54070de58705213919c476",
+      "started_at": "2026-10-01T09:02:23.614Z",
+      "finished_at": "2026-10-01T09:10:21.837Z"
+    }
+  },
+  "goalComplete": false,
+  "productionReady": false,
+  "finalCandidateBound": false,
+  "generatedAt": "2026-10-01T11:29:03.879660+00:00",
+  "historicalCatalogBeforeRemediatedPreBrowserRefresh": {
+    "declared_routes": 135,
+    "declared_states": 16,
+    "clubs": 5,
+    "catalog_cells": 10800,
+    "counts": {
+      "assertions_missing": 3705,
+      "automated_accessibility_executed": 3607,
+      "automated_accessibility_missing": 3700,
+      "accessibility_not_applicable": 3493,
+      "contract_not_applicable": 2934,
+      "automated_assertions_executed": 4161
+    },
+    "inventory": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-route-state-inventory-remediated-20261001/route-inventory.json",
+      "sha256": "4f407791e582d85d32d0f41d7b30c9db84c39db434987e3a41cb29750db4b791"
+    },
+    "contracts": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-route-state-inventory-remediated-20261001/route-state-closure.json",
+      "sha256": "a74cf6df9a1cb337b642ead39ec59cd45efbfd7f5546aefd41aa62c0622a2d53"
+    }
+  },
+  "historicalEvidenceBeforeRemediatedPreBrowserRefresh": {
+    "native_execution": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-five-club-complete-native-states-registration-remediated-20261001.receipt.json",
+      "sha256": "263a3e4ebf94757b998ab044227e382e9b20d616256fcabc13fd79907e8bacc7",
+      "bytes": 507653
+    },
+    "integration": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-integration-package-cwd-current/verification.json",
+      "sha256": "d24f284d471302a96c1518e4ea2bfd5101dc7989cf773e12dee7281f364c7eb8",
+      "bytes": 379998
+    },
+    "strict": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-workspace-strict-final-source-current.receipt.json",
+      "sha256": "51270347a57bea4ef8515e8410e1e99b7573e00dde62e5de25760b278d9348e0",
+      "bytes": 378477
+    },
+    "typescript": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-source-focus-corrected-validation-20261001/verification.json",
+      "sha256": "c8232ec444dbf068df34554165841f8941b5fb8ed265643dbd8e198975f3218d",
+      "bytes": 210295
+    },
+    "http": [
+      {
+        "club": "as_vita",
+        "verification": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-as_vita-remediated-20261001-readonly.receipt.json",
+          "sha256": "963ff0736cf87666dc32c5ce2b8e060721b073476af58bcdc4a441f5442d3891",
+          "bytes": 184325
+        },
+        "readonlyProof": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-as_vita-remediated-20261001-readonly-readonly-proof.json",
+          "sha256": "1dab95692ce1c4656e68a9987cd388c3aeb6ca2ba0567cd243d25705420d1432",
+          "bytes": 5190
+        },
+        "counts": {
+          "passed": 179,
+          "failed": 0,
+          "skipped": 0,
+          "receipt": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-as_vita-remediated-20261001-readonly.receipt.json",
+            "sha256": "963ff0736cf87666dc32c5ce2b8e060721b073476af58bcdc4a441f5442d3891"
+          },
+          "assertion_count": 94
+        }
+      },
+      {
+        "club": "costa_do_sol",
+        "verification": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-costa_do_sol-remediated-20261001-readonly.receipt.json",
+          "sha256": "f7ecd9182a8e79ad3d1a09a740f9bbf3605a280fa37b5c8b600eafbbd24568cc",
+          "bytes": 184360
+        },
+        "readonlyProof": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-costa_do_sol-remediated-20261001-readonly-readonly-proof.json",
+          "sha256": "f0a45224c1fd7f11d85078d8363cc6b8be09b19a8ca9f5131b159eca15c3390e",
+          "bytes": 5220
+        },
+        "counts": {
+          "passed": 179,
+          "failed": 0,
+          "skipped": 0,
+          "receipt": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-costa_do_sol-remediated-20261001-readonly.receipt.json",
+            "sha256": "f7ecd9182a8e79ad3d1a09a740f9bbf3605a280fa37b5c8b600eafbbd24568cc"
+          },
+          "assertion_count": 94
+        }
+      },
+      {
+        "club": "nkana",
+        "verification": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-nkana-remediated-20261001-readonly.receipt.json",
+          "sha256": "5092747fe9c1731d8d1d9737dad465c5a12bdba23904edef55f769200f4576a8",
+          "bytes": 184311
+        },
+        "readonlyProof": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-nkana-remediated-20261001-readonly-readonly-proof.json",
+          "sha256": "aea8153550ad0354cd9d14507c74ab9b29a9b7eccedcc8ef083c3a503b5f3567",
+          "bytes": 5176
+        },
+        "counts": {
+          "passed": 179,
+          "failed": 0,
+          "skipped": 0,
+          "receipt": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-nkana-remediated-20261001-readonly.receipt.json",
+            "sha256": "5092747fe9c1731d8d1d9737dad465c5a12bdba23904edef55f769200f4576a8"
+          },
+          "assertion_count": 94
+        }
+      },
+      {
+        "club": "rayon_sports",
+        "verification": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-rayon_sports-remediated-20261001-readonly.receipt.json",
+          "sha256": "3708e0b0d8f1287c06df5bf583e84249e036304b27e41ca353fa59b20b751b80",
+          "bytes": 184360
+        },
+        "readonlyProof": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-rayon_sports-remediated-20261001-readonly-readonly-proof.json",
+          "sha256": "baa7428f7977fc89e09a5e8b81b80e09b54fea2bd53270c3ae57710ae62265f5",
+          "bytes": 5214
+        },
+        "counts": {
+          "passed": 179,
+          "failed": 0,
+          "skipped": 0,
+          "receipt": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-rayon_sports-remediated-20261001-readonly.receipt.json",
+            "sha256": "3708e0b0d8f1287c06df5bf583e84249e036304b27e41ca353fa59b20b751b80"
+          },
+          "assertion_count": 94
+        }
+      },
+      {
+        "club": "vitalo",
+        "verification": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-vitalo-remediated-20261001-readonly.receipt.json",
+          "sha256": "ecb8e23c559895b737cd16d9fb85980b7fde4e83b0bbdbd8caa961b068431458",
+          "bytes": 184318
+        },
+        "readonlyProof": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-vitalo-remediated-20261001-readonly-readonly-proof.json",
+          "sha256": "ad1ab905d8e46f6b4893c6a16b98e50699cc531f1ce16f8e1be15d528a4a9d92",
+          "bytes": 5184
+        },
+        "counts": {
+          "passed": 179,
+          "failed": 0,
+          "skipped": 0,
+          "receipt": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-vitalo-remediated-20261001-readonly.receipt.json",
+            "sha256": "ecb8e23c559895b737cd16d9fb85980b7fde4e83b0bbdbd8caa961b068431458"
+          },
+          "assertion_count": 94
+        }
+      }
+    ],
+    "security_render": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-security-render-owned-loopback-20261001.json",
+      "sha256": "ed4f9cef214a1b25b143594f45b71bf0934f5234d7b17a907a20508e1d40a359",
+      "bytes": 9907
+    },
+    "compiled_build": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-exact-build-20261001/verification.json",
+      "sha256": "01a5bf08ed42a13a6c73964879fed8cd46e84320d4e167377415fbf738a390ce",
+      "bytes": 243936
+    },
+    "conversion": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-conversion-remediated-20261001/output-bound-conversion.json",
+      "sha256": "68727b2b1a9440546348379adccf99b6b0a9ab70c8c2529e86d55e4932f65217",
+      "bytes": 579329
+    },
+    "dry_run": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-dry-run-no-banner-remediated-20261001/output-bound-dry-run.json",
+      "sha256": "8b266bbadf80c881b604e1e1ca401db3b2d9f7043bca6588f6755c196150950d",
+      "bytes": 1195870
+    },
+    "native_http_overlay": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/root-goal-reports-remediated-pre-browser-published-20261001/actual-native-http-coverage-overlay.json",
+      "sha256": "6338b7d0186bb366002b957defc066b278bf5a080e634464e909c08bf8d5b69c",
+      "bytes": 18833017
+    }
+  },
+  "historicalActualResultsBeforeRemediatedPreBrowserRefresh": {
+    "native_tests_passed": 4933,
+    "integration_tests_passed": 315,
+    "http_tests_passed": 895,
+    "typescript_exit": 0,
+    "strict_exit": 0,
+    "native_assertion_cells": 3691,
+    "native_a11y_cells": 3607,
+    "http_assertion_cells": 470,
+    "security_render_checks_passed": 13,
+    "current_full_browser_execution_complete": false,
+    "browser_tests_passed": 0,
+    "applicable_assertion_cells_executed": 4161,
+    "applicable_automated_accessibility_cells_executed": 3607
+  },
+  "retainedReportSnapshots": [
+    {
+      "report": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/root-goal-reports-remediated-pre-browser-published-20261001/before/local-route-state-accessibility-2026-10-01.json",
+        "sha256": "7aecdbffb9a93fd8c4c5bfa5ceba17d0e3edc996c73b85a674d18d42dc7b3890",
+        "bytes": 12721
+      },
+      "scope": "Full previous report bytes retained; former current fields are historical."
+    },
+    {
+      "report": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/root-goal-reports-budget-signals-pre-browser-published-20261001/before/local-route-state-accessibility-2026-10-01.json",
+        "sha256": "80f81ddd02dc4764c2cef0da6acef05d6c601d14bf6e4c65b3a8481a564b1e7b",
+        "bytes": 35043
+      },
+      "scope": "Full previous report bytes retained; former current fields are historical."
+    }
+  ],
+  "goalStatus": "CLOSED_REVISED_SCOPE",
+  "revisedGoalComplete": true,
+  "originalFull16RequirementsVerified": false,
+  "scopeRevision": {
+    "requestedAt": "2026-10-01",
+    "reason": "User requested immediate finish after prolonged execution and canceled nonessential work.",
+    "scope": "Apply diagnosed ticket overflow correction and verify the affected source page across all five clubs; publish truthful closeout.",
+    "complete": true,
+    "closedAt": "2026-10-01T11:29:03.879660+00:00",
+    "completed": [
+      "Scoped table containment correction applied.",
+      "Five clubs passed desktop dark/mobile light at 200 percent text, keyboard drawer recovery and ten Axe analyses.",
+      "Repeated broad validation runs stopped; prior receipts and staged/unstaged work preserved.",
+      "Closeout and file rationale published."
+    ],
+    "canceledWork": [
+      "Remaining full 305-case browser matrix and its aggregate route/accessibility admission.",
+      "Repeated full unit, native and verifier-method suites for unchanged implementation.",
+      "New production rebuild, conversion, artifact seal/extraction and artifact secret admission.",
+      "Final candidate commit and comprehensive all-16 candidate/evidence binding audit."
+    ],
+    "focusedEvidence": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/essential-ticket-five-club-pagination-corrected-20261001/verification.json",
+      "sha256": "6bb347f5f1580a1df3742cc3937ca3dbf7eac2928c4ced62d45bcb8bee94528c",
+      "bytes": 11262
+    },
+    "serverTerminationAndRestoration": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/essential-source-dev-emulator-free-20261001/configuration-restoration.json",
+      "sha256": "648b5f41281283fc6e84830ec2d98577e7f0c05481f983ac378af29454b6fefe",
+      "bytes": 1381
+    },
+    "originalFull16RequirementsVerified": false,
+    "productionReady": false,
+    "externalReleaseAcceptance": false
+  },
+  "closeoutReport": {
+    "path": "docs/release/local-production-goal-closeout-2026-10-01.json",
+    "sha256": "3c175aeb0ca2fbfb953cc7c6b49ef7b9d89b28611e4b29fec959517047d87529",
+    "bytes": 46634
+  },
+  "checkpointAttribution": "Existing broad implementation/build/coverage fields describe the preserved prior checkpoint. The final CSS change is verified only by the focused source-browser receipt.",
+  "pending": [],
+  "canceledWork": [
+    "Remaining full 305-case browser matrix and its aggregate route/accessibility admission.",
+    "Repeated full unit, native and verifier-method suites for unchanged implementation.",
+    "New production rebuild, conversion, artifact seal/extraction and artifact secret admission.",
+    "Final candidate commit and comprehensive all-16 candidate/evidence binding audit."
+  ]
+}

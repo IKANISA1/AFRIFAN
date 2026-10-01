@@ -1,0 +1,1396 @@
+{
+  "schemaVersion": 1,
+  "generatedAtUtc": "2026-09-30T23:24:04.459639+00:00",
+  "scope": "Local AuthRepository, push device lifecycle and licensed SDK session mutation cleanup",
+  "status": "LOCAL_IMPLEMENTATION_VERIFIED",
+  "sourceChanges": [
+    {
+      "path": "pubspec.yaml",
+      "sha256": "ed12b835abf4388e5da87e98272eb0c9cb4c7a4f5a38a374ed1c81196516252d",
+      "bytes": 5237,
+      "changeType": "modified",
+      "reason": "Select the licensed local GoTrue2.27.2 patch through the root path override."
+    },
+    {
+      "path": "pubspec.lock",
+      "sha256": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b",
+      "bytes": 41649,
+      "changeType": "modified",
+      "reason": "Bind GoTrue to the reviewed local path source without changing any resolved package version."
+    },
+    {
+      "path": "packages/core/core_auth/pubspec.yaml",
+      "sha256": "fa6f0e3b43a7852a3c56c81c90e30f834d4376591f5a889c79fcb6e16d9d0d69",
+      "bytes": 483,
+      "changeType": "modified",
+      "reason": "Declare the installed http dependency directly for actual intercepted-SDK regression fixtures."
+    },
+    {
+      "path": "packages/core/core_auth/lib/src/auth_repository.dart",
+      "sha256": "8147b1f86842f31877dd32996b70f38f70743857ff9e9d0910a5e5d6bd9f0d02",
+      "bytes": 22276,
+      "changeType": "modified",
+      "reason": "Capture session/client/repository authority for cleanup, hydration, guarded retries and profile writes; cancel only SDK mutations owned by the obsolete repository."
+    },
+    {
+      "path": "packages/core/core_auth/lib/src/auth_notifier.dart",
+      "sha256": "90840f8ca7a3bd07777e46f17c1587e36e96ab18d9b4b12cda9e97222eb84fb6",
+      "bytes": 22380,
+      "changeType": "modified",
+      "reason": "Add old captured-repository invalidation at notifier rebuild/disposal, preserving the separately implemented generation and session ordering controls."
+    },
+    {
+      "path": "packages/core/core_auth/test/auth_repository_cleanup_test.dart",
+      "sha256": "0f1a8e237d261344f5654f05426ea98de81d8a6d93b5fce407248aed66b9522c",
+      "bytes": 33734,
+      "changeType": "added",
+      "reason": "Exercise actual SDK HTTP/session events for stale cleanup, same-user replacement, normal refresh, hydration/profile writes, scoped cancellation and delayed-storage logout."
+    },
+    {
+      "path": "packages/core/core_network/lib/core_network.dart",
+      "sha256": "4d103dc82104d8dab6c1e5c4870c30a32488cf6b0ccf9723133ef94888e5b535",
+      "bytes": 1395,
+      "changeType": "modified",
+      "reason": "Expose captured-session authority and the finite native health payload normalizer; the privacy addition is detailed in the native observability report."
+    },
+    {
+      "path": "packages/core/core_network/lib/src/supabase_session_authority.dart",
+      "sha256": "3aa9a4367621126d9b8c4c23106dc8d648dc44fdf2302f0378941dfc696598cb",
+      "bytes": 3660,
+      "changeType": "added",
+      "reason": "Provide a sticky client/session/owner authority fence that permits genuine SDK token rotation of the same server session."
+    },
+    {
+      "path": "packages/core/core_network/lib/src/push_notification_service.dart",
+      "sha256": "d564aab00c2b116f4d63a633f6aaab2ecbbdaa0d8f7753f3c592ce1dba35745c",
+      "bytes": 19694,
+      "changeType": "modified",
+      "reason": "Fence delayed native and token operations by captured account/client/club/device generation and serialize device operations to protect newer registrations."
+    },
+    {
+      "path": "packages/core/core_network/test/push_device_session_cleanup_test.dart",
+      "sha256": "a6aa4ff473333aeda644f0610127c16746abee88e977da776f0fadbfe16430f1",
+      "bytes": 17441,
+      "changeType": "added",
+      "reason": "Verify actual local SDK row requests and controlled native push cleanup, registration, permissions and topic transitions."
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/AFRICLUB_PATCH.md",
+      "sha256": "aeda6a1df136f3fb0241b853c8a7627bc5eefa7258cfa67ac980623d07fa55b8",
+      "bytes": 2111,
+      "changeType": "added",
+      "reason": "Document the reviewed patch, operation ownership and consumer integration.",
+      "upstreamSha256": null,
+      "matchesUpstream": null
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/CHANGELOG.md",
+      "sha256": "48f2f5c3c63cc6c113bf6a4c07965a188026be4d14e51cd1bd519142e8706dc7",
+      "bytes": 43873,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "48f2f5c3c63cc6c113bf6a4c07965a188026be4d14e51cd1bd519142e8706dc7",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/LICENSE",
+      "sha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936",
+      "bytes": 1065,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/README.md",
+      "sha256": "3ffd1c1730af3ac3743af2887241e50e19ba579d76a34d9040d267da2f2bf3bd",
+      "bytes": 1250,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "3ffd1c1730af3ac3743af2887241e50e19ba579d76a34d9040d267da2f2bf3bd",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/UPSTREAM_PROVENANCE.json",
+      "sha256": "0b12d78f1134ee29932ffbd40de33cae93120134a87df044577ade90097d90c8",
+      "bytes": 13707,
+      "changeType": "added",
+      "reason": "Record each original installed licensed file separately from the patched local source.",
+      "upstreamSha256": null,
+      "matchesUpstream": null
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/UPSTREAM_PUBSPEC.yaml",
+      "sha256": "5d1d2f237e3ab3ece834f550b4c5aec5a6fb29328734b0dac358d945ded4d230",
+      "bytes": 804,
+      "changeType": "added",
+      "reason": "Preserve the exact original upstream package metadata for provenance comparison.",
+      "upstreamSha256": "5d1d2f237e3ab3ece834f550b4c5aec5a6fb29328734b0dac358d945ded4d230",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/analysis_options.yaml",
+      "sha256": "bfdac46d0fffe29b47dfe619206a54d0fa0ab721789762999ba23c9b2783bd8c",
+      "bytes": 301,
+      "changeType": "added",
+      "reason": "Keep normal Dart static diagnostics without requiring unavailable publisher-only lint dependencies.",
+      "upstreamSha256": "d8ed5cb0cd1c70d18f1a9b1072b1297cf77ea3d3324ea927415a7147e62fc67d",
+      "matchesUpstream": false
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/example/README.md",
+      "sha256": "5561b5809a656952c98860674054066a930b4a473dd0c748320a76e35ad7356f",
+      "bytes": 101,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "5561b5809a656952c98860674054066a930b4a473dd0c748320a76e35ad7356f",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/example/main.dart",
+      "sha256": "f3ed362c7ab446c80de81f78b68ccc02c36e910dad7276b88f8b22dd4a0b8946",
+      "bytes": 697,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "f3ed362c7ab446c80de81f78b68ccc02c36e910dad7276b88f8b22dd4a0b8946",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/gotrue.dart",
+      "sha256": "afae6d4e1b084d1c121ca98a0087d10ef486fb23d124ff5d511cd29366734b3d",
+      "bytes": 849,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "afae6d4e1b084d1c121ca98a0087d10ef486fb23d124ff5d511cd29366734b3d",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/broadcast_stub.dart",
+      "sha256": "8a9cdd61cc1b036c3c665c6d7893b593b4e1ecef56e965732d20c8b5638a6513",
+      "bytes": 246,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "8a9cdd61cc1b036c3c665c6d7893b593b4e1ecef56e965732d20c8b5638a6513",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/broadcast_web.dart",
+      "sha256": "7546f4d263f5e80da7c5472a1cdb12d091d9d8c5d416b6e3dfb96b67c28d4c52",
+      "bytes": 933,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "7546f4d263f5e80da7c5472a1cdb12d091d9d8c5d416b6e3dfb96b67c28d4c52",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/constants.dart",
+      "sha256": "131679776dde45e8f9e0603080812dac4508eb3c79b412acdc219abadc6453a8",
+      "bytes": 2952,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "131679776dde45e8f9e0603080812dac4508eb3c79b412acdc219abadc6453a8",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/fetch.dart",
+      "sha256": "91f10515d02dd3187385b264af6df63319da164bf28cfca309475cd8cb7df1f8",
+      "bytes": 6221,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "91f10515d02dd3187385b264af6df63319da164bf28cfca309475cd8cb7df1f8",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/gotrue_admin_api.dart",
+      "sha256": "8e25c8c32b7266b6c2395ed485af68d969403899729b026a9f4a698002b59831",
+      "bytes": 6981,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "8e25c8c32b7266b6c2395ed485af68d969403899729b026a9f4a698002b59831",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/gotrue_admin_custom_providers_api.dart",
+      "sha256": "6497aa41d949b43e388c6d381a69d4dfc3faf7e859dc14771bfedea94d9fb3c4",
+      "bytes": 4225,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "6497aa41d949b43e388c6d381a69d4dfc3faf7e859dc14771bfedea94d9fb3c4",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/gotrue_admin_mfa_api.dart",
+      "sha256": "0bec1d51d21698b1b9e8faebfdd59f9fc80c914fe0be0ba8d8ef4e6e4a17aed2",
+      "bytes": 1313,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "0bec1d51d21698b1b9e8faebfdd59f9fc80c914fe0be0ba8d8ef4e6e4a17aed2",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/gotrue_admin_oauth_api.dart",
+      "sha256": "70f643aaf2ec47421daaaffa144252d51cb7c89ef14440913ef036ec5d3d443b",
+      "bytes": 5446,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "70f643aaf2ec47421daaaffa144252d51cb7c89ef14440913ef036ec5d3d443b",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/gotrue_admin_passkey_api.dart",
+      "sha256": "e1c8f1783c1be9f9a55edbe22d9f43bb79271f9be1f7ea561eef24f0bab2cce1",
+      "bytes": 1847,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "e1c8f1783c1be9f9a55edbe22d9f43bb79271f9be1f7ea561eef24f0bab2cce1",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/gotrue_client.dart",
+      "sha256": "963144ad26a221d90ca36e4e354a605702f8d1c542e0770ab00ccd9e66dd7a30",
+      "bytes": 63047,
+      "changeType": "added",
+      "reason": "Patch actual SDK mutation ownership and logout event publication before stale replies can mutate or describe a newer session.",
+      "upstreamSha256": "ddf36b5f8edc8ac83fbbd7d7a1d6afa7a4ff5523baa5bd8540c0345769c9159d",
+      "matchesUpstream": false
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/gotrue_mfa_api.dart",
+      "sha256": "a6014a6eaf8878f1d2c73b630b57e1eb408f0ef07f8f7116c32d3eac19bf6b5e",
+      "bytes": 7739,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "a6014a6eaf8878f1d2c73b630b57e1eb408f0ef07f8f7116c32d3eac19bf6b5e",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/gotrue_oauth_api.dart",
+      "sha256": "0eb351b0af051deebdf909e9b1e5b2982c4be0c8cf6efa7f32a91ee03f98f6de",
+      "bytes": 11044,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "0eb351b0af051deebdf909e9b1e5b2982c4be0c8cf6efa7f32a91ee03f98f6de",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/gotrue_passkey_api.dart",
+      "sha256": "9fc8301d629c7a8bbd80352f44cf6d55b855d924473a375294493bc6487957bf",
+      "bytes": 8502,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "9fc8301d629c7a8bbd80352f44cf6d55b855d924473a375294493bc6487957bf",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/helper.dart",
+      "sha256": "cc27ea3afb8b30bb46101f293bc1abdf06d9e22ad89965afdd5a5b5d5a3ff1f3",
+      "bytes": 2673,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "cc27ea3afb8b30bb46101f293bc1abdf06d9e22ad89965afdd5a5b5d5a3ff1f3",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/types/api_version.dart",
+      "sha256": "dc0f3ea30563473ef6bd045ecee3e11cdd09fedff6e494be0bac5bc74a0d3eac",
+      "bytes": 1302,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "dc0f3ea30563473ef6bd045ecee3e11cdd09fedff6e494be0bac5bc74a0d3eac",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/types/auth_exception.dart",
+      "sha256": "43833048e8261a91b10884e61daabd80ba5afe9627015c620da35d16a0b261fa",
+      "bytes": 3471,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "43833048e8261a91b10884e61daabd80ba5afe9627015c620da35d16a0b261fa",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/types/auth_response.dart",
+      "sha256": "d3f8b59543cd7de4dfb26511816446fa26620837847e9eb6409027359583a102",
+      "bytes": 2782,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "d3f8b59543cd7de4dfb26511816446fa26620837847e9eb6409027359583a102",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/types/auth_state.dart",
+      "sha256": "f506f12f18024585c61156671d347aa9909b97c4bcafa92efc3c83b18853cd7a",
+      "bytes": 1295,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "f506f12f18024585c61156671d347aa9909b97c4bcafa92efc3c83b18853cd7a",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/types/custom_oauth_provider.dart",
+      "sha256": "c9942ac90d295ceb2a1f719075ef82baf2d22b257a3cbb59b5006135d8690cde",
+      "bytes": 12525,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "c9942ac90d295ceb2a1f719075ef82baf2d22b257a3cbb59b5006135d8690cde",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/types/error_code.dart",
+      "sha256": "00b1845c91bc51f12a01120ea5d93748d59c8522f2a7d5ca5a6c97ef5c893f15",
+      "bytes": 4446,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "00b1845c91bc51f12a01120ea5d93748d59c8522f2a7d5ca5a6c97ef5c893f15",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/types/fetch_options.dart",
+      "sha256": "fb5e70f4f5e46d7bc17e146bbd1912ee123ff61e2c1b268a6ea2ee0ee1e33fbc",
+      "bytes": 515,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "fb5e70f4f5e46d7bc17e146bbd1912ee123ff61e2c1b268a6ea2ee0ee1e33fbc",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/types/gotrue_async_storage.dart",
+      "sha256": "05384d8524033042833f8b849c758c4ab93e2c2bceedb1ee2f747e7a852ee019",
+      "bytes": 525,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "05384d8524033042833f8b849c758c4ab93e2c2bceedb1ee2f747e7a852ee019",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/types/jwt.dart",
+      "sha256": "fc851a9250c1e79145e72b79351f0f4220b7c25dbb7d60da4a899c0bfe49c988",
+      "bytes": 8038,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "fc851a9250c1e79145e72b79351f0f4220b7c25dbb7d60da4a899c0bfe49c988",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/types/mfa.dart",
+      "sha256": "a9e41a4f3d25c290b53cb2bd22a6fb760790a0b65c12c9fe9bca79858e26b2dd",
+      "bytes": 12369,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "a9e41a4f3d25c290b53cb2bd22a6fb760790a0b65c12c9fe9bca79858e26b2dd",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/types/passkey.dart",
+      "sha256": "65a2541c7e147fc20806a0942f8a58e22c839c25d7a66480e1690fbca8ade9fd",
+      "bytes": 4617,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "65a2541c7e147fc20806a0942f8a58e22c839c25d7a66480e1690fbca8ade9fd",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/types/session.dart",
+      "sha256": "5e35fe388e6d465d24f579cd4f484f7247f7af83341cec0c31b9597e60676bb9",
+      "bytes": 4760,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "5e35fe388e6d465d24f579cd4f484f7247f7af83341cec0c31b9597e60676bb9",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/types/sign_out_reason.dart",
+      "sha256": "61ff1200cbf763372a503a14168691fee1a8de628a32a1479629990fd4cacaa1",
+      "bytes": 820,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "61ff1200cbf763372a503a14168691fee1a8de628a32a1479629990fd4cacaa1",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/types/types.dart",
+      "sha256": "5540866e2e8dd6dfa3a85ce97696d02be1201eca5de84ec9bf65b21a69eb725d",
+      "bytes": 9074,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "5540866e2e8dd6dfa3a85ce97696d02be1201eca5de84ec9bf65b21a69eb725d",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/types/user.dart",
+      "sha256": "16d40a5903a15b0f83a2dc4ecc3d981e07a14d063234db27a2313f9d14733343",
+      "bytes": 9143,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "16d40a5903a15b0f83a2dc4ecc3d981e07a14d063234db27a2313f9d14733343",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/types/user_attributes.dart",
+      "sha256": "26cd1a2c35804229526df454cf976d586e94a313690492958036a6f8a4800c20",
+      "bytes": 4802,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "26cd1a2c35804229526df454cf976d586e94a313690492958036a6f8a4800c20",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/lib/src/version.dart",
+      "sha256": "5d8ff7fe15919238108367aca04ea5b72b4b95bdb5c582ec1fe3974f46882ba3",
+      "bytes": 26,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "5d8ff7fe15919238108367aca04ea5b72b4b95bdb5c582ec1fe3974f46882ba3",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/pubspec.yaml",
+      "sha256": "d08af3a79b850307be50e19c667afbb678c8c5d524f1b4c9c125d9fc58e20c92",
+      "bytes": 781,
+      "changeType": "added",
+      "reason": "Preserve upstream package metadata while removing publisher workspace resolution for this consumer path source.",
+      "upstreamSha256": "5d1d2f237e3ab3ece834f550b4c5aec5a6fb29328734b0dac358d945ded4d230",
+      "matchesUpstream": false
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/admin_delete_user_test.dart",
+      "sha256": "f5a4ed8f584790f95ef7c12692c290cc85d4f2b37244067746ddf5f9b6772f2a",
+      "bytes": 1303,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "f5a4ed8f584790f95ef7c12692c290cc85d4f2b37244067746ddf5f9b6772f2a",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/admin_test.dart",
+      "sha256": "7cddf381b480befc05997ea6e9fcc271fe80e1a8a9e629cbe4dc24af3cde06d0",
+      "bytes": 6156,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "7cddf381b480befc05997ea6e9fcc271fe80e1a8a9e629cbe4dc24af3cde06d0",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/api_version_test.dart",
+      "sha256": "2641535a3f65830b8408728b89298b66e5879829274dc1312c05e2738ffc35e8",
+      "bytes": 1431,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "2641535a3f65830b8408728b89298b66e5879829274dc1312c05e2738ffc35e8",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/client_test.dart",
+      "sha256": "4bdb86ee4499ba6332ba690ddfd9eb7990fdb0c2869c97af7f4563533319f6ee",
+      "bytes": 33016,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "4bdb86ee4499ba6332ba690ddfd9eb7990fdb0c2869c97af7f4563533319f6ee",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/custom_http_client.dart",
+      "sha256": "a7d52e103a98399dc9bdea473c3602609d95afc512e79b12f49cff0e9845ce16",
+      "bytes": 8123,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "a7d52e103a98399dc9bdea473c3602609d95afc512e79b12f49cff0e9845ce16",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/custom_oauth_provider_test.dart",
+      "sha256": "952deccda2170a40084d33c4aedb5552ae019f2ca13e8b21e588bbf4b31570a6",
+      "bytes": 3375,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "952deccda2170a40084d33c4aedb5552ae019f2ca13e8b21e588bbf4b31570a6",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/custom_providers_test.dart",
+      "sha256": "cd23b69794b16b63dd32d013d7c7f7147799cb45685c626e12779c36ddaaf3e6",
+      "bytes": 4531,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "cd23b69794b16b63dd32d013d7c7f7147799cb45685c626e12779c36ddaaf3e6",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/fetch_test.dart",
+      "sha256": "7945b6d0a4c59df85898991d1b9e9a221b149ef8eccecf4be675d2ff7d545a87",
+      "bytes": 2249,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "7945b6d0a4c59df85898991d1b9e9a221b149ef8eccecf4be675d2ff7d545a87",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/get_claims_test.dart",
+      "sha256": "4172db82411fb90360f50af4a6e19abe0302d61530cf777043f0626ef58da6cb",
+      "bytes": 12148,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "4172db82411fb90360f50af4a6e19abe0302d61530cf777043f0626ef58da6cb",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/get_session_test.dart",
+      "sha256": "cba5852863514d256cb125df6e99448c7dafd2929d7abaed00ded42964446fec",
+      "bytes": 5050,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "cba5852863514d256cb125df6e99448c7dafd2929d7abaed00ded42964446fec",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/header_isolation_test.dart",
+      "sha256": "33bb4facab8eff9b3e204510639e2bfaa25ee50f4521307d058deff58077314e",
+      "bytes": 2257,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "33bb4facab8eff9b3e204510639e2bfaa25ee50f4521307d058deff58077314e",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/jwk_test.dart",
+      "sha256": "8e5a67ac99c62de3057f9df85e262731b767f56f55bec645cf5fa53fab714d73",
+      "bytes": 1083,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "8e5a67ac99c62de3057f9df85e262731b767f56f55bec645cf5fa53fab714d73",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/mfa_challenge_mock_test.dart",
+      "sha256": "285b13a4606ffbad0b780bbdec57918bf9767d2d75b8989d9f4e2790bc7493dd",
+      "bytes": 1888,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "285b13a4606ffbad0b780bbdec57918bf9767d2d75b8989d9f4e2790bc7493dd",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/mfa_enroll_test.dart",
+      "sha256": "57fe9ef24d60b49c935727e9d3257c6fd8ae5c7352de68b48895cd3e6a37f418",
+      "bytes": 2463,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "57fe9ef24d60b49c935727e9d3257c6fd8ae5c7352de68b48895cd3e6a37f418",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/mocks/otp_mock_client.dart",
+      "sha256": "457140e72cf89d46fffc41994dc332b04397a3da75c3940182840f51f488dd98",
+      "bytes": 15633,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "457140e72cf89d46fffc41994dc332b04397a3da75c3940182840f51f488dd98",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/mocks/passkey_mock_client.dart",
+      "sha256": "3f0d3ab223bbb82322bfeb08cf354d67c725a1f38340c806e2adde4979119a31",
+      "bytes": 6846,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "3f0d3ab223bbb82322bfeb08cf354d67c725a1f38340c806e2adde4979119a31",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/mocks/web3_mock_client.dart",
+      "sha256": "293ad09acf8c3fdf0c42bc04283eecba4754e864de26ef6edd4f2ac0a958057e",
+      "bytes": 3211,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "293ad09acf8c3fdf0c42bc04283eecba4754e864de26ef6edd4f2ac0a958057e",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/otp_mock_test.dart",
+      "sha256": "aa29b8280fd8211ec372e949d6f66f9ef9784068d93f9fc3b4a111dccd589487",
+      "bytes": 21998,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "aa29b8280fd8211ec372e949d6f66f9ef9784068d93f9fc3b4a111dccd589487",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/passkey_test.dart",
+      "sha256": "f85704696aab81f865e703cf578ff1ffa784f359bb794bb904c620246baaec22",
+      "bytes": 10953,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "f85704696aab81f865e703cf578ff1ffa784f359bb794bb904c620246baaec22",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/provider_test.dart",
+      "sha256": "dfbbedafcbcc602cf460d49120a2da050ef85a083d46a38c0e4b75688b34d1d2",
+      "bytes": 6948,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "dfbbedafcbcc602cf460d49120a2da050ef85a083d46a38c0e4b75688b34d1d2",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/refresh_token_race_test.dart",
+      "sha256": "f6ebe2f758de527ad1001bbee6820694a08032145e8961ba58cef20f01177d7a",
+      "bytes": 21438,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "f6ebe2f758de527ad1001bbee6820694a08032145e8961ba58cef20f01177d7a",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/src/broadcast_web_test.dart",
+      "sha256": "02db77741d5c13ccfb81ca52888d97670de8e6eeb7394bb5930eaa9a6a417f9e",
+      "bytes": 1541,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "02db77741d5c13ccfb81ca52888d97670de8e6eeb7394bb5930eaa9a6a417f9e",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/src/constants_test.dart",
+      "sha256": "a4e067b3f96ac8895e612b5dc057ea51ef2f813fe1527a707f57defe1e68eebf",
+      "bytes": 11015,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "a4e067b3f96ac8895e612b5dc057ea51ef2f813fe1527a707f57defe1e68eebf",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/src/gotrue_admin_custom_providers_api_test.dart",
+      "sha256": "e613195a27ac47eb121226be1eb47d18de50fdc587a766ee7a2810e074022d90",
+      "bytes": 6115,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "e613195a27ac47eb121226be1eb47d18de50fdc587a766ee7a2810e074022d90",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/src/gotrue_admin_mfa_api_test.dart",
+      "sha256": "a67afd24be4cde2ac323aee410110c7f77b49bf1bf67f9c5767fba2bb69f655b",
+      "bytes": 1581,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "a67afd24be4cde2ac323aee410110c7f77b49bf1bf67f9c5767fba2bb69f655b",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/src/gotrue_admin_oauth_api_test.dart",
+      "sha256": "a63df52f2b98330071baa5c4dcfff6e74d6475304e1a2bcab64ab8b38a0ffa85",
+      "bytes": 5969,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "a63df52f2b98330071baa5c4dcfff6e74d6475304e1a2bcab64ab8b38a0ffa85",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/src/gotrue_mfa_api_test.dart",
+      "sha256": "f8de64ef3e5674f58cec6b116412bf3ce227b1f1be5faeee3ad65f41fac3cf97",
+      "bytes": 9824,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "f8de64ef3e5674f58cec6b116412bf3ce227b1f1be5faeee3ad65f41fac3cf97",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/src/gotrue_oauth_api_test.dart",
+      "sha256": "fd6f349392b303e81927639c465c2bff8cabe0ce6bc80eed90ad41891d02ceef",
+      "bytes": 13499,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "fd6f349392b303e81927639c465c2bff8cabe0ce6bc80eed90ad41891d02ceef",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/src/helper_test.dart",
+      "sha256": "201ba34e0587e963743934b5f0f236eca8b04470dc506c85bb5c5a9806391f7f",
+      "bytes": 11115,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "201ba34e0587e963743934b5f0f236eca8b04470dc506c85bb5c5a9806391f7f",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/src/set_session_test.dart",
+      "sha256": "1e3089d506fe7a91c1ec6dba6d7956f6af2c82a69994a970fd607f4f859e439b",
+      "bytes": 8366,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "1e3089d506fe7a91c1ec6dba6d7956f6af2c82a69994a970fd607f4f859e439b",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/src/token_refresh_race_test.dart",
+      "sha256": "46ab34f86f8bb5ccb3590cbce155f65099036efba3eb64c5eac5e8eabd9a3f45",
+      "bytes": 10302,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "46ab34f86f8bb5ccb3590cbce155f65099036efba3eb64c5eac5e8eabd9a3f45",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/src/types/auth_exception_test.dart",
+      "sha256": "0381836eafd5a9fdd723d21ec990d421a33c4834ecb76cf0c021a198dbfa9b6d",
+      "bytes": 16254,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "0381836eafd5a9fdd723d21ec990d421a33c4834ecb76cf0c021a198dbfa9b6d",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/src/types/mfa_test.dart",
+      "sha256": "35d1de5f9e7d1c973d5d1fcfe74af39846594dc7c02035b480af76b589812481",
+      "bytes": 1998,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "35d1de5f9e7d1c973d5d1fcfe74af39846594dc7c02035b480af76b589812481",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/src/types/passkey_test.dart",
+      "sha256": "7f6e0d8cce9fa0e1635469c3741abb423b2b9e5360d63a0f47a8945299a7b6b8",
+      "bytes": 3942,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "7f6e0d8cce9fa0e1635469c3741abb423b2b9e5360d63a0f47a8945299a7b6b8",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/src/types/session_test.dart",
+      "sha256": "b68fdf4545efb3b108436e6b93185ec1b4e8854b331b21bc0e9dbd74e86708fc",
+      "bytes": 17354,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "b68fdf4545efb3b108436e6b93185ec1b4e8854b331b21bc0e9dbd74e86708fc",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/src/types/user_attributes_test.dart",
+      "sha256": "032deb0e5245e7f3e3cd14f2f4d40aa361a9ef471f1741a855d0277d33eee649",
+      "bytes": 4167,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "032deb0e5245e7f3e3cd14f2f4d40aa361a9ef471f1741a855d0277d33eee649",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/src/types/user_test.dart",
+      "sha256": "0427fbd0f3f4358e7b96dbbcee9645fa84b6bd03cb92dafc4327d506ba69ff73",
+      "bytes": 26628,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "0427fbd0f3f4358e7b96dbbcee9645fa84b6bd03cb92dafc4327d506ba69ff73",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/utils.dart",
+      "sha256": "81056a4bbb2962d25a140fcee581f142b9fea804a2c517090c26a3ce1b2fa22b",
+      "bytes": 3183,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "81056a4bbb2962d25a140fcee581f142b9fea804a2c517090c26a3ce1b2fa22b",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/web3_auth_integration_test.dart",
+      "sha256": "08d5fcee2d6c5a4134afad73afeeab128a4f4142e1d053f44f471b536cf37a30",
+      "bytes": 3225,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "08d5fcee2d6c5a4134afad73afeeab128a4f4142e1d053f44f471b536cf37a30",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/test/web3_auth_test.dart",
+      "sha256": "ebc9a4a422aae085f518ef4fd973db705b625bf508c55f9eeb7a02ff8009fb1d",
+      "bytes": 4735,
+      "changeType": "added",
+      "reason": "Retain the complete original licensed SDK distribution so the narrow local patch is reviewable and its upstream interfaces, source, tests and license remain identifiable.",
+      "upstreamSha256": "ebc9a4a422aae085f518ef4fd973db705b625bf508c55f9eeb7a02ff8009fb1d",
+      "matchesUpstream": true
+    },
+    {
+      "path": "third_party/gotrue_2_27_2/LOCAL_PATCH_MANIFEST.json",
+      "sha256": "9e759b77dd234baaa5a9206bf4a674f52660f7502f5b27ad180a46527d71b6bc",
+      "bytes": 24277,
+      "changeType": "added",
+      "reason": "Bind every local vendor file, original-file origin, license, root override and actual package configuration selection.",
+      "upstreamSha256": null,
+      "matchesUpstream": null
+    }
+  ],
+  "sourceChangeCounts": {
+    "added": 86,
+    "modified": 7,
+    "vendorFiles": 83
+  },
+  "implementedControls": {
+    "repositoryCleanup": "Logout and deletion capture the current client, session and user before waiting for push cleanup; old continuations cannot invoke a replacement client/account/session. Destructive actions are not automatically replayed.",
+    "ownedCancellation": "Repository invalidation advances its local epoch and cancels only its tracked client-bound mutation scopes. An old repository never dereferences or cancels the newest global client; a newer repository on the same SDK retains its pending operation.",
+    "hydrationAndWrites": "Profile reads, bootstrap, private contacts and optimistic profile updates capture client/session/epoch, check every continuation and SafeRpc attempt, pin the checked bearer and disable hidden PostgREST builder retries. Foreign user/club profile rows are rejected.",
+    "optimisticConflict": "The compare-and-set update retains expected updated_at and one attempt; a null match remains an explicit ProfileConflictException without bootstrap fallback.",
+    "sameSessionRefresh": "The helper accepts continuity only between SDK-held sessions with matching account and access token or nonempty server session_id; it grants no identity or role authority.",
+    "notifierScope": "Minimal rebuild/disposal hooks invalidate the old captured repository; earlier notifier generation/subscription and successful SDK-event hydration behavior remain covered by the complete package bank.",
+    "nativePush": "Permission, preferences, token reads, registration and cleanup are scoped by actual SDK session/client, club and latest device generation. Serialized native operations finish before a newer token lookup/registration; stale topic joins are revoked inside the same queue before a newer join.",
+    "sdkMutationOrdering": "Anonymous sign-in, verifyOTP and updateUser check actual SDK generation/session continuity and the optional repository-owned scope immediately before mutation/event publication. SDK logout/initial session replacement fence older replies; a delayed PKCE cleanup cannot publish signedOut for a newly installed session."
+  },
+  "beforeFixEvidence": [
+    {
+      "name": "repository cleanup and requested-account baseline",
+      "exitCode": 1,
+      "passed": 1,
+      "failed": 8,
+      "log": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-repository-cleanup-before-fix-corrected-fixture.log",
+        "sha256": "67369b804914b93ae0526b2972f10af7b59b1f31adcbb52021a3a6b4df9bafb0",
+        "bytes": 5172
+      }
+    },
+    {
+      "name": "actual installed SDK stale authentication events",
+      "exitCode": 1,
+      "passed": 0,
+      "failed": 3,
+      "log": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-sdk-mutation-ordering-before-fix-corrected-fixture.log",
+        "sha256": "047c69547380435412d75efa3e6aadb31ea972410fe08e7d5772799a652868be",
+        "bytes": 3334
+      },
+      "observed": "Concurrent OTP, verification during logout cleanup and anonymous login responses restored obsolete sessions and published obsolete signedIn events."
+    },
+    {
+      "name": "actual SDK delayed-storage logout event",
+      "exitCode": 1,
+      "passed": 0,
+      "failed": 1,
+      "log": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-sdk-logout-storage-before-fix-corrected.log",
+        "sha256": "a0df5d91065c84ac0242fbc9dc022a5cf81045e4a54567cdb081092bed3d5ab8",
+        "bytes": 990
+      },
+      "observed": "After a newer login completed, the previous logout emitted signedOut with the newer current session."
+    }
+  ],
+  "verification": {
+    "currentCompletePackages": [
+      {
+        "name": "final-core-auth-bank",
+        "command": [
+          "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+          "--no-version-check",
+          "--suppress-analytics",
+          "test",
+          "--no-pub",
+          "--concurrency=4",
+          "--reporter",
+          "expanded"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/core/core_auth",
+        "exitCode": 0,
+        "elapsedSeconds": 77.587,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-core-auth-bank.log",
+          "sha256": "bf6e0a1c5d9ac19bee403a0d8131bb113401bbf5ce5f055051df530b21741319"
+        },
+        "passed": 406,
+        "skipped": 0,
+        "failed": 0,
+        "conclusion": "All tests passed!"
+      },
+      {
+        "name": "final-core-network-bank",
+        "command": [
+          "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+          "--no-version-check",
+          "--suppress-analytics",
+          "test",
+          "--no-pub",
+          "--concurrency=4",
+          "--reporter",
+          "expanded"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/core/core_network",
+        "exitCode": 0,
+        "elapsedSeconds": 136.416,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-core-network-bank.log",
+          "sha256": "53f0eec87488dc13f3d55834e1b0eba7bc2257ccf9fa952b5ac4bfae15fc9d56"
+        },
+        "passed": 123,
+        "skipped": 0,
+        "failed": 0,
+        "conclusion": "All tests passed!"
+      },
+      {
+        "name": "final-actual-sdk-enabled-bank",
+        "command": [
+          "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+          "--no-version-check",
+          "--suppress-analytics",
+          "test",
+          "--no-pub",
+          "--dart-define=ENABLE_FIREBASE_OBSERVABILITY=true",
+          "packages/core/core_network/test/native_observability_payload_test.dart",
+          "packages/core/core_network/test/firebase_bootstrap_performance_privacy_test.dart",
+          "--reporter",
+          "expanded"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+        "exitCode": 0,
+        "elapsedSeconds": 48.484,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-actual-sdk-enabled-bank.log",
+          "sha256": "3dc1b7037366642dc3100e05b2bd69376c9dd2bb0f6075d4e99303b72c479e86"
+        },
+        "passed": 12,
+        "skipped": 0,
+        "failed": 0,
+        "conclusion": "All tests passed!"
+      },
+      {
+        "name": "final-diagnostic-startup-bank",
+        "command": [
+          "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+          "--no-version-check",
+          "--suppress-analytics",
+          "test",
+          "--no-pub",
+          "packages/core/core_utils/test/logger_privacy_test.dart",
+          "packages/core/core_theme/test/afri_error_boundary_privacy_test.dart",
+          "apps/rayon_sports/test/firebase_startup_contract_test.dart",
+          "--reporter",
+          "expanded"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+        "exitCode": 0,
+        "elapsedSeconds": 62.06,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-diagnostic-startup-bank.log",
+          "sha256": "ec543b314afea6e7fa6e83632cb2b77e8a346444692f0994316f10024595670e"
+        },
+        "passed": 32,
+        "skipped": 0,
+        "failed": 0,
+        "conclusion": "All tests passed!"
+      },
+      {
+        "name": "final-native-performance-control-mutations",
+        "command": [
+          "python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tools/scripts",
+          "-p",
+          "test_verify_native_performance_privacy.py",
+          "-v"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+        "exitCode": 0,
+        "elapsedSeconds": 19.006,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-native-performance-control-mutations.log",
+          "sha256": "2d0488a0e29b638798120da37e0c342255bcb164ab8184147230a091f9ad597e"
+        },
+        "passed": 12,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "name": "final-native-performance-controls",
+        "command": [
+          "python3",
+          "tools/scripts/verify_native_performance_privacy.py",
+          "--report",
+          "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/native-control-result.json"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+        "exitCode": 0,
+        "elapsedSeconds": 0.233,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-native-performance-controls.log",
+          "sha256": "634edcd390e2e27feaa3daffd2ef2da50408b53a490a8c0a48ebadd6708fce7e"
+        },
+        "targets": 10,
+        "configurationVerified": true
+      },
+      {
+        "name": "final-owned-source-strict-analysis",
+        "command": [
+          "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+          "--no-version-check",
+          "--suppress-analytics",
+          "analyze",
+          "--no-pub",
+          "--fatal-infos",
+          "packages/core/core_auth/lib/src/auth_repository.dart",
+          "packages/core/core_auth/lib/src/auth_notifier.dart",
+          "packages/core/core_auth/test/auth_repository_cleanup_test.dart",
+          "packages/core/core_network/lib/src/push_notification_service.dart",
+          "packages/core/core_network/lib/src/supabase_session_authority.dart",
+          "packages/core/core_network/lib/core_network.dart",
+          "packages/core/core_network/test/push_device_session_cleanup_test.dart",
+          "third_party/gotrue_2_27_2/lib",
+          "packages/core/core_network/lib/src/crashlytics_service.dart",
+          "packages/core/core_network/lib/src/firebase_analytics_service.dart",
+          "packages/core/core_network/lib/src/privacy_safe_analytics.dart",
+          "packages/core/core_network/lib/src/operational_health_service.dart",
+          "packages/core/core_network/lib/src/offline_event_queue.dart",
+          "packages/core/core_network/lib/src/native_health_payload.dart",
+          "packages/core/core_network/test/privacy_safe_analytics_test.dart",
+          "packages/core/core_network/test/native_health_payload_test.dart",
+          "packages/core/core_network/test/native_observability_payload_test.dart",
+          "packages/core/core_network/test/crashlytics_service_test.dart",
+          "packages/core/core_network/test/offline_event_queue_test.dart",
+          "packages/core/core_network/lib/src/firebase_bootstrap_service.dart",
+          "packages/core/core_network/test/firebase_bootstrap_performance_privacy_test.dart",
+          "packages/core/core_utils/lib/src/logger.dart",
+          "packages/core/core_utils/test/logger_privacy_test.dart",
+          "packages/core/core_theme/lib/src/widgets/afri_error_boundary.dart",
+          "packages/core/core_theme/test/afri_error_boundary_privacy_test.dart",
+          "packages/core/core_app/lib/src/bootstrap.dart",
+          "packages/core/core_app/lib/src/app.dart",
+          "apps/rayon_sports/test/firebase_startup_contract_test.dart"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+        "exitCode": 0,
+        "elapsedSeconds": 94.823,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-owned-source-strict-analysis.log",
+          "sha256": "2e636efeddaf969ef865faafc3d23f54795a534d8b37ff6fd84dbead3d4144eb"
+        },
+        "issues": 0,
+        "fatalInfos": true,
+        "fatalWarnings": true
+      }
+    ],
+    "privacyRebind": {
+      "path": "docs/release/local-native-observability-privacy-2026-09-30.json",
+      "sha256": "90248fab5f8288332abb7ba9a544c3a0999e10cfca7dd81eb109df7cef9d79b5",
+      "bytes": 35415
+    },
+    "totalPassed": 585,
+    "focusedRegressionCheckpoint": {
+      "passed": 58,
+      "failed": 0,
+      "exitCode": 0,
+      "log": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-repository-push-source-freeze-focused.log",
+        "sha256": "72d04259404206c48c2a8486775cf9eb417c6f69ca5428e2f0a3019097eaa4cb",
+        "bytes": 43556
+      },
+      "binding": "Checkpoint predates final test-only import ordering and logger privacy change; all these regressions are included in the final current complete package banks."
+    },
+    "sourceBinding": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-source-bound-verification.json",
+      "sha256": "3a31a5b4cc166f98a08044c90e5c075d7f7195b602d4ffb38825a8e3f07c66b3",
+      "bytes": 9455,
+      "boundInputs": 1078,
+      "beforeAfterStable": true,
+      "currentHashReadbackPassed": true
+    },
+    "originalSourceReadback": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-repository-cleanup/vendor-frozen-provenance-readback.json",
+      "sha256": "a36d36bcffde19a7e6851e3af6ddb7f3c0934c3e13aff56e481702df734e7391",
+      "bytes": 1192
+    },
+    "configuredClubFixtureMatrix": {
+      "clubIds": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "kind": "synthetic numeric configured-club fixtures; actual five-club registry/native evidence is owned by the broader readiness bank"
+    },
+    "actualSdkCompatibility": [
+      "ordinary SDK refresh during pending OTP",
+      "successful SDK auth event before blocked repository profile hydration",
+      "normal anonymous and OTP/phone-change hydration",
+      "normal delayed-storage logout event"
+    ],
+    "performancePrivacy": {
+      "path": "docs/release/local-native-performance-privacy-2026-10-01.json",
+      "sha256": "51f818df196935983b488452e1a6ab4f5f4e5405f7c7d04a5902c2bb01ffbb14",
+      "bytes": 50486
+    },
+    "totalTestExecutionsPassed": 585,
+    "totalFlutterTestExecutionsPassed": 573,
+    "nativeControlMutationTestsPassed": 12,
+    "currentResolverInputs": [
+      {
+        "path": "pubspec.yaml",
+        "sha256": "ed12b835abf4388e5da87e98272eb0c9cb4c7a4f5a38a374ed1c81196516252d",
+        "bytes": 5237
+      },
+      {
+        "path": "pubspec.lock",
+        "sha256": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b",
+        "bytes": 41649
+      },
+      {
+        "path": ".dart_tool/package_config.json",
+        "sha256": "8bc8f1fab9321d11f62371f2416e7769c842cbcfe0289047721c0a4f59f2fd40",
+        "bytes": 40560
+      },
+      {
+        "path": ".dart_tool/package_graph.json",
+        "sha256": "44e4f3fd924a6a9cb5a7938ae9123811bb707657d0ca04dda1d97fe01f7a3f4a",
+        "bytes": 47097
+      }
+    ],
+    "strictTargets": 28,
+    "strictIssues": 0
+  },
+  "dependencyResolution": {
+    "command": "pinned flutter --no-version-check --suppress-analytics pub get --offline",
+    "receipts": [
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-repository-cleanup/pub-get-offline-receipt.json",
+        "sha256": "8096064c34b63509815242283595ce436397ebdcf87cb3ae14dd7a4d637f1876",
+        "bytes": 1331
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-repository-cleanup/vendor-pub-get-offline-receipt.json",
+        "sha256": "aac7f1919fe88dff8ec369b3e60a2da12400494a97e569586fe6f84b40af8dce",
+        "bytes": 2030
+      }
+    ],
+    "resolutionExitCodes": [
+      0,
+      0
+    ],
+    "resolvedPackageCount": 177,
+    "allResolvedPackageVersionsUnchanged": true,
+    "current": {
+      "pubspec.yaml": "ed12b835abf4388e5da87e98272eb0c9cb4c7a4f5a38a374ed1c81196516252d",
+      "pubspec.lock": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b",
+      ".dart_tool/package_config.json": "8bc8f1fab9321d11f62371f2416e7769c842cbcfe0289047721c0a4f59f2fd40",
+      ".dart_tool/package_graph.json": "44e4f3fd924a6a9cb5a7938ae9123811bb707657d0ca04dda1d97fe01f7a3f4a"
+    },
+    "vendor": {
+      "manifest": {
+        "path": "third_party/gotrue_2_27_2/LOCAL_PATCH_MANIFEST.json",
+        "sha256": "9e759b77dd234baaa5a9206bf4a674f52660f7502f5b27ad180a46527d71b6bc",
+        "bytes": 24277
+      },
+      "originalProvenance": {
+        "path": "third_party/gotrue_2_27_2/UPSTREAM_PROVENANCE.json",
+        "sha256": "0b12d78f1134ee29932ffbd40de33cae93120134a87df044577ade90097d90c8",
+        "bytes": 13707
+      },
+      "originalFileCount": 79,
+      "originalBytes": 581119,
+      "originalInstalledCacheUnchanged": true,
+      "allOriginalFilesRetained": true,
+      "license": {
+        "path": "third_party/gotrue_2_27_2/LICENSE",
+        "sha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936",
+        "bytes": 1065
+      },
+      "licenseByteIdenticalToInstalledOriginal": true,
+      "actualCanonicalSelection": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/third_party/gotrue_2_27_2",
+      "patchedOriginalFiles": [
+        "analysis_options.yaml",
+        "lib/src/gotrue_client.dart",
+        "pubspec.yaml"
+      ],
+      "patch": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-repository-cleanup/gotrue-session-mutation.patch",
+        "sha256": "3936b5af7404a4cb28c7a11820d00f31808d0f92de92157a80560ac914d27663",
+        "bytes": 7078
+      }
+    },
+    "currentObservedGraphNote": "Current observed hashes include the later coordinated test_support core_l10n/feat_membership dev-edge graph update. The original auth/vendor resolution receipts retain their exact historical inputs and are not relabeled as producing this graph. Root lock/config/vendor bytes and resolved versions remain unchanged."
+  },
+  "limits": [
+    "Verification covers the named local packages and source bindings. It does not establish deployed services, devices, stores or provider acceptance.",
+    "An HTTP request or native call already accepted by its server/platform cannot be undone by a local epoch. Requests stay bound to their checked account; queued native work prevents the old call from operating on a newer registration.",
+    "All original upstream SDK tests/examples are retained and hashed. Publisher test fixtures needing their original local service/dev environment were not invoked; current application-facing SDK regressions use the installed/local patched SDK with intercepted HTTP and controlled native calls.",
+    "Module test commands emitted the core_theme material-icon pubspec advisory; tests passed with zero failures or skipped cases. Static analysis of the nineteen owned targets is a separate strict zero-issue gate.",
+    "The original installed-file provenance is kept separate from local patched bytes; no claim equates the patched local source to an original hosted archive checksum."
+  ],
+  "gitOperations": {
+    "commits": 0,
+    "pushes": 0,
+    "sharedPubCacheMutation": false
+  },
+  "acceptedVerificationCheckpoints": [
+    {
+      "binding": "Earlier accepted whole-input checkpoint; retains exact older graph and boundary/bootstrap bytes.",
+      "report": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/accepted-report-checkpoints/local-auth-repository-cleanup-2026-09-30.json",
+        "sha256": "51bea7e235eb3b5c9b031b6508dab83da96d6d3294be1109c8df3b1d6d0ecd5a",
+        "bytes": 61721
+      },
+      "verification": {
+        "currentCompletePackages": [
+          {
+            "name": "final-core-auth-bank",
+            "command": [
+              "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+              "--no-version-check",
+              "--suppress-analytics",
+              "test",
+              "--no-pub",
+              "--concurrency=4",
+              "--reporter",
+              "expanded"
+            ],
+            "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/core/core_auth",
+            "exitCode": 0,
+            "elapsedSeconds": 17.894,
+            "log": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-privacy/final-core-auth-bank.log",
+              "sha256": "c3935f085f2f973e02c5459a10b4eb7c0c406352c545fe5e7835b1d303031be4"
+            },
+            "passed": 406,
+            "skipped": 0,
+            "failed": 0,
+            "conclusion": "All tests passed!"
+          },
+          {
+            "name": "final-core-network-bank",
+            "command": [
+              "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+              "--no-version-check",
+              "--suppress-analytics",
+              "test",
+              "--no-pub",
+              "--concurrency=4",
+              "--reporter",
+              "expanded"
+            ],
+            "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/core/core_network",
+            "exitCode": 0,
+            "elapsedSeconds": 31.63,
+            "log": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-privacy/final-core-network-bank.log",
+              "sha256": "98bd345c6fdf55b0f60ca00932f446e79a05f341e332c57b5fd6e8c9c9a2d389"
+            },
+            "passed": 119,
+            "skipped": 0,
+            "failed": 0,
+            "conclusion": "All tests passed!"
+          },
+          {
+            "name": "final-actual-sdk-enabled-bank",
+            "command": [
+              "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+              "--no-version-check",
+              "--suppress-analytics",
+              "test",
+              "--no-pub",
+              "--dart-define=ENABLE_FIREBASE_OBSERVABILITY=true",
+              "packages/core/core_network/test/native_observability_payload_test.dart",
+              "--reporter",
+              "expanded"
+            ],
+            "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+            "exitCode": 0,
+            "elapsedSeconds": 22.383,
+            "log": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-privacy/final-actual-sdk-enabled-bank.log",
+              "sha256": "e55f389a09fc12edd3d323201996ba1a9c3d0a4ac8f34d3538d404b382598048"
+            },
+            "passed": 8,
+            "skipped": 0,
+            "failed": 0,
+            "conclusion": "All tests passed!"
+          },
+          {
+            "name": "final-owned-source-strict-analysis",
+            "command": [
+              "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+              "--no-version-check",
+              "--suppress-analytics",
+              "analyze",
+              "--no-pub",
+              "--fatal-infos",
+              "packages/core/core_auth/lib/src/auth_repository.dart",
+              "packages/core/core_auth/lib/src/auth_notifier.dart",
+              "packages/core/core_auth/test/auth_repository_cleanup_test.dart",
+              "packages/core/core_network/lib/src/push_notification_service.dart",
+              "packages/core/core_network/lib/src/supabase_session_authority.dart",
+              "packages/core/core_network/lib/core_network.dart",
+              "packages/core/core_network/test/push_device_session_cleanup_test.dart",
+              "third_party/gotrue_2_27_2/lib",
+              "packages/core/core_network/lib/src/crashlytics_service.dart",
+              "packages/core/core_network/lib/src/firebase_analytics_service.dart",
+              "packages/core/core_network/lib/src/privacy_safe_analytics.dart",
+              "packages/core/core_network/lib/src/operational_health_service.dart",
+              "packages/core/core_network/lib/src/offline_event_queue.dart",
+              "packages/core/core_network/lib/src/native_health_payload.dart",
+              "packages/core/core_network/test/privacy_safe_analytics_test.dart",
+              "packages/core/core_network/test/native_health_payload_test.dart",
+              "packages/core/core_network/test/native_observability_payload_test.dart",
+              "packages/core/core_network/test/crashlytics_service_test.dart",
+              "packages/core/core_network/test/offline_event_queue_test.dart"
+            ],
+            "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+            "exitCode": 0,
+            "elapsedSeconds": 33.492,
+            "log": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-privacy/final-owned-source-strict-analysis.log",
+              "sha256": "2698142b400e867117a948ceedcb2d0f566ffea7d5f06fa6b4d53a3ba740f8c8"
+            },
+            "issues": 0,
+            "fatalInfos": true,
+            "fatalWarnings": true
+          }
+        ],
+        "privacyRebind": {
+          "path": "docs/release/local-native-observability-privacy-2026-09-30.json",
+          "sha256": "3f68ebd4901be499c3556e851c2cb371495c3f2255ac30a5cd15837a4d7bc2b5",
+          "bytes": 22152
+        },
+        "totalPassed": 533,
+        "focusedRegressionCheckpoint": {
+          "passed": 58,
+          "failed": 0,
+          "exitCode": 0,
+          "log": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-repository-push-source-freeze-focused.log",
+            "sha256": "72d04259404206c48c2a8486775cf9eb417c6f69ca5428e2f0a3019097eaa4cb",
+            "bytes": 43556
+          },
+          "binding": "Checkpoint predates final test-only import ordering and logger privacy change; all these regressions are included in the final current complete package banks."
+        },
+        "sourceBinding": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-privacy/final-source-bound-verification.json",
+          "sha256": "3d68b8f5c2f194294b25e73f13c79f3a3837727703f9e258fe4525e40a0855e9",
+          "bytes": 5845,
+          "boundInputs": 1028,
+          "beforeAfterStable": true,
+          "currentHashReadbackPassed": true
+        },
+        "originalSourceReadback": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-repository-cleanup/vendor-frozen-provenance-readback.json",
+          "sha256": "a36d36bcffde19a7e6851e3af6ddb7f3c0934c3e13aff56e481702df734e7391",
+          "bytes": 1192
+        },
+        "configuredClubFixtureMatrix": {
+          "clubIds": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "kind": "synthetic numeric configured-club fixtures; actual five-club registry/native evidence is owned by the broader readiness bank"
+        },
+        "actualSdkCompatibility": [
+          "ordinary SDK refresh during pending OTP",
+          "successful SDK auth event before blocked repository profile hydration",
+          "normal anonymous and OTP/phone-change hydration",
+          "normal delayed-storage logout event"
+        ]
+      }
+    }
+  ]
+}

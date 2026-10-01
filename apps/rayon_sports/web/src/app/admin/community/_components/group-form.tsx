@@ -112,7 +112,7 @@ export function ContributionGroupForm({
           </label>
           <div className="grid gap-2 text-sm">
             Visibility
-            <div className="dashboard-input flex items-center text-[var(--admin-zinc-300)]">
+            <div className="dashboard-input flex items-center text-[var(--admin-foreground)]">
               Public only
             </div>
           </div>

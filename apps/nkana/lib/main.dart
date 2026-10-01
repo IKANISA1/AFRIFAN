@@ -2,13 +2,19 @@ import 'package:app_registry/app_registry.dart';
 import 'package:club_nkana/club_nkana.dart';
 import 'package:core_app/bootstrap.dart';
 
-void main() async {
+Future<void> startNkanaApp({
+  NativeSupporterJourney? nativeSupporterJourney,
+}) async {
   const config = NkanaConfig();
   await bootstrap(
     config,
-    options: AfriClubBootstrapOptions(
-      moduleBuilder: (snapshot) =>
-          AppModuleRegistry.build(config, configSnapshot: snapshot),
+    options: clubBootstrapOptions(
+      config,
+      nativeSupporterJourney: nativeSupporterJourney,
     ),
   );
+}
+
+void main() async {
+  await startNkanaApp();
 }

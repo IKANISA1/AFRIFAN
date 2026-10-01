@@ -13,10 +13,24 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'package:test_support/app_font_loader.dart';
 
-void main() {
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
+void main({bool localStateCoverage = false}) {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUpAll(loadAppFonts);
+  if (localStateCoverage) {
+    testWidgets('local Onboarding actual light state', (tester) async {
+      await _pumpOnboardingStateGolden(
+        tester,
+        id: 'light',
+        brightness: Brightness.light,
+        repository: _ValueOnboardingContentRepository(
+          OnboardingContentSnapshot.current(),
+        ),
+      );
+    });
+  }
 
   testWidgets('golden Onboarding route loading state', (tester) async {
     await _pumpOnboardingStateGolden(
@@ -270,6 +284,7 @@ Future<void> _pumpOnboardingStateGolden(
   required OnboardingContentRepository repository,
   Size size = const Size(390, 844),
   double textScale = 1,
+  Brightness brightness = Brightness.dark,
   bool settle = true,
   bool online = true,
   List<Override> overrides = const [],
@@ -281,7 +296,7 @@ Future<void> _pumpOnboardingStateGolden(
   addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
   TypographyTokens.debugUseFallbackFonts = true;
   addTearDown(() => TypographyTokens.debugUseFallbackFonts = false);
-  ColorTokens.setBrightness(Brightness.dark);
+  ColorTokens.setBrightness(brightness);
   addTearDown(() => ColorTokens.setBrightness(Brightness.dark));
   ConnectivityService.setOnlineForTest(online);
   addTearDown(() => ConnectivityService.setOnlineForTest(true));
@@ -295,7 +310,7 @@ Future<void> _pumpOnboardingStateGolden(
         ...overrides,
       ],
       child: ClubConfigScope(
-        config: ClubConfig.fallback(),
+        config: localRouteConfigOrFallback(),
         child: MaterialApp(
           locale: const Locale('en'),
           localizationsDelegates: const [
@@ -313,8 +328,8 @@ Future<void> _pumpOnboardingStateGolden(
             );
           },
           theme: ClubTheme.from(
-            ClubConfig.fallback(),
-            brightness: Brightness.dark,
+            localRouteConfigOrFallback(),
+            brightness: brightness,
           ),
           home: const RepaintBoundary(
             key: ValueKey<String>('onboarding-state-golden'),
@@ -353,11 +368,12 @@ Future<void> _pumpOnboardingStateGolden(
 
   expect(tester.takeException(), isNull);
 
-  await expectLater(
+  await expectGoldenOrClubAssertions(
+    tester,
     routeBoundary,
-    matchesGoldenFile(
-      'goldens/onboarding_state_${id}_dark_${size.width.toInt()}x${size.height.toInt()}.png',
-    ),
+    'goldens/onboarding_state_${id}_${brightness.name}_${size.width.toInt()}x${size.height.toInt()}.png',
+    route: '/onboarding',
+    kind: 'route',
   );
 
   await afterCapture?.call(tester);
@@ -423,7 +439,8 @@ class _SequencedOnboardingContentRepository
 }
 
 class _FakeAuthRepository extends AuthRepository {
-  _FakeAuthRepository() : super(clubId: '24');
+  _FakeAuthRepository()
+    : super(clubId: localRouteFixtureConfig?.clubId ?? '24');
 
   @override
   Future<UserProfile?> restoreCurrentUser() async => null;

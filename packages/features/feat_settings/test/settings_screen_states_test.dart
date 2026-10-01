@@ -11,10 +11,24 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
 
-void main() {
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
+void main({bool localStateCoverage = false}) {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUpAll(loadAppFonts);
+  if (localStateCoverage) {
+    testWidgets('local Settings actual light state', (tester) async {
+      await _pumpSettingsStateGolden(
+        tester,
+        id: 'light',
+        brightness: Brightness.light,
+        repository: _ValueSettingsRouteContentRepository(
+          SettingsRouteContentSnapshot.current(supportWhatsApp: null),
+        ),
+      );
+    });
+  }
 
   testWidgets('golden Settings route loading state', (tester) async {
     await _pumpSettingsStateGolden(
@@ -287,6 +301,7 @@ Future<void> _pumpSettingsStateGolden(
   required SettingsRouteContentRepository repository,
   Size size = const Size(390, 844),
   double textScale = 1,
+  Brightness brightness = Brightness.dark,
   bool settle = true,
   bool online = true,
   List<Override> overrides = const <Override>[],
@@ -298,7 +313,7 @@ Future<void> _pumpSettingsStateGolden(
   addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
   TypographyTokens.debugUseFallbackFonts = true;
   addTearDown(() => TypographyTokens.debugUseFallbackFonts = false);
-  ColorTokens.setBrightness(Brightness.dark);
+  ColorTokens.setBrightness(brightness);
   addTearDown(() => ColorTokens.setBrightness(Brightness.dark));
   ConnectivityService.setOnlineForTest(online);
   addTearDown(() => ConnectivityService.setOnlineForTest(true));
@@ -323,12 +338,12 @@ Future<void> _pumpSettingsStateGolden(
     ProviderScope(
       key: UniqueKey(),
       overrides: <Override>[
-        currentUserProvider.overrideWith((ref) => _profile),
+        currentUserProvider.overrideWith((ref) => localRouteProfile(_profile)),
         settingsRouteContentRepositoryProvider.overrideWithValue(repository),
         ...overrides,
       ],
       child: ClubConfigScope(
-        config: ClubConfig.fallback(),
+        config: localRouteConfigOrFallback(),
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,
           builder: (context, child) {
@@ -342,8 +357,8 @@ Future<void> _pumpSettingsStateGolden(
             );
           },
           theme: ClubTheme.from(
-            ClubConfig.fallback(),
-            brightness: Brightness.dark,
+            localRouteConfigOrFallback(),
+            brightness: brightness,
           ),
           routerConfig: router,
         ),
@@ -378,11 +393,12 @@ Future<void> _pumpSettingsStateGolden(
   }
 
   expect(tester.takeException(), isNull);
-  await expectLater(
+  await expectGoldenOrClubAssertions(
+    tester,
     routeBoundary,
-    matchesGoldenFile(
-      'goldens/settings_state_${id}_dark_${size.width.toInt()}x${size.height.toInt()}.png',
-    ),
+    'goldens/settings_state_${id}_${brightness.name}_${size.width.toInt()}x${size.height.toInt()}.png',
+    route: '/settings',
+    kind: 'tab',
   );
 
   await afterCapture?.call(tester);

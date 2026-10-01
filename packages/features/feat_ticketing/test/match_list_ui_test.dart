@@ -14,10 +14,30 @@ import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
 import 'package:test_support/touch_target_audit.dart';
 
-void main() {
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
+void main({bool localStateCoverage = false}) {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadAppFonts);
   setUp(() => ConnectivityService.setOnlineForTest(true));
+
+  if (localStateCoverage) {
+    testWidgets('Tickets actual light-theme route state', (tester) async {
+      await _pumpTicketStateGolden(
+        tester,
+        id: 'light',
+        brightness: Brightness.light,
+        ticketMatchesOverride: ticketMatchesProvider.overrideWith(
+          (ref) async => [_fixture()],
+        ),
+      );
+      expect(find.byType(MatchListScreen), findsOneWidget);
+      expect(
+        Theme.of(tester.element(find.byType(MatchListScreen))).brightness,
+        Brightness.light,
+      );
+    });
+  }
 
   test('ticket failures sanitize known backend categories', () {
     expect(
@@ -410,9 +430,9 @@ Widget _buildTicketingApp(
   return ProviderScope(
     overrides: [
       currentUserProvider.overrideWith(
-        (ref) => const UserProfile(
+        (ref) => UserProfile(
           id: 'user-1',
-          clubId: '24',
+          clubId: localRouteFixtureConfig?.clubId ?? '24',
           publicUserId: '483912',
         ),
       ),
@@ -422,7 +442,10 @@ Widget _buildTicketingApp(
       locale: const Locale('en'),
       localizationsDelegates: AfriLocalizations.localizationsDelegates,
       supportedLocales: const <Locale>[Locale('en')],
-      theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
+      theme: ClubTheme.from(
+        localRouteConfigOrFallback(),
+        brightness: brightness,
+      ),
       routerConfig: router,
       builder: (context, child) {
         final mediaQuery = MediaQuery.of(context);
@@ -431,7 +454,7 @@ Widget _buildTicketingApp(
           child: MediaQuery(
             data: mediaQuery.copyWith(disableAnimations: true),
             child: ClubConfigScope(
-              config: ClubConfig.fallback(),
+              config: localRouteConfigOrFallback(),
               child: child ?? const SizedBox.shrink(),
             ),
           ),
@@ -442,6 +465,7 @@ Widget _buildTicketingApp(
 }
 
 const _ticketStateGoldenPaths = <String, String>{
+  'light': 'goldens/tickets_state_light_390x844.png',
   'loading': 'goldens/tickets_state_loading_dark_390x844.png',
   'empty': 'goldens/tickets_state_empty_dark_390x844.png',
   'error': 'goldens/tickets_state_error_dark_390x844.png',
@@ -463,6 +487,7 @@ Future<void> _pumpTicketStateGolden(
   required String id,
   required Override ticketMatchesOverride,
   Size size = const Size(390, 844),
+  Brightness brightness = Brightness.dark,
   double textScale = 1,
   bool settle = true,
   bool online = true,
@@ -475,7 +500,7 @@ Future<void> _pumpTicketStateGolden(
   addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
   TypographyTokens.debugUseFallbackFonts = true;
   addTearDown(() => TypographyTokens.debugUseFallbackFonts = false);
-  ColorTokens.setBrightness(Brightness.dark);
+  ColorTokens.setBrightness(brightness);
   addTearDown(() => ColorTokens.setBrightness(Brightness.dark));
   ConnectivityService.setOnlineForTest(online);
   addTearDown(() => ConnectivityService.setOnlineForTest(true));
@@ -483,6 +508,7 @@ Future<void> _pumpTicketStateGolden(
   await tester.pumpWidget(
     _buildTicketingApp(
       ticketMatchesOverride,
+      brightness: brightness,
       goldenKey: const ValueKey<String>('tickets-state-golden'),
       autofocusMatchId: autofocusMatchId,
     ),
@@ -499,9 +525,13 @@ Future<void> _pumpTicketStateGolden(
   expect(tester.takeException(), isNull);
   final goldenPath = _ticketStateGoldenPaths[id];
   expect(goldenPath, isNotNull, reason: 'Missing Tickets golden path for $id.');
-  await expectLater(
+  await expectGoldenOrClubAssertions(
+    tester,
     find.byKey(const ValueKey<String>('tickets-state-golden')),
-    matchesGoldenFile(goldenPath!),
+    goldenPath!,
+    route: '/tickets',
+    kind: 'route',
+    surface: 'mobile',
   );
   await afterCapture?.call();
 }

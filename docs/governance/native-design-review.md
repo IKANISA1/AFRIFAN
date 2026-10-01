@@ -1,3 +1,25 @@
+# Revolut-only system implementation — 30 September 2026
+
+The selected `revolut-design` skill is the sole visual authority for all five
+Android/iOS club apps, consumer/member web, Admin PWA, native administration and
+the browser operator console. `DESIGN.md` now contains product facts and source
+mappings only; duplicate repository visual standards are removed.
+
+Six loose retired design specifications/bindings, including a hidden imported
+writeback copy, have been permanently deleted. Their exact former paths/hashes
+are recorded in `output/qa/revolut-only-20260930/retired-design-documents.json`.
+Dated Drive inventories describe capture-time source bytes and are not current
+archive presence/hash-parity claims after this authorized cleanup. Other imported
+business/source packages remain provenance material and cannot be design authority.
+
+Current implementation checks and rendered comparisons are recorded under
+`output/qa/revolut-only-20260930/`. Authority and skill-bundle integrity do not
+establish full visual equivalence. Applicable runtime source comparisons,
+independent review and artifact/platform evidence remain distinct. The historical
+checkpoints below keep their original dates and scopes.
+
+---
+
 # Frontend feedback implementation — 23 September 2026
 
 ## Screen-by-screen follow-up — 23 September 2026
@@ -78,7 +100,7 @@ These evidence files are under `output/qa/full-stack-20260914/`. The browser run
 
 ## Review and evidence boundaries
 
-Revolut design remains the visual authority, with Product Design used for relevance, duplication, task depth, hierarchy and recovery. Club identity, football rules, record IDs, payment authorization and account boundaries remain product-owned. The implementer inspected route representatives and affected 200% text states; the 812-record assessment does not claim a manual pixel comparison of every former image.
+The selected revolut-design skill is the sole visual authority. Product review records relevance, duplication, task depth and recovery within its rules. Club identity, football rules, record IDs, payment authorization and account boundaries remain product-owned. The implementer inspected route representatives and affected 200% text states; the 812-record assessment does not claim a manual pixel comparison of every former image.
 
 Current command logs and source/artifact hashes are in `output/qa/full-stack-20260914/`. Capture generation is separate from tests comparing against those baselines. The live review artifact is `output/qa/full-stack-20260914/frontend-review/`. It uses synthetic Flutter and controlled browser fixtures. Exact source-font/pixel fidelity, independent technical review, installed physical devices, provider validation, hosted CI, deployment, signing and store/public availability remain distinct and unverified by these screenshots.
 

@@ -12,6 +12,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
 
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
 const _goldens = <String, String>{
   'loading': 'goldens/ticket_detail_state_loading_dark_390x844.png',
   'empty': 'goldens/ticket_detail_state_empty_dark_390x844.png',
@@ -180,7 +182,10 @@ void main() {
             (widget) =>
                 widget is Semantics &&
                 widget.properties.selected == true &&
-                widget.properties.label == 'Selected ticket access General',
+                (widget.properties.label?.startsWith(
+                      'Selected ticket access General',
+                    ) ??
+                    false),
           ),
           findsOneWidget,
         );
@@ -199,6 +204,15 @@ void main() {
         await tester.ensureVisible(find.text('Review'));
         await tester.pump();
         expect(tester.takeException(), isNull);
+        if (localRouteFixtureConfig != null) {
+          // Review was reached above. Capture the enlarged access control in
+          // full, rather than its few visible pixels at the viewport edge.
+          await Scrollable.ensureVisible(
+            tester.element(find.text('General')),
+            alignment: 0.2,
+          );
+          await tester.pump();
+        }
       },
     );
   });
@@ -227,8 +241,9 @@ void main() {
       value: AsyncData<TicketDetailState>(_ready()),
       check: (tester) async {
         expect(find.textContaining('Official ticket categories'), findsNothing);
-        expect(find.text('RWF 5,000'), findsOneWidget);
-        expect(find.text('RWF 15,000'), findsOneWidget);
+        final currency = localRouteConfigOrFallback().currencySymbol;
+        expect(find.text('$currency 5,000'), findsOneWidget);
+        expect(find.text('$currency 15,000'), findsOneWidget);
         final down = find.byKey(const ValueKey('ticket-quantity-decrease'));
         final up = find.byKey(const ValueKey('ticket-quantity-increase'));
         final count = find.byKey(const ValueKey('ticket-quantity-value'));
@@ -377,7 +392,10 @@ Future<void> _pumpRoute(
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
-        theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
+        theme: ClubTheme.from(
+          localRouteConfigOrFallback(),
+          brightness: brightness,
+        ),
         builder: (context, child) {
           final media = MediaQuery.of(context);
           return MediaQuery(
@@ -386,7 +404,7 @@ Future<void> _pumpRoute(
               disableAnimations: reducedMotion,
             ),
             child: ClubConfigScope(
-              config: ClubConfig.fallback(),
+              config: localRouteConfigOrFallback(),
               child: child!,
             ),
           );
@@ -402,7 +420,13 @@ Future<void> _pumpRoute(
   }
   await check?.call(tester);
   if (capture) {
-    await expectLater(find.byType(MaterialApp), matchesGoldenFile(goldenPath!));
+    await expectGoldenOrClubAssertions(
+      tester,
+      find.byType(MaterialApp),
+      goldenPath!,
+      route: '/tickets/detail/:id',
+      kind: 'route',
+    );
   }
 }
 

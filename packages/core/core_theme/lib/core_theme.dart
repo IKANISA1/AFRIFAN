@@ -1,4 +1,4 @@
-/// AFRICLUB Core Theme — Universal App Design Standard implementation
+/// AFRICLUB Core Theme — revolut-design runtime adapter
 ///
 /// Shared Flutter surfaces, tokens, and primitives adapted from revolut-design.
 library;

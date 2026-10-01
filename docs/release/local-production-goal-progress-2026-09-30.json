@@ -1,0 +1,1373 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-01T11:29:03.879660+00:00",
+  "baselineHead": "7fa5292248d5776c6e255aa39ab7acdd658f24e9",
+  "goalStatus": "CLOSED_REVISED_SCOPE",
+  "goalComplete": false,
+  "productionReady": false,
+  "externalReleaseAcceptance": false,
+  "requirements": [
+    {
+      "id": 1,
+      "requirement": "Finish Android/iOS protected credential storage and the Dart adapter.",
+      "status": "retained_checkpoint_revised_scope_closed",
+      "evidence": [
+        {
+          "path": "docs/release/native-credential-store-integration-2026-09-30.json",
+          "sha256": "b0677135d15e8cf94f88126c64d9a4a30159ee9a234c4ff7940be73622fc0d32",
+          "bytes": 72980
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/unchanged-completed-checkpoints-current-readback-20261001.json",
+          "sha256": "22cdbecc8cea95bb7ec55bfe891e828151046dc087f7ac471ff012e6e3450e7b",
+          "bytes": 253922
+        }
+      ],
+      "currentEvidence": "49 unchanged source hashes; portable Kotlin/Swift and Flutter binding tests; local native compilation/typechecking recorded.",
+      "remainingLocalWork": "Outside revised scope; final aggregate work canceled.",
+      "originalRemainingLocalWork": "Bind completed current credential implementation and native integration to the exact final candidate.",
+      "originalCheckpointStatus": "verified_local_checkpoint"
+    },
+    {
+      "id": 2,
+      "requirement": "Register the credential bridge in all five native apps.",
+      "status": "retained_checkpoint_revised_scope_closed",
+      "evidence": [
+        {
+          "path": "docs/release/native-credential-store-integration-2026-09-30.json",
+          "sha256": "b0677135d15e8cf94f88126c64d9a4a30159ee9a234c4ff7940be73622fc0d32",
+          "bytes": 72980
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/unchanged-completed-checkpoints-current-readback-20261001.json",
+          "sha256": "22cdbecc8cea95bb7ec55bfe891e828151046dc087f7ac471ff012e6e3450e7b",
+          "bytes": 253922
+        }
+      ],
+      "currentEvidence": "Ten Android/iOS host registrations; shared channel contracts and five iOS registrations typechecked.",
+      "remainingLocalWork": "Outside revised scope; final aggregate work canceled.",
+      "originalRemainingLocalWork": "Bind ten current host registrations and completed native integration to the exact final candidate.",
+      "originalCheckpointStatus": "verified_local_checkpoint"
+    },
+    {
+      "id": 3,
+      "requirement": "Connect native identity, credential recovery and membership composition.",
+      "status": "retained_checkpoint_revised_scope_closed",
+      "evidence": [
+        {
+          "path": "docs/release/local-native-bootstrap-integration-2026-09-30.json",
+          "sha256": "0807d26a5c451f6ef527f8f9bd6ccba5f379556fb11f7c985088f353859e72ac",
+          "bytes": 8654
+        },
+        {
+          "path": "docs/release/native-identity-client-integration-2026-09-30.json",
+          "sha256": "37d4281dee2997ac9d2abba9c0a1ff0d23b66f67c4b50b417c33a2f68b4a78e6",
+          "bytes": 19187
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-bootstrap-final-source-rebind/verification.json",
+          "sha256": "b047ef4a967e2f721318b66d8c316199e53f4eac6f99ad5d3010af48a6eeba5d",
+          "bytes": 782390
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-coverage-all-captures-current-pre-browser-readiness.json",
+          "bytes": 5028,
+          "sha256": "af1dbf0751327c137b89c487ddd6590e63851222c16f004d9485736e22cf6c8c"
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-five-club-complete-native-states-registration-remediated-20261001.receipt.json",
+          "sha256": "263a3e4ebf94757b998ab044227e382e9b20d616256fcabc13fd79907e8bacc7",
+          "bytes": 507653
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-integration-package-cwd-current/verification.json",
+          "sha256": "d24f284d471302a96c1518e4ea2bfd5101dc7989cf773e12dee7281f364c7eb8",
+          "bytes": 379998
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-workspace-strict-final-source-current.receipt.json",
+          "sha256": "51270347a57bea4ef8515e8410e1e99b7573e00dde62e5de25760b278d9348e0",
+          "bytes": 378477
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-five-club-complete-native-states-registration-remediated-20261001.receipt.json",
+          "sha256": "263a3e4ebf94757b998ab044227e382e9b20d616256fcabc13fd79907e8bacc7",
+          "bytes": 507653
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-integration-package-cwd-current/verification.json",
+          "sha256": "d24f284d471302a96c1518e4ea2bfd5101dc7989cf773e12dee7281f364c7eb8",
+          "bytes": 379998
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-workspace-strict-final-source-current.receipt.json",
+          "sha256": "51270347a57bea4ef8515e8410e1e99b7573e00dde62e5de25760b278d9348e0",
+          "bytes": 378477
+        }
+      ],
+      "currentEvidence": "Fresh current native4933/0fail/0skip; current integration315 and strict analysis pass; applicable native3691 assertion/3607 accessibility cells complete. Final candidate binding remains pending.",
+      "remainingLocalWork": "Outside revised scope; final aggregate work canceled.",
+      "originalRemainingLocalWork": "Bind the completed current native implementation, integration and strict analysis to the exact final candidate and completion audit.",
+      "originalCheckpointStatus": "current_native_integration_verified_candidate_pending"
+    },
+    {
+      "id": 4,
+      "requirement": "Build native review, confirmation and unresolved-payment recovery screens.",
+      "status": "retained_checkpoint_revised_scope_closed",
+      "evidence": [
+        {
+          "path": "docs/release/native-membership-integration-2026-09-30.json",
+          "sha256": "d581ba9764fe324edb78fda656a8d01b6e33f70bc9cffc85750c1a2a891589fa",
+          "bytes": 112271
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-coverage-all-captures-current-pre-browser-readiness.json",
+          "bytes": 5028,
+          "sha256": "af1dbf0751327c137b89c487ddd6590e63851222c16f004d9485736e22cf6c8c"
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-five-club-complete-native-states-registration-remediated-20261001.receipt.json",
+          "sha256": "263a3e4ebf94757b998ab044227e382e9b20d616256fcabc13fd79907e8bacc7",
+          "bytes": 507653
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-integration-package-cwd-current/verification.json",
+          "sha256": "d24f284d471302a96c1518e4ea2bfd5101dc7989cf773e12dee7281f364c7eb8",
+          "bytes": 379998
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-workspace-strict-final-source-current.receipt.json",
+          "sha256": "51270347a57bea4ef8515e8410e1e99b7573e00dde62e5de25760b278d9348e0",
+          "bytes": 378477
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-five-club-complete-native-states-registration-remediated-20261001.receipt.json",
+          "sha256": "263a3e4ebf94757b998ab044227e382e9b20d616256fcabc13fd79907e8bacc7",
+          "bytes": 507653
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-integration-package-cwd-current/verification.json",
+          "sha256": "d24f284d471302a96c1518e4ea2bfd5101dc7989cf773e12dee7281f364c7eb8",
+          "bytes": 379998
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-workspace-strict-final-source-current.receipt.json",
+          "sha256": "51270347a57bea4ef8515e8410e1e99b7573e00dde62e5de25760b278d9348e0",
+          "bytes": 378477
+        }
+      ],
+      "currentEvidence": "Fresh current native4933/0fail/0skip; current integration315 and strict analysis pass; applicable native3691 assertion/3607 accessibility cells complete. Final candidate binding remains pending.",
+      "remainingLocalWork": "Outside revised scope; final aggregate work canceled.",
+      "originalRemainingLocalWork": "Bind the completed current native implementation, integration and strict analysis to the exact final candidate and completion audit.",
+      "originalCheckpointStatus": "current_native_integration_verified_candidate_pending"
+    },
+    {
+      "id": 5,
+      "requirement": "Complete lifecycle, logout, account-switch, club-switch and route guards.",
+      "status": "retained_checkpoint_revised_scope_closed",
+      "evidence": [
+        {
+          "path": "docs/release/native-membership-integration-2026-09-30.json",
+          "sha256": "d581ba9764fe324edb78fda656a8d01b6e33f70bc9cffc85750c1a2a891589fa",
+          "bytes": 112271
+        },
+        {
+          "path": "docs/release/native-identity-client-integration-2026-09-30.json",
+          "sha256": "37d4281dee2997ac9d2abba9c0a1ff0d23b66f67c4b50b417c33a2f68b4a78e6",
+          "bytes": 19187
+        },
+        {
+          "path": "docs/release/local-native-bootstrap-integration-2026-09-30.json",
+          "sha256": "0807d26a5c451f6ef527f8f9bd6ccba5f379556fb11f7c985088f353859e72ac",
+          "bytes": 8654
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-root-replacement-current-proof.json",
+          "sha256": "f67d93abc76fa727d5d2a85ed6bdf0729ec55f7a33b2af03f27a5f91f4782009",
+          "bytes": 1691
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-authority-transition/final-source-bound-verification.json",
+          "sha256": "d9a9b3fc83612048e82f3291481495f0282a030eb675abc60b6c71b023e6edd9",
+          "bytes": 26508
+        },
+        {
+          "path": "docs/release/local-auth-repository-cleanup-2026-09-30.json",
+          "sha256": "3eba625ec9607e7647785032f8d3679db57ebd26d537ee24a294be5b04f8904f",
+          "bytes": 74993
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-agent-handoff.json",
+          "sha256": "b5d58196eb1c02b33512cf5a7a5c1194fb3d728a648886efc5341a0625c61b51",
+          "bytes": 25196
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-coverage-all-captures-current-pre-browser-readiness.json",
+          "bytes": 5028,
+          "sha256": "af1dbf0751327c137b89c487ddd6590e63851222c16f004d9485736e22cf6c8c"
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-five-club-complete-native-states-registration-remediated-20261001.receipt.json",
+          "sha256": "263a3e4ebf94757b998ab044227e382e9b20d616256fcabc13fd79907e8bacc7",
+          "bytes": 507653
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-integration-package-cwd-current/verification.json",
+          "sha256": "d24f284d471302a96c1518e4ea2bfd5101dc7989cf773e12dee7281f364c7eb8",
+          "bytes": 379998
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-workspace-strict-final-source-current.receipt.json",
+          "sha256": "51270347a57bea4ef8515e8410e1e99b7573e00dde62e5de25760b278d9348e0",
+          "bytes": 378477
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-five-club-complete-native-states-registration-remediated-20261001.receipt.json",
+          "sha256": "263a3e4ebf94757b998ab044227e382e9b20d616256fcabc13fd79907e8bacc7",
+          "bytes": 507653
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-integration-package-cwd-current/verification.json",
+          "sha256": "d24f284d471302a96c1518e4ea2bfd5101dc7989cf773e12dee7281f364c7eb8",
+          "bytes": 379998
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-workspace-strict-final-source-current.receipt.json",
+          "sha256": "51270347a57bea4ef8515e8410e1e99b7573e00dde62e5de25760b278d9348e0",
+          "bytes": 378477
+        }
+      ],
+      "currentEvidence": "Fresh current native4933/0fail/0skip; current integration315 and strict analysis pass; applicable native3691 assertion/3607 accessibility cells complete. Final candidate binding remains pending.",
+      "remainingLocalWork": "Outside revised scope; final aggregate work canceled.",
+      "originalRemainingLocalWork": "Bind the completed current native implementation, integration and strict analysis to the exact final candidate and completion audit.",
+      "originalCheckpointStatus": "current_native_integration_verified_candidate_pending"
+    },
+    {
+      "id": 6,
+      "requirement": "Implement authentication key-version rotation and recovery using test keys.",
+      "status": "retained_checkpoint_revised_scope_closed",
+      "evidence": [
+        {
+          "path": "docs/release/local-auth-rotation-isolation-2026-09-30.json",
+          "sha256": "6c437c360005be6bb10047910af76233778fff4c0d6f8f3409e6b4013c159dd8",
+          "bytes": 13118
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/unchanged-completed-checkpoints-current-readback-20261001.json",
+          "sha256": "22cdbecc8cea95bb7ec55bfe891e828151046dc087f7ac471ff012e6e3450e7b",
+          "bytes": 253922
+        }
+      ],
+      "currentEvidence": "15 unchanged source hashes; immutable key fingerprints, bounded retained read versions and version-bound crypto tested.",
+      "remainingLocalWork": "Outside revised scope; final aggregate work canceled.",
+      "originalRemainingLocalWork": "Current aggregate gate and final candidate/source binding.",
+      "originalCheckpointStatus": "verified_local_checkpoint"
+    },
+    {
+      "id": 7,
+      "requirement": "Expand local cross-club authorization, revocation and isolation tests.",
+      "status": "retained_checkpoint_revised_scope_closed",
+      "evidence": [
+        {
+          "path": "docs/release/local-auth-rotation-isolation-2026-09-30.json",
+          "sha256": "6c437c360005be6bb10047910af76233778fff4c0d6f8f3409e6b4013c159dd8",
+          "bytes": 13118
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/unchanged-completed-checkpoints-current-readback-20261001.json",
+          "sha256": "22cdbecc8cea95bb7ec55bfe891e828151046dc087f7ac471ff012e6e3450e7b",
+          "bytes": 253922
+        }
+      ],
+      "currentEvidence": "Prior 1215-test boundary bank and five fresh migration integrity checks; exact implementation hashes remain current.",
+      "remainingLocalWork": "Outside revised scope; final aggregate work canceled.",
+      "originalRemainingLocalWork": "Current aggregate gate and final candidate/source binding.",
+      "originalCheckpointStatus": "verified_local_checkpoint"
+    },
+    {
+      "id": 8,
+      "requirement": "Complete CSP, redirect and private-cache security hardening.",
+      "status": "retained_checkpoint_revised_scope_closed",
+      "evidence": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-browser-context-final-build-20261001.json",
+          "sha256": "11d07f4baddfb22ceaadc23601ab2c118f1a15fef6f80a3e4140bace8b870f02",
+          "bytes": 2489
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-render-security-browser-context-final-20261001.json",
+          "sha256": "0b382b06afc9bfa992b9aa6e4bc31adddba3154ec8665b7a16e5575869cba160",
+          "bytes": 10020
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-canonical-context-final-vitest-20261001.verification.json",
+          "sha256": "bb0cf807bd3625fe7924f5f570cf3dfa41aeb00961328a6660c6e0c2b0d810fa",
+          "bytes": 7512
+        },
+        {
+          "path": "docs/release/local-malformed-route-recovery-2026-09-30.json",
+          "sha256": "aa0e0bd8fcbe9a83740c51efceee8118406a4bf9da35af04a6a8fb4d3dc275e4",
+          "bytes": 8012
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-browser-context-isolated-conversion-umask-retry-20261001.json",
+          "sha256": "2e263b76535edcc16545b65b691c985a1aad356f108887343f777ef985b89cba",
+          "bytes": 1460
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-browser-context-isolated-conversion-umask-retry-20261001.converter.json",
+          "sha256": "99f21fbdb05a2d6e78437018e61e518562c95d66d98372067bb167e24bd87026",
+          "bytes": 3738
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/wrangler-browser-context-final-dry-run-20261001.json",
+          "sha256": "282ff95dd108c39379888e57b1740d51dc051b9aea150c1422dafe0dcf767139",
+          "bytes": 2855
+        },
+        {
+          "path": "docs/release/local-browser-portal-context-2026-10-01.json",
+          "sha256": "b14a1261efb51683113cfff5dbedfbf1ca2a6ef4593eaa536a45fcd4dc93091a",
+          "bytes": 19647
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-conversion-final-20261001/output-bound-conversion.json",
+          "sha256": "49e4580472ba81dd0933ac1bb9ef74a2831c34d8f6c1de48c8c2f33b8cb212b1",
+          "bytes": 579303
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-dry-run-final-20261001/output-bound-dry-run.json",
+          "sha256": "82460dccefb229152bd79082a1c2beee63125a56e4b681cdf16322c59e6dc4f6",
+          "bytes": 1195835
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-source-focus-corrected-validation-20261001/verification.json",
+          "sha256": "c8232ec444dbf068df34554165841f8941b5fb8ed265643dbd8e198975f3218d",
+          "bytes": 210295
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-exact-build-20261001/verification.json",
+          "sha256": "01a5bf08ed42a13a6c73964879fed8cd46e84320d4e167377415fbf738a390ce",
+          "bytes": 243936
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-conversion-remediated-20261001/output-bound-conversion.json",
+          "sha256": "68727b2b1a9440546348379adccf99b6b0a9ab70c8c2529e86d55e4932f65217",
+          "bytes": 579329
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-dry-run-no-banner-remediated-20261001/output-bound-dry-run.json",
+          "sha256": "8b266bbadf80c881b604e1e1ca401db3b2d9f7043bca6588f6755c196150950d",
+          "bytes": 1195870
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-security-render-owned-loopback-20261001.json",
+          "sha256": "ed4f9cef214a1b25b143594f45b71bf0934f5234d7b17a907a20508e1d40a359",
+          "bytes": 9907
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-as_vita-remediated-20261001-readonly.receipt.json",
+          "sha256": "963ff0736cf87666dc32c5ce2b8e060721b073476af58bcdc4a441f5442d3891",
+          "bytes": 184325
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-costa_do_sol-remediated-20261001-readonly.receipt.json",
+          "sha256": "f7ecd9182a8e79ad3d1a09a740f9bbf3605a280fa37b5c8b600eafbbd24568cc",
+          "bytes": 184360
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-nkana-remediated-20261001-readonly.receipt.json",
+          "sha256": "5092747fe9c1731d8d1d9737dad465c5a12bdba23904edef55f769200f4576a8",
+          "bytes": 184311
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-rayon_sports-remediated-20261001-readonly.receipt.json",
+          "sha256": "3708e0b0d8f1287c06df5bf583e84249e036304b27e41ca353fa59b20b751b80",
+          "bytes": 184360
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-vitalo-remediated-20261001-readonly.receipt.json",
+          "sha256": "ecb8e23c559895b737cd16d9fb85980b7fde4e83b0bbdbd8caa961b068431458",
+          "bytes": 184318
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-source-budget-signals-validation-20261001/verification.json",
+          "sha256": "99fb293c4f07b4b04983cf581b166b69ec38cd1e112ce5a230ad9b3e35e99eb6",
+          "bytes": 290521
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-exact-build-20261001/verification.json",
+          "sha256": "01a5bf08ed42a13a6c73964879fed8cd46e84320d4e167377415fbf738a390ce",
+          "bytes": 243936
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-conversion-remediated-20261001/output-bound-conversion.json",
+          "sha256": "68727b2b1a9440546348379adccf99b6b0a9ab70c8c2529e86d55e4932f65217",
+          "bytes": 579329
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-dry-run-no-banner-remediated-20261001/output-bound-dry-run.json",
+          "sha256": "8b266bbadf80c881b604e1e1ca401db3b2d9f7043bca6588f6755c196150950d",
+          "bytes": 1195870
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-security-render-owned-loopback-20261001.json",
+          "sha256": "ed4f9cef214a1b25b143594f45b71bf0934f5234d7b17a907a20508e1d40a359",
+          "bytes": 9907
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-as_vita-remediated-budget-20261001-readonly.receipt.json",
+          "sha256": "4635dcf35b522812fdaadf270ec8379c4e4cc2a2e385315167404d083876a640",
+          "bytes": 184402
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-costa_do_sol-remediated-budget-20261001-readonly.receipt.json",
+          "sha256": "c693416c6ded5c13a788041ed5abb021b75e97771e64e5649a412446fdfb39e1",
+          "bytes": 184437
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-nkana-remediated-budget-20261001-readonly.receipt.json",
+          "sha256": "0c88e6731cbc6b950cfbe9cfb7c3a978276f7c76677bfd36c5368db917312ff7",
+          "bytes": 184388
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-rayon_sports-remediated-budget-20261001-readonly.receipt.json",
+          "sha256": "4919511c844373142fca47c97cd2dafdb560d1548cdbafe4ef770b9427c7d03f",
+          "bytes": 184437
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-vitalo-remediated-budget-20261001-readonly.receipt.json",
+          "sha256": "984fa306499d353ec757c91b15c11b89b4daa26f62a8a1fa373557544c4438e2",
+          "bytes": 184395
+        }
+      ],
+      "currentEvidence": "Current1181 units and source TypeScript pass; fresh sealed build CWMOWy0PHpiOwfhebqpUY, actual conversion/dry run,13 security render checks and five-club HTTP895/470 pass. Full rendered state bank and final candidate binding are pending.",
+      "remainingLocalWork": "Outside revised scope; final aggregate work canceled.",
+      "originalRemainingLocalWork": "Final current route/state/accessibility integration and exact candidate/artifact readback.",
+      "originalCheckpointStatus": "current_local_runtime_build_render_conversion_and_dry_run_verified_candidate_pending"
+    },
+    {
+      "id": 9,
+      "requirement": "Complete privacy-safe metrics, tracing and log redaction across services.",
+      "status": "retained_checkpoint_revised_scope_closed",
+      "evidence": [
+        {
+          "path": "docs/release/backend-telemetry-integration-2026-09-30.json",
+          "sha256": "0b34340d109fca4d87394989082ca1fefea2f4cf7727320c4ef6db67b2252ff8",
+          "bytes": 51940
+        },
+        {
+          "path": "docs/release/local-auth-browser-telemetry-2026-09-30.json",
+          "sha256": "708bec559815fc7e3902c45f25899c05e3c3e950fdf2bff08ee99ad1a48c7b59",
+          "bytes": 11929
+        },
+        {
+          "path": "docs/release/local-edge-diagnostic-privacy-2026-09-30.json",
+          "sha256": "acc705b719d2b357a262c32199948595089f473e90db63d9c0ae2bab2940804a",
+          "bytes": 25286
+        },
+        {
+          "path": "docs/release/local-native-diagnostic-privacy-2026-10-01.json",
+          "sha256": "07382a092ef318fc874a1a004aa45cb8f27af52d3e472340c9aad3b5b79c5bfa",
+          "bytes": 20687
+        },
+        {
+          "path": "docs/release/local-native-observability-privacy-2026-09-30.json",
+          "sha256": "90248fab5f8288332abb7ba9a544c3a0999e10cfca7dd81eb109df7cef9d79b5",
+          "bytes": 35415
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-agent-handoff.json",
+          "sha256": "b5d58196eb1c02b33512cf5a7a5c1194fb3d728a648886efc5341a0625c61b51",
+          "bytes": 25196
+        },
+        {
+          "path": "docs/release/local-native-performance-privacy-2026-10-01.json",
+          "sha256": "51f818df196935983b488452e1a6ab4f5f4e5405f7c7d04a5902c2bb01ffbb14",
+          "bytes": 50486
+        }
+      ],
+      "currentEvidence": "Closed native analytics/crash/health/offline and logger/framework diagnostics are current. Permanently deactivated Firebase Performance on all10native hosts; actual installed Flutter SDK tests cover both startup paths, setter failure and retry. Nested global ErrorWidget restoration is fixed. Current585execution bank and strict28targets pass with1078stable inputs.",
+      "remainingLocalWork": "Outside revised scope; final aggregate work canceled.",
+      "originalRemainingLocalWork": "Bind completed current native privacy, integration and strict analysis to the exact source candidate and completion audit.",
+      "originalCheckpointStatus": "current_native_privacy_and_performance_controls_verified_final_binding_pending"
+    },
+    {
+      "id": 10,
+      "requirement": "Finish dead-letter inspection and explicit, idempotent re-drive tooling.",
+      "status": "retained_checkpoint_revised_scope_closed",
+      "evidence": [
+        {
+          "path": "docs/release/local-operations-recovery-2026-09-30.json",
+          "sha256": "17102bd530b8088261b36240476f8f4c78ed4fe2184dbc36316da72de2962dbe",
+          "bytes": 84580
+        },
+        {
+          "path": "docs/release/local-operations-recovery-current-checkpoint-2026-09-30.json",
+          "sha256": "acb8014136a32cfa4b26d3c9b66db6541f330ffe58a6d9b34d67fce67a440767",
+          "bytes": 39414
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/unchanged-completed-checkpoints-current-readback-20261001.json",
+          "sha256": "22cdbecc8cea95bb7ec55bfe891e828151046dc087f7ac471ff012e6e3450e7b",
+          "bytes": 253922
+        }
+      ],
+      "currentEvidence": "Current standalone SQLite recovery rehearsal passed allocations/drains/concurrency, response-loss, late commits, stale backup quarantine, forward restore and retained old-dispatcher rollback.",
+      "remainingLocalWork": "Outside revised scope; final aggregate work canceled.",
+      "originalRemainingLocalWork": "Final exact local candidate/source binding.",
+      "originalCheckpointStatus": "current_operational_checkpoint_verified"
+    },
+    {
+      "id": 11,
+      "requirement": "Complete local source, Git-history and artifact secret scans; fix code findings.",
+      "status": "retained_checkpoint_revised_scope_closed",
+      "evidence": [
+        {
+          "path": "docs/release/local-secret-audit-review-policy-2026-09-30.json",
+          "sha256": "58199399d14a80a670372c8aa1e1054f2fd014403436e21a197d9552d65b976a",
+          "bytes": 4725
+        },
+        {
+          "path": "docs/release/local-isolated-artifact-review-2026-09-30.json",
+          "sha256": "cefc40f2213853f2f894d6f0a7bf79d46ed2d3ff1351ab9e1c3f293b86721dc5",
+          "bytes": 14613
+        },
+        {
+          "path": "docs/release/local-diagnostic-web-bundle-privacy-2026-09-30.json",
+          "sha256": "9d85d7eb0f3d2aec47d78e27f6b192b04e6553933ec3a1c643898f852145853b",
+          "bytes": 22110
+        }
+      ],
+      "currentEvidence": "Current generated diagnostic web ZIP has2560 hash-verified extracted members and0 secret/path/archive coverage findings. Active source locations0; full source/reachable-Git checkpoints retain historical findings and explicitly reject concurrent mutation.",
+      "remainingLocalWork": "Outside revised scope; final aggregate work canceled.",
+      "originalRemainingLocalWork": "Scan final frozen source, all reachable Git and newly sealed candidate; fix active code/packaging findings without masking historical credentials.",
+      "originalCheckpointStatus": "current_scan_checkpoint_final_freeze_pending"
+    },
+    {
+      "id": 12,
+      "requirement": "Complete route/state coverage and automated accessibility checks.",
+      "status": "retained_checkpoint_revised_scope_closed",
+      "evidence": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-browser-ws-guard-corrected-final-readonly/readonly-verification.json",
+          "sha256": "a2b91205bd88b58e2c300e2ba1c45e748e4d20b6c87071c95a609b1f79486bef",
+          "bytes": 4326
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-coverage-current-pre-browser-readiness.json",
+          "bytes": 3521,
+          "sha256": "ef77833aebc35fbe941caf59202043b7457aa478ee4b57ef65a4e28527319d6f"
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-web-e2e-typecheck-readonly-wcag21-final/readonly-verification.json",
+          "sha256": "07248e81ed356993a1db80a3092889c521fee12dc389c95aca04a3575cfa0f8d",
+          "bytes": 207651
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-web-e2e-typecheck-readonly-all-captures-final/readonly-verification.json",
+          "sha256": "3bfc1fc2458e525ebc8f2c2b1577bd2e6b9609cbe3127e9d8dcd25950e46bf4a",
+          "bytes": 207651
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-coverage-all-captures-current-pre-browser-readiness.json",
+          "sha256": "af1dbf0751327c137b89c487ddd6590e63851222c16f004d9485736e22cf6c8c",
+          "bytes": 5028
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-five-club-all-captures-current-readonly-summary.json",
+          "sha256": "af7e1bb722de4f5c8f2b2fd6bf7e6ba070cd5a79d4654ad5034380e6f6a21987",
+          "bytes": 8438
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-http-all-captures-current-admitted-coverage.json",
+          "sha256": "62ffe3dd16b0fbec767af8cffe3b4700af9180ddbdd0febd11ec475802d873a1",
+          "bytes": 18595918
+        },
+        {
+          "path": "docs/release/local-route-state-accessibility-2026-10-01.json",
+          "sha256": "f96a026af4a1e831ecfbc107107ae8e794182e2188171aa98bcf1ef5c5bff032",
+          "bytes": 6883
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-five-club-complete-native-states-registration-remediated-20261001.receipt.json",
+          "sha256": "263a3e4ebf94757b998ab044227e382e9b20d616256fcabc13fd79907e8bacc7",
+          "bytes": 507653
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-as_vita-remediated-20261001-readonly.receipt.json",
+          "sha256": "963ff0736cf87666dc32c5ce2b8e060721b073476af58bcdc4a441f5442d3891",
+          "bytes": 184325
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-costa_do_sol-remediated-20261001-readonly.receipt.json",
+          "sha256": "f7ecd9182a8e79ad3d1a09a740f9bbf3605a280fa37b5c8b600eafbbd24568cc",
+          "bytes": 184360
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-nkana-remediated-20261001-readonly.receipt.json",
+          "sha256": "5092747fe9c1731d8d1d9737dad465c5a12bdba23904edef55f769200f4576a8",
+          "bytes": 184311
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-rayon_sports-remediated-20261001-readonly.receipt.json",
+          "sha256": "3708e0b0d8f1287c06df5bf583e84249e036304b27e41ca353fa59b20b751b80",
+          "bytes": 184360
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-vitalo-remediated-20261001-readonly.receipt.json",
+          "sha256": "ecb8e23c559895b737cd16d9fb85980b7fde4e83b0bbdbd8caa961b068431458",
+          "bytes": 184318
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-route-state-inventory-remediated-20261001/route-inventory.json",
+          "sha256": "4f407791e582d85d32d0f41d7b30c9db84c39db434987e3a41cb29750db4b791"
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-route-state-inventory-remediated-20261001/route-state-closure.json",
+          "sha256": "a74cf6df9a1cb337b642ead39ec59cd45efbfd7f5546aefd41aa62c0622a2d53"
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-five-club-complete-native-states-registration-remediated-20261001.receipt.json",
+          "sha256": "263a3e4ebf94757b998ab044227e382e9b20d616256fcabc13fd79907e8bacc7",
+          "bytes": 507653
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-as_vita-remediated-budget-20261001-readonly.receipt.json",
+          "sha256": "4635dcf35b522812fdaadf270ec8379c4e4cc2a2e385315167404d083876a640",
+          "bytes": 184402
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-costa_do_sol-remediated-budget-20261001-readonly.receipt.json",
+          "sha256": "c693416c6ded5c13a788041ed5abb021b75e97771e64e5649a412446fdfb39e1",
+          "bytes": 184437
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-nkana-remediated-budget-20261001-readonly.receipt.json",
+          "sha256": "0c88e6731cbc6b950cfbe9cfb7c3a978276f7c76677bfd36c5368db917312ff7",
+          "bytes": 184388
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-rayon_sports-remediated-budget-20261001-readonly.receipt.json",
+          "sha256": "4919511c844373142fca47c97cd2dafdb560d1548cdbafe4ef770b9427c7d03f",
+          "bytes": 184437
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-vitalo-remediated-budget-20261001-readonly.receipt.json",
+          "sha256": "984fa306499d353ec757c91b15c11b89b4daa26f62a8a1fa373557544c4438e2",
+          "bytes": 184395
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-route-state-inventory-remediated-20261001/route-inventory.json",
+          "sha256": "4f407791e582d85d32d0f41d7b30c9db84c39db434987e3a41cb29750db4b791"
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-route-state-inventory-remediated-20261001/route-state-closure.json",
+          "sha256": "a74cf6df9a1cb337b642ead39ec59cd45efbfd7f5546aefd41aa62c0622a2d53"
+        }
+      ],
+      "currentEvidence": "Current native/HTTP overlay admits4161 assertion and3607 automated accessibility cells;3705 assertion/3700 accessibility cells remain for305 browser cases. Original25pass/280fail checkpoint is retained.",
+      "remainingLocalWork": "Outside revised scope; final aggregate work canceled.",
+      "originalRemainingLocalWork": "Run305 browser cases, admit every remaining3705 assertion/3700 rendered accessibility cell, resolve real local findings and bind exact final candidate.",
+      "originalCheckpointStatus": "current_native_http_verified_full_browser_pending"
+    },
+    {
+      "id": 13,
+      "requirement": "Add synthetic load, failure, concurrency, restore and rollback rehearsals.",
+      "status": "retained_checkpoint_revised_scope_closed",
+      "evidence": [
+        {
+          "path": "docs/release/local-operations-recovery-2026-09-30.json",
+          "sha256": "17102bd530b8088261b36240476f8f4c78ed4fe2184dbc36316da72de2962dbe",
+          "bytes": 84580
+        },
+        {
+          "path": "docs/release/local-operations-recovery-current-checkpoint-2026-09-30.json",
+          "sha256": "acb8014136a32cfa4b26d3c9b66db6541f330ffe58a6d9b34d67fce67a440767",
+          "bytes": 39414
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/unchanged-completed-checkpoints-current-readback-20261001.json",
+          "sha256": "22cdbecc8cea95bb7ec55bfe891e828151046dc087f7ac471ff012e6e3450e7b",
+          "bytes": 253922
+        }
+      ],
+      "currentEvidence": "Current local load/failure/recovery/restore/rollback rehearsal passed with406 unchanged bound inputs. Current backend receipt binds404 inputs and2789 passing tests.",
+      "remainingLocalWork": "Outside revised scope; final aggregate work canceled.",
+      "originalRemainingLocalWork": "Final exact local candidate/source binding.",
+      "originalCheckpointStatus": "current_operational_checkpoint_verified"
+    },
+    {
+      "id": 14,
+      "requirement": "Generate exact dependency, SBOM and license inventories.",
+      "status": "retained_checkpoint_revised_scope_closed",
+      "evidence": [
+        {
+          "path": "docs/release/local-dependency-inventory-2026-09-30.verification.json",
+          "sha256": "a2359878def3818db64e0bbfe994dc8cc6e3b3e3d8f9e4d1a971287b6d36f64a",
+          "bytes": 98425
+        }
+      ],
+      "currentEvidence": "All five actual offline native observations cover537configurations with0unresolved selected dependencies. Current exact inventories contain2265components,7199edges,137849edge occurrences and8290evidence records. Full and portable validation,54regressions,cached CycloneDX schema,all shard/row/hash and2265license-field readbacks passed with181unchanged frozen inputs. Exactly6declared direct dev-edge additions and the provenance-bound local GoTrue source replacement preserve prior relationships and selected versions.22license evidence gaps and282unbuilt native output fields remain explicitly recorded.",
+      "remainingLocalWork": "Outside revised scope; final aggregate work canceled.",
+      "originalRemainingLocalWork": "Bind the completed current inventories and explicitly recorded limits to the exact final source candidate and completion audit.",
+      "originalCheckpointStatus": "current_exact_local_inventory_verified_candidate_pending"
+    },
+    {
+      "id": 15,
+      "requirement": "Expand CI definitions and configuration checks across five clubs and ten native targets.",
+      "status": "retained_checkpoint_revised_scope_closed",
+      "evidence": [
+        {
+          "path": "docs/release/local-native-ci-configuration-2026-09-30.json",
+          "sha256": "50509c32cc55ab991b8ced4206e7ed5318fbce20b9f555e804fcf529c94b3eba",
+          "bytes": 18789
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/ci-performance-source-bound-20261001.verification.json",
+          "sha256": "95a66fc02389a8ebb244aa301833664c2769a7f7026cd0a07fd1bf49c0812482",
+          "bytes": 9271
+        }
+      ],
+      "currentEvidence": "Current local CI configuration check verifies5clubs/10native targets and10permanent Performance controls;22contract tests passed. All46configuration inputs are unchanged before/after actual CLI verification. Workflow gates are unconditional and precede compilation.",
+      "remainingLocalWork": "Outside revised scope; final aggregate work canceled.",
+      "originalRemainingLocalWork": "Bind current configuration/CI report to final candidate and completion audit.",
+      "originalCheckpointStatus": "current_configuration_locally_verified_final_candidate_pending"
+    },
+    {
+      "id": 16,
+      "requirement": "Finalize local candidate commits, artifact sealing/verification, per-file reports and evidence hashes.",
+      "status": "retained_checkpoint_revised_scope_closed",
+      "evidence": [
+        {
+          "path": "docs/release/local-phase3-artifact-verification-2026-09-30.json",
+          "sha256": "9a4ba2b14865e4fe4f8cf0e4867ce69a0d324b21749dde9a4b6919985cd9a8b2",
+          "bytes": 2303
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-candidate-preservation-fixtures-20261001.json",
+          "sha256": "7746eacf1feaf0eea96005f33232875ea7def01ed11f6cb563cdef9bf1c6b8ab",
+          "bytes": 1309
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-candidate-comprehensive-per-file-rationale-20261001.preparation.json",
+          "sha256": "65129e742ff9c4d23568e6f837665870819ad6e7063a04f015eeca81450203b6",
+          "bytes": 2845857
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/run_output_bound_conversion_20261001.py",
+          "bytes": 16444,
+          "sha256": "9065f93f07ee9cf1519ecc25eb9a459d3731f42539f94c6dafcd187098d63bbf"
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/current_opennext_promotion_capture.cjs",
+          "bytes": 8859,
+          "sha256": "3fbc0d7d971c260a857516e7bf6ca00851b178a4ed822fccd6e7629e149ba77f"
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-promotion-capture-fixtures-final-20261001T003418Z/receipt.json",
+          "bytes": 3034,
+          "sha256": "7749391c7c2502033c272130212ac194a88cd7c595c8f9bebdaab63efe2631a8"
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/release-packager-current-regressions-20261001.json",
+          "bytes": 962,
+          "sha256": "5e4ad4ae068a5489a193d524194e249ee21f7f7f5cab1798efbfed7704aaea79"
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-conversion-remediated-20261001/output-bound-conversion.json",
+          "sha256": "68727b2b1a9440546348379adccf99b6b0a9ab70c8c2529e86d55e4932f65217",
+          "bytes": 579329
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-dry-run-no-banner-remediated-20261001/output-bound-dry-run.json",
+          "sha256": "8b266bbadf80c881b604e1e1ca401db3b2d9f7043bca6588f6755c196150950d",
+          "bytes": 1195870
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/seal_exact_local_candidate.py",
+          "sha256": "4c116c80f3493714eec869c68436b60470aff460e252d4cf49e5bb760cb16063",
+          "bytes": 16471
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/run_output_bound_dry_run_no_banner_20261001.py",
+          "sha256": "59e27e87e8f4ac448048e605d39d3e37a778acc053ea710dbfcb332ad1d083d5",
+          "bytes": 6449
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/create_final_source_candidate_20261001.py",
+          "sha256": "8db07a57ebc48ea1cc4482b2cc6f910747f5c6e40cd2e844ea810242f05f2f54",
+          "bytes": 3083
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/final-secret-audit-preparation-20261001T000955Z/actual-output-bound-archive-readiness-20261001.json",
+          "sha256": "5ebeb12fa4dfbdf677da78e103d0ded9741074e2a3ca1e68a6e870089257cfda",
+          "bytes": 11024
+        }
+      ],
+      "currentEvidence": "Current build CWMOWy0PHpiOwfhebqpUY: actual conversion passed in 145.030 seconds within the 1200-second deadline, capturing 2,557 files / 50,288,668 bytes at observed promotion. Output inventory SHA-256: f96023a435374a96eac6f2054eb9eb4ce7ea4987377642897f4ad5bcc4931bb6. The corrected local Wrangler dry run passed in 9.425 seconds within 600 seconds; every output file before and after matches the actual conversion. Source, compiled output and installed bindings remained exact. Each runner captured four Node guard reports with zero blocked attempts. Uncaptured child stderr and Node control scope remain explicit limitations. The candidate commit, sealed ZIP, final source/all-Git/archive scan, full browser admission, complete per-file rationale and independent all16 audit remain pending.",
+      "remainingLocalWork": "Outside revised scope; final aggregate work canceled.",
+      "retainedHistoricalOutputEvidence": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-conversion-final-20261001/output-bound-conversion.json",
+          "sha256": "49e4580472ba81dd0933ac1bb9ef74a2831c34d8f6c1de48c8c2f33b8cb212b1",
+          "bytes": 579303
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-dry-run-final-20261001/output-bound-dry-run.json",
+          "sha256": "82460dccefb229152bd79082a1c2beee63125a56e4b681cdf16322c59e6dc4f6",
+          "bytes": 1195835
+        },
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/run_output_bound_dry_run_20261001.py",
+          "sha256": "4c71d8ded79fb588ef1dfea744012955565ef6c67ed1de08754751331566a7e8",
+          "bytes": 6368
+        }
+      ],
+      "currentOutputEvidence": {
+        "conversion": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-conversion-remediated-20261001/output-bound-conversion.json",
+          "sha256": "68727b2b1a9440546348379adccf99b6b0a9ab70c8c2529e86d55e4932f65217",
+          "bytes": 579329
+        },
+        "dryRun": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-dry-run-no-banner-remediated-20261001/output-bound-dry-run.json",
+          "sha256": "8b266bbadf80c881b604e1e1ca401db3b2d9f7043bca6588f6755c196150950d",
+          "bytes": 1195870
+        },
+        "dryRunSupervisor": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/run_output_bound_dry_run_no_banner_20261001.py",
+          "sha256": "59e27e87e8f4ac448048e605d39d3e37a778acc053ea710dbfcb332ad1d083d5",
+          "bytes": 6449
+        },
+        "buildId": "CWMOWy0PHpiOwfhebqpUY",
+        "candidateFinalizationPending": true,
+        "fullBrowserPending": true
+      },
+      "historicalSupersededEvidence": [
+        {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/seal_exact_local_candidate.py",
+          "sha256": "ca507e8298383deb86895f6b6d62868bdaee51d06737ee11d6f8e15285b75101",
+          "bytes": 15844
+        }
+      ],
+      "originalRemainingLocalWork": "Finish exact local source candidate commit, new artifact seal/extract/hash-readback/final secret gate and complete per-file rationale reports.",
+      "originalCheckpointStatus": "candidate_finalization_pending"
+    }
+  ],
+  "boundaries": [
+    "No provider provisioning, credential rotation, deployment, signing, store submission or external acceptance is claimed.",
+    "Concurrent design edits and staging are preserved; current-source verification and exact candidate/source binding remain required.",
+    "Catalog counts, N/A dimensions and previous scoped test passes do not prove complete route/state/accessibility closure."
+  ],
+  "currentCheckoutBranch": "codex/revolut-only-20260930",
+  "previousGoalTurnClassification": "progress_all_capture_accessibility_omissions_and_schema_corrected_current_typecheck_and_http_execution",
+  "currentGoalTurnClassification": "user_revised_essential_scope_completed_and_nonessential_work_canceled",
+  "latestBrowserRemediation": {
+    "generatedAt": 1790844584.768953,
+    "status": "historical_checkpoint_with_focused_ticket_correction_verified",
+    "priorBrowserExecution": {
+      "expectedTests": 305,
+      "passed": 25,
+      "failed": 280,
+      "skipped": 0,
+      "flaky": 0,
+      "accepted": false,
+      "evidence": {
+        "local-browser-five-club-final.receipt.json": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-browser-five-club-final.receipt.json",
+          "sha256": "9edf40a1849320ee34b26f00d4cde3bad4efccdf50f1d298826dc2e869c381fc"
+        },
+        "local-browser-five-club-final-artifact-manifest.json": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-browser-five-club-final-artifact-manifest.json",
+          "sha256": "400dc486d3853e7265b24bef6e3ee01ff7483d27d6aadccfd8ea16e44db0091d"
+        },
+        "recovered-browser-final-failure-analysis-20261001.json": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/recovered-browser-final-failure-analysis-20261001.json",
+          "sha256": "d090cb340dc58e647d72035f7a60ff7ddd36ba2017e131a7021ce63a268e9ed1"
+        },
+        "local-browser-five-club-final-server.json": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-browser-five-club-final-server.json",
+          "sha256": "9463db88451d2ff815034b9080d711a73c2a85abfea5785557c7712e50d227ad"
+        }
+      }
+    },
+    "sourceCorrectionsApplied": [
+      "strict CSP compatible large text test setup without changing product CSP",
+      "valid named loading and collection groups",
+      "persistent football sync panel linkage",
+      "keyboard focus for scrollable dialog content",
+      "selected club API fixture interception",
+      "standalone recovery query validation",
+      "finite runtime matrix deadline",
+      "contributions middleware redirect before admin layout",
+      "explicit real initial browser online precondition"
+    ],
+    "additionalSourceFindingsPending": [],
+    "oldCompiledEvidence": "Retained checkpoint; product source was intentionally corrected afterwards. A fresh exact build, conversion, dry run, render, HTTP and full browser execution are required.",
+    "goalComplete": false,
+    "productionReady": false,
+    "finalCandidateBound": false,
+    "running": [],
+    "pending": [],
+    "canceledWork": [
+      "Remaining full 305-case browser matrix and its aggregate route/accessibility admission.",
+      "Repeated full unit, native and verifier-method suites for unchanged implementation.",
+      "New production rebuild, conversion, artifact seal/extraction and artifact secret admission.",
+      "Final candidate commit and comprehensive all-16 candidate/evidence binding audit."
+    ],
+    "scopeRevision": {
+      "requestedAt": "2026-10-01",
+      "reason": "User requested immediate finish after prolonged execution and canceled nonessential work.",
+      "scope": "Apply diagnosed ticket overflow correction and verify the affected source page across all five clubs; publish truthful closeout.",
+      "complete": true,
+      "closedAt": "2026-10-01T11:29:03.879660+00:00",
+      "completed": [
+        "Scoped table containment correction applied.",
+        "Five clubs passed desktop dark/mobile light at 200 percent text, keyboard drawer recovery and ten Axe analyses.",
+        "Repeated broad validation runs stopped; prior receipts and staged/unstaged work preserved.",
+        "Closeout and file rationale published."
+      ],
+      "canceledWork": [
+        "Remaining full 305-case browser matrix and its aggregate route/accessibility admission.",
+        "Repeated full unit, native and verifier-method suites for unchanged implementation.",
+        "New production rebuild, conversion, artifact seal/extraction and artifact secret admission.",
+        "Final candidate commit and comprehensive all-16 candidate/evidence binding audit."
+      ],
+      "focusedEvidence": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/essential-ticket-five-club-pagination-corrected-20261001/verification.json",
+        "sha256": "6bb347f5f1580a1df3742cc3937ca3dbf7eac2928c4ced62d45bcb8bee94528c",
+        "bytes": 11262
+      },
+      "serverTerminationAndRestoration": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/essential-source-dev-emulator-free-20261001/configuration-restoration.json",
+        "sha256": "648b5f41281283fc6e84830ec2d98577e7f0c05481f983ac378af29454b6fefe",
+        "bytes": 1381
+      },
+      "originalFull16RequirementsVerified": false,
+      "productionReady": false,
+      "externalReleaseAcceptance": false
+    },
+    "oldCompiledEvidenceAttribution": "Historical compiled evidence; final ticket CSS source change has not been rebuilt or sealed."
+  },
+  "currentRemediatedSourceCheckpoint": {
+    "generatedAt": "2026-10-01T10:49:26.818468+00:00",
+    "status": "historical_checkpoint_with_focused_ticket_correction_verified",
+    "actualSourceValidation": {
+      "unitPassed": 1181,
+      "unitFailed": 0,
+      "externalOptInSkipped": 1,
+      "typescriptExitCode": 0,
+      "sourceInputs": 598,
+      "sourceBeforeAfterStable": true,
+      "installedContentAndStatBindingStable": true,
+      "installedWriteAttempts": 0
+    },
+    "allFourAdminTabKeyboardContractsImplemented": true,
+    "namedNativeTsxProhibitedCandidatesRemaining": 0,
+    "selectedTsxFilesReviewed": 182,
+    "perFileRemediation": {
+      "uniqueFiles": 76,
+      "addedHelpers": 2,
+      "modifiedFiles": 74,
+      "verifiedMutationSteps": 127
+    },
+    "historicalSupplementaryReports": [
+      "backend telemetry older25-source snapshot; later404 backend and406 operations bind current operator API and actual telemetry tests",
+      "auth authority older2-source snapshot; later585 test /1078 selected-input proof binds current auth_notifier"
+    ],
+    "running": [],
+    "pending": [],
+    "proofs": {
+      "unitAndTypescript": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-source-budget-signals-validation-20261001/verification.json",
+        "sha256": "99fb293c4f07b4b04983cf581b166b69ec38cd1e112ce5a230ad9b3e35e99eb6",
+        "bytes": 290521
+      },
+      "namingAstReview": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-tsx-accessible-name-review-20261001.json",
+        "sha256": "18f7bed9a679d5fb840662164cb7743cd3af999664b3c3c8db103fe85cc905d3"
+      },
+      "currentCheckpointDriftReadback": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/completed-checkpoint-drift-after-web-remediation-20261001.json",
+        "sha256": "fa85ca4f09e3e86e2b250654e4eb0666926d561284279baecdd431417a637134"
+      },
+      "historicalSupersession": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/completed-checkpoint-drift-historical-supersession-20261001.json",
+        "sha256": "111c39220614a727d0357d8543f3e938414dc778c88404d7a7fc76b0639493be"
+      },
+      "perFilePurposeJson": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/browser-remediation-per-file-purpose-budget-20261001.json",
+        "sha256": "1261c08106ecf15e625422838445e284970e0f930d6bace4178e79e5975cc542",
+        "bytes": 223870
+      },
+      "perFilePurposeMarkdown": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/browser-remediation-per-file-purpose-current-20261001.md",
+        "sha256": "823c6fa347b8eb5aa9c51c95a10244985e352ea2bc4d0d253da48fb15a2c45e3"
+      },
+      "sourceSealedProductionBuild": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-exact-build-20261001/verification.json",
+        "sha256": "01a5bf08ed42a13a6c73964879fed8cd46e84320d4e167377415fbf738a390ce",
+        "bytes": 243936
+      },
+      "currentConversion": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-conversion-remediated-20261001/output-bound-conversion.json",
+        "sha256": "68727b2b1a9440546348379adccf99b6b0a9ab70c8c2529e86d55e4932f65217",
+        "bytes": 579329
+      },
+      "actualPromotionCapture": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-conversion-remediated-20261001/actual-output-promotion.json",
+        "sha256": "3c5dfcdcd0aed650719012cdb8d01ef0e920e29f9ac6c26c5d84bcb873de5813",
+        "bytes": 1197647
+      },
+      "currentDryRun": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-dry-run-no-banner-remediated-20261001/output-bound-dry-run.json",
+        "sha256": "8b266bbadf80c881b604e1e1ca401db3b2d9f7043bca6588f6755c196150950d",
+        "bytes": 1195870
+      },
+      "currentNative": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-five-club-complete-native-states-registration-remediated-20261001.receipt.json",
+        "sha256": "263a3e4ebf94757b998ab044227e382e9b20d616256fcabc13fd79907e8bacc7",
+        "bytes": 507653
+      },
+      "currentNativeIntegration": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-integration-package-cwd-current/verification.json",
+        "sha256": "d24f284d471302a96c1518e4ea2bfd5101dc7989cf773e12dee7281f364c7eb8",
+        "bytes": 379998
+      },
+      "currentStrict": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-native-workspace-strict-final-source-current.receipt.json",
+        "sha256": "51270347a57bea4ef8515e8410e1e99b7573e00dde62e5de25760b278d9348e0",
+        "bytes": 378477
+      },
+      "securityRender": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-security-render-owned-loopback-20261001.json",
+        "sha256": "ed4f9cef214a1b25b143594f45b71bf0934f5234d7b17a907a20508e1d40a359",
+        "bytes": 9907
+      },
+      "currentHttp": [
+        {
+          "club": "as_vita",
+          "verification": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-as_vita-remediated-budget-20261001-readonly.receipt.json",
+            "sha256": "4635dcf35b522812fdaadf270ec8379c4e4cc2a2e385315167404d083876a640",
+            "bytes": 184402
+          },
+          "readonlyProof": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-as_vita-remediated-budget-20261001-readonly-readonly-proof.json",
+            "sha256": "9bc137ab36a4cb13e9e1ca229c1d96e040f5e0ff1898a138c9927c650d4aa186",
+            "bytes": 5225
+          },
+          "counts": {
+            "passed": 179,
+            "failed": 0,
+            "skipped": 0,
+            "receipt": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-as_vita-remediated-budget-20261001-readonly.receipt.json",
+              "sha256": "4635dcf35b522812fdaadf270ec8379c4e4cc2a2e385315167404d083876a640"
+            },
+            "assertion_count": 94
+          }
+        },
+        {
+          "club": "costa_do_sol",
+          "verification": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-costa_do_sol-remediated-budget-20261001-readonly.receipt.json",
+            "sha256": "c693416c6ded5c13a788041ed5abb021b75e97771e64e5649a412446fdfb39e1",
+            "bytes": 184437
+          },
+          "readonlyProof": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-costa_do_sol-remediated-budget-20261001-readonly-readonly-proof.json",
+            "sha256": "9f1ce6de3faf4237584dac4748b1b710ad7ed753bb49c3ddae6568680df428f9",
+            "bytes": 5716
+          },
+          "counts": {
+            "passed": 179,
+            "failed": 0,
+            "skipped": 0,
+            "receipt": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-costa_do_sol-remediated-budget-20261001-readonly.receipt.json",
+              "sha256": "c693416c6ded5c13a788041ed5abb021b75e97771e64e5649a412446fdfb39e1"
+            },
+            "assertion_count": 94
+          }
+        },
+        {
+          "club": "nkana",
+          "verification": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-nkana-remediated-budget-20261001-readonly.receipt.json",
+            "sha256": "0c88e6731cbc6b950cfbe9cfb7c3a978276f7c76677bfd36c5368db917312ff7",
+            "bytes": 184388
+          },
+          "readonlyProof": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-nkana-remediated-budget-20261001-readonly-readonly-proof.json",
+            "sha256": "072c2d083ac1aeeb4061b0543703e76a7c01e9d84891ddf705d41d39ea472d65",
+            "bytes": 5213
+          },
+          "counts": {
+            "passed": 179,
+            "failed": 0,
+            "skipped": 0,
+            "receipt": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-nkana-remediated-budget-20261001-readonly.receipt.json",
+              "sha256": "0c88e6731cbc6b950cfbe9cfb7c3a978276f7c76677bfd36c5368db917312ff7"
+            },
+            "assertion_count": 94
+          }
+        },
+        {
+          "club": "rayon_sports",
+          "verification": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-rayon_sports-remediated-budget-20261001-readonly.receipt.json",
+            "sha256": "4919511c844373142fca47c97cd2dafdb560d1548cdbafe4ef770b9427c7d03f",
+            "bytes": 184437
+          },
+          "readonlyProof": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-rayon_sports-remediated-budget-20261001-readonly-readonly-proof.json",
+            "sha256": "35033e310c825786402779268b72b0689c894e740a467797380a6c522eedd35b",
+            "bytes": 5255
+          },
+          "counts": {
+            "passed": 179,
+            "failed": 0,
+            "skipped": 0,
+            "receipt": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-rayon_sports-remediated-budget-20261001-readonly.receipt.json",
+              "sha256": "4919511c844373142fca47c97cd2dafdb560d1548cdbafe4ef770b9427c7d03f"
+            },
+            "assertion_count": 94
+          }
+        },
+        {
+          "club": "vitalo",
+          "verification": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-vitalo-remediated-budget-20261001-readonly.receipt.json",
+            "sha256": "984fa306499d353ec757c91b15c11b89b4daa26f62a8a1fa373557544c4438e2",
+            "bytes": 184395
+          },
+          "readonlyProof": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-vitalo-remediated-budget-20261001-readonly-readonly-proof.json",
+            "sha256": "8e3a63467b150051c96265b7feb51e628a011967d9cf039dbd8b1e4f37dbc852",
+            "bytes": 5219
+          },
+          "counts": {
+            "passed": 179,
+            "failed": 0,
+            "skipped": 0,
+            "receipt": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-http-vitalo-remediated-budget-20261001-readonly.receipt.json",
+              "sha256": "984fa306499d353ec757c91b15c11b89b4daa26f62a8a1fa373557544c4438e2"
+            },
+            "assertion_count": 94
+          }
+        }
+      ],
+      "inventory": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-route-state-inventory-remediated-20261001/route-inventory.json",
+        "sha256": "4f407791e582d85d32d0f41d7b30c9db84c39db434987e3a41cb29750db4b791"
+      },
+      "contracts": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-route-state-inventory-remediated-20261001/route-state-closure.json",
+        "sha256": "a74cf6df9a1cb337b642ead39ec59cd45efbfd7f5546aefd41aa62c0622a2d53"
+      },
+      "dryRunSupervisor": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/run_output_bound_dry_run_no_banner_20261001.py",
+        "sha256": "59e27e87e8f4ac448048e605d39d3e37a778acc053ea710dbfcb332ad1d083d5",
+        "bytes": 6449
+      },
+      "currentNativeHttpOverlay": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/root-goal-reports-budget-signals-pre-browser-published-20261001/actual-native-http-coverage-overlay.json",
+        "sha256": "75e3c79e8544a023c948d76344f060763d137eb2f0437e45e45a64e1030ad9e2",
+        "bytes": 18839632
+      },
+      "historicalPerFilePurposeJsonBeforeBudgetCorrection": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/browser-remediation-per-file-purpose-current-20261001.json",
+        "sha256": "0659a2d6f3d143494a3468ee5756c7f0a0fdd4d17c3d720fb1601008a1aff0f6"
+      }
+    },
+    "goalComplete": false,
+    "productionReady": false,
+    "providerActions": 0,
+    "deploymentActions": 0,
+    "phase": "pre-browser",
+    "finalCandidateBound": false,
+    "retainedRejectedPreBrowserAttempts": [
+      {
+        "verification": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/output-bound-dry-run-remediated-20261001/output-bound-dry-run.json",
+          "sha256": "3a5c90d8fe62a6389490aa9136e5500e7ffea46252ef3021ff58fa77f1fb1e18",
+          "bytes": 598228
+        },
+        "acceptedAsCurrentPass": false,
+        "failure": "network_guard_unverified",
+        "exitCode": 0,
+        "scope": "Actual rejected earlier attempt; its bytes remain unchanged and are not admitted by the corrected receipt."
+      },
+      {
+        "verification": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-security-render-20261001.json",
+          "sha256": "8edb8cb86e8e4e399f3fc84708d0ead7af10b2035cfb6fdb9ea704585500edfd",
+          "bytes": 1735
+        },
+        "acceptedAsCurrentPass": false,
+        "failure": "production_server_not_ready",
+        "exitCode": null,
+        "scope": "Actual rejected earlier attempt; its bytes remain unchanged and are not admitted by the corrected receipt."
+      },
+      {
+        "verification": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-remediated-security-render-loopback-20261001.json",
+          "sha256": "8edb8cb86e8e4e399f3fc84708d0ead7af10b2035cfb6fdb9ea704585500edfd",
+          "bytes": 1735
+        },
+        "acceptedAsCurrentPass": false,
+        "failure": "production_server_not_ready",
+        "exitCode": null,
+        "scope": "Actual rejected earlier attempt; its bytes remain unchanged and are not admitted by the corrected receipt."
+      }
+    ],
+    "currentUnitValidation": {
+      "unitPassed": 1181,
+      "unitFailed": 0,
+      "externalOptInSkipped": 1,
+      "typescriptExitCode": 0,
+      "sourceInputs": 598,
+      "sourceBeforeAfterStable": true,
+      "installedContentAndStatBindingStable": true,
+      "installedWriteAttempts": 0
+    },
+    "actualCompletedLocalExecutions": {
+      "nativePassed": 4933,
+      "integrationPassed": 315,
+      "strictExitCode": 0,
+      "httpPassed": 895,
+      "httpAssertionCells": 470,
+      "securityRenderChecksPassed": 13,
+      "currentBrowserExecutionComplete": false,
+      "currentBrowserTestsPassed": 0,
+      "applicableAssertionCellsExecuted": 4161,
+      "applicableAutomatedAccessibilityCellsExecuted": 3607
+    },
+    "historicalPerFileRemediationBeforeBudgetCorrection": {
+      "uniqueFiles": 66,
+      "addedHelpers": 2,
+      "modifiedFiles": 64,
+      "verifiedMutationSteps": 81
+    },
+    "canceledWork": [
+      "Remaining full 305-case browser matrix and its aggregate route/accessibility admission.",
+      "Repeated full unit, native and verifier-method suites for unchanged implementation.",
+      "New production rebuild, conversion, artifact seal/extraction and artifact secret admission.",
+      "Final candidate commit and comprehensive all-16 candidate/evidence binding audit."
+    ],
+    "scopeRevision": {
+      "requestedAt": "2026-10-01",
+      "reason": "User requested immediate finish after prolonged execution and canceled nonessential work.",
+      "scope": "Apply diagnosed ticket overflow correction and verify the affected source page across all five clubs; publish truthful closeout.",
+      "complete": true,
+      "closedAt": "2026-10-01T11:29:03.879660+00:00",
+      "completed": [
+        "Scoped table containment correction applied.",
+        "Five clubs passed desktop dark/mobile light at 200 percent text, keyboard drawer recovery and ten Axe analyses.",
+        "Repeated broad validation runs stopped; prior receipts and staged/unstaged work preserved.",
+        "Closeout and file rationale published."
+      ],
+      "canceledWork": [
+        "Remaining full 305-case browser matrix and its aggregate route/accessibility admission.",
+        "Repeated full unit, native and verifier-method suites for unchanged implementation.",
+        "New production rebuild, conversion, artifact seal/extraction and artifact secret admission.",
+        "Final candidate commit and comprehensive all-16 candidate/evidence binding audit."
+      ],
+      "focusedEvidence": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/essential-ticket-five-club-pagination-corrected-20261001/verification.json",
+        "sha256": "6bb347f5f1580a1df3742cc3937ca3dbf7eac2928c4ced62d45bcb8bee94528c",
+        "bytes": 11262
+      },
+      "serverTerminationAndRestoration": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/essential-source-dev-emulator-free-20261001/configuration-restoration.json",
+        "sha256": "648b5f41281283fc6e84830ec2d98577e7f0c05481f983ac378af29454b6fefe",
+        "bytes": 1381
+      },
+      "originalFull16RequirementsVerified": false,
+      "productionReady": false,
+      "externalReleaseAcceptance": false
+    },
+    "historicalCheckpointSourceHashMismatches": 0,
+    "historicalBuildBeforeFinalTicketCssCorrection": {
+      "build_id": "CWMOWy0PHpiOwfhebqpUY",
+      "source_sha256": "64f8fb6903390dfa04640b6f295fcd2a093eeaba2099e9924598baa102fbef53",
+      "artifact_sha256": "977956349cf499c4080ea375cf871af6c0bc0cff2ecc4c8a3a4f6924552abdaa",
+      "installed_inputs_sha256": "922f42b1b989d05210aabfa334b2763ca0a33c52a83495c523cdb7cf18e1ad2b",
+      "installed_inputs_binding_sha256": "42005be8510119ec99a18b4671093ae63df5f86507e0ad741dac5c2f2f86075e",
+      "provenance_sha256": "b2a19c9502c00580a5212006981779cfeb6f5334cf54070de58705213919c476",
+      "started_at": "2026-10-01T09:02:23.614Z",
+      "finished_at": "2026-10-01T09:10:21.837Z"
+    }
+  },
+  "finalCandidateBound": false,
+  "status": "closed_user_revised_essential_scope",
+  "retainedReportSnapshots": [
+    {
+      "report": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/root-goal-reports-remediated-pre-browser-published-20261001/before/local-production-goal-progress-2026-09-30.json",
+        "sha256": "4f8ba5f17fb00d81f1115bca4011e4a4efad40bb0bde8d7624fe15d266aa4e93",
+        "bytes": 37692
+      },
+      "scope": "Full previous report bytes retained; former current fields are historical."
+    },
+    {
+      "report": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/root-goal-reports-budget-signals-pre-browser-published-20261001/before/local-production-goal-progress-2026-09-30.json",
+        "sha256": "805f8ffd8dc86fe8ab714ef29758af2918ab9c55b75ad07d09994b5f36dc0c0a",
+        "bytes": 57492
+      },
+      "scope": "Full previous report bytes retained; former current fields are historical."
+    }
+  ],
+  "revisedGoalComplete": true,
+  "originalFull16RequirementsVerified": false,
+  "scopeRevision": {
+    "requestedAt": "2026-10-01",
+    "reason": "User requested immediate finish after prolonged execution and canceled nonessential work.",
+    "scope": "Apply diagnosed ticket overflow correction and verify the affected source page across all five clubs; publish truthful closeout.",
+    "complete": true,
+    "closedAt": "2026-10-01T11:29:03.879660+00:00",
+    "completed": [
+      "Scoped table containment correction applied.",
+      "Five clubs passed desktop dark/mobile light at 200 percent text, keyboard drawer recovery and ten Axe analyses.",
+      "Repeated broad validation runs stopped; prior receipts and staged/unstaged work preserved.",
+      "Closeout and file rationale published."
+    ],
+    "canceledWork": [
+      "Remaining full 305-case browser matrix and its aggregate route/accessibility admission.",
+      "Repeated full unit, native and verifier-method suites for unchanged implementation.",
+      "New production rebuild, conversion, artifact seal/extraction and artifact secret admission.",
+      "Final candidate commit and comprehensive all-16 candidate/evidence binding audit."
+    ],
+    "focusedEvidence": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/essential-ticket-five-club-pagination-corrected-20261001/verification.json",
+      "sha256": "6bb347f5f1580a1df3742cc3937ca3dbf7eac2928c4ced62d45bcb8bee94528c",
+      "bytes": 11262
+    },
+    "serverTerminationAndRestoration": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/essential-source-dev-emulator-free-20261001/configuration-restoration.json",
+      "sha256": "648b5f41281283fc6e84830ec2d98577e7f0c05481f983ac378af29454b6fefe",
+      "bytes": 1381
+    },
+    "originalFull16RequirementsVerified": false,
+    "productionReady": false,
+    "externalReleaseAcceptance": false
+  },
+  "closeoutReport": {
+    "path": "docs/release/local-production-goal-closeout-2026-10-01.json",
+    "sha256": "3c175aeb0ca2fbfb953cc7c6b49ef7b9d89b28611e4b29fec959517047d87529",
+    "bytes": 46634
+  },
+  "checkpointAttribution": "Existing broad implementation/build/coverage fields describe the preserved prior checkpoint. The final CSS change is verified only by the focused source-browser receipt.",
+  "pending": [],
+  "canceledWork": [
+    "Remaining full 305-case browser matrix and its aggregate route/accessibility admission.",
+    "Repeated full unit, native and verifier-method suites for unchanged implementation.",
+    "New production rebuild, conversion, artifact seal/extraction and artifact secret admission.",
+    "Final candidate commit and comprehensive all-16 candidate/evidence binding audit."
+  ]
+}

@@ -173,7 +173,7 @@ export default function AdminMatchesPage() {
           <button
             onClick={beginCreate}
             disabled={busy || status === "permission_denied"}
-            className="admin-action-button min-h-12 !bg-[var(--admin-accent)] !text-[var(--admin-zinc-950)] disabled:cursor-not-allowed disabled:!bg-[var(--admin-zinc-800)] disabled:!text-[var(--admin-text-strong)]"
+            className="admin-action-button min-h-12 !bg-[var(--admin-accent)] !text-[var(--admin-canvas)] disabled:cursor-not-allowed disabled:!bg-[var(--admin-raised)] disabled:!text-[var(--admin-text-strong)]"
           >
             <Plus size={16} />
             <span>Create fixture</span>

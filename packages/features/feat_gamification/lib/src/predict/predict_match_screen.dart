@@ -613,7 +613,9 @@ class _PredictMatchScreenState extends ConsumerState<PredictMatchScreen>
                 Text(
                   partnerPoolEligibilityLabel(l10n, pool.eligibilityMode),
                   style: TypographyTokens.labelMedium(
-                    ColorTokens.primaryContainer,
+                    ColorTokens.contrastForeground(
+                      Theme.of(context).colorScheme.surfaceContainerHigh,
+                    ),
                   ),
                 ),
                 const SizedBox(height: SpacingTokens.spacing5),

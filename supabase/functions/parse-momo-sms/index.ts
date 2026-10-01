@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import {
@@ -314,10 +315,7 @@ export async function handleRequest(request: Request) {
           throw primaryError;
         }
 
-        console.error(
-          "parse-momo-sms gemini attempt failed, retrying with OpenAI",
-          primaryError,
-        );
+        logDiagnostic("error", "parse_momo_sms_parse_momo_sms_gemini_attempt_failed_retrying_with_openai", primaryError);
         selectedAttempt = await runProviderAttempt("openai");
       }
 
@@ -388,10 +386,7 @@ export async function handleRequest(request: Request) {
             timestamp,
           );
         } catch (reconciliationError) {
-          console.error(
-            "parse-momo-sms reconciliation failed",
-            reconciliationError,
-          );
+          logDiagnostic("error", "parse_momo_sms_parse_momo_sms_reconciliation_failed", reconciliationError);
           autoReconciliation = buildManualReviewResult(
             "AI parsing succeeded, but reconciliation failed and needs manual review.",
             {
@@ -565,7 +560,7 @@ export async function handleRequest(request: Request) {
           });
         } catch (notifError) {
           // Non-fatal: log but don't fail the parse flow.
-          console.error("parse-momo-sms push notification failed:", notifError);
+          logDiagnostic("error", "parse_momo_sms_parse_momo_sms_push_notification_failed", notifError);
         }
       }
 
@@ -597,10 +592,7 @@ export async function handleRequest(request: Request) {
         p_error: error instanceof Error ? error.message : "AI parse failed",
       });
       if (cleanup.error) {
-        console.error(
-          "parse-momo-sms failure state could not be persisted",
-          cleanup.error,
-        );
+        logDiagnostic("error", "parse_momo_sms_parse_momo_sms_failure_state_could_not_be_persisted", cleanup.error);
       }
 
       await recordOperationalHealthEvent(adminClient, {
@@ -635,7 +627,7 @@ export async function handleRequest(request: Request) {
       throw error;
     }
   } catch (error) {
-    console.error("parse-momo-sms failed", error);
+    logDiagnostic("error", "parse_momo_sms_parse_momo_sms_failed", error);
     return jsonError(
       error instanceof Error ? error.message : "Failed to parse MoMo SMS",
       500,

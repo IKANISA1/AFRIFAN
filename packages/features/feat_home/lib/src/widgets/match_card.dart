@@ -67,7 +67,8 @@ class _MatchScoreCardState extends State<MatchScoreCard> {
               onTap: slide.route == null
                   ? null
                   : () => context.push(slide.route!),
-              semanticsLabel: context.afriL10n.homeOpenMatchDetails,
+              semanticsLabel: _matchActionLabel(context, slide),
+              excludeChildSemantics: true,
               child: _MatchOverview(slide: slide),
             ),
         ],
@@ -86,7 +87,8 @@ class _MatchScoreCardState extends State<MatchScoreCard> {
                 onTap: slide.route == null
                     ? null
                     : () => context.push(slide.route!),
-                semanticsLabel: context.afriL10n.homeOpenMatchDetails,
+                semanticsLabel: _matchActionLabel(context, slide),
+                excludeChildSemantics: true,
                 child: _MatchOverview(slide: slide),
               );
             },
@@ -114,6 +116,17 @@ class _MatchScoreCardState extends State<MatchScoreCard> {
     );
   }
 }
+
+String _matchActionLabel(BuildContext context, MatchSlide slide) => <String>[
+  context.afriL10n.homeOpenMatchDetails,
+  slide.homeTeam,
+  slide.awayTeam,
+  if (slide.homeScore != null && slide.awayScore != null)
+    '${slide.homeScore} - ${slide.awayScore}',
+  slide.status,
+  slide.dateInfo,
+  slide.venue,
+].where((part) => part.trim().isNotEmpty).join(', ');
 
 class _MatchOverview extends StatelessWidget {
   const _MatchOverview({required this.slide});

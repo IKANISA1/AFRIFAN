@@ -433,6 +433,1632 @@
       "changed_or_new_images": 53,
       "report": "output/qa/full-stack-20260914/screen-typology-review-20260923/report.md",
       "owner_acceptance": "pending"
+    },
+    "latest_native_role_review": {
+      "date": "2026-09-30",
+      "source_head": "7fa5292248d5776c6e255aa39ab7acdd658f24e9",
+      "runtime": "Flutter 3.44.9; Dart 3.12.2; macOS arm64 flutter_test",
+      "data_source": "synthetic_non_production",
+      "review": "Implementer inspected all 68 old/new difference crops in nine local comparison sheets before copying only those images. These regression fixtures do not establish source-native pixel parity or owner acceptance.",
+      "source_references": [
+        "LIVE-007",
+        "NEX-007",
+        "NEX-010"
+      ],
+      "supported_roles": "Neutral grouped dark canvas/surfaces and blue on/grey off switch tracks with white enabled thumbs.",
+      "adaptations": "Explicit secondary icon/radio roles, selected blue rail, neutral light borders/shadows and progress tracks remove ungoverned library defaults. Foregrounds choose readable contrast for selected controls.",
+      "unverified": [
+        "Current native light/high-contrast source palette",
+        "Date/time-picker source geometry",
+        "Source-native progress timing and complete disabled/focus states",
+        "Native exact font/token export",
+        "Whole-system design acceptance"
+      ],
+      "comparison_inventory": "output/qa/revolut-only-20260930/native/golden-review/review-inventory.json",
+      "comparison_sheets": "output/qa/revolut-only-20260930/native/golden-review/comparison-1.png through comparison-9.png",
+      "owner_acceptance": "pending_current_bytes",
+      "changed_images": [
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600.png",
+          "previous_sha256": "4927c37710678ada9da70d1dc5b45ab43e021b2943c97a64addb521ecaafa319",
+          "sha256": "bf66329acc99fd79532520a726d53dc74866996ad16498fc0c948053fbf9046b"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/app_shell_large_screen_side_rail_hover_dark.png",
+          "previous_sha256": "812b891c690d8014c9fec1f8da78ec50138218a38eeb4912046d64a05134061f",
+          "sha256": "923edf69e2fe738f51102798f4a0b3fbdbf7af0474886e59d325d33e61311bfe"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/app_shell_large_screen_side_rail_focused_dark.png",
+          "previous_sha256": "927f33999306d613a733f8091c8d4bbfa515627d2233d15113ca9769142d7915",
+          "sha256": "794f3cda89bc57ad63263c6430a9e0279423893951bb84a2143be61833f2c4bf"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/app_shell_large_screen_side_rail_pressed_dark.png",
+          "previous_sha256": "8d5bb4836ddf1da6a6dfafbdd48c1bbe9843645f45efd68cae248ebfd2099e20",
+          "sha256": "8b30f1addf3cec84e5dfc4a05ce5b00328dcf7a56142f0777b3e5a4211f142b7"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600.png",
+          "previous_sha256": "4d80291ee96efc5d37a452f7b7419eb8bf7b92372fbf987f1f80e222b908ffb5",
+          "sha256": "9869f034913006484cee7b98e74b2d783dc4c55a7cf69d3a9e868d1bf428d4ac"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_interactive_state_catalog_900x1600.png",
+          "previous_sha256": "be2ad1b91ec0cb536f8a26c24abbf1062c437a51af71e430ffbb67da115d0411",
+          "sha256": "07c7e201c7deac328b1b8d807d1efee7a453d5c5d386183fb44798c58e0a615e"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_async_state_catalog_900x1600.png",
+          "previous_sha256": "14face67f76be4f9e72f5db2cfa6a6d83b3a0b6fd7f086bcf9b94875bcabc0e1",
+          "sha256": "88653662a33539529bea037fd92390d4e90a5827aef1734c07106115ad6cc1c5"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_input_state_catalog_1400x1600.png",
+          "previous_sha256": "cf002753fe0bcf6e42fe8a8ee095b925ae60a858056468b6db3f5c81fdc7721e",
+          "sha256": "b290ad93538d11e6a4f398d015b994c47d393cbff026d65124922452e6352489"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/contrast_evidence_light_430x900.png",
+          "previous_sha256": "8abd32bf8e1d368dbc0855887ea6d94c1f6e51a827bb8ba5da19a858d2eb5630",
+          "sha256": "90d89357b3cb3799ee2d6387e312c954f12c331830777fed63db1b23caef589d"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_media_state_catalog_1400x1600.png",
+          "previous_sha256": "f83f23d92b9dbbb1dd908719d217d6b3640bf45a7c9ae7f62d77948a789d9e54",
+          "sha256": "309d8501cca97063e464729df57ddbd59f29222d004289c1c0f11dbcc109a731"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/inputs_date_hover_dark.png",
+          "previous_sha256": "f2387e86f64d62b33c2131a282e800c5e13bbc9e2eed87e85b5fcb1a42b2240c",
+          "sha256": "eef8d4cfdf1b9f0f90c137bf2a026b36c5b5f5966cddbc8e7d7cf2b953b46b2f"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/inputs_date_focused_dark.png",
+          "previous_sha256": "fa66e53bd5e76cc251dd2c95b1acd35c18a7a9aae77890c105f690ae2f6d6768",
+          "sha256": "978de6f6ceefe21222db107342f06690285bcdcbb996ce7096640af7de3af86d"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/inputs_date_pressed_dark.png",
+          "previous_sha256": "27eac501722821d4ab88b4eb4806abc6871cc55a9c0f3a7040cd8c710299413c",
+          "sha256": "2764a80256fcc189953d0ddf2c4479dd2739085c5c30f3fb392047c90b55024f"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/inputs_time_hover_dark.png",
+          "previous_sha256": "98c218552dc2795f37d0cf5ba6ae3fdcb56a3ee157ca4cabd0efa6e8480f279d",
+          "sha256": "9246ab43d074717d387e66b06de861273fdcbeae144f9a7bd2da7b12754c223a"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/inputs_time_focused_dark.png",
+          "previous_sha256": "23ece218cfdd407ebed7e35c9e1738b61286ffe2e0bebfcee6af56aeef553c1d",
+          "sha256": "89ac2e87047954b5c752bee8a18c82f2022d358a1713168c2f6336d6375dc7af"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_security_state_catalog_1400x2200.png",
+          "previous_sha256": "4293d574150af51631c8cdfb563d10216334b3cb635ce55d373d77746d0321f7",
+          "sha256": "30f4ca074d3c428ffa18263098c3d9e494cdb7257b8144dc571f0f7cadb67396"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/inputs_time_pressed_dark.png",
+          "previous_sha256": "d9529f6c2051be3471164190e31611840a03e78921e2f33e9bfbfe5c41861e8c",
+          "sha256": "6bd58e196557c07d4cd0050c34d098219d6b97ebc50340e8b091016537c168b1"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_button_state_catalog_1000x1200.png",
+          "previous_sha256": "68599c81739e2423791aa90e65316d03aabbf6f8b84dd64f97b17804cc419901",
+          "sha256": "9785ccee3eec10331e9995e7403fb6a237065971a994fd84c1cf764f4bbb1e72"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/selection_radio_hover_dark.png",
+          "previous_sha256": "55b8a42ff4a0d81bccb3718b640aca21364330025985f3c2066b3555fcbd4953",
+          "sha256": "2ba86069509871910ad5ae835cedfdecadfcdc3ba1866f53a4380c8fca0adf8a"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/selection_radio_focused_dark.png",
+          "previous_sha256": "c45af137fbe6fb92681ccb02a05d3568f372db3ded6cb132034c084707cd7b33",
+          "sha256": "27507805f7680d66971a95f70da16dcf4660550c9bd89317c20d1d54a38c5e65"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_shell_overlay_menu_catalog_1400x2400.png",
+          "previous_sha256": "7828e9bf583f934e8a22db8d1cfac6e4ccb655b693ac9f94b500ab898b044938",
+          "sha256": "65ce78435b4c2e453d0d23f714cf4694777a530d29033ca9d0328f4e6d7070a3"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/selection_radio_pressed_dark.png",
+          "previous_sha256": "f8fd4a3763fcbf22c059e6bf8ca894eb0cffe1a67d7441c8ca84504f9682d4cf",
+          "sha256": "ff94fca77c88710ac819375194822aafeba6b2653c13db9b2d7cd00bb9c8665a"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/selection_switch_hover_dark.png",
+          "previous_sha256": "89438869b198eb0d75a072b82a913bd452a89707f18e366431df7ddfc408f79e",
+          "sha256": "0d704ef1ed5d8febe3801c09812a1d59e301914412f0386b4fccfecf147d76ee"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/selection_switch_focused_dark.png",
+          "previous_sha256": "864b610c2556cf18ec517746c960d990c1c5c698afc7752cbae2bc929452287a",
+          "sha256": "4af294a7be3e5c4b5a3c80a7554e4b33838df375f409db6202e319cc18ccf01e"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_transient_feedback_catalog_1400x900.png",
+          "previous_sha256": "19967b175fa627a9ce38be1f8ed1d63043408f4a6d7bc2eb2f3c16182a6406d9",
+          "sha256": "23155f752b388adcc1a78a12fba807ffca5a0bfeac22dc297f4479fa05e80be5"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/selection_switch_pressed_dark.png",
+          "previous_sha256": "7eb8f005029bc1ab928ba04d98b798214906410ef08d92df27e349ac37604462",
+          "sha256": "ff13da8b04b672d21a76904d5b7724c9c6855f7d1aec10d51e532813c6d5eef5"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_open_selection_menu_800x600.png",
+          "previous_sha256": "4531301454726d2fee9a5c2002ddc1bf65d7679ec30237d5b6d1b6bfd02bc434",
+          "sha256": "27b87e7fa98768b0d8c14806486af71d0234bcdb9e66d230badbb16146401635"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_form_data_catalog_900x1600_light.png",
+          "previous_sha256": "38bce515d249f7299183e8f4df6a549570d273d0f8fb8faeb3c2b161965eb336",
+          "sha256": "c331d0b9248fbf39c2c26dc0934feb7b7ebd50535b8a8041fbd6da6eb1254d09"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_media_security_catalog_900x1600_light.png",
+          "previous_sha256": "7088434f22266f21ac84e422f91162d8efc8c26b9349bf46cf47675084555309",
+          "sha256": "ca5f4e2a2f9653b2695df2562a6a289501d5c399074d3ace59e289c51780304d"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_interactive_state_catalog_900x1600_light.png",
+          "previous_sha256": "2aea508878b02201c6c71e588d0081e55b08722a3a15179d0dbf877074e61f1f",
+          "sha256": "68959bf0620d5c927e75e513d4d9538a4a6bfd9535f1ba806222bfa00994b0e2"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/navigation_large_screen_breadcrumb_hover_dark.png",
+          "previous_sha256": "068fb721fabcb3d83976f25a824c9dede977c3b63cd0c511f66b8679ea75422c",
+          "sha256": "6005dedec3d758179f15cbffc4ba1bcb6378ed09aaf47bd9af6ba7c8a20e3dc4"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_async_state_catalog_900x1600_light.png",
+          "previous_sha256": "ddd2219a56aed499c5154a3ee3dd9f5d3f853d38d5160121b1bbde3f16d99caa",
+          "sha256": "baa083acf0b45c76a9806f4171a8460803dacffcc3e27722542c1887fa7a1693"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/navigation_large_screen_breadcrumb_focused_dark.png",
+          "previous_sha256": "d3a5a7270ff91b4fbb927182d82e3efece23cf64a6b0382b66e2342872b4efcc",
+          "sha256": "d54858a9011831d56e8a46163399833550e4aa0a96e9c6d4bd2ca7b99c9d110d"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/navigation_large_screen_breadcrumb_pressed_dark.png",
+          "previous_sha256": "1f553c2700a1902347ec8dd314aedd10851e0c924c67e1f7ee1648b3b8708aa8",
+          "sha256": "227e122fd82870581104ec56a21b70d52f0ef8691b6fc44bf4a9aafcc9839b5b"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_input_state_catalog_1400x1600_light.png",
+          "previous_sha256": "c001be98975cef5dc45891fb0b85a05f75cb52568841f5af5444304441d28129",
+          "sha256": "776673b6047f59bd71f13525c49189a6243c9e2c1c670e228c58fafa1114f64b"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/media_document_preview_hover_dark.png",
+          "previous_sha256": "93052226564e422e165e52ae28e88bee71bdf508272a93c39c00d4487c9ce2db",
+          "sha256": "bbc9396dfefea5a0d73599824ef17aa44ccbf8d19ab9d3ce212a75bb7a4d7a70"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/media_document_preview_focused_dark.png",
+          "previous_sha256": "79767dccaf330464afcbe2b710246405d8033aa828eba08aac06a77dbffbc2b1",
+          "sha256": "9438b0b73bbf852df585feb5439a8b68b89b01bd776fdbccfdd84222a46a4e1d"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/media_document_preview_pressed_dark.png",
+          "previous_sha256": "157413ae0894ef0199d0287c2c37a8ebff03803511c7bc1a1bde475743bb1ec8",
+          "sha256": "a41f8ced7cc96b67bfa10c2421d55ed8b909a2cd70308d1690e7c332e112134d"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_media_state_catalog_1400x1600_light.png",
+          "previous_sha256": "752e2a574e7031fdcc1906e3af3b42bce4ea309965452bae064fc55aaf90008a",
+          "sha256": "38be5e160768116edb2f129a5ca0071263b5010ed2835a531a6f818976801255"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_security_state_catalog_1400x2200_light.png",
+          "previous_sha256": "67759405ca6a6ead35639c08542d755a8467cdd55b48842482771d5f63976cc8",
+          "sha256": "b367876d9404fcfe090da6d8c23264eb5aa76ca7bbe8497aea4d71940290469d"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/app_shell_large_screen_side_rail_hover_light.png",
+          "previous_sha256": "bdbadb10a6b8c4c1950475d8645f6d9b054b6d4ed57c58bbf886613fd2f0a05c",
+          "sha256": "cbf3964eb771c2f7bb7ee626f8f6823e70d5c25a8d7378507ba50ad06c281b49"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/app_shell_large_screen_side_rail_focused_light.png",
+          "previous_sha256": "f4aaadba8e3a4253acfe8fb1dbcae142d9955cadc1205ffc2b02533e51b5bbb7",
+          "sha256": "614e6b6976c528781a2d5d56332bf6885f8d3461117d8728785837a14a0cb4e4"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_button_state_catalog_1000x1200_light.png",
+          "previous_sha256": "f03d98b089070b0b2ad556b2ee84f1a4f6ca92b4ae110bcbb65ab0d0dfd440a6",
+          "sha256": "332dc7a5811e23cecffcc268cfb3adcd8c8db3b4784efde87ae84c354b5ac590"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/app_shell_large_screen_side_rail_pressed_light.png",
+          "previous_sha256": "8263410c7f7052aa7aef4b16f5a13558983a3196d4af5ae75be9f13551fcfc58",
+          "sha256": "c6f4a55afef45a535a8a97edad5e96838a564d6c3e63902eabca067d2340edc4"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_shell_overlay_menu_catalog_1400x2400_light.png",
+          "previous_sha256": "54c8af915f5a21513e022de33473d6836fb6307c5fdf6456f894764e9afa7876",
+          "sha256": "308c4e35a91f7e0b2bfb2ea48bf5aabd81392e4f7b3b0f61e5014055077c208b"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_transient_feedback_catalog_1400x900_light.png",
+          "previous_sha256": "db0c127c8a4e2dd50378db0c36055c1ae86107ba33ad2c26ee53f4895d9ce25f",
+          "sha256": "e91b90eeefd435836dbe780c1b6a8b5bc4c11aaf20d8a5ebf5de1e6de8361251"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/buttons_split_hover_light.png",
+          "previous_sha256": "ce0b61c342b219c1b352ad36113c196d95c3f3e6db076b340d20baf8a260089f",
+          "sha256": "59994149edea8d27c39d6aec3f3a2c89b66a3786be5318ca018775368fa5d4e4"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/buttons_split_focused_light.png",
+          "previous_sha256": "dece1ca201fdbf9cbad909e965db8b9c9e3d498457e7a901e00b759f5e86614e",
+          "sha256": "7fd3a905b793ca429e7a2c511d181b790489841c79d9a4750a3bc8f196394afa"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_open_selection_menu_800x600_light.png",
+          "previous_sha256": "7ba190f0a01f789c3fa79226917003d320f8feb5ebd086f248ba2db606b3cf09",
+          "sha256": "b258931ba44f6bb8f6ea7541fb86a771cb126e96bb03d643a4cbdf21e6258758"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/buttons_split_pressed_light.png",
+          "previous_sha256": "424122ca9f5d77c364f2e2272d3f644f0284665625f730e72b8e63078d27ad3f",
+          "sha256": "6fc180c61428f9d8ea934675e4f06a9d70b78e5f9432489110d61c310635216c"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/inputs_date_hover_light.png",
+          "previous_sha256": "0d45f9678ed48f44789b831c5ccd321b83ec4bb760c415629d0cb46be42dff0e",
+          "sha256": "4af5479476eb0df8d5dacfcdc496020626fba19260d1214077625ae63661f70c"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/inputs_date_focused_light.png",
+          "previous_sha256": "610b79e0a54499bda67811c107bc914386d64f6810acc25eb1b1d1c98b5ad072",
+          "sha256": "08c42096631418a8c6aaad4a3f58948d99572b4e5e3272b9f5dbf7fd4677fd27"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/inputs_date_pressed_light.png",
+          "previous_sha256": "daa882ce82bbd3ede8f2e0b9e06921e102e56cad426aba6797f670e7192b882b",
+          "sha256": "514724677c6ba87dbff25375d59cd5f4cfaf4c5104e620412b25dd0e998d7e87"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/inputs_time_hover_light.png",
+          "previous_sha256": "e55bb0880e0b1382155674d1800ea8095293d14dde84825e510eda8b38aec962",
+          "sha256": "ce5c97d76c6bfd00cb548100a730a211b6c839c358956e8b1a6f53f88a2649f3"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/inputs_time_focused_light.png",
+          "previous_sha256": "6047455c11ddb6e53d83f3e11cb2f5b978c22adecb3b926a310d6546b24c8e0b",
+          "sha256": "54bb2bc07d63e072c44a121e573212185e80f2e379e0aa32ba6251038893b8ac"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/inputs_time_pressed_light.png",
+          "previous_sha256": "8690d545f18ae89828cd82c566d9b30fb56083ae684bcbaccd7bdcfb98b0f64c",
+          "sha256": "18f7518ee58769f97f3482251fe857336a6ff48b39a96081e69549e6ac686554"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/selection_radio_hover_light.png",
+          "previous_sha256": "3863b5273a515304331dfa4e4b0e0f007dae48609a30979c22866d24cb33b15c",
+          "sha256": "1cd257de338631cefeaf134eb44e08af904f77e9b476a40588c8cbfc35d3debb"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/selection_radio_focused_light.png",
+          "previous_sha256": "4db26a2015bdddab339b2e1db4372965d68b77cbd88d7a5acec88c8fb2679b1a",
+          "sha256": "4ced38e0f429d490d5055b48702d3ffbb7eda7cd5095b9defa87bd7ade2bc96d"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/selection_radio_pressed_light.png",
+          "previous_sha256": "5a00b1a87e341cd6fda0cf9fd3dc996423223c1badc85972e55fbeda836a7099",
+          "sha256": "54988b21bd284479aaf9726977aff136340a50bb0ac84c503faba03de86f5ba2"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/selection_switch_hover_light.png",
+          "previous_sha256": "be5dd2d2884df38b2af1f6518bf8d122ab4af3b62265f81f737d08a1e9509bfe",
+          "sha256": "23dcdffdbeeaab46fcdb9b019108da5a6e137ece8a45b768b5e014f748aff2ca"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/selection_switch_focused_light.png",
+          "previous_sha256": "cab7ac3b041bf047f5b133fbb9abe90c7c8100c5c3bcca2c4e8edb8654f488f5",
+          "sha256": "c7d566a88733a3f545db98ef5ad3ab19660a86b9118f604ab87f5cd0e73226cd"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/selection_switch_pressed_light.png",
+          "previous_sha256": "878a384e08719f2d08f396e11ee5b7c54fb50b200d86003a67860045c2f6ef32",
+          "sha256": "afdd5aae15f35819b7114f91d8d94672a286dbcb5bd11c0e4a27105a53ca0ca1"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/navigation_large_screen_breadcrumb_hover_light.png",
+          "previous_sha256": "0d2320fad1d8efcc98043b99b1556e812fe9b431560582dac87e2bb8064fe094",
+          "sha256": "79f0310ab7851f023340490e285930fc4605e5c33ac053ffbb242853e078e22d"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/navigation_large_screen_breadcrumb_focused_light.png",
+          "previous_sha256": "211d84fefc32b7761545777d1163032342fae1ba3348f8ef8daa78b109dbba73",
+          "sha256": "b8411a6538d5901f4158f76128ef997163ee1e78c339375e06d13cb975168a5d"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/navigation_large_screen_breadcrumb_pressed_light.png",
+          "previous_sha256": "afacbd03068cea69529ceac640ca43d66c708ea652580fc7c991d5980785b127",
+          "sha256": "543460e0d870f81eec856a1b9824c0fc8b18f24de842e3db78478a40728e9b12"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/media_document_preview_hover_light.png",
+          "previous_sha256": "57bce8b90d5e0e58a8f5f657b1f7284bf63097ea9b186d2b474bd0dfa8a69cca",
+          "sha256": "683113fa5433e518a4c790b47bf15401061d8999c782dc81a2152600e0768aba"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/media_document_preview_focused_light.png",
+          "previous_sha256": "615c22b60b50429911b750bede1d7f8af37cb5568ac60f2c9a7f705c6fda743e",
+          "sha256": "d646eaea13211e7f07beb66c87a69497e5179acf141d6f5b02f15b6c548af89d"
+        },
+        {
+          "path": "packages/core/core_theme/test/goldens/interactions/media_document_preview_pressed_light.png",
+          "previous_sha256": "6d4203d08a72b38a75e359d7cf44f2344322728c9eadc61aa7fa9ec0393087bf",
+          "sha256": "451a72b3829a663e3749379b5ab7e69509c532bfa8003aa95ac15749a85c9c6b"
+        }
+      ],
+      "settings_route_review": {
+        "source_references": [
+          "LIVE-007",
+          "NEX-007"
+        ],
+        "implementation": "Settings grouped content uses existing 24px spacing role. The source shows roughly x24..382 at 406px capture width; native DPR/capture crop are not verified, so this is a measured layout adapter rather than an exact native token.",
+        "product_adaptation": "Preserves Settings title, profile alias, membership row, account/preferences/support sections and actions; source product identity and business features are not imported.",
+        "enlarged_text": "At 320px/200-percent text the icon and trailing gutter move above the label so Membership no longer splits mid-word. Dedicated test checks actual rendered selection boxes and retained tap action. Current source-native enlarged-text comparison is unverified.",
+        "review": "All 12 old/new route pairs inspected in four local sheets; changed margin/role/enlarged-text fixtures only. Selected Appearance state did not change.",
+        "comparison_sheets": "output/qa/revolut-only-20260930/native/settings-review/comparison-1.png through comparison-4.png",
+        "changed_images": [
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_state_loading_dark_390x844.png",
+            "previous_sha256": "d1b9366208e381d30ed1cec17e1045de896ad91266a3424a5aeab210ac74321c",
+            "sha256": "1a2090bead5a55ad6b95ee4eb4029eefa990e4416ef2339833f2a16c12d751b8"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_state_empty_dark_390x844.png",
+            "previous_sha256": "a7980075d98647297193cb3939e7958aee3844d3db6ef9fc655e72cd68f09c8c",
+            "sha256": "f2e5c7e70ce724c22d21fdeec657c06d2c2c18987ba21b4246955be1fef7935c"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_state_error_dark_390x844.png",
+            "previous_sha256": "42ff750e1e4425f7bcd53d000ddd252de5f2fbf678bdcf9a61ce68ccbe236a0c",
+            "sha256": "98f8666e0fa1c600fc47f50372d40d714f955439af3db253646b9098085887fd"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_state_offline_dark_390x844.png",
+            "previous_sha256": "2e340d74d1e4c8a229ef0b9a0aafd8371f6e8595feb9623a63ee2830aa883b17",
+            "sha256": "d01317795795bc6a193e868653e63f058a6eca6eca2aab5b5755ab5c0fa63006"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_state_permission_denied_dark_390x844.png",
+            "previous_sha256": "a0c48699ef9c8511028ededd0cbd283931bca95c398b5bd0ee3031afd9300515",
+            "sha256": "53ae81cdbf0b901c51c74288bafbf3023519a8833f2fac69d8c61aff25be5476"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_state_disabled_dark_390x844.png",
+            "previous_sha256": "cf42a66c7c24f33c4be8fd0f3ba43a485f2c461dbb9fc3fb5ac90577565a5d71",
+            "sha256": "4789bdeba29223a183014808bfc298faa688cecc65fa77403994a5dfa3d13f72"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_state_focused_dark_390x844.png",
+            "previous_sha256": "3a9df60199c9bf9f5c69e9a9080f38a44b10eaa61a83f03d71ae2a28ffef6e87",
+            "sha256": "7e67427a2223a097aceb273b7068ea1abe96e34276bf74badd3b0a46a74a49d5"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_state_pressed_dark_390x844.png",
+            "previous_sha256": "d737b7b663aad2d25868f277907c4cec7e02e91f627e906c1b56bea5c25aa6e1",
+            "sha256": "f8992ff8b804e4a2867c16f07cd7e1bf19405b2f2ce9bcd782a3e1ec4e99cea5"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_state_large_text_dark_320x720.png",
+            "previous_sha256": "9d5d925013cd9bc06e05ce913d1c2a096c87353eb6bb755bbd53a36c8074c01a",
+            "sha256": "c0a5f193323ad3019c8df74845290bc8062e70f151218d086cf092b41a1f423b"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_state_syncing_dark_390x844.png",
+            "previous_sha256": "09950d733759467d976c08a47b90423c4392121e3ac71c34bb3fbe5d5f026f6c",
+            "sha256": "f1329cd3659332842fd8cef8633b59c8ea4cd8f74642eca07ecc28f628b1c331"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_state_conflict_dark_390x844.png",
+            "previous_sha256": "a5c63c3e2f9f47d98c983597d8905dc2e7d6c8ba0a8b6c0d568767cb5da1450a",
+            "sha256": "3d3226462767f68595067d50d7a71ffbd73ffccc652ded76cd222b9c6dbdd6c0"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_state_security_timeout_dark_390x844.png",
+            "previous_sha256": "0d811c43e5e85ef282ccd87ba6923a2f584aa1f0f36eb497985280fc437a50f3",
+            "sha256": "b5b43f4fa78a188358e845ba5db85ace4a2d77939d4ba4be27529b23e046a3f0"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_compact_dark_320x760.png",
+            "previous_sha256": "6e955ce85689b381b9bff3c458220530b4e4713c5d44ad67cc7f6f1efc035e1d",
+            "sha256": "f0c55af2299e697f413d0bea539b812019a0a14a4a0312279d7f1d500132c86f"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_compact_light_320x760.png",
+            "previous_sha256": "4c4490348c697077adc0b32c576fbfacb233edbb32368dbf311c7f5e420cd393",
+            "sha256": "6b49007d8a371702d37c27f94f9da53b07cf1b05fe5a4995a5ff54ac4dcaa18f"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_compact_dark_374x812.png",
+            "previous_sha256": "8273c2b30b6c66292b57faf38ab804f50ad8e71c8fa761d8fe7b6c515f35b0af",
+            "sha256": "2469c6833ffb47065dbeb77ae02372ad723bd78eb67d9d36af7a95ed9acebbc9"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_compact_light_374x812.png",
+            "previous_sha256": "e445eefa614b60e713b14d296f58a86ad384ba523445c4dc55fe59b97e518605",
+            "sha256": "1bcefad2ae7992e8f5d728437d7aa44b0e93e0fa747440e981ff89e052634294"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_standard_dark_390x844.png",
+            "previous_sha256": "4802295412af08b3905cd68a27d7ff4beeb7850937a9186f49f7df414c34ebcb",
+            "sha256": "7b3b4c8e1b2d192fbccce68385c633abaa40194e576d1bf3d174befeb137a1c8"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_standard_light_390x844.png",
+            "previous_sha256": "9319e9a7ff29ab2619962052d47f96ed9b5e75587aba0ecfd55401a30f149cfa",
+            "sha256": "25d9a1548814e68eb7ba8ecb6cd9f39983f8056119c35a6d46865e941111a097"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_dense_dark_393x852.png",
+            "previous_sha256": "ba12a6e01ac29dca2fd6abb9b1f7c233f46b35bcfa484b2428b3c9f08bd97ccf",
+            "sha256": "1b429ad7a5470b20b04302243aa220d934763f70d3d4fda792c025ef19bc4083"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_large_dark_430x900.png",
+            "previous_sha256": "1556da77ee49ff151c65f950ebe0bbb504c3b4b7a268b9d3340a164b813a026b",
+            "sha256": "17cb45a5b3be2726b7f5bdb2d5af0265c2876bca69ecad324dcc77e63901dbc6"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_large_dark_599x900.png",
+            "previous_sha256": "0b15382b04be18c8ff8674a91dbd5d9b12638e0c81ad93b8424546b0c4556e83",
+            "sha256": "ffb92dfeeee7d87b9c4420336a00b9be8c8745c13f36e6575e7038db4f375e63"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_foldable_half_light_674x842.png",
+            "previous_sha256": "21b8503f14c0e5c6e9ec6c5215a1eb6305e018735855354544766529f6a372f6",
+            "sha256": "651b5082fbda172fb92c8dc39a36586650a6dd12633ad157477442e749a2ce2f"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_tablet_dark_720x1024.png",
+            "previous_sha256": "86d0edb92d2a1b760af1e4e3ddddeb04e2243bc3f732c36a512299ebcd71010a",
+            "sha256": "65a2001ad5249c2ce136431d690e1d6b87caf69dd852436de8830ebc56f118cd"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_tablet_dark_834x1194.png",
+            "previous_sha256": "1f3274eba7609e05db21418db49ba05aa97ac3970f6fb54e6352d076cfcce981",
+            "sha256": "a645ea3a151f6fe3af679bc41054aa611997196ca271af457446798e0cd48e0e"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/settings_high_contrast_light_390x844.png",
+            "previous_sha256": "ca49ff39fce5927571f76fd0abe1198869df0d5d9b851688d52a9afa25f2918b",
+            "sha256": "a3f8a2c68965e816c801ac1a8ea327c14c6ddf1264cb13a3aaabf0b6e853a51e"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/privacy_state_offline_dark_390x844.png",
+            "previous_sha256": "52ca0cf9c781dd5581ccb7b158ed6802887fe7e60425ebab5efaec0520580329",
+            "sha256": "81f0c97af28531bca3e6d590badb41013f480aaae21a85569c5723d88a1ac58c"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/privacy_state_disabled_dark_390x844.png",
+            "previous_sha256": "59a0f33bcb21431caeabfcfb669f1255de8e02fe1dae04b49146210a4fca3a8c",
+            "sha256": "741fee39a4a3d657798e44838e84be187859d691796006c7e4800f27746f9d5f"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/notifications_state_light_light_390x844.png",
+            "previous_sha256": "633d003677d145cc8c8df35ff795f42f63bc74e2e6d0f2fc4b9e9e1e35c4c48a",
+            "sha256": "7cd808dc7845baf5ccb77ea46d7bd3e5d0fd449e27967cfd69c0aac043dc017e"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/privacy_state_focused_dark_390x844.png",
+            "previous_sha256": "959261c8c9bc4dcc0414b93336f3869e9808d9c0306add80a9800423dae8b14d",
+            "sha256": "54021a579808aef4032d944be071271dbf9c2ae1d8ee23432ab9d9b035999dfb"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/notifications_state_syncing_dark_390x844.png",
+            "previous_sha256": "e5e670b6e2c61c9d3dad70867ae16b523e8376ae2b5452babc85a7d7326b595b",
+            "sha256": "1a5ad94316ac502ce497da48ac5ffa84bdea2ad7bcb72061b23883ddb575ba68"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/privacy_state_pressed_dark_390x844.png",
+            "previous_sha256": "430ee9d3a885e3e1b433add7d32b99d67ecee8b9b196a10691b43e80b519a385",
+            "sha256": "51fbd9c2b6fb9aab2da147c802e0bce57815489108e2436c7b4f16a9ee0cf44a"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/profile_state_selected_dark_390x844.png",
+            "previous_sha256": "d19d5f4e0e7527af0bdb4c568733123ad706fbd3347e3e1b81bfcb75d3ca21a6",
+            "sha256": "56548e8672c545b4cd87c9d9fcf2f617c3fd6e6cd656499b5e4610efc21d126f"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/privacy_state_selected_dark_390x844.png",
+            "previous_sha256": "7ba3aaf369d27aaf96ecaaeb90c5a1ae89a0538ef74f91f1a6eb8ea2857718fd",
+            "sha256": "254aacbd0f6a9adf1e9beda6f6570e3474eb184ec54b69bdc16d75376c35e4c0"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/notifications_state_security_timeout_dark_390x844.png",
+            "previous_sha256": "212725a37075a5d03896559aa161fd2f1c77dfa87333e00d632b125b0f20eb6c",
+            "sha256": "721d58cdfff656f23c331218d698a1fdd807e92d6cab89e3e03233eefeda8487"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/privacy_state_reduced_motion_dark_390x844.png",
+            "previous_sha256": "705e44d2b4d2ea032e8833623ad11dc9a8d08f5ef20e1d84fc7293c99698758d",
+            "sha256": "de4e90b56101d11ad54457cb20aead60edc31771c123793b19a65a33a5203cf3"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/profile_state_syncing_dark_390x844.png",
+            "previous_sha256": "a59cca18463e52e420d0bf9d416bd259bd8224fc0052ab6a53962364f020d044",
+            "sha256": "683661812600caad765c9460ccc9061a65fbccef524624559c36289ee5d4b4c5"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/privacy_state_dark_dark_390x844.png",
+            "previous_sha256": "705e44d2b4d2ea032e8833623ad11dc9a8d08f5ef20e1d84fc7293c99698758d",
+            "sha256": "de4e90b56101d11ad54457cb20aead60edc31771c123793b19a65a33a5203cf3"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/privacy_state_light_light_390x844.png",
+            "previous_sha256": "67f8f80cf829e6e754c56facdb621722c8ad7e8d21c786909268f5a680e38d96",
+            "sha256": "d40f6eb94771b55bcf5f2841787c840fcebaf5766f84a1817b6dcfb6484b5cf6"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/privacy_state_syncing_dark_390x844.png",
+            "previous_sha256": "ecea540d6ec2d36eb4eaa129477778146b5022e130e798ed8c4f7c02e8d92404",
+            "sha256": "1616f34a46cc3a17bccf20da53bec27bb2b5e8ca15c3784f94c8544cca621bc2"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/privacy_state_conflict_dark_390x844.png",
+            "previous_sha256": "d083ebbc8954ba57435f480097a95f83d870847a7b8b2da214986b785c52cecc",
+            "sha256": "f9ae52f2cde66008998b53a8d6ba2b9c473b28af9ea5fb722f24c373df97b1ef"
+          },
+          {
+            "path": "packages/features/feat_settings/test/goldens/privacy_state_security_timeout_dark_390x844.png",
+            "previous_sha256": "4073a4cd99132ed17ae5bfabcb72416bcbe9ac559ce35d0656ff9d5964f75388",
+            "sha256": "ea574b2df8a9b6d1c6c6d5245b72cd2a2b7ee81a575adca02cd0785701afede8"
+          }
+        ],
+        "responsive_review": "All 13 responsive/default light/dark/high-contrast old/new pairs inspected. Insets change from16 to24 using the measured native grouping adapter; product content/scroll actions stay intact. Current source-native light/contrast/tablet comparators stay unverified.",
+        "responsive_comparison_sheets": "output/qa/revolut-only-20260930/native/settings-responsive-review/comparison-1.png through comparison-4.png",
+        "control_review": "All 16 Settings child-route difference crops inspected: grey-off/white-thumb switches, explicit secondary copy and selected text, progress track and neutral snack surface. Source NEX-010 supports enabled on/off switches. Full native disabled/focus/progress behavior and current native light comparisons stay unverified.",
+        "control_comparison_sheets": "output/qa/revolut-only-20260930/native/settings-controls-review/comparison-1.png through comparison-2.png"
+      }
+    },
+    "latest_digest_correction": {
+      "date": "2026-09-30",
+      "source_head": "7fa5292248d5776c6e255aa39ab7acdd658f24e9",
+      "scope": "Correct stale Home and gamification digests already mismatched in HEAD. Every corrected image is byte-identical to HEAD; no image was regenerated or visually approved by this hash correction.",
+      "image_count": 38,
+      "visual_acceptance": "unchanged and unverified by digest correction",
+      "changed_manifest_entries": [
+        {
+          "path": "packages/features/feat_home/test/goldens/home_state_error_dark_390x844.png",
+          "previous_manifest_sha256": "4c3caf3a019e01f50d348036c007a4de5f599a3778177a1d22891e81d89ba153",
+          "sha256": "79c7186e05801b1230f732113f934deaf712d53d9b031893cf6e423c557a95b3",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_home/test/goldens/home_state_offline_dark_390x844.png",
+          "previous_manifest_sha256": "6ec1f2ab457c6e818555fd207d6e31ad55fa5c556a9ea453ba728d4378b85fc7",
+          "sha256": "f405e9cffd110919cb2c092867c9199f40abf73fada1e692a35263993a47171e",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_home/test/goldens/home_state_selected_dark_390x844.png",
+          "previous_manifest_sha256": "852512019af94842df893897ad70113628713e6683a0d8a1c9e27c7968842e8e",
+          "sha256": "8aa61be7e2834a65c401c3e08834fef07d4d5b3c9584f69116f74334f76a002c",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/match_detail_state_conflict_dark_390x844.png",
+          "previous_manifest_sha256": "efff2831124aea70c0f01a82f91227b01cdfb83809dd65e546fe1ce1150b8fce",
+          "sha256": "41b2f89d1bf6c36940cb23f3a146f1ac81216e02a7769f4ae52d20459f9ddddb",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/match_detail_state_dark_dark_390x844.png",
+          "previous_manifest_sha256": "55b81eee562cb3ec76d8925b7bc2164d496d99d3ad1a4fafad513a5f243eb72e",
+          "sha256": "db6c3c4fc2c81453b61c42e47e7ba60875ea33af2fe00984e79a149b76fcd85f",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/match_detail_state_disabled_dark_390x844.png",
+          "previous_manifest_sha256": "91e502c9d5a648ad85ce92803700ba3e44a97ff79b996972fabea8891f9620ec",
+          "sha256": "0e8020ab0e9ac3fb0ecb608773e4a3b0a9a93af020f0fa4c1558dae5b09063af",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/match_detail_state_focused_dark_390x844.png",
+          "previous_manifest_sha256": "3fc6ecf12186fa542067cc344e2ae5cdeb05b4b9e8c9c6c6312e3b72fe866e16",
+          "sha256": "c8c75255d9e06b3957041a1f354ddadaf51d487539c93c849c18e08b389e8db5",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/match_detail_state_large_text_dark_320x720.png",
+          "previous_manifest_sha256": "f8c581687ae76fbdc8ad10b2b9e559578b34c61d39093e40dda36a677b74171b",
+          "sha256": "1bf168b9f7a1b10422f95abe8dd9d71b6cf300998567ec6ca8e0733f1fd0685b",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/match_detail_state_light_light_390x844.png",
+          "previous_manifest_sha256": "f06e839834a97e15d17d1b08478a699406a7315ce65b284958141ceee30b07f2",
+          "sha256": "3a66e8571d8efc0486158450459234242ab0273627e41f8cee074469def7b3ed",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/match_detail_state_offline_dark_390x844.png",
+          "previous_manifest_sha256": "f635d301b190e34eab57ec962d101913d71e4b977dcc73fe43722887c0c7fd14",
+          "sha256": "9ef3fe0f955f09f7e20dd7a2b687a7d3df5678d97fe5c62d9ff97a72ff28dbb8",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/match_detail_state_pressed_dark_390x844.png",
+          "previous_manifest_sha256": "7f3ba92c9c7ece30ed871f1e23151a7cee0ec21c02c342eea17a3a061f9ffbbb",
+          "sha256": "c0b28642d57a3427c1b8642388b52847143105ea21d8a3e1b52e1092b800f03a",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/match_detail_state_reduced_motion_dark_390x844.png",
+          "previous_manifest_sha256": "55b81eee562cb3ec76d8925b7bc2164d496d99d3ad1a4fafad513a5f243eb72e",
+          "sha256": "db6c3c4fc2c81453b61c42e47e7ba60875ea33af2fe00984e79a149b76fcd85f",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/match_detail_state_selected_dark_390x844.png",
+          "previous_manifest_sha256": "7e953aca85e46681b6d36adaba1447a311eac0d1eebb9d933e6fa4b99592cd5f",
+          "sha256": "a3b10bd0e60e924ae1faad681d9c78a4f2ae32ba8064a161c662b2dfdebb1274",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/match_detail_state_syncing_dark_390x844.png",
+          "previous_manifest_sha256": "540b1efb4c08d926b8f9f60c17d7d5f96126a533f590366f5178f76d006d80ec",
+          "sha256": "88f7680b7c07e2211de2d01af6b20b25fde419d6c9559c99fc235929d3a0c03a",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/share_card_state_conflict_dark_390x844.png",
+          "previous_manifest_sha256": "ca4325b0341ea283915f9422d83121aa0860af278f10070c284dee3679e2bfc3",
+          "sha256": "35f10605a7fb8aa08582d256c559eda3f941c1ecec091770cc8fb14bd87fc0a1",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/share_card_state_dark_dark_390x844.png",
+          "previous_manifest_sha256": "7662836c8220567b72abb3a5d4ddc08fa0187809f8f87090c7d623f1072b49f7",
+          "sha256": "96c9a8c2f60aab009a7c8d9a50db713c2e569a2ebe873d5eaf155a9460c0c151",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/share_card_state_focused_dark_390x844.png",
+          "previous_manifest_sha256": "082512c9280dfbf739202dec25e7069876263d03d877f935634714ef158fca27",
+          "sha256": "1f50d87b00ed50aecac481c42b453d481bd4c64bfec8b233f90c90c8e06164ad",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/share_card_state_large_text_dark_320x720.png",
+          "previous_manifest_sha256": "e9213dbcc0b66bcaabcb38d0f613d744fcdae9ff74f2773d8c68b8795e27af1f",
+          "sha256": "40656e7a1eeede33abf1bcd19e821f4305ddb06854bec40e7432ab93bf6b1da3",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/share_card_state_light_light_390x844.png",
+          "previous_manifest_sha256": "9c77a8b15c7bfcde2fcbb9edb30b1798356904d8363d6cbd79b0d31e154d058d",
+          "sha256": "6284194753bf94acdfdd03a14f74f0299869bb38201b52d86e6242ee6520ed37",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/share_card_state_offline_dark_390x844.png",
+          "previous_manifest_sha256": "0bebe961e2f1d298a60394a1b153cdf946de6b5494d8554f11934539131eaa34",
+          "sha256": "7f575c72b3d72fde26f2c34aa5100ae50e4c5ac8bab76301964dc03f281eb5b0",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/share_card_state_pressed_dark_390x844.png",
+          "previous_manifest_sha256": "e0940606d04731fa5fcbaa6d7ba43be7003ecdaf11e52f7107ac791c3ec0643f",
+          "sha256": "8b20b01c4551a47f9018eec043c1529fd070a8780d0efdff8a53343ca39ffb14",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/share_card_state_reduced_motion_dark_390x844.png",
+          "previous_manifest_sha256": "7662836c8220567b72abb3a5d4ddc08fa0187809f8f87090c7d623f1072b49f7",
+          "sha256": "96c9a8c2f60aab009a7c8d9a50db713c2e569a2ebe873d5eaf155a9460c0c151",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/share_card_state_security_timeout_dark_390x844.png",
+          "previous_manifest_sha256": "f9b27806f59fe827642cd8b46197907fd187df40f1f6fcc14ddfc0a12f7c5028",
+          "sha256": "e359a4ee03108b8909c99cd8a3b3dca9033c28a1bca993d2684e9a1f983bfde9",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/share_card_state_selected_dark_390x844.png",
+          "previous_manifest_sha256": "e59d47c1b2d4eef2c13c958a8a944cd7f965e5600d35c407c85fe0b31df390f5",
+          "sha256": "861fd5afa37afb0d07ae275f31ed89f701bb22017ccc7003ecf4eedbd78a8c7a",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_gamification/test/goldens/share_card_state_syncing_dark_390x844.png",
+          "previous_manifest_sha256": "95d7db7dd633e0d8cc2d5bff2e7dab7dd2908e8c919344469c67554da0d8a352",
+          "sha256": "5c4a15e77a3a5eff635e79fae21ae8cc36dee201b0d4af70dc9f8de737c99626",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_home/test/goldens/home_state_populated_dark_390x844.png",
+          "previous_manifest_sha256": "640c670aafd992c068ee6ca94272a9fda669527faf1c33e949d3da1193119b83",
+          "sha256": "f96ecf4ebb1de3ccb5d780bce17b995cdf4e2cf500eea506a3c0cd814f280bfe",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_home/test/goldens/home_state_club_vitalo_dark_390x844.png",
+          "previous_manifest_sha256": "e7329e11739ed431a6933bfe4164578b0c2aca276fa96f684dbee28b875862b9",
+          "sha256": "9e6d6a4c16eda8e421c34c4e0a63a650a7fe640dc4957d159b126ca267dd0ea3",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_home/test/goldens/home_state_club_rayon_sports_dark_390x844.png",
+          "previous_manifest_sha256": "bd69377cde6f249886bde0d12dce1c0862dc161972465feebc969713b8d43504",
+          "sha256": "c0452cd499bbe8f6fe7567eff48750043ef95f794d0dd1cd786b89c7ad6dc239",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_home/test/goldens/home_state_club_nkana_dark_390x844.png",
+          "previous_manifest_sha256": "3815a4dc3a91058220f30f1b80ea3a45d7f372cf67f8351557c72adf08558fd7",
+          "sha256": "041e5ce685b5f5de47ec5f66f6e5b78810de04e80db7c69b87c883cd49a8ce2e",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_home/test/goldens/home_state_club_as_vita_dark_390x844.png",
+          "previous_manifest_sha256": "f9e88b2ca82fafe2db5dd7f76004d09f9eb19c5970fe8d8ffbfd091fa9ca3262",
+          "sha256": "079c9b2f73a5b17b73a1d366097d861d7ebfc966a6d4da129011dfda4ebd520f",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_home/test/goldens/home_state_shortcuts_collapsed_normal_text_dark_390x844.png",
+          "previous_manifest_sha256": "6ff8f123f411ae11f06ae7eb296ed0dcc8d871fb53b8569f5fa294a5c683fbfc",
+          "sha256": "c886430adaf552061e94b3bd44b528d73e578220a4d970fb4e48b300233a7edb",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_home/test/goldens/home_state_shortcuts_collapsed_normal_text_light_390x844.png",
+          "previous_manifest_sha256": "b217620b6b374cb368720134ed6e320d71389e1443212918a3a17de1ecb14ed8",
+          "sha256": "fc7ae0d9afe3aa5320f62acc7ac837f17517b0ca113b2f02b035468de9746e32",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_home/test/goldens/home_state_shortcuts_expanded_normal_text_dark_390x844.png",
+          "previous_manifest_sha256": "ee590bd7e22f1cc8cb78769c921ec25c3029ba297e60a94facd68d8c5e7d15a1",
+          "sha256": "c9a90f17c6fedc0c0c77de4e1ab44e026f7dc61d99027a3ad5340d91830a9278",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_home/test/goldens/home_state_shortcuts_expanded_normal_text_light_390x844.png",
+          "previous_manifest_sha256": "8afd00de321910a26dd1cf44dee6b1e889b5d3c2619cb92fb7ae4f28d3e017ad",
+          "sha256": "0f6e22bffca71239a2a5dab5456bc68de05a292d869e81ada70c84386e89f2f6",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_home/test/goldens/home_state_discovery_active_predictions_dark_390x844.png",
+          "previous_manifest_sha256": "94c29b7dda382e526b5e739028ae8d796f696f6f442bc5468733e23c523a0750",
+          "sha256": "4fdbae59bc6997aed702d2afa4e9f65844dc16a47e84a56c83aa41fb82bb2672",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_home/test/goldens/home_state_discovery_active_predictions_large_text_dark_320x720.png",
+          "previous_manifest_sha256": "6d4574fd3d9447e602f8b98a1d5d4e2011679b1e9c541c3fa9cc194479eb1cce",
+          "sha256": "e61b778f3f14bd4991e87467dc653fc42fe7a4c0b356daf2a5c1bd649fe6e6d6",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_home/test/goldens/home_state_discovery_active_predictions_large_text_light_320x720.png",
+          "previous_manifest_sha256": "5b02329e0387e8bf8f095a4ed32772ec9f0cd0517046b539233ceb411b43f656",
+          "sha256": "626c87fe902191799beb82410915c407af406522fe2ab04c4c11f5a4de0b809f",
+          "image_bytes_unchanged_from_head": true
+        },
+        {
+          "path": "packages/features/feat_home/test/goldens/home_state_discovery_active_predictions_light_390x844.png",
+          "previous_manifest_sha256": "a7f3d2fec8eb850121cb1692b606bf289c26daefa9ad03407f7a6a6698e11107",
+          "sha256": "c884565272be644a4a12c0ff20b61e9930498c39c08475606b5f9cd2f1bc8793",
+          "image_bytes_unchanged_from_head": true
+        }
+      ]
+    },
+    "latest_candidate_shared_role_review": {
+      "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+      "evidence": "output/qa/revolut-only-20260930/native/candidate-core-review",
+      "owner_acceptance": "pending_current_bytes",
+      "native_exactness": "Selected chip exact native typography and light-mode source remain unverified. This is a contrast adaptation.",
+      "changes": [
+        {
+          "path": "packages/core/core_theme/test/goldens/universal_interactive_state_catalog_900x1600.png",
+          "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+          "old_sha256": "07c7e201c7deac328b1b8d807d1efee7a453d5c5d386183fb44798c58e0a615e",
+          "new_sha256": "910422e4a4daf2e896d70dd883e82aad4d79beaa7290a873e372e6dbccd17ced",
+          "review": "Only selected choice-chip text changes white to black on blue. Geometry, sibling controls, and all content are identical. Source supports blue selection roles; exact selected chip native typography is unverified. This foreground correction preserves required readable contrast. No fixture changed."
+        }
+      ],
+      "overall_source_tree": "3aefa42a6ad75798c687fb283e0dfb2fd0ee22d2",
+      "shared_feature_review": {
+        "evidence": "output/qa/revolut-only-20260930/native/candidate-shared-feature-review",
+        "initial_test_result": {
+          "passed": 68,
+          "failed_pixels": 43,
+          "non_image_failures": 0
+        },
+        "all_pairs_inspected": 43,
+        "changes": [
+          {
+            "path": "packages/features/feat_gamification/test/goldens/match_detail_state_focused_dark_390x844.png",
+            "old_sha256": "c8c75255d9e06b3957041a1f354ddadaf51d487539c93c849c18e08b389e8db5",
+            "new_sha256": "262fabda2ea127e8eea1b4b6549d28d43f273ec4085ca9c0209f5e84100cf94b",
+            "bbox": [
+              21,
+              19,
+              375,
+              425
+            ],
+            "changed_pixels": 89054,
+            "total_pixels": 329160,
+            "pixel_change_percent": 27.0549,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Explicit semantic modal scrim darkens only the underlying match page. Sheet geometry, all data, all choices, and CTA stay identical. Current native account-selection source shows a dimmed underlying page; exact opacity is unverified.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_gamification/test/goldens/match_detail_state_pressed_dark_390x844.png",
+            "old_sha256": "c0b28642d57a3427c1b8642388b52847143105ea21d8a3e1b52e1092b800f03a",
+            "new_sha256": "b8d5e8d2f448e0d1a6237bd0e00893345fa3e6b0c2e1a36c44684b7d492b3bbb",
+            "bbox": [
+              21,
+              19,
+              375,
+              425
+            ],
+            "changed_pixels": 89054,
+            "total_pixels": 329160,
+            "pixel_change_percent": 27.0549,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Explicit semantic modal scrim darkens only the underlying match page. Sheet geometry, all data, all choices, and CTA stay identical. Current native account-selection source shows a dimmed underlying page; exact opacity is unverified.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_gamification/test/goldens/match_detail_state_selected_dark_390x844.png",
+            "old_sha256": "a3b10bd0e60e924ae1faad681d9c78a4f2ae32ba8064a161c662b2dfdebb1274",
+            "new_sha256": "d0d35200873338ccd739ab74afd9be07c107c925645c6ce4aa7589e9821dfbd4",
+            "bbox": [
+              21,
+              19,
+              375,
+              425
+            ],
+            "changed_pixels": 89054,
+            "total_pixels": 329160,
+            "pixel_change_percent": 27.0549,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Explicit semantic modal scrim darkens only the underlying match page. Sheet geometry, all data, all choices, and CTA stay identical. Current native account-selection source shows a dimmed underlying page; exact opacity is unverified.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_gamification/test/goldens/share_card_state_conflict_dark_390x844.png",
+            "old_sha256": "35f10605a7fb8aa08582d256c559eda3f941c1ecec091770cc8fb14bd87fc0a1",
+            "new_sha256": "f70733f1a54b54e7b0c111abf62c2ff0bc54e4b5a9f464f6c83e1bb596089f3b",
+            "bbox": [
+              48,
+              377,
+              342,
+              378
+            ],
+            "changed_pixels": 294,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0893,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only the existing divider takes the explicit semantic outline color. Measured region and all content/layout are unchanged. Dark grouped surfaces support this role; current native light/source geometry remains unverified.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_gamification/test/goldens/share_card_state_dark_dark_390x844.png",
+            "old_sha256": "96c9a8c2f60aab009a7c8d9a50db713c2e569a2ebe873d5eaf155a9460c0c151",
+            "new_sha256": "59df4dd09bfafeac58c28a96847534e66cc68149225a6e7643ab27d276c5e7a2",
+            "bbox": [
+              48,
+              271,
+              342,
+              272
+            ],
+            "changed_pixels": 294,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0893,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only the existing divider takes the explicit semantic outline color. Measured region and all content/layout are unchanged. Dark grouped surfaces support this role; current native light/source geometry remains unverified.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_gamification/test/goldens/share_card_state_focused_dark_390x844.png",
+            "old_sha256": "1f50d87b00ed50aecac481c42b453d481bd4c64bfec8b233f90c90c8e06164ad",
+            "new_sha256": "1a3bb834704523a9c0dc6a2ca8c9f0da39b76c107affcadf581dfd2b98e71a0f",
+            "bbox": [
+              48,
+              271,
+              342,
+              272
+            ],
+            "changed_pixels": 294,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0893,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only the existing divider takes the explicit semantic outline color. Measured region and all content/layout are unchanged. Dark grouped surfaces support this role; current native light/source geometry remains unverified.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_gamification/test/goldens/share_card_state_large_text_dark_320x720.png",
+            "old_sha256": "40656e7a1eeede33abf1bcd19e821f4305ddb06854bec40e7432ab93bf6b1da3",
+            "new_sha256": "c7459796bfdcf449026a9d43b3bfc2fb242f75c6d334f9fbc4426b8e3e4dc774",
+            "bbox": [
+              48,
+              212,
+              272,
+              213
+            ],
+            "changed_pixels": 224,
+            "total_pixels": 230400,
+            "pixel_change_percent": 0.0972,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only the existing divider takes the explicit semantic outline color. Measured region and all content/layout are unchanged. Dark grouped surfaces support this role; current native light/source geometry remains unverified.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_gamification/test/goldens/share_card_state_light_light_390x844.png",
+            "old_sha256": "6284194753bf94acdfdd03a14f74f0299869bb38201b52d86e6242ee6520ed37",
+            "new_sha256": "0e0b4811c38ec4082f94ba6071af539e3be9634266a438381a5e0a80c8072a09",
+            "bbox": [
+              48,
+              271,
+              342,
+              272
+            ],
+            "changed_pixels": 294,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0893,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only the existing divider takes the explicit semantic outline color. Measured region and all content/layout are unchanged. Dark grouped surfaces support this role; current native light/source geometry remains unverified.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_gamification/test/goldens/share_card_state_offline_dark_390x844.png",
+            "old_sha256": "7f575c72b3d72fde26f2c34aa5100ae50e4c5ac8bab76301964dc03f281eb5b0",
+            "new_sha256": "b1d8207b1d0b6bd2ea8602016352d8ed766864b815fbf59e5065bd910c22ba63",
+            "bbox": [
+              48,
+              377,
+              342,
+              378
+            ],
+            "changed_pixels": 294,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0893,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only the existing divider takes the explicit semantic outline color. Measured region and all content/layout are unchanged. Dark grouped surfaces support this role; current native light/source geometry remains unverified.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_gamification/test/goldens/share_card_state_pressed_dark_390x844.png",
+            "old_sha256": "8b20b01c4551a47f9018eec043c1529fd070a8780d0efdff8a53343ca39ffb14",
+            "new_sha256": "44872bbec2d5bea2d9617af4feb5241b057a0d44ac61a8fa44fff36dda784388",
+            "bbox": [
+              48,
+              271,
+              342,
+              272
+            ],
+            "changed_pixels": 294,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0893,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only the existing divider takes the explicit semantic outline color. Measured region and all content/layout are unchanged. Dark grouped surfaces support this role; current native light/source geometry remains unverified.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_gamification/test/goldens/share_card_state_reduced_motion_dark_390x844.png",
+            "old_sha256": "96c9a8c2f60aab009a7c8d9a50db713c2e569a2ebe873d5eaf155a9460c0c151",
+            "new_sha256": "59df4dd09bfafeac58c28a96847534e66cc68149225a6e7643ab27d276c5e7a2",
+            "bbox": [
+              48,
+              271,
+              342,
+              272
+            ],
+            "changed_pixels": 294,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0893,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only the existing divider takes the explicit semantic outline color. Measured region and all content/layout are unchanged. Dark grouped surfaces support this role; current native light/source geometry remains unverified.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_gamification/test/goldens/share_card_state_security_timeout_dark_390x844.png",
+            "old_sha256": "e359a4ee03108b8909c99cd8a3b3dca9033c28a1bca993d2684e9a1f983bfde9",
+            "new_sha256": "48cd19853aec23d39d6643473ff204a0ec50285b4efeb09fcd39611dd5333312",
+            "bbox": [
+              48,
+              377,
+              342,
+              378
+            ],
+            "changed_pixels": 294,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0893,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only the existing divider takes the explicit semantic outline color. Measured region and all content/layout are unchanged. Dark grouped surfaces support this role; current native light/source geometry remains unverified.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_gamification/test/goldens/share_card_state_selected_dark_390x844.png",
+            "old_sha256": "861fd5afa37afb0d07ae275f31ed89f701bb22017ccc7003ecf4eedbd78a8c7a",
+            "new_sha256": "4ca49518070280049e78661cf8df61a16b47d2e9402c7f5fb6a584e96800ae5a",
+            "bbox": [
+              48,
+              271,
+              342,
+              272
+            ],
+            "changed_pixels": 294,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0893,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only the existing divider takes the explicit semantic outline color. Measured region and all content/layout are unchanged. Dark grouped surfaces support this role; current native light/source geometry remains unverified.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_gamification/test/goldens/share_card_state_syncing_dark_390x844.png",
+            "old_sha256": "5c4a15e77a3a5eff635e79fae21ae8cc36dee201b0d4af70dc9f8de737c99626",
+            "new_sha256": "97bef810a1487de41590c4981f199a31330a14bb621dcdacc024b4953b581ad1",
+            "bbox": [
+              48,
+              377,
+              342,
+              378
+            ],
+            "changed_pixels": 294,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0893,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only the existing divider takes the explicit semantic outline color. Measured region and all content/layout are unchanged. Dark grouped surfaces support this role; current native light/source geometry remains unverified.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_compact_dark_320x760.png",
+            "old_sha256": "5a52829684bc59d477ba2d516d251766392c0c9f4ec2d0567f198ccca96ebaf9",
+            "new_sha256": "83846fa55f66a23160a30a30b466eeffeca9ae1bca5e905581f339d5381089d8",
+            "bbox": [
+              272,
+              400,
+              280,
+              412
+            ],
+            "changed_pixels": 52,
+            "total_pixels": 243200,
+            "pixel_change_percent": 0.0214,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_compact_light_374x812.png",
+            "old_sha256": "4bd53884cef4807fac22ce7290efcda38d6bba2b82b531a7377b45970bbedae5",
+            "new_sha256": "4493b816449e670d8ddb299bdf98d0503901f53ee196aa4c9fb31600d31fc01c",
+            "bbox": [
+              326,
+              314,
+              334,
+              326
+            ],
+            "changed_pixels": 43,
+            "total_pixels": 303688,
+            "pixel_change_percent": 0.0142,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_foldable_half_light_674x842.png",
+            "old_sha256": "00404f4e2d68e30f1e763d79dfff6e62a5db790add921d8f0d22bdfb4d09c0a7",
+            "new_sha256": "73771bd005ebda3ded58cb8fcfd1214c1e1144aabaebbaf1c792d0290a733bb2",
+            "bbox": [
+              626,
+              287,
+              634,
+              299
+            ],
+            "changed_pixels": 43,
+            "total_pixels": 567508,
+            "pixel_change_percent": 0.0076,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_high_contrast_dark_390x844.png",
+            "old_sha256": "cfe8e9e884aa7f1d581e43207d6b783f0dc9cd3c0c37df82a3f6d10cfc229922",
+            "new_sha256": "24b3504814a2baf83525747a0a478d8291b9e0202ebcb3c22003108e36f80d24",
+            "bbox": [
+              338,
+              321,
+              346,
+              333
+            ],
+            "changed_pixels": 52,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0158,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_large_light_430x900.png",
+            "old_sha256": "1cdc4c667357217522e9f6da4b1d926eb682caaf41ab4df691d1c23d117d4bbb",
+            "new_sha256": "39176fe894b859fbfdb4fedcb242d197c138639a7870a09071efd04ca7c7e1b7",
+            "bbox": [
+              382,
+              287,
+              390,
+              299
+            ],
+            "changed_pixels": 43,
+            "total_pixels": 387000,
+            "pixel_change_percent": 0.0111,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_standard_dark_390x844.png",
+            "old_sha256": "e548a52f2f9b61e4816b7def2fe1589ac7eff81a9afeb9fbdc83214efe0818a0",
+            "new_sha256": "a5f10c3b457bbc5f6bf396f3b96949b2c908d37fcab8d3e55f89a5c203a6c5e5",
+            "bbox": [
+              342,
+              305,
+              350,
+              317
+            ],
+            "changed_pixels": 52,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0158,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_club_as_vita_dark_390x844.png",
+            "old_sha256": "079c9b2f73a5b17b73a1d366097d861d7ebfc966a6d4da129011dfda4ebd520f",
+            "new_sha256": "55122dea8dec3e38cde797fc8604c39b02780f17930acccb2905d959dedc817d",
+            "bbox": [
+              342,
+              453,
+              350,
+              465
+            ],
+            "changed_pixels": 52,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0158,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_club_nkana_dark_390x844.png",
+            "old_sha256": "041e5ce685b5f5de47ec5f66f6e5b78810de04e80db7c69b87c883cd49a8ce2e",
+            "new_sha256": "8eb9b23aa805337a7fd436b6d1bcd533af762d32b1c436cf24e2918d9d26a6ea",
+            "bbox": [
+              342,
+              453,
+              350,
+              465
+            ],
+            "changed_pixels": 52,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0158,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_club_rayon_sports_dark_390x844.png",
+            "old_sha256": "c0452cd499bbe8f6fe7567eff48750043ef95f794d0dd1cd786b89c7ad6dc239",
+            "new_sha256": "da4ddeac98e25ec1939395cf0e322db700afa9291490e23724b4e95d05371e2e",
+            "bbox": [
+              342,
+              453,
+              350,
+              465
+            ],
+            "changed_pixels": 52,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0158,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_club_vitalo_dark_390x844.png",
+            "old_sha256": "9e6d6a4c16eda8e421c34c4e0a63a650a7fe640dc4957d159b126ca267dd0ea3",
+            "new_sha256": "bff41281a25108f54e1be4c8afbdc27d41d153bef4a1546e0b8388d5e80bfb4a",
+            "bbox": [
+              342,
+              439,
+              350,
+              451
+            ],
+            "changed_pixels": 52,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0158,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_disabled_dark_390x844.png",
+            "old_sha256": "4d2c1843229ee0fc4e3797c55b68681a1469cfa39191eaa1524dc1532bce9e06",
+            "new_sha256": "d4869b32f1210a8379293d667057fed097f46d9618a6f998890ad4e1448fdc64",
+            "bbox": [
+              342,
+              599,
+              350,
+              611
+            ],
+            "changed_pixels": 52,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0158,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_empty_dark_390x844.png",
+            "old_sha256": "e548a52f2f9b61e4816b7def2fe1589ac7eff81a9afeb9fbdc83214efe0818a0",
+            "new_sha256": "a5f10c3b457bbc5f6bf396f3b96949b2c908d37fcab8d3e55f89a5c203a6c5e5",
+            "bbox": [
+              342,
+              305,
+              350,
+              317
+            ],
+            "changed_pixels": 52,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0158,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_error_dark_390x844.png",
+            "old_sha256": "79c7186e05801b1230f732113f934deaf712d53d9b031893cf6e423c557a95b3",
+            "new_sha256": "8fdb79c7efba97aa52b8fbbd8f5699e0e6579384e88b01bef13c932fdc35ddff",
+            "bbox": [
+              342,
+              507,
+              350,
+              519
+            ],
+            "changed_pixels": 52,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0158,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_focused_dark_390x844.png",
+            "old_sha256": "75fb8c0968c10a7aa2fc52cc389d0d68ea2725d1365e8f4ddba49af643b7517f",
+            "new_sha256": "f92eeeafb0c4082cad8f74c5b113d9f30d3c515bb4989efdc1f2b6e20be84a7e",
+            "bbox": [
+              342,
+              599,
+              350,
+              611
+            ],
+            "changed_pixels": 52,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0158,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_offline_dark_390x844.png",
+            "old_sha256": "f405e9cffd110919cb2c092867c9199f40abf73fada1e692a35263993a47171e",
+            "new_sha256": "761afeb5eb7b4b37b55ddfc96164ab93b76ed747b1c258ff2d2bcf023bb1da54",
+            "bbox": [
+              342,
+              305,
+              350,
+              317
+            ],
+            "changed_pixels": 52,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0158,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_populated_dark_390x844.png",
+            "old_sha256": "f96ecf4ebb1de3ccb5d780bce17b995cdf4e2cf500eea506a3c0cd814f280bfe",
+            "new_sha256": "8bc3ed6f8a918428b1caee67a0a83c09d16bcd33e05cf718899eb4c8b6200776",
+            "bbox": [
+              342,
+              453,
+              350,
+              465
+            ],
+            "changed_pixels": 52,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0158,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_pressed_dark_390x844.png",
+            "old_sha256": "c5b43ce137ac8e19d83827e663d4a40a27459d24778e8648dff9cf95aa14b376",
+            "new_sha256": "d3077943de5ecde67044cc5bd3699f8356b3e4c27a39ccdb384294bb29f2a45a",
+            "bbox": [
+              342,
+              599,
+              350,
+              611
+            ],
+            "changed_pixels": 52,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0158,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_selected_dark_390x844.png",
+            "old_sha256": "8aa61be7e2834a65c401c3e08834fef07d4d5b3c9584f69116f74334f76a002c",
+            "new_sha256": "708ba64c37fb6e7f604b1ed2793e6e0dbf02713f9000ef54df801dd65b3ee3ed",
+            "bbox": [
+              342,
+              521,
+              350,
+              533
+            ],
+            "changed_pixels": 52,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0158,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_shortcuts_collapsed_large_text_dark_320x720.png",
+            "old_sha256": "e3a908bea95631b318a2aa1884d94dadd7d2b11057a6322170cdde5e94610cfb",
+            "new_sha256": "e42f5e6f7ef1c4d6fe0186744fd36efb9614654ce945a4415ced742eaa155d16",
+            "bbox": [
+              16,
+              103,
+              304,
+              710
+            ],
+            "changed_pixels": 72345,
+            "total_pixels": 230400,
+            "pixel_change_percent": 31.3997,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "At 320px and 2x text, shared row icons/trailing controls move above full-width labels. Join Gikundiro remains whole on one line; subtitle wraps less, row shrinks, and following content moves upward. Navigation, controls, data, and every word remain present. This is a tested accessibility adaptation; no current enlarged native reference exists.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_shortcuts_collapsed_large_text_light_320x720.png",
+            "old_sha256": "c9f5a6b31dc34e40e64a2438bb0ae306d4796773c2b6074c1503d31f4891571b",
+            "new_sha256": "f23be63e34b37e7a25ae6550d6515fd0a182740486e06abb3379649604f42500",
+            "bbox": [
+              16,
+              103,
+              304,
+              701
+            ],
+            "changed_pixels": 71250,
+            "total_pixels": 230400,
+            "pixel_change_percent": 30.9245,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "At 320px and 2x text, shared row icons/trailing controls move above full-width labels. Join Gikundiro remains whole on one line; subtitle wraps less, row shrinks, and following content moves upward. Navigation, controls, data, and every word remain present. This is a tested accessibility adaptation; no current enlarged native reference exists.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_shortcuts_collapsed_normal_text_dark_390x844.png",
+            "old_sha256": "c886430adaf552061e94b3bd44b528d73e578220a4d970fb4e48b300233a7edb",
+            "new_sha256": "504bd104eda98fb4dfbd72a2db337da5c1be9fd3a19f5f9fd203e365e6b468f3",
+            "bbox": [
+              342,
+              103,
+              350,
+              115
+            ],
+            "changed_pixels": 52,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0158,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_shortcuts_collapsed_normal_text_light_390x844.png",
+            "old_sha256": "fc7ae0d9afe3aa5320f62acc7ac837f17517b0ca113b2f02b035468de9746e32",
+            "new_sha256": "576b5a24dd0dea2e25f35af09e3852eb4797aad4983a198b213aaafc42de452c",
+            "bbox": [
+              342,
+              103,
+              350,
+              115
+            ],
+            "changed_pixels": 43,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0131,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_shortcuts_expanded_large_text_dark_320x720.png",
+            "old_sha256": "8b2b68d9c7825ceef7ae280c3958111906095db95a0f83b41a2c3baef2e2c816",
+            "new_sha256": "0f87d25b2d9891d20ef8204dac613e0a13a3ddc988888ac0ff0de7c1ef2d4aa5",
+            "bbox": [
+              16,
+              0,
+              304,
+              711
+            ],
+            "changed_pixels": 74109,
+            "total_pixels": 230400,
+            "pixel_change_percent": 32.1654,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "At 320px and 2x text, shared row icons/trailing controls move above full-width labels. Join Gikundiro remains whole on one line; subtitle wraps less, row shrinks, and following content moves upward. Navigation, controls, data, and every word remain present. This is a tested accessibility adaptation; no current enlarged native reference exists.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_shortcuts_expanded_large_text_light_320x720.png",
+            "old_sha256": "453e81171ab26eb108d582661c8ec061c09738ef860f8ffb0448babc2a66f33d",
+            "new_sha256": "bd49c4eced732f2a15ede1fdc9f0d5af741419d0c47037102fc5d89d1865991b",
+            "bbox": [
+              16,
+              0,
+              304,
+              694
+            ],
+            "changed_pixels": 72902,
+            "total_pixels": 230400,
+            "pixel_change_percent": 31.6415,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "At 320px and 2x text, shared row icons/trailing controls move above full-width labels. Join Gikundiro remains whole on one line; subtitle wraps less, row shrinks, and following content moves upward. Navigation, controls, data, and every word remain present. This is a tested accessibility adaptation; no current enlarged native reference exists.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_shortcuts_expanded_normal_text_dark_390x844.png",
+            "old_sha256": "c9a90f17c6fedc0c0c77de4e1ab44e026f7dc61d99027a3ad5340d91830a9278",
+            "new_sha256": "34af67aa3db55ae1de4e9eb2c8ff6d51c3deca65dbb4e51482237563afd6b0f7",
+            "bbox": [
+              342,
+              4,
+              350,
+              101
+            ],
+            "changed_pixels": 104,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0316,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_shortcuts_expanded_normal_text_light_390x844.png",
+            "old_sha256": "0f6e22bffca71239a2a5dab5456bc68de05a292d869e81ada70c84386e89f2f6",
+            "new_sha256": "d7f1b7d8716f59990239c5eb10d6d69c43f28d411d3f8e7c5f8df9a187e5a6f5",
+            "bbox": [
+              342,
+              4,
+              350,
+              101
+            ],
+            "changed_pixels": 86,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0261,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_state_syncing_dark_390x844.png",
+            "old_sha256": "3ec45b46b9430f4425071b60056eb32e0c93ce830000f369ea56830cbd529cdc",
+            "new_sha256": "4acfb2e5bc6eef7c4ba6c74e87ea19f519d525d66651ca472bab3cd83a201576",
+            "bbox": [
+              342,
+              697,
+              350,
+              709
+            ],
+            "changed_pixels": 52,
+            "total_pixels": 329160,
+            "pixel_change_percent": 0.0158,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_tablet_dark_834x1194.png",
+            "old_sha256": "143b65feaa066569cdd9d507b7b31b8fb9661f7761e4a7e0110e0efeb0fe2b27",
+            "new_sha256": "2ff2cbe4940d3b1aa9d5ae3929f38e133d61d396407abec50814a92189eee3f9",
+            "bbox": [
+              16,
+              8,
+              794,
+              299
+            ],
+            "changed_pixels": 2621,
+            "total_pixels": 995796,
+            "pixel_change_percent": 0.2632,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Explicit navigation rail roles replace implicit defaults: selected accent glyph with tonal indicator and neutral secondary inactive glyphs. Row chevron takes primary semantic foreground. Geometry/content are unchanged. Desktop rail geometry is an adaptation without an exact native source comparator.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          },
+          {
+            "path": "packages/features/feat_home/test/goldens/home_wide_dark_599x900.png",
+            "old_sha256": "65adc843a8d86f6f788c7a1430487c0aba484c762e45ec8bd28e9042a67ccfd6",
+            "new_sha256": "75d1a9473e8416f976c0cc252e717ffbdc1980aa45baf294591e7e377a5cf0bb",
+            "bbox": [
+              551,
+              287,
+              559,
+              299
+            ],
+            "changed_pixels": 52,
+            "total_pixels": 539100,
+            "pixel_change_percent": 0.0096,
+            "snapshot_tree": "be6d26b113d18e8b5b4f067bf4e1b7bc560517ac",
+            "review": "Only inherited row chevron color takes explicit semantic primary foreground: dark white #FFFFFF to #F4F4F4; light #222222 to #191C1F. Geometry, all content and action remain identical. Native grouped Settings/Profile sources use controlled foreground roles.",
+            "review_status": "reviewed_expected_change",
+            "owner_acceptance": "pending_current_bytes"
+          }
+        ]
+      }
     }
   },
   "comparison": {
@@ -469,7 +2095,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "6e955ce85689b381b9bff3c458220530b4e4713c5d44ad67cc7f6f1efc035e1d"
+      "sha256": "f0c55af2299e697f413d0bea539b812019a0a14a4a0312279d7f1d500132c86f"
     },
     {
       "id": "settings-compact-374-dark",
@@ -481,7 +2107,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "8273c2b30b6c66292b57faf38ab804f50ad8e71c8fa761d8fe7b6c515f35b0af"
+      "sha256": "2469c6833ffb47065dbeb77ae02372ad723bd78eb67d9d36af7a95ed9acebbc9"
     },
     {
       "id": "settings-dense-dark",
@@ -493,7 +2119,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "ba12a6e01ac29dca2fd6abb9b1f7c233f46b35bcfa484b2428b3c9f08bd97ccf"
+      "sha256": "1b429ad7a5470b20b04302243aa220d934763f70d3d4fda792c025ef19bc4083"
     },
     {
       "id": "settings-large-430-dark",
@@ -505,7 +2131,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "1556da77ee49ff151c65f950ebe0bbb504c3b4b7a268b9d3340a164b813a026b"
+      "sha256": "17cb45a5b3be2726b7f5bdb2d5af0265c2876bca69ecad324dcc77e63901dbc6"
     },
     {
       "id": "settings-large-599-dark",
@@ -517,7 +2143,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "0b15382b04be18c8ff8674a91dbd5d9b12638e0c81ad93b8424546b0c4556e83"
+      "sha256": "ffb92dfeeee7d87b9c4420336a00b9be8c8745c13f36e6575e7038db4f375e63"
     },
     {
       "id": "settings-tablet-720-dark",
@@ -529,7 +2155,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "86d0edb92d2a1b760af1e4e3ddddeb04e2243bc3f732c36a512299ebcd71010a"
+      "sha256": "65a2001ad5249c2ce136431d690e1d6b87caf69dd852436de8830ebc56f118cd"
     },
     {
       "id": "universal-form-data-catalog-dark",
@@ -541,7 +2167,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "4927c37710678ada9da70d1dc5b45ab43e021b2943c97a64addb521ecaafa319"
+      "sha256": "bf66329acc99fd79532520a726d53dc74866996ad16498fc0c948053fbf9046b"
     },
     {
       "id": "universal-form-data-catalog-light",
@@ -553,7 +2179,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "38bce515d249f7299183e8f4df6a549570d273d0f8fb8faeb3c2b161965eb336"
+      "sha256": "c331d0b9248fbf39c2c26dc0934feb7b7ebd50535b8a8041fbd6da6eb1254d09"
     },
     {
       "id": "universal-media-security-catalog-dark",
@@ -565,7 +2191,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "4d80291ee96efc5d37a452f7b7419eb8bf7b92372fbf987f1f80e222b908ffb5"
+      "sha256": "9869f034913006484cee7b98e74b2d783dc4c55a7cf69d3a9e868d1bf428d4ac"
     },
     {
       "id": "universal-media-security-catalog-light",
@@ -577,7 +2203,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "7088434f22266f21ac84e422f91162d8efc8c26b9349bf46cf47675084555309"
+      "sha256": "ca5f4e2a2f9653b2695df2562a6a289501d5c399074d3ace59e289c51780304d"
     },
     {
       "id": "home-compact-320-dark",
@@ -589,7 +2215,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "5a52829684bc59d477ba2d516d251766392c0c9f4ec2d0567f198ccca96ebaf9",
+      "sha256": "83846fa55f66a23160a30a30b466eeffeca9ae1bca5e905581f339d5381089d8",
       "revision": {
         "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
         "dirty_state": true,
@@ -609,7 +2235,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "4bd53884cef4807fac22ce7290efcda38d6bba2b82b531a7377b45970bbedae5",
+      "sha256": "4493b816449e670d8ddb299bdf98d0503901f53ee196aa4c9fb31600d31fc01c",
       "revision": {
         "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
         "dirty_state": true,
@@ -791,7 +2417,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "4c4490348c697077adc0b32c576fbfacb233edbb32368dbf311c7f5e420cd393"
+      "sha256": "6b49007d8a371702d37c27f94f9da53b07cf1b05fe5a4995a5ff54ac4dcaa18f"
     },
     {
       "id": "settings-compact-374-light",
@@ -803,7 +2429,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "e445eefa614b60e713b14d296f58a86ad384ba523445c4dc55fe59b97e518605"
+      "sha256": "1bcefad2ae7992e8f5d728437d7aa44b0e93e0fa747440e981ff89e052634294"
     },
     {
       "id": "home-standard-390-dark",
@@ -815,7 +2441,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "e548a52f2f9b61e4816b7def2fe1589ac7eff81a9afeb9fbdc83214efe0818a0",
+      "sha256": "a5f10c3b457bbc5f6bf396f3b96949b2c908d37fcab8d3e55f89a5c203a6c5e5",
       "revision": {
         "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
         "dirty_state": true,
@@ -835,7 +2461,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "1cdc4c667357217522e9f6da4b1d926eb682caaf41ab4df691d1c23d117d4bbb",
+      "sha256": "39176fe894b859fbfdb4fedcb242d197c138639a7870a09071efd04ca7c7e1b7",
       "revision": {
         "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
         "dirty_state": true,
@@ -855,7 +2481,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "65adc843a8d86f6f788c7a1430487c0aba484c762e45ec8bd28e9042a67ccfd6",
+      "sha256": "75d1a9473e8416f976c0cc252e717ffbdc1980aa45baf294591e7e377a5cf0bb",
       "revision": {
         "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
         "dirty_state": true,
@@ -1118,7 +2744,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "4802295412af08b3905cd68a27d7ff4beeb7850937a9186f49f7df414c34ebcb"
+      "sha256": "7b3b4c8e1b2d192fbccce68385c633abaa40194e576d1bf3d174befeb137a1c8"
     },
     {
       "id": "adaptive-shell-hinge-dark-850x900",
@@ -1178,7 +2804,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "00404f4e2d68e30f1e763d79dfff6e62a5db790add921d8f0d22bdfb4d09c0a7",
+      "sha256": "73771bd005ebda3ded58cb8fcfd1214c1e1144aabaebbaf1c792d0290a733bb2",
       "revision": {
         "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
         "dirty_state": true,
@@ -1198,7 +2824,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "143b65feaa066569cdd9d507b7b31b8fb9661f7761e4a7e0110e0efeb0fe2b27",
+      "sha256": "2ff2cbe4940d3b1aa9d5ae3929f38e133d61d396407abec50814a92189eee3f9",
       "revision": {
         "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
         "dirty_state": true,
@@ -1308,7 +2934,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "21b8503f14c0e5c6e9ec6c5215a1eb6305e018735855354544766529f6a372f6"
+      "sha256": "651b5082fbda172fb92c8dc39a36586650a6dd12633ad157477442e749a2ce2f"
     },
     {
       "id": "settings-tablet-dark-834x1194",
@@ -1320,7 +2946,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "1f3274eba7609e05db21418db49ba05aa97ac3970f6fb54e6352d076cfcce981"
+      "sha256": "a645ea3a151f6fe3af679bc41054aa611997196ca271af457446798e0cd48e0e"
     },
     {
       "id": "shop-checkout-foldable-half-light-674x842",
@@ -1380,7 +3006,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "14face67f76be4f9e72f5db2cfa6a6d83b3a0b6fd7f086bcf9b94875bcabc0e1"
+      "sha256": "88653662a33539529bea037fd92390d4e90a5827aef1734c07106115ad6cc1c5"
     },
     {
       "id": "universal-async-state-light-900x1600",
@@ -1392,7 +3018,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "ddd2219a56aed499c5154a3ee3dd9f5d3f853d38d5160121b1bbde3f16d99caa"
+      "sha256": "baa083acf0b45c76a9806f4171a8460803dacffcc3e27722542c1887fa7a1693"
     },
     {
       "id": "universal-interactive-state-dark-900x1600",
@@ -1404,7 +3030,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "be2ad1b91ec0cb536f8a26c24abbf1062c437a51af71e430ffbb67da115d0411"
+      "sha256": "910422e4a4daf2e896d70dd883e82aad4d79beaa7290a873e372e6dbccd17ced"
     },
     {
       "id": "universal-interactive-state-light-900x1600",
@@ -1416,7 +3042,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "2aea508878b02201c6c71e588d0081e55b08722a3a15179d0dbf877074e61f1f"
+      "sha256": "68959bf0620d5c927e75e513d4d9538a4a6bfd9535f1ba806222bfa00994b0e2"
     },
     {
       "id": "universal-input-state-dark-1400x1600",
@@ -1428,7 +3054,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "cf002753fe0bcf6e42fe8a8ee095b925ae60a858056468b6db3f5c81fdc7721e"
+      "sha256": "b290ad93538d11e6a4f398d015b994c47d393cbff026d65124922452e6352489"
     },
     {
       "id": "universal-input-state-light-1400x1600",
@@ -1440,7 +3066,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "c001be98975cef5dc45891fb0b85a05f75cb52568841f5af5444304441d28129"
+      "sha256": "776673b6047f59bd71f13525c49189a6243c9e2c1c670e228c58fafa1114f64b"
     },
     {
       "id": "universal-media-state-dark-1400x1600",
@@ -1452,7 +3078,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "f83f23d92b9dbbb1dd908719d217d6b3640bf45a7c9ae7f62d77948a789d9e54"
+      "sha256": "309d8501cca97063e464729df57ddbd59f29222d004289c1c0f11dbcc109a731"
     },
     {
       "id": "universal-media-state-light-1400x1600",
@@ -1464,7 +3090,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "752e2a574e7031fdcc1906e3af3b42bce4ea309965452bae064fc55aaf90008a"
+      "sha256": "38be5e160768116edb2f129a5ca0071263b5010ed2835a531a6f818976801255"
     },
     {
       "id": "universal-security-state-dark-1400x2200",
@@ -1476,7 +3102,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "4293d574150af51631c8cdfb563d10216334b3cb635ce55d373d77746d0321f7"
+      "sha256": "30f4ca074d3c428ffa18263098c3d9e494cdb7257b8144dc571f0f7cadb67396"
     },
     {
       "id": "universal-security-state-light-1400x2200",
@@ -1488,7 +3114,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "67759405ca6a6ead35639c08542d755a8467cdd55b48842482771d5f63976cc8"
+      "sha256": "b367876d9404fcfe090da6d8c23264eb5aa76ca7bbe8497aea4d71940290469d"
     },
     {
       "id": "universal-button-state-dark-1000x1200",
@@ -1500,7 +3126,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "68599c81739e2423791aa90e65316d03aabbf6f8b84dd64f97b17804cc419901"
+      "sha256": "9785ccee3eec10331e9995e7403fb6a237065971a994fd84c1cf764f4bbb1e72"
     },
     {
       "id": "universal-button-state-light-1000x1200",
@@ -1512,7 +3138,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "f03d98b089070b0b2ad556b2ee84f1a4f6ca92b4ae110bcbb65ab0d0dfd440a6"
+      "sha256": "332dc7a5811e23cecffcc268cfb3adcd8c8db3b4784efde87ae84c354b5ac590"
     },
     {
       "id": "universal-shell-overlay-menu-dark-1400x2400",
@@ -1524,7 +3150,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "7828e9bf583f934e8a22db8d1cfac6e4ccb655b693ac9f94b500ab898b044938"
+      "sha256": "65ce78435b4c2e453d0d23f714cf4694777a530d29033ca9d0328f4e6d7070a3"
     },
     {
       "id": "universal-shell-overlay-menu-light-1400x2400",
@@ -1536,7 +3162,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "54c8af915f5a21513e022de33473d6836fb6307c5fdf6456f894764e9afa7876"
+      "sha256": "308c4e35a91f7e0b2bfb2ea48bf5aabd81392e4f7b3b0f61e5014055077c208b"
     },
     {
       "id": "universal-transient-feedback-dark-1400x900",
@@ -1548,7 +3174,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "19967b175fa627a9ce38be1f8ed1d63043408f4a6d7bc2eb2f3c16182a6406d9"
+      "sha256": "23155f752b388adcc1a78a12fba807ffca5a0bfeac22dc297f4479fa05e80be5"
     },
     {
       "id": "universal-transient-feedback-light-1400x900",
@@ -1560,7 +3186,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "db0c127c8a4e2dd50378db0c36055c1ae86107ba33ad2c26ee53f4895d9ce25f"
+      "sha256": "e91b90eeefd435836dbe780c1b6a8b5bc4c11aaf20d8a5ebf5de1e6de8361251"
     },
     {
       "id": "universal-open-selection-menu-dark-800x600",
@@ -1572,7 +3198,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "4531301454726d2fee9a5c2002ddc1bf65d7679ec30237d5b6d1b6bfd02bc434"
+      "sha256": "27b87e7fa98768b0d8c14806486af71d0234bcdb9e66d230badbb16146401635"
     },
     {
       "id": "universal-open-selection-menu-light-800x600",
@@ -1584,7 +3210,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "7ba190f0a01f789c3fa79226917003d320f8feb5ebd086f248ba2db606b3cf09"
+      "sha256": "b258931ba44f6bb8f6ea7541fb86a771cb126e96bb03d643a4cbdf21e6258758"
     },
     {
       "id": "universal-deep-link-recovery-dark-1000x700",
@@ -1716,7 +3342,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "812b891c690d8014c9fec1f8da78ec50138218a38eeb4912046d64a05134061f"
+      "sha256": "923edf69e2fe738f51102798f4a0b3fbdbf7af0474886e59d325d33e61311bfe"
     },
     {
       "id": "interaction-app-shell-large-screen-side-rail-hover-light-720x420",
@@ -1728,7 +3354,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "bdbadb10a6b8c4c1950475d8645f6d9b054b6d4ed57c58bbf886613fd2f0a05c"
+      "sha256": "cbf3964eb771c2f7bb7ee626f8f6823e70d5c25a8d7378507ba50ad06c281b49"
     },
     {
       "id": "interaction-app-shell-large-screen-side-rail-focused-dark-720x420",
@@ -1740,7 +3366,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "927f33999306d613a733f8091c8d4bbfa515627d2233d15113ca9769142d7915"
+      "sha256": "794f3cda89bc57ad63263c6430a9e0279423893951bb84a2143be61833f2c4bf"
     },
     {
       "id": "interaction-app-shell-large-screen-side-rail-focused-light-720x420",
@@ -1752,7 +3378,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "f4aaadba8e3a4253acfe8fb1dbcae142d9955cadc1205ffc2b02533e51b5bbb7"
+      "sha256": "614e6b6976c528781a2d5d56332bf6885f8d3461117d8728785837a14a0cb4e4"
     },
     {
       "id": "interaction-app-shell-large-screen-side-rail-pressed-dark-720x420",
@@ -1764,7 +3390,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "8d5bb4836ddf1da6a6dfafbdd48c1bbe9843645f45efd68cae248ebfd2099e20"
+      "sha256": "8b30f1addf3cec84e5dfc4a05ce5b00328dcf7a56142f0777b3e5a4211f142b7"
     },
     {
       "id": "interaction-app-shell-large-screen-side-rail-pressed-light-720x420",
@@ -1776,7 +3402,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "8263410c7f7052aa7aef4b16f5a13558983a3196d4af5ae75be9f13551fcfc58"
+      "sha256": "c6f4a55afef45a535a8a97edad5e96838a564d6c3e63902eabca067d2340edc4"
     },
     {
       "id": "interaction-buttons-primary-hover-dark-720x420",
@@ -2160,7 +3786,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "ce0b61c342b219c1b352ad36113c196d95c3f3e6db076b340d20baf8a260089f"
+      "sha256": "59994149edea8d27c39d6aec3f3a2c89b66a3786be5318ca018775368fa5d4e4"
     },
     {
       "id": "interaction-buttons-split-focused-dark-720x420",
@@ -2184,7 +3810,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "dece1ca201fdbf9cbad909e965db8b9c9e3d498457e7a901e00b759f5e86614e"
+      "sha256": "7fd3a905b793ca429e7a2c511d181b790489841c79d9a4750a3bc8f196394afa"
     },
     {
       "id": "interaction-buttons-split-pressed-dark-720x420",
@@ -2208,7 +3834,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "424122ca9f5d77c364f2e2272d3f644f0284665625f730e72b8e63078d27ad3f"
+      "sha256": "6fc180c61428f9d8ea934675e4f06a9d70b78e5f9432489110d61c310635216c"
     },
     {
       "id": "interaction-inputs-text-hover-dark-720x420",
@@ -2508,7 +4134,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "f2387e86f64d62b33c2131a282e800c5e13bbc9e2eed87e85b5fcb1a42b2240c"
+      "sha256": "eef8d4cfdf1b9f0f90c137bf2a026b36c5b5f5966cddbc8e7d7cf2b953b46b2f"
     },
     {
       "id": "interaction-inputs-date-hover-light-720x420",
@@ -2520,7 +4146,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "0d45f9678ed48f44789b831c5ccd321b83ec4bb760c415629d0cb46be42dff0e"
+      "sha256": "4af5479476eb0df8d5dacfcdc496020626fba19260d1214077625ae63661f70c"
     },
     {
       "id": "interaction-inputs-date-focused-dark-720x420",
@@ -2532,7 +4158,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "fa66e53bd5e76cc251dd2c95b1acd35c18a7a9aae77890c105f690ae2f6d6768"
+      "sha256": "978de6f6ceefe21222db107342f06690285bcdcbb996ce7096640af7de3af86d"
     },
     {
       "id": "interaction-inputs-date-focused-light-720x420",
@@ -2544,7 +4170,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "610b79e0a54499bda67811c107bc914386d64f6810acc25eb1b1d1c98b5ad072"
+      "sha256": "08c42096631418a8c6aaad4a3f58948d99572b4e5e3272b9f5dbf7fd4677fd27"
     },
     {
       "id": "interaction-inputs-date-pressed-dark-720x420",
@@ -2556,7 +4182,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "27eac501722821d4ab88b4eb4806abc6871cc55a9c0f3a7040cd8c710299413c"
+      "sha256": "2764a80256fcc189953d0ddf2c4479dd2739085c5c30f3fb392047c90b55024f"
     },
     {
       "id": "interaction-inputs-date-pressed-light-720x420",
@@ -2568,7 +4194,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "daa882ce82bbd3ede8f2e0b9e06921e102e56cad426aba6797f670e7192b882b"
+      "sha256": "514724677c6ba87dbff25375d59cd5f4cfaf4c5104e620412b25dd0e998d7e87"
     },
     {
       "id": "interaction-inputs-time-hover-dark-720x420",
@@ -2580,7 +4206,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "98c218552dc2795f37d0cf5ba6ae3fdcb56a3ee157ca4cabd0efa6e8480f279d"
+      "sha256": "9246ab43d074717d387e66b06de861273fdcbeae144f9a7bd2da7b12754c223a"
     },
     {
       "id": "interaction-inputs-time-hover-light-720x420",
@@ -2592,7 +4218,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "e55bb0880e0b1382155674d1800ea8095293d14dde84825e510eda8b38aec962"
+      "sha256": "ce5c97d76c6bfd00cb548100a730a211b6c839c358956e8b1a6f53f88a2649f3"
     },
     {
       "id": "interaction-inputs-time-focused-dark-720x420",
@@ -2604,7 +4230,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "23ece218cfdd407ebed7e35c9e1738b61286ffe2e0bebfcee6af56aeef553c1d"
+      "sha256": "89ac2e87047954b5c752bee8a18c82f2022d358a1713168c2f6336d6375dc7af"
     },
     {
       "id": "interaction-inputs-time-focused-light-720x420",
@@ -2616,7 +4242,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "6047455c11ddb6e53d83f3e11cb2f5b978c22adecb3b926a310d6546b24c8e0b"
+      "sha256": "54bb2bc07d63e072c44a121e573212185e80f2e379e0aa32ba6251038893b8ac"
     },
     {
       "id": "interaction-inputs-time-pressed-dark-720x420",
@@ -2628,7 +4254,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "d9529f6c2051be3471164190e31611840a03e78921e2f33e9bfbfe5c41861e8c"
+      "sha256": "6bd58e196557c07d4cd0050c34d098219d6b97ebc50340e8b091016537c168b1"
     },
     {
       "id": "interaction-inputs-time-pressed-light-720x420",
@@ -2640,7 +4266,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "8690d545f18ae89828cd82c566d9b30fb56083ae684bcbaccd7bdcfb98b0f64c"
+      "sha256": "18f7518ee58769f97f3482251fe857336a6ff48b39a96081e69549e6ac686554"
     },
     {
       "id": "interaction-inputs-search-hover-dark-720x420",
@@ -2940,7 +4566,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "55b8a42ff4a0d81bccb3718b640aca21364330025985f3c2066b3555fcbd4953"
+      "sha256": "2ba86069509871910ad5ae835cedfdecadfcdc3ba1866f53a4380c8fca0adf8a"
     },
     {
       "id": "interaction-selection-radio-hover-light-720x420",
@@ -2952,7 +4578,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "3863b5273a515304331dfa4e4b0e0f007dae48609a30979c22866d24cb33b15c"
+      "sha256": "1cd257de338631cefeaf134eb44e08af904f77e9b476a40588c8cbfc35d3debb"
     },
     {
       "id": "interaction-selection-radio-focused-dark-720x420",
@@ -2964,7 +4590,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "c45af137fbe6fb92681ccb02a05d3568f372db3ded6cb132034c084707cd7b33"
+      "sha256": "27507805f7680d66971a95f70da16dcf4660550c9bd89317c20d1d54a38c5e65"
     },
     {
       "id": "interaction-selection-radio-focused-light-720x420",
@@ -2976,7 +4602,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "4db26a2015bdddab339b2e1db4372965d68b77cbd88d7a5acec88c8fb2679b1a"
+      "sha256": "4ced38e0f429d490d5055b48702d3ffbb7eda7cd5095b9defa87bd7ade2bc96d"
     },
     {
       "id": "interaction-selection-radio-pressed-dark-720x420",
@@ -2988,7 +4614,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "f8fd4a3763fcbf22c059e6bf8ca894eb0cffe1a67d7441c8ca84504f9682d4cf"
+      "sha256": "ff94fca77c88710ac819375194822aafeba6b2653c13db9b2d7cd00bb9c8665a"
     },
     {
       "id": "interaction-selection-radio-pressed-light-720x420",
@@ -3000,7 +4626,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "5a00b1a87e341cd6fda0cf9fd3dc996423223c1badc85972e55fbeda836a7099"
+      "sha256": "54988b21bd284479aaf9726977aff136340a50bb0ac84c503faba03de86f5ba2"
     },
     {
       "id": "interaction-selection-switch-hover-dark-720x420",
@@ -3012,7 +4638,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "89438869b198eb0d75a072b82a913bd452a89707f18e366431df7ddfc408f79e"
+      "sha256": "0d704ef1ed5d8febe3801c09812a1d59e301914412f0386b4fccfecf147d76ee"
     },
     {
       "id": "interaction-selection-switch-hover-light-720x420",
@@ -3024,7 +4650,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "be5dd2d2884df38b2af1f6518bf8d122ab4af3b62265f81f737d08a1e9509bfe"
+      "sha256": "23dcdffdbeeaab46fcdb9b019108da5a6e137ece8a45b768b5e014f748aff2ca"
     },
     {
       "id": "interaction-selection-switch-focused-dark-720x420",
@@ -3036,7 +4662,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "864b610c2556cf18ec517746c960d990c1c5c698afc7752cbae2bc929452287a"
+      "sha256": "4af294a7be3e5c4b5a3c80a7554e4b33838df375f409db6202e319cc18ccf01e"
     },
     {
       "id": "interaction-selection-switch-focused-light-720x420",
@@ -3048,7 +4674,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "cab7ac3b041bf047f5b133fbb9abe90c7c8100c5c3bcca2c4e8edb8654f488f5"
+      "sha256": "c7d566a88733a3f545db98ef5ad3ab19660a86b9118f604ab87f5cd0e73226cd"
     },
     {
       "id": "interaction-selection-switch-pressed-dark-720x420",
@@ -3060,7 +4686,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "7eb8f005029bc1ab928ba04d98b798214906410ef08d92df27e349ac37604462"
+      "sha256": "ff13da8b04b672d21a76904d5b7724c9c6855f7d1aec10d51e532813c6d5eef5"
     },
     {
       "id": "interaction-selection-switch-pressed-light-720x420",
@@ -3072,7 +4698,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "878a384e08719f2d08f396e11ee5b7c54fb50b200d86003a67860045c2f6ef32"
+      "sha256": "afdd5aae15f35819b7114f91d8d94672a286dbcb5bd11c0e4a27105a53ca0ca1"
     },
     {
       "id": "interaction-selection-segmented-control-hover-dark-720x420",
@@ -3660,7 +5286,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "068fb721fabcb3d83976f25a824c9dede977c3b63cd0c511f66b8679ea75422c"
+      "sha256": "6005dedec3d758179f15cbffc4ba1bcb6378ed09aaf47bd9af6ba7c8a20e3dc4"
     },
     {
       "id": "interaction-navigation-large-screen-breadcrumb-hover-light-720x420",
@@ -3672,7 +5298,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "0d2320fad1d8efcc98043b99b1556e812fe9b431560582dac87e2bb8064fe094"
+      "sha256": "79f0310ab7851f023340490e285930fc4605e5c33ac053ffbb242853e078e22d"
     },
     {
       "id": "interaction-navigation-large-screen-breadcrumb-focused-dark-720x420",
@@ -3684,7 +5310,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "d3a5a7270ff91b4fbb927182d82e3efece23cf64a6b0382b66e2342872b4efcc"
+      "sha256": "d54858a9011831d56e8a46163399833550e4aa0a96e9c6d4bd2ca7b99c9d110d"
     },
     {
       "id": "interaction-navigation-large-screen-breadcrumb-focused-light-720x420",
@@ -3696,7 +5322,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "211d84fefc32b7761545777d1163032342fae1ba3348f8ef8daa78b109dbba73"
+      "sha256": "b8411a6538d5901f4158f76128ef997163ee1e78c339375e06d13cb975168a5d"
     },
     {
       "id": "interaction-navigation-large-screen-breadcrumb-pressed-dark-720x420",
@@ -3708,7 +5334,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "1f553c2700a1902347ec8dd314aedd10851e0c924c67e1f7ee1648b3b8708aa8"
+      "sha256": "227e122fd82870581104ec56a21b70d52f0ef8691b6fc44bf4a9aafcc9839b5b"
     },
     {
       "id": "interaction-navigation-large-screen-breadcrumb-pressed-light-720x420",
@@ -3720,7 +5346,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "afacbd03068cea69529ceac640ca43d66c708ea652580fc7c991d5980785b127"
+      "sha256": "543460e0d870f81eec856a1b9824c0fc8b18f24de842e3db78478a40728e9b12"
     },
     {
       "id": "interaction-navigation-back-button-hover-dark-720x420",
@@ -3876,7 +5502,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "93052226564e422e165e52ae28e88bee71bdf508272a93c39c00d4487c9ce2db"
+      "sha256": "bbc9396dfefea5a0d73599824ef17aa44ccbf8d19ab9d3ce212a75bb7a4d7a70"
     },
     {
       "id": "interaction-media-document-preview-hover-light-720x420",
@@ -3888,7 +5514,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "57bce8b90d5e0e58a8f5f657b1f7284bf63097ea9b186d2b474bd0dfa8a69cca"
+      "sha256": "683113fa5433e518a4c790b47bf15401061d8999c782dc81a2152600e0768aba"
     },
     {
       "id": "interaction-media-document-preview-focused-dark-720x420",
@@ -3900,7 +5526,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "79767dccaf330464afcbe2b710246405d8033aa828eba08aac06a77dbffbc2b1"
+      "sha256": "9438b0b73bbf852df585feb5439a8b68b89b01bd776fdbccfdd84222a46a4e1d"
     },
     {
       "id": "interaction-media-document-preview-focused-light-720x420",
@@ -3912,7 +5538,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "615c22b60b50429911b750bede1d7f8af37cb5568ac60f2c9a7f705c6fda743e"
+      "sha256": "d646eaea13211e7f07beb66c87a69497e5179acf141d6f5b02f15b6c548af89d"
     },
     {
       "id": "interaction-media-document-preview-pressed-dark-720x420",
@@ -3924,7 +5550,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "157413ae0894ef0199d0287c2c37a8ebff03803511c7bc1a1bde475743bb1ec8"
+      "sha256": "a41f8ced7cc96b67bfa10c2421d55ed8b909a2cd70308d1690e7c332e112134d"
     },
     {
       "id": "interaction-media-document-preview-pressed-light-720x420",
@@ -3936,7 +5562,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "6d4203d08a72b38a75e359d7cf44f2344322728c9eadc61aa7fa9ec0393087bf"
+      "sha256": "451a72b3829a663e3749379b5ab7e69509c532bfa8003aa95ac15749a85c9c6b"
     },
     {
       "id": "interaction-security-privacy-masked-value-hover-dark-720x420",
@@ -4164,7 +5790,7 @@
       },
       "theme": "high_contrast",
       "data_source": "synthetic",
-      "sha256": "cfe8e9e884aa7f1d581e43207d6b783f0dc9cd3c0c37df82a3f6d10cfc229922",
+      "sha256": "24b3504814a2baf83525747a0a478d8291b9e0202ebcb3c22003108e36f80d24",
       "revision": {
         "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
         "dirty_state": true,
@@ -4184,7 +5810,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "9319e9a7ff29ab2619962052d47f96ed9b5e75587aba0ecfd55401a30f149cfa"
+      "sha256": "25d9a1548814e68eb7ba8ecb6cd9f39983f8056119c35a6d46865e941111a097"
     },
     {
       "id": "settings-high-contrast-light-390x844",
@@ -4196,7 +5822,7 @@
       },
       "theme": "high_contrast",
       "data_source": "synthetic",
-      "sha256": "ca49ff39fce5927571f76fd0abe1198869df0d5d9b851688d52a9afa25f2918b"
+      "sha256": "a3f8a2c68965e816c801ac1a8ea327c14c6ddf1264cb13a3aaabf0b6e853a51e"
     },
     {
       "id": "contrast-evidence-dark-430x900",
@@ -4220,7 +5846,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "8abd32bf8e1d368dbc0855887ea6d94c1f6e51a827bb8ba5da19a858d2eb5630"
+      "sha256": "90d89357b3cb3799ee2d6387e312c954f12c331830777fed63db1b23caef589d"
     },
     {
       "id": "search-state-loading-dark-390x844",
@@ -4336,7 +5962,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "e548a52f2f9b61e4816b7def2fe1589ac7eff81a9afeb9fbdc83214efe0818a0",
+      "sha256": "a5f10c3b457bbc5f6bf396f3b96949b2c908d37fcab8d3e55f89a5c203a6c5e5",
       "revision": {
         "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
         "dirty_state": true,
@@ -4356,7 +5982,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "4c3caf3a019e01f50d348036c007a4de5f599a3778177a1d22891e81d89ba153",
+      "sha256": "8fdb79c7efba97aa52b8fbbd8f5699e0e6579384e88b01bef13c932fdc35ddff",
       "revision": {
         "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
         "dirty_state": true,
@@ -4396,7 +6022,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "6ec1f2ab457c6e818555fd207d6e31ad55fa5c556a9ea453ba728d4378b85fc7",
+      "sha256": "761afeb5eb7b4b37b55ddfc96164ab93b76ed747b1c258ff2d2bcf023bb1da54",
       "revision": {
         "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
         "dirty_state": true,
@@ -4436,7 +6062,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "4d2c1843229ee0fc4e3797c55b68681a1469cfa39191eaa1524dc1532bce9e06",
+      "sha256": "d4869b32f1210a8379293d667057fed097f46d9618a6f998890ad4e1448fdc64",
       "revision": {
         "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
         "dirty_state": true,
@@ -4456,7 +6082,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "75fb8c0968c10a7aa2fc52cc389d0d68ea2725d1365e8f4ddba49af643b7517f",
+      "sha256": "f92eeeafb0c4082cad8f74c5b113d9f30d3c515bb4989efdc1f2b6e20be84a7e",
       "revision": {
         "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
         "dirty_state": true,
@@ -4476,7 +6102,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "c5b43ce137ac8e19d83827e663d4a40a27459d24778e8648dff9cf95aa14b376",
+      "sha256": "d3077943de5ecde67044cc5bd3699f8356b3e4c27a39ccdb384294bb29f2a45a",
       "revision": {
         "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
         "dirty_state": true,
@@ -4496,7 +6122,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "852512019af94842df893897ad70113628713e6683a0d8a1c9e27c7968842e8e",
+      "sha256": "708ba64c37fb6e7f604b1ed2793e6e0dbf02713f9000ef54df801dd65b3ee3ed",
       "revision": {
         "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
         "dirty_state": true,
@@ -4516,7 +6142,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "3ec45b46b9430f4425071b60056eb32e0c93ce830000f369ea56830cbd529cdc",
+      "sha256": "4acfb2e5bc6eef7c4ba6c74e87ea19f519d525d66651ca472bab3cd83a201576",
       "revision": {
         "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
         "dirty_state": true,
@@ -6121,7 +7747,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "d1b9366208e381d30ed1cec17e1045de896ad91266a3424a5aeab210ac74321c"
+      "sha256": "1a2090bead5a55ad6b95ee4eb4029eefa990e4416ef2339833f2a16c12d751b8"
     },
     {
       "id": "settings-state-empty-dark-390x844",
@@ -6133,7 +7759,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "a7980075d98647297193cb3939e7958aee3844d3db6ef9fc655e72cd68f09c8c"
+      "sha256": "f2e5c7e70ce724c22d21fdeec657c06d2c2c18987ba21b4246955be1fef7935c"
     },
     {
       "id": "settings-state-error-dark-390x844",
@@ -6145,7 +7771,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "42ff750e1e4425f7bcd53d000ddd252de5f2fbf678bdcf9a61ce68ccbe236a0c"
+      "sha256": "98f8666e0fa1c600fc47f50372d40d714f955439af3db253646b9098085887fd"
     },
     {
       "id": "settings-state-offline-dark-390x844",
@@ -6157,7 +7783,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "2e340d74d1e4c8a229ef0b9a0aafd8371f6e8595feb9623a63ee2830aa883b17"
+      "sha256": "d01317795795bc6a193e868653e63f058a6eca6eca2aab5b5755ab5c0fa63006"
     },
     {
       "id": "settings-state-permission-denied-dark-390x844",
@@ -6169,7 +7795,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "a0c48699ef9c8511028ededd0cbd283931bca95c398b5bd0ee3031afd9300515"
+      "sha256": "53ae81cdbf0b901c51c74288bafbf3023519a8833f2fac69d8c61aff25be5476"
     },
     {
       "id": "settings-state-disabled-dark-390x844",
@@ -6181,7 +7807,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "cf42a66c7c24f33c4be8fd0f3ba43a485f2c461dbb9fc3fb5ac90577565a5d71"
+      "sha256": "4789bdeba29223a183014808bfc298faa688cecc65fa77403994a5dfa3d13f72"
     },
     {
       "id": "settings-state-focused-dark-390x844",
@@ -6193,7 +7819,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "3a9df60199c9bf9f5c69e9a9080f38a44b10eaa61a83f03d71ae2a28ffef6e87"
+      "sha256": "7e67427a2223a097aceb273b7068ea1abe96e34276bf74badd3b0a46a74a49d5"
     },
     {
       "id": "settings-state-pressed-dark-390x844",
@@ -6205,7 +7831,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "d737b7b663aad2d25868f277907c4cec7e02e91f627e906c1b56bea5c25aa6e1"
+      "sha256": "f8992ff8b804e4a2867c16f07cd7e1bf19405b2f2ce9bcd782a3e1ec4e99cea5"
     },
     {
       "id": "settings-state-selected-dark-390x844",
@@ -6229,7 +7855,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "9d5d925013cd9bc06e05ce913d1c2a096c87353eb6bb755bbd53a36c8074c01a"
+      "sha256": "c0a5f193323ad3019c8df74845290bc8062e70f151218d086cf092b41a1f423b"
     },
     {
       "id": "settings-state-syncing-dark-390x844",
@@ -6241,7 +7867,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "09950d733759467d976c08a47b90423c4392121e3ac71c34bb3fbe5d5f026f6c"
+      "sha256": "f1329cd3659332842fd8cef8633b59c8ea4cd8f74642eca07ecc28f628b1c331"
     },
     {
       "id": "settings-state-conflict-dark-390x844",
@@ -6253,7 +7879,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "a5c63c3e2f9f47d98c983597d8905dc2e7d6c8ba0a8b6c0d568767cb5da1450a"
+      "sha256": "3d3226462767f68595067d50d7a71ffbd73ffccc652ded76cd222b9c6dbdd6c0"
     },
     {
       "id": "settings-state-security-timeout-dark-390x844",
@@ -6265,7 +7891,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "0d811c43e5e85ef282ccd87ba6923a2f584aa1f0f36eb497985280fc437a50f3"
+      "sha256": "b5b43f4fa78a188358e845ba5db85ace4a2d77939d4ba4be27529b23e046a3f0"
     },
     {
       "id": "profile-state-loading-dark-390x844",
@@ -6373,7 +7999,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "d19d5f4e0e7527af0bdb4c568733123ad706fbd3347e3e1b81bfcb75d3ca21a6"
+      "sha256": "56548e8672c545b4cd87c9d9fcf2f617c3fd6e6cd656499b5e4610efc21d126f"
     },
     {
       "id": "profile-state-large-text-dark-320x720",
@@ -6433,7 +8059,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "a59cca18463e52e420d0bf9d416bd259bd8224fc0052ab6a53962364f020d044"
+      "sha256": "683661812600caad765c9460ccc9061a65fbccef524624559c36289ee5d4b4c5"
     },
     {
       "id": "profile-state-conflict-dark-390x844",
@@ -6553,7 +8179,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "633d003677d145cc8c8df35ff795f42f63bc74e2e6d0f2fc4b9e9e1e35c4c48a"
+      "sha256": "7cd808dc7845baf5ccb77ea46d7bd3e5d0fd449e27967cfd69c0aac043dc017e"
     },
     {
       "id": "notifications-state-loading-dark-390x844",
@@ -6625,7 +8251,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "212725a37075a5d03896559aa161fd2f1c77dfa87333e00d632b125b0f20eb6c"
+      "sha256": "721d58cdfff656f23c331218d698a1fdd807e92d6cab89e3e03233eefeda8487"
     },
     {
       "id": "notifications-state-selected-dark-390x844",
@@ -6649,7 +8275,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "e5e670b6e2c61c9d3dad70867ae16b523e8376ae2b5452babc85a7d7326b595b"
+      "sha256": "1a5ad94316ac502ce497da48ac5ffa84bdea2ad7bcb72061b23883ddb575ba68"
     },
     {
       "id": "privacy-state-conflict-dark-390x844",
@@ -6661,7 +8287,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "d083ebbc8954ba57435f480097a95f83d870847a7b8b2da214986b785c52cecc"
+      "sha256": "f9ae52f2cde66008998b53a8d6ba2b9c473b28af9ea5fb722f24c373df97b1ef"
     },
     {
       "id": "privacy-state-dark-dark-390x844",
@@ -6673,7 +8299,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "705e44d2b4d2ea032e8833623ad11dc9a8d08f5ef20e1d84fc7293c99698758d"
+      "sha256": "de4e90b56101d11ad54457cb20aead60edc31771c123793b19a65a33a5203cf3"
     },
     {
       "id": "privacy-state-disabled-dark-390x844",
@@ -6685,7 +8311,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "59a0f33bcb21431caeabfcfb669f1255de8e02fe1dae04b49146210a4fca3a8c"
+      "sha256": "741fee39a4a3d657798e44838e84be187859d691796006c7e4800f27746f9d5f"
     },
     {
       "id": "privacy-state-empty-dark-390x844",
@@ -6721,7 +8347,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "959261c8c9bc4dcc0414b93336f3869e9808d9c0306add80a9800423dae8b14d"
+      "sha256": "54021a579808aef4032d944be071271dbf9c2ae1d8ee23432ab9d9b035999dfb"
     },
     {
       "id": "privacy-state-large-text-dark-320x720",
@@ -6753,7 +8379,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "67f8f80cf829e6e754c56facdb621722c8ad7e8d21c786909268f5a680e38d96"
+      "sha256": "d40f6eb94771b55bcf5f2841787c840fcebaf5766f84a1817b6dcfb6484b5cf6"
     },
     {
       "id": "privacy-state-loading-dark-390x844",
@@ -6777,7 +8403,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "52ca0cf9c781dd5581ccb7b158ed6802887fe7e60425ebab5efaec0520580329"
+      "sha256": "81f0c97af28531bca3e6d590badb41013f480aaae21a85569c5723d88a1ac58c"
     },
     {
       "id": "privacy-state-permission-denied-dark-390x844",
@@ -6801,7 +8427,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "430ee9d3a885e3e1b433add7d32b99d67ecee8b9b196a10691b43e80b519a385"
+      "sha256": "51fbd9c2b6fb9aab2da147c802e0bce57815489108e2436c7b4f16a9ee0cf44a"
     },
     {
       "id": "privacy-state-reduced-motion-dark-390x844",
@@ -6813,7 +8439,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "705e44d2b4d2ea032e8833623ad11dc9a8d08f5ef20e1d84fc7293c99698758d"
+      "sha256": "de4e90b56101d11ad54457cb20aead60edc31771c123793b19a65a33a5203cf3"
     },
     {
       "id": "privacy-state-security-timeout-dark-390x844",
@@ -6825,7 +8451,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "4073a4cd99132ed17ae5bfabcb72416bcbe9ac559ce35d0656ff9d5964f75388"
+      "sha256": "ea574b2df8a9b6d1c6c6d5245b72cd2a2b7ee81a575adca02cd0785701afede8"
     },
     {
       "id": "privacy-state-selected-dark-390x844",
@@ -6837,7 +8463,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "7ba3aaf369d27aaf96ecaaeb90c5a1ae89a0538ef74f91f1a6eb8ea2857718fd"
+      "sha256": "254aacbd0f6a9adf1e9beda6f6570e3474eb184ec54b69bdc16d75376c35e4c0"
     },
     {
       "id": "privacy-state-syncing-dark-390x844",
@@ -6849,7 +8475,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "ecea540d6ec2d36eb4eaa129477778146b5022e130e798ed8c4f7c02e8d92404"
+      "sha256": "1616f34a46cc3a17bccf20da53bec27bb2b5e8ca15c3784f94c8544cca621bc2"
     },
     {
       "id": "match-detail-state-conflict-dark-390x844",
@@ -6861,7 +8487,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "efff2831124aea70c0f01a82f91227b01cdfb83809dd65e546fe1ce1150b8fce"
+      "sha256": "41b2f89d1bf6c36940cb23f3a146f1ac81216e02a7769f4ae52d20459f9ddddb"
     },
     {
       "id": "match-detail-state-dark-dark-390x844",
@@ -6873,7 +8499,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "55b81eee562cb3ec76d8925b7bc2164d496d99d3ad1a4fafad513a5f243eb72e"
+      "sha256": "db6c3c4fc2c81453b61c42e47e7ba60875ea33af2fe00984e79a149b76fcd85f"
     },
     {
       "id": "match-detail-state-disabled-dark-390x844",
@@ -6885,7 +8511,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "91e502c9d5a648ad85ce92803700ba3e44a97ff79b996972fabea8891f9620ec"
+      "sha256": "0e8020ab0e9ac3fb0ecb608773e4a3b0a9a93af020f0fa4c1558dae5b09063af"
     },
     {
       "id": "match-detail-state-empty-dark-390x844",
@@ -6921,7 +8547,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "3fc6ecf12186fa542067cc344e2ae5cdeb05b4b9e8c9c6c6312e3b72fe866e16"
+      "sha256": "262fabda2ea127e8eea1b4b6549d28d43f273ec4085ca9c0209f5e84100cf94b"
     },
     {
       "id": "match-detail-state-large-text-dark-320x720",
@@ -6933,7 +8559,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "f8c581687ae76fbdc8ad10b2b9e559578b34c61d39093e40dda36a677b74171b"
+      "sha256": "1bf168b9f7a1b10422f95abe8dd9d71b6cf300998567ec6ca8e0733f1fd0685b"
     },
     {
       "id": "match-detail-state-light-light-390x844",
@@ -6945,7 +8571,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "f06e839834a97e15d17d1b08478a699406a7315ce65b284958141ceee30b07f2"
+      "sha256": "3a66e8571d8efc0486158450459234242ab0273627e41f8cee074469def7b3ed"
     },
     {
       "id": "match-detail-state-loading-dark-390x844",
@@ -6969,7 +8595,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "f635d301b190e34eab57ec962d101913d71e4b977dcc73fe43722887c0c7fd14"
+      "sha256": "9ef3fe0f955f09f7e20dd7a2b687a7d3df5678d97fe5c62d9ff97a72ff28dbb8"
     },
     {
       "id": "match-detail-state-permission-denied-dark-390x844",
@@ -6993,7 +8619,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "7f3ba92c9c7ece30ed871f1e23151a7cee0ec21c02c342eea17a3a061f9ffbbb"
+      "sha256": "b8d5e8d2f448e0d1a6237bd0e00893345fa3e6b0c2e1a36c44684b7d492b3bbb"
     },
     {
       "id": "match-detail-state-reduced-motion-dark-390x844",
@@ -7005,7 +8631,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "55b81eee562cb3ec76d8925b7bc2164d496d99d3ad1a4fafad513a5f243eb72e"
+      "sha256": "db6c3c4fc2c81453b61c42e47e7ba60875ea33af2fe00984e79a149b76fcd85f"
     },
     {
       "id": "match-detail-state-security-timeout-dark-390x844",
@@ -7029,7 +8655,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "7e953aca85e46681b6d36adaba1447a311eac0d1eebb9d933e6fa4b99592cd5f"
+      "sha256": "d0d35200873338ccd739ab74afd9be07c107c925645c6ce4aa7589e9821dfbd4"
     },
     {
       "id": "match-detail-state-syncing-dark-390x844",
@@ -7041,7 +8667,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "540b1efb4c08d926b8f9f60c17d7d5f96126a533f590366f5178f76d006d80ec"
+      "sha256": "88f7680b7c07e2211de2d01af6b20b25fde419d6c9559c99fc235929d3a0c03a"
     },
     {
       "id": "prediction-detail-state-conflict-dark-390x844",
@@ -8205,7 +9831,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "ca4325b0341ea283915f9422d83121aa0860af278f10070c284dee3679e2bfc3",
+      "sha256": "f70733f1a54b54e7b0c111abf62c2ff0bc54e4b5a9f464f6c83e1bb596089f3b",
       "revision": {
         "source_commit": "d1dd6916af807c4414dfd26c9475981eb23146b5",
         "dirty_state": true,
@@ -8225,7 +9851,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "7662836c8220567b72abb3a5d4ddc08fa0187809f8f87090c7d623f1072b49f7",
+      "sha256": "59df4dd09bfafeac58c28a96847534e66cc68149225a6e7643ab27d276c5e7a2",
       "revision": {
         "source_commit": "d1dd6916af807c4414dfd26c9475981eb23146b5",
         "dirty_state": true,
@@ -8305,7 +9931,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "082512c9280dfbf739202dec25e7069876263d03d877f935634714ef158fca27",
+      "sha256": "1a3bb834704523a9c0dc6a2ca8c9f0da39b76c107affcadf581dfd2b98e71a0f",
       "revision": {
         "source_commit": "d1dd6916af807c4414dfd26c9475981eb23146b5",
         "dirty_state": true,
@@ -8325,7 +9951,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "e9213dbcc0b66bcaabcb38d0f613d744fcdae9ff74f2773d8c68b8795e27af1f",
+      "sha256": "c7459796bfdcf449026a9d43b3bfc2fb242f75c6d334f9fbc4426b8e3e4dc774",
       "revision": {
         "source_commit": "d1dd6916af807c4414dfd26c9475981eb23146b5",
         "dirty_state": true,
@@ -8345,7 +9971,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "9c77a8b15c7bfcde2fcbb9edb30b1798356904d8363d6cbd79b0d31e154d058d",
+      "sha256": "0e0b4811c38ec4082f94ba6071af539e3be9634266a438381a5e0a80c8072a09",
       "revision": {
         "source_commit": "d1dd6916af807c4414dfd26c9475981eb23146b5",
         "dirty_state": true,
@@ -8385,7 +10011,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "0bebe961e2f1d298a60394a1b153cdf946de6b5494d8554f11934539131eaa34",
+      "sha256": "b1d8207b1d0b6bd2ea8602016352d8ed766864b815fbf59e5065bd910c22ba63",
       "revision": {
         "source_commit": "d1dd6916af807c4414dfd26c9475981eb23146b5",
         "dirty_state": true,
@@ -8425,7 +10051,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "e0940606d04731fa5fcbaa6d7ba43be7003ecdaf11e52f7107ac791c3ec0643f",
+      "sha256": "44872bbec2d5bea2d9617af4feb5241b057a0d44ac61a8fa44fff36dda784388",
       "revision": {
         "source_commit": "d1dd6916af807c4414dfd26c9475981eb23146b5",
         "dirty_state": true,
@@ -8445,7 +10071,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "7662836c8220567b72abb3a5d4ddc08fa0187809f8f87090c7d623f1072b49f7",
+      "sha256": "59df4dd09bfafeac58c28a96847534e66cc68149225a6e7643ab27d276c5e7a2",
       "revision": {
         "source_commit": "d1dd6916af807c4414dfd26c9475981eb23146b5",
         "dirty_state": true,
@@ -8465,7 +10091,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "f9b27806f59fe827642cd8b46197907fd187df40f1f6fcc14ddfc0a12f7c5028",
+      "sha256": "48cd19853aec23d39d6643473ff204a0ec50285b4efeb09fcd39611dd5333312",
       "revision": {
         "source_commit": "d1dd6916af807c4414dfd26c9475981eb23146b5",
         "dirty_state": true,
@@ -8485,7 +10111,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "e59d47c1b2d4eef2c13c958a8a944cd7f965e5600d35c407c85fe0b31df390f5",
+      "sha256": "4ca49518070280049e78661cf8df61a16b47d2e9402c7f5fb6a584e96800ae5a",
       "revision": {
         "source_commit": "d1dd6916af807c4414dfd26c9475981eb23146b5",
         "dirty_state": true,
@@ -8505,7 +10131,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "95d7db7dd633e0d8cc2d5bff2e7dab7dd2908e8c919344469c67554da0d8a352",
+      "sha256": "97bef810a1487de41590c4981f199a31330a14bb621dcdacc024b4953b581ad1",
       "revision": {
         "source_commit": "d1dd6916af807c4414dfd26c9475981eb23146b5",
         "dirty_state": true,
@@ -12297,7 +13923,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "640c670aafd992c068ee6ca94272a9fda669527faf1c33e949d3da1193119b83",
+      "sha256": "8bc3ed6f8a918428b1caee67a0a83c09d16bcd33e05cf718899eb4c8b6200776",
       "revision": {
         "source_commit": "fbcf812019c12cc716839151e3d957878c9d6e8c",
         "dirty_state": true,
@@ -13249,7 +14875,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "e7329e11739ed431a6933bfe4164578b0c2aca276fa96f684dbee28b875862b9"
+      "sha256": "bff41281a25108f54e1be4c8afbdc27d41d153bef4a1546e0b8388d5e80bfb4a"
     },
     {
       "id": "home-club-rayon-sports-dark-390x844",
@@ -13261,7 +14887,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "bd69377cde6f249886bde0d12dce1c0862dc161972465feebc969713b8d43504"
+      "sha256": "da4ddeac98e25ec1939395cf0e322db700afa9291490e23724b4e95d05371e2e"
     },
     {
       "id": "home-club-nkana-dark-390x844",
@@ -13273,7 +14899,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "3815a4dc3a91058220f30f1b80ea3a45d7f372cf67f8351557c72adf08558fd7"
+      "sha256": "8eb9b23aa805337a7fd436b6d1bcd533af762d32b1c436cf24e2918d9d26a6ea"
     },
     {
       "id": "home-club-as-vita-dark-390x844",
@@ -13285,7 +14911,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "f9e88b2ca82fafe2db5dd7f76004d09f9eb19c5970fe8d8ffbfd091fa9ca3262"
+      "sha256": "55122dea8dec3e38cde797fc8604c39b02780f17930acccb2905d959dedc817d"
     },
     {
       "id": "admin-predict-state-automatic-result-dark-390x844",
@@ -13333,7 +14959,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "e3a908bea95631b318a2aa1884d94dadd7d2b11057a6322170cdde5e94610cfb"
+      "sha256": "e42f5e6f7ef1c4d6fe0186744fd36efb9614654ce945a4415ced742eaa155d16"
     },
     {
       "id": "home-state-shortcuts-collapsed-large-text-light-320x720",
@@ -13345,7 +14971,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "c9f5a6b31dc34e40e64a2438bb0ae306d4796773c2b6074c1503d31f4891571b"
+      "sha256": "f23be63e34b37e7a25ae6550d6515fd0a182740486e06abb3379649604f42500"
     },
     {
       "id": "home-state-shortcuts-collapsed-normal-text-dark-390x844",
@@ -13357,7 +14983,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "6ff8f123f411ae11f06ae7eb296ed0dcc8d871fb53b8569f5fa294a5c683fbfc"
+      "sha256": "504bd104eda98fb4dfbd72a2db337da5c1be9fd3a19f5f9fd203e365e6b468f3"
     },
     {
       "id": "home-state-shortcuts-collapsed-normal-text-light-390x844",
@@ -13369,7 +14995,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "b217620b6b374cb368720134ed6e320d71389e1443212918a3a17de1ecb14ed8"
+      "sha256": "576b5a24dd0dea2e25f35af09e3852eb4797aad4983a198b213aaafc42de452c"
     },
     {
       "id": "home-state-shortcuts-expanded-large-text-dark-320x720",
@@ -13381,7 +15007,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "8b2b68d9c7825ceef7ae280c3958111906095db95a0f83b41a2c3baef2e2c816"
+      "sha256": "0f87d25b2d9891d20ef8204dac613e0a13a3ddc988888ac0ff0de7c1ef2d4aa5"
     },
     {
       "id": "home-state-shortcuts-expanded-large-text-light-320x720",
@@ -13393,7 +15019,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "453e81171ab26eb108d582661c8ec061c09738ef860f8ffb0448babc2a66f33d"
+      "sha256": "bd49c4eced732f2a15ede1fdc9f0d5af741419d0c47037102fc5d89d1865991b"
     },
     {
       "id": "home-state-shortcuts-expanded-normal-text-dark-390x844",
@@ -13405,7 +15031,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "ee590bd7e22f1cc8cb78769c921ec25c3029ba297e60a94facd68d8c5e7d15a1"
+      "sha256": "34af67aa3db55ae1de4e9eb2c8ff6d51c3deca65dbb4e51482237563afd6b0f7"
     },
     {
       "id": "home-state-shortcuts-expanded-normal-text-light-390x844",
@@ -13417,7 +15043,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "8afd00de321910a26dd1cf44dee6b1e889b5d3c2619cb92fb7ae4f28d3e017ad"
+      "sha256": "d7f1b7d8716f59990239c5eb10d6d69c43f28d411d3f8e7c5f8df9a187e5a6f5"
     },
     {
       "id": "home-state-discovery-active-predictions-dark-390x844",
@@ -13429,7 +15055,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "94c29b7dda382e526b5e739028ae8d796f696f6f442bc5468733e23c523a0750"
+      "sha256": "4fdbae59bc6997aed702d2afa4e9f65844dc16a47e84a56c83aa41fb82bb2672"
     },
     {
       "id": "home-state-discovery-active-predictions-large-text-dark-320x720",
@@ -13441,7 +15067,7 @@
       },
       "theme": "dark",
       "data_source": "synthetic",
-      "sha256": "6d4574fd3d9447e602f8b98a1d5d4e2011679b1e9c541c3fa9cc194479eb1cce"
+      "sha256": "e61b778f3f14bd4991e87467dc653fc42fe7a4c0b356daf2a5c1bd649fe6e6d6"
     },
     {
       "id": "home-state-discovery-active-predictions-large-text-light-320x720",
@@ -13453,7 +15079,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "5b02329e0387e8bf8f095a4ed32772ec9f0cd0517046b539233ceb411b43f656"
+      "sha256": "626c87fe902191799beb82410915c407af406522fe2ab04c4c11f5a4de0b809f"
     },
     {
       "id": "home-state-discovery-active-predictions-light-390x844",
@@ -13465,7 +15091,7 @@
       },
       "theme": "light",
       "data_source": "synthetic",
-      "sha256": "a7f3d2fec8eb850121cb1692b606bf289c26daefa9ad03407f7a6a6698e11107"
+      "sha256": "c884565272be644a4a12c0ff20b61e9930498c39c08475606b5f9cd2f1bc8793"
     },
     {
       "id": "home-state-discovery-fan-clubs-dark-390x844",

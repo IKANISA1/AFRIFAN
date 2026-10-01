@@ -331,7 +331,7 @@ function AdminAuthCard() {
             href="https://wa.me/250788767816"
             target="_blank"
             rel="noopener"
-            className="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-[var(--admin-zinc-100)] px-5 py-4 text-sm font-medium normal-case tracking-normal text-[var(--admin-zinc-950)] transition-opacity hover:opacity-90 active:scale-[0.98]"
+            className="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-[var(--admin-foreground)] px-5 py-4 text-sm font-medium normal-case tracking-normal text-[var(--admin-canvas)] transition-opacity hover:opacity-90 active:scale-[0.98]"
           >
             <MessageCircle className="h-[18px] w-[18px]" aria-hidden="true" />
             Message +250 788 767 816
@@ -442,7 +442,7 @@ function AdminAuthCard() {
                     type="submit"
                     disabled={authBusy}
                     aria-label="Send code via WhatsApp"
-                    className="flex h-14 w-full items-center justify-center gap-2.5 rounded-2xl bg-[var(--admin-zinc-100)] text-sm font-medium normal-case tracking-normal text-[var(--admin-zinc-950)] transition-opacity hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:hover:shadow-none"
+                    className="flex h-14 w-full items-center justify-center gap-2.5 rounded-2xl bg-[var(--admin-foreground)] text-sm font-medium normal-case tracking-normal text-[var(--admin-canvas)] transition-opacity hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:hover:shadow-none"
                   >
                     {authBusy ? (
                       <>
@@ -484,7 +484,7 @@ function AdminAuthCard() {
                   <button
                     type="submit"
                     disabled={authBusy || code.length < 6}
-                    className="flex h-14 w-full items-center justify-center gap-2.5 rounded-2xl bg-[var(--admin-zinc-100)] text-sm font-medium normal-case tracking-normal text-[var(--admin-zinc-950)] transition-opacity hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:hover:shadow-none"
+                    className="flex h-14 w-full items-center justify-center gap-2.5 rounded-2xl bg-[var(--admin-foreground)] text-sm font-medium normal-case tracking-normal text-[var(--admin-canvas)] transition-opacity hover:opacity-90 active:scale-[0.98] disabled:opacity-50 disabled:hover:shadow-none"
                   >
                     {authBusy ? (
                       <>
@@ -609,7 +609,7 @@ function AdminWorkspaceSignal({
         "mt-4 flex items-start gap-3 rounded-2xl border px-4 py-3 text-sm",
         isError
           ? "border-error/25 bg-error/10 text-error"
-          : "border-[var(--admin-border)] bg-[var(--admin-zinc-900)] text-[var(--admin-text)]",
+          : "border-[var(--admin-border)] bg-[var(--admin-widget)] text-[var(--admin-text)]",
       )}
     >
       <span className="mt-0.5 shrink-0 text-[var(--admin-text-muted)]">
@@ -771,19 +771,19 @@ export function AdminShell({ children }: { children: ReactNode }) {
             "transition-all duration-300 motion-reduce:transition-none",
           )}
         >
-          <div className="sticky top-0 flex h-screen flex-col border-r border-[var(--admin-border)] bg-[var(--admin-zinc-950)] px-3 py-4">
+          <div className="sticky top-0 flex h-screen flex-col border-r border-[var(--admin-border)] bg-[var(--admin-canvas)] px-3 py-4">
             <div className="flex items-center justify-between gap-3 border-b border-[var(--admin-border)] pb-4 mb-4">
               {!sidebarCollapsed ? (
                 <div className="flex items-center gap-2 px-1">
-                  <div className="flex h-8 w-8 items-center justify-center rounded bg-[var(--admin-zinc-100)] text-xs font-medium text-[var(--admin-zinc-950)]">
+                  <div className="flex h-8 w-8 items-center justify-center rounded bg-[var(--admin-foreground)] text-xs font-medium text-[var(--admin-canvas)]">
                     AC
                   </div>
-                  <p className="font-medium text-sm tracking-tight text-[var(--admin-zinc-100)]">
+                  <p className="font-medium text-sm tracking-tight text-[var(--admin-foreground)]">
                     AFRICLUB
                   </p>
                 </div>
               ) : (
-                <div className="flex h-8 w-8 mx-auto items-center justify-center rounded bg-[var(--admin-zinc-100)] text-xs font-medium text-[var(--admin-zinc-950)]">
+                <div className="flex h-8 w-8 mx-auto items-center justify-center rounded bg-[var(--admin-foreground)] text-xs font-medium text-[var(--admin-canvas)]">
                   AC
                 </div>
               )}
@@ -801,10 +801,10 @@ export function AdminShell({ children }: { children: ReactNode }) {
               {!sidebarCollapsed ? (
                 <div className="space-y-3">
                   <div className="px-2">
-                    <p className="text-xs font-medium text-[var(--admin-zinc-100)] truncate">
+                    <p className="text-xs font-medium text-[var(--admin-foreground)] truncate">
                       {sessionIdentity}
                     </p>
-                    <p className="text-xs text-[var(--admin-zinc-500)] mt-0.5">
+                    <p className="text-xs text-[var(--admin-secondary)] mt-0.5">
                       {formatAdminRoleLabel(access.role)}
                     </p>
                   </div>
@@ -831,13 +831,13 @@ export function AdminShell({ children }: { children: ReactNode }) {
         </aside>
 
         <div className="w-0 min-w-0 flex-1 overflow-x-hidden">
-          <header className="sticky top-0 z-20 border-b border-[var(--admin-border)] bg-[var(--admin-zinc-950)/80] backdrop-blur-md px-4 py-3 sm:px-6 lg:px-8">
+          <header className="sticky top-0 z-20 border-b border-[var(--admin-border)] bg-[var(--admin-canvas)]/80 backdrop-blur-md px-4 py-3 sm:px-6 lg:px-8">
             <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
               <div className="flex items-center gap-4">
                 <button
                   type="button"
                   onClick={() => setSidebarCollapsed((v) => !v)}
-                  className="hidden rounded-lg p-2 text-[var(--admin-zinc-500)] transition hover:bg-[var(--admin-zinc-900)] hover:text-[var(--admin-zinc-100)] xl:block"
+                  className="hidden rounded-lg p-2 text-[var(--admin-secondary)] transition hover:bg-[var(--admin-widget)] hover:text-[var(--admin-foreground)] xl:block"
                   aria-label={
                     sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"
                   }
@@ -849,10 +849,10 @@ export function AdminShell({ children }: { children: ReactNode }) {
                   )}
                 </button>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-sm font-medium text-[var(--admin-zinc-100)] normal-case tracking-normal">
+                  <h1 className="text-sm font-medium text-[var(--admin-foreground)] normal-case tracking-normal">
                     {activeItem?.label ?? "Workspace"}
                   </h1>
-                  <span className="text-xs text-[var(--admin-zinc-500)] font-medium">
+                  <span className="text-xs text-[var(--admin-secondary)] font-medium">
                     {formattedDate ? `/ ${formattedDate}` : null}
                   </span>
                 </div>
@@ -868,7 +868,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                     }
                     disabled={switchingClub}
                     aria-busy={switchingClub}
-                    className="rounded-md border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] px-3 py-1.5 text-xs font-semibold text-[var(--admin-zinc-100)] outline-none"
+                    className="rounded-md border border-[var(--admin-border)] bg-[var(--admin-widget)] px-3 py-1.5 text-xs font-semibold text-[var(--admin-foreground)] outline-none"
                   >
                     {clubOptions.map((club) => (
                       <option key={club.id} value={club.id}>
@@ -877,7 +877,7 @@ export function AdminShell({ children }: { children: ReactNode }) {
                     ))}
                   </select>
                 ) : (
-                  <span className="text-xs font-semibold text-[var(--admin-zinc-400)]">
+                  <span className="text-xs font-semibold text-[var(--admin-secondary)]">
                     {activeClubLabel}
                   </span>
                 )}
@@ -943,7 +943,7 @@ function AdminMobileNav({
   return (
     <>
       <nav
-        className="fixed inset-x-0 bottom-0 z-30 border-t border-[var(--admin-border)] bg-[var(--admin-zinc-950)] pb-[env(safe-area-inset-bottom)] xl:hidden"
+        className="fixed inset-x-0 bottom-0 z-30 border-t border-[var(--admin-border)] bg-[var(--admin-canvas)] pb-[env(safe-area-inset-bottom)] xl:hidden"
         aria-label="Admin mobile navigation"
       >
         <div className="mx-auto flex max-w-md items-stretch justify-around px-3 pt-2">
@@ -959,8 +959,8 @@ function AdminMobileNav({
                 className={cn(
                   "flex flex-col items-center gap-1 p-2 transition-colors",
                   active
-                    ? "text-[var(--admin-zinc-100)]"
-                    : "text-[var(--admin-zinc-500)]",
+                    ? "text-[var(--admin-foreground)]"
+                    : "text-[var(--admin-secondary)]",
                 )}
               >
                 <Icon size={20} />
@@ -977,8 +977,8 @@ function AdminMobileNav({
             className={cn(
               "flex flex-col items-center gap-1 p-2",
               sheetOpen
-                ? "text-[var(--admin-zinc-100)]"
-                : "text-[var(--admin-zinc-500)]",
+                ? "text-[var(--admin-foreground)]"
+                : "text-[var(--admin-secondary)]",
             )}
             aria-label="Show more admin options"
           >
@@ -1001,7 +1001,7 @@ function AdminMobileNav({
       >
         {overflowSections.map((section) => (
           <div key={section.title}>
-            <p className="mb-3 text-xs font-medium normal-case tracking-normal text-[var(--admin-zinc-600)]">
+            <p className="mb-3 text-xs font-medium normal-case tracking-normal text-[var(--admin-control-border)]">
               {section.title}
             </p>
             <div className="grid gap-1">
@@ -1018,11 +1018,11 @@ function AdminMobileNav({
                     className={cn(
                       "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
                       active
-                        ? "bg-[var(--admin-zinc-800)] text-[var(--admin-zinc-100)]"
-                        : "text-[var(--admin-zinc-400)] hover:bg-[var(--admin-zinc-800)]",
+                        ? "bg-[var(--admin-raised)] text-[var(--admin-foreground)]"
+                        : "text-[var(--admin-secondary)] hover:bg-[var(--admin-raised)]",
                     )}
                   >
-                    <Icon size={18} className="text-[var(--admin-zinc-500)]" />
+                    <Icon size={18} className="text-[var(--admin-secondary)]" />
                     {item.label}
                   </Link>
                 );

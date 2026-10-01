@@ -1,3 +1,4 @@
+import { registerLocalHttpAssertions } from "../../../../e2e/fixtures/local-http-route-assertions";
 const mocks = vi.hoisted(() => ({
   getSiteSearchIndex: vi.fn(),
 }));
@@ -127,3 +128,36 @@ describe("GET /api/search-index", () => {
     expect(JSON.stringify(body)).not.toContain("private-version");
   });
 });
+
+registerLocalHttpAssertions([
+  {
+    "name": "returns the controlled empty state",
+    "route": "/api/search-index",
+    "state": "empty"
+  },
+  {
+    "name": "does not send a response while the index is still syncing",
+    "route": "/api/search-index",
+    "state": "syncing"
+  },
+  {
+    "name": "returns a stable security timeout",
+    "route": "/api/search-index",
+    "state": "security_timeout"
+  },
+  {
+    "name": "sanitizes search-provider failures",
+    "route": "/api/search-index",
+    "state": "error"
+  },
+  {
+    "name": "returns a stable permission-denied response",
+    "route": "/api/search-index",
+    "state": "permission_denied"
+  },
+  {
+    "name": "returns a stable conflict response for a stale index snapshot",
+    "route": "/api/search-index",
+    "state": "conflict"
+  }
+]);

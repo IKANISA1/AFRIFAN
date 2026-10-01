@@ -19,7 +19,7 @@ export function DisabledFeatureFallback({
 }: DisabledFeatureFallbackProps) {
   return (
     <div className="page-shell section-grid py-16">
-      <section className="glass-panel mx-auto max-w-3xl rounded-[34px] p-8 text-center sm:p-10">
+      <section className="ui-panel mx-auto max-w-3xl rounded-[34px] p-8 text-center sm:p-10">
         <p className="font-mono text-xs normal-case tracking-normal text-action-neutral">
           Feature availability
         </p>

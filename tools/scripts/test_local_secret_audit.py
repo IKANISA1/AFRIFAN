@@ -11,7 +11,7 @@ import tempfile
 import unittest
 import zipfile
 
-from local_secret_audit import Audit, Limits, classify, digest, run, source_open, report_destination
+from local_secret_audit import Audit, Limits, classify, digest, run, source_open, report_destination, review_policy
 
 
 def token():
@@ -76,6 +76,15 @@ class LocalSecretAuditTests(unittest.TestCase):
         result = self.audit('const value = "'+token()+'";')
         self.assertFalse(result['passed'])
         self.assert_private_absent(result, token())
+
+    def test_appended_provider_token_characters_cannot_bypass_detection(self):
+        value = token()+'A'*2000
+        result = self.audit(value)
+        self.assertFalse(result['passed'])
+        self.assert_private_absent(result, value)
+        result = self.audit(zip_data([(value+'.txt', 'normal')]), 'archive.zip')
+        self.assert_private_absent(result, token())
+        self.assertIn('[redacted]', result['archiveMembers'][0]['path'])
 
     def test_binary_embedded_text_is_not_skipped(self):
         result = self.audit(b'\x00\xff\x80'+token().encode()+b'\x00')
@@ -150,6 +159,17 @@ class LocalSecretAuditTests(unittest.TestCase):
         result = self.audit(zip_data([(pem(), 'normal')]), 'artifact.zip')
         self.assert_private_absent(result, pem(), 'A'*128)
 
+    def test_long_bearer_and_assignment_names_do_not_disclose_fragments(self):
+        bearer = 'eyJ'+'A'*12+'.'+'B'*2000+'.'+'C'*20
+        result = self.audit(zip_data([(bearer+'.txt', 'normal')]), 'archive.zip')
+        self.assert_private_absent(result, 'B'*100)
+        assignment = 'AUTH_HMAC_KEY="'+'0123456789abcdef'*200+'"'
+        result = self.audit(zip_data([(assignment, 'normal')]), 'archive.zip')
+        self.assert_private_absent(result, '0123456789abcdef'*4)
+
+    def test_long_secret_assignment_cannot_bypass_review(self):
+        self.assertFalse(self.audit('AUTH_HMAC_KEY="'+'0123456789abcdef'*200+'"')['passed'])
+
     def test_duplicate_archive_paths_fail_coverage(self):
         import warnings
         with warnings.catch_warnings():
@@ -177,6 +197,81 @@ class LocalSecretAuditTests(unittest.TestCase):
         self.assertFalse(result['passed'])
         self.assertFalse(result['coverageComplete'])
         self.assert_private_absent(result, token())
+
+    def test_javascript_ustar_literal_at_header_offset_is_text(self):
+        data = b' ' * 257 + b'ustar\x00' + b'// JavaScript parser marker'
+        result = self.audit(data, 'tar-stream/headers.js')
+        self.assertTrue(result['passed'])
+        self.assertEqual(result['contents'][0]['type'], 'binary')
+        self.assertEqual(result['summary']['archiveMembers'], 0)
+
+    def test_invalid_tar_header_checksum_and_numeric_fields(self):
+        out = io.BytesIO()
+        with tarfile.open(fileobj=out, mode='w') as archive:
+            info = tarfile.TarInfo('file.txt'); info.size = 4
+            archive.addfile(info, io.BytesIO(b'safe'))
+        corrupt_checksum = bytearray(out.getvalue()); corrupt_checksum[148:156] = b'000000\x00 '
+        self.assertTrue(self.audit(bytes(corrupt_checksum), 'source.bin')['coverageComplete'])
+        self.assertFalse(self.audit(bytes(corrupt_checksum), 'source.tar')['coverageComplete'])
+        malformed_size = bytearray(out.getvalue()); malformed_size[124:136] = b'non-numeric!'
+        checksum = sum(malformed_size[:148])+8*32+sum(malformed_size[156:512])
+        malformed_size[148:156] = ('%06o\x00 ' % checksum).encode()
+        result = self.audit(bytes(malformed_size), 'source.bin')
+        self.assertTrue(result['coverageComplete'])
+        self.assertEqual(result['summary']['archiveMembers'], 0)
+
+    def test_valid_extensionless_tar_scans_member_and_empty_tar(self):
+        out = io.BytesIO()
+        with tarfile.open(fileobj=out, mode='w') as archive:
+            data = token().encode(); info = tarfile.TarInfo('file.txt'); info.size = len(data)
+            archive.addfile(info, io.BytesIO(data))
+        result = self.audit(out.getvalue(), 'extensionless')
+        self.assertTrue(result['coverageComplete'])
+        self.assertFalse(result['passed'])
+        self.assertEqual(result['summary']['archiveMembers'], 1)
+        self.assert_private_absent(result, token())
+        result = self.audit(b'\x00'*1024, 'empty.tar')
+        self.assertTrue(result['passed'])
+
+    def test_generic_assignment_review_is_exact_content_bound(self):
+        data = b'access_token="'+b'0123456789abcdef'*4+b'"'
+        review = {'classification': 'reviewed_synthetic_placeholder', 'evidenceRef': 'SYNTHETIC_TEST_ONLY'}
+        audit = Audit(reviews={digest(data): review}); audit.content(data, 'fixture.txt')
+        result = audit.report()
+        self.assertTrue(result['passed'])
+        self.assertEqual(result['summary']['reviewedSyntheticContents'], 1)
+        self.assertFalse(result['contentFindings'][0]['blocksAcceptance'])
+        changed = Audit(reviews={digest(data): review}); changed.content(data+b'\n', 'fixture.txt')
+        self.assertFalse(changed.report()['passed'])
+
+    def test_review_cannot_exempt_strong_secret_categories(self):
+        review = {'classification': 'reviewed_synthetic_placeholder', 'evidenceRef': 'SYNTHETIC_TEST_ONLY'}
+        for secret in (token(), pem(), jwt('service_role'), json.dumps({'type':'service_account','private_key':'synthetic'})):
+            with self.subTest(secret_type=classify(secret.encode())[0]):
+                data = (secret if secret.startswith('{') else 'access_token="'+'0123456789abcdef'*4+'"\n'+secret).encode()
+                audit = Audit(reviews={digest(data):review}); audit.content(data, 'fixture.txt')
+                result = audit.report()
+                self.assertFalse(result['passed'])
+                self.assertGreater(result['summary']['blockingContentFindings'], 0)
+                self.assert_private_absent(result, secret, '0123456789abcdef'*4)
+
+    def test_review_policy_validation_and_safe_reporting(self):
+        data = b'access_token="'+b'0123456789abcdef'*4+b'"'
+        row = {'sha256': digest(data), 'category': 'secret_assignment_requires_review',
+               'classification': 'reviewed_synthetic_placeholder', 'evidenceRef': 'SYNTHETIC_TEST_ONLY',
+               'reason': 'Synthetic schema fixture used without provider requests: '+token()}
+        path = self.root/'policy.json'; path.write_text(json.dumps({'schemaVersion':1,'reviewedContents':[row]}))
+        reviews, policy_sha = review_policy(path)
+        self.assertEqual(policy_sha, digest(path.read_bytes()))
+        audit = Audit(reviews=reviews); audit.content(data, 'fixture.txt')
+        self.assert_private_absent(audit.report(), row['reason'], token())
+        for invalid in ({**row,'category':'private_key_material'}, {**row,'sha256':'A'*64}, {**row,'evidenceRef':'unsafe/path'}, {**row,'reason':'short'}):
+            path.write_text(json.dumps({'schemaVersion':1,'reviewedContents':[invalid]}))
+            with self.assertRaises(ValueError):
+                review_policy(path)
+        path.write_text(json.dumps({'schemaVersion':1,'reviewedContents':[row,row]}))
+        with self.assertRaises(ValueError):
+            review_policy(path)
 
     def test_unsupported_extension_cannot_hide_in_content_cache(self):
         audit = Audit(); audit.content(b'normal', 'normal.txt'); audit.content(b'normal', 'archive.7z')

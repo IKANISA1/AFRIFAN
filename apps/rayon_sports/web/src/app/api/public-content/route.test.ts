@@ -1,3 +1,4 @@
+import { registerLocalHttpAssertions, httpFixtureOrigin } from "../../../../e2e/fixtures/local-http-route-assertions";
 const mocks = vi.hoisted(() => ({
   getCmsContentStrict: vi.fn(),
   getContributionGroupsStrict: vi.fn(),
@@ -39,42 +40,42 @@ vi.mock("@/lib/data/public/gamification", () => ({
 import { GET } from "./route";
 
 const request = () =>
-  new Request("https://africlub.invalid/api/public-content?resource=history");
+  new Request(`${httpFixtureOrigin("https://africlub.invalid")}/api/public-content?resource=history`);
 const homeRequest = () =>
-  new Request("https://africlub.invalid/api/public-content?resource=home");
+  new Request(`${httpFixtureOrigin("https://africlub.invalid")}/api/public-content?resource=home`);
 const newsRequest = () =>
-  new Request("https://africlub.invalid/api/public-content?resource=news");
+  new Request(`${httpFixtureOrigin("https://africlub.invalid")}/api/public-content?resource=news`);
 const fixturesRequest = () =>
-  new Request("https://africlub.invalid/api/public-content?resource=fixtures");
+  new Request(`${httpFixtureOrigin("https://africlub.invalid")}/api/public-content?resource=fixtures`);
 const circlesRequest = () =>
-  new Request("https://africlub.invalid/api/public-content?resource=circles");
+  new Request(`${httpFixtureOrigin("https://africlub.invalid")}/api/public-content?resource=circles`);
 const fanClubsRequest = () =>
-  new Request("https://africlub.invalid/api/public-content?resource=fan-clubs");
+  new Request(`${httpFixtureOrigin("https://africlub.invalid")}/api/public-content?resource=fan-clubs`);
 const membershipRequest = () =>
   new Request(
-    "https://africlub.invalid/api/public-content?resource=membership",
+    `${httpFixtureOrigin("https://africlub.invalid")}/api/public-content?resource=membership`,
   );
 const shopRequest = () =>
-  new Request("https://africlub.invalid/api/public-content?resource=shop");
+  new Request(`${httpFixtureOrigin("https://africlub.invalid")}/api/public-content?resource=shop`);
 const shopProductRequest = (productId = "home-shirt") =>
   new Request(
-    `https://africlub.invalid/api/public-content?resource=shop-product&productId=${encodeURIComponent(productId)}`,
+    `${httpFixtureOrigin("https://africlub.invalid")}/api/public-content?resource=shop-product&productId=${encodeURIComponent(productId)}`,
   );
 const standingsRequest = () =>
-  new Request("https://africlub.invalid/api/public-content?resource=standings");
+  new Request(`${httpFixtureOrigin("https://africlub.invalid")}/api/public-content?resource=standings`);
 const squadRequest = () =>
-  new Request("https://africlub.invalid/api/public-content?resource=squad");
+  new Request(`${httpFixtureOrigin("https://africlub.invalid")}/api/public-content?resource=squad`);
 const supportersRequest = () =>
   new Request(
-    "https://africlub.invalid/api/public-content?resource=supporters",
+    `${httpFixtureOrigin("https://africlub.invalid")}/api/public-content?resource=supporters`,
   );
 const fixtureDetailRequest = (matchId = "opening-day") =>
   new Request(
-    `https://africlub.invalid/api/public-content?resource=fixture-detail&matchId=${encodeURIComponent(matchId)}`,
+    `${httpFixtureOrigin("https://africlub.invalid")}/api/public-content?resource=fixture-detail&matchId=${encodeURIComponent(matchId)}`,
   );
 const newsArticleRequest = (articleId = "opening-day") =>
   new Request(
-    `https://africlub.invalid/api/public-content?resource=news-article&articleId=${encodeURIComponent(articleId)}`,
+    `${httpFixtureOrigin("https://africlub.invalid")}/api/public-content?resource=news-article&articleId=${encodeURIComponent(articleId)}`,
   );
 
 describe("GET /api/public-content", () => {
@@ -90,7 +91,7 @@ describe("GET /api/public-content", () => {
   it.each(["private", "venues"])("rejects unsupported resource %s before reading CMS data", async (resource) => {
     const response = await GET(
       new Request(
-        `https://africlub.invalid/api/public-content?resource=${resource}`,
+        `${httpFixtureOrigin("https://africlub.invalid")}/api/public-content?resource=${resource}`,
       ),
     );
 
@@ -486,7 +487,7 @@ describe("GET /api/public-content", () => {
   it("rejects missing or oversized article identifiers before data access", async () => {
     const missing = await GET(
       new Request(
-        "https://africlub.invalid/api/public-content?resource=news-article",
+        `${httpFixtureOrigin("https://africlub.invalid")}/api/public-content?resource=news-article`,
       ),
     );
     const oversized = await GET(newsArticleRequest("x".repeat(201)));
@@ -1073,3 +1074,36 @@ describe("GET /api/public-content", () => {
     expect(text).not.toContain("database.internal");
   });
 });
+
+registerLocalHttpAssertions([
+  {
+    "name": "returns the controlled empty history state",
+    "route": "/api/public-content",
+    "state": "empty"
+  },
+  {
+    "name": "does not confirm readiness while CMS content is unsettled",
+    "route": "/api/public-content",
+    "state": "syncing"
+  },
+  {
+    "name": "returns a stable permission-denied response",
+    "route": "/api/public-content",
+    "state": "permission_denied"
+  },
+  {
+    "name": "returns a stable conflict response",
+    "route": "/api/public-content",
+    "state": "conflict"
+  },
+  {
+    "name": "sanitizes provider failures",
+    "route": "/api/public-content",
+    "state": "error"
+  },
+  {
+    "name": "returns a deterministic eight-second timeout",
+    "route": "/api/public-content",
+    "state": "security_timeout"
+  }
+]);

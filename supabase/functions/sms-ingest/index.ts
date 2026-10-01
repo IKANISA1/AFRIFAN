@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import {
@@ -265,7 +266,7 @@ export async function handleRequest(request: Request) {
       otpWhatsAppNumber,
     });
   } catch (error) {
-    console.error("sms-ingest failed", error);
+    logDiagnostic("error", "sms_ingest_sms_ingest_failed", error);
     await recordEdgeFunctionFailure(adminClient, {
       functionName: "sms-ingest",
       error,

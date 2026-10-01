@@ -35,6 +35,10 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules">
+        <!-- Automatic Performance payloads are outside the finite telemetry contract. -->
+        <meta-data
+            android:name="firebase_performance_collection_deactivated"
+            android:value="true" />
 
         <!-- Firebase networked SDKs are opt-in until production Firebase
              configuration is verified. This avoids startup calls to suspended

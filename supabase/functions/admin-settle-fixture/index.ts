@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import { HttpError, requireAdminCaller } from "../_shared/auth.ts";
@@ -149,7 +150,7 @@ export function createAdminSettleFixtureHandler(
       if (error instanceof HttpError) {
         return jsonError(error.message, error.status);
       }
-      console.error("admin-settle-fixture failed");
+      logDiagnostic("error", "admin_settle_fixture_admin_settle_fixture_failed");
       return jsonError("Fixture settlement was not confirmed.", 500);
     }
   };

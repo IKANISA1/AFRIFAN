@@ -32,7 +32,7 @@ import { emptyForm, type StandingForm } from "./_components/standing-state";
 
 const formBadge: Record<string, string> = {
   W: "bg-success/18 text-success",
-  D: "bg-[var(--admin-zinc-800)] text-[var(--admin-text-strong)]",
+  D: "bg-[var(--admin-raised)] text-[var(--admin-text-strong)]",
   L: "bg-error/18 text-error",
 };
 
@@ -230,7 +230,7 @@ export default function AdminStandingsPage() {
             type="button"
             onClick={beginCreate}
             disabled={mutationLocked}
-            className="admin-action-button min-h-12 !bg-[var(--admin-accent)] !text-[var(--admin-zinc-950)] disabled:cursor-not-allowed disabled:!bg-[var(--admin-zinc-800)] disabled:!text-[var(--admin-text-strong)]"
+            className="admin-action-button min-h-12 !bg-[var(--admin-accent)] !text-[var(--admin-canvas)] disabled:cursor-not-allowed disabled:!bg-[var(--admin-raised)] disabled:!text-[var(--admin-text-strong)]"
           >
             <Plus size={16} aria-hidden="true" />
             <span>Add club</span>
@@ -362,7 +362,7 @@ export default function AdminStandingsPage() {
               <tr>
                 <td
                   colSpan={7}
-                  className="py-8 text-center text-sm text-[var(--admin-zinc-400)]"
+                  className="py-8 text-center text-sm text-[var(--admin-secondary)]"
                 >
                   Loading standings…
                 </td>
@@ -371,7 +371,7 @@ export default function AdminStandingsPage() {
               <tr>
                 <td
                   colSpan={7}
-                  className="py-8 text-center text-sm text-[var(--admin-zinc-400)]"
+                  className="py-8 text-center text-sm text-[var(--admin-secondary)]"
                 >
                   {rowCollection.query
                     ? "No standings match the current search."
@@ -392,7 +392,7 @@ export default function AdminStandingsPage() {
                     data-row-id={row.id}
                     className={cn(isHighlighted && "bg-[var(--admin-accent)]/5")}
                   >
-                    <td className="text-center font-mono text-xs text-[var(--admin-zinc-500)]">
+                    <td className="text-center font-mono text-xs text-[var(--admin-secondary)]">
                       {row.position}
                     </td>
                     <td>
@@ -404,14 +404,14 @@ export default function AdminStandingsPage() {
                       ) : null}
                     </td>
                     <td className="text-center font-medium">{row.played}</td>
-                    <td className="text-center text-[var(--admin-zinc-400)]">
+                    <td className="text-center text-[var(--admin-secondary)]">
                       {row.goalDifference}
                     </td>
                     <td className="text-center font-medium text-[var(--admin-text-strong)]">
                       {row.points}
                     </td>
                     <td>
-                      <div className="flex gap-1" aria-label={`${row.club} recent form`}>
+                      <div className="flex gap-1" role="group" aria-label={`${row.club} recent form`}>
                         {row.form.map((item, index) => (
                           <span
                             key={`${item}-${index}`}

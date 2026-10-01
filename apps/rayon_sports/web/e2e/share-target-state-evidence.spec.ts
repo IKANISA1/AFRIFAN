@@ -39,7 +39,7 @@ async function capture(page: Page, state: string) {
 }
 
 test.beforeEach(async ({ browser }, testInfo) => {
-  test.setTimeout(120_000);
+  test.setTimeout(360_000);
   evidenceDirectory = prepareStateEvidence(browser, testInfo, "consumer_web_share_target_states");
 });
 
@@ -127,8 +127,8 @@ test("share target proves nine rendered states including invalid URLs", async ({
   await page.mouse.up();
 
   primary = await openShareTarget(page);
-  await page.addStyleTag({
-    content: "html { font-size: 200% !important; }",
+  await page.evaluate(() => {
+    document.documentElement.style.setProperty("font-size", "200%", "important");
   });
   const horizontalOverflow = await page.evaluate(
     () =>

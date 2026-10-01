@@ -1,3 +1,4 @@
+import { registerLocalHttpAssertions, httpFixtureOrigin, httpFixtureClubId } from "../../../../../e2e/fixtures/local-http-route-assertions";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 
@@ -215,8 +216,8 @@ describe("admin resource route", () => {
       isSuperAdmin: false,
       userId: "user-1",
       role: "club_admin",
-      clubId: "24",
-      availableClubIds: ["24"],
+      clubId: httpFixtureClubId(),
+      availableClubIds: [httpFixtureClubId()],
       canSelectClub: false,
       assignmentCount: 1,
     });
@@ -264,7 +265,7 @@ describe("admin resource route", () => {
 
   it("uses the admin client for LiveScore source reads", async () => {
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/livescore-sources",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/livescore-sources`,
       { method: "GET" },
     );
 
@@ -274,14 +275,14 @@ describe("admin resource route", () => {
 
     expect(getAdminLiveScoreCompetitionSourcesMock).toHaveBeenCalledWith(
       adminClient,
-      expect.objectContaining({ clubId: "24" }),
+      expect.objectContaining({ clubId: httpFixtureClubId() }),
     );
     expect(response.status).toBe(200);
   });
 
   it("uses the scoped admin client and bounded limit for audit-log reads", async () => {
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/audit-logs?limit=75",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/audit-logs?limit=75`,
       { method: "GET" },
     );
 
@@ -291,7 +292,7 @@ describe("admin resource route", () => {
 
     expect(getAdminAuditLogsMock).toHaveBeenCalledWith(
       adminClient,
-      expect.objectContaining({ clubId: "24" }),
+      expect.objectContaining({ clubId: httpFixtureClubId() }),
       { limit: 75 },
     );
     expect(response.status).toBe(200);
@@ -299,7 +300,7 @@ describe("admin resource route", () => {
 
   it("uses the admin client for runtime registry reads", async () => {
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/runtime-registry",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/runtime-registry`,
       { method: "GET" },
     );
 
@@ -309,14 +310,14 @@ describe("admin resource route", () => {
 
     expect(getAdminRuntimeRegistrySnapshotMock).toHaveBeenCalledWith(
       adminClient,
-      expect.objectContaining({ clubId: "24" }),
+      expect.objectContaining({ clubId: httpFixtureClubId() }),
     );
     expect(response.status).toBe(200);
   });
 
   it("uses the admin client for scoped home-banner reads", async () => {
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/cms-banners",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/cms-banners`,
       { method: "GET" },
     );
 
@@ -326,7 +327,7 @@ describe("admin resource route", () => {
 
     expect(getAdminBannersMock).toHaveBeenCalledWith(
       adminClient,
-      expect.objectContaining({ clubId: "24" }),
+      expect.objectContaining({ clubId: httpFixtureClubId() }),
     );
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({
@@ -336,11 +337,11 @@ describe("admin resource route", () => {
 
   it("uses the admin client for contribution group creation", async () => {
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/contributions",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/contributions`,
       {
         method: "POST",
         headers: {
-          origin: "https://admin.gikundiro.com",
+          origin: `${httpFixtureOrigin("https://admin.gikundiro.com")}`,
           "content-type": "application/json",
         },
         body: JSON.stringify({
@@ -356,7 +357,7 @@ describe("admin resource route", () => {
 
     expect(saveAdminContributionGroupMock).toHaveBeenCalledWith(
       adminClient,
-      expect.objectContaining({ clubId: "24" }),
+      expect.objectContaining({ clubId: httpFixtureClubId() }),
       expect.objectContaining({ name: "Circle" }),
     );
     expect(response.status).toBe(200);
@@ -364,11 +365,11 @@ describe("admin resource route", () => {
 
   it("uses the server client for partner WDW pool creation", async () => {
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/partner-prediction-pools",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/partner-prediction-pools`,
       {
         method: "POST",
         headers: {
-          origin: "https://admin.gikundiro.com",
+          origin: `${httpFixtureOrigin("https://admin.gikundiro.com")}`,
           "content-type": "application/json",
         },
         body: JSON.stringify({
@@ -388,7 +389,7 @@ describe("admin resource route", () => {
 
     expect(saveAdminPartnerPredictionPoolMock).toHaveBeenCalledWith(
       serverClient,
-      expect.objectContaining({ clubId: "24" }),
+      expect.objectContaining({ clubId: httpFixtureClubId() }),
       expect.objectContaining({
         partnerId: "partner-1",
         fixtureId: "fixture-1",
@@ -403,7 +404,7 @@ describe("admin resource route", () => {
 
   it("loads the prediction workspace through one mixed-client boundary", async () => {
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/predictions",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/predictions`,
       { method: "GET" },
     );
 
@@ -413,7 +414,7 @@ describe("admin resource route", () => {
 
     expect(getAdminPredictionsWorkspaceMock).toHaveBeenCalledWith(
       adminClient,
-      expect.objectContaining({ clubId: "24" }),
+      expect.objectContaining({ clubId: httpFixtureClubId() }),
       { poolClient: serverClient },
     );
     expect(response.status).toBe(200);
@@ -431,11 +432,11 @@ describe("admin resource route", () => {
 
   it("uses the server client for partner WDW pool settlement", async () => {
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/partner-prediction-pool-settlement",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/partner-prediction-pool-settlement`,
       {
         method: "POST",
         headers: {
-          origin: "https://admin.gikundiro.com",
+          origin: `${httpFixtureOrigin("https://admin.gikundiro.com")}`,
           "content-type": "application/json",
         },
         body: JSON.stringify({ poolId: "pool-1" }),
@@ -450,7 +451,7 @@ describe("admin resource route", () => {
 
     expect(settleAdminPartnerPredictionPoolMock).toHaveBeenCalledWith(
       serverClient,
-      expect.objectContaining({ clubId: "24" }),
+      expect.objectContaining({ clubId: httpFixtureClubId() }),
       "pool-1",
     );
     expect(response.status).toBe(200);
@@ -458,11 +459,11 @@ describe("admin resource route", () => {
 
   it("uses the admin client for LiveScore source saves", async () => {
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/livescore-sources",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/livescore-sources`,
       {
         method: "POST",
         headers: {
-          origin: "https://admin.gikundiro.com",
+          origin: `${httpFixtureOrigin("https://admin.gikundiro.com")}`,
           "content-type": "application/json",
         },
         body: JSON.stringify({
@@ -481,7 +482,7 @@ describe("admin resource route", () => {
 
     expect(saveAdminLiveScoreCompetitionSourceMock).toHaveBeenCalledWith(
       adminClient,
-      expect.objectContaining({ clubId: "24" }),
+      expect.objectContaining({ clubId: httpFixtureClubId() }),
       expect.objectContaining({ sourceKey: "rwanda-premier-league" }),
     );
     expect(response.status).toBe(200);
@@ -489,11 +490,11 @@ describe("admin resource route", () => {
 
   it("uses the admin client for runtime route saves", async () => {
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/runtime-routes",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/runtime-routes`,
       {
         method: "POST",
         headers: {
-          origin: "https://admin.gikundiro.com",
+          origin: `${httpFixtureOrigin("https://admin.gikundiro.com")}`,
           "content-type": "application/json",
         },
         body: JSON.stringify({
@@ -511,7 +512,7 @@ describe("admin resource route", () => {
 
     expect(saveAdminPlatformRouteMock).toHaveBeenCalledWith(
       adminClient,
-      expect.objectContaining({ clubId: "24" }),
+      expect.objectContaining({ clubId: httpFixtureClubId() }),
       expect.objectContaining({
         routeKey: "admin.dashboard",
         pathPattern: "/admin",
@@ -522,11 +523,11 @@ describe("admin resource route", () => {
 
   it("uses the admin client for contribution group deletion", async () => {
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/contributions?id=group-1&expected_updated_at=2026-07-24T18%3A00%3A00Z",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/contributions?id=group-1&expected_updated_at=2026-07-24T18%3A00%3A00Z`,
       {
         method: "DELETE",
         headers: {
-          origin: "https://admin.gikundiro.com",
+          origin: `${httpFixtureOrigin("https://admin.gikundiro.com")}`,
         },
       },
     );
@@ -537,7 +538,7 @@ describe("admin resource route", () => {
 
     expect(deleteAdminContributionGroupMock).toHaveBeenCalledWith(
       adminClient,
-      expect.objectContaining({ clubId: "24" }),
+      expect.objectContaining({ clubId: httpFixtureClubId() }),
       "group-1",
       "2026-07-24T18:00:00Z",
     );
@@ -551,16 +552,16 @@ describe("admin resource route", () => {
       isSuperAdmin: false,
       userId: "moderator-1",
       role: "club_moderator",
-      clubId: "24",
-      availableClubIds: ["24"],
+      clubId: httpFixtureClubId(),
+      availableClubIds: [httpFixtureClubId()],
       canSelectClub: false,
       assignmentCount: 1,
     });
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/contributions?id=group-1&expected_updated_at=2026-07-24T18%3A00%3A00Z",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/contributions?id=group-1&expected_updated_at=2026-07-24T18%3A00%3A00Z`,
       {
         method: "DELETE",
-        headers: { origin: "https://admin.gikundiro.com" },
+        headers: { origin: `${httpFixtureOrigin("https://admin.gikundiro.com")}` },
       },
     );
 
@@ -585,15 +586,15 @@ describe("admin resource route", () => {
       userId: "club-admin-1",
       role: "club_admin",
       clubId: null,
-      availableClubIds: ["24"],
+      availableClubIds: [httpFixtureClubId()],
       canSelectClub: false,
       assignmentCount: 1,
     });
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/contributions?id=group-1&expected_updated_at=2026-07-24T18%3A00%3A00Z",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/contributions?id=group-1&expected_updated_at=2026-07-24T18%3A00%3A00Z`,
       {
         method: "DELETE",
-        headers: { origin: "https://admin.gikundiro.com" },
+        headers: { origin: `${httpFixtureOrigin("https://admin.gikundiro.com")}` },
       },
     );
 
@@ -612,11 +613,11 @@ describe("admin resource route", () => {
 
   it("uses the admin client for LiveScore source deletion", async () => {
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/livescore-sources?id=source-1&expected_updated_at=2026-07-24T18%3A00%3A00Z",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/livescore-sources?id=source-1&expected_updated_at=2026-07-24T18%3A00%3A00Z`,
       {
         method: "DELETE",
         headers: {
-          origin: "https://admin.gikundiro.com",
+          origin: `${httpFixtureOrigin("https://admin.gikundiro.com")}`,
         },
       },
     );
@@ -627,7 +628,7 @@ describe("admin resource route", () => {
 
     expect(deleteAdminLiveScoreCompetitionSourceMock).toHaveBeenCalledWith(
       adminClient,
-      expect.objectContaining({ clubId: "24" }),
+      expect.objectContaining({ clubId: httpFixtureClubId() }),
       "source-1",
       "2026-07-24T18:00:00Z",
     );
@@ -636,11 +637,11 @@ describe("admin resource route", () => {
 
   it("uses the admin client for runtime route deletion", async () => {
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/runtime-routes?id=route-1&expected_updated_at=2026-07-24T18%3A00%3A00Z",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/runtime-routes?id=route-1&expected_updated_at=2026-07-24T18%3A00%3A00Z`,
       {
         method: "DELETE",
         headers: {
-          origin: "https://admin.gikundiro.com",
+          origin: `${httpFixtureOrigin("https://admin.gikundiro.com")}`,
         },
       },
     );
@@ -651,7 +652,7 @@ describe("admin resource route", () => {
 
     expect(deleteAdminPlatformRouteMock).toHaveBeenCalledWith(
       adminClient,
-      expect.objectContaining({ clubId: "24" }),
+      expect.objectContaining({ clubId: httpFixtureClubId() }),
       "route-1",
       "2026-07-24T18:00:00Z",
     );
@@ -660,11 +661,11 @@ describe("admin resource route", () => {
 
   it("uses the admin client for club settings updates including team colors", async () => {
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/settings",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/settings`,
       {
         method: "POST",
         headers: {
-          origin: "https://admin.gikundiro.com",
+          origin: `${httpFixtureOrigin("https://admin.gikundiro.com")}`,
           "content-type": "application/json",
         },
         body: JSON.stringify({
@@ -683,7 +684,7 @@ describe("admin resource route", () => {
 
     expect(saveAdminClubProfileMock).toHaveBeenCalledWith(
       adminClient,
-      expect.objectContaining({ clubId: "24" }),
+      expect.objectContaining({ clubId: httpFixtureClubId() }),
       expect.objectContaining({
         primaryColorHex: "#0038A8",
         secondaryColorHex: "#0E2B55",
@@ -696,7 +697,7 @@ describe("admin resource route", () => {
   it("returns an explicit empty state for an empty resource collection", async () => {
     getAdminLiveScoreCompetitionSourcesMock.mockResolvedValueOnce([]);
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/livescore-sources",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/livescore-sources`,
       { method: "GET" },
     );
 
@@ -718,7 +719,7 @@ describe("admin resource route", () => {
       new Error("database password and raw provider details"),
     );
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/livescore-sources",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/livescore-sources`,
       { method: "GET" },
     );
 
@@ -751,7 +752,7 @@ describe("admin resource route", () => {
       assignmentCount: 0,
     });
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/livescore-sources",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/livescore-sources`,
       { method: "GET" },
     );
 
@@ -776,11 +777,11 @@ describe("admin resource route", () => {
       }),
     );
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/contributions",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/contributions`,
       {
         method: "POST",
         headers: {
-          origin: "https://admin.gikundiro.com",
+          origin: `${httpFixtureOrigin("https://admin.gikundiro.com")}`,
           "content-type": "application/json",
         },
         body: JSON.stringify({ name: "Circle" }),
@@ -810,11 +811,11 @@ describe("admin resource route", () => {
       new AdminMutationConflictError("raw record version details"),
     );
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/contributions",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/contributions`,
       {
         method: "POST",
         headers: {
-          origin: "https://admin.gikundiro.com",
+          origin: `${httpFixtureOrigin("https://admin.gikundiro.com")}`,
           "content-type": "application/json",
         },
         body: JSON.stringify({ name: "Circle" }),
@@ -844,7 +845,7 @@ describe("admin resource route", () => {
       new Promise(() => undefined),
     );
     const request = new NextRequest(
-      "https://admin.gikundiro.com/api/admin/livescore-sources",
+      `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/livescore-sources`,
       { method: "GET" },
     );
     const responsePromise = GET(request, {
@@ -864,3 +865,36 @@ describe("admin resource route", () => {
     expect(response.headers.get("cache-control")).toBe("no-store");
   });
 });
+
+registerLocalHttpAssertions([
+  {
+    "name": "returns an explicit empty state for an empty resource collection",
+    "route": "/api/admin/:resource",
+    "state": "empty"
+  },
+  {
+    "name": "sanitizes unexpected resource errors",
+    "route": "/api/admin/:resource",
+    "state": "error"
+  },
+  {
+    "name": "returns a controlled permission-denied response before resource access",
+    "route": "/api/admin/:resource",
+    "state": "permission_denied"
+  },
+  {
+    "name": "does not confirm a mutation while its write is still syncing",
+    "route": "/api/admin/:resource",
+    "state": "syncing"
+  },
+  {
+    "name": "returns a controlled conflict without claiming the write succeeded",
+    "route": "/api/admin/:resource",
+    "state": "conflict"
+  },
+  {
+    "name": "returns a bounded timeout with no success confirmation",
+    "route": "/api/admin/:resource",
+    "state": "security_timeout"
+  }
+]);

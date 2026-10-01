@@ -540,7 +540,7 @@ export function MemberPortal({ refreshKey = 0, clubShortName, clubId = 24, count
           member number, see confirmed contributions, and support {clubShortName}{" "}
           through the official MoMo route.
         </p>
-        <div className="member-trust-row" aria-label="Member portal safeguards">
+        <div className="member-trust-row" role="group" aria-label="Member portal safeguards">
           <span><ShieldCheck aria-hidden="true" /> WhatsApp OTP</span>
           <span><LockKeyhole aria-hidden="true" /> Private record</span>
           <span><BadgeCheck aria-hidden="true" /> External confirmation</span>
@@ -715,7 +715,7 @@ export function MemberPortal({ refreshKey = 0, clubShortName, clubId = 24, count
                 value={amount}
                 onChange={(event) => setAmount(event.target.value)}
               />
-              <div className="member-amount-presets" aria-label="Contribution amount presets">
+              <div className="member-amount-presets" role="group" aria-label="Contribution amount presets">
                 {amountPresets.map((preset) => (
                   <button type="button" key={preset} aria-pressed={amount === String(preset)} onClick={() => setAmount(String(preset))}>
                     {formatMemberAmount(preset, currencyCode)}

@@ -70,7 +70,7 @@ export function FetEditorForm({
     <form
       action={submitForm}
       data-mutation-disabled={disabled || undefined}
-      className="glass-panel grid min-w-0 gap-4 rounded-[32px] p-6"
+      className="ui-panel grid min-w-0 gap-4 rounded-[32px] p-6"
     >
       <div className="flex items-center justify-between gap-3">
         <p className="font-display text-3xl font-medium normal-case leading-none">

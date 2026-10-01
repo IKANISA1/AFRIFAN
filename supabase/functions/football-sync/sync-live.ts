@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 /**
  * sync-live — Fetch live match details (stats, events, lineups).
  *
@@ -64,7 +65,7 @@ export async function syncLive(
     // Budget check
     const rateLimit = getRateLimit();
     if (rateLimit.dailyRemaining <= 10) {
-      console.warn("[sync-live] Near daily limit, stopping.");
+      logDiagnostic("warn", "football_sync_sync_live__sync_live_near_daily_limit_stopping");
       break;
     }
 
@@ -210,10 +211,7 @@ export async function syncLive(
       result.fixtures_processed++;
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error(
-        `[sync-live] Error for fixture ${apiFixtureId}:`,
-        msg,
-      );
+      logDiagnostic("error", "football_sync_sync_live__sync_live_error_for_fixture", msg);
       result.errors.push(`Fixture ${apiFixtureId}: ${msg}`);
     }
   }

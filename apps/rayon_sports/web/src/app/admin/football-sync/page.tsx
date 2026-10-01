@@ -22,6 +22,7 @@ import {
 } from "@/components/admin/admin-resource-status-banner";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
+import { handleAdminTabKeyDown } from "@/components/admin/admin-tab-keyboard";
 import { AdminSurface } from "@/components/admin/admin-surface";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
@@ -485,15 +486,18 @@ export default function AdminFootballSyncPage() {
               key={tab.key}
               type="button"
               role="tab"
+              id={`football-sync-tab-${tab.key}`}
               aria-selected={activeTab === tab.key}
-              aria-controls={`football-sync-${tab.key}`}
+              aria-controls="football-sync-panel"
+              tabIndex={activeTab === tab.key ? 0 : -1}
               disabled={status === "permission_denied"}
+              onKeyDown={handleAdminTabKeyDown}
               onClick={() => selectTab(tab.key)}
               className={cn(
                 "flex min-h-12 items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold transition motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-60",
                 activeTab === tab.key
                   ? "bg-action-blue text-white"
-                  : "border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] text-[var(--admin-text-strong)] hover:bg-[var(--admin-zinc-800)]",
+                  : "border border-[var(--admin-border)] bg-[var(--admin-widget)] text-[var(--admin-text-strong)] hover:bg-[var(--admin-raised)]",
               )}
             >
               <Icon size={16} aria-hidden="true" />
@@ -503,6 +507,13 @@ export default function AdminFootballSyncPage() {
         })}
       </div>
 
+      <div
+        id="football-sync-panel"
+        role="tabpanel"
+        aria-labelledby={`football-sync-tab-${activeTab}`}
+        tabIndex={0}
+        className="min-w-0"
+      >
       {unrecoveredFailure ? (
         <AdminErrorState
           title={statusCopy[status].label}
@@ -528,7 +539,7 @@ export default function AdminFootballSyncPage() {
               {Array.from({ length: 4 }).map((_, index) => (
                 <div
                   key={index}
-                  className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] p-4"
+                  className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-widget)] p-4"
                 >
                   <Skeleton className="skeleton-text h-5 w-1/3" />
                   <Skeleton className="skeleton-text mt-2 h-3 w-2/3" />
@@ -538,10 +549,9 @@ export default function AdminFootballSyncPage() {
           ) : activeTab === "overview" ? (
             <div
               id="football-sync-overview"
-              role="tabpanel"
               className="grid gap-4 p-5 sm:grid-cols-2 sm:p-6 lg:grid-cols-3"
             >
-              <div className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] p-5">
+              <div className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-widget)] p-5">
                 <p className="admin-row-meta">Source control</p>
                 <p className="mt-2 text-sm text-[var(--admin-text-strong)]">
                   <strong>{data.overview.activeSources}</strong> active source
@@ -549,7 +559,7 @@ export default function AdminFootballSyncPage() {
                   configured
                 </p>
               </div>
-              <div className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] p-5">
+              <div className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-widget)] p-5">
                 <p className="admin-row-meta">Fixture breakdown</p>
                 <p className="mt-2 text-sm text-[var(--admin-text-strong)]">
                   <strong>{data.overview.scheduledFixtures}</strong> scheduled ·{" "}
@@ -557,7 +567,7 @@ export default function AdminFootballSyncPage() {
                   <strong>{data.overview.finishedFixtures}</strong> finished
                 </p>
               </div>
-              <div className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] p-5">
+              <div className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-widget)] p-5">
                 <p className="admin-row-meta">Latest confirmed sync</p>
                 <p className="mt-2 text-sm text-[var(--admin-text-strong)]">
                   {formatRelativeTime(data.overview.lastSyncAt)}
@@ -567,7 +577,6 @@ export default function AdminFootballSyncPage() {
           ) : activeTab === "sources" ? (
             <div
               id="football-sync-sources"
-              role="tabpanel"
               className="admin-football-sync-source-grid grid min-w-0 gap-4 p-5 sm:p-6 lg:grid-cols-[minmax(0,1fr)_420px]"
             >
               <div className="min-w-0 space-y-3">
@@ -607,7 +616,7 @@ export default function AdminFootballSyncPage() {
                 </AdminFilterBar>
 
                 {sourceCollection.pageResult.items.length === 0 ? (
-                  <div className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] p-5 text-sm text-[var(--admin-text-muted)]">
+                  <div className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-widget)] p-5 text-sm text-[var(--admin-text-muted)]">
                     {sourceCollection.query
                       ? "No LiveScore sources match the current search."
                       : "No approved LiveScore competition source is configured."}
@@ -616,7 +625,7 @@ export default function AdminFootballSyncPage() {
                   sourceCollection.pageResult.items.map((source) => (
                     <article
                       key={source.id}
-                      className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] p-4"
+                      className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-widget)] p-4"
                     >
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div className="min-w-0">
@@ -671,7 +680,7 @@ export default function AdminFootballSyncPage() {
               </div>
 
               <form
-                className="min-w-0 rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] p-4"
+                className="min-w-0 rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-widget)] p-4"
                 onSubmit={(event) => {
                   event.preventDefault();
                   void handleSaveSource();
@@ -814,7 +823,6 @@ export default function AdminFootballSyncPage() {
           ) : (
             <div
               id="football-sync-logs"
-              role="tabpanel"
               className="min-w-0 space-y-3 p-5 sm:p-6"
             >
               <AdminFilterBar>
@@ -924,6 +932,7 @@ export default function AdminFootballSyncPage() {
           )}
         </AdminSurface>
       )}
+      </div>
 
       <AdminActionDrawer
         open={detailLog != null}

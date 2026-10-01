@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { headers } from "next/headers";
 import { GlobalNav } from "@/components/nav/global-nav";
 import { MatchRibbon } from "@/components/match-ribbon";
 import { AppBottomNav } from "@/components/app-bottom-nav";
@@ -12,6 +13,7 @@ import {
   getSiteNavigationItems,
 } from "@/lib/feature-config";
 import { ui } from "@/ui-kit";
+import { validCspNonce } from "@/lib/content-security-policy";
 
 export default async function SiteLayout({
   children,
@@ -24,6 +26,8 @@ export default async function SiteLayout({
     getPlatformConfig(),
   ]);
   const copy = getSiteChromeCopy(club.defaultLanguage);
+  const requestNonce = (await headers()).get("x-africlub-csp-nonce");
+  const nonce = validCspNonce(requestNonce) ? requestNonce : undefined;
   const navFeatures = getNavFeatures(platformConfig);
   const primaryNavigation = getSiteNavigationItems(platformConfig, "primary");
   const footerNavigation = [
@@ -78,7 +82,7 @@ export default async function SiteLayout({
         navigationItems={primaryNavigation}
         ribbon={<MatchRibbon match={nextMatch} copy={copy} />}
       />
-      <script dangerouslySetInnerHTML={{ __html: publicSwBootstrap }} />
+      <script nonce={nonce} dangerouslySetInnerHTML={{ __html: publicSwBootstrap }} />
 
       <main
         id="main-content"

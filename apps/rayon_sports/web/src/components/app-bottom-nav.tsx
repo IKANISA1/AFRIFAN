@@ -116,7 +116,7 @@ export function AppBottomNav({
     >
       <nav
         ref={navRef}
-        className="fixed inset-x-[12px] bottom-[calc(12px+env(safe-area-inset-bottom))] z-50 mx-auto w-fit max-w-[calc(100%-24px)] rounded-[32px] border border-white/20 bg-[var(--glass-fill)] backdrop-blur-xl md:hidden"
+        className="fixed inset-x-[12px] bottom-[calc(12px+env(safe-area-inset-bottom))] z-50 mx-auto w-fit max-w-[calc(100%-24px)] rounded-[32px] border border-white/20 bg-[var(--chrome-surface)] backdrop-blur-xl md:hidden"
         aria-label="Main navigation"
       >
         <div className="mx-auto flex max-w-md items-stretch justify-around px-[8px] py-[4px]">

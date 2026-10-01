@@ -5,7 +5,7 @@ import '../tokens/component_size_tokens.dart';
 import '../tokens/shape_tokens.dart';
 import '../tokens/size_tokens.dart';
 
-/// Minimalist loading indicator aligned with the monolith aesthetic.
+/// Loading indicator using the selected Revolut control colour role.
 class AfriLoadingIndicator extends StatelessWidget {
   const AfriLoadingIndicator({
     this.size = SizeTokens.loadingIndicator,

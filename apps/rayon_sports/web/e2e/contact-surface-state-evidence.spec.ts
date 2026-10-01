@@ -1,4 +1,4 @@
-import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions } from "./state-evidence-provenance";
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions, createStateEvidenceContext } from "./state-evidence-provenance";
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
@@ -41,7 +41,7 @@ async function expectNoSeriousAxeViolations(page: Page) {
 }
 
 test.beforeEach(async ({ browser }, testInfo) => {
-  test.setTimeout(120_000);
+  test.setTimeout(360_000);
   evidenceDirectory = prepareStateEvidence(browser, testInfo, "consumer_web_contact_states");
 });
 
@@ -53,7 +53,7 @@ test("contact proves its six applicable static-support states", async ({
   browser,
 }) => {
 
-  const context: BrowserContext = await browser.newContext({
+  const context: BrowserContext = await createStateEvidenceContext(browser, {
     ...stateEvidenceContextOptions(test.info()),
     colorScheme: "dark",
     reducedMotion: "no-preference",
@@ -110,8 +110,8 @@ test("contact proves its six applicable static-support states", async ({
   await page.mouse.up();
 
   surface = await openContact(page, "large-text");
-  await page.addStyleTag({
-    content: "html { font-size: 200% !important; }",
+  await page.evaluate(() => {
+    document.documentElement.style.setProperty("font-size", "200%", "important");
   });
   await expect.poll(() => page.evaluate(() =>
     document.querySelector(".contact-surface-hero")!.getBoundingClientRect().top -

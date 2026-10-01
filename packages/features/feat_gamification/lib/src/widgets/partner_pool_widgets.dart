@@ -155,7 +155,16 @@ class PartnerPoolOutcomeOption extends StatelessWidget {
                   label,
                   style: TypographyTokens.titleSmall(
                     isSelected
-                        ? ColorTokens.primaryContainer
+                        ? ColorTokens.contrastForeground(
+                            Color.alphaBlend(
+                              ColorTokens.primaryContainer.withValues(
+                                alpha: 0.14,
+                              ),
+                              Theme.of(
+                                context,
+                              ).colorScheme.surfaceContainerHigh,
+                            ),
+                          )
                         : ColorTokens.onSurface,
                   ),
                 ),

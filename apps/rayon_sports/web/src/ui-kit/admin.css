@@ -1,26 +1,25 @@
-/* Operator styles load with the admin route layout. Shared tokens stay in theme.css. */
+/* Revolut Business surface adapter. Dark and historical light utility scopes
+ * share semantic roles; exact authenticated desktop comparison remains open. */
 .admin-workspace {
-  --admin-zinc-950: var(--background);
-  --admin-zinc-900: var(--surface);
-  --admin-zinc-800: var(--surface-elevated);
-  --admin-zinc-700: var(--surface-elevated);
-  --admin-zinc-600: var(--border-hover);
-  --admin-zinc-500: var(--foreground-muted);
-  --admin-zinc-400: var(--foreground-muted);
-  --admin-zinc-300: var(--foreground);
-  --admin-zinc-100: var(--foreground);
-  --admin-bg-top: var(--admin-zinc-950);
-  --admin-bg-bottom: var(--admin-zinc-950);
-  --admin-surface: var(--admin-zinc-900);
-  --admin-surface-muted: var(--admin-zinc-950);
-  --admin-surface-hover: var(--admin-zinc-800);
-  --admin-border: var(--admin-zinc-800);
-  --admin-border-strong: var(--admin-zinc-700);
-  --admin-text-strong: var(--admin-zinc-100);
-  --admin-text: var(--admin-zinc-300);
-  --admin-text-muted: var(--admin-zinc-500);
-  --admin-accent: var(--admin-zinc-100);
-  --admin-accent-soft: var(--admin-zinc-800);
+  --admin-canvas: var(--background);
+  --admin-widget: var(--surface);
+  --admin-raised: var(--surface-elevated);
+  --admin-interactive: var(--surface-elevated);
+  --admin-control-border: var(--border-hover);
+  --admin-secondary: var(--foreground-muted);
+  --admin-foreground: var(--foreground);
+  --admin-bg-top: var(--admin-canvas);
+  --admin-bg-bottom: var(--admin-canvas);
+  --admin-surface: var(--admin-widget);
+  --admin-surface-muted: var(--admin-canvas);
+  --admin-surface-hover: var(--admin-raised);
+  --admin-border: var(--admin-raised);
+  --admin-border-strong: var(--admin-interactive);
+  --admin-text-strong: var(--admin-foreground);
+  --admin-text: var(--admin-foreground);
+  --admin-text-muted: var(--admin-secondary);
+  --admin-accent: var(--accent);
+  --admin-accent-soft: var(--accent-wash);
   --admin-success: var(--success);
   --admin-warning: var(--warning);
   --admin-danger: var(--error);
@@ -38,24 +37,21 @@
   width: min(1440px, 100%);
 }
 
-.admin-workspace .glass-panel,
 .admin-workspace .ui-panel {
   background: var(--admin-surface);
   box-shadow: none;
   backdrop-filter: none;
 }
 
-.admin-workspace .glass-panel-elevated,
 .admin-workspace .ui-panel-elevated {
   background: var(--admin-surface);
-  box-shadow: 0 4px 20px -10px rgba(0, 0, 0, 0.5);
+  box-shadow: none;
   backdrop-filter: none;
 }
 
-.admin-workspace .ui-panel-inset,
-.admin-workspace .clay-card {
+.admin-workspace .ui-panel-inset {
   border-color: var(--admin-border);
-  background: var(--admin-zinc-950);
+  background: var(--admin-canvas);
   box-shadow: none;
 }
 
@@ -67,9 +63,9 @@
 }
 
 .admin-workspace .ui-button-primary {
-  border-color: var(--admin-zinc-700);
-  background: var(--admin-zinc-100);
-  color: var(--admin-zinc-950);
+  border-color: var(--admin-interactive);
+  background: var(--admin-foreground);
+  color: var(--admin-canvas);
   box-shadow: none;
 }
 
@@ -79,25 +75,25 @@
 }
 
 .admin-workspace .ui-button-secondary {
-  background: var(--admin-zinc-800);
-  color: var(--admin-zinc-300);
+  background: var(--admin-raised);
+  color: var(--admin-foreground);
   backdrop-filter: none;
 }
 
 .admin-workspace .ui-button-secondary:hover {
-  background: var(--admin-zinc-700);
-  border-color: var(--admin-zinc-600);
+  background: var(--admin-interactive);
+  border-color: var(--admin-control-border);
 }
 
 .admin-workspace .ui-icon-button {
   background: transparent;
-  color: var(--admin-zinc-500);
+  color: var(--admin-secondary);
   backdrop-filter: none;
 }
 
 .admin-workspace .ui-icon-button:hover {
-  background: var(--admin-zinc-800);
-  color: var(--admin-zinc-100);
+  background: var(--admin-raised);
+  color: var(--admin-foreground);
 }
 
 .admin-workspace .ui-chip,
@@ -109,9 +105,9 @@
 }
 
 .admin-workspace .dashboard-chip[data-active="true"] {
-  background: var(--admin-zinc-100);
-  border-color: var(--admin-zinc-100);
-  color: var(--admin-zinc-950);
+  background: var(--admin-foreground);
+  border-color: var(--admin-foreground);
+  color: var(--admin-canvas);
 }
 
 .admin-workspace .ui-input,
@@ -133,11 +129,11 @@
 }
 
 .admin-workspace .progress-track {
-  background: var(--admin-zinc-800);
+  background: var(--admin-raised);
 }
 
 .admin-workspace .progress-fill {
-  background: var(--admin-zinc-100);
+  background: var(--admin-foreground);
 }
 
 .admin-workspace .progress-fill::after {
@@ -145,19 +141,19 @@
 }
 
 .admin-workspace .ui-shell-bar {
-  background: var(--admin-zinc-900);
+  background: var(--admin-widget);
   box-shadow: none;
   backdrop-filter: none;
 }
 
 .admin-workspace .ui-nav-tab-active {
-  background: var(--admin-zinc-800);
-  color: var(--admin-zinc-100);
+  background: var(--admin-raised);
+  color: var(--admin-foreground);
   box-shadow: none;
 }
 
 .admin-workspace .ui-nav-tab {
-  color: var(--admin-zinc-500);
+  color: var(--admin-secondary);
 }
 
 .admin-page-header {
@@ -286,7 +282,8 @@
   container-type: inline-size;
 }
 
-.admin-features-state-surface .admin-table-shell {
+.admin-features-state-surface .admin-table-shell,
+.admin-tickets-state-surface .admin-table-shell {
   width: 100%;
   min-width: 0;
   max-width: 100%;
@@ -593,7 +590,7 @@
 .admin-timeline-item {
   border: 1px solid var(--admin-border);
   background: rgba(255, 255, 255, 0.03);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  box-shadow: none;
 }
 
 .admin-nav-link {
@@ -911,7 +908,7 @@
   align-items: start;
 }
 
-.admin-notifications-state-surface .glass-panel,
+.admin-notifications-state-surface .ui-panel,
 .admin-notifications-state-surface .admin-surface {
   min-width: 0;
   max-width: 100%;
@@ -1179,7 +1176,7 @@
   justify-content: center;
   border: 1px solid var(--admin-border);
   border-radius: 0.9rem;
-  background: var(--admin-zinc-900);
+  background: var(--admin-widget);
   color: var(--admin-accent);
 }
 
@@ -1242,7 +1239,7 @@
   min-width: 0;
   border: 1px solid var(--admin-border);
   border-radius: 0.8rem;
-  background: var(--admin-zinc-900);
+  background: var(--admin-widget);
   padding: 0.65rem;
 }
 
@@ -1643,15 +1640,13 @@
     --success: var(--success-ink);
     --warning: var(--warning-ink);
     --accent: var(--inverse-accent);
-    --admin-zinc-950: var(--inverse-surface);
-    --admin-zinc-900: var(--inverse-group);
-    --admin-zinc-800: var(--inverse-border);
-    --admin-zinc-700: var(--inverse-muted);
-    --admin-zinc-600: var(--inverse-muted);
-    --admin-zinc-500: var(--inverse-muted);
-    --admin-zinc-400: var(--inverse-muted);
-    --admin-zinc-300: var(--inverse-foreground);
-    --admin-zinc-100: var(--inverse-foreground);
+    --admin-canvas: var(--inverse-surface);
+    --admin-widget: var(--inverse-group);
+    --admin-raised: var(--inverse-border);
+    --admin-interactive: var(--inverse-border);
+    --admin-control-border: var(--inverse-muted);
+    --admin-secondary: var(--inverse-muted);
+    --admin-foreground: var(--inverse-foreground);
     --admin-bg-top: var(--inverse-group);
     --admin-bg-bottom: var(--inverse-group);
     --admin-surface: var(--inverse-surface);
@@ -1698,4 +1693,8 @@
 .admin-sign-out {
   min-height: 3rem;
   min-width: 3rem;
+}
+
+.admin-workspace :is(input[type="checkbox"], input[type="radio"]) {
+  accent-color: var(--admin-action-primary);
 }

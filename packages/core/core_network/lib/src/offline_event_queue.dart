@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 
 import 'connectivity_service.dart';
 import 'hive_encryption_service.dart';
+import 'native_health_payload.dart';
 import 'operational_health_service.dart';
 
 /// Queues [OperationalHealthService] events locally when offline,
@@ -55,6 +56,7 @@ class OfflineEventQueue {
         _boxName,
         encryptionCipher: HiveEncryptionService.cipher,
       );
+      await _normalizeStoredEvents(_box!);
       _initialized = true;
 
       final pendingCount = _box!.length;
@@ -133,10 +135,11 @@ class OfflineEventQueue {
     Map<String, dynamic> payload, {
     bool sendImmediately = true,
   }) async {
+    final safePayload = NativeHealthPayload.normalize(payload);
     if (sendImmediately && ConnectivityService.isOnline && _sender != null) {
       // Try to send immediately.
       try {
-        await _sender!(payload);
+        await _sender!(safePayload);
         return; // Sent successfully — no need to queue.
       } catch (_) {
         // Fall through to queue it.
@@ -148,11 +151,31 @@ class OfflineEventQueue {
     if (box == null) return;
 
     try {
-      final key = '${DateTime.now().toUtc().millisecondsSinceEpoch}';
-      await box.put(key, jsonEncode(payload));
-      AfriLogger.info(_tag, 'Event queued locally ($key).');
+      await box.add(jsonEncode(safePayload));
+      AfriLogger.info(_tag, 'Event queued locally.');
     } catch (error) {
-      AfriLogger.warn(_tag, 'Failed to queue event: $error');
+      AfriLogger.warn(_tag, 'Failed to queue event.');
+    }
+  }
+
+  static Map<String, dynamic>? _decodeStoredEvent(String raw) {
+    try {
+      final decoded = jsonDecode(raw);
+      return decoded is Map ? NativeHealthPayload.normalize(decoded) : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static Future<void> _normalizeStoredEvents(Box<String> box) async {
+    for (final key in box.keys.toList()) {
+      final raw = box.get(key);
+      final safe = raw == null ? null : _decodeStoredEvent(raw);
+      if (safe == null) {
+        await box.delete(key);
+      } else {
+        await box.put(key, jsonEncode(safe));
+      }
     }
   }
 
@@ -195,7 +218,13 @@ class OfflineEventQueue {
         final raw = box.get(key);
         if (raw == null) continue;
 
-        final event = Map<String, dynamic>.from(jsonDecode(raw) as Map);
+        final event = _decodeStoredEvent(raw);
+        if (event == null) {
+          await box.delete(key);
+          continue;
+        }
+        // Rewrite before delivery: a failed replay retains only safe bytes.
+        await box.put(key, jsonEncode(event));
         await sender(event);
 
         if (!box.isOpen) {
@@ -204,7 +233,7 @@ class OfflineEventQueue {
         await box.delete(key);
         sent += 1;
       } catch (error) {
-        AfriLogger.warn(_tag, 'Failed to flush event "$key": $error');
+        AfriLogger.warn(_tag, 'Failed to flush event.');
         // Leave it in the queue for next attempt.
       }
     }

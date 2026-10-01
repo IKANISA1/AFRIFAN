@@ -1,6 +1,6 @@
 export const ui = {
   brandMark: "ui-brand-mark",
-  glassHeader: "ui-glass-header",
+  header: "ui-header",
   panel: "ui-panel",
   panelElevated: "ui-panel-elevated",
   panelInset: "ui-panel-inset",
@@ -33,7 +33,6 @@ export const ui = {
   input: "ui-input",
   kicker: "ui-kicker",
   meta: "ui-meta",
-  monolithBleed: "ui-monolith-bleed",
 } as const;
 
 export type UiRecipe = (typeof ui)[keyof typeof ui];

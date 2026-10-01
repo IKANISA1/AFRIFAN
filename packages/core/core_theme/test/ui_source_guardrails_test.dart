@@ -1174,7 +1174,7 @@ void main() {
         violations,
         isEmpty,
         reason: _formatViolations(
-          'Found raw Material colors in feature/app UI. Use ColorTokens, AfriSemanticColors, or ExternalBrandColors from core_theme.',
+          'Found raw Material colors in feature/app UI. Use ColorTokens or AfriSemanticColors; DomainContentColors is reserved for depicting real product content.',
           violations,
         ),
       );
@@ -1221,7 +1221,7 @@ void main() {
       );
     });
 
-    test('Preserved Drive evidence does not become an active design surface', () {
+    test('Drive archives cannot retain competing design authorities', () {
       final fixture = Directory.systemTemp.createTempSync(
         'africlub-visual-source-boundary-',
       );
@@ -1240,12 +1240,18 @@ void main() {
         'docs/drive-import/2026-09-28/mirror/capture.png',
         'Synthetic archived screenshot bytes; no runtime rights approval.',
       );
-      expect(_findSecondaryDesignAuthorityFiles(fixture), isEmpty);
+      write(
+        'docs/drive-import/2026-09-28/source-inventory.md',
+        'Source file inventory, hashes and domain snapshot provenance.',
+      );
+      expect(_findSecondaryDesignAuthorityFiles(fixture), [
+        '${fixture.path}/docs/drive-import/2026-09-28/mirror/DESIGN.md',
+      ]);
       expect(_findStoredVisualAssets(fixture), isEmpty);
       expect(_findForbiddenStaticDesignReferences(fixture), isEmpty);
 
-      // Copying historical material into a live surface restores every guard;
-      // the archive's location cannot confer runtime rights or design authority.
+      // Archived product media remains evidence rather than runtime artwork.
+      // Neither an archive nor a live directory can shelter a design authority.
       write(
         'docs/style-guide.md',
         'Competing source of truth for product design.',
@@ -1259,6 +1265,7 @@ void main() {
         "Image.asset('assets/images/old.png')",
       );
       expect(_findSecondaryDesignAuthorityFiles(fixture), [
+        '${fixture.path}/docs/drive-import/2026-09-28/mirror/DESIGN.md',
         '${fixture.path}/docs/style-guide.md',
       ]);
       expect(_findStoredVisualAssets(fixture), [
@@ -1504,7 +1511,10 @@ List<String> _findSecondaryDesignAuthorityFiles(Directory repoRoot) {
     caseSensitive: false,
   );
 
-  for (final entity in _safeRecursiveList(repoRoot)) {
+  for (final entity in _safeRecursiveList(
+    repoRoot,
+    includePreservedDriveEvidence: true,
+  )) {
     if (entity is! File) continue;
 
     final normalizedPath = entity.path.replaceAll('\\', '/');
@@ -1897,7 +1907,10 @@ List<String> _scanTextFiles({
   return violations;
 }
 
-List<FileSystemEntity> _safeRecursiveList(Directory root) {
+List<FileSystemEntity> _safeRecursiveList(
+  Directory root, {
+  bool includePreservedDriveEvidence = false,
+}) {
   final entities = <FileSystemEntity>[];
   final pending = <Directory>[root];
 
@@ -1913,7 +1926,8 @@ List<FileSystemEntity> _safeRecursiveList(Directory root) {
     for (final child in children) {
       final normalizedPath = child.path.replaceAll('\\', '/');
       if (_isGeneratedPath(normalizedPath) ||
-          _isPreservedDriveEvidencePath(root, normalizedPath)) {
+          (!includePreservedDriveEvidence &&
+              _isPreservedDriveEvidencePath(root, normalizedPath))) {
         continue;
       }
       entities.add(child);

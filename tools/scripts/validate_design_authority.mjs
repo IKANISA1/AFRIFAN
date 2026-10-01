@@ -9,11 +9,15 @@ export const requiredAuthorityFiles = [
   "references/brand-adaptation.md",
   "references/screen-typologies.md",
   "references/mobile-patterns.md",
+  "references/current-native-atlas.md",
   "references/web-patterns.md",
+  "references/tokens.md",
+  "references/colour-role-evidence.md",
   "references/pwa-and-accessibility.md",
   "references/component-contracts.md",
   "references/quality-standard.md",
   "references/operational-checklist.md",
+  "references/mobile-design-100.md",
 ];
 const digest = (value) => createHash("sha256").update(value).digest("hex");
 

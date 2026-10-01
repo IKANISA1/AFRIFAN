@@ -313,7 +313,7 @@ export function PwaShell() {
         isAdminSurface ? "top-4 sm:top-6" : "bottom-24 sm:bottom-6",
       ].join(" ")}
     >
-      <div className="pointer-events-auto glass-panel rounded-[28px] px-4 py-4 shadow-2xl">
+      <div className="pointer-events-auto ui-panel rounded-[28px] px-4 py-4 shadow-2xl">
         <p className="font-mono text-[11px] normal-case tracking-normal text-action-neutral">
           {surface}
         </p>

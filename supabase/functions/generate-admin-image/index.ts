@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import {
@@ -381,7 +382,7 @@ const handler = async (request: Request) => {
       kind,
     });
   } catch (error) {
-    console.error("generate-admin-image failed:", error);
+    logDiagnostic("error", "generate_admin_image_generate_admin_image_failed", error);
     return jsonError(
       error instanceof Error ? error.message : "Image generation failed.",
       500,

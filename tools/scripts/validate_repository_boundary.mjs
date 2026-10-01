@@ -143,9 +143,9 @@ const rootBuildConfigurationPaths = new Set(['pubspec.yaml', 'pubspec.yml', 'pac
 export const governedArchiveControlTests = Object.freeze([
   Object.freeze({
     path: 'packages/core/core_theme/test/ui_source_guardrails_test.dart',
-    sha256: 'a87e7e46d9e55d796a0346db94362b14df8037754b341991041ce026036f7639',
+    sha256: '504b8a4fb28ed04cb68e35ef973cfab30aeeaf0f611ad6503e81a4d4eb5f8aba',
     expiresAt: '2026-10-29T00:00:00.000Z',
-    reviewedBy: 'implementation technical review; no owner or release approval',
+    reviewedBy: '2026-09-30 implementation technical review of archive design rejection and synthetic negative fixtures; no owner or release approval',
   }),
 ]);
 

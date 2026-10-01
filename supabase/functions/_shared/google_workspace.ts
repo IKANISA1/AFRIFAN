@@ -1,3 +1,4 @@
+import { logDiagnostic } from "./diagnostics.ts";
 /**
  * Google Workspace AI Audit Bridge
  * 
@@ -24,7 +25,7 @@ export type AiAuditEvent = {
  */
 export async function logAiAudit(event: AiAuditEvent) {
   if (!GOOGLE_SERVICE_ACCOUNT_EMAIL || !GOOGLE_PRIVATE_KEY || !AI_AUDIT_SHEET_ID) {
-    console.warn("Google Workspace Audit not configured. Skipping log.");
+    logDiagnostic("warn", "google_workspace_google_workspace_audit_not_configured_skipping_log");
     return;
   }
 
@@ -46,11 +47,11 @@ export async function logAiAudit(event: AiAuditEvent) {
 
     // Placeholder for Google Sheets API Append call
     // POST https://sheets.googleapis.com/v4/spreadsheets/{spreadsheetId}/values/{range}:append
-    console.log(`[AI AUDIT LOG] ${event.function_name}: ${event.decision} (Conf: ${event.confidence})`);
+    logDiagnostic("info", "google_workspace__ai_audit_log");
     
     // We would perform the fetch to Google API here.
   } catch (err) {
-    console.error("Failed to log to Google Sheets:", err);
+    logDiagnostic("error", "google_workspace_failed_to_log_to_google_sheets", err);
   }
 }
 
@@ -60,12 +61,12 @@ export async function logAiAudit(event: AiAuditEvent) {
  */
 export async function createGoogleDoc(title: string, content: string): Promise<string | null> {
   if (!GOOGLE_SERVICE_ACCOUNT_EMAIL || !GOOGLE_PRIVATE_KEY) {
-    console.warn("Google Workspace credentials not configured.");
+    logDiagnostic("warn", "google_workspace_google_workspace_credentials_not_configured");
     return null;
   }
 
   try {
-    console.log(`[GOOGLE DOCS] Creating document: ${title}`);
+    logDiagnostic("info", "google_workspace__google_docs_creating_document");
     
     // In a full implementation, we would:
     // 1. Authenticate with Google using Service Account JWT
@@ -76,7 +77,7 @@ export async function createGoogleDoc(title: string, content: string): Promise<s
     const placeholderId = "1_ai_financial_memo_" + Math.random().toString(36).substring(7);
     return `https://docs.google.com/document/d/${placeholderId}/view`;
   } catch (err) {
-    console.error("Failed to create Google Doc:", err);
+    logDiagnostic("error", "google_workspace_failed_to_create_google_doc", err);
     return null;
   }
 }
@@ -89,7 +90,7 @@ export async function uploadToDrive(fileName: string, content: string, folderNam
   if (!GOOGLE_SERVICE_ACCOUNT_EMAIL || !GOOGLE_PRIVATE_KEY) return null;
 
   try {
-    console.log(`[GOOGLE DRIVE] Archiving ${fileName} into folder: ${folderName}`);
+    logDiagnostic("info", "google_workspace__google_drive_archiving");
     
     // In production:
     // 1. Check if folder exists, create if not
@@ -98,7 +99,7 @@ export async function uploadToDrive(fileName: string, content: string, folderNam
     const placeholderId = "drive_file_" + Math.random().toString(36).substring(7);
     return `https://drive.google.com/file/d/${placeholderId}/view`;
   } catch (err) {
-    console.error("Failed to upload to Drive:", err);
+    logDiagnostic("error", "google_workspace_failed_to_upload_to_drive", err);
     return null;
   }
 }
@@ -111,7 +112,7 @@ export async function sendGmail(to: string, subject: string, body: string): Prom
   if (!GOOGLE_SERVICE_ACCOUNT_EMAIL || !GOOGLE_PRIVATE_KEY) return false;
 
   try {
-    console.log(`[GMAIL] Sending official report to: ${to}`);
+    logDiagnostic("info", "google_workspace__gmail_sending_official_report_to");
     
     // In production:
     // 1. Construct RFC 2822 message
@@ -119,7 +120,7 @@ export async function sendGmail(to: string, subject: string, body: string): Prom
     
     return true;
   } catch (err) {
-    console.error("Failed to send Gmail:", err);
+    logDiagnostic("error", "google_workspace_failed_to_send_gmail", err);
     return false;
   }
 }
@@ -138,7 +139,7 @@ export async function upsertCalendarEvent(event: {
   if (!GOOGLE_SERVICE_ACCOUNT_EMAIL || !GOOGLE_PRIVATE_KEY) return null;
 
   try {
-    console.log(`[GOOGLE CALENDAR] Scheduling ${event.category}: ${event.summary} on ${event.start_date}`);
+    logDiagnostic("info", "google_workspace__google_calendar_scheduling");
     
     // In production:
     // 1. Authenticate with Google
@@ -148,7 +149,7 @@ export async function upsertCalendarEvent(event: {
     const placeholderId = "cal_event_" + Math.random().toString(36).substring(7);
     return placeholderId;
   } catch (err) {
-    console.error("Failed to upsert Calendar event:", err);
+    logDiagnostic("error", "google_workspace_failed_to_upsert_calendar_event", err);
     return null;
   }
 }

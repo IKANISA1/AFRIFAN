@@ -291,7 +291,7 @@ export default function AdminGamificationPage() {
             {Array.from({ length: 4 }).map((_, index) => (
               <div
                 key={index}
-                className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] p-4"
+                className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-widget)] p-4"
               >
                 <Skeleton className="skeleton-text h-5 w-1/3" />
                 <Skeleton className="skeleton-text mt-2 h-3 w-2/3" />

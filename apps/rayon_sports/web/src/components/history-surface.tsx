@@ -378,6 +378,7 @@ export function HistorySurface({
             <>
               <div
                 className="history-chapters"
+                role="group"
                 aria-label={localized.chapters}
               >
                 {moments.map((moment, index) => (

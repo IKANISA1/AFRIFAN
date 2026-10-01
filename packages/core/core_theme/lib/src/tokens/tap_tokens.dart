@@ -1,11 +1,11 @@
 /// Minimum tap target sizes for accessibility compliance.
 ///
-/// Following Material Design accessibility guidelines:
-/// minimum 48dp for all interactive elements.
+/// The selected revolut-design adapter keeps a minimum 48 logical pixels
+/// for interactive elements as an accessible product adaptation.
 class AfriTapTargets {
   AfriTapTargets._();
 
-  /// Minimum interactive target (48dp). WCAG minimum.
+  /// Minimum interactive target (48 logical pixels).
   static const double minimum = 48.0;
 
   /// Comfortable target (56dp). For primary actions.

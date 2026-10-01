@@ -40,9 +40,9 @@ class SettingsScreen extends ConsumerWidget {
       child: ListView(
         key: const ValueKey('settings-scroll'),
         padding: const EdgeInsets.fromLTRB(
-          SpacingTokens.screenPadding,
+          SpacingTokens.spacing6,
           SpacingTokens.spacing4,
-          SpacingTokens.screenPadding,
+          SpacingTokens.spacing6,
           SpacingTokens.spacing20,
         ),
         children: [

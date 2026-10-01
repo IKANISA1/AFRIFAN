@@ -13,10 +13,13 @@ dependencies:
 
   core_router:
     path: ../core/core_router
+  core_app:
+    path: ../core/core_app
   core_theme:
     path: ../core/core_theme
   core_feature_config:
     path: ../core/core_feature_config
+  flutter_riverpod: ^2.6.1
 
   feat_home:
     path: ../features/feat_home

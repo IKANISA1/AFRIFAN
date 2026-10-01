@@ -529,7 +529,11 @@ class _ToggleRow extends StatelessWidget {
               ],
             ),
           ),
-          AfriSwitch(value: value, onChanged: enabled ? onChanged : null),
+          AfriSwitch(
+            semanticsLabel: label,
+            value: value,
+            onChanged: enabled ? onChanged : null,
+          ),
         ],
       ),
     );

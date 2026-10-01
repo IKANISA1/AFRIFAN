@@ -216,7 +216,7 @@ export default function AdminAuditLogPage() {
             <Search
               size={16}
               aria-hidden="true"
-              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[var(--admin-zinc-500)]"
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[var(--admin-secondary)]"
             />
             <input
               type="search"
@@ -301,7 +301,7 @@ export default function AdminAuditLogPage() {
                 <tr>
                   <td
                     colSpan={5}
-                    className="p-12 text-center text-sm text-[var(--admin-zinc-500)]"
+                    className="p-12 text-center text-sm text-[var(--admin-secondary)]"
                   >
                     {filter
                       ? "No audit records match the current filter."
@@ -341,7 +341,7 @@ export default function AdminAuditLogPage() {
                           : "No target identifier"}
                       </p>
                     </td>
-                    <td className="text-xs text-[var(--admin-zinc-500)]">
+                    <td className="text-xs text-[var(--admin-secondary)]">
                       {formatAuditDate(log.createdAt)}
                     </td>
                     <td className="text-right">
@@ -433,7 +433,7 @@ function AuditJsonDetail({
       <dt className="text-xs font-semibold normal-case tracking-normal text-[var(--admin-text-muted)]">
         {label}
       </dt>
-      <dd className="mt-2 overflow-x-auto rounded-xl border border-[var(--admin-border)] bg-[var(--admin-zinc-950)] p-3 font-mono text-xs text-[var(--admin-text)]">
+      <dd className="mt-2 overflow-x-auto rounded-xl border border-[var(--admin-border)] bg-[var(--admin-canvas)] p-3 font-mono text-xs text-[var(--admin-text)]">
         <pre className="whitespace-pre-wrap break-words">{value}</pre>
       </dd>
     </div>

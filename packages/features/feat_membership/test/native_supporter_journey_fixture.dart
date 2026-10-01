@@ -10,7 +10,12 @@ import 'native_checkout/platform_recovery_harness.dart' as recovery;
 // Synthetic, memory-backed contract doubles only. No OS protection, carrier,
 // provider, server deployment or physical device acceptance is implied.
 final class JourneyFixture {
-  JourneyFixture({bool enabled = true, List<NativeMembershipPlan>? plans}) {
+  JourneyFixture({
+    bool enabled = true,
+    List<NativeMembershipPlan>? plans,
+    NativeIdentityScope? scope,
+  }) : identity = auth.IdentityFixture(scope: scope) {
+    transport.clubId = scope?.clubId ?? 24;
     journey = NativeSupporterJourney(
       identityClient: identity.client,
       credentialStore: identity.store,
@@ -22,7 +27,7 @@ final class JourneyFixture {
       dialer: dialer,
     );
   }
-  final identity = auth.IdentityFixture();
+  final auth.IdentityFixture identity;
   final transport = JourneyMembershipTransport();
   final channel = recovery.FakeChannel();
   final dialer = JourneyDialer();
@@ -73,14 +78,28 @@ final class JourneyMembershipTransport implements NativeMembershipTransport {
   String userId = auth.fixtureUser, sessionId = auth.fixtureSession;
   int clubId = 24;
   bool losePrepareAck = false, loseClaimAck = false;
+  NativeWireResponse? forcedResponse;
   Completer<void>? prepareSent;
   Completer<NativeWireResponse>? prepareReply;
   String get orderId => vectors['status:valid']!['orderId']! as String;
   int get posts => requests.where((r) => r.method == 'POST').length;
+  Object? bindClub(Object? value) {
+    if (value is List) return value.map(bindClub).toList();
+    if (value is Map) {
+      return value.map(
+        (key, item) => MapEntry(
+          key,
+          key == 'clubId' && item == 24 ? clubId : bindClub(item),
+        ),
+      );
+    }
+    return value;
+  }
+
   NativeWireResponse reply(Object? body) => NativeWireResponse(200, {
     'content-type': 'application/json',
     'cache-control': 'no-store',
-  }, jsonEncode(body));
+  }, jsonEncode(bindClub(body)));
 
   @override
   Future<NativeWireResponse> send(
@@ -88,6 +107,7 @@ final class JourneyMembershipTransport implements NativeMembershipTransport {
     Duration timeout,
   ) async {
     requests.add(request);
+    if (forcedResponse != null) return forcedResponse!;
     final path = request.uri.path;
     if (path.endsWith('/session')) {
       return reply({

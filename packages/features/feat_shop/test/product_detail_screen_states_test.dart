@@ -11,6 +11,8 @@ import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
 import 'package:test_support/shop_fixture_images.dart';
 
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadAppFonts);
@@ -428,9 +430,12 @@ Future<void> _pumpProductDetailGolden(
     isNotNull,
     reason: 'Missing product-detail golden path for $id.',
   );
-  await expectLater(
+  await expectGoldenOrClubAssertions(
+    tester,
     find.byKey(const ValueKey<String>('product-detail-state-golden')),
-    matchesGoldenFile(goldenPath!),
+    goldenPath!,
+    route: '/shop/product/:productId',
+    kind: 'route',
   );
   await afterCapture?.call();
 }
@@ -474,9 +479,14 @@ Widget _buildProductDetailApp({
   );
 
   return ProviderScope(
-    overrides: [currentUserProvider.overrideWithValue(_user)],
+    overrides: [
+      currentUserProvider.overrideWithValue(localRouteProfile(_user)),
+    ],
     child: MaterialApp.router(
-      theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
+      theme: ClubTheme.from(
+        localRouteConfigOrFallback(),
+        brightness: brightness,
+      ),
       routerConfig: router,
       builder: (context, child) {
         final mediaQuery = MediaQuery.of(context);
@@ -486,7 +496,7 @@ Widget _buildProductDetailApp({
             accessibleNavigation: reduceMotion,
           ),
           child: ClubConfigScope(
-            config: ClubConfig.fallback(),
+            config: localRouteConfigOrFallback(),
             child: child ?? const SizedBox.shrink(),
           ),
         );

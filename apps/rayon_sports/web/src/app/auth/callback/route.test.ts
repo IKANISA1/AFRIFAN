@@ -6,13 +6,24 @@ import {
   resolveNextPath,
 } from "@/lib/auth-callback";
 import { GET } from "./route";
+import { httpFixtureOrigin, registerLocalHttpAssertions } from "../../../../e2e/fixtures/local-http-route-assertions";
+
+const callbackOrigin = httpFixtureOrigin("https://club.example");
+registerLocalHttpAssertions([
+  ["uses a controlled empty state when the authorization code is absent", "empty"],
+  ["uses a sanitized error state when authentication is unavailable", "error"],
+  ["maps permission denial without exposing provider diagnostics", "permission_denied"],
+  ["maps a stale session collision to a controlled conflict state", "conflict"],
+  ["does not redirect while the code exchange is still syncing", "syncing"],
+  ["uses a controlled timeout state when exchange exceeds its deadline", "security_timeout"],
+].map(([name, state]) => ({ name, state, route: "/auth/callback", surface: "consumer_web", kind: "http_route" })));
 
 vi.mock("@/lib/supabase/server", () => ({
   getServerSupabase: vi.fn(),
 }));
 
 function request(query = "") {
-  return new Request(`https://club.example/auth/callback${query}`);
+  return new Request(`${callbackOrigin}/auth/callback${query}`);
 }
 
 function exchangeClient(result: unknown) {
@@ -123,7 +134,7 @@ describe("auth callback controlled states", () => {
     expect(settled).toBe(false);
     resolveExchange?.({ error: null });
     const response = await responsePromise;
-    expect(destination(response).toString()).toBe("https://club.example/admin");
+    expect(destination(response).toString()).toBe(`${callbackOrigin}/admin`);
   });
 
   it("uses a controlled timeout state when exchange exceeds its deadline", async () => {
@@ -172,7 +183,7 @@ describe("auth callback controlled states", () => {
       request(`?code=valid&next=${encodeURIComponent(nextValue)}`),
     );
 
-    expect(destination(response).toString()).toBe("https://club.example/admin");
+    expect(destination(response).toString()).toBe(`${callbackOrigin}/admin`);
   });
 
   it("normalizes a safe same-origin relative destination", () => {

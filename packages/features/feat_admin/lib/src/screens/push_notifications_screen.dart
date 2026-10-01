@@ -161,15 +161,6 @@ class _PushNotificationsScreenState
     );
   }
 
-  Widget _choiceLabel(String value, {required bool selected}) {
-    return Text(
-      value,
-      style: TypographyTokens.labelMedium(
-        selected ? ColorTokens.onDark : ColorTokens.onSurfaceVariant,
-      ),
-    );
-  }
-
   String _audienceLabel(String audience) {
     final l10n = context.afriL10n;
     return switch (audience) {
@@ -363,10 +354,7 @@ class _PushNotificationsScreenState
                       .map(
                         (item) => AfriChoiceChip(
                           selected: _audience == item,
-                          label: _choiceLabel(
-                            _audienceLabel(item),
-                            selected: _audience == item,
-                          ),
+                          label: Text(_audienceLabel(item)),
                           onSelected: controlsEnabled
                               ? (_) {
                                   setState(() {
@@ -393,10 +381,7 @@ class _PushNotificationsScreenState
                         .map(
                           (tier) => AfriChoiceChip(
                             selected: _selectedTier == tier,
-                            label: _choiceLabel(
-                              _tierLabel(tier),
-                              selected: _selectedTier == tier,
-                            ),
+                            label: Text(_tierLabel(tier)),
                             onSelected: controlsEnabled
                                 ? (_) => setState(() => _selectedTier = tier)
                                 : null,
@@ -464,10 +449,7 @@ class _PushNotificationsScreenState
                       .map(
                         (mode) => AfriChoiceChip(
                           selected: _scheduleMode == mode,
-                          label: _choiceLabel(
-                            _scheduleLabel(mode),
-                            selected: _scheduleMode == mode,
-                          ),
+                          label: Text(_scheduleLabel(mode)),
                           onSelected: controlsEnabled
                               ? (_) {
                                   setState(() {

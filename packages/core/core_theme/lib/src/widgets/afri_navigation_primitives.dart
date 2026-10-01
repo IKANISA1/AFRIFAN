@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../extensions.dart';
 import '../tokens/color_tokens.dart';
 import '../tokens/component_size_tokens.dart';
 import '../tokens/icon_tokens.dart';
@@ -43,6 +44,7 @@ class AfriSideRail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.afriSemanticColors;
     return NavigationRail(
       extended: extended,
       selectedIndex: selectedIndex,
@@ -51,7 +53,14 @@ class AfriSideRail extends StatelessWidget {
       },
       minWidth: AfriComponentSizes.compactMenuMinWidth,
       minExtendedWidth: 240,
-      backgroundColor: ColorTokens.surfaceContainerLow,
+      backgroundColor: colors.elevatedBackground,
+      indicatorColor: colors.accentSoft,
+      selectedIconTheme: IconThemeData(color: colors.accent),
+      unselectedIconTheme: IconThemeData(color: colors.secondaryText),
+      selectedLabelTextStyle: TypographyTokens.labelMedium(colors.primaryText),
+      unselectedLabelTextStyle: TypographyTokens.labelMedium(
+        colors.secondaryText,
+      ),
       leading: header,
       trailing: footer == null ? null : Expanded(child: footer!),
       labelType: extended
@@ -60,6 +69,10 @@ class AfriSideRail extends StatelessWidget {
       destinations: destinations
           .map(
             (destination) => NavigationRailDestination(
+              padding: const EdgeInsets.symmetric(
+                horizontal: SpacingTokens.spacing2,
+                vertical: SpacingTokens.spacing1 / 2,
+              ),
               icon: Opacity(
                 opacity: destination.enabled ? 1 : 0.48,
                 child: Icon(destination.icon),

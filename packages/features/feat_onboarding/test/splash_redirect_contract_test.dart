@@ -9,6 +9,18 @@ void main() {
     '/splash?from=%2Ftickets': '/onboarding?from=%2Ftickets',
     '/splash?from=%2Fsplash': '/onboarding',
     '/splash?from=https%3A%2F%2Fexample.com': '/onboarding',
+    '/splash?from=%FF': '/onboarding',
+    '/splash?from=%E0%A0': '/onboarding',
+    '/splash?from=%2Ftickets&ignored=%FF': '/onboarding',
+    '/splash?fr%FFom=%2Ftickets': '/onboarding',
+    '/splash?from=%2Ftickets%3Fnote%3D%25FF': '/onboarding',
+    '/splash?from=https%3A%2F%2Fexample.com%2Ftickets': '/onboarding',
+    '/splash?from=%2F%2Fexample.com%2Ftickets': '/onboarding',
+    '/splash?from=%20%2Ftickets%20': '/onboarding?from=%2Ftickets',
+    '/splash?from=%2Fclub%2Fnews%2Farticle-1%3Ftab%3Dlatest':
+        '/onboarding?from=%2Fclub%2Fnews%2Farticle-1%3Ftab%3Dlatest',
+    '/splash?from=%2Fclub%2Fnews%3Fq%3D%C3%A9':
+        '/onboarding?from=%2Fclub%2Fnews%3Fq%3D%25C3%25A9',
   };
 
   for (final entry in redirects.entries) {
@@ -37,6 +49,7 @@ void main() {
 
       expect(find.text('Target: ${entry.value}'), findsOneWidget);
       expect(router.routeInformationProvider.value.uri.toString(), entry.value);
+      expect(tester.takeException(), isNull);
     });
   }
 

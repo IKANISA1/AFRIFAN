@@ -1,0 +1,617 @@
+{
+  "businessSemantics": {
+    "callerFiles": 24,
+    "evidence": {
+      "bytes": 3997,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930/edge-diagnostics/business-semantics.json",
+      "sha256": "34b6d8950d269668db7ebcb1fd0dc8b4120ee783486430c356af0493512b812f",
+      "why": "TypeScript AST comparison against HEAD proves other caller business statements and control flow remain identical"
+    },
+    "exclusions": [
+      "console/shared diagnostic calls",
+      "diagnostics-only writeSyncLog/failSyncLog bodies"
+    ],
+    "passed": true
+  },
+  "consoleCallsConverted": 66,
+  "diagnosticStorage": [
+    {
+      "removed": [
+        "raw messages",
+        "user_id",
+        "subject_id",
+        "subject_type",
+        "arbitrary metadata",
+        "URLs",
+        "raw error names"
+      ],
+      "retained": [
+        "catalog service/function/issue",
+        "status/severity",
+        "safe enums and metrics",
+        "ISO occurred_at",
+        "ingest_origin"
+      ],
+      "table": "operational_health_events"
+    },
+    {
+      "removed": [
+        "provider error_message",
+        "source_notes",
+        "access_issues",
+        "summary.errors"
+      ],
+      "retained": [
+        "sync config linkage",
+        "sync type/status",
+        "safe counters and enum metadata",
+        "timestamps"
+      ],
+      "table": "football_sync_log"
+    }
+  ],
+  "eventCatalog": [
+    {
+      "event": "feature_guard__feature_guard_rpc_error_for",
+      "level": "error",
+      "path": "supabase/functions/_shared/feature_guard.ts"
+    },
+    {
+      "event": "feature_guard__feature_guard_invalid_access_state_payload_for",
+      "level": "error",
+      "path": "supabase/functions/_shared/feature_guard.ts"
+    },
+    {
+      "event": "feature_guard__feature_guard_unexpected_error_checking",
+      "level": "error",
+      "path": "supabase/functions/_shared/feature_guard.ts"
+    },
+    {
+      "event": "feature_guard__feature_guard_unexpected_error_checking_2",
+      "level": "error",
+      "path": "supabase/functions/_shared/feature_guard.ts"
+    },
+    {
+      "event": "google_workspace_google_workspace_audit_not_configured_skipping_log",
+      "level": "warn",
+      "path": "supabase/functions/_shared/google_workspace.ts"
+    },
+    {
+      "event": "google_workspace__ai_audit_log",
+      "level": "info",
+      "path": "supabase/functions/_shared/google_workspace.ts"
+    },
+    {
+      "event": "google_workspace_failed_to_log_to_google_sheets",
+      "level": "error",
+      "path": "supabase/functions/_shared/google_workspace.ts"
+    },
+    {
+      "event": "google_workspace_google_workspace_credentials_not_configured",
+      "level": "warn",
+      "path": "supabase/functions/_shared/google_workspace.ts"
+    },
+    {
+      "event": "google_workspace__google_docs_creating_document",
+      "level": "info",
+      "path": "supabase/functions/_shared/google_workspace.ts"
+    },
+    {
+      "event": "google_workspace_failed_to_create_google_doc",
+      "level": "error",
+      "path": "supabase/functions/_shared/google_workspace.ts"
+    },
+    {
+      "event": "google_workspace__google_drive_archiving",
+      "level": "info",
+      "path": "supabase/functions/_shared/google_workspace.ts"
+    },
+    {
+      "event": "google_workspace_failed_to_upload_to_drive",
+      "level": "error",
+      "path": "supabase/functions/_shared/google_workspace.ts"
+    },
+    {
+      "event": "google_workspace__gmail_sending_official_report_to",
+      "level": "info",
+      "path": "supabase/functions/_shared/google_workspace.ts"
+    },
+    {
+      "event": "google_workspace_failed_to_send_gmail",
+      "level": "error",
+      "path": "supabase/functions/_shared/google_workspace.ts"
+    },
+    {
+      "event": "google_workspace__google_calendar_scheduling",
+      "level": "info",
+      "path": "supabase/functions/_shared/google_workspace.ts"
+    },
+    {
+      "event": "google_workspace_failed_to_upsert_calendar_event",
+      "level": "error",
+      "path": "supabase/functions/_shared/google_workspace.ts"
+    },
+    {
+      "event": "observability_operational_health_event_insert_failed",
+      "level": "error",
+      "path": "supabase/functions/_shared/observability.ts"
+    },
+    {
+      "event": "observability_operational_health_event_insert_crashed",
+      "level": "error",
+      "path": "supabase/functions/_shared/observability.ts"
+    },
+    {
+      "event": "payments_failed_to_send_whatsapp_confirmation",
+      "level": "error",
+      "path": "supabase/functions/_shared/payments.ts"
+    },
+    {
+      "event": "rate_limit_rate_limit_count_query_failed",
+      "level": "warn",
+      "path": "supabase/functions/_shared/rate_limit.ts"
+    },
+    {
+      "event": "rate_limit_rate_limit_event_insert_failed",
+      "level": "warn",
+      "path": "supabase/functions/_shared/rate_limit.ts"
+    },
+    {
+      "event": "admin_send_notification_admin_send_notification_failed",
+      "level": "error",
+      "path": "supabase/functions/admin-send-notification/index.ts"
+    },
+    {
+      "event": "admin_settle_fixture_admin_settle_fixture_failed",
+      "level": "error",
+      "path": "supabase/functions/admin-settle-fixture/index.ts"
+    },
+    {
+      "event": "dispatch_scheduled_notifications_dispatch_scheduled_notifications_failed",
+      "level": "error",
+      "path": "supabase/functions/dispatch-scheduled-notifications/index.ts"
+    },
+    {
+      "event": "football_sync_api_football_client__api_football_minute_limit_exhausted_waiting_60s_before",
+      "level": "warn",
+      "path": "supabase/functions/football-sync/api-football-client.ts"
+    },
+    {
+      "event": "football_sync_api_football_client__api_football_retry",
+      "level": "warn",
+      "path": "supabase/functions/football-sync/api-football-client.ts"
+    },
+    {
+      "event": "football_sync_auto_settle__auto_settle_settlement_error_for_fixture",
+      "level": "error",
+      "path": "supabase/functions/football-sync/auto-settle.ts"
+    },
+    {
+      "event": "football_sync_auto_settle__auto_settle_settled_fixture",
+      "level": "info",
+      "path": "supabase/functions/football-sync/auto-settle.ts"
+    },
+    {
+      "event": "football_sync_auto_settle__auto_settle_error_settling",
+      "level": "error",
+      "path": "supabase/functions/football-sync/auto-settle.ts"
+    },
+    {
+      "event": "football_sync__football_sync_unhandled_error",
+      "level": "error",
+      "path": "supabase/functions/football-sync/index.ts"
+    },
+    {
+      "event": "football_sync_sync_fixtures__sync_fixtures_failed_to_load_sync_configs",
+      "level": "error",
+      "path": "supabase/functions/football-sync/sync-fixtures.ts"
+    },
+    {
+      "event": "football_sync_sync_fixtures__sync_fixtures_skipping_fixture",
+      "level": "warn",
+      "path": "supabase/functions/football-sync/sync-fixtures.ts"
+    },
+    {
+      "event": "football_sync_sync_fixtures__sync_fixtures_upsert_error_for_fixture",
+      "level": "error",
+      "path": "supabase/functions/football-sync/sync-fixtures.ts"
+    },
+    {
+      "event": "football_sync_sync_fixtures__sync_fixtures_error_for_league",
+      "level": "error",
+      "path": "supabase/functions/football-sync/sync-fixtures.ts"
+    },
+    {
+      "event": "football_sync_sync_fixtures__sync_fixtures_near_daily_limit_stopping",
+      "level": "warn",
+      "path": "supabase/functions/football-sync/sync-fixtures.ts"
+    },
+    {
+      "event": "football_sync_sync_fixtures__sync_fixtures_team_fetch_error",
+      "level": "error",
+      "path": "supabase/functions/football-sync/sync-fixtures.ts"
+    },
+    {
+      "event": "football_sync_sync_history__sync_history_no_sync_configs_found",
+      "level": "error",
+      "path": "supabase/functions/football-sync/sync-history.ts"
+    },
+    {
+      "event": "football_sync_sync_history__sync_history_near_daily_limit_stopping",
+      "level": "warn",
+      "path": "supabase/functions/football-sync/sync-history.ts"
+    },
+    {
+      "event": "football_sync_sync_history__sync_history",
+      "level": "info",
+      "path": "supabase/functions/football-sync/sync-history.ts"
+    },
+    {
+      "event": "football_sync_sync_history__sync_history_error_for_league",
+      "level": "error",
+      "path": "supabase/functions/football-sync/sync-history.ts"
+    },
+    {
+      "event": "football_sync_sync_live__sync_live_near_daily_limit_stopping",
+      "level": "warn",
+      "path": "supabase/functions/football-sync/sync-live.ts"
+    },
+    {
+      "event": "football_sync_sync_live__sync_live_error_for_fixture",
+      "level": "error",
+      "path": "supabase/functions/football-sync/sync-live.ts"
+    },
+    {
+      "event": "football_sync_sync_standings__sync_standings_failed_to_load_sync_configs",
+      "level": "error",
+      "path": "supabase/functions/football-sync/sync-standings.ts"
+    },
+    {
+      "event": "football_sync_sync_standings__sync_standings_skipping_standing_for_team",
+      "level": "warn",
+      "path": "supabase/functions/football-sync/sync-standings.ts"
+    },
+    {
+      "event": "football_sync_sync_standings__sync_standings_upsert_error_for_team",
+      "level": "error",
+      "path": "supabase/functions/football-sync/sync-standings.ts"
+    },
+    {
+      "event": "football_sync_sync_standings__sync_standings_error_for_league",
+      "level": "error",
+      "path": "supabase/functions/football-sync/sync-standings.ts"
+    },
+    {
+      "event": "football_sync_sync_standings__sync_standings_near_daily_limit_stopping",
+      "level": "warn",
+      "path": "supabase/functions/football-sync/sync-standings.ts"
+    },
+    {
+      "event": "generate_admin_image_generate_admin_image_failed",
+      "level": "error",
+      "path": "supabase/functions/generate-admin-image/index.ts"
+    },
+    {
+      "event": "generate_product_image_generate_product_image_failed",
+      "level": "error",
+      "path": "supabase/functions/generate-product-image/index.ts"
+    },
+    {
+      "event": "get_platform_config_rpc_error",
+      "level": "error",
+      "path": "supabase/functions/get-platform-config/index.ts"
+    },
+    {
+      "event": "get_platform_config_unexpected_error",
+      "level": "error",
+      "path": "supabase/functions/get-platform-config/index.ts"
+    },
+    {
+      "event": "google_wallet_ticket_pass_google_wallet_ticket_pass_failed",
+      "level": "error",
+      "path": "supabase/functions/google-wallet-ticket-pass/index.ts"
+    },
+    {
+      "event": "livescore_openai_sync_livescore_openai_sync_log_failure",
+      "level": "error",
+      "path": "supabase/functions/livescore-openai-sync/index.ts"
+    },
+    {
+      "event": "livescore_openai_sync_livescore_openai_sync_failed",
+      "level": "error",
+      "path": "supabase/functions/livescore-openai-sync/index.ts"
+    },
+    {
+      "event": "parse_momo_sms_parse_momo_sms_gemini_attempt_failed_retrying_with_openai",
+      "level": "error",
+      "path": "supabase/functions/parse-momo-sms/index.ts"
+    },
+    {
+      "event": "parse_momo_sms_parse_momo_sms_reconciliation_failed",
+      "level": "error",
+      "path": "supabase/functions/parse-momo-sms/index.ts"
+    },
+    {
+      "event": "parse_momo_sms_parse_momo_sms_push_notification_failed",
+      "level": "error",
+      "path": "supabase/functions/parse-momo-sms/index.ts"
+    },
+    {
+      "event": "parse_momo_sms_parse_momo_sms_failure_state_could_not_be_persisted",
+      "level": "error",
+      "path": "supabase/functions/parse-momo-sms/index.ts"
+    },
+    {
+      "event": "parse_momo_sms_parse_momo_sms_failed",
+      "level": "error",
+      "path": "supabase/functions/parse-momo-sms/index.ts"
+    },
+    {
+      "event": "record_operational_health_record_operational_health_error",
+      "level": "error",
+      "path": "supabase/functions/record-operational-health/index.ts"
+    },
+    {
+      "event": "settle_prediction_notifications_fcm_send_failed_for_user",
+      "level": "error",
+      "path": "supabase/functions/settle-prediction-notifications/index.ts"
+    },
+    {
+      "event": "settle_prediction_notifications_fcm_dispatch_error_for_user",
+      "level": "error",
+      "path": "supabase/functions/settle-prediction-notifications/index.ts"
+    },
+    {
+      "event": "settle_prediction_notifications_failed_to_mark_notifications_as_sent",
+      "level": "error",
+      "path": "supabase/functions/settle-prediction-notifications/index.ts"
+    },
+    {
+      "event": "settle_prediction_notifications_settle_prediction_notifications_failed",
+      "level": "error",
+      "path": "supabase/functions/settle-prediction-notifications/index.ts"
+    },
+    {
+      "event": "sms_ingest_sms_ingest_failed",
+      "level": "error",
+      "path": "supabase/functions/sms-ingest/index.ts"
+    },
+    {
+      "event": "sync_google_wallet_ticket_state_sync_google_wallet_ticket_state_failed",
+      "level": "error",
+      "path": "supabase/functions/sync-google-wallet-ticket-state/index.ts"
+    }
+  ],
+  "implementationVerifiedLocally": true,
+  "limits": [
+    "No live provider, deployment, secret rotation, production exporter or distributed trace acceptance was performed",
+    "Previously stored diagnostic rows were not purged from local or remote databases",
+    "Authorised SMS parsing, AI audit, transaction, rate-limit security enforcement, payment, notification and receipt records retain their domain data",
+    "Existing Google Workspace bridge implementations remain placeholders: createGoogleDoc/uploadToDrive/upsertCalendarEvent return generated placeholder identifiers and sendGmail returns true without a provider request. The diagnostic migration does not establish provider delivery or acceptance"
+  ],
+  "productionCallsiteFiles": 25,
+  "providerOrDeploymentAcceptance": false,
+  "report": {
+    "bytes": 2332,
+    "path": "docs/release/local-edge-diagnostic-privacy-2026-09-30.md",
+    "sha256": "59632b0530c887102bad63fede9342129172c470501f3f55b3cf90f7fccd827d",
+    "why": "Reviewable scope, persisted diagnostic policy, tests and explicit provider/historical-data limitations"
+  },
+  "schemaVersion": 1,
+  "scope": "Active Supabase Edge diagnostics; local source and mocked-runtime validation only",
+  "sourceFiles": [
+    {
+      "bytes": 4148,
+      "path": "supabase/functions/_shared/diagnostic_events.ts",
+      "sha256": "29428a6b8f03fa125523e03953b61fd4de3f9167287cba9b8f9a26fe590aedf7",
+      "why": "Finite catalog of all66 actual diagnostic callsite event codes"
+    },
+    {
+      "bytes": 5421,
+      "path": "supabase/functions/_shared/diagnostics.ts",
+      "sha256": "73239359078f93a63bbe21395ffff82d02dee905c1293488a3d4ceae6c62a643",
+      "why": "Shared closed catalogs, own-data-property metrics/enums, bounded numeric status and safe error class extraction; never serialize raw arguments"
+    },
+    {
+      "bytes": 5293,
+      "path": "supabase/functions/_shared/diagnostics_test.ts",
+      "sha256": "2d51d8db1c1b73426996be3f72a17a0acc9cee490d90c59d267ba52914e603ad",
+      "why": "Privacy regressions through console/storage/real handlers with hostile metadata and controlled mocked provider failures"
+    },
+    {
+      "bytes": 2739,
+      "path": "supabase/functions/_shared/feature_guard.ts",
+      "sha256": "1257e6be3afdaa6d7ad3cd8285f6fb354f280a902944bcdbeb475070571c0a8e",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 5530,
+      "path": "supabase/functions/_shared/google_workspace.ts",
+      "sha256": "1d449cda33eb7e450c8f69a5a430fecfd0cd759acdc53d4e7a9363f834dc7d5d",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 4243,
+      "path": "supabase/functions/_shared/observability.ts",
+      "sha256": "87e068d4d7885fc5a0a94e3b85ff37d9d37e260908eaefdd65df51dec0292202",
+      "why": "Sanitize operational health storage: fixed messages, reviewed statuses/codes, safe metadata and no duplicated actor/subject identifiers"
+    },
+    {
+      "bytes": 4875,
+      "path": "supabase/functions/_shared/observability_test.ts",
+      "sha256": "d59229b03c50262b218300a2c74369ee38265b67a71078e14e526e10e7041f00",
+      "why": "Privacy regressions through console/storage/real handlers with hostile metadata and controlled mocked provider failures"
+    },
+    {
+      "bytes": 32321,
+      "path": "supabase/functions/_shared/payments.ts",
+      "sha256": "bc26303b1cdefc105d0ace2a7b88d4b48ae20dd0d3a49ce2a3bb6e51b0c71110",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 2882,
+      "path": "supabase/functions/_shared/rate_limit.ts",
+      "sha256": "cf12b0e07f36d0225c259954f026469567f4d8457e2f5678b2f6adaa207a00ca",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 6379,
+      "path": "supabase/functions/admin-send-notification/index.ts",
+      "sha256": "1c5572c33e9379b3ee203f59ad5fe90d8e3427fd70d64b364873387a3db8a6b2",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 5412,
+      "path": "supabase/functions/admin-settle-fixture/index.ts",
+      "sha256": "a5fd25766c9a7da0ee9ccf5127636d676ef8e31ff7d1f9f9fee9cfb5c177343a",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 4968,
+      "path": "supabase/functions/dispatch-scheduled-notifications/index.ts",
+      "sha256": "39b332d8d6253096cfe64ed0d4ded77e3d38d96d14a9dc6b487e181715d9c457",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 12713,
+      "path": "supabase/functions/football-sync/api-football-client.ts",
+      "sha256": "b3400dd39fececed3d67eec22e164413fe3f390b5b4553916e96877860046363",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 7706,
+      "path": "supabase/functions/football-sync/auto-settle.ts",
+      "sha256": "755375e7583bbcab9084bb6d773c933795966e01904e7006b6775bdfdbaeda62",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 17821,
+      "path": "supabase/functions/football-sync/index.ts",
+      "sha256": "c697ed363661c4a4dbaf014214dc19ae1033fd967535df0e7c2940a1a64a3820",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 2737,
+      "path": "supabase/functions/football-sync/privacy_test.ts",
+      "sha256": "f5a00812c8c8fc7ecff1279c0fa23f02a6c982af4ca293d622813f0679645281",
+      "why": "Privacy regressions through console/storage/real handlers with hostile metadata and controlled mocked provider failures"
+    },
+    {
+      "bytes": 11119,
+      "path": "supabase/functions/football-sync/sync-fixtures.ts",
+      "sha256": "54016defff630d62b59c1151e2fa73d32d9b740435186deeeaa650ab5ad269cf",
+      "why": "Redact persisted football_sync_log failure text while preserving config linkage, request counts and actual football fixture writes"
+    },
+    {
+      "bytes": 6458,
+      "path": "supabase/functions/football-sync/sync-history.ts",
+      "sha256": "569365bbefe096e9352b708676c82ec25508b2614286bf8b56576a1fbcb24b9a",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 7857,
+      "path": "supabase/functions/football-sync/sync-live.ts",
+      "sha256": "fe8b717885a74373d7445b244e14f2d34e5ea518cd92cc27bc9c77f27351db11",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 6321,
+      "path": "supabase/functions/football-sync/sync-standings.ts",
+      "sha256": "14eb5e25561bd6dd160d3c307c8757e879b3c066a66b526fb556b88ab09e21ab",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 11047,
+      "path": "supabase/functions/generate-admin-image/index.ts",
+      "sha256": "65c5e0061bfe5f737c06b36851e97798df2b2ef30aad42b14cc89f725c72dc31",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 13535,
+      "path": "supabase/functions/generate-product-image/index.ts",
+      "sha256": "079c42ceb20adfc48a0bd7c15135c2eb20a924362e4def1954b7b0ba749049c6",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 1660,
+      "path": "supabase/functions/get-platform-config/index.ts",
+      "sha256": "869e9d55237ab689141c1d236ba6ca0d3993035fb40d815ea5bb02b8899219de",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 6516,
+      "path": "supabase/functions/google-wallet-ticket-pass/index.ts",
+      "sha256": "6c521ec71983e3f7d570f170c98f490df560fb6d6e99ea8ed7c792052873abb6",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 33760,
+      "path": "supabase/functions/livescore-openai-sync/index.ts",
+      "sha256": "5d7e9d0c02120869498b45d2ffe8159bebe47bdd83cf77a2179ff5a22fa66a3f",
+      "why": "Persist safe football sync counters/enums with fixed failure messages and counts of removed error/note/access text; preserve fixture data"
+    },
+    {
+      "bytes": 10637,
+      "path": "supabase/functions/livescore-openai-sync/index_test.ts",
+      "sha256": "df61dce74c285bb0130a0694c7234435d0ce352946bb63bb5076058eb7bb6dc5",
+      "why": "Privacy regressions through console/storage/real handlers with hostile metadata and controlled mocked provider failures"
+    },
+    {
+      "bytes": 22646,
+      "path": "supabase/functions/parse-momo-sms/index.ts",
+      "sha256": "85914386f904230bcf93c0517d58f565fb858a1dc5cf9fcd1a69b3e0d4b392a9",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 5140,
+      "path": "supabase/functions/record-operational-health/index.ts",
+      "sha256": "98fcb1f797f4b681bd0ffdaeb4bc7c10cef0ad60ae59c0505735c08433a8f0fe",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 5534,
+      "path": "supabase/functions/settle-prediction-notifications/index.ts",
+      "sha256": "8faccead2ed0b224aeb084701023c0cb4eccf89386b19d3c1c742a1eeca09d2c",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 8320,
+      "path": "supabase/functions/sms-ingest/index.ts",
+      "sha256": "f96ad124192bc404c694ef2158d5edd6d150c6acc8a5b5207a524a94b07de8d5",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    },
+    {
+      "bytes": 7440,
+      "path": "supabase/functions/sync-google-wallet-ticket-state/index.ts",
+      "sha256": "301b3427c34a5b47649783c17a11caba4046eb8fe78423ac73cbb33785a6dbf3",
+      "why": "Replace raw console diagnostics with fixed event codes and safe error classification; preserve business statements and control flow"
+    }
+  ],
+  "tests": {
+    "cachedOnly": true,
+    "failed": 0,
+    "frozenLock": true,
+    "log": {
+      "bytes": 29370,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930/edge-diagnostics/tests.log",
+      "sha256": "6920808ae2078d59da4584270521516313488056652b1bcbd930ae5d7f3472b2",
+      "why": "Full existing Edge suite plus13 new privacy/storage/handler regressions"
+    },
+    "mockedProviders": true,
+    "newPrivacyTests": 13,
+    "passed": 306,
+    "runtime": "Deno2.9.6"
+  },
+  "typecheck": {
+    "cachedOnly": true,
+    "files": 91,
+    "frozenLock": true,
+    "log": {
+      "bytes": 4953,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930/edge-diagnostics/typecheck.log",
+      "sha256": "208c0771ccf5c4b85b9ade274bdc6f4f26d387967ae612db2ff31ead1805b7f5",
+      "why": "All91 active TypeScript entrypoints and tests checked"
+    },
+    "passed": true
+  }
+}

@@ -152,3 +152,9 @@ melos:
     clean:
       exec: flutter clean
       description: Clean all packages
+
+# Licensed local GoTrue patch prevents stale SDK authentication replies from
+# replacing a newer session. Provenance and patch notes are kept in the package.
+dependency_overrides:
+  gotrue:
+    path: third_party/gotrue_2_27_2

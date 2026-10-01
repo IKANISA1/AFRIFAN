@@ -50,10 +50,73 @@ class AfriChoiceChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final foreground = selected
-        ? ColorTokens.onDark
+    final accent = selectedColor ?? ColorTokens.primaryContainer;
+    final foreground = onSelected == null
+        ? ColorTokens.contrastForeground(
+            disabledColor ?? ColorTokens.surfaceContainer,
+          )
+        : selected
+        ? ColorTokens.contrastForeground(accent)
         : ColorTokens.onSurfaceVariant;
-    final accent = ColorTokens.primaryContainer;
+
+    if (onSelected == null) {
+      // Material ChoiceChip fades the entire disabled label to 38%, even
+      // when a readable foreground is supplied. Render the same passive chip
+      // without that paint opacity and expose an actually disabled control.
+      final disabledSurface = disabledColor ?? ColorTokens.surfaceContainer;
+      return ConstrainedBox(
+        constraints: const BoxConstraints(
+          minWidth: SizeTokens.touchTargetMin,
+          minHeight: SizeTokens.touchTargetMin,
+        ),
+        child: MergeSemantics(
+          child: Semantics(
+            button: true,
+            enabled: false,
+            selected: selected,
+            child: ExcludeFocus(
+              child: RawChip(
+                avatar: avatar,
+                label: label,
+                selected: selected,
+                tapEnabled: false,
+                tooltip: tooltip,
+                labelStyle:
+                    labelStyle ?? TypographyTokens.labelMedium(foreground),
+                backgroundColor: disabledSurface,
+                selectedColor: disabledSurface,
+                side:
+                    side ??
+                    BorderTokens.side(
+                      color: selected ? accent : ColorTokens.ghostBorder,
+                      opacity: selected ? 0.42 : 1,
+                    ),
+                shape:
+                    shape ??
+                    RoundedRectangleBorder(
+                      borderRadius: ShapeTokens.chipRadius,
+                    ),
+                padding:
+                    padding ??
+                    const EdgeInsets.symmetric(
+                      horizontal: SpacingTokens.spacing1,
+                    ),
+                labelPadding:
+                    labelPadding ??
+                    const EdgeInsets.symmetric(
+                      horizontal: SpacingTokens.spacing2,
+                    ),
+                visualDensity: visualDensity ?? VisualDensity.compact,
+                materialTapTargetSize:
+                    materialTapTargetSize ?? MaterialTapTargetSize.padded,
+                showCheckmark: showCheckmark ?? false,
+                checkmarkColor: checkmarkColor ?? foreground,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
 
     return ConstrainedBox(
       constraints: const BoxConstraints(
@@ -68,7 +131,7 @@ class AfriChoiceChip extends StatelessWidget {
         tooltip: tooltip,
         labelStyle: labelStyle ?? TypographyTokens.labelMedium(foreground),
         backgroundColor: backgroundColor ?? ColorTokens.surfaceContainerLow,
-        selectedColor: selectedColor ?? accent,
+        selectedColor: accent,
         disabledColor: disabledColor ?? ColorTokens.surfaceContainer,
         side:
             side ??

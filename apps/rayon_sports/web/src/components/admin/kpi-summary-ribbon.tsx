@@ -48,12 +48,12 @@ export function KPITile({
               : "";
 
   return (
-    <div className={cn("flex-1 min-w-[160px] bg-[var(--admin-zinc-900)] p-4 sm:p-5", toneClass, className)}>
+    <div className={cn("flex-1 min-w-[160px] bg-[var(--admin-widget)] p-4 sm:p-5", toneClass, className)}>
       <div className="mb-2 flex items-center justify-between gap-2">
-        <p className="text-xs font-medium normal-case tracking-normal text-[var(--admin-zinc-500)]">
+        <p className="text-xs font-medium normal-case tracking-normal text-[var(--admin-secondary)]">
           {label}
         </p>
-        {Icon ? <Icon size={14} className="text-[var(--admin-zinc-500)]" /> : null}
+        {Icon ? <Icon size={14} className="text-[var(--admin-secondary)]" /> : null}
       </div>
       <div className="flex items-baseline gap-2">
         <p className="text-xl font-medium text-[var(--admin-text-strong)]">
@@ -64,7 +64,7 @@ export function KPITile({
             "text-xs font-medium",
             trend === "up" && "text-success",
             trend === "down" && "text-error",
-            trend === "neutral" && "text-[var(--admin-zinc-500)]"
+            trend === "neutral" && "text-[var(--admin-secondary)]"
           )}>
             {trend === "up" ? "↑" : trend === "down" ? "↓" : ""} {trendLabel}
           </span>

@@ -141,8 +141,8 @@ export function AdminDialogFrame({
     layout === "drawer"
       ? "flex h-full w-full max-w-xl flex-col border-l"
       : layout === "sheet"
-        ? "flex max-h-[85vh] w-full max-w-2xl flex-col rounded-t-[28px] border-t"
-        : "flex w-full max-w-lg flex-col rounded-[32px] border";
+        ? "flex max-h-[85vh] w-full max-w-2xl flex-col rounded-t-[24px] border-t"
+        : "flex w-full max-w-lg flex-col rounded-[24px] border";
 
   return (
     <div className={cn("fixed inset-0 z-50 flex", layoutShellClassName)}>
@@ -150,7 +150,7 @@ export function AdminDialogFrame({
         type="button"
         aria-hidden="true"
         tabIndex={-1}
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-[var(--scrim)]"
         onClick={onClose}
       />
       <div
@@ -161,7 +161,7 @@ export function AdminDialogFrame({
         aria-describedby={description ? descriptionId : undefined}
         tabIndex={-1}
         className={cn(
-          "relative min-w-0 max-w-full overflow-hidden border-[var(--admin-border)] bg-[var(--admin-surface)] text-[var(--admin-text)] shadow-2xl outline-none",
+          "relative min-w-0 max-w-full overflow-hidden border-[var(--admin-border)] bg-[var(--admin-surface)] text-[var(--admin-text)] shadow-[var(--shadow-floating)] outline-none",
           layoutPanelClassName,
           panelClassName,
         )}
@@ -186,7 +186,7 @@ export function AdminDialogFrame({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-2 text-[var(--admin-text-muted)] transition hover:bg-[var(--admin-zinc-800)] hover:text-[var(--admin-text-strong)]"
+            className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-full p-2 text-[var(--admin-text-muted)] transition hover:bg-[var(--admin-raised)] hover:text-[var(--admin-text-strong)]"
             aria-label={closeLabel}
             data-autofocus="true"
           >
@@ -195,6 +195,9 @@ export function AdminDialogFrame({
         </header>
 
         <div
+          role="region"
+          aria-labelledby={titleId}
+          tabIndex={0}
           className={cn(
             "min-w-0 flex-1 overflow-x-auto overflow-y-auto p-6",
             bodyClassName,
@@ -204,7 +207,7 @@ export function AdminDialogFrame({
         </div>
 
         {footer ? (
-          <footer className="min-w-0 overflow-x-auto border-t border-[var(--admin-border)] bg-[var(--admin-zinc-950)] px-6 py-4">
+          <footer className="min-w-0 overflow-x-auto border-t border-[var(--admin-border)] bg-[var(--admin-surface)] px-6 py-4">
             {footer}
           </footer>
         ) : null}

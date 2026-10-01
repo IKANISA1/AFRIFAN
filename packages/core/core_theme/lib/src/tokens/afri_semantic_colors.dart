@@ -10,26 +10,11 @@ import 'color_tokens.dart';
 /// surface contexts.
 ///
 /// Access via `context.afriSemanticColors` extension.
-/// External brand colors referenced across features.
-///
-/// These are NOT club-specific; they represent third-party or contextual
-/// constants (e.g. WhatsApp brand green, stadium pitch, celebration effects).
-/// Feature packages should use these instead of hardcoding hex values.
-abstract final class ExternalBrandColors {
-  /// WhatsApp official brand green.
-  static const Color whatsAppGreen = Color(0xFF25D366);
-
-  /// Stadium pitch deep green (used in seat maps, match visuals).
+/// Colours depicting real product content rather than application styling.
+/// The stadium grass is a diagram of the venue, not an interface palette.
+abstract final class DomainContentColors {
+  /// Stadium pitch deep green, retained inside the existing seat-map diagram.
   static const Color stadiumPitch = Color(0xFF1B5E20);
-
-  /// Confetti / celebration palette — non-club-specific accent colors.
-  static const List<Color> confettiPalette = <Color>[
-    ColorTokens.membershipCardVioletLight,
-    ColorTokens.referenceAccountBlue,
-    Color(0xFFFF6B6B), // coral
-    Color(0xFF1DD1A1), // mint
-    Color(0xFF54A0FF), // sky blue
-  ];
 }
 
 class AfriSemanticColors extends ThemeExtension<AfriSemanticColors> {

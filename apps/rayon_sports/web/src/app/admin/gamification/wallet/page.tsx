@@ -396,7 +396,7 @@ export default function AdminGamificationWalletPage() {
         />
       </div>
 
-      <section className="glass-panel rounded-[32px] p-6">
+      <section className="ui-panel rounded-[32px] p-6">
         <div className="flex flex-col gap-3 md:flex-row md:items-end">
           <label className="grid flex-1 gap-2 text-sm text-[var(--admin-text)]">
             Search supporters or reference IDs
@@ -481,7 +481,7 @@ export default function AdminGamificationWalletPage() {
         </AdminSurface>
       ) : (
         <div className="admin-gamification-wallet-content-grid">
-          <section className="glass-panel rounded-[32px] p-6">
+          <section className="ui-panel rounded-[32px] p-6">
             <div className="space-y-5">
               <div>
                 <p className="admin-page-eyebrow">Adjust balance</p>
@@ -687,7 +687,7 @@ export default function AdminGamificationWalletPage() {
             </div>
           </section>
 
-          <section className="glass-panel rounded-[32px] p-6">
+          <section className="ui-panel rounded-[32px] p-6">
             <div className="space-y-5">
               <div>
                 <p className="admin-page-eyebrow">Ledger</p>

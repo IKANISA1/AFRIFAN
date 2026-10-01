@@ -1,6 +1,7 @@
 import 'package:core_utils/core_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'native_health_payload.dart';
 import 'offline_event_queue.dart';
 import 'safe_rpc.dart';
 
@@ -74,28 +75,32 @@ class OperationalHealthService {
     Map<String, dynamic> metadata = const <String, dynamic>{},
     DateTime? occurredAt,
   }) {
-    final resolvedUserId = _normalize(userId) ?? _client.auth.currentUser?.id;
-
-    return <String, dynamic>{
+    return NativeHealthPayload.normalize(<String, dynamic>{
       'service': service,
       'component': component,
       'status': status.name,
-      'severity': (severity ?? _defaultSeverity(status)).name,
-      'issueCode': _normalize(issueCode),
+      'severity': severity?.name,
+      'issueCode': issueCode,
       'message': message,
-      'functionName': _normalize(functionName),
-      'userId': resolvedUserId,
-      'subjectType': _normalize(subjectType),
-      'subjectId': _normalize(subjectId),
+      'functionName': functionName,
+      'userId': userId,
+      'subjectType': subjectType,
+      'subjectId': subjectId,
       'metadata': metadata,
-      'occurredAt': (occurredAt ?? DateTime.now().toUtc()).toIso8601String(),
-    };
+      'occurredAt': DateTime.fromMillisecondsSinceEpoch(
+        (occurredAt ?? DateTime.now().toUtc()).millisecondsSinceEpoch,
+        isUtc: true,
+      ).toIso8601String(),
+    });
   }
 
   Future<void> recordPayloadOrThrow(Map<String, dynamic> payload) async {
+    final safePayload = NativeHealthPayload.normalize(payload);
     final result = await SafeRpc.query<FunctionResponse>(
-      () =>
-          _client.functions.invoke('record-operational-health', body: payload),
+      () => _client.functions.invoke(
+        'record-operational-health',
+        body: safePayload,
+      ),
       tag: 'OperationalHealth',
       description: 'recordEvent',
       timeout: const Duration(seconds: 10),
@@ -103,31 +108,12 @@ class OperationalHealthService {
     );
 
     if (!result.isSuccess) {
-      throw StateError(
-        result.error ?? 'Failed to record operational health event.',
-      );
+      throw StateError('Failed to record operational health event.');
     }
 
     final data = result.requireData.data;
     if (data is Map && data['success'] == false) {
-      throw StateError(
-        data['message']?.toString() ??
-            'Failed to record operational health event.',
-      );
+      throw StateError('Failed to record operational health event.');
     }
-  }
-
-  OperationalHealthSeverity _defaultSeverity(OperationalHealthStatus status) {
-    return switch (status) {
-      OperationalHealthStatus.warn => OperationalHealthSeverity.warning,
-      OperationalHealthStatus.error => OperationalHealthSeverity.critical,
-      OperationalHealthStatus.ok => OperationalHealthSeverity.info,
-    };
-  }
-
-  String? _normalize(String? value) {
-    final trimmed = value?.trim();
-    if (trimmed == null || trimmed.isEmpty) return null;
-    return trimmed;
   }
 }

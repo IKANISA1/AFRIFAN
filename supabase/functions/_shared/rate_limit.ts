@@ -1,3 +1,4 @@
+import { logDiagnostic } from "./diagnostics.ts";
 import { createAdminClient } from "./supabase.ts";
 import { HttpError } from "./auth.ts";
 
@@ -45,7 +46,7 @@ async function countRecentInvocations(
 
   if (error) {
     // Fail open with a warning rather than blocking the user on a telemetry error.
-    console.warn("Rate-limit count query failed:", error);
+    logDiagnostic("warn", "rate_limit_rate_limit_count_query_failed", error);
     return 0;
   }
 
@@ -62,7 +63,7 @@ async function recordInvocation(
     .insert({ user_id: userId, function_name: functionName });
 
   if (error) {
-    console.warn("Rate-limit event insert failed:", error);
+    logDiagnostic("warn", "rate_limit_rate_limit_event_insert_failed", error);
   }
 }
 

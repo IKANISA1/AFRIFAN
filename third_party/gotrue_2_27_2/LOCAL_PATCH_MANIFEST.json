@@ -1,0 +1,608 @@
+{
+  "schemaVersion": 1,
+  "sourceType": "local_path_patch",
+  "package": "gotrue",
+  "version": "2.27.2",
+  "vendorPath": "third_party/gotrue_2_27_2",
+  "upstreamProvenance": {
+    "path": "UPSTREAM_PROVENANCE.json",
+    "sha256": "0b12d78f1134ee29932ffbd40de33cae93120134a87df044577ade90097d90c8"
+  },
+  "upstreamPubspec": {
+    "path": "UPSTREAM_PUBSPEC.yaml",
+    "sha256": "5d1d2f237e3ab3ece834f550b4c5aec5a6fb29328734b0dac358d945ded4d230"
+  },
+  "license": {
+    "path": "LICENSE",
+    "sha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936"
+  },
+  "rootOverride": {
+    "path": "pubspec.yaml",
+    "sha256": "ed12b835abf4388e5da87e98272eb0c9cb4c7a4f5a38a374ed1c81196516252d",
+    "package": "gotrue",
+    "declaredPath": "third_party/gotrue_2_27_2"
+  },
+  "packageConfig": {
+    "path": ".dart_tool/package_config.json",
+    "sha256": "8bc8f1fab9321d11f62371f2416e7769c842cbcfe0289047721c0a4f59f2fd40",
+    "name": "gotrue",
+    "canonicalSelection": "third_party/gotrue_2_27_2"
+  },
+  "fileCount": 82,
+  "files": [
+    {
+      "path": "AFRICLUB_PATCH.md",
+      "size": 2111,
+      "sha256": "aeda6a1df136f3fb0241b853c8a7627bc5eefa7258cfa67ac980623d07fa55b8",
+      "upstreamSha256": null,
+      "matchesUpstream": null
+    },
+    {
+      "path": "CHANGELOG.md",
+      "size": 43873,
+      "sha256": "48f2f5c3c63cc6c113bf6a4c07965a188026be4d14e51cd1bd519142e8706dc7",
+      "upstreamSha256": "48f2f5c3c63cc6c113bf6a4c07965a188026be4d14e51cd1bd519142e8706dc7",
+      "matchesUpstream": true
+    },
+    {
+      "path": "LICENSE",
+      "size": 1065,
+      "sha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936",
+      "upstreamSha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936",
+      "matchesUpstream": true
+    },
+    {
+      "path": "README.md",
+      "size": 1250,
+      "sha256": "3ffd1c1730af3ac3743af2887241e50e19ba579d76a34d9040d267da2f2bf3bd",
+      "upstreamSha256": "3ffd1c1730af3ac3743af2887241e50e19ba579d76a34d9040d267da2f2bf3bd",
+      "matchesUpstream": true
+    },
+    {
+      "path": "UPSTREAM_PROVENANCE.json",
+      "size": 13707,
+      "sha256": "0b12d78f1134ee29932ffbd40de33cae93120134a87df044577ade90097d90c8",
+      "upstreamSha256": null,
+      "matchesUpstream": null
+    },
+    {
+      "path": "UPSTREAM_PUBSPEC.yaml",
+      "size": 804,
+      "sha256": "5d1d2f237e3ab3ece834f550b4c5aec5a6fb29328734b0dac358d945ded4d230",
+      "upstreamSha256": "5d1d2f237e3ab3ece834f550b4c5aec5a6fb29328734b0dac358d945ded4d230",
+      "matchesUpstream": true
+    },
+    {
+      "path": "analysis_options.yaml",
+      "size": 301,
+      "sha256": "bfdac46d0fffe29b47dfe619206a54d0fa0ab721789762999ba23c9b2783bd8c",
+      "upstreamSha256": "d8ed5cb0cd1c70d18f1a9b1072b1297cf77ea3d3324ea927415a7147e62fc67d",
+      "matchesUpstream": false
+    },
+    {
+      "path": "example/README.md",
+      "size": 101,
+      "sha256": "5561b5809a656952c98860674054066a930b4a473dd0c748320a76e35ad7356f",
+      "upstreamSha256": "5561b5809a656952c98860674054066a930b4a473dd0c748320a76e35ad7356f",
+      "matchesUpstream": true
+    },
+    {
+      "path": "example/main.dart",
+      "size": 697,
+      "sha256": "f3ed362c7ab446c80de81f78b68ccc02c36e910dad7276b88f8b22dd4a0b8946",
+      "upstreamSha256": "f3ed362c7ab446c80de81f78b68ccc02c36e910dad7276b88f8b22dd4a0b8946",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/gotrue.dart",
+      "size": 849,
+      "sha256": "afae6d4e1b084d1c121ca98a0087d10ef486fb23d124ff5d511cd29366734b3d",
+      "upstreamSha256": "afae6d4e1b084d1c121ca98a0087d10ef486fb23d124ff5d511cd29366734b3d",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/broadcast_stub.dart",
+      "size": 246,
+      "sha256": "8a9cdd61cc1b036c3c665c6d7893b593b4e1ecef56e965732d20c8b5638a6513",
+      "upstreamSha256": "8a9cdd61cc1b036c3c665c6d7893b593b4e1ecef56e965732d20c8b5638a6513",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/broadcast_web.dart",
+      "size": 933,
+      "sha256": "7546f4d263f5e80da7c5472a1cdb12d091d9d8c5d416b6e3dfb96b67c28d4c52",
+      "upstreamSha256": "7546f4d263f5e80da7c5472a1cdb12d091d9d8c5d416b6e3dfb96b67c28d4c52",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/constants.dart",
+      "size": 2952,
+      "sha256": "131679776dde45e8f9e0603080812dac4508eb3c79b412acdc219abadc6453a8",
+      "upstreamSha256": "131679776dde45e8f9e0603080812dac4508eb3c79b412acdc219abadc6453a8",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/fetch.dart",
+      "size": 6221,
+      "sha256": "91f10515d02dd3187385b264af6df63319da164bf28cfca309475cd8cb7df1f8",
+      "upstreamSha256": "91f10515d02dd3187385b264af6df63319da164bf28cfca309475cd8cb7df1f8",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/gotrue_admin_api.dart",
+      "size": 6981,
+      "sha256": "8e25c8c32b7266b6c2395ed485af68d969403899729b026a9f4a698002b59831",
+      "upstreamSha256": "8e25c8c32b7266b6c2395ed485af68d969403899729b026a9f4a698002b59831",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/gotrue_admin_custom_providers_api.dart",
+      "size": 4225,
+      "sha256": "6497aa41d949b43e388c6d381a69d4dfc3faf7e859dc14771bfedea94d9fb3c4",
+      "upstreamSha256": "6497aa41d949b43e388c6d381a69d4dfc3faf7e859dc14771bfedea94d9fb3c4",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/gotrue_admin_mfa_api.dart",
+      "size": 1313,
+      "sha256": "0bec1d51d21698b1b9e8faebfdd59f9fc80c914fe0be0ba8d8ef4e6e4a17aed2",
+      "upstreamSha256": "0bec1d51d21698b1b9e8faebfdd59f9fc80c914fe0be0ba8d8ef4e6e4a17aed2",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/gotrue_admin_oauth_api.dart",
+      "size": 5446,
+      "sha256": "70f643aaf2ec47421daaaffa144252d51cb7c89ef14440913ef036ec5d3d443b",
+      "upstreamSha256": "70f643aaf2ec47421daaaffa144252d51cb7c89ef14440913ef036ec5d3d443b",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/gotrue_admin_passkey_api.dart",
+      "size": 1847,
+      "sha256": "e1c8f1783c1be9f9a55edbe22d9f43bb79271f9be1f7ea561eef24f0bab2cce1",
+      "upstreamSha256": "e1c8f1783c1be9f9a55edbe22d9f43bb79271f9be1f7ea561eef24f0bab2cce1",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/gotrue_client.dart",
+      "size": 63047,
+      "sha256": "963144ad26a221d90ca36e4e354a605702f8d1c542e0770ab00ccd9e66dd7a30",
+      "upstreamSha256": "ddf36b5f8edc8ac83fbbd7d7a1d6afa7a4ff5523baa5bd8540c0345769c9159d",
+      "matchesUpstream": false
+    },
+    {
+      "path": "lib/src/gotrue_mfa_api.dart",
+      "size": 7739,
+      "sha256": "a6014a6eaf8878f1d2c73b630b57e1eb408f0ef07f8f7116c32d3eac19bf6b5e",
+      "upstreamSha256": "a6014a6eaf8878f1d2c73b630b57e1eb408f0ef07f8f7116c32d3eac19bf6b5e",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/gotrue_oauth_api.dart",
+      "size": 11044,
+      "sha256": "0eb351b0af051deebdf909e9b1e5b2982c4be0c8cf6efa7f32a91ee03f98f6de",
+      "upstreamSha256": "0eb351b0af051deebdf909e9b1e5b2982c4be0c8cf6efa7f32a91ee03f98f6de",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/gotrue_passkey_api.dart",
+      "size": 8502,
+      "sha256": "9fc8301d629c7a8bbd80352f44cf6d55b855d924473a375294493bc6487957bf",
+      "upstreamSha256": "9fc8301d629c7a8bbd80352f44cf6d55b855d924473a375294493bc6487957bf",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/helper.dart",
+      "size": 2673,
+      "sha256": "cc27ea3afb8b30bb46101f293bc1abdf06d9e22ad89965afdd5a5b5d5a3ff1f3",
+      "upstreamSha256": "cc27ea3afb8b30bb46101f293bc1abdf06d9e22ad89965afdd5a5b5d5a3ff1f3",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/types/api_version.dart",
+      "size": 1302,
+      "sha256": "dc0f3ea30563473ef6bd045ecee3e11cdd09fedff6e494be0bac5bc74a0d3eac",
+      "upstreamSha256": "dc0f3ea30563473ef6bd045ecee3e11cdd09fedff6e494be0bac5bc74a0d3eac",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/types/auth_exception.dart",
+      "size": 3471,
+      "sha256": "43833048e8261a91b10884e61daabd80ba5afe9627015c620da35d16a0b261fa",
+      "upstreamSha256": "43833048e8261a91b10884e61daabd80ba5afe9627015c620da35d16a0b261fa",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/types/auth_response.dart",
+      "size": 2782,
+      "sha256": "d3f8b59543cd7de4dfb26511816446fa26620837847e9eb6409027359583a102",
+      "upstreamSha256": "d3f8b59543cd7de4dfb26511816446fa26620837847e9eb6409027359583a102",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/types/auth_state.dart",
+      "size": 1295,
+      "sha256": "f506f12f18024585c61156671d347aa9909b97c4bcafa92efc3c83b18853cd7a",
+      "upstreamSha256": "f506f12f18024585c61156671d347aa9909b97c4bcafa92efc3c83b18853cd7a",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/types/custom_oauth_provider.dart",
+      "size": 12525,
+      "sha256": "c9942ac90d295ceb2a1f719075ef82baf2d22b257a3cbb59b5006135d8690cde",
+      "upstreamSha256": "c9942ac90d295ceb2a1f719075ef82baf2d22b257a3cbb59b5006135d8690cde",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/types/error_code.dart",
+      "size": 4446,
+      "sha256": "00b1845c91bc51f12a01120ea5d93748d59c8522f2a7d5ca5a6c97ef5c893f15",
+      "upstreamSha256": "00b1845c91bc51f12a01120ea5d93748d59c8522f2a7d5ca5a6c97ef5c893f15",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/types/fetch_options.dart",
+      "size": 515,
+      "sha256": "fb5e70f4f5e46d7bc17e146bbd1912ee123ff61e2c1b268a6ea2ee0ee1e33fbc",
+      "upstreamSha256": "fb5e70f4f5e46d7bc17e146bbd1912ee123ff61e2c1b268a6ea2ee0ee1e33fbc",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/types/gotrue_async_storage.dart",
+      "size": 525,
+      "sha256": "05384d8524033042833f8b849c758c4ab93e2c2bceedb1ee2f747e7a852ee019",
+      "upstreamSha256": "05384d8524033042833f8b849c758c4ab93e2c2bceedb1ee2f747e7a852ee019",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/types/jwt.dart",
+      "size": 8038,
+      "sha256": "fc851a9250c1e79145e72b79351f0f4220b7c25dbb7d60da4a899c0bfe49c988",
+      "upstreamSha256": "fc851a9250c1e79145e72b79351f0f4220b7c25dbb7d60da4a899c0bfe49c988",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/types/mfa.dart",
+      "size": 12369,
+      "sha256": "a9e41a4f3d25c290b53cb2bd22a6fb760790a0b65c12c9fe9bca79858e26b2dd",
+      "upstreamSha256": "a9e41a4f3d25c290b53cb2bd22a6fb760790a0b65c12c9fe9bca79858e26b2dd",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/types/passkey.dart",
+      "size": 4617,
+      "sha256": "65a2541c7e147fc20806a0942f8a58e22c839c25d7a66480e1690fbca8ade9fd",
+      "upstreamSha256": "65a2541c7e147fc20806a0942f8a58e22c839c25d7a66480e1690fbca8ade9fd",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/types/session.dart",
+      "size": 4760,
+      "sha256": "5e35fe388e6d465d24f579cd4f484f7247f7af83341cec0c31b9597e60676bb9",
+      "upstreamSha256": "5e35fe388e6d465d24f579cd4f484f7247f7af83341cec0c31b9597e60676bb9",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/types/sign_out_reason.dart",
+      "size": 820,
+      "sha256": "61ff1200cbf763372a503a14168691fee1a8de628a32a1479629990fd4cacaa1",
+      "upstreamSha256": "61ff1200cbf763372a503a14168691fee1a8de628a32a1479629990fd4cacaa1",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/types/types.dart",
+      "size": 9074,
+      "sha256": "5540866e2e8dd6dfa3a85ce97696d02be1201eca5de84ec9bf65b21a69eb725d",
+      "upstreamSha256": "5540866e2e8dd6dfa3a85ce97696d02be1201eca5de84ec9bf65b21a69eb725d",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/types/user.dart",
+      "size": 9143,
+      "sha256": "16d40a5903a15b0f83a2dc4ecc3d981e07a14d063234db27a2313f9d14733343",
+      "upstreamSha256": "16d40a5903a15b0f83a2dc4ecc3d981e07a14d063234db27a2313f9d14733343",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/types/user_attributes.dart",
+      "size": 4802,
+      "sha256": "26cd1a2c35804229526df454cf976d586e94a313690492958036a6f8a4800c20",
+      "upstreamSha256": "26cd1a2c35804229526df454cf976d586e94a313690492958036a6f8a4800c20",
+      "matchesUpstream": true
+    },
+    {
+      "path": "lib/src/version.dart",
+      "size": 26,
+      "sha256": "5d8ff7fe15919238108367aca04ea5b72b4b95bdb5c582ec1fe3974f46882ba3",
+      "upstreamSha256": "5d8ff7fe15919238108367aca04ea5b72b4b95bdb5c582ec1fe3974f46882ba3",
+      "matchesUpstream": true
+    },
+    {
+      "path": "pubspec.yaml",
+      "size": 781,
+      "sha256": "d08af3a79b850307be50e19c667afbb678c8c5d524f1b4c9c125d9fc58e20c92",
+      "upstreamSha256": "5d1d2f237e3ab3ece834f550b4c5aec5a6fb29328734b0dac358d945ded4d230",
+      "matchesUpstream": false
+    },
+    {
+      "path": "test/admin_delete_user_test.dart",
+      "size": 1303,
+      "sha256": "f5a4ed8f584790f95ef7c12692c290cc85d4f2b37244067746ddf5f9b6772f2a",
+      "upstreamSha256": "f5a4ed8f584790f95ef7c12692c290cc85d4f2b37244067746ddf5f9b6772f2a",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/admin_test.dart",
+      "size": 6156,
+      "sha256": "7cddf381b480befc05997ea6e9fcc271fe80e1a8a9e629cbe4dc24af3cde06d0",
+      "upstreamSha256": "7cddf381b480befc05997ea6e9fcc271fe80e1a8a9e629cbe4dc24af3cde06d0",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/api_version_test.dart",
+      "size": 1431,
+      "sha256": "2641535a3f65830b8408728b89298b66e5879829274dc1312c05e2738ffc35e8",
+      "upstreamSha256": "2641535a3f65830b8408728b89298b66e5879829274dc1312c05e2738ffc35e8",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/client_test.dart",
+      "size": 33016,
+      "sha256": "4bdb86ee4499ba6332ba690ddfd9eb7990fdb0c2869c97af7f4563533319f6ee",
+      "upstreamSha256": "4bdb86ee4499ba6332ba690ddfd9eb7990fdb0c2869c97af7f4563533319f6ee",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/custom_http_client.dart",
+      "size": 8123,
+      "sha256": "a7d52e103a98399dc9bdea473c3602609d95afc512e79b12f49cff0e9845ce16",
+      "upstreamSha256": "a7d52e103a98399dc9bdea473c3602609d95afc512e79b12f49cff0e9845ce16",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/custom_oauth_provider_test.dart",
+      "size": 3375,
+      "sha256": "952deccda2170a40084d33c4aedb5552ae019f2ca13e8b21e588bbf4b31570a6",
+      "upstreamSha256": "952deccda2170a40084d33c4aedb5552ae019f2ca13e8b21e588bbf4b31570a6",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/custom_providers_test.dart",
+      "size": 4531,
+      "sha256": "cd23b69794b16b63dd32d013d7c7f7147799cb45685c626e12779c36ddaaf3e6",
+      "upstreamSha256": "cd23b69794b16b63dd32d013d7c7f7147799cb45685c626e12779c36ddaaf3e6",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/fetch_test.dart",
+      "size": 2249,
+      "sha256": "7945b6d0a4c59df85898991d1b9e9a221b149ef8eccecf4be675d2ff7d545a87",
+      "upstreamSha256": "7945b6d0a4c59df85898991d1b9e9a221b149ef8eccecf4be675d2ff7d545a87",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/get_claims_test.dart",
+      "size": 12148,
+      "sha256": "4172db82411fb90360f50af4a6e19abe0302d61530cf777043f0626ef58da6cb",
+      "upstreamSha256": "4172db82411fb90360f50af4a6e19abe0302d61530cf777043f0626ef58da6cb",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/get_session_test.dart",
+      "size": 5050,
+      "sha256": "cba5852863514d256cb125df6e99448c7dafd2929d7abaed00ded42964446fec",
+      "upstreamSha256": "cba5852863514d256cb125df6e99448c7dafd2929d7abaed00ded42964446fec",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/header_isolation_test.dart",
+      "size": 2257,
+      "sha256": "33bb4facab8eff9b3e204510639e2bfaa25ee50f4521307d058deff58077314e",
+      "upstreamSha256": "33bb4facab8eff9b3e204510639e2bfaa25ee50f4521307d058deff58077314e",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/jwk_test.dart",
+      "size": 1083,
+      "sha256": "8e5a67ac99c62de3057f9df85e262731b767f56f55bec645cf5fa53fab714d73",
+      "upstreamSha256": "8e5a67ac99c62de3057f9df85e262731b767f56f55bec645cf5fa53fab714d73",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/mfa_challenge_mock_test.dart",
+      "size": 1888,
+      "sha256": "285b13a4606ffbad0b780bbdec57918bf9767d2d75b8989d9f4e2790bc7493dd",
+      "upstreamSha256": "285b13a4606ffbad0b780bbdec57918bf9767d2d75b8989d9f4e2790bc7493dd",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/mfa_enroll_test.dart",
+      "size": 2463,
+      "sha256": "57fe9ef24d60b49c935727e9d3257c6fd8ae5c7352de68b48895cd3e6a37f418",
+      "upstreamSha256": "57fe9ef24d60b49c935727e9d3257c6fd8ae5c7352de68b48895cd3e6a37f418",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/mocks/otp_mock_client.dart",
+      "size": 15633,
+      "sha256": "457140e72cf89d46fffc41994dc332b04397a3da75c3940182840f51f488dd98",
+      "upstreamSha256": "457140e72cf89d46fffc41994dc332b04397a3da75c3940182840f51f488dd98",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/mocks/passkey_mock_client.dart",
+      "size": 6846,
+      "sha256": "3f0d3ab223bbb82322bfeb08cf354d67c725a1f38340c806e2adde4979119a31",
+      "upstreamSha256": "3f0d3ab223bbb82322bfeb08cf354d67c725a1f38340c806e2adde4979119a31",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/mocks/web3_mock_client.dart",
+      "size": 3211,
+      "sha256": "293ad09acf8c3fdf0c42bc04283eecba4754e864de26ef6edd4f2ac0a958057e",
+      "upstreamSha256": "293ad09acf8c3fdf0c42bc04283eecba4754e864de26ef6edd4f2ac0a958057e",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/otp_mock_test.dart",
+      "size": 21998,
+      "sha256": "aa29b8280fd8211ec372e949d6f66f9ef9784068d93f9fc3b4a111dccd589487",
+      "upstreamSha256": "aa29b8280fd8211ec372e949d6f66f9ef9784068d93f9fc3b4a111dccd589487",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/passkey_test.dart",
+      "size": 10953,
+      "sha256": "f85704696aab81f865e703cf578ff1ffa784f359bb794bb904c620246baaec22",
+      "upstreamSha256": "f85704696aab81f865e703cf578ff1ffa784f359bb794bb904c620246baaec22",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/provider_test.dart",
+      "size": 6948,
+      "sha256": "dfbbedafcbcc602cf460d49120a2da050ef85a083d46a38c0e4b75688b34d1d2",
+      "upstreamSha256": "dfbbedafcbcc602cf460d49120a2da050ef85a083d46a38c0e4b75688b34d1d2",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/refresh_token_race_test.dart",
+      "size": 21438,
+      "sha256": "f6ebe2f758de527ad1001bbee6820694a08032145e8961ba58cef20f01177d7a",
+      "upstreamSha256": "f6ebe2f758de527ad1001bbee6820694a08032145e8961ba58cef20f01177d7a",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/src/broadcast_web_test.dart",
+      "size": 1541,
+      "sha256": "02db77741d5c13ccfb81ca52888d97670de8e6eeb7394bb5930eaa9a6a417f9e",
+      "upstreamSha256": "02db77741d5c13ccfb81ca52888d97670de8e6eeb7394bb5930eaa9a6a417f9e",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/src/constants_test.dart",
+      "size": 11015,
+      "sha256": "a4e067b3f96ac8895e612b5dc057ea51ef2f813fe1527a707f57defe1e68eebf",
+      "upstreamSha256": "a4e067b3f96ac8895e612b5dc057ea51ef2f813fe1527a707f57defe1e68eebf",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/src/gotrue_admin_custom_providers_api_test.dart",
+      "size": 6115,
+      "sha256": "e613195a27ac47eb121226be1eb47d18de50fdc587a766ee7a2810e074022d90",
+      "upstreamSha256": "e613195a27ac47eb121226be1eb47d18de50fdc587a766ee7a2810e074022d90",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/src/gotrue_admin_mfa_api_test.dart",
+      "size": 1581,
+      "sha256": "a67afd24be4cde2ac323aee410110c7f77b49bf1bf67f9c5767fba2bb69f655b",
+      "upstreamSha256": "a67afd24be4cde2ac323aee410110c7f77b49bf1bf67f9c5767fba2bb69f655b",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/src/gotrue_admin_oauth_api_test.dart",
+      "size": 5969,
+      "sha256": "a63df52f2b98330071baa5c4dcfff6e74d6475304e1a2bcab64ab8b38a0ffa85",
+      "upstreamSha256": "a63df52f2b98330071baa5c4dcfff6e74d6475304e1a2bcab64ab8b38a0ffa85",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/src/gotrue_mfa_api_test.dart",
+      "size": 9824,
+      "sha256": "f8de64ef3e5674f58cec6b116412bf3ce227b1f1be5faeee3ad65f41fac3cf97",
+      "upstreamSha256": "f8de64ef3e5674f58cec6b116412bf3ce227b1f1be5faeee3ad65f41fac3cf97",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/src/gotrue_oauth_api_test.dart",
+      "size": 13499,
+      "sha256": "fd6f349392b303e81927639c465c2bff8cabe0ce6bc80eed90ad41891d02ceef",
+      "upstreamSha256": "fd6f349392b303e81927639c465c2bff8cabe0ce6bc80eed90ad41891d02ceef",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/src/helper_test.dart",
+      "size": 11115,
+      "sha256": "201ba34e0587e963743934b5f0f236eca8b04470dc506c85bb5c5a9806391f7f",
+      "upstreamSha256": "201ba34e0587e963743934b5f0f236eca8b04470dc506c85bb5c5a9806391f7f",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/src/set_session_test.dart",
+      "size": 8366,
+      "sha256": "1e3089d506fe7a91c1ec6dba6d7956f6af2c82a69994a970fd607f4f859e439b",
+      "upstreamSha256": "1e3089d506fe7a91c1ec6dba6d7956f6af2c82a69994a970fd607f4f859e439b",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/src/token_refresh_race_test.dart",
+      "size": 10302,
+      "sha256": "46ab34f86f8bb5ccb3590cbce155f65099036efba3eb64c5eac5e8eabd9a3f45",
+      "upstreamSha256": "46ab34f86f8bb5ccb3590cbce155f65099036efba3eb64c5eac5e8eabd9a3f45",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/src/types/auth_exception_test.dart",
+      "size": 16254,
+      "sha256": "0381836eafd5a9fdd723d21ec990d421a33c4834ecb76cf0c021a198dbfa9b6d",
+      "upstreamSha256": "0381836eafd5a9fdd723d21ec990d421a33c4834ecb76cf0c021a198dbfa9b6d",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/src/types/mfa_test.dart",
+      "size": 1998,
+      "sha256": "35d1de5f9e7d1c973d5d1fcfe74af39846594dc7c02035b480af76b589812481",
+      "upstreamSha256": "35d1de5f9e7d1c973d5d1fcfe74af39846594dc7c02035b480af76b589812481",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/src/types/passkey_test.dart",
+      "size": 3942,
+      "sha256": "7f6e0d8cce9fa0e1635469c3741abb423b2b9e5360d63a0f47a8945299a7b6b8",
+      "upstreamSha256": "7f6e0d8cce9fa0e1635469c3741abb423b2b9e5360d63a0f47a8945299a7b6b8",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/src/types/session_test.dart",
+      "size": 17354,
+      "sha256": "b68fdf4545efb3b108436e6b93185ec1b4e8854b331b21bc0e9dbd74e86708fc",
+      "upstreamSha256": "b68fdf4545efb3b108436e6b93185ec1b4e8854b331b21bc0e9dbd74e86708fc",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/src/types/user_attributes_test.dart",
+      "size": 4167,
+      "sha256": "032deb0e5245e7f3e3cd14f2f4d40aa361a9ef471f1741a855d0277d33eee649",
+      "upstreamSha256": "032deb0e5245e7f3e3cd14f2f4d40aa361a9ef471f1741a855d0277d33eee649",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/src/types/user_test.dart",
+      "size": 26628,
+      "sha256": "0427fbd0f3f4358e7b96dbbcee9645fa84b6bd03cb92dafc4327d506ba69ff73",
+      "upstreamSha256": "0427fbd0f3f4358e7b96dbbcee9645fa84b6bd03cb92dafc4327d506ba69ff73",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/utils.dart",
+      "size": 3183,
+      "sha256": "81056a4bbb2962d25a140fcee581f142b9fea804a2c517090c26a3ce1b2fa22b",
+      "upstreamSha256": "81056a4bbb2962d25a140fcee581f142b9fea804a2c517090c26a3ce1b2fa22b",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/web3_auth_integration_test.dart",
+      "size": 3225,
+      "sha256": "08d5fcee2d6c5a4134afad73afeeab128a4f4142e1d053f44f471b536cf37a30",
+      "upstreamSha256": "08d5fcee2d6c5a4134afad73afeeab128a4f4142e1d053f44f471b536cf37a30",
+      "matchesUpstream": true
+    },
+    {
+      "path": "test/web3_auth_test.dart",
+      "size": 4735,
+      "sha256": "ebc9a4a422aae085f518ef4fd973db705b625bf508c55f9eeb7a02ff8009fb1d",
+      "upstreamSha256": "ebc9a4a422aae085f518ef4fd973db705b625bf508c55f9eeb7a02ff8009fb1d",
+      "matchesUpstream": true
+    }
+  ]
+}

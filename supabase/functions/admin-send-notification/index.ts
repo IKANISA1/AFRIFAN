@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import {
@@ -185,7 +186,7 @@ export function createAdminSendNotificationHandler(
         throw error;
       }
     } catch (error) {
-      console.error("admin-send-notification failed:", error);
+      logDiagnostic("error", "admin_send_notification_admin_send_notification_failed", error);
       return jsonError(
         error instanceof Error
           ? error.message

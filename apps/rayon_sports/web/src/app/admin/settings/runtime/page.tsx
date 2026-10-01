@@ -759,7 +759,7 @@ export default function AdminRuntimeSettingsPage() {
                 </div>
               ) : null}
             </div>
-            <p className="mb-3 text-sm leading-6 text-[var(--admin-zinc-400)]">
+            <p className="mb-3 text-sm leading-6 text-[var(--admin-secondary)]">
               Use one JSON object. Sensitive-key metadata and records outside
               the active scope are rejected.
             </p>

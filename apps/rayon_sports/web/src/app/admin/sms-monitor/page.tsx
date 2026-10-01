@@ -414,10 +414,11 @@ export default function AdminSmsMonitorPage() {
       {initialLoading ? (
         <div
           className="grid gap-5 lg:grid-cols-2"
+          role="group"
           aria-label="Loading SMS workspace"
         >
           {Array.from({ length: 2 }).map((_, index) => (
-            <div key={index} className="glass-panel rounded-[32px] p-6">
+            <div key={index} className="ui-panel rounded-[32px] p-6">
               <Skeleton className="skeleton-text h-7 w-2/5" />
               <Skeleton className="skeleton-text mt-5 h-52 w-full" />
             </div>
@@ -430,7 +431,7 @@ export default function AdminSmsMonitorPage() {
           className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]"
           data-admin-sms-state-surface
         >
-          <article className="glass-panel rounded-[32px] p-6">
+          <article className="ui-panel rounded-[32px] p-6">
             <p className="font-display text-3xl font-medium normal-case leading-none">
               Pipeline flow
             </p>
@@ -467,7 +468,7 @@ export default function AdminSmsMonitorPage() {
             </div>
           </article>
 
-          <article className="glass-panel rounded-[32px] p-6">
+          <article className="ui-panel rounded-[32px] p-6">
             <div className="flex items-center justify-between gap-3">
               <p className="font-display text-3xl font-medium normal-case leading-none">
                 Recent sync runs
@@ -594,7 +595,7 @@ export default function AdminSmsMonitorPage() {
 
       {access.isSuperAdmin && !initialLoading && !unrecoveredFailure ? (
         <section
-          className="glass-panel rounded-[32px] p-6"
+          className="ui-panel rounded-[32px] p-6"
           data-admin-sms-review-surface
         >
           <div className="flex flex-wrap items-center justify-between gap-3">

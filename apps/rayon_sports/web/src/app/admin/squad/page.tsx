@@ -242,7 +242,7 @@ export default function AdminSquadPage() {
           <button
             onClick={beginCreate}
             disabled={mutationLocked}
-            className="admin-action-button min-h-12 !bg-[var(--admin-accent)] !text-[var(--admin-zinc-950)] disabled:cursor-not-allowed disabled:!bg-[var(--admin-zinc-800)] disabled:!text-[var(--admin-text-strong)]"
+            className="admin-action-button min-h-12 !bg-[var(--admin-accent)] !text-[var(--admin-canvas)] disabled:cursor-not-allowed disabled:!bg-[var(--admin-raised)] disabled:!text-[var(--admin-text-strong)]"
           >
             <Plus size={16} aria-hidden="true" />
             <span>Add player</span>
@@ -286,6 +286,7 @@ export default function AdminSquadPage() {
 
       <div
         className="flex items-center gap-1 overflow-x-auto border-b border-[var(--admin-border)] no-scrollbar"
+        role="group"
         aria-label="Filter squad by position"
       >
         {(
@@ -307,7 +308,7 @@ export default function AdminSquadPage() {
               "relative min-h-12 px-6 py-3 text-xs font-medium normal-case tracking-normal transition-colors motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-70",
               filter === tab
                 ? "text-[var(--admin-text-strong)]"
-                : "text-[var(--admin-zinc-500)] hover:text-[var(--admin-zinc-300)]",
+                : "text-[var(--admin-secondary)] hover:text-[var(--admin-foreground)]",
             )}
           >
             {tab}
@@ -407,7 +408,7 @@ export default function AdminSquadPage() {
               <tr>
                 <td
                   colSpan={6}
-                  className="py-8 text-center text-sm text-[var(--admin-zinc-400)]"
+                  className="py-8 text-center text-sm text-[var(--admin-secondary)]"
                 >
                   Loading squad roster…
                 </td>
@@ -416,7 +417,7 @@ export default function AdminSquadPage() {
               <tr>
                 <td
                   colSpan={6}
-                  className="py-8 text-center text-sm text-[var(--admin-zinc-400)]"
+                  className="py-8 text-center text-sm text-[var(--admin-secondary)]"
                 >
                   {playerCollection.query
                     ? "No players match the current search."
@@ -428,7 +429,7 @@ export default function AdminSquadPage() {
                 <tr key={player.id} data-row-id={player.id}>
                   <td>
                     <div className="flex items-center gap-3">
-                      <div className="h-8 w-8 overflow-hidden rounded-full border border-[var(--admin-border)] bg-[var(--admin-zinc-800)]">
+                      <div className="h-8 w-8 overflow-hidden rounded-full border border-[var(--admin-border)] bg-[var(--admin-raised)]">
                         {player.imageUrl ? (
                           <Image
                             src={player.imageUrl}
@@ -439,7 +440,7 @@ export default function AdminSquadPage() {
                             className="h-full w-full object-cover"
                           />
                         ) : (
-                          <div className="flex h-full w-full items-center justify-center text-xs font-medium text-[var(--admin-zinc-500)]">
+                          <div className="flex h-full w-full items-center justify-center text-xs font-medium text-[var(--admin-secondary)]">
                             {player.number}
                           </div>
                         )}
@@ -460,7 +461,7 @@ export default function AdminSquadPage() {
                       {player.role}
                     </span>
                   </td>
-                  <td className="text-[var(--admin-zinc-400)]">
+                  <td className="text-[var(--admin-secondary)]">
                     {player.nationality}
                   </td>
                   <td>

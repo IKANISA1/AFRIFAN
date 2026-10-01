@@ -471,7 +471,7 @@ export function MatchCollectionSurface({
                 </Link>
               </article>
 
-              <div className="match-collection-list" aria-label={localized.listed}>
+              <div className="match-collection-list" role="group" aria-label={localized.listed}>
                 {matches.map((match) => (
                   <button
                     type="button"
@@ -510,7 +510,7 @@ export function MatchCollectionSurface({
               </div>
             </>
           ) : status === "loading" ? (
-            <div className="match-collection-skeleton" aria-label={message.label} aria-busy="true">
+            <div className="match-collection-skeleton" role="group" aria-label={message.label} aria-busy="true">
               <span />
               <span />
               <span />

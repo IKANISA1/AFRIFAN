@@ -49,14 +49,22 @@ abstract final class InternalRouteUriPolicy {
       return null;
     }
 
-    for (final segment in candidate.pathSegments) {
-      if (segment == '.' ||
-          segment == '..' ||
-          segment.contains('/') ||
-          segment.contains(r'\') ||
-          _controlCharacters.hasMatch(segment)) {
-        return null;
+    try {
+      // URI construction accepts percent-encoded bytes that are not valid
+      // UTF8. Validate every component before downstream code decodes it.
+      candidate.queryParametersAll;
+      Uri.decodeComponent(candidate.fragment);
+      for (final segment in candidate.pathSegments) {
+        if (segment == '.' ||
+            segment == '..' ||
+            segment.contains('/') ||
+            segment.contains(r'\') ||
+            _controlCharacters.hasMatch(segment)) {
+          return null;
+        }
       }
+    } on FormatException {
+      return null;
     }
 
     return candidate;
@@ -105,6 +113,15 @@ class DeepLinkParser {
       (websiteUri?.host.trim().isNotEmpty ?? false) || customSchemes.isNotEmpty;
 
   Uri? toInternalUri(Uri incoming) {
+    try {
+      return _toInternalUri(incoming);
+    } on FormatException {
+      // A custom-scheme path is decoded before the internal URI is built.
+      return null;
+    }
+  }
+
+  Uri? _toInternalUri(Uri incoming) {
     if (!isEnabled) {
       return null;
     }

@@ -48,7 +48,7 @@ describe("Admin authentication contrast contract", () => {
       for (const role of ["--admin-text-strong", "--admin-text-muted", "--admin-auth-accent", "--admin-danger-text"]) {
         expect(contrast(resolve(role), resolve("--admin-surface")), `${light ? "light" : "dark"} ${role}`).toBeGreaterThanOrEqual(4.5);
       }
-      expect(contrast(resolve("--admin-zinc-950"), resolve("--admin-zinc-100"))).toBeGreaterThanOrEqual(4.5);
+      expect(contrast(resolve("--admin-canvas"), resolve("--admin-foreground"))).toBeGreaterThanOrEqual(4.5);
     }
   });
 

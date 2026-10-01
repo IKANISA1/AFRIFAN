@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../tokens/color_tokens.dart';
+import '../extensions.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 
@@ -41,7 +41,9 @@ class AfriSectionHeader extends StatelessWidget {
           const SizedBox(height: SpacingTokens.spacing1),
           Text(
             subtitle!,
-            style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
+            style: TypographyTokens.bodySmall(
+              context.afriSemanticColors.secondaryText,
+            ),
           ),
         ],
       ],

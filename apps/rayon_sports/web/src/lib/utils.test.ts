@@ -52,8 +52,8 @@ describe("utils", () => {
   });
 
   it("joins class names safely", () => {
-    expect(cn("glass-panel", false, undefined, "rounded")).toBe(
-      "glass-panel rounded",
+    expect(cn("ui-panel", false, undefined, "rounded")).toBe(
+      "ui-panel rounded",
     );
   });
 });

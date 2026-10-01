@@ -2,11 +2,15 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
 import {readFileSync} from 'node:fs';
+import {register} from 'node:module';
 import {VITAL_NAMES,PWA_EVENTS,normalizeObservation,projectWebVital,projectPwaEvent,
  parseObservationJson,observationConfiguration} from '../contracts.mjs';
 import {handleWebObservation} from '../http.mjs';
-import {PrivateWebObservationStore} from '../sink.mjs';
+import {PrivateWebObservationStore,runWebObservationRetention} from '../sink.mjs';
 import {validate} from '../scripts/check-deployment.mjs';
+// Execute the real JS callback; this harness does not emulate hosted D1/RPC.
+register(new URL('../../shared-telemetry/tests/workers-loader.mjs',import.meta.url),import.meta.url);
+const {default:worker}=await import('../worker.mjs');
 
 const NOW=1790800000000,NOW_SQL="CAST(unixepoch('subsec') * 1000 AS INTEGER)";
 const vital={schemaVersion:1,event:'web_vital',name:'LCP',value:1200,rating:'good'};
@@ -142,6 +146,69 @@ test('configured expiry is bounded and current observations are preserved',async
  assert.equal(f.count(),2);assert.deepEqual(await f.store.expire({limit:1000}),{schemaVersion:1,removed:1});
  assert.equal(f.count(),1);await assert.rejects(()=>f.store.expire({limit:1001}));
  assert.throws(()=>f.sql.exec("UPDATE private_web_observations SET club_id=26"));
+});
+for(const clubId of [6,24,26,44,1001])test('scheduled retention preserves every other club '+clubId,async t=>{
+ const f=fixture(t,clubId);
+ for(const otherClub of [6,24,26,44,1001]){
+  const store=new PrivateWebObservationStore({...f.env,WEB_OBSERVATIONS_CLUB_ID:String(otherClub)});
+  await store.record({...f.input(vital),clubId:otherClub});
+ }
+ f.advance(3600001);await f.store.record(f.input(pwa));
+ assert.deepEqual(await runWebObservationRetention(f.env),{schemaVersion:1,removed:1,enabled:true});
+ assert.equal(f.count(),5);
+ assert.deepEqual(f.sql.prepare('SELECT club_id FROM private_web_observations ORDER BY club_id').all().map(row=>row.club_id),[6,24,26,44,1001]);
+});
+test('disabled or unselected scheduled retention never reads its database',async()=>{
+ const env={...configuration(),WEB_OBSERVATIONS_STORE_ENABLED:'false'};
+ Object.defineProperty(env,'WEB_OBSERVATIONS_DB',{get(){throw Error('database_read_when_disabled');}});
+ assert.deepEqual(await runWebObservationRetention(env),{schemaVersion:1,removed:0,enabled:false});
+ assert.deepEqual(await runWebObservationRetention({}),{schemaVersion:1,removed:0,enabled:false});
+ await worker.scheduled({},env);await worker.scheduled({},{});
+});
+test('the real scheduled callback removes expired rows and surfaces storage failure',async t=>{
+ const f=fixture(t);await f.store.record(f.input(vital));f.advance(3600001);
+ assert.equal(await worker.scheduled({},f.env),undefined);assert.equal(f.count(),0);
+ f.env.WEB_OBSERVATIONS_DB={prepare(){throw Error('synthetic_database_failure');}};
+ await assert.rejects(()=>worker.scheduled({},f.env),{message:'web_observation_unavailable'});
+ const response=await worker.fetch(new Request('https://synthetic.invalid'));
+ assert.equal(response.status,404);assert.equal(response.headers.get('cache-control'),'no-store');
+});
+test('checked deployment maintenance capacity exceeds its per-minute write quota',()=>{
+ const config=JSON.parse(readFileSync(new URL('../wrangler.staging.jsonc',import.meta.url),'utf8'));
+ for(const triggers of [{crons:[]},{crons:['0 * * * *']},{crons:['* * * * *'],private:'synthetic'}])
+  assert.ok(validate({...config,triggers}).includes('retention_schedule'));
+});
+test('bounded maintenance clears a delayed backlog while observations continue at quota',async t=>{
+ const f=fixture(t);
+ for(let batch=0;batch<4;batch++){
+  for(let i=0;i<300;i++)await f.store.record(f.input(vital));
+  f.advance(60001);
+ }
+ f.advance(3600000);
+ for(let i=0;i<300;i++)await f.store.record(f.input(pwa));
+ assert.deepEqual(await runWebObservationRetention(f.env),{schemaVersion:1,enabled:true,removed:1000});
+ assert.equal(f.count(),500);
+ f.advance(60001);
+ for(let i=0;i<300;i++)await f.store.record(f.input(pwa));
+ assert.deepEqual(await runWebObservationRetention(f.env),{schemaVersion:1,enabled:true,removed:200});
+ assert.equal(f.count(),600);
+ assert.equal(f.sql.prepare('SELECT count(*) n FROM private_web_observations WHERE expires_at_ms<=test_now_ms()').get().n,0);
+ assert.deepEqual(await runWebObservationRetention(f.env),{schemaVersion:1,enabled:true,removed:0});
+});
+for(const changes of [undefined,null,'1',NaN,Infinity,-1,.5,1001])
+ test('invalid cleanup acknowledgement is rejected '+String(changes),async()=>{
+  const env={...configuration(),WEB_OBSERVATIONS_DB:{prepare(){return {bind(){return this;},async run(){return {meta:{changes}};}};}}};
+  await assert.rejects(()=>runWebObservationRetention(env),{message:'web_observation_unavailable'});
+ });
+test('maintenance failure retains observations for a later explicit tick',async t=>{
+ const f=fixture(t);await f.store.record(f.input(vital));f.advance(3600001);
+ const working=f.env.WEB_OBSERVATIONS_DB;
+ f.env.WEB_OBSERVATIONS_DB={prepare(){throw Error('synthetic_storage_unavailable');}};
+ await assert.rejects(()=>runWebObservationRetention(f.env),{message:'web_observation_unavailable'});
+ assert.equal(f.count(),1);
+ f.env.WEB_OBSERVATIONS_DB=working;
+ assert.deepEqual(await runWebObservationRetention(f.env),{schemaVersion:1,enabled:true,removed:1});
+ assert.equal(f.count(),0);
 });
 for(const acknowledgement of [null,{recorded:true},{schemaVersion:1,recorded:true,token:'private'}])
  test('invalid private acknowledgement cannot claim recorded '+JSON.stringify(acknowledgement),async t=>{

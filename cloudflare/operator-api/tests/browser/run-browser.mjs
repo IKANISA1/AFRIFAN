@@ -22,12 +22,12 @@ mkdirSync(out,{recursive:true});
 const temporary=mkdtempSync(join(tmpdir(),'africlub-operator-browser-'));
 const key=join(temporary,'key.pem'),cert=join(temporary,'cert.pem');
 execFileSync('openssl',['req','-x509','-newkey','rsa:2048','-keyout',key,'-out',cert,'-days','1','-nodes','-subj','/CN=localhost','-addext','subjectAltName=IP:127.0.0.1'],{stdio:'pipe'});
-const results=[],processes=[],streams=[];let browser,blocked=false;
+const results=[],processes=[],streams=[],renderedFonts=[];let browser,blocked=false;
 const save=()=>writeFileSync(join(out,'browser-results.json'),JSON.stringify({
  schemaVersion:1,scope:'Actual installed Chromium, active gateway/UI and local SQLite with synthetic Access/RPC/R2; no hosted Cloudflare acceptance',
  browser:browser?.version(),playwright:require(process.env.PLAYWRIGHT_MODULE?join(process.env.PLAYWRIGHT_MODULE,'package.json'):'playwright/package.json').version,
  renderedAcceptance:results.length===19&&results.every(x=>x.passed),navigationBlockedByAdministrator:blocked,
- browserPolicyChanged:false,remoteCalls:false,passed:results.filter(x=>x.passed).length,failed:results.filter(x=>!x.passed).length,cases:results,
+ browserPolicyChanged:false,remoteCalls:false,renderedFonts,passed:results.filter(x=>x.passed).length,failed:results.filter(x=>!x.passed).length,cases:results,
 },null,2)+'\n');
 async function startServer(path,name){
  const log=createWriteStream(join(out,name+'-server.log'));streams.push(log);
@@ -60,6 +60,18 @@ async function runCase(name,task,{width=1280,height=900,expectedConsole=false}={
   await page.screenshot({path:join(out,name+'-failed.png'),fullPage:true}).catch(()=>{});
  }finally{await ctx.close();save();}
 }
+async function verifyRenderedFont(page,view){
+ await page.evaluate(()=>document.fonts.ready);
+ const cdp=await page.context().newCDPSession(page);
+ try{
+  await cdp.send('DOM.enable');await cdp.send('CSS.enable');
+  const {root}=await cdp.send('DOM.getDocument');
+  const {nodeId}=await cdp.send('DOM.querySelector',{nodeId:root.nodeId,selector:'h1'});
+  const {fonts}=await cdp.send('CSS.getPlatformFontsForNode',{nodeId});
+  assert.ok(fonts.some(font=>font.isCustomFont&&font.familyName==='Inter'&&font.glyphCount>0),'Heading must render the self-hosted Inter glyphs');
+  renderedFonts.push({view,selector:'h1',fonts});
+ }finally{await cdp.detach();}
+}
 try{
  browser=await chromium.launch({executablePath,headless:true});
  const f=await startServer('cloudflare/operator-api/tests/browser/server.mjs','publication');
@@ -69,7 +81,7 @@ try{
  const confirm=async page=>{await page.locator('#acknowledge').check();await page.locator('#confirmation').fill(await page.locator('#confirmation-phrase').innerText());await expect(page.locator('#publish')).toBeEnabled();await page.locator('#publish').click();};
  const publicationCase=(name,task,options={},mode)=>runCase(name,async(page,ctx)=>{await reset(mode);await task(page,ctx);},options);
  await publicationCase('desktop-complete-flow',async page=>{
-  await load(page);assert.equal((await state()).reviews,0);await page.screenshot({path:join(out,'publication-desktop.png'),fullPage:true});
+  await load(page);await verifyRenderedFont(page,'publication');assert.equal((await state()).reviews,0);await page.screenshot({path:join(out,'publication-desktop.png'),fullPage:true});
   await review(page);await expect(page.locator('#publish')).toBeDisabled();await page.locator('#preview-load').click();await expect(page.locator('#preview')).toContainText('Synthetic club training update');assert.equal(await page.locator('#preview img').count(),0);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),true);
   await confirm(page);await expect(page.locator('#receipt-section')).toBeVisible();assert.equal((await state()).publications,1);assert.equal((await state()).audit,1);
@@ -104,7 +116,7 @@ try{
   const command=async(page,action,digest=false)=>{await page.locator('#action').selectOption(action);if(digest)await page.locator('#evidence-digest').fill('d'.repeat(64));await page.getByRole('button',{name:'Review command',exact:true}).click();await page.locator('#confirm-ack').check();await page.getByRole('button',{name:'Confirm case command',exact:true}).click();await expect(page.locator('#receipt-section')).toBeVisible();await expect(page.locator('#status')).toContainText('Workspace updated');};
   const open=async page=>{await page.getByRole('button',{name:'Open a case',exact:true}).click();await page.locator('#order-id').fill(crypto.randomUUID());await command(page,'open');};
   await c.control('reset','POST');
-  await runCase('case-maker-opens-and-proposes',async page=>{await navigate(page);assert.equal(await page.title(),'Payment case review · AFRICLUB');assert.equal((await c.control()).events,0);await open(page);assert.equal((await c.control()).events,1);await command(page,'propose',true);const s=await c.control();assert.equal(s.events,2);caseId=s.cases[0].case_id;await page.screenshot({path:join(out,'case-proposal-desktop.png'),fullPage:true});});
+  await runCase('case-maker-opens-and-proposes',async page=>{await navigate(page);assert.equal(await page.title(),'Payment case review · AFRICLUB');assert.equal((await c.control()).events,0);await open(page);assert.equal((await c.control()).events,1);await command(page,'propose',true);const s=await c.control();assert.equal(s.events,2);caseId=s.cases[0].case_id;await verifyRenderedFont(page,'payment-exceptions');await page.screenshot({path:join(out,'case-proposal-desktop.png'),fullPage:true});});
   await c.control('role?who=checker','POST');
   await runCase('case-separate-checker-approves',async page=>{await navigate(page);await page.locator('#case-list button').first().click();await expect(page.locator('#case-details')).toContainText('awaiting_review');await command(page,'approve');assert.equal((await c.control()).events,3);});
   await c.control('role?who=maker','POST');

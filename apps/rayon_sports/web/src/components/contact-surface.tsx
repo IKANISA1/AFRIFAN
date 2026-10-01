@@ -97,7 +97,7 @@ export function ContactSurface({
               Club contact
             </p>
             <p className="contact-surface-card-title">{officialContact}</p>
-            <div className="contact-surface-tags" aria-label="Supported languages">
+            <div className="contact-surface-tags" role="group" aria-label="Supported languages">
               {languages.map((language) => (
                 <span key={language} className="contact-surface-tag">
                   {language.toUpperCase()}

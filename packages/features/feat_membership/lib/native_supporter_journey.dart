@@ -122,6 +122,10 @@ final class NativeSupporterJourney extends ChangeNotifier
   bool get busy => _busy;
   bool _busy = false, _disposed = false, _foreground = false;
   int _generation = 0;
+
+  /// Changes synchronously when an account, route or lifecycle boundary hides
+  /// private state. Views use this epoch to discard local drafts as well.
+  int get invalidationEpoch => _generation;
   PaymentReview? _review;
   PaymentReview? get paymentReview => _review;
   CurrentCheckout? _checkout;

@@ -213,7 +213,9 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             decoration: BoxDecoration(
               gradient: ColorTokens.imageScrimGradient(
                 color: ColorTokens.referenceChromeBlack,
-                alphas: const [0.12, 0.05, 0.55, 0.96],
+                // Large text expands into the upper image. Keep the image
+                // scrim dark enough wherever the welcome copy can appear.
+                alphas: const [0.55, 0.55, 0.67, 0.96],
                 stops: const [0.0, 0.38, 0.67, 1.0],
               ),
             ),
@@ -429,8 +431,8 @@ class _WelcomeContent extends StatelessWidget {
               Text(
                 slide.body,
                 style: largeText
-                    ? TypographyTokens.bodyMedium(ColorTokens.onDarkSubtle)
-                    : TypographyTokens.bodyLarge(ColorTokens.onDarkSubtle),
+                    ? TypographyTokens.bodyMedium(ColorTokens.onDark)
+                    : TypographyTokens.bodyLarge(ColorTokens.onDark),
               ),
             ],
           ),

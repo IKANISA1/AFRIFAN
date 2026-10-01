@@ -1,0 +1,687 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-30T20:37:20.944898+00:00",
+  "scope": "Current local operations and telemetry source binding; source ownership is retained and runtime sources were not edited during this refresh.",
+  "currentGitHead": "7fa5292248d5776c6e255aa39ab7acdd658f24e9",
+  "baselineCommit": "9f2a658cc49c212f780b7906bbd37edd215e60bf",
+  "files": [
+    {
+      "path": "cloudflare/allocation-delivery/RECOVERY.md",
+      "action": "added",
+      "bytes": 4783,
+      "sha256": "f044fe8b18af510b5041d674c3abc8d2e496ea7ccf9971b88571814f70779055",
+      "why": "Documents forward-only recovery, durable private-client operation and executed local restore/rollback limits.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "f044fe8b18af510b5041d674c3abc8d2e496ea7ccf9971b88571814f70779055",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/allocation-delivery/migrations_source/0007_approved_recovery.sql",
+      "action": "added",
+      "bytes": 6879,
+      "sha256": "568509027a53611cc36463d1d085078a67047a9242c5383a74ce5587d8e774c0",
+      "why": "Adds disabled same-database prepared decisions; fresh separate maker/checker confirmation and retained original redrive command commit or roll back atomically.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "568509027a53611cc36463d1d085078a67047a9242c5383a74ce5587d8e774c0",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/allocation-delivery/recovery-client.ts",
+      "action": "added",
+      "bytes": 11283,
+      "sha256": "91fa4c0885abf9244b190075a1fd736c500186ca9d9117d457cf8513dd48fa72",
+      "why": "Provides durable stage/readback-before-send, original-key uncertainty recovery, explicit GET reconciliation, wrong-event receipt validation and scope fencing.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "91fa4c0885abf9244b190075a1fd736c500186ca9d9117d457cf8513dd48fa72",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/allocation-delivery/scripts/check-recovery-deployment.mjs",
+      "action": "added",
+      "bytes": 2682,
+      "sha256": "9420958e5e24c1498a41eb984d7bdb5725f64429f6efac3adced0284a1eaba67",
+      "why": "Validates disabled private recovery configuration and rejects unresolved/same reviewer identities in ready inspection.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "9420958e5e24c1498a41eb984d7bdb5725f64429f6efac3adced0284a1eaba67",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/dispatch-worker.mjs",
+      "action": "modified",
+      "bytes": 535,
+      "sha256": "78338008d08f14b6bd98634d7216a97ea6a7fd2320ae0ae320271033f4f728c8",
+      "why": "Retains bounded observation promises in Worker lifetime context without changing named delivery capabilities.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "78338008d08f14b6bd98634d7216a97ea6a7fd2320ae0ae320271033f4f728c8",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/dispatcher.mjs",
+      "action": "modified",
+      "bytes": 4695,
+      "sha256": "97f6fca7b38f99dbecbd2180272a1708d013057e95c1e7e4955b84338fe10d41",
+      "why": "Ensures failure of supplemental per-club fairness observation cannot override a completed drain.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "97f6fca7b38f99dbecbd2180272a1708d013057e95c1e7e4955b84338fe10d41",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/inbox-worker.mjs",
+      "action": "modified",
+      "bytes": 899,
+      "sha256": "422a36e63968333c75bde09d2e2f937ac1983c6733514e62cbe400e6e9a7054a",
+      "why": "Observes concrete inbox acceptance and private inspection once without copying event/user/order envelopes.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "422a36e63968333c75bde09d2e2f937ac1983c6733514e62cbe400e6e9a7054a",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/recovery-worker.mjs",
+      "action": "added",
+      "bytes": 2021,
+      "sha256": "8d031a873aabef159b3529ac9c00db0447a097bb8d61005b5a540290b191273e",
+      "why": "Observes all six maker/checker capabilities around fixed-principal construction and work; suppresses internal duplicate decision metrics.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "8d031a873aabef159b3529ac9c00db0447a097bb8d61005b5a540290b191273e",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/recovery.mjs",
+      "action": "added",
+      "bytes": 7116,
+      "sha256": "5daec851651c055c2bb6a586cf3488bf0ebf77f664a14e6614313cf88e734578",
+      "why": "Retains direct-service observation while allowing trusted entrypoint suppression and bounded context lifetime; durable decision logic remains unchanged.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "5daec851651c055c2bb6a586cf3488bf0ebf77f664a14e6614313cf88e734578",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/source-worker.mjs",
+      "action": "modified",
+      "bytes": 1699,
+      "sha256": "eb6b5985ee0829ba7b87604f31decbcf9621b3a0939f5307a775018e9b04aa4e",
+      "why": "Observes all six source/review capabilities once, alongside existing bounded queue aggregates.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "eb6b5985ee0829ba7b87604f31decbcf9621b3a0939f5307a775018e9b04aa4e",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/allocation-delivery/src/source.mjs",
+      "action": "modified",
+      "bytes": 12017,
+      "sha256": "c76598fe1e480e9895e4821ae80127755d3583a8dad775e24ba18eabd40f3550",
+      "why": "Adds best-effort bounded queue-age observations without changing the existing private health response or review authority.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "c76598fe1e480e9895e4821ae80127755d3583a8dad775e24ba18eabd40f3550",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/allocation-delivery/tests/recovery-client.test.mjs",
+      "action": "added",
+      "bytes": 9184,
+      "sha256": "2b9f978b5d48ba843cde3879c4f08695fa464fde19d3f500880910ee93773b84",
+      "why": "Executes the strict compiled client with real private SQLite journal, crash/lost-ack, storage failure, CAS race, wrong-event and deadline tests.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "2b9f978b5d48ba843cde3879c4f08695fa464fde19d3f500880910ee93773b84",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/allocation-delivery/tests/recovery-config.test.mjs",
+      "action": "added",
+      "bytes": 2028,
+      "sha256": "b897c1261998e35a06a971af0ce49e6352b5a409f0f86bb9f0ade61699dc9cad",
+      "why": "Exercises disabled configuration and real queue/acknowledgment telemetry without leaking domain identifiers or triggering retries.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "b897c1261998e35a06a971af0ce49e6352b5a409f0f86bb9f0ade61699dc9cad",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/allocation-delivery/tests/recovery.test.mjs",
+      "action": "added",
+      "bytes": 11705,
+      "sha256": "96cf217746c44e6b6ad14be87f09fba6a9a7a067d2042f0703c8bf8bd026e396",
+      "why": "Exercises transaction-boundary revocation, separation, expired/stale decisions, direct-path denial, lost acknowledgments, rollback and independent reviewer races.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "8158edd56646ed640ef163eac82317149fe9ee7d9eaf488510d02578ec7dfece",
+      "changedSinceReferencedReport": true
+    },
+    {
+      "path": "cloudflare/allocation-delivery/tests/recovery/fixture.mjs",
+      "action": "added",
+      "bytes": 1979,
+      "sha256": "f58b2924507854cdd23043e8c4e30be8d0d1b73f13f665fd43817e13f7f43a95",
+      "why": "Supplies real SQLite recovery fixtures and independent worker connections for concurrent decision/receipt validation.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "f58b2924507854cdd23043e8c4e30be8d0d1b73f13f665fd43817e13f7f43a95",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/allocation-delivery/tests/recovery/recovery-race-worker.mjs",
+      "action": "added",
+      "bytes": 617,
+      "sha256": "605cccb4da3b6db11dc4601dca624ad5dd575e32ef2bb8bef3355d0b3f8ea6ef",
+      "why": "Supplies real SQLite recovery fixtures and independent worker connections for concurrent decision/receipt validation.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "605cccb4da3b6db11dc4601dca624ad5dd575e32ef2bb8bef3355d0b3f8ea6ef",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/allocation-delivery/tests/telemetry.test.mjs",
+      "action": "added",
+      "bytes": 2416,
+      "sha256": "a02ca2425f2c075f9dc62170f159044e4f064645e2b38ae2d467803f3080e4ab",
+      "why": "Exercises disabled configuration and real queue/acknowledgment telemetry without leaking domain identifiers or triggering retries.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "dc64a68ea8cfe63a91017429efe4123b7ef963eb04f7f11a512846c02a6c4a43",
+      "changedSinceReferencedReport": true
+    },
+    {
+      "path": "cloudflare/allocation-delivery/wrangler.recovery.staging.jsonc",
+      "action": "added",
+      "bytes": 805,
+      "sha256": "6cd155140b1b876eb750833ef01ad3f35b8e22de296900a11bff89ee87dda25e",
+      "why": "Adds disabled recovery deployment input with two unresolved reviewers, existing source database, no dispatcher/provider binding and blank retention policy.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "6cd155140b1b876eb750833ef01ad3f35b8e22de296900a11bff89ee87dda25e",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/README.md",
+      "action": "modified",
+      "bytes": 9686,
+      "sha256": "d07c8aba9081de9503489edbfa062b91c7a5b3702841bccd0f86741a54fd1984",
+      "why": "Records the private read-only inspection, telemetry and existing no-resend boundary.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "d07c8aba9081de9503489edbfa062b91c7a5b3702841bccd0f86741a54fd1984",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/scripts/check-review-deployment.mjs",
+      "action": "added",
+      "bytes": 2015,
+      "sha256": "7ce5c7bc238d9efa8c45e71b94d5a214d98cff939626b86e7ab665e4a3965575",
+      "why": "Validates a disabled read-only claim-review template without provider credentials or unlisted capabilities.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "7ce5c7bc238d9efa8c45e71b94d5a214d98cff939626b86e7ab665e4a3965575",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipt-reader-worker.mjs",
+      "action": "modified",
+      "bytes": 671,
+      "sha256": "674bab4cfd7623cdb520acb947bf4d69ec0621e1c21eb9ca9b354ade31c690b3",
+      "why": "Observes the private receipt reader once without copying challenge, message, recipient or signing values.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "674bab4cfd7623cdb520acb947bf4d69ec0621e1c21eb9ca9b354ade31c690b3",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/receipts-webhook-worker.mjs",
+      "action": "modified",
+      "bytes": 832,
+      "sha256": "230832654558135fcf1ef0534491151b27cebbe8af14128b23de5842e2d4ba66",
+      "why": "Observes webhook and bounded scheduled reconciliation independently of durable acknowledgement and without metric-triggered webhook replay.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "230832654558135fcf1ef0534491151b27cebbe8af14128b23de5842e2d4ba66",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/review-worker.mjs",
+      "action": "added",
+      "bytes": 677,
+      "sha256": "a44507eb99bf4ce7a303a72549b9266d6814e64d6780cef5f208deb54ac0c23d",
+      "why": "Exposes only named private read methods and sanitizes storage failures while preserving hidden no-store HTTP.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "a44507eb99bf4ce7a303a72549b9266d6814e64d6780cef5f208deb54ac0c23d",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/review.mjs",
+      "action": "added",
+      "bytes": 3866,
+      "sha256": "a2f60cd1d089082983f3720c595fff527279850b84f1fd4aa128d5b820aded85",
+      "why": "Adds bounded authorized private aggregate age/count and claim inspection, explicitly denying any provider-claim resend capability.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "a2f60cd1d089082983f3720c595fff527279850b84f1fd4aa128d5b820aded85",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/service.mjs",
+      "action": "modified",
+      "bytes": 5930,
+      "sha256": "3a0c7592effe2ef9e5e512d883e881e0bcb79f0c0bbcce9735cc24caa6b9ca0d",
+      "why": "Moves the existing single sender observation around complete receipt validation and durable dispatch; suppresses internal observation only for the trusted decorator.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "3a0c7592effe2ef9e5e512d883e881e0bcb79f0c0bbcce9735cc24caa6b9ca0d",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/status-aware-service.mjs",
+      "action": "modified",
+      "bytes": 3468,
+      "sha256": "f3b0a2ee62c563f079b9772d2ae50d001f644fc7e7646a4c54517bb2ba895a00",
+      "why": "Observes receipt binding and sender completion once; suppresses nested sender emissions and covers denial before any provider call.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "f3b0a2ee62c563f079b9772d2ae50d001f644fc7e7646a4c54517bb2ba895a00",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/status-aware-worker.mjs",
+      "action": "modified",
+      "bytes": 721,
+      "sha256": "305340e27b8dbd2cc50cba86a9b91f11ad72c6285a76cefe73c5a716f6492e99",
+      "why": "Passes the Worker lifetime context for bounded best-effort metrics without changing RPC behavior or dispatch outcomes.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "305340e27b8dbd2cc50cba86a9b91f11ad72c6285a76cefe73c5a716f6492e99",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/src/worker.mjs",
+      "action": "modified",
+      "bytes": 791,
+      "sha256": "63649a29c633b6f0072f9a46751605276603ab6add694b95984cb1a6952d1158",
+      "why": "Passes the Worker lifetime context for bounded best-effort metrics without changing RPC behavior or dispatch outcomes.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "63649a29c633b6f0072f9a46751605276603ab6add694b95984cb1a6952d1158",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/review-config.test.mjs",
+      "action": "added",
+      "bytes": 903,
+      "sha256": "7dedb988efe931bfd92e1dd37c42ac60280f843b445b0af16088a3423900297a",
+      "why": "Proves actual provider dispatch is not repeated by metric failures; bounds private claim inspection and rejects public/configuration/secret-field widening.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "7dedb988efe931bfd92e1dd37c42ac60280f843b445b0af16088a3423900297a",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/tests/review-telemetry.test.mjs",
+      "action": "added",
+      "bytes": 4295,
+      "sha256": "2b064d4a342ca6facca19201552fedcbd1ad5d30612e63d4583cdd25bc12a045",
+      "why": "Proves actual provider dispatch is not repeated by metric failures; bounds private claim inspection and rejects public/configuration/secret-field widening.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "2b064d4a342ca6facca19201552fedcbd1ad5d30612e63d4583cdd25bc12a045",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/auth-code-delivery/wrangler.review.staging.jsonc",
+      "action": "added",
+      "bytes": 621,
+      "sha256": "ceee6b99285deafb70546ceb7377cad22c227433e8a9a1348ffe2d1e0725a7f4",
+      "why": "Adds a disabled private review reader with no schedule, public route or provider credential.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "ceee6b99285deafb70546ceb7377cad22c227433e8a9a1348ffe2d1e0725a7f4",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/operator-api/README.md",
+      "action": "modified",
+      "bytes": 16043,
+      "sha256": "bdd975c7ff7f784400bd410fc5fdcac6bac06e896ab3b678fffbe58a54fa2e76",
+      "why": "Records private observation configuration and conservative mutating outcomes without claiming enabled hosted telemetry.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "bdd975c7ff7f784400bd410fc5fdcac6bac06e896ab3b678fffbe58a54fa2e76",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/operator-api/src/index.mjs",
+      "action": "modified",
+      "bytes": 6781,
+      "sha256": "19767a9ffaf22758132ce72d8cc6930ace370c45814607b378e0131555462f02",
+      "why": "Keeps one existing request observation and makes injected clock failure independent of the committed response.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "04c16834be4501cca7f1b1a442102d257369a0d50b269fc765319dc97be14f6d",
+      "changedSinceReferencedReport": true
+    },
+    {
+      "path": "cloudflare/operator-api/src/telemetry.mjs",
+      "action": "modified",
+      "bytes": 3287,
+      "sha256": "4c0a9ce721b5bdd32f4531285db7760bb37ede0e1e8ecd6a2ef47e33c4726433",
+      "why": "Reuses existing route classification and generated response correlation for one private metric; suppresses legacy duplicates and removes default console emission.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "4c0a9ce721b5bdd32f4531285db7760bb37ede0e1e8ecd6a2ef47e33c4726433",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/operator-api/tests/telemetry.test.mjs",
+      "action": "modified",
+      "bytes": 7405,
+      "sha256": "8529813b18a88f01a0ca38ea5279447e0307cc627c23ff88cb8c8392afa40a0a",
+      "why": "Proves one private emission, missing-policy suppression, safe async legacy failures and preservation of committed operator commands after sink/clock/permission failure.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "8529813b18a88f01a0ca38ea5279447e0307cc627c23ff88cb8c8392afa40a0a",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/checkout-worker.mjs",
+      "action": "modified",
+      "bytes": 3016,
+      "sha256": "b4ac48567ba32b1907db0c5aca836981f964c32e424d82fd6598ce060bdd1be1",
+      "why": "Observes all eleven checkout/read/handoff capabilities without copying user, order, operation or dialer values.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "b4ac48567ba32b1907db0c5aca836981f964c32e424d82fd6598ce060bdd1be1",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/payment-allocation/src/worker.mjs",
+      "action": "modified",
+      "bytes": 1923,
+      "sha256": "b1d5abf9a8709f778d533829660680e71e267fb99a636ed1395cdd9b2cd21083",
+      "why": "Observes the five financial ingest/allocation/receipt/outbox capabilities without changing fixed principal authority or adding a writer.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "b1d5abf9a8709f778d533829660680e71e267fb99a636ed1395cdd9b2cd21083",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/payment-exceptions/src/worker.mjs",
+      "action": "modified",
+      "bytes": 1598,
+      "sha256": "ebd7d4e08b7e09675a2417c5b280bc9d7c713d42ecf568748fc370c50ad10958",
+      "why": "Observes all six private case methods while preserving sanitized RPC envelopes and treating failed commands as unknown.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "ebd7d4e08b7e09675a2417c5b280bc9d7c713d42ecf568748fc370c50ad10958",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/rayon-public/src/authorized-publication-worker.mjs",
+      "action": "modified",
+      "bytes": 2410,
+      "sha256": "6a66ad68afe0749133713fd695d85ded449c3cfe6f96181718e08d7b739add3f",
+      "why": "Observes all nine Access-derived publication inspection/review/publish methods without copying operator, snapshot, review or media identities.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "6a66ad68afe0749133713fd695d85ded449c3cfe6f96181718e08d7b739add3f",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/rayon-public/src/index.mjs",
+      "action": "modified",
+      "bytes": 15724,
+      "sha256": "742df537317d160cb62b6c2ebdc0305d29026f4d546c7354870138495fed4e8c",
+      "why": "Observes public snapshot/media HTTP reads using fixed classification without recording request URLs, content or source IDs.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "742df537317d160cb62b6c2ebdc0305d29026f4d546c7354870138495fed4e8c",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/rayon-public/src/publication-worker.mjs",
+      "action": "modified",
+      "bytes": 1415,
+      "sha256": "e90ade78019793b2775f9114c1f8163bc1c6d1688848abd6a1d188c1d6ed46e5",
+      "why": "Observes the private approved-snapshot publisher once around validation and publication.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "e90ade78019793b2775f9114c1f8163bc1c6d1688848abd6a1d188c1d6ed46e5",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/shared-telemetry/README.md",
+      "action": "added",
+      "bytes": 5508,
+      "sha256": "0d0cd56b8468f9873a4877cc0887a01a829a3f096d3118d5869f8d9da6e140b0",
+      "why": "Documents exact covered capabilities, outcome meaning, absent console fallback and explicit retention/deployment boundaries.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "0d0cd56b8468f9873a4877cc0887a01a829a3f096d3118d5869f8d9da6e140b0",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/shared-telemetry/entrypoints.mjs",
+      "action": "added",
+      "bytes": 1049,
+      "sha256": "eb1ac532dca8b93fd740fe1ec83851f2d4d35203fb5fb96f6f8d65ba6e6b7d91",
+      "why": "Adds one-invocation private RPC and HTTP projections; reads only a bounded club scalar, fixed operation and response status.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "eb1ac532dca8b93fd740fe1ec83851f2d4d35203fb5fb96f6f8d65ba6e6b7d91",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/shared-telemetry/migrations/0001_private_metrics.sql",
+      "action": "added",
+      "bytes": 1145,
+      "sha256": "782e883ed9a6cd3ad3090360a58141459538971fc18cf738137441c1acada317",
+      "why": "Adds a separate bounded observation schema with expiry indexes; grants no financial, queue, identity or provider effect.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "782e883ed9a6cd3ad3090360a58141459538971fc18cf738137441c1acada317",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/shared-telemetry/scripts/check-deployment.mjs",
+      "action": "added",
+      "bytes": 1560,
+      "sha256": "3750d3668ecc2632112b93ab6bd1229eab3569076e5acb9e19be073796a6243d",
+      "why": "Rejects unknown configuration capabilities, public routes, implicit logging and enabled or unreviewed retention defaults.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "3750d3668ecc2632112b93ab6bd1229eab3569076e5acb9e19be073796a6243d",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/shared-telemetry/sink.mjs",
+      "action": "added",
+      "bytes": 3585,
+      "sha256": "6aee1199f97aaa0e63a8ad4f882458211eafd424ec27defe33c02e0782f075aa",
+      "why": "Implements private sanitized observation storage, recent-time validation, server-fixed retention, trace reads and bounded explicit expiry.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "6aee1199f97aaa0e63a8ad4f882458211eafd424ec27defe33c02e0782f075aa",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/shared-telemetry/telemetry.mjs",
+      "action": "added",
+      "bytes": 7897,
+      "sha256": "effae381afb7c1347540af8453b8392a104091034a90eded755a12d4806853b0",
+      "why": "Extends the finite operation vocabulary, conservatively classifies mutating permission failures as unknown and isolates configuration getters.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "effae381afb7c1347540af8453b8392a104091034a90eded755a12d4806853b0",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/shared-telemetry/tests/entrypoints.test.mjs",
+      "action": "added",
+      "bytes": 24136,
+      "sha256": "c371f09c2b1dc6dbef1abba73b4d66e1a5ddf0e244e9bbc28f35391a288a9948",
+      "why": "Exercises actual financial/case/publication/receipt/source/inbox/recovery entrypoints against real SQLite, secret omission, lost acknowledgement, revocation, timeout, exact operation counts and isolated sink readback.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "c371f09c2b1dc6dbef1abba73b4d66e1a5ddf0e244e9bbc28f35391a288a9948",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/shared-telemetry/tests/sink.test.mjs",
+      "action": "added",
+      "bytes": 5828,
+      "sha256": "a74935293222db9eb2c8b95d486a39e80d608bdfabd85a934b265037c506c7ab",
+      "why": "Executes actual SQLite retention, expired-read exclusion, bounded deletion, configuration, secret-field injection and projection invariants.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "a74935293222db9eb2c8b95d486a39e80d608bdfabd85a934b265037c506c7ab",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/shared-telemetry/tests/telemetry.test.mjs",
+      "action": "added",
+      "bytes": 6179,
+      "sha256": "d80962eda9daa73e20bb50965721a7100f6b65516047f37b86b66dfe0889c254",
+      "why": "Rejects sensitive or malformed telemetry and proves sink, clock, classifier and lifecycle-context faults cannot change or retry a service operation.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "d80962eda9daa73e20bb50965721a7100f6b65516047f37b86b66dfe0889c254",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/shared-telemetry/tests/workers-loader.mjs",
+      "action": "added",
+      "bytes": 389,
+      "sha256": "725d2d70134e7d33b15f6e6d87468e624437da8de6e54b810dd37e386f9b24df",
+      "why": "Loads actual private entrypoint source for local JavaScript tests without claiming hosted RPC or workerd emulation.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "725d2d70134e7d33b15f6e6d87468e624437da8de6e54b810dd37e386f9b24df",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/shared-telemetry/worker.mjs",
+      "action": "added",
+      "bytes": 711,
+      "sha256": "45829231c6f9d27a8e6d5b1c1ee1644b59546b7c90c0026fbfd545633afa8d76",
+      "why": "Separates private writer, trace reader and retention capabilities; ordinary HTTP remains hidden.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "45829231c6f9d27a8e6d5b1c1ee1644b59546b7c90c0026fbfd545633afa8d76",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/shared-telemetry/wrangler.staging.jsonc",
+      "action": "added",
+      "bytes": 528,
+      "sha256": "90b4ca1dd5b07a57398142961fae1c59d2f0fd134285c4205866626c27f3517d",
+      "why": "Supplies disabled private metrics configuration with one separate unresolved database and no invented retention policy.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "90b4ca1dd5b07a57398142961fae1c59d2f0fd134285c4205866626c27f3517d",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/browser-identity-worker.mjs",
+      "action": "modified",
+      "bytes": 1326,
+      "sha256": "61b00863f04b38b1aaeb972304537194d74dfce862b72f75fb7c658cd2141dee",
+      "why": "Observe each private browser identity capability once and scheduled secret expiry once with the Worker execution context; preserve cookie, CSRF, session and receipt behavior.",
+      "sourceOwner": "docs/release/local-auth-browser-telemetry-2026-09-30.json",
+      "previousReportSha256": "61b00863f04b38b1aaeb972304537194d74dfce862b72f75fb7c658cd2141dee",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/delivery-health-worker.mjs",
+      "action": "modified",
+      "bytes": 590,
+      "sha256": "d5b4110aabb07ed7581193f0a9a7c8f92260548c4d344f760e1958fd71f6481e",
+      "why": "Observe the existing aggregate health read once without identity key provisioning or sender retries.",
+      "sourceOwner": "docs/release/local-auth-browser-telemetry-2026-09-30.json",
+      "previousReportSha256": "d5b4110aabb07ed7581193f0a9a7c8f92260548c4d344f760e1958fd71f6481e",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/entrypoint-rpc.mjs",
+      "action": "added",
+      "bytes": 1105,
+      "sha256": "0f8fffbb14de331fb3572fa8008d5742c3200170f96049d3b2633126a5b015f9",
+      "why": "Expose Node-testable private capability execution so the actual identity services run once under the entrypoint observation; preserve sanitized RPC results and keep public ingress free of identity execution imports.",
+      "sourceOwner": "docs/release/local-auth-browser-telemetry-2026-09-30.json",
+      "previousReportSha256": "0f8fffbb14de331fb3572fa8008d5742c3200170f96049d3b2633126a5b015f9",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/entrypoint-telemetry.mjs",
+      "action": "added",
+      "bytes": 3121,
+      "sha256": "6508b60b68eef73ce49a6ff01a5ebd4d6754ef5b5c067a44531da5b0d7a00a13",
+      "why": "Project finite operations and outcomes into the reviewed aggregate schema; ignore native caller club/trace values, use only server-configured browser club, and conservatively mark invoked mutation failures unknown.",
+      "sourceOwner": "docs/release/local-auth-browser-telemetry-2026-09-30.json",
+      "previousReportSha256": "6508b60b68eef73ce49a6ff01a5ebd4d6754ef5b5c067a44531da5b0d7a00a13",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/identity-verifier-worker.mjs",
+      "action": "modified",
+      "bytes": 522,
+      "sha256": "bdc21bafd00e91c9b0c34bd97ba0f531698b1effc48aa7d97e2acf45353ae33c",
+      "why": "Delegate the private read capability to the tested wrapper and register detached metrics with the actual Worker execution context.",
+      "sourceOwner": "docs/release/local-auth-browser-telemetry-2026-09-30.json",
+      "previousReportSha256": "bdc21bafd00e91c9b0c34bd97ba0f531698b1effc48aa7d97e2acf45353ae33c",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/supporter-auth/src/index.mjs",
+      "action": "modified",
+      "bytes": 2512,
+      "sha256": "09c8514eed8d6f32b96001a20dddc3a2ebd6bacfc00a32efcb87b54675730c81",
+      "why": "Observe each native request and scheduled maintenance once, retaining original response, authorization, receipt and cleanup behavior; a refresh-reuse revocation or lost mutation acknowledgement remains unknown in telemetry.",
+      "sourceOwner": "docs/release/local-auth-browser-telemetry-2026-09-30.json",
+      "previousReportSha256": "09c8514eed8d6f32b96001a20dddc3a2ebd6bacfc00a32efcb87b54675730c81",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/supporter-auth/tests/entrypoint-telemetry.test.mjs",
+      "action": "added",
+      "bytes": 10174,
+      "sha256": "cab5c3c32ea112657ce4a0c527d9bc9ca67689eb02b56a48dfed1b86e56e1980",
+      "why": "Exercise actual SQLite-backed native/private-browser services, privacy, caller-controlled routes, refresh-reuse revocation, lost acknowledgement, scheduled cleanup and disabled/throwing/rejecting/hung sink behavior.",
+      "sourceOwner": "docs/release/local-auth-browser-telemetry-2026-09-30.json",
+      "previousReportSha256": "cab5c3c32ea112657ce4a0c527d9bc9ca67689eb02b56a48dfed1b86e56e1980",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/src/index.mjs",
+      "action": "modified",
+      "bytes": 13412,
+      "sha256": "13e1e5719990ca306348482707bfccddaa8ebda9462acdc990fdcfb921d9ed18",
+      "why": "Record finite browser identity, history and checkout operations at public ingress without private request fields; preserve original unknown financial/identity responses, keys and cookies.",
+      "sourceOwner": "docs/release/local-auth-browser-telemetry-2026-09-30.json",
+      "previousReportSha256": "13e1e5719990ca306348482707bfccddaa8ebda9462acdc990fdcfb921d9ed18",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/supporter-browser-api/tests/telemetry.test.mjs",
+      "action": "added",
+      "bytes": 4792,
+      "sha256": "ca814a26aaa65f6d9fe124b88aa4765c7545a73c331b6a1318ee5ef219bb8050",
+      "why": "Exercise actual browser session/CSRF ingress, one observation per boundary, a real checkout commit followed by lost acknowledgement, no repeated domain writes, privacy and independent sink failures.",
+      "sourceOwner": "docs/release/local-auth-browser-telemetry-2026-09-30.json",
+      "previousReportSha256": "ca814a26aaa65f6d9fe124b88aa4765c7545a73c331b6a1318ee5ef219bb8050",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "cloudflare/supporter-web-router/src/index.mjs",
+      "action": "modified",
+      "bytes": 3782,
+      "sha256": "d6622839c5d01498983c6a3317b25cf7b8004d191867b5288c7970e02ff2b422",
+      "why": "Observes same-origin routing once while preserving original browser Request identity, cache rules and existing single bounded dispatch.",
+      "sourceOwner": "docs/release/backend-telemetry-integration-2026-09-30.json",
+      "previousReportSha256": "d6622839c5d01498983c6a3317b25cf7b8004d191867b5288c7970e02ff2b422",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "tools/scripts/local_ops_rehearsal.mjs",
+      "action": "added",
+      "bytes": 17845,
+      "sha256": "1779cfaeaf5fb844c18d9030be2dd39db5822f82dfdd78232b0dea4556adcc5a",
+      "why": "Executes five-club synthetic load and faults, real independent-connection races, hash-verified forward restore, one-writer cutover and actual old-dispatcher rollback.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "1779cfaeaf5fb844c18d9030be2dd39db5822f82dfdd78232b0dea4556adcc5a",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "tools/scripts/local_ops_rehearsal_journal.mjs",
+      "action": "added",
+      "bytes": 3936,
+      "sha256": "7fdcc0d347a86fdac214b09696ff3a7ae238add56b3730e8f056322e6b99ddab",
+      "why": "Provides a real private-file SQLite CAS journal with retained immutable history and authenticated host scope binding.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "7fdcc0d347a86fdac214b09696ff3a7ae238add56b3730e8f056322e6b99ddab",
+      "changedSinceReferencedReport": false
+    },
+    {
+      "path": "tools/scripts/local_ops_rehearsal_no_network.cjs",
+      "action": "added",
+      "bytes": 1725,
+      "sha256": "bf5b463b5419d6296ed32295dcc99e204f908b4325088ff41b7df1ff6b794cc8",
+      "why": "Denies outbound fetch, DNS and Internet sockets during local bundling and reports only blocked-attempt counts.",
+      "sourceOwner": "original operations checkpoint",
+      "previousReportSha256": "fcac22f02fe10167b316b32174f537dc796378f067df3602bc6c285067a810df",
+      "changedSinceReferencedReport": true
+    }
+  ],
+  "sourceFileCount": 66,
+  "changedSinceReferencedReport": 4,
+  "backendProof": {
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/backend-current-final-harness/source-bound-receipt.json",
+    "sha256": "91f7a26c2d103f244357a72a27af0ad63e02e93bef5d70c36cc918d453ab4aa6",
+    "boundInputs": 404,
+    "allCurrentHashesMatch": true
+  },
+  "rehearsalProof": {
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/operations-current-rehearsal/source-bound-receipt.json",
+    "sha256": "c63dc3785c683a4019973465b442264b7530389ab777255d096434966b1486a7",
+    "boundInputs": 406,
+    "allCurrentHashesMatch": true
+  },
+  "checkpointReportOnlyChange": "docs/release/local-operations-recovery-2026-09-30.json",
+  "newCheckpointReport": "docs/release/local-operations-recovery-current-checkpoint-2026-09-30.json",
+  "noRuntimeEdits": true,
+  "noExternalActions": true
+}

@@ -15,6 +15,8 @@ import 'package:test_support/app_font_loader.dart';
 import 'package:test_support/predict_fixture_images.dart';
 import 'package:test_support/tab_shell_fixture.dart';
 
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
 const _goldenKey = ValueKey<String>('club-route-state-golden');
 
 // Golden viewport contract: 390x844 standard and 320x720 at 200% text.
@@ -274,11 +276,12 @@ Future<void> _pumpClubRouteState(
 
   final themeName = brightness == Brightness.light ? 'light' : 'dark';
   final dimensions = '${size.width.toInt()}x${size.height.toInt()}';
-  await expectLater(
+  await expectGoldenOrClubAssertions(
+    tester,
     find.byKey(_goldenKey),
-    matchesGoldenFile(
-      'goldens/club_${route.slug}_state_${state}_${themeName}_$dimensions.png',
-    ),
+    'goldens/club_${route.slug}_state_${state}_${themeName}_$dimensions.png',
+    route: route.pattern,
+    kind: route.pattern == '/club' ? 'tab' : 'route',
   );
 
   await heldGesture?.up();
@@ -331,7 +334,7 @@ Widget _buildClubApp({
       ),
     ],
   );
-  final config = ClubConfig.fallback();
+  final config = localRouteConfigOrFallback();
 
   return ProviderScope(
     overrides: <Override>[

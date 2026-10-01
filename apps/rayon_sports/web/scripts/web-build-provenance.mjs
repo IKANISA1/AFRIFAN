@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
+import { snapshotInstalledArtifactInputs } from "./artifact-installed-inputs.mjs";
 
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const read = (file) => JSON.parse(fs.readFileSync(file, "utf8"));
@@ -64,14 +65,35 @@ export function productionSourceSnapshot(root) {
   // Dotenv files are hashed, never copied into evidence or printed as values.
   const entries = ["src", "public", "package.json", "package-lock.json", "next.config.ts", "postcss.config.mjs", "tsconfig.json",
     "scripts/run-next-build-stable.mjs", "scripts/ensure-next-build-artifacts.mjs", "scripts/fix-route-group-manifests.mjs", "scripts/web-build-provenance.mjs"];
-  for (const file of [".env", ".env.local", ".env.production", ".env.production.local"]) {
+  for (const file of [".env", ".env.local", ".env.production", ".env.production.local",
+    ".env.development", ".env.development.local", ".env.test", ".env.test.local"]) {
     if (fs.existsSync(path.join(root, file))) entries.push(file);
   }
   for (const file of ["open-next.config.ts", "wrangler.jsonc"]) {
     if (fs.existsSync(path.join(root, file))) entries.push(file);
   }
-  const files = [...inventory(root, entries).files, ...sharedPortalInputs(root), ...sharedObservationInputs(root)];
-  return { sha256: sha256(JSON.stringify(files)), files };
+  for (const file of ["scripts/artifact-public-environment.mjs", "scripts/build-opennext-isolated.mjs", "scripts/artifact-installed-inputs.mjs"]) {
+    if (fs.existsSync(path.join(root, file))) entries.push(file);
+  }
+  const files = [...inventory(root, entries).files, ...sharedPortalInputs(root), ...sharedObservationInputs(root), ...artifactControlInputs(root)];
+  let installedInputs = null;
+  if (fs.existsSync(path.join(root, "scripts/build-opennext-isolated.mjs"))) {
+    requireValue(fs.existsSync(path.join(root, "scripts/artifact-installed-inputs.mjs")), "Missing required installed artifact input helper");
+    const installed = snapshotInstalledArtifactInputs(root);
+    installedInputs = Object.fromEntries(["sha256", "sourceBindingSha256", "fileCount", "directoryCount", "symlinkCount", "totalBytes"].map(key => [key, installed[key]]));
+  }
+  return { sha256: sha256(JSON.stringify({ files, installedInputs })), files, installedInputs };
+}
+
+function artifactControlInputs(root) {
+  if (!fs.existsSync(path.join(root, "scripts/build-opennext-isolated.mjs"))) return [];
+  const repository = fs.realpathSync(path.resolve(root, "../../.."));
+  const controls = path.join(repository, "tools/scripts");
+  const file = "local_ops_rehearsal_no_network.cjs";
+  requireValue(fs.existsSync(path.join(controls, file)), "Missing required artifact network control");
+  requireValue(fs.realpathSync(controls) === controls, "Artifact control directory symlink escapes declared repository location");
+  return inventory(controls, [file], "artifact control root").files.map(entry =>
+    ({ ...entry, file: `../../../tools/scripts/${entry.file}` }));
 }
 
 function sharedObservationInputs(root) {
@@ -104,7 +126,7 @@ export function productionArtifactSnapshot(root) {
 export function beginProductionBuild(root, command) {
   const source = productionSourceSnapshot(root);
   const declared = read(path.join(root, "package.json"));
-  const environmentKeys = new Set(["NODE_ENV", "AFRICLUB_ALLOW_HTTP_PREVIEW", "AFRICLUB_CONTROLLED_ADMIN_EVIDENCE", "AFRICLUB_CONTROLLED_ROUTE_EVIDENCE"]);
+  const environmentKeys = new Set(["NODE_ENV", "NODE_OPTIONS", "AFRICLUB_ALLOW_HTTP_PREVIEW", "AFRICLUB_CONTROLLED_ADMIN_EVIDENCE", "AFRICLUB_CONTROLLED_ROUTE_EVIDENCE"]);
   for (const entry of source.files.filter((entry) => /\.[cm]?[jt]sx?$/.test(entry.file))) {
     for (const match of fs.readFileSync(path.join(root, entry.file), "utf8").matchAll(/process\.env\.([A-Z][A-Z0-9_]*)/g)) environmentKeys.add(match[1]);
   }
@@ -142,9 +164,15 @@ export function validateProductionBuild(root) {
   const record = read(sealPath(root));
   requireValue(record.schema_version === 1 && record.compiled === true, "Invalid production build provenance");
   requireValue(record.build_id === fs.readFileSync(path.join(root, ".next/BUILD_ID"), "utf8").trim(), "Production build ID differs from its source seal");
-  requireValue(record.source.sha256 === productionSourceSnapshot(root).sha256, "Production build is stale for the current source");
-  requireValue(record.artifacts.sha256 === productionArtifactSnapshot(root).sha256, "Production artifacts changed after their source seal");
+  const source = productionSourceSnapshot(root), artifacts = productionArtifactSnapshot(root);
+  requireValue(record.source.sha256 === source.sha256, "Production build is stale for the current source");
+  requireValue(record.artifacts.sha256 === artifacts.sha256, "Production artifacts changed after their source seal");
+  requireValue(JSON.stringify(record.source.files) === JSON.stringify(source.files), "Production source inventory differs from its digest");
+  requireValue(JSON.stringify(record.source.installedInputs) === JSON.stringify(source.installedInputs), "Production installed input inventory differs from its digest");
+  requireValue(JSON.stringify(record.artifacts.files) === JSON.stringify(artifacts.files), "Production artifact inventory differs from its digest");
   return { build_id: record.build_id, source_sha256: record.source.sha256, artifact_sha256: record.artifacts.sha256,
+    installed_inputs_sha256: source.installedInputs?.sha256 ?? null,
+    installed_inputs_binding_sha256: source.installedInputs?.sourceBindingSha256 ?? null,
     provenance_sha256: sha256(fs.readFileSync(sealPath(root))), started_at: record.started_at, finished_at: record.finished_at };
 }
 

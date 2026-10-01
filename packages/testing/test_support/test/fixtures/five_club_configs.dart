@@ -31,8 +31,13 @@ Map<String, ClubConfig> fiveClubFixtures(Directory workspace) {
 }
 
 class _IsolatedConfig implements ClubConfig {
-  const _IsolatedConfig(this.base, this.clubId);
+  const _IsolatedConfig(
+    this.base,
+    this.clubId, {
+    this.internalMobileAdmin = false,
+  });
   final ClubConfig base;
+  final bool internalMobileAdmin;
   @override
   final String clubId;
   @override
@@ -72,5 +77,13 @@ class _IsolatedConfig implements ClubConfig {
   @override
   String get environment => 'isolated-local-fixture';
   @override
-  Map<String, bool> get features => base.features;
+  Map<String, bool> get features => {
+    ...base.features,
+    if (internalMobileAdmin) 'mobile_admin': true,
+  };
 }
+
+/// Separate declared internal-build scope; consumer capabilities stay exact.
+/// This does not mutate or authorize the production consumer configuration.
+ClubConfig internalAdminFixtureConfig(ClubConfig config) =>
+    _IsolatedConfig(config, config.clubId, internalMobileAdmin: true);

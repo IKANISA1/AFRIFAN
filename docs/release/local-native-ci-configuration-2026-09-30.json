@@ -42,8 +42,512 @@
     }
   ],
   "configurationVerified": true,
+  "nativePerformanceGateVerified": true,
   "hostedJobsExecuted": false,
   "releaseAccepted": false,
   "flutterSetupActionSha256": "65a5de1a79363b989a6613cd6e61a920ae1309ee7e0d1a7cae7e08ae514b670c",
-  "workflowSha256": "0dfe0f5111cfb3f9fc1e9b8977f4f111272b769768d10169f843f64ef4c20d1a"
+  "workflowSha256": "4460ea80679ea611d1b123e70942d03b62a67992e2bb36c9642e06706b6b5ada",
+  "webAdapterConfiguration": {
+    "packageCommands": [
+      "preview",
+      "deploy",
+      "upload"
+    ],
+    "workflowDefinitions": [
+      ".github/workflows/ci.yaml",
+      ".github/workflows/free_self_hosted_release.yml"
+    ],
+    "isolatedAdapterWiringVerified": true,
+    "artifactEnvironmentRegressionInputs": [
+      "scripts/artifact-public-environment.node-test.mjs",
+      "scripts/artifact-installed-inputs.node-test.mjs",
+      "scripts/sync-cloudflare-dev-vars.node-test.mjs",
+      "../../../tools/scripts/local_validation_network_guard.node-test.mjs"
+    ],
+    "requiredCiEnvironmentGateVerified": true,
+    "adapterExecutedByThisCheck": false
+  },
+  "nativePerformanceConfiguration": {
+    "schemaVersion": 1,
+    "status": "passed",
+    "configurationVerified": true,
+    "targets": [
+      {
+        "club": "as_vita",
+        "platform": "android",
+        "path": "apps/as_vita/android/app/src/main/AndroidManifest.xml",
+        "permanentCollectionDeactivated": true
+      },
+      {
+        "club": "as_vita",
+        "platform": "ios",
+        "path": "apps/as_vita/ios/Runner/Info.plist",
+        "permanentCollectionDeactivated": true
+      },
+      {
+        "club": "costa_do_sol",
+        "platform": "android",
+        "path": "apps/costa_do_sol/android/app/src/main/AndroidManifest.xml",
+        "permanentCollectionDeactivated": true
+      },
+      {
+        "club": "costa_do_sol",
+        "platform": "ios",
+        "path": "apps/costa_do_sol/ios/Runner/Info.plist",
+        "permanentCollectionDeactivated": true
+      },
+      {
+        "club": "nkana",
+        "platform": "android",
+        "path": "apps/nkana/android/app/src/main/AndroidManifest.xml",
+        "permanentCollectionDeactivated": true
+      },
+      {
+        "club": "nkana",
+        "platform": "ios",
+        "path": "apps/nkana/ios/Runner/Info.plist",
+        "permanentCollectionDeactivated": true
+      },
+      {
+        "club": "rayon_sports",
+        "platform": "android",
+        "path": "apps/rayon_sports/android/app/src/main/AndroidManifest.xml",
+        "permanentCollectionDeactivated": true
+      },
+      {
+        "club": "rayon_sports",
+        "platform": "ios",
+        "path": "apps/rayon_sports/ios/Runner/Info.plist",
+        "permanentCollectionDeactivated": true
+      },
+      {
+        "club": "vitalo",
+        "platform": "android",
+        "path": "apps/vitalo/android/app/src/main/AndroidManifest.xml",
+        "permanentCollectionDeactivated": true
+      },
+      {
+        "club": "vitalo",
+        "platform": "ios",
+        "path": "apps/vitalo/ios/Runner/Info.plist",
+        "permanentCollectionDeactivated": true
+      }
+    ],
+    "sourceInputs": [
+      {
+        "path": "apps/as_vita/android/app/src/debug/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/as_vita/android/app/src/main/AndroidManifest.xml",
+        "sha256": "3e5a01201d11ea1377e5d105a678a1fbbe8abf083ab2a3a4fce28ddfb5c88466",
+        "bytes": 2670
+      },
+      {
+        "path": "apps/as_vita/android/app/src/profile/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/as_vita/ios/Runner/Info.plist",
+        "sha256": "aa5588cf3dee1a165ccd468c37ce7c4ee97c3eb8adb1c33b10191580288e6f6e",
+        "bytes": 2353
+      },
+      {
+        "path": "apps/costa_do_sol/android/app/src/debug/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/costa_do_sol/android/app/src/main/AndroidManifest.xml",
+        "sha256": "3e5a01201d11ea1377e5d105a678a1fbbe8abf083ab2a3a4fce28ddfb5c88466",
+        "bytes": 2670
+      },
+      {
+        "path": "apps/costa_do_sol/android/app/src/profile/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/costa_do_sol/ios/Runner/Info.plist",
+        "sha256": "2b8face460314ac84af56f21642d7274d399168fd6d69b6778df1eb72e1f992b",
+        "bytes": 2358
+      },
+      {
+        "path": "apps/nkana/android/app/src/debug/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/nkana/android/app/src/main/AndroidManifest.xml",
+        "sha256": "3e5a01201d11ea1377e5d105a678a1fbbe8abf083ab2a3a4fce28ddfb5c88466",
+        "bytes": 2670
+      },
+      {
+        "path": "apps/nkana/android/app/src/profile/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/nkana/ios/Runner/Info.plist",
+        "sha256": "814d0b4393e2593169e7605b9d40a640c2d8df9f717e61f09c73e059af88d8d1",
+        "bytes": 2351
+      },
+      {
+        "path": "apps/rayon_sports/android/app/src/debug/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/rayon_sports/android/app/src/main/AndroidManifest.xml",
+        "sha256": "47316bc15bdb1807bdcf6dc1fb1bedfc769c043d4fd526644bd31f821704bd39",
+        "bytes": 8282
+      },
+      {
+        "path": "apps/rayon_sports/android/app/src/profile/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/rayon_sports/ios/Runner/Info.plist",
+        "sha256": "8f3d883abbbf4c65c9966cdbc3ac4c1b7ea02a51dfa141b0c5b69bebb3761c4d",
+        "bytes": 2909
+      },
+      {
+        "path": "apps/vitalo/android/app/src/debug/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/vitalo/android/app/src/main/AndroidManifest.xml",
+        "sha256": "3e5a01201d11ea1377e5d105a678a1fbbe8abf083ab2a3a4fce28ddfb5c88466",
+        "bytes": 2670
+      },
+      {
+        "path": "apps/vitalo/android/app/src/profile/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/vitalo/ios/Runner/Info.plist",
+        "sha256": "d859c7ba030a62a178b50e49c49b4944c6e7c6ac108d259ec1574f7a73ea811e",
+        "bytes": 2352
+      }
+    ],
+    "errors": [],
+    "hostedJobsExecuted": false,
+    "releaseAccepted": false
+  },
+  "syntheticClubConfigurations": [
+    {
+      "club": "as_vita",
+      "clubId": "6",
+      "platforms": [
+        "android",
+        "ios"
+      ],
+      "syntheticOnly": true,
+      "configurationSha256": "fada781e502441595c2b6d6fa10bb4239f052e8a8d01a7607c35d4b5ca8dc12b"
+    },
+    {
+      "club": "costa_do_sol",
+      "clubId": "1001",
+      "platforms": [
+        "android",
+        "ios"
+      ],
+      "syntheticOnly": true,
+      "configurationSha256": "7a566ed3881374eb293dfa7e334d2a40e4a8044d81072ccc4264c189367a6e81"
+    },
+    {
+      "club": "nkana",
+      "clubId": "26",
+      "platforms": [
+        "android",
+        "ios"
+      ],
+      "syntheticOnly": true,
+      "configurationSha256": "d767212e8201ddb9f40d8cf94443f6e23c4653449b3ff292121897e6d450876d"
+    },
+    {
+      "club": "rayon_sports",
+      "clubId": "24",
+      "platforms": [
+        "android",
+        "ios"
+      ],
+      "syntheticOnly": true,
+      "configurationSha256": "11c75609e7a5a68bd797e3c4ee7f0f8ef0beab70daafb183f788628fa3abc935"
+    },
+    {
+      "club": "vitalo",
+      "clubId": "44",
+      "platforms": [
+        "android",
+        "ios"
+      ],
+      "syntheticOnly": true,
+      "configurationSha256": "d695ea3db8ff017e6819d991bd7beb4f6c3c40acd5def5058d49eb5bd15d1c87"
+    }
+  ],
+  "sourceInputs": [
+    {
+      "path": ".github/workflows/ci.yaml",
+      "sha256": "4460ea80679ea611d1b123e70942d03b62a67992e2bb36c9642e06706b6b5ada",
+      "bytes": 33612
+    },
+    {
+      "path": ".github/workflows/free_self_hosted_release.yml",
+      "sha256": "4125804b109895164e6a5ba28b2e42bbfdd99aede5eb3663305a9edd373ef70e",
+      "bytes": 5830
+    },
+    {
+      "path": ".github/actions/setup-flutter/action.yml",
+      "sha256": "65a5de1a79363b989a6613cd6e61a920ae1309ee7e0d1a7cae7e08ae514b670c",
+      "bytes": 633
+    },
+    {
+      "path": ".fvmrc",
+      "sha256": "d25bb29fd83fe90c61d22b5f15767fabc0033d3ff98feb07d65d539b1400302f",
+      "bytes": 7
+    },
+    {
+      "path": "docs/release/full_stack_qa_plan.md",
+      "sha256": "655333708ced9f155e83a242d8058bedf16bb0ae42dd964cbb29a12efe4bbe4c",
+      "bytes": 55656
+    },
+    {
+      "path": "apps/rayon_sports/web/package.json",
+      "sha256": "749c63534880989556b22e048215032bc03c8a144ed7ced0c913dab3cd872c42",
+      "bytes": 5173
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/build-opennext-isolated.mjs",
+      "sha256": "0c531caf116ff031d85f40be360f95f06cfd6b744db6b3bd900df7aedce9f4be",
+      "bytes": 8150
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/artifact-public-environment.mjs",
+      "sha256": "c4c81236470e89237eba0fe12aeb2b656e5ea25a2da17eed43a37d3fbd044610",
+      "bytes": 4617
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/artifact-installed-inputs.mjs",
+      "sha256": "3e0baede37547137ce79e4c0b1ac454d614dea9f5580befb38b1357ade855c23",
+      "bytes": 14905
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/artifact-installed-inputs.node-test.mjs",
+      "sha256": "6fba02e8aa0c83be342f934fe3364307ea960c117e49d33c991cf0d47d743b7c",
+      "bytes": 9133
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/web-build-provenance.mjs",
+      "sha256": "a7770d4e134c08475af7d46cc28af911292a1efefce2546b6db343507634c024",
+      "bytes": 11957
+    },
+    {
+      "path": "tools/scripts/local_native_ci.py",
+      "sha256": "71c0fa28c23dd73c32dd1963237282cf6433954ce89d2bb4e99418dcefef76d0",
+      "bytes": 14911
+    },
+    {
+      "path": "tools/scripts/test_local_native_ci.py",
+      "sha256": "bed448a93f2f4aea6be99c2423bae3dc7619db093b622750a41c505045107ab3",
+      "bytes": 11134
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/artifact-public-environment.node-test.mjs",
+      "sha256": "bdcc2ad87abbc3bdc1820c918bbad6286a24d7e331ea3f1588613b04cb0340ae",
+      "bytes": 5066
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/sync-cloudflare-dev-vars.mjs",
+      "sha256": "b0db2e0802582690db08a1f7212733d7ef32d41b6800ce0664e585ea77c538c2",
+      "bytes": 2665
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/sync-cloudflare-dev-vars.node-test.mjs",
+      "sha256": "ac8e5a7bd778b2cfd671d5b2f312e1ecc4366c418a930a9a8aca6f8dbefc1f13",
+      "bytes": 2008
+    },
+    {
+      "path": "tools/scripts/local_validation_network_guard.node-test.mjs",
+      "sha256": "c4e8b6cef1dab4dd7d01c83f6c34776f0c1b518d7b6e749408dcd3a643965320",
+      "bytes": 2446
+    },
+    {
+      "path": "tools/scripts/local_ops_rehearsal_no_network.cjs",
+      "sha256": "bf5b463b5419d6296ed32295dcc99e204f908b4325088ff41b7df1ff6b794cc8",
+      "bytes": 1725
+    },
+    {
+      "path": "tools/scripts/local_web_server_no_network.cjs",
+      "sha256": "0aa5dd1d6e2a9958a94e3e0acd606f46985fa72bfcad3eb6a22dd71d3460de8b",
+      "bytes": 643
+    },
+    {
+      "path": "tools/scripts/verify_native_performance_privacy.py",
+      "sha256": "99737c96e8fb964ee890401f7deef26be1916e0da340cb6940102e18ff95017c",
+      "bytes": 8373
+    },
+    {
+      "path": "tools/scripts/test_verify_native_performance_privacy.py",
+      "sha256": "886acf55db445864559f0b008314c804acef6d73dc729f2f43b44390791837bd",
+      "bytes": 10297
+    },
+    {
+      "path": "apps/as_vita/android/app/src/debug/AndroidManifest.xml",
+      "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+      "bytes": 378
+    },
+    {
+      "path": "apps/as_vita/android/app/src/main/AndroidManifest.xml",
+      "sha256": "3e5a01201d11ea1377e5d105a678a1fbbe8abf083ab2a3a4fce28ddfb5c88466",
+      "bytes": 2670
+    },
+    {
+      "path": "apps/as_vita/android/app/src/profile/AndroidManifest.xml",
+      "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+      "bytes": 378
+    },
+    {
+      "path": "apps/as_vita/ios/Runner/Info.plist",
+      "sha256": "aa5588cf3dee1a165ccd468c37ce7c4ee97c3eb8adb1c33b10191580288e6f6e",
+      "bytes": 2353
+    },
+    {
+      "path": "apps/costa_do_sol/android/app/src/debug/AndroidManifest.xml",
+      "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+      "bytes": 378
+    },
+    {
+      "path": "apps/costa_do_sol/android/app/src/main/AndroidManifest.xml",
+      "sha256": "3e5a01201d11ea1377e5d105a678a1fbbe8abf083ab2a3a4fce28ddfb5c88466",
+      "bytes": 2670
+    },
+    {
+      "path": "apps/costa_do_sol/android/app/src/profile/AndroidManifest.xml",
+      "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+      "bytes": 378
+    },
+    {
+      "path": "apps/costa_do_sol/ios/Runner/Info.plist",
+      "sha256": "2b8face460314ac84af56f21642d7274d399168fd6d69b6778df1eb72e1f992b",
+      "bytes": 2358
+    },
+    {
+      "path": "apps/nkana/android/app/src/debug/AndroidManifest.xml",
+      "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+      "bytes": 378
+    },
+    {
+      "path": "apps/nkana/android/app/src/main/AndroidManifest.xml",
+      "sha256": "3e5a01201d11ea1377e5d105a678a1fbbe8abf083ab2a3a4fce28ddfb5c88466",
+      "bytes": 2670
+    },
+    {
+      "path": "apps/nkana/android/app/src/profile/AndroidManifest.xml",
+      "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+      "bytes": 378
+    },
+    {
+      "path": "apps/nkana/ios/Runner/Info.plist",
+      "sha256": "814d0b4393e2593169e7605b9d40a640c2d8df9f717e61f09c73e059af88d8d1",
+      "bytes": 2351
+    },
+    {
+      "path": "apps/rayon_sports/android/app/src/debug/AndroidManifest.xml",
+      "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+      "bytes": 378
+    },
+    {
+      "path": "apps/rayon_sports/android/app/src/main/AndroidManifest.xml",
+      "sha256": "47316bc15bdb1807bdcf6dc1fb1bedfc769c043d4fd526644bd31f821704bd39",
+      "bytes": 8282
+    },
+    {
+      "path": "apps/rayon_sports/android/app/src/profile/AndroidManifest.xml",
+      "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+      "bytes": 378
+    },
+    {
+      "path": "apps/rayon_sports/ios/Runner/Info.plist",
+      "sha256": "8f3d883abbbf4c65c9966cdbc3ac4c1b7ea02a51dfa141b0c5b69bebb3761c4d",
+      "bytes": 2909
+    },
+    {
+      "path": "apps/vitalo/android/app/src/debug/AndroidManifest.xml",
+      "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+      "bytes": 378
+    },
+    {
+      "path": "apps/vitalo/android/app/src/main/AndroidManifest.xml",
+      "sha256": "3e5a01201d11ea1377e5d105a678a1fbbe8abf083ab2a3a4fce28ddfb5c88466",
+      "bytes": 2670
+    },
+    {
+      "path": "apps/vitalo/android/app/src/profile/AndroidManifest.xml",
+      "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+      "bytes": 378
+    },
+    {
+      "path": "apps/vitalo/ios/Runner/Info.plist",
+      "sha256": "d859c7ba030a62a178b50e49c49b4944c6e7c6ac108d259ec1574f7a73ea811e",
+      "bytes": 2352
+    },
+    {
+      "path": "apps/as_vita/assets/flavors/production.json",
+      "sha256": "0c264bf19bab696d22d585a94128ed17b7a669ebe62c256bbc6073311d17addc",
+      "bytes": 434
+    },
+    {
+      "path": "apps/costa_do_sol/assets/flavors/production.json",
+      "sha256": "39528fe460740de15898b553ac0f283242bbe4d6693ad68c4f4302d3e8bb6834",
+      "bytes": 192
+    },
+    {
+      "path": "apps/nkana/assets/flavors/production.json",
+      "sha256": "0a12a6fa4a5e9db7527cbb61772a09ee47c59c9661b96b29f8053a2afae344fb",
+      "bytes": 427
+    },
+    {
+      "path": "apps/rayon_sports/assets/flavors/production.json",
+      "sha256": "0ed48d1f7247e9d46d8b282fc966aa41c7af86ff5b1b7cf5a18acd6192220c54",
+      "bytes": 1221
+    },
+    {
+      "path": "apps/vitalo/assets/flavors/production.json",
+      "sha256": "091e5b9fa67a1fcd690fbb10e0a1564caa708b0141a6e4a5b5bb89ad35daf3dd",
+      "bytes": 428
+    }
+  ],
+  "remainingGates": [
+    "Hosted native jobs were not executed by this source check",
+    "Five Android and five iOS compilation outcomes need their own build evidence",
+    "Provider, signing, device/store and deployment acceptance remain external to configuration verification"
+  ],
+  "currentPerformanceSourceVerification": {
+    "receipt": "output/qa/full-stack-20260914/production-goal-20260930-phase4/ci-performance-source-bound-20261001.verification.json",
+    "sha256": "95a66fc02389a8ebb244aa301833664c2769a7f7026cd0a07fd1bf49c0812482",
+    "contractTestsPassed": 22,
+    "sourceInputsStable": 46,
+    "nativeControls": 10,
+    "sourceConfigurationOnly": true
+  },
+  "perFileRationale": [
+    {
+      "path": ".github/workflows/ci.yaml",
+      "whyChanged": "Require permanent native Performance collector deactivation and its mutation regressions before ten-target verification/compilation."
+    },
+    {
+      "path": "tools/scripts/local_native_ci.py",
+      "whyChanged": "Reject absent, duplicate, conditional, ignored or late privacy gate; verify every native control and bind its exact source inputs."
+    },
+    {
+      "path": "tools/scripts/test_local_native_ci.py",
+      "whyChanged": "Prove required privacy gate placement/failure handling and actual ten-target controls while preserving other CI contract tests."
+    }
+  ]
 }

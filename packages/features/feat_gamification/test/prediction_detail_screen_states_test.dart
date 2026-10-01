@@ -10,6 +10,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
 
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
 const _goldenPaths = <String, String>{
   'loading': 'goldens/prediction_detail_state_loading_dark_390x844.png',
   'empty': 'goldens/prediction_detail_state_empty_dark_390x844.png',
@@ -538,7 +540,10 @@ Future<void> _pumpRoute(
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
-        theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
+        theme: ClubTheme.from(
+          localRouteConfigOrFallback(),
+          brightness: brightness,
+        ),
         builder: (context, child) {
           final media = MediaQuery.of(context);
           return AfriLocalizationsScope(
@@ -564,6 +569,12 @@ Future<void> _pumpRoute(
   }
   await beforeCapture?.call(tester);
   if (capture) {
-    await expectLater(find.byType(MaterialApp), matchesGoldenFile(goldenPath!));
+    await expectGoldenOrClubAssertions(
+      tester,
+      find.byType(MaterialApp),
+      goldenPath!,
+      route: '/predict/picks/:predictionId',
+      kind: 'route',
+    );
   }
 }

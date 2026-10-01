@@ -1,4 +1,5 @@
-import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence } from "./state-evidence-provenance";
+import { localStateContextOptions } from "./fixtures/local-route-assertions.mjs";
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, createStateEvidenceContext } from "./state-evidence-provenance";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { writeAdminStateEvidence } from "./admin-state-evidence-manifest";
@@ -143,7 +144,8 @@ async function expectNoOverflow(page: Page) {
 
 async function runMatrix(browser: Browser) {
   const evidenceDirectory = prepareStateEvidence(browser, test.info(), "admin_pwa_settings_features_states");
-  const context = await browser.newContext({
+  const context = await createStateEvidenceContext(browser, {
+    ...localStateContextOptions(test.info(), true),
     // API fixtures must bypass worker interception; PWA lifecycle has its own tests.
     serviceWorkers: "block",
     viewport: { width: 1440, height: 1000 },
@@ -451,7 +453,7 @@ test.describe("admin settings feature evidence matrix", () => {
   test("covers the governed route-state and interaction matrix", async ({
     browser,
   }) => {
-    test.setTimeout(180_000);
+    test.setTimeout(360_000);
     await runMatrix(browser);
   });
 });

@@ -31,6 +31,13 @@ dependencies:
   file: ^7.0.1
 
 dev_dependencies:
+  core_l10n:
+    path: ../../core/core_l10n
+  feat_membership:
+    path: ../../features/feat_membership
+  go_router: ^14.8.1
+  http: ^1.2.2
+  supabase_flutter: ^2.12.2
   club_as_vita:
     path: ../../clubs/club_as_vita
   club_costa_do_sol:

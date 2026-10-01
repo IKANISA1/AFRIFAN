@@ -714,7 +714,7 @@ class StadiumPainter extends CustomPainter {
     canvas.drawRect(
       pitchRect,
       Paint()
-        ..color = ExternalBrandColors.stadiumPitch
+        ..color = DomainContentColors.stadiumPitch
         ..style = PaintingStyle.fill,
     );
 
