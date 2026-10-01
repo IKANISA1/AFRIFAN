@@ -17,7 +17,6 @@ export const requiredAuthorityFiles = [
   "references/component-contracts.md",
   "references/quality-standard.md",
   "references/operational-checklist.md",
-  "references/mobile-design-100.md",
 ];
 const digest = (value) => createHash("sha256").update(value).digest("hex");
 

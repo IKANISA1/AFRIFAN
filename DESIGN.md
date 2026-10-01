@@ -2,7 +2,7 @@
 
 ## Sole design authority
 
-The owner's 30 September 2026 instruction selects **revolut-design exclusively**
+The owner's current instruction selects **revolut-design exclusively**
 for the complete system: all five Android/iOS club apps, consumer and member web,
 Admin PWA, native role-guarded administration, and the browser operator console.
 The target is **100% fidelity to the selected Revolut visual typologies and
@@ -116,10 +116,11 @@ state-appropriate source, including compact/enlarged views, keyboard, safe areas
 reduced motion and applicable accessibility conditions.
 
 Use existing route, widget, golden, browser and accessibility harnesses. Record
-actual source/artifact hashes and unresolved differences. The skill's
-MOBILE-DESIGN-100 rule governs mobile visual acceptance; no repository-owned
-score or alternative design contract replaces it. Apply the skill's corresponding
-web/admin evidence rules to those surfaces independently.
+actual source/artifact hashes and unresolved differences. Apply the skill's
+relevant references directly to the product and state being reviewed; do not
+create a separately named mandatory mobile design checklist or its gates.
+Report observed implementation evidence and remaining visual differences plainly
+for native, web, admin and installed PWA surfaces.
 
 A 100% completion claim requires coverage of every applicable route/state,
 reviewed source comparisons with no unexplained material differences, and

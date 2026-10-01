@@ -1,0 +1,27 @@
+{
+  "scope": "selected_design_authority_text_reference_distribution",
+  "authority_register": "docs/governance/design-exceptions.json",
+  "repository": "IKANISA1/AFRIFAN",
+  "repository_private_verified": true,
+  "release_tag": "revolut-authority-source-20261001-057d79f80d1f",
+  "release_is_draft": true,
+  "asset_id": 604061012,
+  "asset_name": "revolut-authority-source-20261001.tar.gz",
+  "asset_sha256": "057d79f80d1fee40632e5cc77e7114a4113f6f1d5e2ff209fd0465c334d99929",
+  "asset_bytes": 61272,
+  "selected_text_reference_count": 13,
+  "excluded_material": [
+    "account screenshots",
+    "font binaries",
+    "full private collection",
+    "retired separate mobile checklist"
+  ],
+  "repository_variables": [
+    "REVOLUT_DESIGN_ASSET_ID",
+    "REVOLUT_DESIGN_BUNDLE_SHA256"
+  ],
+  "private_asset_retrieval_and_fresh_provisioning_verified_at_utc": "2026-10-01T20:22:12.172883+00:00",
+  "hosted_ci_provisioning_verified": false,
+  "visual_acceptance_granted": false,
+  "legal_or_production_approval_granted": false
+}

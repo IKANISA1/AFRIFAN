@@ -1,0 +1,34 @@
+name: Provision selected Revolut authority
+description: Read a pinned private reference bundle and verify every selected source binding
+inputs:
+  asset-id:
+    description: Numeric immutable release asset ID in this private repository
+    required: true
+  bundle-sha256:
+    description: SHA256 of the approved selected text-reference bundle
+    required: true
+  github-token:
+    description: Existing repository contents-read token
+    required: true
+outputs:
+  authority-root:
+    description: Fresh verified selected-reference directory
+    value: ${{ steps.provision.outputs.authority-root }}
+runs:
+  using: composite
+  steps:
+    - id: provision
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        AUTHORITY_ASSET_ID: ${{ inputs.asset-id }}
+        AUTHORITY_BUNDLE_SHA256: ${{ inputs.bundle-sha256 }}
+      run: |
+        set -euo pipefail
+        destination="${RUNNER_TEMP}/africlub-revolut-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}-${GITHUB_JOB}"
+        python3 "${GITHUB_WORKSPACE}/tools/scripts/provision_design_authority.py" download \
+          --repository "${GITHUB_REPOSITORY}" \
+          --asset-id "${AUTHORITY_ASSET_ID}" \
+          --sha256 "${AUTHORITY_BUNDLE_SHA256}" \
+          --destination "${destination}"
+        printf 'authority-root=%s\n' "${destination}" >> "${GITHUB_OUTPUT}"

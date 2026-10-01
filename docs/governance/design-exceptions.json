@@ -4,15 +4,15 @@
     "skill": "revolut-design",
     "path": "SKILL.md",
     "root_hint": "/Volumes/PRO-G40/Application Data/Codex/Codex-Home/skills/revolut-design",
-    "sha256": "59ed494b2dd61684a8f2f516385ba601cfa549b7541bc1e9706df50e28fe3e1a",
+    "sha256": "0941cf390b2e77d605ee4877f960440688166534341ae2a3239a990d40127c50",
     "bound_files": [
       {
         "path": "SKILL.md",
-        "sha256": "59ed494b2dd61684a8f2f516385ba601cfa549b7541bc1e9706df50e28fe3e1a"
+        "sha256": "0941cf390b2e77d605ee4877f960440688166534341ae2a3239a990d40127c50"
       },
       {
         "path": "references/DESIGN.md",
-        "sha256": "255cc09f017cd53c8f7d1cf201a12101a3c95b611fd84e193b750b14bd18353d"
+        "sha256": "da11ece6b4d015df7690b5e38cd508e587772efad57d5a160ed5460488cb9a6b"
       },
       {
         "path": "references/brand-adaptation.md",
@@ -36,7 +36,7 @@
       },
       {
         "path": "references/tokens.md",
-        "sha256": "64748e6f2286d537833de590d9bdd8ad4b2c33ce6af3c76bb1c0976b24660199"
+        "sha256": "be75c5ba3109ac56945a5ac87e3880819f6265bab9f5c3070406d0b10ee081e1"
       },
       {
         "path": "references/colour-role-evidence.md",
@@ -57,15 +57,11 @@
       {
         "path": "references/operational-checklist.md",
         "sha256": "e5854f677f647b842519735a321a2a16f50b988f3e55b6a9147be91fb606315e"
-      },
-      {
-        "path": "references/mobile-design-100.md",
-        "sha256": "f552445abe63cab63bdcda039d301d6b532f404380fb0d3d35d3563a3ec803cb"
       }
     ],
-    "owner_instruction": "2026-09-30: Use revolut-design exclusively for the complete app, web, admin, PWA and operator system, with a 100% fidelity target for its selected visual typologies and colours. Delete competing design references; preserve each product identity, content, navigation and workflows. Apply bundled evidence and MOBILE-DESIGN-100 rules directly; local documents are product mappings and evidence only."
+    "owner_instruction": "Current owner instruction: use revolut-design as the sole UI/UX and product visual design skill; apply relevant references directly while preserving the target product identity, capabilities and workflows. Do not install, restore or recreate competing UI/design skills or a separately named mandatory mobile design checklist and its gates. Technical/professional skills remain available for their own scopes; their UI/UX work uses Revolut. Report observed implementation evidence and remaining differences plainly."
   },
-  "updated_at": "2026-09-30T16:56:44.505396+00:00",
+  "updated_at": "2026-10-01T19:55:06.031885+00:00",
   "exceptions": [],
   "resolved_decisions": [
     {
@@ -101,7 +97,7 @@
   ],
   "product_adapter": {
     "path": "DESIGN.md",
-    "sha256": "714070e50d0e6e4c518fe38149744f20e206ca50a09610a150cd17738c02465d",
-    "change_note": "Removed duplicate visual standards, established complete-system scope and refreshed the selected skill bindings from actual source bytes. No visual acceptance is inferred."
+    "sha256": "df934a7f3add5db8a4b07336a893c225e2c376602fb1c8350dd893c8ecdbed8c",
+    "change_note": "Aligned the active product mapping and source bindings with the owner current sole-authority instruction and actual installed Revolut references. Retired separate mobile checklist requirement removed. Source integrity does not confer visual or release acceptance."
   }
 }
