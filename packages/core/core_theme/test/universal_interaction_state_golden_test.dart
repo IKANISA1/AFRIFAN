@@ -294,7 +294,11 @@ final _interactionSpecs = <_InteractionSpec>[
     componentKey: 'selection|switch',
     pressedPumpMs: 120,
     targetFinder: (_) => find.byType(Switch),
-    builder: (_) => const AfriSwitch(value: false, onChanged: _boolNoop),
+    builder: (_) => const AfriSwitch(
+      semanticsLabel: 'Selection switch',
+      value: false,
+      onChanged: _boolNoop,
+    ),
   ),
   _InteractionSpec(
     componentKey: 'selection|segmented_control',

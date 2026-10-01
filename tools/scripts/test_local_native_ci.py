@@ -25,6 +25,86 @@ class NativeCIContractTests(unittest.TestCase):
         self.assertFalse(result['hostedJobsExecuted'])
         self.assertFalse(result['releaseAccepted'])
 
+    def test_native_performance_gate_is_required_before_compilation(self):
+        workflow = copy.deepcopy(self.workflow)
+        steps = workflow['jobs']['native-target-ci']['steps']
+        command = 'python3 tools/scripts/verify_native_performance_privacy.py'
+        if not any(step.get('run', '').strip() == command for step in steps):
+            first_build = next(i for i, step in enumerate(steps) if 'flutter build' in step.get('run', ''))
+            steps.insert(first_build, {'name': 'Verify native performance privacy', 'run': command})
+        value = ci.verify_workflow(yaml.safe_dump(workflow), self.scopes)
+        self.assertTrue(value['nativePerformanceGateVerified'])
+        for fault in ('missing', 'conditional', 'ignored', 'duplicate', 'late'):
+            changed = copy.deepcopy(workflow)
+            altered = changed['jobs']['native-target-ci']['steps']
+            index = next(i for i, step in enumerate(altered) if step.get('run', '').strip() == command)
+            if fault == 'missing': altered.pop(index)
+            elif fault == 'conditional': altered[index]['if'] = 'false'
+            elif fault == 'ignored': altered[index]['continue-on-error'] = 'true'
+            elif fault == 'duplicate': altered.insert(index, copy.deepcopy(altered[index]))
+            else: altered.append(altered.pop(index))
+            with self.subTest(fault=fault), self.assertRaisesRegex(ValueError, 'performance'):
+                ci.verify_workflow(yaml.safe_dump(changed), self.scopes)
+
+    def test_native_performance_configuration_covers_ten_current_targets(self):
+        value = ci.verify_native_controls(ci.ROOT, self.scopes)
+        self.assertEqual(len(value['targets']), 10)
+        self.assertTrue(value['configurationVerified'])
+        self.assertFalse(value['hostedJobsExecuted'])
+        self.assertFalse(value['releaseAccepted'])
+
+    def adapter_inputs(self):
+        package = json.loads((ci.ROOT / 'apps/rayon_sports/web/package.json').read_text())
+        workflows = {str(path.relative_to(ci.ROOT)): path.read_text() for path in
+                     (ci.ROOT / '.github/workflows/ci.yaml', ci.ROOT / '.github/workflows/free_self_hosted_release.yml')}
+        return package, workflows
+
+    def test_current_package_and_ci_use_the_isolated_adapter(self):
+        package, workflows = self.adapter_inputs()
+        value = ci.verify_adapter_configuration(json.dumps(package), workflows)
+        self.assertTrue(value['isolatedAdapterWiringVerified'])
+        self.assertTrue(value['requiredCiEnvironmentGateVerified'])
+        self.assertFalse(value['adapterExecutedByThisCheck'])
+
+    def test_raw_package_adapter_or_wrong_conversion_order_rejected(self):
+        for command in ('opennextjs-cloudflare build && opennextjs-cloudflare preview',
+                        'opennextjs-cloudflare preview && node scripts/build-opennext-isolated.mjs'):
+            package, workflows = self.adapter_inputs(); package['scripts']['preview'] = command
+            with self.subTest(command=command), self.assertRaises(ValueError):
+                ci.verify_adapter_configuration(json.dumps(package), workflows)
+
+    def test_ci_cannot_bypass_or_duplicate_adapter_conversion(self):
+        for replacement in ('opennextjs-cloudflare build',
+                            'node scripts/build-opennext-isolated.mjs\n          node scripts/build-opennext-isolated.mjs'):
+            package, workflows = self.adapter_inputs()
+            workflows['.github/workflows/ci.yaml'] = workflows['.github/workflows/ci.yaml'].replace('node scripts/build-opennext-isolated.mjs', replacement)
+            with self.subTest(replacement=replacement), self.assertRaises(ValueError):
+                ci.verify_adapter_configuration(json.dumps(package), workflows)
+
+    def test_artifact_environment_gate_cannot_omit_regressions_skip_failures_or_run_late(self):
+        package, workflows = self.adapter_inputs()
+        for omitted in ('scripts/artifact-public-environment.node-test.mjs',
+                        'scripts/artifact-installed-inputs.node-test.mjs',
+                        'scripts/sync-cloudflare-dev-vars.node-test.mjs',
+                        '../../../tools/scripts/local_validation_network_guard.node-test.mjs'):
+            changed = copy.deepcopy(package)
+            changed['scripts']['test:artifact-environment'] = changed['scripts']['test:artifact-environment'].replace(omitted, '')
+            with self.subTest(omitted=omitted), self.assertRaises(ValueError):
+                ci.verify_adapter_configuration(json.dumps(changed), workflows)
+        original = yaml.load(workflows['.github/workflows/ci.yaml'], Loader=ci.StrictYaml)
+        for fault in ('missing', 'conditional', 'ignored', 'late'):
+            workflow = copy.deepcopy(original)
+            job = next(job for job in workflow['jobs'].values()
+                       if any('node scripts/build-opennext-isolated.mjs' in s.get('run', '') for s in job.get('steps', [])))
+            index = next(i for i, s in enumerate(job['steps']) if s.get('run') == 'corepack npm run test:artifact-environment')
+            if fault == 'missing': job['steps'].pop(index)
+            elif fault == 'conditional': job['steps'][index]['if'] = 'false'
+            elif fault == 'ignored': job['steps'][index]['continue-on-error'] = 'true'
+            else: job['steps'].append(job['steps'].pop(index))
+            changed = dict(workflows); changed['.github/workflows/ci.yaml'] = yaml.safe_dump(workflow)
+            with self.subTest(fault=fault), self.assertRaises(ValueError):
+                ci.verify_adapter_configuration(json.dumps(package), changed)
+
     def test_missing_target_cannot_pass_by_count(self):
         self.rejected(lambda d: d['jobs']['native-target-ci']['strategy']['matrix']['include'].pop())
 

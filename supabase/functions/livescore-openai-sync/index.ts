@@ -1,3 +1,4 @@
+import { diagnosticMetadata, logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import { HttpError, requireAdminCaller } from "../_shared/auth.ts";
@@ -331,11 +332,11 @@ export function createLiveScoreOpenAiSyncHandler(
           await writeSyncLog(deps.createAdminClient(), startedAt, summary, options);
         }
       } catch (logError) {
-        console.error("livescore-openai-sync log failure:", logError);
+        logDiagnostic("error", "livescore_openai_sync_livescore_openai_sync_log_failure", logError);
       }
 
       const status = error instanceof HttpError ? error.status : 500;
-      console.error("livescore-openai-sync failed:", error);
+      logDiagnostic("error", "livescore_openai_sync_livescore_openai_sync_failed", error);
       return jsonError(messageOf(error), status);
     }
   };
@@ -900,13 +901,16 @@ async function writeSyncLog(
     records_fetched: summary.raw_rows_seen,
     records_upserted: summary.fixtures_upserted,
     api_requests_used: summary.openai_requests_used,
-    error_message: summary.errors.length > 0 ? summary.errors.slice(0, 5).join(" | ") : null,
-    metadata: {
+    error_message: summary.errors.length > 0 ? "Football synchronization completed with errors." : null,
+    metadata: diagnosticMetadata({
       ...summary,
+      error_count: summary.errors.length,
+      source_note_count: summary.source_notes.length,
+      access_issue_count: summary.access_issues.length,
       source_provider: PROVIDER,
       dry_run: options.dryRun,
       mode: options.mode,
-    },
+    }),
     started_at: startedAt.toISOString(),
     completed_at: new Date().toISOString(),
   });

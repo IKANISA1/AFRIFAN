@@ -125,7 +125,7 @@ jobs:
 
       - name: Package and dry-run the Worker candidate
         run: |
-          corepack npm exec -- opennextjs-cloudflare build --skipNextBuild
+          node scripts/build-opennext-isolated.mjs
           node scripts/fix-route-group-manifests.mjs --open-next
           corepack npm exec -- wrangler deploy --dry-run
 

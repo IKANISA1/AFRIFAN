@@ -1,0 +1,43 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {Worker} from 'node:worker_threads';
+import {DatabaseSync} from 'node:sqlite';
+import {mkdtempSync,rmSync,readFileSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+const clubs=[6,24,26,44,1001],now=1790800000000;
+for(const clubId of clubs)test('independent SQLite writers and maintenance preserve quota and club isolation '+clubId,{timeout:60000},async t=>{
+ const dir=mkdtempSync(join(tmpdir(),'africlub-observations-race-')),file=join(dir,'observations.sqlite');
+ const db=new DatabaseSync(file);db.exec('PRAGMA journal_mode=WAL; PRAGMA busy_timeout=10000;');
+ db.exec(readFileSync(new URL('../migrations/0001_private_web_observations.sql',import.meta.url),'utf8'));
+ const insert=db.prepare('INSERT INTO private_web_observations (record_id,club_id,event,observation_json,recorded_at_ms,expires_at_ms) VALUES (?,?,?,?,?,?)');
+ const observation=JSON.stringify({schemaVersion:1,event:'web_vital',name:'LCP',value:1200,rating:'good'});
+ db.exec('BEGIN');
+ for(let i=0;i<1200;i++)insert.run('expired-'+i,clubId,'web_vital',observation,now-7200000,now-3600000);
+ for(const other of clubs.filter(value=>value!==clubId))insert.run('other-'+other,other,'web_vital',observation,now-7200000,now-3600000);
+ db.exec('COMMIT');
+ const barrier=new SharedArrayBuffer(4),workers=[];
+ t.after(async()=>{await Promise.all(workers.map(worker=>worker.terminate()));db.close();rmSync(dir,{recursive:true,force:true});});
+ const jobs=Array.from({length:8},(_,index)=>{
+  let ready,complete;
+  const started=new Promise(resolve=>{ready=resolve;});
+  const finished=new Promise((resolve,reject)=>{
+   const worker=new Worker(new URL('./retention-race-worker.mjs',import.meta.url),{workerData:{file,clubId,now,barrier,operation:index<6?'record':'expire'}});
+   workers.push(worker);complete=false;
+   worker.on('message',message=>{if(message.ready)ready();else{complete=true;resolve(message);}});
+   worker.on('error',reject);worker.on('exit',code=>{if(code!==0||!complete)reject(Error('observation_race_worker_incomplete'));});
+  });
+  return {started,finished};
+ });
+ await Promise.all(jobs.map(job=>job.started));
+ Atomics.store(new Int32Array(barrier),0,1);Atomics.notify(new Int32Array(barrier),0);
+ const results=await Promise.all(jobs.map(job=>job.finished));
+ assert.equal(results.reduce((sum,row)=>sum+(row.accepted??0),0),300);
+ assert.equal(results.reduce((sum,row)=>sum+(row.rejected??0),0),60);
+ assert.equal(results.reduce((sum,row)=>sum+(row.removed??0),0),1200);
+ assert.equal(db.prepare('SELECT count(*) n FROM private_web_observations WHERE club_id=? AND expires_at_ms>?').get(clubId,now).n,300);
+ assert.equal(db.prepare('SELECT count(*) n FROM private_web_observations WHERE club_id=? AND expires_at_ms<=?').get(clubId,now).n,0);
+ assert.deepEqual(db.prepare('SELECT club_id FROM private_web_observations WHERE club_id<>? ORDER BY club_id').all(clubId).map(row=>row.club_id),clubs.filter(value=>value!==clubId));
+ assert.equal(db.prepare('PRAGMA integrity_check').get().integrity_check,'ok');
+ assert.deepEqual(db.prepare('PRAGMA foreign_key_check').all(),[]);
+});

@@ -10,12 +10,10 @@ import '../tokens/shape_tokens.dart';
 import '../tokens/spacing_tokens.dart';
 import '../tokens/typography_tokens.dart';
 
-/// Numeric alias badge — the "Anonymous Identity" system.
+/// Supporter numeric alias rendered with the selected Revolut control roles.
 ///
-/// "Never design for names. All layouts optimized for 6-digit numeric ."
-/// - Monospaced-style tracking for the 6-digit numbers
-/// - Glassmorphic pill container with sm radius
-/// - Treated with same typographic weight as primary headlines
+/// The existing six-digit product identity keeps its own content and formatting;
+/// typography, tonal pill surface and spacing come from shared semantic tokens.
 class NumericAlias extends StatelessWidget {
   final String alias;
   final double fontSize;

@@ -1,9 +1,40 @@
 import ast
 from pathlib import Path
+import sys
+import tempfile
 import unittest
+from verify_converged_source import node_version_output,run_logged_step
 
 ROOT = Path(__file__).resolve().parents[2]
 class ConvergedInventoryTests(unittest.TestCase):
+    def test_timed_out_step_preserves_streamed_text_and_is_failed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            log=Path(directory)/'step.log'
+            code,timed_out=run_logged_step([sys.executable,'-u','-c',
+                'import time; print("streamed evidence"); time.sleep(30)'],log,timeout_seconds=0.2)
+            self.assertEqual(code,1);self.assertTrue(timed_out)
+            self.assertIn('streamed evidence\n',log.read_text())
+            self.assertIn('Required step timed out\n',log.read_text())
+    def test_completed_step_streams_stdout_and_stderr_without_changing_result(self):
+        with tempfile.TemporaryDirectory() as directory:
+            log=Path(directory)/'step.log'
+            code,timed_out=run_logged_step([sys.executable,'-u','-c',
+                'import sys; print("stdout evidence"); print("stderr evidence",file=sys.stderr); sys.exit(7)'],log)
+            self.assertEqual(code,7);self.assertFalse(timed_out)
+            self.assertEqual(log.read_text(),'stdout evidence\nstderr evidence\n')
+    def test_preload_evidence_cannot_corrupt_or_bypass_the_actual_node_version(self):
+        record='{"localValidationNetworkGuard":true,"outboundNetworkAttemptsBlocked":0}'
+        for output in ['22.23.2',record+'\n22.23.2','22.23.2\n'+record]:
+            self.assertEqual(node_version_output(output),'22.23.2')
+        for output in ['untrusted\n22.23.2','22.23.2\n22.23.2',record,'{"localValidationNetworkGuard":false}\n22.23.2']:
+            self.assertIsNone(node_version_output(output))
+    def test_artifact_environment_and_node_network_guards_are_in_the_converged_gate(self):
+        for script in ['tools/scripts/local_validation_network_guard.node-test.mjs',
+                       'apps/rayon_sports/web/scripts/artifact-public-environment.node-test.mjs',
+                       'apps/rayon_sports/web/scripts/artifact-installed-inputs.node-test.mjs',
+                       'apps/rayon_sports/web/scripts/web-build-provenance.node-test.mjs',
+                       'apps/rayon_sports/web/scripts/sync-cloudflare-dev-vars.node-test.mjs']:
+            self.assertIn(script,self.text)
     def setUp(self): self.text = (ROOT/'tools/scripts/verify_converged_source.py').read_text()
     def test_allocation_delivery_tests_are_registered(self):
         self.assertIn("'cloudflare/allocation-delivery/tests'", self.text)

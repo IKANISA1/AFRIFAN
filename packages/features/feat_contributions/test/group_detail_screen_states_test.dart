@@ -11,6 +11,8 @@ import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
 import 'package:test_support/predict_fixture_images.dart';
 
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
 const _groupId = 'initiative-1';
 
 const _goldenPaths = <String, String>{
@@ -128,7 +130,7 @@ void main() {
         ],
         child: MaterialApp.router(
           theme: ClubTheme.from(
-            ClubConfig.fallback(),
+            localRouteConfigOrFallback(),
             brightness: Brightness.dark,
           ),
           routerConfig: router,
@@ -524,7 +526,10 @@ Future<void> _pumpState(
             child: child ?? const SizedBox.shrink(),
           );
         },
-        theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
+        theme: ClubTheme.from(
+          localRouteConfigOrFallback(),
+          brightness: brightness,
+        ),
         routerConfig: router,
       ),
     ),
@@ -551,7 +556,13 @@ Future<void> _pumpState(
   expect(tester.takeException(), isNull);
   final goldenPath = _goldenPaths[id];
   expect(goldenPath, isNotNull, reason: 'Missing group detail golden for $id.');
-  await expectLater(goldenBoundary, matchesGoldenFile(goldenPath!));
+  await expectGoldenOrClubAssertions(
+    tester,
+    goldenBoundary,
+    goldenPath!,
+    route: '/contribute/group/:groupId',
+    kind: 'route',
+  );
   await afterCapture?.call(tester);
 }
 

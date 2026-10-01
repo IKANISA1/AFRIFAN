@@ -10,9 +10,22 @@ import {
 import { emptyAdminAccess, resolveAdminAccess } from "@/lib/data/admin/access";
 import { getAdminClubScopeOptions } from "@/lib/data/admin/settings";
 import { getServerSupabase } from "@/lib/supabase/server";
+import { getSupportedClubProfile } from "@/lib/content";
 import type { AdminPortalInitialState } from "@/lib/types";
 
-function controlledAdminEvidenceState(): AdminPortalInitialState {
+function controlledAdminEvidenceState(requestedClubId: string | null): AdminPortalInitialState {
+  const clubId = requestedClubId ?? "24";
+  const club = /^\d+$/.test(clubId) ? getSupportedClubProfile(clubId) : null;
+  if (!club || String(club.id) !== clubId) {
+    return {
+      session: null,
+      user: null,
+      access: emptyAdminAccess,
+      clubOptions: [],
+      error: "The controlled club scope is not declared.",
+      controlledEvidence: true,
+    };
+  }
   const user = {
     id: "controlled-admin-evidence",
     app_metadata: {},
@@ -32,19 +45,19 @@ function controlledAdminEvidenceState(): AdminPortalInitialState {
       isSuperAdmin: true,
       userId: user.id,
       role: "super_admin",
-      clubId: "24",
-      availableClubIds: ["24"],
+      clubId,
+      availableClubIds: [clubId],
       canSelectClub: false,
       assignmentCount: 1,
     },
     clubOptions: [
       {
-        id: "24",
-        clubName: "Rayon Sports",
-        shortName: "Rayon",
-        clubSlug: "rayon-sports",
-        currencyCode: "RWF",
-        currencySymbol: "RWF",
+        id: clubId,
+        clubName: club.clubName,
+        shortName: club.shortName,
+        clubSlug: club.clubSlug,
+        currencyCode: club.currencyCode,
+        currencySymbol: club.currencySymbol,
       },
     ],
     error: null,
@@ -66,7 +79,11 @@ export async function getAdminPortalInitialState(): Promise<AdminPortalInitialSt
         requestHeaders.get("host"),
     })
   ) {
-    return controlledAdminEvidenceState();
+    const controlledCookies = await cookies();
+    return controlledAdminEvidenceState(getRequestedAdminClubId(
+      null,
+      controlledCookies.get(adminClubScopeCookieName)?.value ?? null,
+    ));
   }
 
   const cookieStore = await cookies();

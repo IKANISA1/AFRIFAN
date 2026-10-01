@@ -136,7 +136,7 @@ export function IdentityForm({
   const isValid = validationErrors.length === 0;
 
   return (
-    <section className="glass-panel grid gap-4 rounded-[32px] p-6">
+    <section className="ui-panel grid gap-4 rounded-[32px] p-6">
       <div className="flex items-center justify-between gap-3">
         <p className="font-display text-3xl font-medium normal-case leading-none">
           Identity settings

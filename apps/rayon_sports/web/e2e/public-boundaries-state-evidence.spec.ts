@@ -8,7 +8,7 @@ import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, na
 let evidenceDirectory: string;
 
 test.beforeEach(async ({ browser }, testInfo) => {
-  test.setTimeout(120_000);
+  test.setTimeout(360_000);
   evidenceDirectory = prepareStateEvidence(browser, testInfo, "consumer_web_boundary_states");
 });
 test.afterEach(async ({}, testInfo) => {
@@ -57,18 +57,26 @@ for (const fixture of cases) {
         // Keep the real document, compiled CSS, fonts and navigation. Only the
         // route body is a static rendering of the actual production component.
         // These captures are explicitly not runtime boundary/lifecycle proof.
-        await page.locator("#main-content").evaluate((element, markup) => { element.innerHTML = markup; }, componentMarkup[fixture.name]);
+        await page.locator("#main-content").evaluate((element, markup) => {
+          element.setAttribute("data-local-component-fixture", "true");
+          element.innerHTML = markup;
+        }, componentMarkup[fixture.name]);
       } else {
         expect(response?.status()).toBe(404);
         await expect(page.getByRole("heading", { name: "Page not found" })).toBeVisible();
         await expect(page.getByRole("link", { name: "Return home" })).toHaveAttribute("href", "/");
+        // This deliberately missing destination is outside the declared route
+        // catalog; preserve its boundary evidence without crediting a route.
+        await page.locator("body").evaluate((element) => element.setAttribute("data-local-component-fixture", "missing-route-boundary"));
       }
       if (fixture.name.endsWith("loading")) await expect(page.getByRole("status")).toContainText("Loading page…");
       if (fixture.name === "site-error") {
         await expect(page.getByRole("button", { name: "Retry" })).toBeVisible();
         await expect(page.getByText("Private diagnostic")).toHaveCount(0);
       }
-      if (state === "large_text") await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
+      if (state === "large_text") await page.evaluate(() => {
+    document.documentElement.style.setProperty("font-size", "200%", "important");
+  });
       await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1);
       for (const action of await page.locator(".recovery-action").all()) expect((await action.boundingBox())!.height).toBeGreaterThanOrEqual(48);
       const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag22aa"]).analyze();

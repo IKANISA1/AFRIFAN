@@ -7,7 +7,9 @@ existing authorization does not need to be requested again.
 
 - `README.md`: repository entry point and development commands.
 - `docs/blueprint.md`: product boundary, architecture, and tenancy.
-- `DESIGN.md`: visual and interaction requirements.
+- Selected `revolut-design` skill: sole visual and interaction authority for the
+  complete app, web, admin, PWA and operator system.
+- `DESIGN.md`: product facts and mappings to that skill, never another design standard.
 - Root `pubspec.yaml` and `pubspec.lock`: Flutter workspace, resolved dependencies,
   and Melos commands.
 - `.fvmrc`, `.nvmrc`, and the web `package.json` and lockfile: toolchain versions.
@@ -65,7 +67,7 @@ and approved backend data for dynamic content. Respect runtime feature flags.
 Do not fabricate content or success states when data is unavailable.
 
 Supporter onboarding permits anonymous entry. MoMo linking belongs in account
-settings and must not become a first-launch requirement. Follow `DESIGN.md`
+settings and must not become a first-launch requirement. Follow the selected `revolut-design` skill
 for loading, empty, error, offline, and accessibility states; there is no
 blanket requirement to hide every empty screen.
 

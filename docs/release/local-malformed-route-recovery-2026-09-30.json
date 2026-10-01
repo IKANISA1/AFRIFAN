@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-30T21:36:54.228157+00:00",
+  "status": "local_runtime_checkpoint_verified_final_integration_pending",
+  "goalComplete": false,
+  "productionReady": false,
+  "finalCandidateBound": false,
+  "externalAcceptance": false,
+  "sources": [
+    {
+      "path": "packages/core/core_router/lib/src/app_router.dart",
+      "sha256": "3e0a42bc395ddef45168c702b3367b9f0080988da1e4a00a59fba451b7872472",
+      "bytes": 5778,
+      "whyChanged": "Install parser containment for URI matching/redirect failures and recover to a registered default destination rather than repeating a malformed initial link."
+    },
+    {
+      "path": "packages/core/core_router/lib/src/recovering_go_router.dart",
+      "sha256": "f915851f22a10dbb5f3b37a9f52ce99622af1434f6aa91ac87db71162475d6b0",
+      "bytes": 5387,
+      "whyChanged": "Contain sync/async redirects, invalid UTF8 dynamic matching and final query decoding; retain imperative navigation history/completers with finite privacy-safe recovery errors."
+    },
+    {
+      "path": "packages/core/core_router/test/redirect_exception_containment_test.dart",
+      "sha256": "ad4fb627c61f1fc3be163397927c357de725160ff0b38fd63aecdf85057e5511",
+      "bytes": 9710,
+      "whyChanged": "Exercise actual GoRouter cold/warm/restored navigation, nested redirects, sync/async failures, push/replace/pushReplacement completion and private-detail suppression."
+    },
+    {
+      "path": "packages/core/core_app/lib/src/app.dart",
+      "sha256": "c64eadeaabc016087cc1121ced9755c57e92468002a892ceccda3581fec669a9",
+      "bytes": 20219,
+      "whyChanged": "Reject undecodable deferred destinations while preserving finite authenticated fallback and existing club/account/route isolation guards."
+    },
+    {
+      "path": "packages/core/core_app/lib/src/deep_link_service.dart",
+      "sha256": "c573f8c0314786c7f2f988d3590117c86ab1b7945b6cf9e762e11066c1e56aa8",
+      "bytes": 8603,
+      "whyChanged": "Reject undecodable path/query/fragment bytes and contain custom-scheme decoding before route matching."
+    },
+    {
+      "path": "packages/core/core_app/test/app_routing_guard_test.dart",
+      "sha256": "19547f24354bd650b743aea91698c402c429ec3520cfd99e631f0b263ff2edfd",
+      "bytes": 37074,
+      "whyChanged": "Exercise malformed deferred links through the actual root and preserve existing lifecycle/scope/private-route regression coverage."
+    },
+    {
+      "path": "packages/core/core_app/test/deep_link_service_test.dart",
+      "sha256": "212692589ed5ea9ce7efd8c6c4da9f432671e32891d02ddb9a8fda610d92d436",
+      "bytes": 4992,
+      "whyChanged": "Reject malformed UTF8 components without exceptions and retain valid Unicode destinations."
+    },
+    {
+      "path": "packages/features/feat_onboarding/lib/src/onboarding_module.dart",
+      "sha256": "ec387ebef2a97ba045bcfb55ca3d88116f7ad5efd7a6c9b18206fd57ccd9e2df",
+      "bytes": 3232,
+      "whyChanged": "Contain malformed splash query decoding and validate deferred destinations before forwarding onboarding navigation."
+    },
+    {
+      "path": "packages/features/feat_club/lib/src/club_module.dart",
+      "sha256": "637ad8c6db7be0f0a6ba2bc553dbdae647c90cf8712bab55e376c63efc62c79d",
+      "bytes": 9268,
+      "whyChanged": "Move public-link query decoding inside finite native-collection fallback while preserving valid resolver behavior."
+    },
+    {
+      "path": "packages/features/feat_onboarding/test/splash_redirect_contract_test.dart",
+      "sha256": "3f0272f63d670c5f25e0fff1b714763d295b1a7814b54b1f4811e400e977c33b",
+      "bytes": 2366,
+      "whyChanged": "Traverse real module redirects for malformed/external inputs and valid encoded internal destinations."
+    },
+    {
+      "path": "packages/features/feat_club/test/public_link_malformed_query_test.dart",
+      "sha256": "99fe64eed0d862c95c516f7e70050177414162bad749858c2b09878077f578af",
+      "bytes": 2547,
+      "whyChanged": "Traverse actual public-link redirects and verify malformed input recovery and valid resolver/native collection behavior."
+    }
+  ],
+  "checks": [
+    {
+      "passed": true,
+      "testsPassed": 18,
+      "scope": "Actual shared parser11 cases plus existing empty-module/recovery7 regression cases.",
+      "log": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/router-exception-query-final.log",
+        "sha256": "a5c77cc94a32cc5e3d4dfd11e96331fc621bffc4493497bf5ecdf3dd5e6fe774",
+        "bytes": 3643
+      }
+    },
+    {
+      "passed": true,
+      "testsPassed": 2,
+      "scope": "Actual root malformed deferred destinations, both passed without escaped builder exceptions.",
+      "log": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/root-malformed-deferred-query-contained.log",
+        "sha256": "41744100c9a9b1003e71f6273724c84d41d5a0aea1b780afa4330591be7468ec",
+        "bytes": 690
+      }
+    },
+    {
+      "passed": true,
+      "testsPassed": 37,
+      "scope": "Earlier current-root/deep-link checkpoint before the added2 root regression cases; final rebind remains required.",
+      "log": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/deep-link-router-current-after-fix.log",
+        "sha256": "21d41851c6432cf30d4608b1fbeae7d3a5c199a96ddfc82ca65e78f17136269e",
+        "bytes": 8151
+      }
+    }
+  ],
+  "moduleReview": {
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/module-malformed-uri-review/module-malformed-uri-review.json",
+    "sha256": "0463fbff408134c6fff9b9e0824a1ce5bec3846f78674e106a76e5cb27e29eb3",
+    "bytes": 9549
+  },
+  "retainedFailures": [
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/router-exception-before-fix.log",
+      "sha256": "46266790bf4053523c843b83da63fad0e155d2072a9a13f36ff5653fee2f227c",
+      "bytes": 19060
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/deep-link-malformed-before-fix.log",
+      "sha256": "1d43f9d3331d887aef057326c49f132702298a1722f974bd058fa42bc8b19d31",
+      "bytes": 2587
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/root-malformed-deferred-after-fix.log",
+      "sha256": "0440efa847c87ea90ceb55549ec0a42c6980424c057087bc14e02c83fcf17739",
+      "bytes": 15477
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/router-exception-strict-analysis.log",
+      "sha256": "3c550a54a9e37990b9de0093f390c9053ac0dd4104e5c86e2719b286f9280fd7",
+      "bytes": 969
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/deep-link-malformed-strict-analysis.log",
+      "sha256": "7163cbe9b4d42b1dbf97dafafd7efc438f65d03eea82c6235bad73e7d1ecf621",
+      "bytes": 349
+    }
+  ],
+  "remainingLocalWork": [
+    "Final source-bound native/root/router integration bank after repository/push authority fixes freeze.",
+    "Current strict analysis and final source/candidate/artifact report binding."
+  ],
+  "boundaries": [
+    "Recovery preserves finite UI and does not serialize original exceptions, query values, fragments or extras into newly produced failure state.",
+    "Actual module traversal and shared parser fault evidence are separate from destination route/state/accessibility closure."
+  ],
+  "currentStrictChecks": [
+    {
+      "passed": true,
+      "issues": 0,
+      "log": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/deep-link-malformed-corrected-strict-analysis.log",
+        "sha256": "22732cf51544b441f52f206e0321884ffcb199c0783b37c5a9811369e01ce224",
+        "bytes": 97
+      }
+    },
+    {
+      "passed": true,
+      "issues": 0,
+      "log": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/router-exception-query-final-strict-analysis.log",
+        "sha256": "6424e8f85e8e44cd758690c361416b46ab3dae8cd65b73a91404ce4957090855",
+        "bytes": 163
+      }
+    }
+  ]
+}

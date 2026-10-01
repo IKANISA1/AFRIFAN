@@ -484,7 +484,7 @@ export function SquadSurface({ locale, copy }: SquadSurfaceProps) {
               </div>
             </article>
           ) : status === "loading" ? (
-            <div className="squad-skeleton" aria-label={message.label}>
+            <div className="squad-skeleton" role="group" aria-label={message.label}>
               <span />
               <span />
               <span />

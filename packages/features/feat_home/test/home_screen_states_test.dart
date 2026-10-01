@@ -26,13 +26,15 @@ import 'package:test_support/predict_fixture_images.dart';
 import 'package:test_support/tab_shell_fixture.dart';
 import 'package:test_support/touch_target_audit.dart';
 
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadAppFonts);
   setUp(
     () => RuntimeBranding.configure(
-      appName: 'Gikundiro',
-      clubName: 'Rayon Sports FC',
+      appName: localRouteFixtureConfig?.appName ?? 'Gikundiro',
+      clubName: localRouteFixtureConfig?.clubName ?? 'Rayon Sports FC',
     ),
   );
   tearDown(RuntimeBranding.resetForTest);
@@ -296,7 +298,10 @@ void main() {
         expect(find.textContaining('temporarily unavailable'), findsOneWidget);
         await _scrollHomeTo(tester, find.text('Tickets'));
         expect(find.text('Tickets'), findsOneWidget);
-        expect(find.text('Join Gikundiro'), findsWidgets);
+        expect(
+          find.text('Join ${localRouteFixtureConfig?.appName ?? 'Gikundiro'}'),
+          findsWidgets,
+        );
         expect(find.text('Predict\nUnavailable'), findsOneWidget);
         expect(find.text('Shop'), findsOneWidget);
       },
@@ -365,7 +370,10 @@ void main() {
         expect(find.text('Open Predict'), findsNothing);
         await _scrollHomeTo(tester, find.text('Tickets'));
         expect(find.text('Tickets'), findsOneWidget);
-        expect(find.text('Join Gikundiro'), findsWidgets);
+        expect(
+          find.text('Join ${localRouteFixtureConfig?.appName ?? 'Gikundiro'}'),
+          findsWidgets,
+        );
         expect(find.text('Predict\nUnavailable'), findsOneWidget);
         expect(find.text('Shop'), findsOneWidget);
       },
@@ -503,7 +511,7 @@ void main() {
             ),
           ],
           child: MaterialApp.router(
-            theme: ClubTheme.from(ClubConfig.fallback()),
+            theme: ClubTheme.from(localRouteConfigOrFallback()),
             routerConfig: router,
           ),
         ),
@@ -899,7 +907,12 @@ void main() {
                         )
                         .first,
                   );
-                  await tester.ensureVisible(target);
+                  await Scrollable.ensureVisible(
+                    tester.element(target),
+                    // The pinned app bar overlays offset zero. A fixture
+                    // viewport must show the section below that chrome.
+                    alignment: localRouteFixtureConfig == null ? 0 : 0.1,
+                  );
                   await tester.pumpAndSettle();
                   await tester.runAsync(() async {
                     final context = tester.element(find.byType(HomeScreen));
@@ -993,9 +1006,12 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(tester.takeException(), isNull);
-      await expectLater(
+      await expectGoldenOrClubAssertions(
+        tester,
         find.byKey(const ValueKey<String>('home-route-golden')),
-        matchesGoldenFile('goldens/home_${profile.id}.png'),
+        'goldens/home_${profile.id}.png',
+        route: '/home',
+        kind: 'tab',
       );
     });
   }
@@ -1280,9 +1296,12 @@ void main() {
     expect(homePosition.pixels, homePosition.minScrollExtent);
 
     expect(tester.takeException(), isNull);
-    await expectLater(
+    await expectGoldenOrClubAssertions(
+      tester,
       find.byKey(const ValueKey<String>('home-high-contrast-golden')),
-      matchesGoldenFile('goldens/home_high_contrast_dark_390x844.png'),
+      'goldens/home_high_contrast_dark_390x844.png',
+      route: '/home',
+      kind: 'tab',
     );
   });
 
@@ -1403,11 +1422,12 @@ Future<void> _pumpHomeStateGolden(
   }
 
   expect(tester.takeException(), isNull);
-  await expectLater(
+  await expectGoldenOrClubAssertions(
+    tester,
     find.byKey(const ValueKey<String>('home-state-golden')),
-    matchesGoldenFile(
-      'goldens/home_state_${id}_${brightness.name}_${size.width.toInt()}x${size.height.toInt()}.png',
-    ),
+    'goldens/home_state_${id}_${brightness.name}_${size.width.toInt()}x${size.height.toInt()}.png',
+    route: '/home',
+    kind: 'tab',
   );
   await afterCapture?.call(tester);
 }
@@ -1455,7 +1475,7 @@ Widget _buildApp({
           );
         },
         theme: ClubTheme.from(
-          ClubConfig.fallback(),
+          localRouteConfigOrFallback(),
           brightness: brightness,
           highContrast: highContrast,
         ),
@@ -1752,7 +1772,8 @@ class _FakeLatestIntelRepository implements LatestIntelRepository {
 }
 
 class _FakeAuthRepository extends AuthRepository {
-  _FakeAuthRepository() : super(clubId: '24');
+  _FakeAuthRepository()
+    : super(clubId: localRouteFixtureConfig?.clubId ?? '24');
 
   @override
   Future<UserProfile?> restoreCurrentUser() async => null;

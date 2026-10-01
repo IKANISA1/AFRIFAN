@@ -41,11 +41,11 @@ export function AdminStatusBadge({
 }: AdminStatusBadgeProps) {
   return (
     <span
-      aria-label={`${toneLabel[tone]} status: ${label}`}
       className={cn("admin-status-badge", toneClassName[tone], className)}
       data-status-tone={tone}
     >
       {pulse ? <span className="admin-status-dot" aria-hidden="true" /> : null}
+      <span className="sr-only">{toneLabel[tone]} status: </span>
       {label}
     </span>
   );

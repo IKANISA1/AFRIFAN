@@ -35,12 +35,24 @@ The sink independently selects matching configuration and requires
 `WEB_OBSERVATIONS_STORE_ENABLED=true`. It uses a separate D1 database, an atomic
 per-club quota, server-generated times and an immutable observation table. The
 private `PrivateWebObservationsRetention` entrypoint offers explicit bounded
-expiry. All HTTP entrypoints on the sink return 404. The checked template is
+expiry. The default Worker also wires maintenance every minute, deleting at
+most 1,000 expired rows for its configured club per tick. This exceeds the
+300-write per-minute quota, allowing a delayed maintenance backlog to clear
+while new observations arrive. Disabled or unselected
+maintenance never accesses the database. A populated retention timestamp is
+therefore accompanied by executable maintenance; the template has not been
+deployed and no external schedule was activated. All HTTP entrypoints return 404. The checked template is
 disabled, has no route, and disables automatic invocation logs and traces.
 
 Node tests execute the ingress and sink against actual SQLite, including all
 five club IDs, finite events, privacy rejection, quota, expiry and lost binding
-acknowledgements. Browser tests exercise the transport and the two Next route
+acknowledgements. Independent SQLite connections race writes and retention for
+all five clubs: the quota retains exactly 300 of 360 concurrent attempts while
+two bounded cleanup batches remove 1,200 expired rows and preserve other clubs.
+A delayed backlog test verifies cleanup alongside continued writes at quota.
+The actual JavaScript scheduled callback is exercised with a WorkerEntrypoint
+stub; it proves callback wiring and failure propagation, without emulating
+hosted D1 or Cloudflare scheduling. Browser tests exercise the transport and the two Next route
 wrappers. These local tests do not activate a binding or select a production
 retention policy. Historical rows in the former Supabase PWA table are not
 modified by this source change.

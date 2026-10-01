@@ -45,9 +45,12 @@ class DigitalMembershipCardFull extends StatelessWidget {
               AfriTeamCrest(name: clubName, size: 44),
               const SizedBox(width: SpacingTokens.spacing3),
               Expanded(
-                child: Text(
-                  teamInitials(clubName),
-                  style: TypographyTokens.titleLarge(ColorTokens.onDark),
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    teamInitials(clubName),
+                    style: TypographyTokens.titleLarge(ColorTokens.onDark),
+                  ),
                 ),
               ),
               if (onShare != null)

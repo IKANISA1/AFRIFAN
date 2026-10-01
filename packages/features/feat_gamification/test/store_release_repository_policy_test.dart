@@ -63,6 +63,5 @@ void main() {
         verifyNever(() => client.auth);
       },
     );
-
   });
 }

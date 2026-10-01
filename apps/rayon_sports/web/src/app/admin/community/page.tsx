@@ -15,6 +15,7 @@ import {
 } from "@/components/admin/admin-resource-status-banner";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
+import { handleAdminTabKeyDown } from "@/components/admin/admin-tab-keyboard";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
@@ -554,7 +555,11 @@ function CommunityWorkspace() {
                   key={tab === "chapters" ? "FanClubs" : tab}
                   type="button"
                   role="tab"
+                  id={`community-tab-${tab}`}
                   aria-selected={activeTab === tab}
+                  aria-controls="community-panel"
+                  tabIndex={activeTab === tab ? 0 : -1}
+                  onKeyDown={handleAdminTabKeyDown}
                   onClick={() => selectTab(tab)}
                   className={cn(
                     "relative min-h-12 shrink-0 px-5 py-3 text-xs font-medium normal-case tracking-normal transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none",
@@ -575,6 +580,13 @@ function CommunityWorkspace() {
             )}
           </div>
 
+          <div
+            id="community-panel"
+            role="tabpanel"
+            aria-labelledby={`community-tab-${activeTab}`}
+            tabIndex={0}
+            className="min-w-0"
+          >
           {activeTab === "chapters" ? (
             <div className="admin-surface min-w-0">
               <AdminFilterBar>
@@ -843,7 +855,7 @@ function CommunityWorkspace() {
                               </span>
                             </div>
                             <div
-                              className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--admin-zinc-800)]"
+                              className="h-1.5 w-full overflow-hidden rounded-full bg-[var(--admin-raised)]"
                               role="progressbar"
                               aria-label={`${group.name} funding progress`}
                               aria-valuemin={0}
@@ -1044,6 +1056,7 @@ function CommunityWorkspace() {
               />
             </div>
           ) : null}
+          </div>
         </>
       )}
 

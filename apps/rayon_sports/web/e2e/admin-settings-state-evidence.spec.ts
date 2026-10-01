@@ -1,5 +1,6 @@
+import { localStateContextOptions } from "./fixtures/local-route-assertions.mjs";
 import fs from "node:fs";
-import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence } from "./state-evidence-provenance";
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, createStateEvidenceContext } from "./state-evidence-provenance";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import {
@@ -14,6 +15,61 @@ import {
   primeEvidenceScreenshot,
   settleEvidenceVisuals,
 } from "./evidence-navigation-stability";
+
+async function assertTabKeyboardNavigation(page: Page, label: string, panelId: string, tabCount: number) {
+  const tablist = page.getByRole("tablist", { name: label, exact: true });
+  const tabs = tablist.getByRole("tab");
+  const panel = page.locator(`#${panelId}`);
+  await expect(tabs).toHaveCount(tabCount);
+  await expect(panel).toHaveCount(1);
+  const mountedPanel = await panel.elementHandle();
+  if (mountedPanel == null) throw new Error("The tab panel must be mounted before keyboard navigation.");
+  try {
+    const assertSelected = async (index: number) => {
+      const selected = tabs.nth(index);
+      await expect(selected).toBeFocused();
+      await expect(selected).toHaveAttribute("aria-selected", "true");
+      await expect(selected).toHaveAttribute("tabindex", "0");
+      await expect(selected).toHaveAttribute("aria-controls", panelId);
+      const selectedId = await selected.getAttribute("id");
+      expect(selectedId).not.toBeNull();
+      await expect(panel).toHaveAttribute("role", "tabpanel");
+      await expect(panel).toHaveAttribute("aria-labelledby", selectedId!);
+      await expect(panel).toHaveAccessibleName((await selected.innerText()).trim());
+      await expect(tablist.locator('[role="tab"][tabindex="0"]')).toHaveCount(1);
+      for (let other = 0; other < tabCount; other++) {
+        if (other === index) continue;
+        await expect(tabs.nth(other)).toHaveAttribute("aria-selected", "false");
+        await expect(tabs.nth(other)).toHaveAttribute("tabindex", "-1");
+        await expect(tabs.nth(other)).toHaveAttribute("aria-controls", panelId);
+      }
+      expect(await mountedPanel.evaluate((element, id) =>
+        element.isConnected && element.ownerDocument.getElementById(id) === element,
+      panelId)).toBe(true);
+    };
+    await tabs.first().click();
+    await tabs.first().focus();
+    await assertSelected(0);
+    await page.keyboard.press("ArrowLeft");
+    await assertSelected(tabCount - 1);
+    await page.keyboard.press("ArrowRight");
+    await assertSelected(0);
+    await page.keyboard.press("End");
+    await assertSelected(tabCount - 1);
+    await page.keyboard.press("Home");
+    await assertSelected(0);
+    await page.keyboard.press("ArrowRight");
+    await assertSelected(1);
+    await page.keyboard.press("Tab");
+    await expect(panel).toBeFocused();
+    await page.keyboard.press("Shift+Tab");
+    await assertSelected(1);
+    await page.keyboard.press("Home");
+    await assertSelected(0);
+  } finally {
+    await mountedPanel.dispose();
+  }
+}
 
 type ResponseMode =
   | "loading"
@@ -134,7 +190,8 @@ async function expectBrandPreviewContentVisible(page: Page) {
 
 async function runMatrix(browser: Browser) {
   const evidenceDirectory = prepareStateEvidence(browser, test.info(), "admin_pwa_settings_states");
-  const context = await browser.newContext({
+  const context = await createStateEvidenceContext(browser, {
+    ...localStateContextOptions(test.info(), true),
     // These states use routed API fixtures. Actual worker lifecycle has a
     // separate real-backend suite; worker fetches bypass fixture routing.
     serviceWorkers: "block",
@@ -450,6 +507,8 @@ async function runMatrix(browser: Browser) {
   await expectNoHorizontalOverflow(page);
   await capture("responsive_compact", "compact_390x844");
 
+  await assertTabKeyboardNavigation(page, "Settings sections", "settings-panel", 2);
+
   const governedStates = [
     "loading",
     "empty",
@@ -534,7 +593,7 @@ test.describe("controlled Admin PWA settings evidence", () => {
   test("captures the exact authenticated settings state matrix", async ({
     browser,
   }) => {
-    test.setTimeout(180_000);
+    test.setTimeout(360_000);
     await runMatrix(browser);
   });
 });

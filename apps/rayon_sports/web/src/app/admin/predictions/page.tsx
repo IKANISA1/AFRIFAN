@@ -655,7 +655,7 @@ export default function AdminPredictionsPage() {
           title="Loading prediction workspace"
           className="admin-predictions-workspace"
         >
-          <div className="space-y-4" aria-label="Loading prediction records">
+          <div className="space-y-4" role="group" aria-label="Loading prediction records">
             {Array.from({ length: 5 }).map((_, i) => (
               <div
                 key={i}
@@ -671,6 +671,7 @@ export default function AdminPredictionsPage() {
         <>
           <div
             className="admin-predictions-tabs flex flex-wrap gap-2"
+            role="group"
             aria-label="Prediction workspace sections"
           >
             {tabs.map((tab) => {
@@ -694,7 +695,7 @@ export default function AdminPredictionsPage() {
             })}
           </div>
 
-          <section className="admin-predictions-workspace glass-panel min-w-0 rounded-[32px] p-4 sm:p-6">
+          <section className="admin-predictions-workspace ui-panel min-w-0 rounded-[32px] p-4 sm:p-6">
             <>
               {/* Partner pools tab */}
               {activeTab === "partnerPools" && (

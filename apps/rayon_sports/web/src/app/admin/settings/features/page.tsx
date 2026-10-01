@@ -151,7 +151,7 @@ function ChannelState({
       className={
         enabled
           ? "inline-flex min-h-12 min-w-12 items-center justify-center text-success"
-          : "inline-flex min-h-12 min-w-12 items-center justify-center text-[var(--admin-zinc-500)]"
+          : "inline-flex min-h-12 min-w-12 items-center justify-center text-[var(--admin-secondary)]"
       }
       title={`${channel} ${enabled ? "enabled" : "disabled"}`}
     >
@@ -452,7 +452,7 @@ export default function AdminFeaturesPage() {
             <Search
               size={16}
               aria-hidden="true"
-              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[var(--admin-zinc-500)]"
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[var(--admin-secondary)]"
             />
             <input
               type="search"
@@ -545,7 +545,7 @@ export default function AdminFeaturesPage() {
                 <tr>
                   <td
                     colSpan={7}
-                    className="p-12 text-center text-sm text-[var(--admin-zinc-500)]"
+                    className="p-12 text-center text-sm text-[var(--admin-secondary)]"
                   >
                     {filter
                       ? "No features match the current search."
@@ -756,8 +756,8 @@ export default function AdminFeaturesPage() {
                 </label>
               </div>
 
-              <section className="glass-panel rounded-[24px] border border-[var(--admin-border)] p-4">
-                <h3 className="mb-4 text-xs font-medium normal-case tracking-normal text-[var(--admin-zinc-500)]">
+              <section className="ui-panel rounded-[24px] border border-[var(--admin-border)] p-4">
+                <h3 className="mb-4 text-xs font-medium normal-case tracking-normal text-[var(--admin-secondary)]">
                   Channel settings
                 </h3>
                 <div className="space-y-4">
@@ -770,7 +770,7 @@ export default function AdminFeaturesPage() {
                         <p className="text-sm font-semibold normal-case text-[var(--admin-text-strong)]">
                           {channel.channel}
                         </p>
-                        <div className="flex flex-wrap gap-4 text-xs text-[var(--admin-zinc-400)]">
+                        <div className="flex flex-wrap gap-4 text-xs text-[var(--admin-secondary)]">
                           {[
                             ["isEnabled", "Enabled"],
                             ["isVisible", "Visible"],
@@ -814,7 +814,7 @@ export default function AdminFeaturesPage() {
                         </div>
                       </div>
                       <div className="grid gap-4 md:grid-cols-3">
-                        <label className="grid gap-2 text-xs font-semibold normal-case tracking-normal text-[var(--admin-zinc-400)]">
+                        <label className="grid gap-2 text-xs font-semibold normal-case tracking-normal text-[var(--admin-secondary)]">
                           Sort order
                           <input
                             type="number"
@@ -841,7 +841,7 @@ export default function AdminFeaturesPage() {
                             className="admin-input min-h-12"
                           />
                         </label>
-                        <label className="grid gap-2 text-xs font-semibold normal-case tracking-normal text-[var(--admin-zinc-400)]">
+                        <label className="grid gap-2 text-xs font-semibold normal-case tracking-normal text-[var(--admin-secondary)]">
                           Route key
                           <input
                             value={channel.routeKey ?? ""}
@@ -863,7 +863,7 @@ export default function AdminFeaturesPage() {
                             className="admin-input min-h-12"
                           />
                         </label>
-                        <label className="grid gap-2 text-xs font-semibold normal-case tracking-normal text-[var(--admin-zinc-400)]">
+                        <label className="grid gap-2 text-xs font-semibold normal-case tracking-normal text-[var(--admin-secondary)]">
                           Placement key
                           <input
                             value={channel.placementKey ?? ""}
@@ -892,8 +892,8 @@ export default function AdminFeaturesPage() {
                 </div>
               </section>
 
-              <section className="glass-panel rounded-[24px] border border-[var(--admin-border)] p-4">
-                <h3 className="mb-4 text-xs font-medium normal-case tracking-normal text-[var(--admin-zinc-500)]">
+              <section className="ui-panel rounded-[24px] border border-[var(--admin-border)] p-4">
+                <h3 className="mb-4 text-xs font-medium normal-case tracking-normal text-[var(--admin-secondary)]">
                   Access rules
                 </h3>
                 <div className="grid gap-4">

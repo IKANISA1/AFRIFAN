@@ -1,0 +1,481 @@
+{
+  "schemaVersion": 1,
+  "recordedAtUtc": "2026-09-30T20:47:12.514736+00:00",
+  "status": "DIAGNOSTIC_BUNDLE_DECLARED_PRIVACY_SCAN_COMPLETE_SOURCE_CHECKPOINT_INCOMPLETE",
+  "diagnosticOnly": true,
+  "finalCandidate": false,
+  "acceptance": false,
+  "productionReady": false,
+  "sourceFrozen": false,
+  "matchedValuesIncluded": false,
+  "networkCalls": 0,
+  "buildId": "tsdiZFDh6EmtM85O7Vzgn",
+  "archive": {
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/diagnostic-web-bundle-privacy/tsdiZFDh6EmtM85O7Vzgn-20260930T204216000200Z/diagnostic-web-only.zip",
+    "sha256": "d03340c672d32d48e71c918d8650ab357e72331311cf6464a416c1ddb17191ee",
+    "bytes": 15991027,
+    "mode": "0o600"
+  },
+  "sealReadbackEvidence": {
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/diagnostic-web-bundle-privacy/tsdiZFDh6EmtM85O7Vzgn-20260930T204216000200Z/seal-readback-receipt.json",
+    "sha256": "5f4b5f605485c714cb6d14ba840af60b4892a37fadaf920f5eb2ad047a27b410"
+  },
+  "manifestEvidence": {
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/diagnostic-web-bundle-privacy/tsdiZFDh6EmtM85O7Vzgn-20260930T204216000200Z/diagnostic-bundle-manifest.json",
+    "sha256": "32bad4aa4ea1e3ef85676b9b9b75c1f622f38ed8cd27801828713d3c1b16fdd6"
+  },
+  "extractDirectory": "output/qa/full-stack-20260914/production-goal-20260930-phase4/diagnostic-web-bundle-privacy/tsdiZFDh6EmtM85O7Vzgn-20260930T204216000200Z/extract-readback",
+  "generatedRegularOutputFiles": 2557,
+  "separateBuildEvidenceRecords": [
+    {
+      "member": "evidence/next/africlub-build-provenance.json",
+      "source": "apps/rayon_sports/web/.next/africlub-build-provenance.json",
+      "sha256": "f5436a59f621969e4ac1aaca84ad95a5201ddca3c0b29d745e3246adcf34e755",
+      "bytes": 750219,
+      "sourceMode": "0o644",
+      "kind": "separate_build_evidence"
+    },
+    {
+      "member": "evidence/opennext/opennext-public-environment-build.json",
+      "source": "apps/rayon_sports/web/tmp/opennext-public-environment-build.json",
+      "sha256": "49dd73642b4ea2d7d6fcf3a34f317e3b244818e5c9b0ddeef40626386035e172",
+      "bytes": 3738,
+      "sourceMode": "0o644",
+      "kind": "separate_build_evidence"
+    }
+  ],
+  "archiveMemberCount": 2560,
+  "payloadBytes": 51022685,
+  "links": [],
+  "specialFiles": [],
+  "excludedRegularOutputFiles": [],
+  "integrity": {
+    "allSourceHashesRecheckedAfterSeal": true,
+    "allSealedAndExtractedMemberHashesRechecked": true,
+    "allScannerMemberHashesMatchSealReadback": true,
+    "archiveSha256RecheckedAfterScanner": true,
+    "sealCreatedExclusively": true,
+    "extractDirectoryCreatedExclusively": true,
+    "archiveMode": "0o600"
+  },
+  "actualAudit": {
+    "processSession": 97337,
+    "exitCode": 1,
+    "report": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/diagnostic-web-bundle-privacy/tsdiZFDh6EmtM85O7Vzgn-20260930T204216000200Z/source-git-sealed-audit.json",
+      "sha256": "3808d9df7aaac1a29d1ee680acd4e8ae7f38d4f6e5a635717016af0681a00cfa"
+    },
+    "countOnlyLog": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/diagnostic-web-bundle-privacy/tsdiZFDh6EmtM85O7Vzgn-20260930T204216000200Z/source-git-sealed-audit.log",
+      "sha256": "c6875d4a560cd9e52fd467b7f898ba5ebfe42387483d90fe1319df59fb0a6f99"
+    },
+    "snapshot": {
+      "head": "7fa5292248d5776c6e255aa39ab7acdd658f24e9",
+      "refsSha256": "31829613c280723e4a4aa0e5b2a1e0a1b44809c7ac2ce25ddeb89f80c8fed382",
+      "sourceInventorySha256": "c2bc3486cf15b718411e42700cbb452fd5c1cec9bab347c46fec598a462651d0",
+      "scannerSha256": "d7295887c682c81641ecb5d50d5a40bc17546215296a51cd2df57f7a23cfb581",
+      "reviewPolicySha256": "58199399d14a80a670372c8aa1e1054f2fd014403436e21a197d9552d65b976a"
+    },
+    "limits": {
+      "max_blob_bytes": 268435456,
+      "max_member_bytes": 268435456,
+      "max_total_bytes": 8589934592,
+      "max_expanded_bytes": 4294967296,
+      "max_members": 200000,
+      "max_depth": 8,
+      "max_seconds": 600
+    },
+    "passed": false,
+    "coverageComplete": false,
+    "summary": {
+      "sourceOccurrences": 6173,
+      "reachableGitBlobs": 20834,
+      "sealedArchives": 1,
+      "uniqueContents": 23951,
+      "archiveMembers": 12684,
+      "uniqueBytesRead": 2062884860,
+      "uniqueExpandedBytes": 506408213,
+      "contentFindings": 21,
+      "blockingContentFindings": 13,
+      "reviewedSyntheticContents": 8,
+      "activeSourceFindingLocations": 0,
+      "sealedCandidateFindingContents": 0,
+      "pathFindings": 1,
+      "coverageGaps": 7
+    },
+    "coverageGaps": [
+      {
+        "category": "source_changed_after_scan",
+        "path": "packages/features/feat_admin/test/predict_ops_screen_test.dart",
+        "pathSha256": "25d2c4dc008c2fc5031cadd8aaa44720a26d342047047cd656e6c68107bc3c36"
+      },
+      {
+        "category": "source_changed_after_scan",
+        "path": "packages/features/feat_contributions/test/contributions_hub_screen_test.dart",
+        "pathSha256": "4d5ed024fe7152463a7f22d15e2844a98083a0568266597923d4ebdbe43c86ad"
+      },
+      {
+        "category": "source_changed_after_scan",
+        "path": "packages/features/feat_fan_clubs/test/fan_clubs_list_screen_test.dart",
+        "pathSha256": "953840e443aab61a031c24fd63184cddfd5eaf2c2d4f2610cab5a8d41e5c0cd8"
+      },
+      {
+        "category": "source_changed_after_scan",
+        "path": "packages/features/feat_onboarding/test/onboarding_screen_states_test.dart",
+        "pathSha256": "15015ebbdb248ca817090dbc0e0ca12ca547e1600341cf6538929830819f83d1"
+      },
+      {
+        "category": "source_changed_after_scan",
+        "path": "packages/features/feat_settings/test/settings_screen_states_test.dart",
+        "pathSha256": "d97d6b10ea5e206302fff3543230fa8235d4a6056a31e82a9baf4bf2cbeed3ee"
+      },
+      {
+        "category": "source_changed_after_scan",
+        "path": "packages/features/feat_shop/test/cart_screen_states_test.dart",
+        "pathSha256": "164777e775d4872a13ac88f19fac82086f948e9486d35bab2ff0aaf01cc3853d"
+      },
+      {
+        "category": "source_changed_after_scan",
+        "path": "packages/testing/test_support/test/local_five_club_feature_states_test.dart",
+        "pathSha256": "3335188790e88bed190ec02cfd30361b14e740f2e1ad5fd3bf2dc62a7ff5e2fa"
+      }
+    ]
+  },
+  "archivePrivacyScope": {
+    "declaredCoverageComplete": true,
+    "archiveCoverageGaps": [],
+    "contentFindings": [],
+    "pathFindings": [],
+    "blockingFindingContents": 0,
+    "scannedMemberEdges": 2560,
+    "scannedUniqueContentsIncludingArchive": 2427,
+    "scope": "Every member of the exact hash-bound diagnostic ZIP; actual scanner sealed_candidate scope labels supplied archives and does not designate this as a final candidate."
+  },
+  "activeReleaseSourceFindingLocations": 0,
+  "historicalContentFindings": [
+    {
+      "sha256": "326c5a4eaa77896ff9d40cfac811ba8c474bbbadd560da01e7e127e70444e697",
+      "categories": [
+        "high_confidence_credential"
+      ],
+      "blocksAuditAcceptance": true,
+      "directOccurrences": [],
+      "archiveOccurrences": [
+        {
+          "parentSha256": "7fd4d45cbc9c361e1e21d72bd51106af0b8fcc6c9a0b27c10c23eef3cb99ec02",
+          "path": "docs/drive-import/2026-09-28/full-tree-file-analysis.tsv",
+          "pathSha256": "cf50f652d0986af6ee30358b6cf5ffd3ebe0fc348d5bd7c78cabb87ec9114cde",
+          "sha256": "326c5a4eaa77896ff9d40cfac811ba8c474bbbadd560da01e7e127e70444e697",
+          "containerOccurrences": [
+            {
+              "scope": "retained_evidence",
+              "path": "docs/drive-import/2026-09-28/full-tree-file-analysis.tsv.gz",
+              "pathSha256": "24b45ad2da0bcb2109a20d379d83ef67d46579e25d51240f19d043bdd8c8bdbb",
+              "sha256": "7fd4d45cbc9c361e1e21d72bd51106af0b8fcc6c9a0b27c10c23eef3cb99ec02"
+            },
+            {
+              "scope": "reachable_git_blob",
+              "path": "docs/drive-import/2026-09-28/full-tree-file-analysis.tsv.gz",
+              "pathSha256": "24b45ad2da0bcb2109a20d379d83ef67d46579e25d51240f19d043bdd8c8bdbb",
+              "gitObject": "957386bd7ee6ab1054dfaeaf511ba6d0b8fa1d4b",
+              "sha256": "7fd4d45cbc9c361e1e21d72bd51106af0b8fcc6c9a0b27c10c23eef3cb99ec02"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sha256": "3c4360f4ca3a2b203447875da6c0cf2d237fc51dc6644eb7d5d793945a019d5a",
+      "categories": [
+        "high_confidence_credential"
+      ],
+      "blocksAuditAcceptance": true,
+      "directOccurrences": [],
+      "archiveOccurrences": [
+        {
+          "parentSha256": "0922c0e45b3dc9e9079da699d7829397bba384c0fb8697065a4f34214ffdb291",
+          "path": "docs/drive-import/2026-09-28/full-tree-generated-byte-comparison.tsv",
+          "pathSha256": "069989cf971dd16b8cd6fb14364a843dd9cf3517d1918dd8df35b5d23520b1b3",
+          "sha256": "3c4360f4ca3a2b203447875da6c0cf2d237fc51dc6644eb7d5d793945a019d5a",
+          "containerOccurrences": [
+            {
+              "scope": "retained_evidence",
+              "path": "docs/drive-import/2026-09-28/full-tree-generated-byte-comparison.tsv.gz",
+              "pathSha256": "04caf76292dbb95efea5c9a449bcb50a2aefc4abf71bd1517363060ab37bb47b",
+              "sha256": "0922c0e45b3dc9e9079da699d7829397bba384c0fb8697065a4f34214ffdb291"
+            },
+            {
+              "scope": "reachable_git_blob",
+              "path": "docs/drive-import/2026-09-28/full-tree-generated-byte-comparison.tsv.gz",
+              "pathSha256": "04caf76292dbb95efea5c9a449bcb50a2aefc4abf71bd1517363060ab37bb47b",
+              "gitObject": "61696f9bfff5560bd6264e169dd592e59c187459",
+              "sha256": "0922c0e45b3dc9e9079da699d7829397bba384c0fb8697065a4f34214ffdb291"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sha256": "44fde265857f72cc66df06a3771bdfdcbb5b6bfc78d62c1f6b73934d6c162276",
+      "categories": [
+        "high_confidence_credential",
+        "privileged_backend_token"
+      ],
+      "blocksAuditAcceptance": true,
+      "directOccurrences": [
+        {
+          "scope": "reachable_git_blob",
+          "path": "supabase/.temp/start-secrets/supabase_kong_AFRICLUB/secret-0",
+          "pathSha256": "fe1c647bb712e450074384e61a199bae4a6146bb0eab5cba960677faef277bf2",
+          "gitObject": "52f2d9c419cf1e014830e69992963bcbad6fe32c",
+          "sha256": "44fde265857f72cc66df06a3771bdfdcbb5b6bfc78d62c1f6b73934d6c162276"
+        }
+      ],
+      "archiveOccurrences": []
+    },
+    {
+      "sha256": "450987b92b4d3e604ded12bc259d4a263caf82206b2685e4662b5675701bebfc",
+      "categories": [
+        "high_confidence_credential"
+      ],
+      "blocksAuditAcceptance": true,
+      "directOccurrences": [],
+      "archiveOccurrences": [
+        {
+          "parentSha256": "04738d3eacea84213c626f7aa33ed64271f8dcc3f98f6760bca44c8ba0793775",
+          "path": "docs/drive-import/2026-09-28/full-tree-file-analysis.tsv",
+          "pathSha256": "cf50f652d0986af6ee30358b6cf5ffd3ebe0fc348d5bd7c78cabb87ec9114cde",
+          "sha256": "450987b92b4d3e604ded12bc259d4a263caf82206b2685e4662b5675701bebfc",
+          "containerOccurrences": [
+            {
+              "scope": "reachable_git_blob",
+              "path": "docs/drive-import/2026-09-28/full-tree-file-analysis.tsv.gz",
+              "pathSha256": "24b45ad2da0bcb2109a20d379d83ef67d46579e25d51240f19d043bdd8c8bdbb",
+              "gitObject": "ac94f166e2c35102b85b76a50c412446ea436e80",
+              "sha256": "04738d3eacea84213c626f7aa33ed64271f8dcc3f98f6760bca44c8ba0793775"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sha256": "5bd8e6514f9f33f87842113ae7be6e3bea1a487da78b23183a54d45049743bbd",
+      "categories": [
+        "private_key_material"
+      ],
+      "blocksAuditAcceptance": true,
+      "directOccurrences": [
+        {
+          "scope": "reachable_git_blob",
+          "path": "supabase/.temp/start-secrets/supabase_kong_AFRICLUB/secret-2",
+          "pathSha256": "d713f58ec76145729316150adf2bf95fe456d540a70838a0f4f5a76652a096c8",
+          "gitObject": "9b71aab6123f5b3e471832962be6371d8a6a8ed1",
+          "sha256": "5bd8e6514f9f33f87842113ae7be6e3bea1a487da78b23183a54d45049743bbd"
+        }
+      ],
+      "archiveOccurrences": []
+    },
+    {
+      "sha256": "683e0034ef9be1212e225e864b820eed8f800b33dea8bffeabc939ab4a9ce804",
+      "categories": [
+        "high_confidence_credential"
+      ],
+      "blocksAuditAcceptance": true,
+      "directOccurrences": [],
+      "archiveOccurrences": [
+        {
+          "parentSha256": "bed7bb9ffe0c49a98c150a19075a81ba3c1d320502d50bb4467ffb180c3966fb",
+          "path": "docs/drive-import/2026-09-28/full-tree-generated-size-comparison.tsv",
+          "pathSha256": "01fcb8958402fb3412d244aad231c658876501fcfeb961701af4bfa16fb8f467",
+          "sha256": "683e0034ef9be1212e225e864b820eed8f800b33dea8bffeabc939ab4a9ce804",
+          "containerOccurrences": [
+            {
+              "scope": "retained_evidence",
+              "path": "docs/drive-import/2026-09-28/full-tree-generated-size-comparison.tsv.gz",
+              "pathSha256": "2427887906b92de0fc3d0bdc78f7a7f3905fecbc85954b088e82d7499d79e24f",
+              "sha256": "bed7bb9ffe0c49a98c150a19075a81ba3c1d320502d50bb4467ffb180c3966fb"
+            },
+            {
+              "scope": "reachable_git_blob",
+              "path": "docs/drive-import/2026-09-28/full-tree-generated-size-comparison.tsv.gz",
+              "pathSha256": "2427887906b92de0fc3d0bdc78f7a7f3905fecbc85954b088e82d7499d79e24f",
+              "gitObject": "799810c3bf98e007903f5b8e091799e87ca31b29",
+              "sha256": "bed7bb9ffe0c49a98c150a19075a81ba3c1d320502d50bb4467ffb180c3966fb"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sha256": "72125b6601f7465909311a481ef625d3a5b96b93d3090f803c395b51446da0c6",
+      "categories": [
+        "high_confidence_credential"
+      ],
+      "blocksAuditAcceptance": true,
+      "directOccurrences": [],
+      "archiveOccurrences": [
+        {
+          "parentSha256": "0e1315b31d823dc9b401ec330d12e67d4c130bd98610f0fb7d4f4415c64b969a",
+          "path": "docs/drive-import/2026-09-28/full-tree-generated-byte-comparison.tsv",
+          "pathSha256": "069989cf971dd16b8cd6fb14364a843dd9cf3517d1918dd8df35b5d23520b1b3",
+          "sha256": "72125b6601f7465909311a481ef625d3a5b96b93d3090f803c395b51446da0c6",
+          "containerOccurrences": [
+            {
+              "scope": "reachable_git_blob",
+              "path": "docs/drive-import/2026-09-28/full-tree-generated-byte-comparison.tsv.gz",
+              "pathSha256": "04caf76292dbb95efea5c9a449bcb50a2aefc4abf71bd1517363060ab37bb47b",
+              "gitObject": "d96a12503b582d95d453b4da2f73ab29a5e9bf46",
+              "sha256": "0e1315b31d823dc9b401ec330d12e67d4c130bd98610f0fb7d4f4415c64b969a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "sha256": "a17102f039bb8d51d28045828f825c8780493fb86e4755dfa5e33c2214d2036e",
+      "categories": [
+        "high_confidence_credential",
+        "privileged_backend_token"
+      ],
+      "blocksAuditAcceptance": true,
+      "directOccurrences": [
+        {
+          "scope": "reachable_git_blob",
+          "path": "supabase/.temp/start-secrets/supabase_edge_runtime_AFRICLUB/env/docker.env",
+          "pathSha256": "5a9d73e91c530636a22d1ac3be1392b1f2468bd87cbc87ee648aa67ad77266d6",
+          "gitObject": "df95cdcf1cfabaa2fc70842dec4f28314cf972e2",
+          "sha256": "a17102f039bb8d51d28045828f825c8780493fb86e4755dfa5e33c2214d2036e"
+        }
+      ],
+      "archiveOccurrences": []
+    },
+    {
+      "sha256": "c356e1c4adda2a0b9137529a7187207d7ac41d2171229852d6913682eeb2f122",
+      "categories": [
+        "private_key_material",
+        "service_account_private_key"
+      ],
+      "blocksAuditAcceptance": true,
+      "directOccurrences": [
+        {
+          "scope": "reachable_git_blob",
+          "path": "apps/rayon_sports/android/fastlane/play-store-service-account.json",
+          "pathSha256": "fed2437e271d6eb7d804202a4fb0328c9991c0c1f8e1943c05f905a514a97ab0",
+          "gitObject": "58a9bf114ac6c9b3f22837d961aa956d7720b3a2",
+          "sha256": "c356e1c4adda2a0b9137529a7187207d7ac41d2171229852d6913682eeb2f122"
+        }
+      ],
+      "archiveOccurrences": []
+    },
+    {
+      "sha256": "fa9274e22e70b20bfb8494afd1e59451d4cbd1512bc9a1a07894aed4ffe158f4",
+      "categories": [
+        "privileged_backend_token"
+      ],
+      "blocksAuditAcceptance": true,
+      "directOccurrences": [
+        {
+          "scope": "reachable_git_blob",
+          "path": "1supabase.md",
+          "pathSha256": "1bc53cf0c4bc4cd86a804c2d1e8fba8d58358c9230534234c656f5e5ddecb828",
+          "gitObject": "01e284605280c02b50eb8bc56a1e40ceeee2bbeb",
+          "sha256": "fa9274e22e70b20bfb8494afd1e59451d4cbd1512bc9a1a07894aed4ffe158f4"
+        }
+      ],
+      "archiveOccurrences": []
+    }
+  ],
+  "historicalPathFindings": [
+    {
+      "scope": "reachable_git_blob",
+      "path": "apps/rayon_sports/android/keystore.properties",
+      "pathSha256": "5d1e11b1bd0104c88ee4f8b58660aaa22a7a8eae1afa825b25b478ed4f99ecf0",
+      "sha256": "8661bfef2a397d8c558022090b58e60de3ee33e75179abd4a9cc0e9d8d203c1b",
+      "category": "private_configuration_or_signing_artifact"
+    }
+  ],
+  "reviewedSyntheticContents": [
+    {
+      "sha256": "124d1fd7e74d6fcffe6e0e5127c2beaffb4da6ff79e7c37be1107edf30534f35",
+      "category": "secret_assignment_requires_review",
+      "blocksAcceptance": false,
+      "classification": "reviewed_synthetic_placeholder",
+      "evidenceRef": "WA_BATCH5_ARCHIVED_PATCH"
+    },
+    {
+      "sha256": "368f7dc588b076ea629f4091eb33882983e09f9b46385cd64b0175e56dc50031",
+      "category": "secret_assignment_requires_review",
+      "blocksAcceptance": false,
+      "classification": "reviewed_synthetic_placeholder",
+      "evidenceRef": "WA_SCHEMA_CHECK_ACTIVE"
+    },
+    {
+      "sha256": "6fd2f0d09ed44ba2fb78a24f79745c0f53becb49f65c8b25118c170b643c779f",
+      "category": "secret_assignment_requires_review",
+      "blocksAcceptance": false,
+      "classification": "reviewed_synthetic_placeholder",
+      "evidenceRef": "WA_UNIT_TEST_FIXTURE"
+    },
+    {
+      "sha256": "70c0b2920991e87b784e4cc911649a4e224e7c31a0c03d52ef76888de0ebea46",
+      "category": "secret_assignment_requires_review",
+      "blocksAcceptance": false,
+      "classification": "reviewed_synthetic_placeholder",
+      "evidenceRef": "WA_SCHEMA_CHECK_RETAINED"
+    },
+    {
+      "sha256": "7de1df5497637b41741e3702e634238df2be6bd8ea059674ecd67b08007e3e0e",
+      "category": "secret_assignment_requires_review",
+      "blocksAcceptance": false,
+      "classification": "reviewed_synthetic_placeholder",
+      "evidenceRef": "WA_REMEDIATION_ARCHIVED_PATCH"
+    },
+    {
+      "sha256": "a77077eaa51e6777ea7be62452600405e2788c85eb92508b763a4d9d3157f566",
+      "category": "secret_assignment_requires_review",
+      "blocksAcceptance": false,
+      "classification": "reviewed_synthetic_placeholder",
+      "evidenceRef": "WA_RECEIPT_SCHEMA_CHECK_ACTIVE"
+    },
+    {
+      "sha256": "c40192bf655108402f34ef6e892f55ce032bf8345c0b7606fbeb40d5c66830b8",
+      "category": "secret_assignment_requires_review",
+      "blocksAcceptance": false,
+      "classification": "reviewed_synthetic_placeholder",
+      "evidenceRef": "WA_RECEIPT_SCHEMA_CHECK_RETAINED"
+    },
+    {
+      "sha256": "f4bccde5e3383482912588a896cc101cb24f34d3a7bfb555d0f65f6a244021ec",
+      "category": "secret_assignment_requires_review",
+      "blocksAcceptance": false,
+      "classification": "reviewed_synthetic_placeholder",
+      "evidenceRef": "WA_BATCH6_ARCHIVED_PATCH"
+    }
+  ],
+  "preservedOldRejectedArtifact": {
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-opennext-9f2a658c-1790774375474.zip",
+    "sha256": "77e460ea4d21fcca11d9735d082a56dafa5dbd0cadaadeb4ec2045af7510eaa5",
+    "accepted": false,
+    "bindingEvidence": {
+      "path": "docs/release/local-secret-audit-current-checkpoint-2026-09-30.json",
+      "sha256": "6129a841bd42657f7a2e893d8a5f093d36496f8237b580e2d5d5fb4d6ce8e8f7"
+    }
+  },
+  "remainingLocalActions": [
+    "Complete concurrent source edits and freeze the current source inventory, bytes, local refs, installed build inputs and final candidate until final scan completion.",
+    "Supply the separately sealed final all-source candidate exact path and verified SHA-256.",
+    "Run frozen current source, all reachable local Git and exact final candidate scans; retain actual exit, coverage and finite historical findings.",
+    "Retain private/privileged history and credential-shaped retained inventory findings without global exceptions; authorized disposition remains separate from this local diagnostic scan."
+  ],
+  "limitations": [
+    "Git source inventory includes tracked and untracked nonignored files; ignored workstation dependencies/credentials are outside active source scope.",
+    "Reachable Git objects use all local refs. Reflog-only/dangling objects and unavailable remote refs are outside this scope.",
+    "Git object paths are representative names from rev-list, not a complete per-commit path history.",
+    "Content is scanned once per SHA-256; occurrences and archive member edges retain all inventoried locations.",
+    "Binary bytes and UTF-16 text are scanned; supported ZIP/TAR/gzip contents recurse without extraction. Unsupported/encrypted/oversized/missing material fails coverage.",
+    "Public client-key classification does not prove provider restrictions; no credential validity, rotation, permissions or production safety is asserted.",
+    "No private source dotenv files or original third-party installed stage were copied. Generated compiled files were all included.",
+    "This is a pattern audit with complete declared diagnostic archive coverage, not credential validity, provider permission, rotation, store, deployment or production acceptance.",
+    "Whole current source coverage remains incomplete due seven concurrent test-source changes; the final all-source candidate has not been supplied."
+  ]
+}

@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 /**
  * auto-settle — Post-sync hook that triggers prediction settlement
  * when fixtures transition to 'finished'.
@@ -91,10 +92,7 @@ export async function autoSettleFinishedFixtures(
       );
 
       if (settleError) {
-        console.error(
-          `[auto-settle] Settlement error for fixture ${fixture.id}:`,
-          settleError.message,
-        );
+        logDiagnostic("error", "football_sync_auto_settle__auto_settle_settlement_error_for_fixture", settleError);
         result.errors.push(
           `Fixture ${fixture.id}: ${settleError.message}`,
         );
@@ -112,13 +110,10 @@ export async function autoSettleFinishedFixtures(
         settlementData.total_fet_awarded ?? 0,
       );
 
-      console.log(
-        `[auto-settle] Settled fixture ${fixture.id}: ${homeScore}-${awayScore}`,
-        settlementData,
-      );
+      logDiagnostic("info", "football_sync_auto_settle__auto_settle_settled_fixture", settlementData);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      console.error(`[auto-settle] Error settling ${fixture.id}:`, msg);
+      logDiagnostic("error", "football_sync_auto_settle__auto_settle_error_settling", err);
       result.errors.push(`Fixture ${fixture.id}: ${msg}`);
     }
   }

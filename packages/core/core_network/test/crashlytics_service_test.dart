@@ -23,12 +23,22 @@ void main() {
       await expectLater(CrashlyticsService.setUserId('user123'), completes);
     });
 
-    test('diagnostic messages reject identifiers and bucket counts', () {
+    test('diagnostic messages accept only closed diagnostic codes', () {
       expect(
         CrashlyticsService.sanitizeDiagnosticMessage(
           'upload_queue: retried=428 uploaded=12',
         ),
-        'upload_queue: retried=# uploaded=#',
+        isNull,
+      );
+      expect(
+        CrashlyticsService.sanitizeDiagnosticMessage('runtime_error'),
+        'runtime_error',
+      );
+      expect(
+        CrashlyticsService.sanitizeDiagnosticMessage(
+          'opaque_private_supporter_alias',
+        ),
+        isNull,
       );
       expect(
         CrashlyticsService.sanitizeDiagnosticMessage(

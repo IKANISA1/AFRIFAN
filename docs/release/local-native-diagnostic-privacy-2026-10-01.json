@@ -1,0 +1,449 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-30T23:24:04.459639+00:00",
+  "status": "local_native_diagnostic_privacy_and_nested_restoration_verified",
+  "scopeImplementationComplete": true,
+  "goalComplete": false,
+  "productionReady": false,
+  "finalCandidateBound": false,
+  "sources": [
+    {
+      "path": "packages/core/core_utils/lib/src/logger.dart",
+      "sha256": "905cbc6b64a8bcb424087bebe538ed9c90838b6b4184db55bf0eb5d8e57a00f5",
+      "bytes": 4707,
+      "owner": "root",
+      "whyChanged": "Drop arbitrary messages/errors/stacks and unknown component labels; emit finite severity/error categories and construct finite FlutterErrorDetails without original stack/collector/filter/context."
+    },
+    {
+      "path": "packages/core/core_utils/test/logger_privacy_test.dart",
+      "sha256": "f39ddd9a68322f42f637b8afc92213c1a1259355d648a6654c8a9208280ad505",
+      "bytes": 4119,
+      "owner": "root",
+      "whyChanged": "24 actual public logging/framework cases exercise opaque text, credential/URL/contact/account/stack labels, hostile error renderers and framework collectors."
+    },
+    {
+      "path": "packages/core/core_app/lib/src/bootstrap.dart",
+      "sha256": "69475fd173751cbc0b2b4399a66bc37123ca8b00faf36fb8c69f9409152a758d",
+      "bytes": 9473,
+      "owner": "root",
+      "whyChanged": "Forward finite framework details to prior handlers; retain only finite queued pre-init error records and fixed health messages without raw stack metadata."
+    },
+    {
+      "path": "packages/core/core_app/lib/src/app.dart",
+      "sha256": "90a5835b817e30f62cb8097e4e4ffc3b7cbc3699e2645259bcde321d84f2b4f7",
+      "bytes": 20410,
+      "owner": "root",
+      "whyChanged": "Use finite deep-link/notification stream failure messages and preserve sanitized Crashlytics handling."
+    },
+    {
+      "path": "packages/core/core_theme/lib/src/widgets/afri_error_boundary.dart",
+      "sha256": "ced8dece4b6e92f7f837335f3e56c6689fa112bcc88c7dc75972c9b6af062962",
+      "bytes": 6228,
+      "owner": "auth_repository_cleanup; prior finite logging/stable callback work by root",
+      "whyChanged": "Keep finite recovery debug output and stable callback identity; restore nested global ErrorWidget builders through frame leases that skip released ancestor callbacks. Fallback UI unchanged byte-for-byte relative to this bounded-task input."
+    },
+    {
+      "path": "packages/core/core_theme/test/afri_error_boundary_privacy_test.dart",
+      "sha256": "41377d78044c5d52568ff789894229b4a163756e063b29ba8a7493a592dc7bbc",
+      "bytes": 3728,
+      "owner": "auth_repository_cleanup; original privacy fixture by root",
+      "whyChanged": "Four actual widget cases prove healthy nested frames/rebuild, inner-first removal, whole nested removal and private-text recovery/fallback/global restoration."
+    }
+  ],
+  "checks": {
+    "beforeFix": [
+      {
+        "name": "native logger opaque/private values",
+        "exitCode": 1,
+        "testsFailed": 22,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-logger-privacy-before-fix.log",
+          "sha256": "2e6a221678fc802a590b975dd9a3c30f35b2d0eb96458ba4db06f7658630a2cc",
+          "bytes": 11599
+        }
+      },
+      {
+        "name": "direct boundary private error debug output",
+        "exitCode": 1,
+        "testsFailed": 1,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-error-boundary-before-fix.log",
+          "sha256": "8fc030107e9619c6990dcb1a41b26332c70ec95d3abc2a374ea33bd2047724f8",
+          "bytes": 2381
+        }
+      },
+      {
+        "name": "nested callback restoration",
+        "exitCode": 1,
+        "testsPassed": 3,
+        "testsFailed": 1,
+        "receipt": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-boundary-restoration/nested-before-fix-result.json",
+          "sha256": "0487de993fd33b4708354fbd726f820a2b5f0c960d4cc9ade40e1c5edd965768",
+          "bytes": 1376
+        }
+      }
+    ],
+    "retainedIntermediateFailures": [
+      {
+        "name": "framework/boundary initial combined run",
+        "exitCode": 1,
+        "testsPassed": 24,
+        "testsFailed": 1,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-framework-logger-privacy-current-20261001.log",
+          "sha256": "efbebd24823018c003e5bf04581b9b36fb24b43f4d9d4a5d746a3f8b13422edb",
+          "bytes": 7974
+        },
+        "reason": "Post-test ErrorWidget.builder/foundation debug variable restoration assertions failed; corrected stable callback fixture/runtime checkpoint retained."
+      },
+      {
+        "name": "initial Firebase SDK fixture setup",
+        "exitCode": 1,
+        "setupFailed": true,
+        "notCountedAsPrivacyReproduction": true,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-sdk-payload-before-fix.log",
+          "sha256": "3b73fc1a588734b49dfe7fd10491397ec2add691a2b5fab6f4755a343b4c806f",
+          "bytes": 792
+        },
+        "reason": "Fixture used an obsolete Analytics channel; corrected actual installed Pigeon boundary reproduced five payload failures and subsequently passed."
+      },
+      {
+        "name": "first Performance/privacy final rebind",
+        "receipt": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification/final-source-bound-verification.json",
+          "sha256": "f589fd33be4f373ff16747665051ad9f5e54b79dc14d7f4176fa610ab0d8c48a",
+          "bytes": 9360
+        },
+        "diagnosticTestsPassed": 31,
+        "diagnosticTestsFailed": 1,
+        "strictIssues": 1,
+        "reason": "Retained startup push source assertion was indentation sensitive; new test had an unnecessary foundation import. Corrected test-only sources now pass the current complete receipt."
+      }
+    ],
+    "priorCorrections": [
+      {
+        "name": "stable callback single boundary and finite framework logger checkpoint",
+        "exitCode": 0,
+        "testsPassed": 25,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-framework-logger-privacy-corrected-20261001.log",
+          "sha256": "57943bcf130be79ab906ef18176558007df955f4d1a5016bd29b0cd7f8e20ff7",
+          "bytes": 4364
+        }
+      },
+      {
+        "name": "corrected actual Firebase SDK payload baseline",
+        "exitCode": 1,
+        "testsPassed": 1,
+        "testsFailed": 5,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-sdk-payload-before-fix-corrected.log",
+          "sha256": "27b5180109c44c4939a29b4d62dd75dcbf9024d05724989d8caffe7c3aeb0d9d",
+          "bytes": 5416
+        }
+      }
+    ],
+    "afterFix": {
+      "testsPassed": 32,
+      "loggerPrivacyCasesPassed": 24,
+      "boundaryPrivacyAndLifecycleCasesPassed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "exitCode": 0,
+      "log": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-diagnostic-startup-bank.log",
+        "sha256": "ec543b314afea6e7fa6e83632cb2b77e8a346444692f0994316f10024595670e"
+      },
+      "startupContractCasesPassed": 4
+    },
+    "strictAnalysis": {
+      "targets": 28,
+      "issues": 0,
+      "exitCode": 0,
+      "fatalInfos": true,
+      "fatalWarnings": true,
+      "log": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-owned-source-strict-analysis.log",
+        "sha256": "2e636efeddaf969ef865faafc3d23f54795a534d8b37ff6fd84dbead3d4144eb"
+      }
+    },
+    "currentDiagnosticBinding": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-source-bound-verification.json",
+      "sha256": "3a31a5b4cc166f98a08044c90e5c075d7f7195b602d4ffb38825a8e3f07c66b3",
+      "bytes": 9455,
+      "boundInputs": 1078,
+      "beforeAfterStable": true,
+      "currentHashReadbackPassed": true
+    },
+    "currentAuthNetworkSdkVerification": {
+      "report": {
+        "path": "docs/release/local-auth-repository-cleanup-2026-09-30.json",
+        "sha256": "3eba625ec9607e7647785032f8d3679db57ebd26d537ee24a294be5b04f8904f",
+        "bytes": 74993
+      },
+      "privacyReport": {
+        "path": "docs/release/local-native-observability-privacy-2026-09-30.json",
+        "sha256": "90248fab5f8288332abb7ba9a544c3a0999e10cfca7dd81eb109df7cef9d79b5",
+        "bytes": 35415
+      },
+      "performanceReport": {
+        "path": "docs/release/local-native-performance-privacy-2026-10-01.json",
+        "sha256": "51f818df196935983b488452e1a6ab4f5f4e5405f7c7d04a5902c2bb01ffbb14",
+        "bytes": 50486
+      },
+      "receipt": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-source-bound-verification.json",
+        "sha256": "3a31a5b4cc166f98a08044c90e5c075d7f7195b602d4ffb38825a8e3f07c66b3",
+        "bytes": 9455,
+        "boundInputs": 1078,
+        "beforeAfterStable": true,
+        "currentHashReadbackPassed": true
+      },
+      "testsPassed": {
+        "core_auth": 406,
+        "core_network": 123,
+        "enabledActualSdkPayload": 8,
+        "enabledPerformanceBootstrap": 4
+      },
+      "strictTargets": 28,
+      "strictIssues": 0,
+      "resolverInputs": [
+        {
+          "path": "pubspec.yaml",
+          "sha256": "ed12b835abf4388e5da87e98272eb0c9cb4c7a4f5a38a374ed1c81196516252d",
+          "bytes": 5237
+        },
+        {
+          "path": "pubspec.lock",
+          "sha256": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b",
+          "bytes": 41649
+        },
+        {
+          "path": ".dart_tool/package_config.json",
+          "sha256": "8bc8f1fab9321d11f62371f2416e7769c842cbcfe0289047721c0a4f59f2fd40",
+          "bytes": 40560
+        },
+        {
+          "path": ".dart_tool/package_graph.json",
+          "sha256": "44e4f3fd924a6a9cb5a7938ae9123811bb707657d0ca04dda1d97fe01f7a3f4a",
+          "bytes": 47097
+        }
+      ]
+    }
+  },
+  "privacyContract": {
+    "messageContentsForwarded": false,
+    "errorContentsForwarded": false,
+    "callerStacksForwarded": false,
+    "dynamicTagsForwarded": false,
+    "unknownErrorsRendered": false,
+    "frameworkCollectorsInvoked": false,
+    "frameworkContextForwarded": false,
+    "componentFallback": "Application",
+    "errorCategories": [
+      "event",
+      "timeout",
+      "format",
+      "argument",
+      "state",
+      "unsupported",
+      "failure"
+    ],
+    "severityCategories": [
+      "information",
+      "warning",
+      "error"
+    ],
+    "nestedBoundaryCallbackRestoration": "Every lease keeps its previous lease. An inner frame restore skips inactive ancestor leases, restoring the original global builder despite ancestor-first post-frame cleanup or nested teardown. Release never overwrites an unrelated replacement builder.",
+    "stableCallbackIdentity": true,
+    "fallbackUiByteIdenticalToBoundedTaskInput": true
+  },
+  "boundedPatch": {
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-boundary-restoration/nested-boundary-restoration.patch",
+    "sha256": "8bd56831237520a62d599955228d54ad8b0df93b16b58d52844276b194ce33c3",
+    "bytes": 3035
+  },
+  "scope": [
+    "Actual public logger APIs and Flutter framework console payloads are captured in24 local fixtures. Developer sink arguments are reviewed in bound source.",
+    "Actual nested WidgetTester mounting/rebuild/unmounting validates global restoration at frame completion and after removal. One real before-fix assertion failed and all four current widget cases pass.",
+    "Runtime/test input bytes and active dependency graph remained stable during the final scoped28-case/6-target run; all six named source hashes were rechecked before this report.",
+    "The accepted auth/network/SDK bank proves local payload contracts before the subsequent nested correction; its broader source binding is preserved as an explicit checkpoint rather than relabeled current."
+  ],
+  "pending": [
+    "Parent-owned broader current native integration and final product candidate binding after this nested boundary correction."
+  ],
+  "limits": [
+    "This verifies the named local diagnostic/privacy/lifecycle changes. It does not establish external SDK provider delivery, physical-device/store acceptance or whole-product release readiness.",
+    "Global ErrorWidget.builder is frame-scoped; this fix preserves existing error-boundary routing and fallback behavior while correcting the demonstrated nested restore leak."
+  ],
+  "gitOperations": {
+    "commits": 0,
+    "pushes": 0,
+    "sharedPubCacheMutation": false
+  },
+  "acceptedVerificationCheckpoints": [
+    {
+      "binding": "Earlier10-input diagnostic receipt retains the previous dependency graph; historical full auth/network receipt predates nested/Performance corrections.",
+      "report": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/accepted-report-checkpoints/local-native-diagnostic-privacy-2026-10-01.json",
+        "sha256": "7b3c18ecf6256780d25e0e926a04d5dc4f673a5108f70ec736d28406352391d3",
+        "bytes": 11957
+      },
+      "checks": {
+        "beforeFix": [
+          {
+            "name": "native logger opaque/private values",
+            "exitCode": 1,
+            "testsFailed": 22,
+            "log": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-logger-privacy-before-fix.log",
+              "sha256": "2e6a221678fc802a590b975dd9a3c30f35b2d0eb96458ba4db06f7658630a2cc",
+              "bytes": 11599
+            }
+          },
+          {
+            "name": "direct boundary private error debug output",
+            "exitCode": 1,
+            "testsFailed": 1,
+            "log": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-error-boundary-before-fix.log",
+              "sha256": "8fc030107e9619c6990dcb1a41b26332c70ec95d3abc2a374ea33bd2047724f8",
+              "bytes": 2381
+            }
+          },
+          {
+            "name": "nested callback restoration",
+            "exitCode": 1,
+            "testsPassed": 3,
+            "testsFailed": 1,
+            "receipt": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-boundary-restoration/nested-before-fix-result.json",
+              "sha256": "0487de993fd33b4708354fbd726f820a2b5f0c960d4cc9ade40e1c5edd965768",
+              "bytes": 1376
+            }
+          }
+        ],
+        "retainedIntermediateFailures": [
+          {
+            "name": "framework/boundary initial combined run",
+            "exitCode": 1,
+            "testsPassed": 24,
+            "testsFailed": 1,
+            "log": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-framework-logger-privacy-current-20261001.log",
+              "sha256": "efbebd24823018c003e5bf04581b9b36fb24b43f4d9d4a5d746a3f8b13422edb",
+              "bytes": 7974
+            },
+            "reason": "Post-test ErrorWidget.builder/foundation debug variable restoration assertions failed; corrected stable callback fixture/runtime checkpoint retained."
+          },
+          {
+            "name": "initial Firebase SDK fixture setup",
+            "exitCode": 1,
+            "setupFailed": true,
+            "notCountedAsPrivacyReproduction": true,
+            "log": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-sdk-payload-before-fix.log",
+              "sha256": "3b73fc1a588734b49dfe7fd10491397ec2add691a2b5fab6f4755a343b4c806f",
+              "bytes": 792
+            },
+            "reason": "Fixture used an obsolete Analytics channel; corrected actual installed Pigeon boundary reproduced five payload failures and subsequently passed."
+          }
+        ],
+        "priorCorrections": [
+          {
+            "name": "stable callback single boundary and finite framework logger checkpoint",
+            "exitCode": 0,
+            "testsPassed": 25,
+            "log": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-framework-logger-privacy-corrected-20261001.log",
+              "sha256": "57943bcf130be79ab906ef18176558007df955f4d1a5016bd29b0cd7f8e20ff7",
+              "bytes": 4364
+            }
+          },
+          {
+            "name": "corrected actual Firebase SDK payload baseline",
+            "exitCode": 1,
+            "testsPassed": 1,
+            "testsFailed": 5,
+            "log": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-sdk-payload-before-fix-corrected.log",
+              "sha256": "27b5180109c44c4939a29b4d62dd75dcbf9024d05724989d8caffe7c3aeb0d9d",
+              "bytes": 5416
+            }
+          }
+        ],
+        "afterFix": {
+          "testsPassed": 28,
+          "loggerPrivacyCasesPassed": 24,
+          "boundaryPrivacyAndLifecycleCasesPassed": 4,
+          "failed": 0,
+          "skipped": 0,
+          "exitCode": 0,
+          "log": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-boundary-restoration/nested-logger-after-fix.log",
+            "sha256": "42962a3f33edd2950edf8b52b222063856e16ccd7ca55fc04a0d67d9ad59ae9a",
+            "bytes": 4821
+          }
+        },
+        "strictAnalysis": {
+          "targets": 6,
+          "issues": 0,
+          "exitCode": 0,
+          "fatalInfos": true,
+          "fatalWarnings": true,
+          "log": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-boundary-restoration/diagnostic-current-strict.log",
+            "sha256": "7b88bba9e14fc9062d8bb31ec113832f77e809173d62a55469fd42b6909f6608",
+            "bytes": 97
+          }
+        },
+        "currentDiagnosticBinding": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-boundary-restoration/final-source-bound-result.json",
+          "sha256": "74bec0c66517f55f0389cebfd34e0e00b2d09a3fe108121be6e455897b712db5",
+          "bytes": 5438,
+          "boundInputs": 10,
+          "beforeAfterStable": true,
+          "currentHashReadbackPassed": true,
+          "before": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-boundary-restoration/final-source-before.json",
+            "sha256": "e91b0b1a2728d7d10cab6b049cae9126447307d2e9a55af81fd441769c5f8ca5",
+            "bytes": 1654
+          },
+          "after": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-boundary-restoration/final-source-after.json",
+            "sha256": "e91b0b1a2728d7d10cab6b049cae9126447307d2e9a55af81fd441769c5f8ca5",
+            "bytes": 1654
+          }
+        },
+        "fullAuthNetworkSdkCheckpoint": {
+          "report": {
+            "path": "docs/release/local-auth-repository-cleanup-2026-09-30.json",
+            "sha256": "51bea7e235eb3b5c9b031b6508dab83da96d6d3294be1109c8df3b1d6d0ecd5a",
+            "bytes": 61721
+          },
+          "privacyReport": {
+            "path": "docs/release/local-native-observability-privacy-2026-09-30.json",
+            "sha256": "3f68ebd4901be499c3556e851c2cb371495c3f2255ac30a5cd15837a4d7bc2b5",
+            "bytes": 22152
+          },
+          "receipt": {
+            "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-privacy/final-source-bound-verification.json",
+            "sha256": "3d68b8f5c2f194294b25e73f13c79f3a3837727703f9e258fe4525e40a0855e9",
+            "bytes": 5845
+          },
+          "testsPassed": {
+            "core_auth": 406,
+            "core_network": 119,
+            "enabledActualSdk": 8
+          },
+          "strictTargets": 19,
+          "strictIssues": 0,
+          "sourceChangesReadbackStillPassed": true,
+          "inputBinding": "Accepted checkpoint before the subsequent two-file nested boundary correction. Whole-bank input binding includes the older boundary source/test; current scoped correction is separately bound by the10-input diagnostic receipt. Broader final native binding belongs to the readiness bank."
+        }
+      }
+    }
+  ]
+}

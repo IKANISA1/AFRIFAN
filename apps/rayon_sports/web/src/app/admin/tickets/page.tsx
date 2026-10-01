@@ -375,6 +375,7 @@ export default function AdminTicketsPage() {
       {initialLoading ? (
         <div
           className="admin-surface p-6"
+          role="group"
           aria-label="Loading ticket operations"
         >
           <div className="h-64 animate-pulse rounded-2xl bg-[var(--admin-surface-muted)] motion-reduce:animate-none" />
@@ -386,7 +387,7 @@ export default function AdminTicketsPage() {
           <div className="relative max-w-md">
             <Search
               size={16}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-zinc-500)]"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-secondary)]"
             />
             <input
               type="search"
@@ -476,7 +477,7 @@ export default function AdminTicketsPage() {
                 <tr>
                   <td
                     colSpan={8}
-                    className="p-12 text-center text-sm text-[var(--admin-zinc-500)]"
+                    className="p-12 text-center text-sm text-[var(--admin-secondary)]"
                   >
                     {filter
                       ? "No ticket orders match the current search."
@@ -570,7 +571,7 @@ export default function AdminTicketsPage() {
                           }
                         />
                       </td>
-                      <td className="text-xs text-[var(--admin-zinc-500)]">
+                      <td className="text-xs text-[var(--admin-secondary)]">
                         {new Date(order.purchasedAt).toLocaleDateString(
                           "en-RW",
                         )}
@@ -717,7 +718,7 @@ export default function AdminTicketsPage() {
         }
       >
         <div className="space-y-5">
-          <div className="rounded-xl border border-[var(--admin-border)] bg-[var(--admin-zinc-950)] p-4">
+          <div className="rounded-xl border border-[var(--admin-border)] bg-[var(--admin-canvas)] p-4">
             <p className="admin-row-title">
               {selectedOrders.length}{" "}
               {selectedOrders.length === 1 ? "ticket" : "tickets"}
@@ -728,7 +729,7 @@ export default function AdminTicketsPage() {
               an action and confirm it.
             </p>
           </div>
-          <div className="space-y-2" aria-label="Bulk ticket actions">
+          <div className="space-y-2" role="group" aria-label="Bulk ticket actions">
             {(["valid", "used", "cancelled"] as const).map((status) => {
               const eligibility = getAdminTicketBulkEligibility(
                 access,
@@ -742,7 +743,7 @@ export default function AdminTicketsPage() {
                   className={`admin-action-button w-full ${
                     status === "cancelled"
                       ? "admin-action-button-danger"
-                      : "!bg-[var(--admin-zinc-800)]"
+                      : "!bg-[var(--admin-raised)]"
                   }`}
                   disabled={mutationLocked || !eligibility.allowed}
                   onClick={() => queueStatusAction(selectedOrders, status)}
@@ -806,7 +807,7 @@ export default function AdminTicketsPage() {
               {pendingAction.orders.length === 1 ? "ticket" : "tickets"} in the
               active club.
             </p>
-            <div className="rounded-xl border border-[var(--admin-border)] bg-[var(--admin-zinc-950)] p-4">
+            <div className="rounded-xl border border-[var(--admin-border)] bg-[var(--admin-canvas)] p-4">
               <p className="admin-row-title">Safety check</p>
               <p className="admin-row-copy">
                 The server will re-check role, club scope, record count, and

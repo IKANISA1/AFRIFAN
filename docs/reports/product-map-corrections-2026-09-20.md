@@ -1,6 +1,6 @@
 # Product map corrections — 20 September 2026
 
-The local Product Design map and working source implement the owner's corrections:
+The local product route map and working source implement the owner's corrections:
 
 - One central admin manages Rayon Sports, Vital’O, Nkana and AS Vita.
 - Predict is the only supported prediction destination. Active old navigation, entry workflows and compatibility redirects are removed.

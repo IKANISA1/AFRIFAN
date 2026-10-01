@@ -39,6 +39,88 @@ const requiredScreenArchetypes = <String>[
   'admin',
 ];
 
+// Finite reviewed mappings. An unreviewed/new redirect retains the generic
+// obligations below; naming a route "redirect" never grants a blanket waiver.
+const _nativeAliasContracts =
+    <String, ({String source, String target, bool permission})>{
+      'ClubModule|/club/partners/:partnerId': (
+        source: 'packages/features/feat_club/lib/src/club_module.dart',
+        target: '/club/partners',
+        permission: false,
+      ),
+      'ClubModule|/club/results': (
+        source: 'packages/features/feat_club/lib/src/club_module.dart',
+        target: '/club/fixtures?tab=results',
+        permission: false,
+      ),
+      'ClubModule|/club/projects': (
+        source: 'packages/features/feat_club/lib/src/club_module.dart',
+        target: '/contribute?type=project',
+        permission: true,
+      ),
+      'ClubModule|/club/projects/:projectId': (
+        source: 'packages/features/feat_club/lib/src/club_module.dart',
+        target: '/contribute/group/:projectId',
+        permission: true,
+      ),
+      'ContributionsModule|/contribute/groups': (
+        source:
+            'packages/features/feat_contributions/lib/src/contributions_module.dart',
+        target: '/contribute?type=community',
+        permission: true,
+      ),
+      'ContributionsModule|/contribute/projects': (
+        source:
+            'packages/features/feat_contributions/lib/src/contributions_module.dart',
+        target: '/contribute?type=project',
+        permission: true,
+      ),
+      'FanClubsModule|/fan-clubs/:clubId': (
+        source:
+            'packages/features/feat_fan_clubs/lib/src/fan_clubs_module.dart',
+        target: '/fan-clubs?club=:clubId',
+        permission: false,
+      ),
+      'LiveModule|/live': (
+        source: 'packages/features/feat_live/lib/src/live_module.dart',
+        target: '/predict/match/live',
+        permission: true,
+      ),
+      'LiveModule|/live-match': (
+        source: 'packages/features/feat_live/lib/src/live_module.dart',
+        target: '/predict/match/live',
+        permission: true,
+      ),
+      'LiveModule|/live/news/:articleId': (
+        source: 'packages/features/feat_live/lib/src/live_module.dart',
+        target: '/club/news/:articleId',
+        permission: true,
+      ),
+      'MembershipModule|/membership/fans': (
+        source:
+            'packages/features/feat_membership/lib/src/membership_module.dart',
+        target: '/fan-clubs',
+        permission: true,
+      ),
+      'TicketingModule|/my-tickets': (
+        source:
+            'packages/features/feat_ticketing/lib/src/ticketing_module.dart',
+        target: '/tickets?tab=mine',
+        permission: true,
+      ),
+      'OnboardingModule|/splash': (
+        source:
+            'packages/features/feat_onboarding/lib/src/onboarding_module.dart',
+        target: '/onboarding',
+        permission: false,
+      ),
+      'AdminModule|/admin/settle': (
+        source: 'packages/features/feat_admin/lib/src/admin_module.dart',
+        target: '/admin/predict',
+        permission: true,
+      ),
+    };
+
 void main(List<String> arguments) {
   final workspace = resolveRouteInventoryWorkspace(Directory.current);
   final outputDirectory = Directory(
@@ -86,13 +168,26 @@ Map<String, Object?> generateRouteInventory({
   required Directory workspace,
   required Directory outputDirectory,
   File? routeStateEvidenceFile,
+  Map<String, Set<String>>? registeredNativeFeaturesByClub,
 }) {
+  if (registeredNativeFeaturesByClub != null &&
+      (registeredNativeFeaturesByClub.keys.toSet().difference(const {
+            'as_vita',
+            'costa_do_sol',
+            'nkana',
+            'rayon_sports',
+            'vitalo',
+          }).isNotEmpty ||
+          registeredNativeFeaturesByClub.length != 5)) {
+    throw ArgumentError('Native registration must describe all five clubs.');
+  }
   outputDirectory.createSync(recursive: true);
   final generatedAt = DateTime.now().toUtc().toIso8601String();
   final routes = <Map<String, Object?>>[];
   final modules = AppModuleRegistry.allModules;
 
   for (final module in modules) {
+    final firstModuleRoute = routes.length;
     final moduleName = module.runtimeType.toString();
     final presentations = <String, RoutePresentationDecision>{
       for (final decision in module.routePresentationDecisions)
@@ -142,6 +237,25 @@ Map<String, Object?> generateRouteInventory({
         presentations: presentations,
         output: routes,
       );
+    }
+    for (final route in routes.skip(firstModuleRoute)) {
+      route['native_feature_key'] = module.featureKey;
+      if (registeredNativeFeaturesByClub != null) {
+        route['native_registration'] = <String, Object?>{
+          for (final club in registeredNativeFeaturesByClub.entries)
+            club.key: <String, Object?>{
+              'registered': club.value.contains(module.featureKey),
+              'feature_key': module.featureKey,
+              'profile': 'declared_controlled_internal_admin',
+              'allow_internal_mobile_admin': true,
+              'mobile_admin': true,
+              'consumer_capabilities_preserved': true,
+              'rationale': club.value.contains(module.featureKey)
+                  ? 'Actual AppModuleRegistry.build for ${club.key}, with declared controlled internal-admin profile mobile_admin:true and allowInternalMobileAdmin:true while preserving original consumer flags, registers ${module.runtimeType}; every declared destination state remains independently required.'
+                  : 'Actual AppModuleRegistry.build for ${club.key} excludes ${module.runtimeType} because the compiled ClubConfig.features[${module.featureKey}] is explicitly false. No destination widget or alias callback is registered. Actual unresolved navigation recovery remains a separate AppRouter system-route obligation.',
+            },
+        };
+      }
     }
   }
 
@@ -194,6 +308,12 @@ Map<String, Object?> generateRouteInventory({
     ],
     'route_count': routes.length,
     'duplicate_keys': duplicateKeys,
+    'native_registration_scope': registeredNativeFeaturesByClub == null
+        ? null
+        : <String, Object?>{
+            for (final club in registeredNativeFeaturesByClub.entries)
+              club.key: (club.value.toList()..sort()),
+          },
     'routes': routes,
   };
 
@@ -532,6 +652,8 @@ Map<String, Object?> generateRouteStateClosure({
       'role_boundary': route['role_boundary'],
       'guard': route['guard'],
       'source': route['source'],
+      'native_feature_key': route['native_feature_key'],
+      'native_registration': route['native_registration'],
       'closure_status': routeOpenCells == 0
           ? 'evidence_complete'
           : 'evidence_open',
@@ -541,6 +663,33 @@ Map<String, Object?> generateRouteStateClosure({
 
   final jsonPath = '${outputDirectory.path}/route-state-closure.json';
   final markdownPath = '${outputDirectory.path}/route-state-closure.md';
+  final scopedClubs = <String>{
+    for (final route in routeRows)
+      ...?(route['native_registration'] as Map<String, Object?>?)?.keys,
+  };
+  final clubScopeCounts = <String, Object?>{};
+  for (final club in scopedClubs) {
+    var scopedApplicable = 0;
+    for (final route in routeRows) {
+      final scope =
+          (route['native_registration'] as Map<String, Object?>?)?[club]
+              as Map<String, Object?>?;
+      if (scope?['registered'] == false) continue;
+      final states = route['states']! as Map<String, Object?>;
+      scopedApplicable += states.values
+          .where(
+            (state) =>
+                (state! as Map<String, Object?>)['applicability'] ==
+                'applicable',
+          )
+          .length;
+    }
+    clubScopeCounts[club] = <String, Object?>{
+      'applicable_cell_count': scopedApplicable,
+      'not_applicable_cell_count':
+          routes.length * routeClosureStates.length - scopedApplicable,
+    };
+  }
   final payload = <String, Object?>{
     'schema_version': '1.2',
     'generated_at': generated,
@@ -550,6 +699,7 @@ Map<String, Object?> generateRouteStateClosure({
     'route_count': routes.length,
     'state_count': routeClosureStates.length,
     'cell_count': routes.length * routeClosureStates.length,
+    'club_scope_cell_counts': clubScopeCounts,
     'applicable_cell_count': applicableCells,
     'not_applicable_cell_count': notApplicableCells,
     'test_evidenced_cell_count': testEvidencedCells,
@@ -1010,6 +1160,8 @@ List<String> _readRouteEvidencePaths({
   }
   if (route['rendered_state_contract'] == 'static_legal_document') {
     const legalDocumentStates = <String>{
+      'focused',
+      'pressed',
       'large_text',
       'reduced_motion',
       'dark',
@@ -1019,10 +1171,9 @@ List<String> _readRouteEvidencePaths({
     return (
       applicable,
       applicable
-          ? 'Static legal document must prove this responsive or presentation '
-                'state with current rendered evidence.'
+          ? 'Static legal document must prove its actual legal-document-actions links, keyboard focus, pointer activation, responsive or presentation state with current rendered evidence.'
           : 'Static legal document always renders governed fallback copy and '
-                'owns no controls, authorization, mutation, synchronization, '
+                'its navigation/mail actions own no authorization, mutation, synchronization, '
                 'conflict, or timeout workflow.',
     );
   }
@@ -1068,6 +1219,45 @@ List<String> _readRouteEvidencePaths({
     );
   }
   if (kind == 'redirect') {
+    final alias = _nativeAliasContracts['${route['source']}|${route['path']}'];
+    if (alias != null) {
+      final applicable = state == 'permission_denied' && alias.permission;
+      return (
+        applicable,
+        '${alias.source} maps ${route['path']} synchronously to ${alias.target}. '
+            '${applicable ? 'Production core_app/app.dart admission on the requested alias or protected target must be traversed and asserted.' : 'This URI mapping has no alias-owned collection, mutation, timed upstream operation, or rendered UI. Malformed matching/callback failures belong to the shared parser contract; every target UI and admission obligation remains independent.'} '
+            'core_router/public_read_routes.dart and core_app/app.dart define its admission scope.',
+      );
+    }
+    if (route['source'] == 'ClubModule' && route['path'] == '/club/open-web') {
+      const outcomes = {
+        'loading',
+        'empty',
+        'error',
+        'offline',
+        'permission_denied',
+        'conflict',
+        'security_timeout',
+      };
+      final applicable = outcomes.contains(state);
+      return (
+        applicable,
+        applicable
+            ? 'ClubModule open-web actually awaits club_public_link_provider.dart: trusted club resolution, one RPC with a 12-second deadline, and null/error/offline/denial/conflict/deadline fallback to nativeCollectionForPublicPath. Assert this real operational outcome and destination; target UI obligations remain.'
+            : 'This one bounded link resolver owns no rendered controls, theme, motion, refresh synchronization, or text scaling. All destination UI states remain required independently.',
+      );
+    }
+    if (route['surface'] == 'admin_pwa' &&
+        route['path'] == '/admin/contributions' &&
+        route['source'] ==
+            'apps/rayon_sports/web/src/app/admin/contributions/page.tsx') {
+      return (
+        state == 'permission_denied',
+        state == 'permission_denied'
+            ? 'The real page.tsx maps club and tab=groups to /admin/community, whose AdminShell (src/components/admin/admin-shell.tsx) enforces the actual session/access from admin/bootstrap.ts. Assert complete alias request, canonical redirect, and denied target admission; destination authorization remains required.'
+            : 'This exact page.tsx only normalizes framework search parameters and issues a deterministic local redirect to /admin/community. It owns no upstream, deadline, collection, mutation, or rendered state; destination and system error obligations remain independent.',
+      );
+    }
     final applicable =
         state == 'error' ||
         state == 'permission_denied' ||
@@ -1096,6 +1286,19 @@ List<String> _readRouteEvidencePaths({
     );
   }
   if (kind == 'api_route' || kind == 'http_route') {
+    if (route['endpoint_state_contract'] ==
+            'anonymous_append_only_observation' &&
+        state == 'conflict') {
+      return (
+        false,
+        'The actual events/vitals handler accepts an anonymous bounded observation '
+            'with no expected revision or request-selected idempotency key. '
+            'cloudflare/web-observations/contracts.mjs has exact observation fields; '
+            'http.mjs projects every record/quota/deadline failure to 503, and '
+            'sink.mjs generates a fresh UUID for one append-only INSERT. '
+            'No conflict or 409 response exists in this endpoint contract.',
+      );
+    }
     const endpointStates = <String>{
       'empty',
       'error',
@@ -1281,6 +1484,12 @@ List<Map<String, Object?>> _collectNextRoutes(Directory workspace) {
           '/.well-known/apple-app-site-association',
           '/.well-known/assetlinks.json',
         }.contains(path);
+    final isAnonymousAppendOnlyObservation =
+        isRouteHandler &&
+        const <String>{
+          '/api/pwa/events',
+          '/api/telemetry/vitals',
+        }.contains(path);
     final isStandaloneOfflineRecovery =
         !isRouteHandler &&
         const <String>{'/offline', '/admin-offline'}.contains(path);
@@ -1331,6 +1540,8 @@ List<Map<String, Object?>> _collectNextRoutes(Directory workspace) {
           ? 'deterministic_asset'
           : isDeterministicVerifierDocument
           ? 'deterministic_verifier_document'
+          : isAnonymousAppendOnlyObservation
+          ? 'anonymous_append_only_observation'
           : isApi || isRouteHandler
           ? 'controlled_response'
           : null,

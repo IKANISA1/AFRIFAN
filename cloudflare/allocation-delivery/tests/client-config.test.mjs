@@ -1,12 +1,13 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {mkdtempSync,rmSync,readFileSync} from 'node:fs';import {tmpdir} from 'node:os';import {join} from 'node:path';import {spawnSync} from 'node:child_process';import {pathToFileURL} from 'node:url';
-import {fixture,claimed} from './fixture.mjs';import {drain} from '../src/dispatcher.mjs';import {validate} from '../scripts/check-deployment.mjs';
+import {claimed} from './fixture.mjs';import {drain} from '../src/dispatcher.mjs';import {validate} from '../scripts/check-deployment.mjs';
+import {withTransportClock} from './transport-clock.mjs';
 const dir=mkdtempSync(join(tmpdir(),'africlub-review-client-'));
 const compiled=spawnSync('tsc',[new URL('../review-client.ts',import.meta.url).pathname,'--strict','--target','ES2022','--module','NodeNext','--moduleResolution','NodeNext','--outDir',dir],{encoding:'utf8'});
 assert.equal(compiled.status,0,compiled.stdout+compiled.stderr);
 const {DeliveryReviewClient}=await import(pathToFileURL(join(dir,'review-client.js')));
 process.on('exit',()=>rmSync(dir,{recursive:true,force:true}));
-async function use(t,fn){const f=await fixture();t.after(()=>f.close());return fn(f);}
+const use=withTransportClock;
 for(const kind of ['source','inbox','dispatch'])test(`disabled ${kind} template has no public route or schedule`,()=>{
  const cfg=JSON.parse(readFileSync(new URL(`../wrangler.${kind}.staging.jsonc`,import.meta.url),'utf8'));assert.deepEqual(validate(cfg,kind),[]);
  for(const change of [{workers_dev:true},{preview_urls:true},{routes:['*/*']},{triggers:{crons:['* * * * *']}},{r2_buckets:[]}])assert.ok(validate({...cfg,...change},kind).length);

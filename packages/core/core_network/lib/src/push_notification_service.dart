@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'supabase_client_factory.dart';
+import 'supabase_session_authority.dart';
 
 enum PushPermissionStatus {
   unavailable,
@@ -38,9 +39,24 @@ Future<void> afriClubFirebaseMessagingBackgroundHandler(
   );
 }
 
+/// Platform boundary used by the service; tests supply controlled native calls
+/// and actual SDK clients without contacting providers.
+@visibleForTesting
+class PushNotificationRuntime {
+  bool get isSupported => !kIsWeb && Firebase.apps.isNotEmpty;
+  SupabaseClient get client => SupabaseClientFactory.client;
+  FirebaseMessaging get messaging => FirebaseMessaging.instance;
+}
+
 class PushNotificationService {
   PushNotificationService._();
 
+  static PushNotificationRuntime _runtime = PushNotificationRuntime();
+  static int _deviceGeneration = 0;
+  static int _scopeGeneration = 0;
+  static Future<void> _deviceOperationTail = Future<void>.value();
+  static StreamSubscription<RemoteMessage>? _messageSubscription;
+  static SupabaseClient? _authClient;
   static bool _initialized = false;
   static String? _clubId;
   static String? _lastKnownUserId;
@@ -49,56 +65,87 @@ class PushNotificationService {
   static StreamSubscription<AuthState>? _authSubscription;
   static StreamSubscription<String>? _tokenRefreshSubscription;
   static Future<void> initialize({required String clubId}) async {
+    if (_clubId != clubId) {
+      _scopeGeneration++;
+      _deviceGeneration++;
+    }
     _clubId = clubId;
-    if (_initialized || Firebase.apps.isEmpty || kIsWeb) {
+    if (!_isSupported ||
+        (_initialized && identical(_authClient, _runtime.client))) {
       return;
     }
 
-    await _authSubscription?.cancel();
+    final client = _runtime.client;
+    final scope = _scopeGeneration;
+    final generation = _deviceGeneration;
+    bool current() =>
+        scope == _scopeGeneration &&
+        generation == _deviceGeneration &&
+        identical(client, _runtime.client);
+    try {
+      await _authSubscription?.cancel();
+      if (scope != _scopeGeneration || !identical(client, _runtime.client)) {
+        return;
+      }
 
-    await _setAutoInitEnabled(false, reason: 'startup');
+      await _setAutoInitEnabled(false, reason: 'startup', isCurrent: current);
+      if (!current()) return;
 
-    final permissionStatus = await getPermissionStatus();
-    if (permissionStatus == PushPermissionStatus.authorized ||
-        permissionStatus == PushPermissionStatus.provisional) {
-      await _ensureMessagingRuntimeRegistered();
-      await _setAutoInitEnabled(true, reason: 'existing permission');
-      unawaited(syncToken());
+      final permissionStatus = await getPermissionStatus();
+      if (!current()) return;
+      if (permissionStatus == PushPermissionStatus.authorized ||
+          permissionStatus == PushPermissionStatus.provisional) {
+        await _ensureMessagingRuntimeRegistered();
+        if (!current()) return;
+        await _setAutoInitEnabled(
+          true,
+          reason: 'existing permission',
+          isCurrent: current,
+        );
+        if (!current()) return;
+        unawaited(syncToken());
+      }
+
+      if (scope != _scopeGeneration || !identical(client, _runtime.client)) {
+        return;
+      }
+      _authClient = client;
+      _authSubscription = client.auth.onAuthStateChange.listen((auth) {
+        final sessionUserId = auth.session?.user.id;
+        if (sessionUserId != null && sessionUserId.trim().isNotEmpty) {
+          _lastKnownUserId = sessionUserId;
+        }
+        switch (auth.event) {
+          case AuthChangeEvent.signedIn:
+          case AuthChangeEvent.tokenRefreshed:
+          case AuthChangeEvent.userUpdated:
+            if (_lastKnownToken != null) {
+              unawaited(syncToken());
+            }
+            break;
+          case AuthChangeEvent.signedOut:
+            final signedOutUserId = _lastKnownUserId;
+            final signedOutToken = _lastKnownToken;
+            if (signedOutUserId != null && signedOutToken != null) {
+              unawaited(
+                unregisterCurrentDevice(
+                  userId: signedOutUserId,
+                  token: signedOutToken,
+                ),
+              );
+            }
+            _lastKnownUserId = null;
+            _lastKnownToken = null;
+            break;
+          default:
+            break;
+        }
+      });
+
+      _initialized = true;
+    } on SupabaseSessionChangedException {
+      return;
     }
-
-    _authSubscription = SupabaseClientFactory.authStateChanges.listen((auth) {
-      final sessionUserId = auth.session?.user.id;
-      if (sessionUserId != null && sessionUserId.trim().isNotEmpty) {
-        _lastKnownUserId = sessionUserId;
-      }
-      switch (auth.event) {
-        case AuthChangeEvent.signedIn:
-        case AuthChangeEvent.tokenRefreshed:
-        case AuthChangeEvent.userUpdated:
-          if (_lastKnownToken != null) {
-            unawaited(syncToken());
-          }
-          break;
-        case AuthChangeEvent.signedOut:
-          final signedOutUserId = _lastKnownUserId;
-          final signedOutToken = _lastKnownToken;
-          if (signedOutUserId != null && signedOutToken != null) {
-            unawaited(
-              unregisterCurrentDevice(
-                userId: signedOutUserId,
-                token: signedOutToken,
-              ),
-            );
-          }
-          _lastKnownUserId = null;
-          _lastKnownToken = null;
-          break;
-        default:
-          break;
-      }
-    });
-
-    _initialized = true;
   }
 
   static Future<PushPermissionStatus> getPermissionStatus() async {
@@ -107,8 +154,7 @@ class PushNotificationService {
     }
 
     try {
-      final settings = await FirebaseMessaging.instance
-          .getNotificationSettings();
+      final settings = await _runtime.messaging.getNotificationSettings();
       return _mapAuthorizationStatus(settings.authorizationStatus);
     } catch (error, stackTrace) {
       AfriLogger.error(
@@ -122,58 +168,100 @@ class PushNotificationService {
   }
 
   static Future<PushPermissionStatus> requestPermission() async {
-    if (!_isSupported) {
-      return PushPermissionStatus.unavailable;
-    }
-
+    if (!_isSupported) return PushPermissionStatus.unavailable;
+    final runtime = _runtime;
+    final authority = SupabaseSessionAuthority.capture(
+      clientProvider: () => _runtime.client,
+    );
+    final scope = _scopeGeneration;
+    final generation = _deviceGeneration;
+    bool current() =>
+        identical(runtime, _runtime) &&
+        scope == _scopeGeneration &&
+        generation == _deviceGeneration &&
+        authority.isCurrent;
+    var status = PushPermissionStatus.unavailable;
     try {
-      final settings = await FirebaseMessaging.instance.requestPermission(
+      final settings = await runtime.messaging.requestPermission(
         alert: true,
         badge: true,
         sound: true,
         provisional: false,
       );
-      final status = _mapAuthorizationStatus(settings.authorizationStatus);
-      if (status == PushPermissionStatus.authorized ||
-          status == PushPermissionStatus.provisional) {
+      status = _mapAuthorizationStatus(settings.authorizationStatus);
+      if (current() &&
+          (status == PushPermissionStatus.authorized ||
+              status == PushPermissionStatus.provisional)) {
         await _ensureMessagingRuntimeRegistered();
-        await _setAutoInitEnabled(true, reason: 'permission granted');
-        await syncToken();
+        if (!current()) return status;
+        await _setAutoInitEnabled(
+          true,
+          reason: 'permission granted',
+          isCurrent: current,
+        );
+        if (current()) await syncToken();
       }
+      return status;
+    } on SupabaseSessionChangedException {
       return status;
     } catch (error, stackTrace) {
       AfriLogger.error('Push', 'Permission request failed.', error, stackTrace);
       return PushPermissionStatus.unavailable;
+    } finally {
+      await authority.dispose();
     }
   }
 
   static Future<void> syncToken() async {
     if (!_isSupported) return;
-
-    final permissionStatus = await getPermissionStatus();
-    if (permissionStatus != PushPermissionStatus.authorized &&
-        permissionStatus != PushPermissionStatus.provisional) {
-      return;
-    }
-
-    final user = SupabaseClientFactory.currentUser;
-    if (user == null) {
-      return;
-    }
-    if (!await _isPushEnabledForUser(user.id)) {
-      await unregisterCurrentDevice(userId: user.id, token: _lastKnownToken);
-      return;
-    }
-
+    final runtime = _runtime;
+    final authority = SupabaseSessionAuthority.capture(
+      clientProvider: () => _runtime.client,
+    );
+    final scope = _scopeGeneration;
+    final generation = ++_deviceGeneration;
+    final clubId = _clubId;
+    bool current() =>
+        identical(runtime, _runtime) &&
+        scope == _scopeGeneration &&
+        generation == _deviceGeneration &&
+        authority.isCurrent;
     try {
+      final user = authority.session?.user;
+      if (user == null) return;
+      final permissionStatus = await getPermissionStatus();
+      if (!current() ||
+          (permissionStatus != PushPermissionStatus.authorized &&
+              permissionStatus != PushPermissionStatus.provisional)) {
+        return;
+      }
+      final enabled = await _isPushEnabledForUser(
+        user.id,
+        authority: authority,
+      );
+      if (!current()) return;
+      if (!enabled) {
+        await unregisterCurrentDevice(userId: user.id, token: _lastKnownToken);
+        return;
+      }
       await _ensureMessagingRuntimeRegistered();
-      await _setAutoInitEnabled(true, reason: 'token sync');
-      final token = await FirebaseMessaging.instance.getToken();
-      if (token == null || token.trim().isEmpty) return;
+      if (!current()) return;
+      await _setAutoInitEnabled(true, reason: 'token sync', isCurrent: current);
+      if (!current()) return;
+      final token = await _deviceOperation(
+        runtime.messaging.getToken,
+        isCurrent: current,
+      );
+      if (!current() || token == null || token.trim().isEmpty) return;
+      _lastKnownUserId = user.id;
       _lastKnownToken = token;
-      await _upsertToken(token: token);
+      await _upsertToken(token: token, clubId: clubId, authority: authority);
+    } on SupabaseSessionChangedException {
+      // An obsolete device operation has no ownership of the new session.
     } catch (error, stackTrace) {
       AfriLogger.error('Push', 'Token sync failed.', error, stackTrace);
+    } finally {
+      await authority.dispose();
     }
   }
 
@@ -182,26 +270,68 @@ class PushNotificationService {
     String? token,
   }) async {
     if (!_isSupported) return;
-
+    final runtime = _runtime;
+    final authority = SupabaseSessionAuthority.capture(
+      clientProvider: () => _runtime.client,
+    );
     final resolvedUserId = userId?.trim().isNotEmpty == true
         ? userId!.trim()
-        : SupabaseClientFactory.currentUser?.id;
-    if (resolvedUserId == null || resolvedUserId.isEmpty) return;
-
+        : authority.session?.user.id;
+    final resolvedToken = token?.trim().isNotEmpty == true
+        ? token!.trim()
+        : _lastKnownToken;
+    if (resolvedUserId == null ||
+        resolvedUserId.isEmpty ||
+        (authority.session != null &&
+            authority.session!.user.id != resolvedUserId) ||
+        (_lastKnownUserId != null && _lastKnownUserId != resolvedUserId) ||
+        (_lastKnownToken != null && _lastKnownToken != resolvedToken)) {
+      await authority.dispose();
+      return;
+    }
+    final scope = _scopeGeneration;
+    final generation = ++_deviceGeneration;
+    bool current() =>
+        identical(runtime, _runtime) &&
+        scope == _scopeGeneration &&
+        generation == _deviceGeneration &&
+        authority.isCurrent &&
+        (_lastKnownUserId == null || _lastKnownUserId == resolvedUserId) &&
+        (_lastKnownToken == null || _lastKnownToken == resolvedToken);
     try {
-      await _setAutoInitEnabled(false, reason: 'token unregister');
-      final resolvedToken = token?.trim().isNotEmpty == true
-          ? token!.trim()
-          : _lastKnownToken;
+      if (resolvedUserId.isEmpty ||
+          (authority.session != null &&
+              authority.session!.user.id != resolvedUserId) ||
+          !current()) {
+        return;
+      }
+      await _setAutoInitEnabled(
+        false,
+        reason: 'token unregister',
+        isCurrent: current,
+      );
+      if (!current()) return;
       if (resolvedToken != null && resolvedToken.trim().isNotEmpty) {
-        await SupabaseClientFactory.client
+        var delete = authority.client
             .from('user_fcm_tokens')
             .delete()
             .eq('user_id', resolvedUserId)
-            .eq('token', resolvedToken);
+            .eq('token', resolvedToken)
+            .retry(enabled: false);
+        final bearer = authority.client.auth.currentSession?.accessToken;
+        if (bearer != null) {
+          delete = delete.setHeader('Authorization', 'Bearer $bearer');
+        }
+        await delete;
       }
+      if (!current()) return;
       try {
-        await FirebaseMessaging.instance.deleteToken();
+        await _deviceOperation(
+          runtime.messaging.deleteToken,
+          isCurrent: current,
+        );
+      } on SupabaseSessionChangedException {
+        return;
       } catch (error, stackTrace) {
         AfriLogger.error(
           'Push',
@@ -210,18 +340,61 @@ class PushNotificationService {
           stackTrace,
         );
       }
-      if (_lastKnownUserId == resolvedUserId) {
-        _lastKnownUserId = null;
-      }
+      if (!current()) return;
+      if (_lastKnownUserId == resolvedUserId) _lastKnownUserId = null;
       if (resolvedToken != null && _lastKnownToken == resolvedToken) {
         _lastKnownToken = null;
       }
+    } on SupabaseSessionChangedException {
+      // A newer registration owns the native token and service fields.
     } catch (error, stackTrace) {
       AfriLogger.error('Push', 'Token unregister failed.', error, stackTrace);
+    } finally {
+      await authority.dispose();
     }
   }
 
-  static bool get _isSupported => !kIsWeb && Firebase.apps.isNotEmpty;
+  static bool get _isSupported => _runtime.isSupported;
+
+  /// Reset only through tests; normal app code uses the Firebase/SDK runtime.
+  @visibleForTesting
+  static Future<void> configureRuntimeForTesting(
+    PushNotificationRuntime? runtime,
+  ) async {
+    _scopeGeneration++;
+    _deviceGeneration++;
+    await _authSubscription?.cancel();
+    await _tokenRefreshSubscription?.cancel();
+    await _messageSubscription?.cancel();
+    await _deviceOperationTail;
+    _runtime = runtime ?? PushNotificationRuntime();
+    _authSubscription = null;
+    _tokenRefreshSubscription = null;
+    _messageSubscription = null;
+    _authClient = null;
+    _initialized = false;
+    _messagingRuntimeRegistered = false;
+    _clubId = null;
+    _lastKnownUserId = null;
+    _lastKnownToken = null;
+  }
+
+  static Future<T> _deviceOperation<T>(
+    Future<T> Function() operation, {
+    bool Function()? isCurrent,
+  }) {
+    final result = _deviceOperationTail.then<T>((_) {
+      if (isCurrent != null && !isCurrent()) {
+        throw const SupabaseSessionChangedException();
+      }
+      return operation();
+    });
+    _deviceOperationTail = result.then<void>(
+      (_) {},
+      onError: (Object error, StackTrace stackTrace) {},
+    );
+    return result;
+  }
 
   static Future<void> _ensureMessagingRuntimeRegistered() async {
     if (!_isSupported || _messagingRuntimeRegistered) return;
@@ -233,12 +406,11 @@ class PushNotificationService {
     if (defaultTargetPlatform == TargetPlatform.iOS ||
         defaultTargetPlatform == TargetPlatform.macOS) {
       try {
-        await FirebaseMessaging.instance
-            .setForegroundNotificationPresentationOptions(
-              alert: true,
-              badge: true,
-              sound: true,
-            );
+        await _runtime.messaging.setForegroundNotificationPresentationOptions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
       } catch (error, stackTrace) {
         AfriLogger.error(
           'Push',
@@ -249,7 +421,8 @@ class PushNotificationService {
       }
     }
 
-    FirebaseMessaging.onMessage.listen((message) {
+    await _messageSubscription?.cancel();
+    _messageSubscription = FirebaseMessaging.onMessage.listen((message) {
       AfriLogger.info(
         'Push',
         'Foreground message received: ${message.messageId ?? 'unknown'}',
@@ -257,21 +430,20 @@ class PushNotificationService {
     });
 
     await _tokenRefreshSubscription?.cancel();
-    _tokenRefreshSubscription = FirebaseMessaging.instance.onTokenRefresh
-        .listen(
-          (token) async {
-            _lastKnownToken = token;
-            await syncToken();
-          },
-          onError: (Object error, StackTrace stackTrace) {
-            AfriLogger.error(
-              'Push',
-              'Token refresh stream error.',
-              error,
-              stackTrace,
-            );
-          },
+    _tokenRefreshSubscription = _runtime.messaging.onTokenRefresh.listen(
+      (token) async {
+        _lastKnownToken = token;
+        await syncToken();
+      },
+      onError: (Object error, StackTrace stackTrace) {
+        AfriLogger.error(
+          'Push',
+          'Token refresh stream error.',
+          error,
+          stackTrace,
         );
+      },
+    );
 
     _messagingRuntimeRegistered = true;
   }
@@ -279,15 +451,22 @@ class PushNotificationService {
   static Future<void> _setAutoInitEnabled(
     bool enabled, {
     required String reason,
+    bool Function()? isCurrent,
   }) async {
     if (!_isSupported) return;
 
     try {
-      await FirebaseMessaging.instance.setAutoInitEnabled(enabled);
+      final messaging = _runtime.messaging;
+      await _deviceOperation(
+        () => messaging.setAutoInitEnabled(enabled),
+        isCurrent: isCurrent,
+      );
       AfriLogger.info(
         'Push',
         'FCM auto-init ${enabled ? 'enabled' : 'disabled'} ($reason).',
       );
+    } on SupabaseSessionChangedException {
+      rethrow;
     } catch (error, stackTrace) {
       AfriLogger.error(
         'Push',
@@ -298,13 +477,20 @@ class PushNotificationService {
     }
   }
 
-  static Future<bool> _isPushEnabledForUser(String userId) async {
+  static Future<bool> _isPushEnabledForUser(
+    String userId, {
+    required SupabaseSessionAuthority authority,
+  }) async {
     try {
-      final row = await SupabaseClientFactory.client
+      authority.requireCurrent();
+      final bearer = authority.client.auth.currentSession!.accessToken;
+      final row = await authority.client
           .from('user_notification_settings')
           .select('push_enabled')
           .eq('user_id', userId)
-          .maybeSingle();
+          .maybeSingle()
+          .retry(enabled: false)
+          .setHeader('Authorization', 'Bearer $bearer');
       return resolvePushDeliveryPreference(
         row == null ? null : Map<String, dynamic>.from(row),
       );
@@ -324,20 +510,38 @@ class PushNotificationService {
 
   static Future<void> subscribeToTopic(String topic) async {
     if (!_isSupported || topic.trim().isEmpty) return;
-    final user = SupabaseClientFactory.currentUser;
-    if (user == null || !await _isPushEnabledForUser(user.id)) {
-      return;
-    }
-
+    final runtime = _runtime;
+    final authority = SupabaseSessionAuthority.capture(
+      clientProvider: () => _runtime.client,
+    );
+    final scope = _scopeGeneration;
+    final generation = _deviceGeneration;
+    bool current() =>
+        identical(runtime, _runtime) &&
+        scope == _scopeGeneration &&
+        generation == _deviceGeneration &&
+        authority.isCurrent;
     try {
-      await FirebaseMessaging.instance.subscribeToTopic(topic.trim());
+      final user = authority.session?.user;
+      if (user == null ||
+          !await _isPushEnabledForUser(user.id, authority: authority) ||
+          !current()) {
+        return;
+      }
+      await _deviceOperation(() async {
+        await runtime.messaging.subscribeToTopic(topic.trim());
+        // A native call already in flight cannot be cancelled. Revoke its
+        // obsolete subscription before the next queued owner can subscribe.
+        if (!current()) {
+          await runtime.messaging.unsubscribeFromTopic(topic.trim());
+        }
+      }, isCurrent: current);
+    } on SupabaseSessionChangedException {
+      return;
     } catch (error, stackTrace) {
-      AfriLogger.error(
-        'Push',
-        'Topic subscription failed for $topic.',
-        error,
-        stackTrace,
-      );
+      AfriLogger.error('Push', 'Topic subscription failed.', error, stackTrace);
+    } finally {
+      await authority.dispose();
     }
   }
 
@@ -345,7 +549,10 @@ class PushNotificationService {
     if (!_isSupported || topic.trim().isEmpty) return;
 
     try {
-      await FirebaseMessaging.instance.unsubscribeFromTopic(topic.trim());
+      final messaging = _runtime.messaging;
+      await _deviceOperation(
+        () => messaging.unsubscribeFromTopic(topic.trim()),
+      );
     } catch (error, stackTrace) {
       AfriLogger.error(
         'Push',
@@ -386,23 +593,28 @@ class PushNotificationService {
     return 'unknown';
   }
 
-  static Future<void> _upsertToken({required String token}) async {
-    final user = SupabaseClientFactory.currentUser;
-    if (user == null) return;
-    _lastKnownUserId = user.id;
-    _lastKnownToken = token;
-
+  static Future<void> _upsertToken({
+    required String token,
+    required String? clubId,
+    required SupabaseSessionAuthority authority,
+  }) async {
+    authority.requireCurrent();
+    final user = authority.session!.user;
     final payload = <String, dynamic>{
       'user_id': user.id,
-      if (_clubId != null && int.tryParse(_clubId!) != null)
-        'club_id': int.parse(_clubId!),
+      if (clubId != null && int.tryParse(clubId) != null)
+        'club_id': int.parse(clubId),
       'token': token,
       'device_platform': _platformLabel(),
       'last_seen_at': DateTime.now().toUtc().toIso8601String(),
     };
-
-    await SupabaseClientFactory.client
+    await authority.client
         .from('user_fcm_tokens')
-        .upsert(payload, onConflict: 'token');
+        .upsert(payload, onConflict: 'token')
+        .retry(enabled: false)
+        .setHeader(
+          'Authorization',
+          'Bearer ${authority.client.auth.currentSession!.accessToken}',
+        );
   }
 }

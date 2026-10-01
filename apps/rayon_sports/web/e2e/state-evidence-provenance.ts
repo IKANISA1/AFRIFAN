@@ -3,6 +3,9 @@ import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import type { Browser, BrowserContextOptions, Page, TestInfo } from "@playwright/test";
+import { assertLocalRouteState, localClub, localStateContextOptions } from "./fixtures/local-route-assertions.mjs";
+import { guardStateEvidenceContext } from "./fixtures/local-browser-network.mjs";
+export { createStateEvidenceContext } from "./fixtures/local-browser-network.mjs";
 
 const sha256 = (bytes: Buffer) => createHash("sha256").update(bytes).digest("hex");
 
@@ -36,6 +39,7 @@ function validateProductionBuild(web: string): Record<string, string> {
 export function stateEvidenceContextOptions(testInfo: TestInfo): BrowserContextOptions {
   const profile = testInfo.project.use;
   return {
+    ...localStateContextOptions(testInfo),
     // Controlled route responses require the browser request to reach the
     // interceptor. Actual service-worker lifecycle is exercised separately.
     serviceWorkers: "block",
@@ -52,6 +56,15 @@ export async function navigateStateEvidence(
   url: string,
   options?: Parameters<Page["goto"]>[1],
 ) {
+  // Playwright's default page fixture also receives the same fence before its
+  // first navigation; all manual contexts use the explicit factory above.
+  await guardStateEvidenceContext(page.context());
+  const club = localClub();
+  if (club && /^\/admin(?:\/|\?|$)/.test(url)) {
+    const target = new URL(url, "http://127.0.0.1:3200");
+    target.searchParams.set("club", String(club.id));
+    url = `${target.pathname}${target.search}${target.hash}`;
+  }
   const media = await page.evaluate(() => ({
     colorScheme: matchMedia("(prefers-color-scheme: dark)").matches ? "dark" as const : "light" as const,
     reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches ? "reduce" as const : "no-preference" as const,
@@ -102,6 +115,11 @@ export async function captureStateScreenshot(
 ) {
   const directory = path.dirname(options.path);
   const file = path.basename(options.path);
+  const metadataPath = path.join(directory, "capture-profiles.json");
+  const existingProfiles = fs.existsSync(metadataPath) ? JSON.parse(fs.readFileSync(metadataPath, "utf8")) : {};
+  if (fs.existsSync(options.path) || Object.hasOwn(existingProfiles, file)) {
+    throw new Error("Capture filename already has retained evidence");
+  }
   const expectedTheme = file.match(/_(dark|light)_(?:desktop|tablet|compact|mobile|viewport)/)?.[1];
   for (let attempt = 1; attempt <= 3; attempt++) {
     await page.evaluate(async () => {
@@ -146,11 +164,11 @@ export async function captureStateScreenshot(
       if (attempt === 3) throw new Error(`Capture geometry did not stabilize: ${file}; inspect ${temporary}`);
       continue;
     }
+    const accessibility = await assertLocalRouteState(page, file, directory);
     for (const tile of tiles) fs.renameSync(path.join(temporary, tile.file), path.join(directory, tile.file));
     fs.rmdirSync(temporary);
-    const metadataPath = path.join(directory, "capture-profiles.json");
     const metadata = fs.existsSync(metadataPath) ? JSON.parse(fs.readFileSync(metadataPath, "utf8")) : {};
-    metadata[file] = { ...profile, full_page: options.fullPage === true, tiles,
+    metadata[file] = { ...profile, full_page: options.fullPage === true, tiles, accessibility,
       capture_validation: { attempts: attempt, fonts_ready: true, geometry_before_after_stable: true, png_dimensions_verified: true } };
     fs.writeFileSync(metadataPath, `${JSON.stringify(metadata, null, 2)}\n`);
     return;
@@ -233,6 +251,59 @@ export function finalizeStateEvidence(directory: string) {
   }
   for (const capture of manifest.captures) {
     if (profiles[capture.file]) capture.capture_profile = profiles[capture.file];
+  }
+  const axeFiles = files.filter((file) => file.endsWith(".axe.json"));
+  const captureNames = manifest.captures.map((capture: { file: string }) => capture.file).sort();
+  if (new Set(captureNames).size !== captureNames.length ||
+      JSON.stringify(Object.keys(profiles).sort()) !== JSON.stringify(captureNames)) {
+    throw new Error("State manifest and capture profiles differ");
+  }
+  const declaredAxe = Object.values(profiles).flatMap((profile) => {
+    const accessibility = (profile as { accessibility?: { file: string; sha256: string; tags: string[]; impact_counts: Record<string, number> } }).accessibility;
+    if (!accessibility) throw new Error("Explicit capture lacks its full accessibility result");
+    if (accessibility.file !== path.basename(accessibility.file)) {
+      throw new Error("Accessibility result path leaves the capture directory");
+    }
+    if (!fs.lstatSync(path.join(directory, accessibility.file)).isFile()) {
+      throw new Error("Accessibility result is not a regular retained file");
+    }
+    const bytes = fs.readFileSync(path.join(directory, accessibility.file));
+    const result = JSON.parse(bytes.toString("utf8"));
+    const tags = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"];
+    const environment = result.testEnvironment;
+    const nonempty = (value: unknown): value is string => typeof value === "string" && value.trim().length > 0;
+    let validUrl = false;
+    if (nonempty(result.url)) {
+      try { new URL(result.url); validUrl = true; } catch { /* Invalid native result URL. */ }
+    }
+    const parsedTimestamp = nonempty(result.timestamp) ? Date.parse(result.timestamp) : NaN;
+    const canonicalTimestamp = Number.isFinite(parsedTimestamp) &&
+      new Date(parsedTimestamp).toISOString() === result.timestamp;
+    const impacts = ["critical", "serious", "moderate", "minor", "unknown"];
+    const impactCounts = Array.isArray(result.violations) ? Object.fromEntries(impacts.map((impact) => [impact,
+      result.violations.filter((violation: { impact?: string }) => (violation.impact ?? "unknown") === impact).length,
+    ])) : null;
+    if (sha256(bytes) !== accessibility.sha256 ||
+        JSON.stringify(accessibility.tags) !== JSON.stringify(tags) ||
+        result.toolOptions?.runOnly?.type !== "tag" ||
+        JSON.stringify(result.toolOptions.runOnly.values) !== JSON.stringify(tags) ||
+        !["violations", "incomplete", "passes", "inapplicable"].every((key) => Array.isArray(result[key])) ||
+        !nonempty(result.testEngine?.name) || !nonempty(result.testEngine?.version) ||
+        !environment || typeof environment !== "object" || Array.isArray(environment) ||
+        !nonempty(environment.userAgent) ||
+        ![environment.windowWidth, environment.windowHeight].every((value) => Number.isFinite(value) && value > 0) ||
+        (environment.orientationAngle !== undefined && !Number.isFinite(environment.orientationAngle)) ||
+        (environment.orientationType !== undefined && !nonempty(environment.orientationType)) ||
+        !validUrl || !canonicalTimestamp ||
+        JSON.stringify(accessibility.impact_counts) !== JSON.stringify(impactCounts) ||
+        result.violations.some((violation: { impact?: string }) =>
+          violation.impact === "critical" || violation.impact === "serious")) {
+      throw new Error("Raw accessibility result or declared WCAG policy differs");
+    }
+    return [accessibility.file];
+  });
+  if (JSON.stringify(declaredAxe.sort()) !== JSON.stringify(axeFiles)) {
+    throw new Error("Raw accessibility results and capture metadata differ");
   }
   fs.writeFileSync(path.join(directory, manifests[0]), `${JSON.stringify(manifest, null, 2)}\n`);
   record.artifacts = files.map((file) => ({ file, sha256: sha256(fs.readFileSync(path.join(directory, file))) }));

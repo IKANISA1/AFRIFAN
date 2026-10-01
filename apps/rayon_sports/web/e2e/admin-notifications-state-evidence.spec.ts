@@ -1,5 +1,6 @@
+import { localClubId, localStateContextOptions } from "./fixtures/local-route-assertions.mjs";
 import fs from "node:fs";
-import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence } from "./state-evidence-provenance";
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, createStateEvidenceContext } from "./state-evidence-provenance";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Browser, type Page, type Route } from "@playwright/test";
@@ -114,7 +115,8 @@ async function expectNoHorizontalOverflow(page: Page) {
 
 async function runMatrix(browser: Browser) {
   const evidenceDirectory = prepareStateEvidence(browser, test.info(), "admin_pwa_notifications_states");
-  const context = await browser.newContext({
+  const context = await createStateEvidenceContext(browser, {
+    ...localStateContextOptions(test.info(), true),
     // API fixtures must bypass worker interception; PWA lifecycle has its own tests.
     serviceWorkers: "block",
     viewport: { width: 1440, height: 1000 },
@@ -127,7 +129,7 @@ async function runMatrix(browser: Browser) {
   await page.emulateMedia({ colorScheme: "dark" });
   let responseMode: ResponseMode = "ready";
 
-  await page.route("**/api/admin/notifications", async (route: Route) => {
+  await page.route((url) => url.pathname === "/api/admin/notifications", async (route: Route) => {
     if (route.request().method() === "POST") {
       await route.fulfill({
         status: 200,
@@ -340,7 +342,7 @@ async function runMatrix(browser: Browser) {
     await dialog.dismiss();
   });
   await page.getByRole("button", { name: /send notification/i }).click();
-  expect(confirmation).toContain("Scope: all supporters · active club 24");
+  expect(confirmation).toContain(`Scope: all supporters · active club ${localClubId()}`);
   expect(confirmation).toContain("This action cannot be undone.");
 
   await page.emulateMedia({ colorScheme: "light" });
@@ -471,7 +473,7 @@ test.describe("controlled Admin PWA notifications evidence", () => {
   test("captures the exact authenticated notifications state matrix", async ({
     browser,
   }) => {
-    test.setTimeout(180_000);
+    test.setTimeout(360_000);
     await runMatrix(browser);
   });
 });

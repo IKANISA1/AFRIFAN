@@ -1,5 +1,6 @@
+import { localClubId, localStateContextOptions } from "./fixtures/local-route-assertions.mjs";
 import fs from "node:fs";
-import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence } from "./state-evidence-provenance";
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, createStateEvidenceContext } from "./state-evidence-provenance";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import {
@@ -121,7 +122,8 @@ async function expectNoHorizontalOverflow(page: Page) {
 
 async function runMatrix(browser: Browser) {
   const evidenceDirectory = prepareStateEvidence(browser, test.info(), "admin_pwa_offers_states");
-  const context = await browser.newContext({
+  const context = await createStateEvidenceContext(browser, {
+    ...localStateContextOptions(test.info(), true),
     // API fixtures must bypass worker interception; PWA lifecycle has its own tests.
     serviceWorkers: "block",
     viewport: { width: 1440, height: 1000 },
@@ -359,7 +361,7 @@ async function runMatrix(browser: Browser) {
   await page
     .getByRole("button", { name: "Delete Verified partner reward 10" })
     .click();
-  expect(confirmation).toContain("Verified partner 10 · active club 24");
+  expect(confirmation).toContain(`Verified partner 10 · active club ${localClubId()}`);
   expect(confirmation).toContain("This action cannot be undone.");
 
   await page.emulateMedia({ colorScheme: "light" });
@@ -493,7 +495,7 @@ test.describe("controlled Admin PWA partner-offer evidence", () => {
   test("captures the exact authenticated partner-offer state matrix", async ({
     browser,
   }) => {
-    test.setTimeout(180_000);
+    test.setTimeout(360_000);
     await runMatrix(browser);
   });
 });

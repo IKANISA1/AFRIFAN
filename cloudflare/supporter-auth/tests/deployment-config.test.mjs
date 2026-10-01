@@ -62,5 +62,11 @@ test('identity checker CLI validates the current templates and refuses an enabli
   const script = fileURLToPath(new URL('../scripts/check-deployment.mjs',import.meta.url));
   assert.equal(JSON.parse(execFileSync(process.execPath,[script],{encoding:'utf8'})).configurationPassed,true);
   const result = spawnSync(process.execPath,[script,'--ready'],{encoding:'utf8'});
-  assert.equal(result.status,1);assert.equal(result.stderr.trim(),'invalid_identity_configuration');
+  assert.equal(result.status,1);assert.equal(result.stdout,'');
+  const diagnostics=result.stderr.trim().split(/\r?\n/);
+  assert.equal(diagnostics[0],'invalid_identity_configuration');
+  assert.ok(diagnostics.length===1||diagnostics.length===2);
+  if(diagnostics.length===2)assert.deepEqual(JSON.parse(diagnostics[1]),{
+    localValidationNetworkGuard:true,outboundNetworkAttemptsBlocked:0,
+  });
 });

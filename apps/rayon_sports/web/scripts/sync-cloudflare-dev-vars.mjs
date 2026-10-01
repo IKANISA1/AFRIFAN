@@ -1,10 +1,7 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, lstatSync, openSync, writeFileSync, fsyncSync, fchmodSync, closeSync, renameSync, unlinkSync, constants } from "node:fs";
 import { resolve } from "node:path";
-
-const root = resolve(process.cwd());
-const sourcePath = [".env.local", ".env"]
-  .map((file) => resolve(root, file))
-  .find((file) => existsSync(file));
+import { randomUUID } from "node:crypto";
+import { fileURLToPath } from "node:url";
 
 const keys = [
   "NEXT_PUBLIC_SITE_URL",
@@ -41,15 +38,34 @@ function parseEnv(source) {
     }, {});
 }
 
-const parsed = sourcePath ? parseEnv(readFileSync(sourcePath, "utf8")) : {};
-const lines = ["NEXTJS_ENV=development"];
-
-for (const key of keys) {
-  const value = parsed[key] ?? process.env[key] ?? "";
-  if (value) {
-    lines.push(`${key}=${value}`);
-  }
+export function writePrivateDevVars(directory,content){
+ const target=resolve(directory,'.dev.vars');
+ if(existsSync(target)||(()=>{try{return lstatSync(target).isSymbolicLink();}catch{return false;}})()){
+  const stat=lstatSync(target);
+  if(!stat.isFile()||stat.isSymbolicLink())throw Error('unsafe_private_environment_target');
+ }
+ const temporary=resolve(directory,'.dev.vars-'+randomUUID());let descriptor;
+ try{
+  descriptor=openSync(temporary,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);
+  fchmodSync(descriptor,0o600);writeFileSync(descriptor,content,{encoding:'utf8'});fsyncSync(descriptor);
+  closeSync(descriptor);descriptor=undefined;renameSync(temporary,target);
+ }finally{
+  if(descriptor!==undefined)closeSync(descriptor);
+  try{unlinkSync(temporary);}catch{/* A completed rename has no temporary entry. */}
+ }
 }
-
-writeFileSync(resolve(root, ".dev.vars"), `${lines.join("\n")}\n`, "utf8");
-console.log(`Wrote .dev.vars from ${sourcePath ? sourcePath.split("/").pop() : "process environment"}.`);
+if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)){
+ try{
+  const root=resolve(process.cwd());
+  const sourcePath=['.env.local','.env'].map(file=>resolve(root,file)).find(file=>existsSync(file));
+  const parsed=sourcePath?parseEnv(readFileSync(sourcePath,'utf8')):{};
+  const lines=['NEXTJS_ENV=development'];
+  for(const key of keys){
+   const value=parsed[key]??process.env[key]??'';
+   if(/[\r\n\0]/.test(value))throw Error('unsafe_private_environment_input');
+   if(value)lines.push(`${key}=${value}`);
+  }
+  writePrivateDevVars(root,`${lines.join('\n')}\n`);console.log('Wrote owner-only .dev.vars.');
+ }
+ catch{console.error('private_environment_write_failed');process.exitCode=1;}
+}

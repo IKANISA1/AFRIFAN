@@ -13,8 +13,10 @@ describe("AdminStatusBadge color-independent contract", () => {
   ] as const)("announces the %s tone independently of color", (tone, name) => {
     render(<AdminStatusBadge label="Payment pending" tone={tone} pulse />);
 
-    const badge = screen.getByLabelText(`${name} status: Payment pending`);
-    expect(badge).toHaveTextContent("Payment pending");
+    const prefix = screen.getByText(`${name} status:`, { exact: true });
+    const badge = prefix.parentElement!;
+    expect(prefix).toHaveClass("sr-only");
+    expect(badge).toHaveTextContent(`${name} status: Payment pending`);
     expect(badge).toHaveAttribute("data-status-tone", tone);
     expect(badge.querySelector(".admin-status-dot")).toHaveAttribute(
       "aria-hidden",

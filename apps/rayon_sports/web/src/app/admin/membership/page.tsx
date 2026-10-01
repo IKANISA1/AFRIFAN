@@ -14,6 +14,7 @@ import {
 } from "@/components/admin/admin-resource-status-banner";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
+import { handleAdminTabKeyDown } from "@/components/admin/admin-tab-keyboard";
 import { AdminSurface } from "@/components/admin/admin-surface";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
@@ -313,7 +314,7 @@ export default function AdminMembershipPage() {
             {Array.from({ length: 4 }).map((_, index) => (
               <div
                 key={index}
-                className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] p-4"
+                className="rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-widget)] p-4"
               >
                 <Skeleton className="skeleton-text h-5 w-1/3" />
                 <Skeleton className="skeleton-text mt-2 h-3 w-2/3" />
@@ -334,8 +335,12 @@ export default function AdminMembershipPage() {
                   key={tab}
                   type="button"
                   role="tab"
+                  id={`membership-tab-${tab}`}
                   aria-selected={activeTab === tab}
+                  aria-controls="membership-panel"
+                  tabIndex={activeTab === tab ? 0 : -1}
                   disabled={mutationLocked && status !== "error"}
+                  onKeyDown={handleAdminTabKeyDown}
                   onClick={() => {
                     setActiveTab(tab);
                     setInteraction("selected");
@@ -351,6 +356,13 @@ export default function AdminMembershipPage() {
             )}
           </div>
 
+          <div
+            id="membership-panel"
+            role="tabpanel"
+            aria-labelledby={`membership-tab-${activeTab}`}
+            tabIndex={0}
+            className="min-w-0"
+          >
           {activeTab === "tiers" ? (
             <MembershipList
               packages={packages}
@@ -492,7 +504,7 @@ export default function AdminMembershipPage() {
               />
             </div>
           ) : null}
-
+          </div>
 
         </>
       )}

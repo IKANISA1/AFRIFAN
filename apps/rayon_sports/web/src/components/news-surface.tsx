@@ -452,7 +452,7 @@ export function NewsSurface({ locale, identity, copy }: NewsSurfaceProps) {
               </article>
 
               {articles.length > 1 ? (
-                <div className="news-story-grid" aria-label={localized.latestStories}>
+                <div className="news-story-grid" role="group" aria-label={localized.latestStories}>
                   {articles.map((article) => (
                     <button
                       type="button"

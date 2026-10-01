@@ -44,7 +44,7 @@ class FirebaseAnalyticsService {
       }
     } catch (error) {
       _consentGranted = false;
-      AfriLogger.warn('Analytics', 'Failed to apply analytics consent: $error');
+      AfriLogger.warn('Analytics', 'Failed to apply analytics consent.');
     }
   }
 
@@ -77,7 +77,7 @@ class FirebaseAnalyticsService {
         parameters: event.parameters.isEmpty ? null : event.parameters,
       );
     } catch (e) {
-      AfriLogger.warn('Analytics', 'Failed to log event "$name": $e');
+      AfriLogger.warn('Analytics', 'Failed to log analytics event.');
     }
   }
 
@@ -90,17 +90,17 @@ class FirebaseAnalyticsService {
     final safeScreenName = PrivacySafeAnalyticsPolicy.sanitizeScreenName(
       screenName,
     );
-    if (safeScreenName == null) return;
+    final safeScreenClass = PrivacySafeAnalyticsPolicy.sanitizeScreenClass(
+      screenClassOverride,
+    );
+    if (safeScreenName == null || safeScreenClass == null) return;
     try {
       await _analytics?.logScreenView(
         screenName: safeScreenName,
-        screenClass: screenClassOverride,
+        screenClass: safeScreenClass,
       );
     } catch (e) {
-      AfriLogger.warn(
-        'Analytics',
-        'Failed to set current screen "$screenName": $e',
-      );
+      AfriLogger.warn('Analytics', 'Failed to set current analytics screen.');
     }
   }
 

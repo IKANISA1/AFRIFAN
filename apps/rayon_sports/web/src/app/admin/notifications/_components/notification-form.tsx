@@ -26,7 +26,7 @@ export function NotificationForm({
 }: NotificationFormProps) {
   return (
     <form
-      className="glass-panel grid gap-4 rounded-[32px] p-6"
+      className="ui-panel grid gap-4 rounded-[32px] p-6"
       onSubmit={(event) => {
         event.preventDefault();
         onSubmit();

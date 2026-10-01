@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import { HttpError, requireCronSecret } from "../_shared/auth.ts";
@@ -163,7 +164,7 @@ export function createDispatchScheduledNotificationsHandler(
         return jsonError(error.message, error.status);
       }
 
-      console.error("dispatch-scheduled-notifications failed:", error);
+      logDiagnostic("error", "dispatch_scheduled_notifications_dispatch_scheduled_notifications_failed", error);
       return jsonError(
         error instanceof Error
           ? error.message

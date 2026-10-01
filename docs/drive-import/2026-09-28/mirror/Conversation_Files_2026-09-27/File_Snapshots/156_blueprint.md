@@ -165,7 +165,7 @@ void, offline, and retry states.
 
 ## UI And UX Contract
 
-`DESIGN.md` is the single visual and interaction authority.
+The selected `revolut-design` skill is the sole visual and interaction authority; `DESIGN.md` records product mappings only.
 
 Football-first composition rules:
 

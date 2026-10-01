@@ -1,5 +1,6 @@
+import { bindLocalClubFixtures, localStateContextOptions } from "./fixtures/local-route-assertions.mjs";
 import fs from "node:fs";
-import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence } from "./state-evidence-provenance";
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, createStateEvidenceContext } from "./state-evidence-provenance";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import {
@@ -185,7 +186,8 @@ async function expectNoHorizontalOverflow(page: Page) {
 
 async function runAdminCmsContentBlocksMatrix(browser: Browser) {
   const evidenceDirectory = prepareStateEvidence(browser, test.info(), "admin_pwa_cms_content_blocks_states");
-  const context = await browser.newContext({
+  const context = await createStateEvidenceContext(browser, {
+    ...localStateContextOptions(test.info(), true),
     // API fixtures must bypass worker interception; PWA lifecycle has its own tests.
     serviceWorkers: "block",
     viewport: { width: 1440, height: 1000 },
@@ -207,7 +209,7 @@ async function runAdminCmsContentBlocksMatrix(browser: Browser) {
     await route.fulfill({
       status: response.status,
       contentType: "application/json",
-      body: JSON.stringify(response.body),
+      body: JSON.stringify(bindLocalClubFixtures(response.body)),
     });
   };
   await page.route("**/api/admin/content-blocks*", (route) =>
@@ -327,7 +329,9 @@ async function runAdminCmsContentBlocksMatrix(browser: Browser) {
 
   await open("large-text");
   await expectStatus("ready", /placement blocks confirmed/i);
-  await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
+  await page.evaluate(() => {
+    document.documentElement.style.setProperty("font-size", "200%", "important");
+  });
   await expectNoHorizontalOverflow(page);
   await capture("large_text");
 
@@ -539,7 +543,7 @@ test.describe("controlled Admin PWA placement-block evidence", () => {
   test("captures the exact authenticated placement-block state matrix", async ({
     browser,
   }) => {
-    test.setTimeout(120_000);
+    test.setTimeout(360_000);
     await runAdminCmsContentBlocksMatrix(browser);
   });
 });

@@ -14,10 +14,22 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:test_support/app_font_loader.dart';
 import 'package:test_support/shop_fixture_images.dart';
 
-void main() {
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
+void main({bool localStateCoverage = false}) {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(loadAppFonts);
   useShopFixtureImages();
+  if (localStateCoverage) {
+    testWidgets('local Cart actual light state', (tester) async {
+      await _pumpCartGolden(
+        tester,
+        id: 'light',
+        brightness: Brightness.light,
+        paymentRouteLoader: (_) async => _route,
+      );
+    });
+  }
   late List<AfriCountry> previousCountries;
   setUp(() {
     ConnectivityService.setOnlineForTest(true);
@@ -300,7 +312,12 @@ void main() {
       afterPump: (tester) async {
         await _submitOrderFromCart(tester);
         await tester.pump(const Duration(milliseconds: 300));
-        await tester.ensureVisible(find.text('Order details changed'));
+        await Scrollable.ensureVisible(
+          tester.element(find.text('Order details changed')),
+          // Keep the state notice visible without leaving the quantity row
+          // cut across the top of this representative viewport.
+          alignment: localRouteFixtureConfig == null ? 0 : 0.8,
+        );
         await tester.pump();
       },
     );
@@ -366,6 +383,7 @@ void main() {
 }
 
 const _cartGoldenPaths = <String, String>{
+  'light': 'local_cart_state_light.png',
   'loading': 'goldens/cart_state_loading_dark_390x844.png',
   'empty': 'goldens/cart_state_empty_dark_390x844.png',
   'error': 'goldens/cart_state_error_dark_390x844.png',
@@ -387,6 +405,7 @@ Future<void> _pumpCartGolden(
   required CartPaymentRouteLoader paymentRouteLoader,
   Size size = const Size(390, 844),
   double textScale = 1,
+  Brightness brightness = Brightness.dark,
   bool settle = true,
   bool online = true,
   bool seeded = true,
@@ -400,7 +419,7 @@ Future<void> _pumpCartGolden(
   addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
   TypographyTokens.debugUseFallbackFonts = true;
   addTearDown(() => TypographyTokens.debugUseFallbackFonts = false);
-  ColorTokens.setBrightness(Brightness.dark);
+  ColorTokens.setBrightness(brightness);
   addTearDown(() => ColorTokens.setBrightness(Brightness.dark));
   ConnectivityService.setOnlineForTest(online);
   addTearDown(() => ConnectivityService.setOnlineForTest(true));
@@ -408,6 +427,7 @@ Future<void> _pumpCartGolden(
   await tester.pumpWidget(
     _buildCartApp(
       paymentRouteLoader: paymentRouteLoader,
+      brightness: brightness,
       seeded: seeded,
       user: user,
       orderPlacer: orderPlacer,
@@ -428,13 +448,17 @@ Future<void> _pumpCartGolden(
   expect(tester.takeException(), isNull);
   final goldenPath = _cartGoldenPaths[id];
   expect(goldenPath, isNotNull, reason: 'Missing cart golden path for $id.');
-  await expectLater(
+  await expectGoldenOrClubAssertions(
+    tester,
     find.byKey(const ValueKey<String>('cart-state-golden')),
-    matchesGoldenFile(goldenPath!),
+    goldenPath!,
+    route: '/shop/cart',
+    kind: 'route',
   );
 }
 
 Widget _buildCartApp({
+  Brightness brightness = Brightness.dark,
   required CartPaymentRouteLoader paymentRouteLoader,
   bool seeded = true,
   UserProfile? user = _user,
@@ -447,13 +471,16 @@ Widget _buildCartApp({
       storeReleasePolicyProvider.overrideWithValue(
         const StoreReleasePolicy.unenforced(),
       ),
-      currentUserProvider.overrideWithValue(user),
+      currentUserProvider.overrideWithValue(localRouteProfile(user)),
       if (seeded) shopCartProvider.overrideWith((ref) => _SeededCartNotifier()),
     ],
     child: MaterialApp(
-      theme: ClubTheme.from(ClubConfig.fallback(), brightness: Brightness.dark),
+      theme: ClubTheme.from(
+        localRouteConfigOrFallback(),
+        brightness: brightness,
+      ),
       home: ClubConfigScope(
-        config: ClubConfig.fallback(),
+        config: localRouteConfigOrFallback(),
         child: RepaintBoundary(
           key: goldenKey,
           child: CartScreen(

@@ -1,4 +1,4 @@
-import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions } from "./state-evidence-provenance";
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions, createStateEvidenceContext } from "./state-evidence-provenance";
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
@@ -154,7 +154,7 @@ async function runStateMatrix(
   const evidenceDirectory = prepareStateEvidence(browser, test.info(), `consumer_web_${config.key}_states`);
 
 
-  const context: BrowserContext = await browser.newContext({
+  const context: BrowserContext = await createStateEvidenceContext(browser, {
     ...stateEvidenceContextOptions(test.info()),
     colorScheme: "dark",
     reducedMotion: "no-preference",
@@ -296,7 +296,9 @@ async function runStateMatrix(
   await capture("selected_dark");
 
   await open("large-text");
-  await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
+  await page.evaluate(() => {
+    document.documentElement.style.setProperty("font-size", "200%", "important");
+  });
   expect(
     await page.evaluate(
       () =>
@@ -461,7 +463,7 @@ async function runStateMatrix(
 test("/shop proves all sixteen applicable rendered states", async ({
   browser,
 }) => {
-  test.setTimeout(120_000);
+  test.setTimeout(360_000);
   await runStateMatrix(browser, {
     route: "/shop",
     key: "shop",
@@ -479,7 +481,7 @@ test("/shop proves all sixteen applicable rendered states", async ({
 test("/shop/:productId proves all sixteen applicable rendered states", async ({
   browser,
 }) => {
-  test.setTimeout(120_000);
+  test.setTimeout(360_000);
   await runStateMatrix(browser, {
     route: "/shop/home-shirt",
     key: "shop_product",

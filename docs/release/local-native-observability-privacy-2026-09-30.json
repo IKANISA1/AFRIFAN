@@ -1,0 +1,728 @@
+{
+  "schemaVersion": 1,
+  "generatedAtUtc": "2026-09-30T23:24:04.459639+00:00",
+  "status": "LOCAL_IMPLEMENTATION_VERIFIED",
+  "scope": "Native privacy at Analytics, Crashlytics, operational-health SDK send, offline Hive persistence and legacy replay boundaries.",
+  "sourceChanges": [
+    {
+      "path": "packages/core/core_network/lib/src/privacy_safe_analytics.dart",
+      "sha256": "abc022755af0ef3ee0c8a281cc2d3858b2177e895e72338f6ff4f737264be5ac",
+      "bytes": 9769,
+      "changeType": "modified",
+      "reason": "Replace regex-only value acceptance with closed per-event parameter sets; emit only reviewed public mobile route templates/names and reject opaque screen labels/classes."
+    },
+    {
+      "path": "packages/core/core_network/lib/src/firebase_analytics_service.dart",
+      "sha256": "7e10bff0e872b3e74d5b255b6c5b3a897ce4116a80e14f235267f8e3c06e2f26",
+      "bytes": 8832,
+      "changeType": "modified",
+      "reason": "Validate Flutter screen class before installed SDK invocation and remove caller/error interpolation from diagnostic fallback messages."
+    },
+    {
+      "path": "packages/core/core_network/lib/src/crashlytics_service.dart",
+      "sha256": "5ccfe660126653ea5dea11099923b0faa1f094a5f71d75778e722aa820c2d536",
+      "bytes": 4821,
+      "changeType": "modified",
+      "reason": "Send finite typed error categories/reasons; suppress caller message, runtimeType, stack, framework collector/context/library and arbitrary breadcrumb text. Await breadcrumb SDK failures. The nonempty redaction marker avoids installed SDK empty-stack fallback."
+    },
+    {
+      "path": "packages/core/core_network/lib/src/native_health_payload.dart",
+      "sha256": "193f67afbfa967c9eb515a786618a0a6eb474df6d8bd312b18ea0359fb0557a9",
+      "bytes": 5716,
+      "changeType": "added",
+      "reason": "Mirror the backend finite service/function/issue and diagnostic metadata contracts in one normalizer; null account/subject identity, fixed messages/status/severity and bounded UTC timestamps."
+    },
+    {
+      "path": "packages/core/core_network/lib/src/operational_health_service.dart",
+      "sha256": "4e91a0888400754965ee04ad03cf3f4ad1f15d03468a995d381573563e4da27f",
+      "bytes": 3610,
+      "changeType": "modified",
+      "reason": "Normalize at payload construction and again at actual SDK send, remove current-user fallback and caller/backend error text from failure exceptions."
+    },
+    {
+      "path": "packages/core/core_network/lib/src/offline_event_queue.dart",
+      "sha256": "923b2d2f848c774f0a4d3145cb0c94b029110fe452cae78f67a3373b4fe84401",
+      "bytes": 7702,
+      "changeType": "modified",
+      "reason": "Normalize before immediate delivery and Hive persistence; normalize legacy records before offline access and before replay, retain sanitized bytes on delivery failure, remove malformed diagnostics and use unique Hive keys to preserve same-tick events."
+    },
+    {
+      "path": "packages/core/core_network/lib/core_network.dart",
+      "sha256": "4d103dc82104d8dab6c1e5c4870c30a32488cf6b0ccf9723133ef94888e5b535",
+      "bytes": 1395,
+      "changeType": "modified",
+      "reason": "Export the shared native health normalizer alongside the separately implemented captured-session helper."
+    },
+    {
+      "path": "packages/core/core_network/test/privacy_safe_analytics_test.dart",
+      "sha256": "9151b10f1aa2cdfa23aecd88999d5552ee14056183b7ff63f28734fb91a7b1b5",
+      "bytes": 7062,
+      "changeType": "modified",
+      "reason": "Exercise every declared key against opaque text and wrong types, existing product caller values, route-name aliases, textual parameter redaction and unknown screen/class rejection."
+    },
+    {
+      "path": "packages/core/core_network/test/crashlytics_service_test.dart",
+      "sha256": "6756ed9db4889fb0e1b863a5e960dfc42d91ee90491f28c0afa07c8ba865e290",
+      "bytes": 1883,
+      "changeType": "modified",
+      "reason": "Assert closed diagnostic code acceptance and reject opaque or interpolated text."
+    },
+    {
+      "path": "packages/core/core_network/test/offline_event_queue_test.dart",
+      "sha256": "7fda222e8f44f04f2087c0c077374a606cb2aac2c88d68c5ebaf2b1f4602b3ec",
+      "bytes": 1884,
+      "changeType": "modified",
+      "reason": "Preserve offline/online delivery expectations while requiring the fixed diagnostic message."
+    },
+    {
+      "path": "packages/core/core_network/test/native_observability_payload_test.dart",
+      "sha256": "1c7f9a1b666f7afeb34e61f50c44d535532c19b8a9eb6232fa8f28d985b40f75",
+      "bytes": 9541,
+      "changeType": "added",
+      "reason": "Use actual installed Firebase Core/Analytics/Crashlytics serializers and local Pigeon/MethodChannel replies to assert native payloads contain finite categories/reasons, zero caller frames, approved screen class and coarse events."
+    },
+    {
+      "path": "packages/core/core_network/test/native_health_payload_test.dart",
+      "sha256": "012de4e8012cfae17802604d78742637258c6b923a4a5ec34932d1ac4a89e660",
+      "bytes": 11619,
+      "changeType": "added",
+      "reason": "Use actual Supabase intercepted HTTP, authenticated SDK session and actual Hive disk records to verify build/send/persist/legacy replay, failure-retained sanitized data, metric/type bounds, hostile objects, malformed records and separate same-tick events."
+    }
+  ],
+  "counts": {
+    "added": 3,
+    "modified": 9
+  },
+  "implementedControls": {
+    "analyticsValues": "Closed per-event reviewed code sets; unknown event/key/value and non-string values fail closed. Optional fields remain optional. Unreviewed backend action keys are discarded from telemetry only.",
+    "screens": "Registry public mobile/native-admin templates and declared aliases plus two existing legacy tickets/orders shapes; dynamic segment contents and query/fragment never emitted. Only Flutter screen class is allowed.",
+    "crashes": "Finite error categories timeout/format/argument/state/unsupported/failure/framework; only five declared diagnostic codes, fallback runtime_error. No raw caller message, supplied stack, arbitrary type name, Flutter metadata or collectors; payload stackTraceElements empty, buildId empty and loadingUnits empty in actual SDK assertions.",
+    "health": "Exact current backend service/function/issue catalogs, fixed messages and bounded diagnosticMetadata. No account/subject IDs, free text, nested metadata or object serialization. Client SDK current user never fills diagnostic identity.",
+    "queue": "Sanitized before immediate send and local write; legacy data normalized while offline at initialization and rewritten before replay. Failed replay retains only sanitized bytes. Malformed diagnostic records removed; no transactional/audit records affected."
+  },
+  "beforeFixEvidence": [
+    {
+      "name": "opaque public API policy probe",
+      "exitCode": 1,
+      "passed": 0,
+      "failed": 4,
+      "log": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-opaque-before-fix.log",
+        "sha256": "a4a0aa65604ecaaf5fc2914b0876b87a2c13ee5aede9dace6bf5b41702640a45",
+        "bytes": 3664
+      }
+    },
+    {
+      "name": "corrected actual Firebase SDK payload boundary",
+      "exitCode": 1,
+      "passed": 1,
+      "failed": 5,
+      "log": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-sdk-payload-before-fix-corrected.log",
+        "sha256": "27b5180109c44c4939a29b4d62dd75dcbf9024d05724989d8caffe7c3aeb0d9d",
+        "bytes": 5416
+      },
+      "note": "An earlier fixture setup used an obsolete channel and failed setup; retained separately, not counted as privacy reproduction."
+    },
+    {
+      "name": "actual native health SDK/Hive boundary",
+      "exitCode": 1,
+      "passed": 0,
+      "failed": 6,
+      "log": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-privacy/native-health-before-fix.log",
+        "sha256": "b5df6919f3baad54f4cf68a5109629948e49f40400e7fc62e20f79408111255f",
+        "bytes": 8003
+      }
+    }
+  ],
+  "baselineSources": {
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-privacy/source-before.json",
+    "sha256": "3ccd01fdee5b7bb986901d99d03d4db74675a3116eb5e24c94b53a66b5dc7eb3",
+    "bytes": 1323
+  },
+  "reviewedCallerInventory": {
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-privacy/caller-contract-inventory.json",
+    "sha256": "7c8cbe8162c75060df7c307eeb70393a4722fe90970823171b7077f95f1242b9",
+    "bytes": 12480
+  },
+  "healthBackendCatalogParity": {
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-privacy/health-backend-catalog-parity.json",
+    "sha256": "0a59e7e149945496c6d555cc254c5c65e757fe18307d4db902bf100a4d63052a",
+    "bytes": 4876
+  },
+  "verification": {
+    "results": [
+      {
+        "name": "final-core-auth-bank",
+        "command": [
+          "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+          "--no-version-check",
+          "--suppress-analytics",
+          "test",
+          "--no-pub",
+          "--concurrency=4",
+          "--reporter",
+          "expanded"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/core/core_auth",
+        "exitCode": 0,
+        "elapsedSeconds": 77.587,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-core-auth-bank.log",
+          "sha256": "bf6e0a1c5d9ac19bee403a0d8131bb113401bbf5ce5f055051df530b21741319"
+        },
+        "passed": 406,
+        "skipped": 0,
+        "failed": 0,
+        "conclusion": "All tests passed!"
+      },
+      {
+        "name": "final-core-network-bank",
+        "command": [
+          "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+          "--no-version-check",
+          "--suppress-analytics",
+          "test",
+          "--no-pub",
+          "--concurrency=4",
+          "--reporter",
+          "expanded"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/core/core_network",
+        "exitCode": 0,
+        "elapsedSeconds": 136.416,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-core-network-bank.log",
+          "sha256": "53f0eec87488dc13f3d55834e1b0eba7bc2257ccf9fa952b5ac4bfae15fc9d56"
+        },
+        "passed": 123,
+        "skipped": 0,
+        "failed": 0,
+        "conclusion": "All tests passed!"
+      },
+      {
+        "name": "final-actual-sdk-enabled-bank",
+        "command": [
+          "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+          "--no-version-check",
+          "--suppress-analytics",
+          "test",
+          "--no-pub",
+          "--dart-define=ENABLE_FIREBASE_OBSERVABILITY=true",
+          "packages/core/core_network/test/native_observability_payload_test.dart",
+          "packages/core/core_network/test/firebase_bootstrap_performance_privacy_test.dart",
+          "--reporter",
+          "expanded"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+        "exitCode": 0,
+        "elapsedSeconds": 48.484,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-actual-sdk-enabled-bank.log",
+          "sha256": "3dc1b7037366642dc3100e05b2bd69376c9dd2bb0f6075d4e99303b72c479e86"
+        },
+        "passed": 12,
+        "skipped": 0,
+        "failed": 0,
+        "conclusion": "All tests passed!"
+      },
+      {
+        "name": "final-diagnostic-startup-bank",
+        "command": [
+          "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+          "--no-version-check",
+          "--suppress-analytics",
+          "test",
+          "--no-pub",
+          "packages/core/core_utils/test/logger_privacy_test.dart",
+          "packages/core/core_theme/test/afri_error_boundary_privacy_test.dart",
+          "apps/rayon_sports/test/firebase_startup_contract_test.dart",
+          "--reporter",
+          "expanded"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+        "exitCode": 0,
+        "elapsedSeconds": 62.06,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-diagnostic-startup-bank.log",
+          "sha256": "ec543b314afea6e7fa6e83632cb2b77e8a346444692f0994316f10024595670e"
+        },
+        "passed": 32,
+        "skipped": 0,
+        "failed": 0,
+        "conclusion": "All tests passed!"
+      },
+      {
+        "name": "final-native-performance-control-mutations",
+        "command": [
+          "python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tools/scripts",
+          "-p",
+          "test_verify_native_performance_privacy.py",
+          "-v"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+        "exitCode": 0,
+        "elapsedSeconds": 19.006,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-native-performance-control-mutations.log",
+          "sha256": "2d0488a0e29b638798120da37e0c342255bcb164ab8184147230a091f9ad597e"
+        },
+        "passed": 12,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "name": "final-native-performance-controls",
+        "command": [
+          "python3",
+          "tools/scripts/verify_native_performance_privacy.py",
+          "--report",
+          "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/native-control-result.json"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+        "exitCode": 0,
+        "elapsedSeconds": 0.233,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-native-performance-controls.log",
+          "sha256": "634edcd390e2e27feaa3daffd2ef2da50408b53a490a8c0a48ebadd6708fce7e"
+        },
+        "targets": 10,
+        "configurationVerified": true
+      },
+      {
+        "name": "final-owned-source-strict-analysis",
+        "command": [
+          "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+          "--no-version-check",
+          "--suppress-analytics",
+          "analyze",
+          "--no-pub",
+          "--fatal-infos",
+          "packages/core/core_auth/lib/src/auth_repository.dart",
+          "packages/core/core_auth/lib/src/auth_notifier.dart",
+          "packages/core/core_auth/test/auth_repository_cleanup_test.dart",
+          "packages/core/core_network/lib/src/push_notification_service.dart",
+          "packages/core/core_network/lib/src/supabase_session_authority.dart",
+          "packages/core/core_network/lib/core_network.dart",
+          "packages/core/core_network/test/push_device_session_cleanup_test.dart",
+          "third_party/gotrue_2_27_2/lib",
+          "packages/core/core_network/lib/src/crashlytics_service.dart",
+          "packages/core/core_network/lib/src/firebase_analytics_service.dart",
+          "packages/core/core_network/lib/src/privacy_safe_analytics.dart",
+          "packages/core/core_network/lib/src/operational_health_service.dart",
+          "packages/core/core_network/lib/src/offline_event_queue.dart",
+          "packages/core/core_network/lib/src/native_health_payload.dart",
+          "packages/core/core_network/test/privacy_safe_analytics_test.dart",
+          "packages/core/core_network/test/native_health_payload_test.dart",
+          "packages/core/core_network/test/native_observability_payload_test.dart",
+          "packages/core/core_network/test/crashlytics_service_test.dart",
+          "packages/core/core_network/test/offline_event_queue_test.dart",
+          "packages/core/core_network/lib/src/firebase_bootstrap_service.dart",
+          "packages/core/core_network/test/firebase_bootstrap_performance_privacy_test.dart",
+          "packages/core/core_utils/lib/src/logger.dart",
+          "packages/core/core_utils/test/logger_privacy_test.dart",
+          "packages/core/core_theme/lib/src/widgets/afri_error_boundary.dart",
+          "packages/core/core_theme/test/afri_error_boundary_privacy_test.dart",
+          "packages/core/core_app/lib/src/bootstrap.dart",
+          "packages/core/core_app/lib/src/app.dart",
+          "apps/rayon_sports/test/firebase_startup_contract_test.dart"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+        "exitCode": 0,
+        "elapsedSeconds": 94.823,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-owned-source-strict-analysis.log",
+          "sha256": "2e636efeddaf969ef865faafc3d23f54795a534d8b37ff6fd84dbead3d4144eb"
+        },
+        "issues": 0,
+        "fatalInfos": true,
+        "fatalWarnings": true
+      }
+    ],
+    "completePackageTestsPassed": 529,
+    "actualEnabledSdkPayloadTestsPassed": 8,
+    "actualEnabledPerformanceBootstrapTestsPassed": 4,
+    "diagnosticPrivacyAndLifecycleTestsPassed": 28,
+    "startupContractTestsPassed": 4,
+    "totalFlutterTestExecutionsPassed": 573,
+    "nativeControlMutationTestsPassed": 12,
+    "totalTestExecutionsPassed": 585,
+    "nativeTargetControlsVerified": 10,
+    "failed": 0,
+    "skipped": 0,
+    "strictTargets": 28,
+    "strictIssues": 0,
+    "sourceBinding": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-source-bound-verification.json",
+      "sha256": "3a31a5b4cc166f98a08044c90e5c075d7f7195b602d4ffb38825a8e3f07c66b3",
+      "bytes": 9455,
+      "boundInputs": 1078,
+      "beforeAfterStable": true,
+      "currentHashReadbackPassed": true
+    },
+    "resolverInputs": [
+      {
+        "path": "pubspec.yaml",
+        "sha256": "ed12b835abf4388e5da87e98272eb0c9cb4c7a4f5a38a374ed1c81196516252d",
+        "bytes": 5237
+      },
+      {
+        "path": "pubspec.lock",
+        "sha256": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b",
+        "bytes": 41649
+      },
+      {
+        "path": ".dart_tool/package_config.json",
+        "sha256": "8bc8f1fab9321d11f62371f2416e7769c842cbcfe0289047721c0a4f59f2fd40",
+        "bytes": 40560
+      },
+      {
+        "path": ".dart_tool/package_graph.json",
+        "sha256": "44e4f3fd924a6a9cb5a7938ae9123811bb707657d0ca04dda1d97fe01f7a3f4a",
+        "bytes": 47097
+      }
+    ],
+    "originalInstalledCacheFileCount": 79,
+    "originalInstalledCacheUnchanged": true,
+    "vendorManifest": {
+      "path": "third_party/gotrue_2_27_2/LOCAL_PATCH_MANIFEST.json",
+      "sha256": "9e759b77dd234baaa5a9206bf4a674f52660f7502f5b27ad180a46527d71b6bc"
+    },
+    "vendorManifestCurrentHashReadbackPassed": true,
+    "resourceCoordination": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/resource-hold.json",
+      "sha256": "89afb50df93c4249e640f5a26354c6451d2642d688f53334ae08431fc9b689f0",
+      "bytes": 619
+    },
+    "sourceFreeze": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/current-source-freeze.json",
+      "sha256": "2372094400c0e18e4bc0bab6cce92a8cb756300841f5a06d3358cceab59c9a64",
+      "bytes": 31031
+    }
+  },
+  "dependencyState": {
+    "noNewDependencyEdge": true,
+    "noVersionUpgrade": true,
+    "noAdditionalPubGet": true,
+    "manifestLockConfigGraph": {
+      "pubspec.yaml": {
+        "path": "pubspec.yaml",
+        "sha256": "ed12b835abf4388e5da87e98272eb0c9cb4c7a4f5a38a374ed1c81196516252d",
+        "bytes": 5237
+      },
+      "pubspec.lock": {
+        "path": "pubspec.lock",
+        "sha256": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b",
+        "bytes": 41649
+      },
+      ".dart_tool/package_config.json": {
+        "path": ".dart_tool/package_config.json",
+        "sha256": "8bc8f1fab9321d11f62371f2416e7769c842cbcfe0289047721c0a4f59f2fd40",
+        "bytes": 40560
+      },
+      ".dart_tool/package_graph.json": {
+        "path": ".dart_tool/package_graph.json",
+        "sha256": "44e4f3fd924a6a9cb5a7938ae9123811bb707657d0ca04dda1d97fe01f7a3f4a",
+        "bytes": 47097
+      }
+    },
+    "vendorManifest": {
+      "path": "third_party/gotrue_2_27_2/LOCAL_PATCH_MANIFEST.json",
+      "sha256": "9e759b77dd234baaa5a9206bf4a674f52660f7502f5b27ad180a46527d71b6bc",
+      "bytes": 24277
+    },
+    "originalInstalledGoTrueCacheUnchanged": true,
+    "scopeNote": "No dependency edge, version upgrade or Pub resolution was introduced by this privacy/Performance task. The current graph includes the separately coordinated test_support core_l10n/feat_membership dev edges; current observed hashes are bound by the corrected receipt. Prior scoped resolver evidence remains in the accepted report checkpoint."
+  },
+  "limits": [
+    "Actual SDK serialization was exercised against controlled local native replies/intercepted HTTP; this establishes local payload privacy, not deployed Firebase/Supabase or native-device/provider acceptance.",
+    "Crash diagnostics intentionally retain finite categories and reviewed facts rather than caller stack/text. Raw exception details remain available only to authorized local application handling; this report does not prove an external diagnostic dashboard.",
+    "Malformed legacy queued diagnostic records are removed. Transaction, receipt and audit storage is outside this telemetry queue and unchanged.",
+    "The complete local auth/network banks and named SDK/strict gates do not constitute whole-product release readiness. Root-owned logger/framework/bootstrap privacy and separate feature/native evidence are reported by their owners."
+  ],
+  "gitOperations": {
+    "commits": 0,
+    "pushes": 0,
+    "sharedPubCacheMutation": false
+  },
+  "acceptedVerificationCheckpoints": [
+    {
+      "binding": "Before later nested boundary correction, two dev-manifest graph edges and Performance correction; no current whole-input claim.",
+      "report": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/accepted-report-checkpoints/local-native-observability-privacy-2026-09-30.json",
+        "sha256": "3f68ebd4901be499c3556e851c2cb371495c3f2255ac30a5cd15837a4d7bc2b5",
+        "bytes": 22152
+      },
+      "verification": {
+        "results": [
+          {
+            "name": "final-core-auth-bank",
+            "command": [
+              "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+              "--no-version-check",
+              "--suppress-analytics",
+              "test",
+              "--no-pub",
+              "--concurrency=4",
+              "--reporter",
+              "expanded"
+            ],
+            "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/core/core_auth",
+            "exitCode": 0,
+            "elapsedSeconds": 17.894,
+            "log": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-privacy/final-core-auth-bank.log",
+              "sha256": "c3935f085f2f973e02c5459a10b4eb7c0c406352c545fe5e7835b1d303031be4"
+            },
+            "passed": 406,
+            "skipped": 0,
+            "failed": 0,
+            "conclusion": "All tests passed!"
+          },
+          {
+            "name": "final-core-network-bank",
+            "command": [
+              "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+              "--no-version-check",
+              "--suppress-analytics",
+              "test",
+              "--no-pub",
+              "--concurrency=4",
+              "--reporter",
+              "expanded"
+            ],
+            "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/core/core_network",
+            "exitCode": 0,
+            "elapsedSeconds": 31.63,
+            "log": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-privacy/final-core-network-bank.log",
+              "sha256": "98bd345c6fdf55b0f60ca00932f446e79a05f341e332c57b5fd6e8c9c9a2d389"
+            },
+            "passed": 119,
+            "skipped": 0,
+            "failed": 0,
+            "conclusion": "All tests passed!"
+          },
+          {
+            "name": "final-actual-sdk-enabled-bank",
+            "command": [
+              "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+              "--no-version-check",
+              "--suppress-analytics",
+              "test",
+              "--no-pub",
+              "--dart-define=ENABLE_FIREBASE_OBSERVABILITY=true",
+              "packages/core/core_network/test/native_observability_payload_test.dart",
+              "--reporter",
+              "expanded"
+            ],
+            "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+            "exitCode": 0,
+            "elapsedSeconds": 22.383,
+            "log": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-privacy/final-actual-sdk-enabled-bank.log",
+              "sha256": "e55f389a09fc12edd3d323201996ba1a9c3d0a4ac8f34d3538d404b382598048"
+            },
+            "passed": 8,
+            "skipped": 0,
+            "failed": 0,
+            "conclusion": "All tests passed!"
+          },
+          {
+            "name": "final-owned-source-strict-analysis",
+            "command": [
+              "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+              "--no-version-check",
+              "--suppress-analytics",
+              "analyze",
+              "--no-pub",
+              "--fatal-infos",
+              "packages/core/core_auth/lib/src/auth_repository.dart",
+              "packages/core/core_auth/lib/src/auth_notifier.dart",
+              "packages/core/core_auth/test/auth_repository_cleanup_test.dart",
+              "packages/core/core_network/lib/src/push_notification_service.dart",
+              "packages/core/core_network/lib/src/supabase_session_authority.dart",
+              "packages/core/core_network/lib/core_network.dart",
+              "packages/core/core_network/test/push_device_session_cleanup_test.dart",
+              "third_party/gotrue_2_27_2/lib",
+              "packages/core/core_network/lib/src/crashlytics_service.dart",
+              "packages/core/core_network/lib/src/firebase_analytics_service.dart",
+              "packages/core/core_network/lib/src/privacy_safe_analytics.dart",
+              "packages/core/core_network/lib/src/operational_health_service.dart",
+              "packages/core/core_network/lib/src/offline_event_queue.dart",
+              "packages/core/core_network/lib/src/native_health_payload.dart",
+              "packages/core/core_network/test/privacy_safe_analytics_test.dart",
+              "packages/core/core_network/test/native_health_payload_test.dart",
+              "packages/core/core_network/test/native_observability_payload_test.dart",
+              "packages/core/core_network/test/crashlytics_service_test.dart",
+              "packages/core/core_network/test/offline_event_queue_test.dart"
+            ],
+            "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+            "exitCode": 0,
+            "elapsedSeconds": 33.492,
+            "log": {
+              "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-privacy/final-owned-source-strict-analysis.log",
+              "sha256": "2698142b400e867117a948ceedcb2d0f566ffea7d5f06fa6b4d53a3ba740f8c8"
+            },
+            "issues": 0,
+            "fatalInfos": true,
+            "fatalWarnings": true
+          }
+        ],
+        "completePackageTestsPassed": 525,
+        "actualEnabledSdkPayloadTestsPassed": 8,
+        "totalPassed": 533,
+        "failed": 0,
+        "skipped": 0,
+        "strictTargets": 19,
+        "strictIssues": 0,
+        "sourceBinding": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-privacy/final-source-bound-verification.json",
+          "sha256": "3d68b8f5c2f194294b25e73f13c79f3a3837727703f9e258fe4525e40a0855e9",
+          "bytes": 5845,
+          "boundInputs": 1028,
+          "beforeAfterStable": true,
+          "currentHashReadbackPassed": true
+        },
+        "sourceFreeze": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-privacy/source-freeze.json",
+          "sha256": "de80c2bdb465018cda60a5042253a8f2b89308d60089770679edc5156d8922d8",
+          "bytes": 2834
+        },
+        "focusedExpanded": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-privacy/expanded-focused-result.json",
+          "sha256": "295f6ec040b354d2dd876c37defce527c2b6536b0887d5e5e0b29b3e7842349b",
+          "bytes": 2983
+        },
+        "correctedFocusedStrict": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-observability-privacy/privacy-strict-corrected.log",
+          "sha256": "b0b598ee98dcc08a134130424b81b8bfe6cd096983ea96a167ff5ec7ee4d0e9d",
+          "bytes": 97
+        },
+        "actualSdks": [
+          {
+            "name": "firebase_analytics",
+            "version": "12.2.0",
+            "selectedRoot": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics-12.2.0",
+            "pubspec": {
+              "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics-12.2.0/pubspec.yaml",
+              "sha256": "faafdb18543b7e5a0f3455555cf73383ccdb3dbd4e95236b6b93e04e70f49bc7",
+              "bytes": 1098
+            }
+          },
+          {
+            "name": "firebase_analytics_platform_interface",
+            "version": "5.1.0",
+            "selectedRoot": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics_platform_interface-5.1.0",
+            "pubspec": {
+              "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics_platform_interface-5.1.0/pubspec.yaml",
+              "sha256": "fcddca7fdbf8cc931269bde55d2adf4356cce7ce2f3759652b7e9c0456d935ac",
+              "bytes": 712
+            }
+          },
+          {
+            "name": "firebase_core",
+            "version": "4.6.0",
+            "selectedRoot": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0",
+            "pubspec": {
+              "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/pubspec.yaml",
+              "sha256": "9f4451b9d6c7c90356d18d339ff27b819ff85f2d1d2ec726b257e02e232170a0",
+              "bytes": 1163
+            }
+          },
+          {
+            "name": "firebase_core_platform_interface",
+            "version": "6.0.3",
+            "selectedRoot": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core_platform_interface-6.0.3",
+            "pubspec": {
+              "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core_platform_interface-6.0.3/pubspec.yaml",
+              "sha256": "6d831ca293a0dd07f00e674937a4758dcde9445530f25a09b0f0b1da9c6a1df1",
+              "bytes": 806
+            }
+          },
+          {
+            "name": "firebase_crashlytics",
+            "version": "5.1.0",
+            "selectedRoot": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.1.0",
+            "pubspec": {
+              "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.1.0/pubspec.yaml",
+              "sha256": "7aa57179638eeda4369d4af9707e657d701a437f53f9d0becad0447018ab3436",
+              "bytes": 991
+            }
+          },
+          {
+            "name": "firebase_crashlytics_platform_interface",
+            "version": "3.8.19",
+            "selectedRoot": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics_platform_interface-3.8.19",
+            "pubspec": {
+              "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics_platform_interface-3.8.19/pubspec.yaml",
+              "sha256": "c347f0631aeecf6abbf9128818d172446ef049bbbaa0818f008646e43b7d0aa2",
+              "bytes": 748
+            }
+          },
+          {
+            "name": "functions_client",
+            "version": "2.7.1",
+            "selectedRoot": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/functions_client-2.7.1",
+            "pubspec": {
+              "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/functions_client-2.7.1/pubspec.yaml",
+              "sha256": "fcaeb6cad1d9781c6b1d3cea7871fa69ae5fff82ae3dc2906119546ab8e17470",
+              "bytes": 675
+            }
+          },
+          {
+            "name": "http",
+            "version": "1.6.0",
+            "selectedRoot": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/http-1.6.0",
+            "pubspec": {
+              "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/http-1.6.0/pubspec.yaml",
+              "sha256": "ab9b20099e285fcabbdb52188d8a9205adee7eeb9b51f00727206edeb1e72420",
+              "bytes": 545
+            }
+          },
+          {
+            "name": "stack_trace",
+            "version": "1.12.1",
+            "selectedRoot": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/stack_trace-1.12.1",
+            "pubspec": {
+              "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/stack_trace-1.12.1/pubspec.yaml",
+              "sha256": "4a268375024e12885ed4d195dbb5a9fc168b43e867932efcf80bebb87ca75520",
+              "bytes": 316
+            }
+          },
+          {
+            "name": "supabase",
+            "version": "2.16.1",
+            "selectedRoot": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/supabase-2.16.1",
+            "pubspec": {
+              "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/supabase-2.16.1/pubspec.yaml",
+              "sha256": "50e99ec0db7856eab72db9a0a0a65407b6f7f270c47f95dbe9370dbae07d99d1",
+              "bytes": 870
+            }
+          },
+          {
+            "name": "supabase_flutter",
+            "version": "2.17.2",
+            "selectedRoot": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/supabase_flutter-2.17.2",
+            "pubspec": {
+              "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/supabase_flutter-2.17.2/pubspec.yaml",
+              "sha256": "cd93dfbc912e99fc6e4733a024d5ed6a77c2e04cfb6ff07cb19235ce15cebe4e",
+              "bytes": 1114
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "performancePrivacy": {
+    "path": "docs/release/local-native-performance-privacy-2026-10-01.json",
+    "sha256": "51f818df196935983b488452e1a6ab4f5f4e5405f7c7d04a5902c2bb01ffbb14",
+    "bytes": 50486
+  }
+}

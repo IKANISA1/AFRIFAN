@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 /**
  * sync-standings — Batch-syncs standings for all tracked leagues.
  */
@@ -26,7 +27,7 @@ export async function syncStandings(
     .eq("is_active", true);
 
   if (configError || !configs) {
-    console.error("[sync-standings] Failed to load sync configs:", configError);
+    logDiagnostic("error", "football_sync_sync_standings__sync_standings_failed_to_load_sync_configs", configError);
     return [];
   }
 
@@ -86,9 +87,7 @@ export async function syncStandings(
             );
 
             if (!teamId) {
-              console.warn(
-                `[sync-standings] Skipping standing for team ${entry.team.id}: not found`,
-              );
+              logDiagnostic("warn", "football_sync_sync_standings__sync_standings_skipping_standing_for_team");
               continue;
             }
 
@@ -121,10 +120,7 @@ export async function syncStandings(
               );
 
             if (upsertError) {
-              console.error(
-                `[sync-standings] Upsert error for team ${entry.team.id}:`,
-                upsertError.message,
-              );
+              logDiagnostic("error", "football_sync_sync_standings__sync_standings_upsert_error_for_team", upsertError);
             } else {
               totalUpserted++;
             }
@@ -149,10 +145,7 @@ export async function syncStandings(
       });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);
-      console.error(
-        `[sync-standings] Error for league ${leagueId}:`,
-        errorMessage,
-      );
+      logDiagnostic("error", "football_sync_sync_standings__sync_standings_error_for_league", errorMessage);
       results.push({
         league: leagueName,
         standings_fetched: 0,
@@ -164,7 +157,7 @@ export async function syncStandings(
 
     const rateLimit = getRateLimit();
     if (rateLimit.dailyRemaining <= 5) {
-      console.warn("[sync-standings] Near daily limit, stopping.");
+      logDiagnostic("warn", "football_sync_sync_standings__sync_standings_near_daily_limit_stopping");
       break;
     }
   }

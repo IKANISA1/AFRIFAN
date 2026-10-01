@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 /**
  * sync-fixtures — Batch-syncs fixtures for all tracked leagues.
  *
@@ -44,7 +45,7 @@ export async function syncFixtures(
     .eq("is_active", true);
 
   if (configError || !configs) {
-    console.error("[sync-fixtures] Failed to load sync configs:", configError);
+    logDiagnostic("error", "football_sync_sync_fixtures__sync_fixtures_failed_to_load_sync_configs", configError);
     return [];
   }
 
@@ -120,9 +121,7 @@ export async function syncFixtures(
         );
 
         if (!homeTeamId || !awayTeamId) {
-          console.warn(
-            `[sync-fixtures] Skipping fixture ${apiFixture.fixture.id}: cannot resolve team(s)`,
-          );
+          logDiagnostic("warn", "football_sync_sync_fixtures__sync_fixtures_skipping_fixture");
           continue;
         }
 
@@ -153,10 +152,7 @@ export async function syncFixtures(
           );
 
         if (upsertError) {
-          console.error(
-            `[sync-fixtures] Upsert error for fixture ${apiFixture.fixture.id}:`,
-            upsertError.message,
-          );
+          logDiagnostic("error", "football_sync_sync_fixtures__sync_fixtures_upsert_error_for_fixture", upsertError);
         } else {
           upsertedCount++;
         }
@@ -188,10 +184,7 @@ export async function syncFixtures(
       });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);
-      console.error(
-        `[sync-fixtures] Error for league ${leagueId}:`,
-        errorMessage,
-      );
+      logDiagnostic("error", "football_sync_sync_fixtures__sync_fixtures_error_for_league", err);
 
       await failSyncLog(adminClient, logId, errorMessage, apiRequestsUsed);
 
@@ -208,7 +201,7 @@ export async function syncFixtures(
     // Budget check
     const rateLimit = getRateLimit();
     if (rateLimit.dailyRemaining <= 5) {
-      console.warn("[sync-fixtures] Near daily limit, stopping.");
+      logDiagnostic("warn", "football_sync_sync_fixtures__sync_fixtures_near_daily_limit_stopping");
       break;
     }
   }
@@ -275,7 +268,7 @@ async function ensureTeamsExist(
       if (!error) upsertedCount++;
     }
   } catch (err) {
-    console.error("[sync-fixtures] Team fetch error:", err);
+    logDiagnostic("error", "football_sync_sync_fixtures__sync_fixtures_team_fetch_error", err);
     // Fall back to creating stub teams from fixture data
     for (const fixture of fixtures) {
       for (const team of [fixture.teams.home, fixture.teams.away]) {
@@ -399,7 +392,7 @@ async function completeSyncLog(
 async function failSyncLog(
   client: SupabaseClient,
   logId: string,
-  errorMessage: string,
+  _errorMessage: string,
   apiRequests: number,
 ): Promise<void> {
   if (!logId) return;
@@ -407,7 +400,7 @@ async function failSyncLog(
     .from("football_sync_log")
     .update({
       status: "failed",
-      error_message: errorMessage,
+      error_message: "Football synchronization failed.",
       api_requests_used: apiRequests,
       completed_at: new Date().toISOString(),
     })

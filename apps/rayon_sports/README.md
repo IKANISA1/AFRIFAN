@@ -23,4 +23,5 @@ See [flavor setup](../../docs/flutter_flavor_setup.md), the
 contains the public site, membership access and admin PWA.
 
 [Architecture](../../docs/blueprint.md) governs product ownership;
-[DESIGN.md](../../DESIGN.md) governs presentation.
+The selected `revolut-design` skill is the sole presentation authority;
+[DESIGN.md](../../DESIGN.md) records product mappings only.

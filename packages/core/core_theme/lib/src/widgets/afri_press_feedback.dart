@@ -36,6 +36,7 @@ class AfriPressFeedback extends StatefulWidget {
     this.enabled = true,
     this.button = true,
     this.selected = false,
+    this.toggled,
     this.autofocus = false,
     this.focusNode,
     this.tooltip,
@@ -58,6 +59,7 @@ class AfriPressFeedback extends StatefulWidget {
   final bool enabled;
   final bool button;
   final bool selected;
+  final bool? toggled;
   final bool autofocus;
   final FocusNode? focusNode;
   final String? tooltip;
@@ -232,6 +234,7 @@ class _AfriPressFeedbackState extends State<AfriPressFeedback>
       button: widget.button,
       enabled: _isInteractive,
       selected: widget.selected,
+      toggled: widget.toggled,
       label: widget.semanticsLabel,
       hint: widget.semanticsHint,
       onTap: _isInteractive ? _handleTap : null,

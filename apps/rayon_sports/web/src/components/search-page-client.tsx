@@ -399,7 +399,7 @@ export function SearchPageClient({
             </span>
           </form>
 
-          <div className="search-suggestions" aria-label={localized.suggestions}>
+          <div className="search-suggestions" role="group" aria-label={localized.suggestions}>
             <span>{localized.suggestions}</span>
             {localized.suggestionValues.map((suggestion) => {
               const selected =

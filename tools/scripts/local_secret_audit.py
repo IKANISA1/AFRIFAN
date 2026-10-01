@@ -32,27 +32,26 @@ from check_sensitive_source import PEM, JWT, path_issue
 MIB = 1024 * 1024
 HIGH_CONFIDENCE = re.compile(
     r'(?:'
-    r'(?:sb_secret_|sk_live_|rk_live_)[A-Za-z0-9_-]{16,256}|'
-    r'(?:ghp_|gho_|ghu_|ghs_|ghr_)[A-Za-z0-9]{30,255}|'
-    r'github_pat_[A-Za-z0-9_]{40,255}|'
+    r'(?:sb_secret_|sk_live_|rk_live_)[A-Za-z0-9_-]{16,}|'
+    r'(?:ghp_|gho_|ghu_|ghs_|ghr_)[A-Za-z0-9]{30,}|'
+    r'github_pat_[A-Za-z0-9_]{40,}|'
     r'(?:AKIA|ASIA)[A-Z0-9]{16}|'
-    r'xox[baprs]-[A-Za-z0-9-]{20,255}|'
-    r'SG\.[A-Za-z0-9_-]{20,100}\.[A-Za-z0-9_-]{20,100}|'
-    r'sk-(?:proj-|svcacct-)[A-Za-z0-9_-]{20,256}'
-    r')(?![A-Za-z0-9_])'
+    r'xox[baprs]-[A-Za-z0-9-]{20,}|'
+    r'SG\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}|'
+    r'sk-(?:proj-|svcacct-)[A-Za-z0-9_-]{20,}'
+    r')'
 )
 ASSIGNMENT = re.compile(
     r'(?i)(?:auth_hmac_key|auth_encryption_key|'
     r'supabase_service_role_key|aws_secret_access_key|cloudflare_api_token|'
     r'client_secret|api_secret|private_key|access_token|refresh_token)\b'
-    r'[\"\']?\s*[:=]\s*[\"\']([A-Za-z0-9_+/=.-]{32,256})[\"\']'
+    r'[\"\']?\s*[:=]\s*[\"\']([A-Za-z0-9_+/=.-]{32,})[\"\']'
 )
 ASSIGNMENT_FIELDS = ('auth_hmac_key', 'auth_encryption_key', 'supabase_service_role_key',
                      'aws_secret_access_key', 'cloudflare_api_token', 'client_secret',
                      'api_secret', 'private_key', 'access_token', 'refresh_token')
 TOKEN_RUNS = re.compile(r'[A-Za-z0-9_.-]{24,}')
 UTF16_RUN = re.compile(rb'(?:[\x20-\x7e]\x00){12,}|(?:\x00[\x20-\x7e]){12,}')
-PATH_JWT = re.compile(r'eyJ[A-Za-z0-9_-]{8,1024}\.[A-Za-z0-9_-]{8,1024}\.[A-Za-z0-9_-]{8,1024}')
 PUBLIC_GOOGLE = re.compile(r'\bAIza[A-Za-z0-9_-]{35}\b')
 UNSUPPORTED = ('.7z', '.rar', '.zst', '.bz2', '.xz', '.lz', '.lzma')
 ARCHIVE_SUFFIXES = ('.zip', '.jar', '.apk', '.ipa', '.docx', '.xlsx', '.pptx',
@@ -69,8 +68,11 @@ def safe_path(name: str) -> str:
     normalized = name.replace('\\\\n', '\n').replace('\\n', '\n').replace('\\r', '\r')
     if PEM.search(normalized):
         return '[redacted-private-key-path]'
+    if 'eyJ' in normalized:
+        return '[redacted-bearer-shaped-path]'
+    if any(field in normalized.lower() for field in ASSIGNMENT_FIELDS) and ASSIGNMENT.search(normalized):
+        return '[redacted-secret-assignment-path]'
     value = HIGH_CONFIDENCE.sub('[redacted]', name[:MAX_PATH])
-    value = PATH_JWT.sub('[redacted]', value)
     value = ASSIGNMENT.sub('[redacted-assignment]', value)
     value = re.sub(r'(?i)([?&](?:key|token|secret|password)=)[^&\s]+', r'\1[redacted]', value)
     value = ''.join(c if c.isprintable() else '?' for c in value)
@@ -125,7 +127,7 @@ def classify(data: bytes) -> tuple[list[str], list[str]]:
                     value = match.group(1)
                     if value.startswith(('REPLACE_', 'INSERT_', 'EXAMPLE_', 'SET_', 'NOT_')):
                         classes.add('configuration_placeholder')
-                    elif len(set(value)) >= 10 and entropy(value) >= 3:
+                    elif len(set(value[:512])) >= 10 and entropy(value[:512]) >= 3:
                         findings.add('secret_assignment_requires_review')
                 start = lower.find(field, start+len(field))
         if PUBLIC_GOOGLE.search(text):
@@ -160,9 +162,16 @@ def classify(data: bytes) -> tuple[list[str], list[str]]:
 
 def jwt_payloads(text: str):
     """Linear lexical runs avoid quadratic retry on adversarial eyJ repetition."""
-    if 'eyJ' not in text:
-        return
-    for match in TOKEN_RUNS.finditer(text):
+    cursor = 0
+    while True:
+        start = text.find('eyJ', cursor)
+        if start < 0:
+            return
+        match = TOKEN_RUNS.match(text, start)
+        if match is None:
+            cursor = start+3
+            continue
+        cursor = match.end()
         run = match.group()
         if 'eyJ' not in run or '.' not in run:
             continue
@@ -180,6 +189,50 @@ def jwt_payloads(text: str):
                 yield payload
 
 
+def tar_header(data: bytes) -> bool:
+    """A JavaScript 'ustar' literal at offset 257 is not a TAR header."""
+    if len(data) >= 1024 and len(data) % 512 == 0 and not data.strip(b'\x00'):
+        return True
+    if len(data) < 512 or data[257:263] not in (b'ustar\x00', b'ustar '):
+        return False
+    field = data[148:156].strip(b'\x00 ')
+    if not re.fullmatch(rb'[0-7]{1,7}', field):
+        return False
+    if int(field, 8) != sum(data[:148])+8*32+sum(data[156:512]):
+        return False
+    try:
+        # Validate the remaining header fields as well as the checksum. A
+        # checksum can be made correct for bytes with an invalid size field.
+        tarfile.TarInfo.frombuf(data[:512], 'utf-8', 'surrogateescape')
+    except (tarfile.TarError, ValueError, UnicodeError):
+        return False
+    return True
+
+
+def review_policy(path: Path | None) -> tuple[dict, str | None]:
+    if path is None:
+        return {}, None
+    if path.is_symlink() or not path.is_file() or path.stat().st_size > MIB:
+        raise ValueError('invalid_review_policy')
+    data = path.read_bytes()
+    value = json.loads(data)
+    if type(value) is not dict or set(value) != {'schemaVersion', 'reviewedContents'} or value['schemaVersion'] != 1 or type(value['reviewedContents']) is not list or len(value['reviewedContents']) > 100:
+        raise ValueError('invalid_review_policy')
+    reviews = {}
+    for row in value['reviewedContents']:
+        if type(row) is not dict or set(row) != {'sha256', 'category', 'classification', 'evidenceRef', 'reason'} or \
+            not isinstance(row['sha256'], str) or not re.fullmatch(r'[0-9a-f]{64}', row['sha256']) or \
+            row['category'] != 'secret_assignment_requires_review' or row['classification'] != 'reviewed_synthetic_placeholder' or \
+            not isinstance(row['evidenceRef'], str) or not re.fullmatch(r'[A-Z][A-Z0-9_-]{3,63}', row['evidenceRef']) or \
+            not isinstance(row['reason'], str) or not 20 <= len(row['reason']) <= 500 or row['sha256'] in reviews:
+            raise ValueError('invalid_review_policy')
+        # Human explanations are source-policy material, never emitted as an
+        # unfiltered scanner result. Strong credential categories cannot be
+        # overridden through this optional generic-assignment review policy.
+        reviews[row['sha256']] = {'classification': row['classification'], 'evidenceRef': row['evidenceRef']}
+    return reviews, digest(data)
+
+
 @dataclasses.dataclass(frozen=True)
 class Limits:
     max_blob_bytes: int = 64 * MIB
@@ -192,7 +245,7 @@ class Limits:
 
 
 class Audit:
-    def __init__(self, limits: Limits | None = None, *, progress=False):
+    def __init__(self, limits: Limits | None = None, *, progress=False, reviews=None):
         self.limits = limits or Limits()
         if any(type(v) is not int or v <= 0 for v in dataclasses.asdict(self.limits).values()):
             raise ValueError('invalid_audit_limits')
@@ -209,6 +262,8 @@ class Audit:
         self.member_count = 0
         self.source_states: dict[str, tuple] = {}
         self.progress_enabled = progress
+        self.snapshot: dict = {}
+        self.reviews = reviews or {}
 
     def checkpoint(self, stage: str, count: int):
         if self.progress_enabled:
@@ -244,7 +299,7 @@ class Audit:
         sha = digest(data)
         lower = name.lower()
         kind = 'zip' if data[:4] in (b'PK\x03\x04', b'PK\x05\x06', b'PK\x07\x08') else \
-            'gzip' if data[:2] == b'\x1f\x8b' else 'tar' if (len(data) >= 265 and data[257:262] == b'ustar') else None
+            'gzip' if data[:2] == b'\x1f\x8b' else 'tar' if tar_header(data) else None
         # Names are occurrence policy, so a cached innocent name cannot hide an
         # unsupported/corrupt archive with identical bytes at another location.
         archive_problem = 'unsupported_archive' if kind is None and lower.endswith(UNSUPPORTED) else \
@@ -501,11 +556,18 @@ class Audit:
             if path.is_symlink() or not path.is_file():
                 self.gap('sealed_archive_not_regular', **location)
                 return
-            size = path.stat().st_size
-            if size > self.limits.max_blob_bytes or not self.budget(size):
-                self.gap('oversized_or_budgeted_sealed_archive', **location)
+            absolute = path.absolute()
+            with source_open(Path(absolute.anchor), str(absolute.relative_to(absolute.anchor))) as f:
+                before = os.fstat(f.fileno())
+                size = before.st_size
+                if size > self.limits.max_blob_bytes or not self.budget(size):
+                    self.gap('oversized_or_budgeted_sealed_archive', **location)
+                    return
+                data = f.read(self.limits.max_blob_bytes+1)
+                after = os.fstat(f.fileno())
+            if len(data) != size or (before.st_ino, before.st_size, before.st_mtime_ns) != (after.st_ino, after.st_size, after.st_mtime_ns):
+                self.gap('sealed_archive_changed_during_read', **location)
                 return
-            data = path.read_bytes()
             if digest(data) != expected_sha256:
                 self.gap('sealed_archive_hash_mismatch', **location)
                 return
@@ -514,16 +576,45 @@ class Audit:
             self.gap('sealed_archive_unavailable', **location)
 
     def report(self) -> dict:
-        findings = [{'sha256': sha, 'category': category} for sha, row in sorted(self.contents.items()) for category in row['categories']]
+        findings = []
+        for sha, row in sorted(self.contents.items()):
+            for category in row['categories']:
+                reviewed = self.reviews.get(sha) if category == 'secret_assignment_requires_review' else None
+                findings.append({'sha256': sha, 'category': category, 'blocksAcceptance': reviewed is None, **(reviewed or {})})
         path_findings = [{'scope': row.get('scope', 'archive_member'), **{k: row[k] for k in ('path', 'pathSha256', 'sha256')},
                           'category': category} for row in self.occurrences+self.members for category in row['categories']]
-        return {'schemaVersion': 1, 'passed': not self.gaps and not findings and not path_findings,
+        blocking = [v for v in findings if v['blocksAcceptance']]
+        by_hash = {v['sha256'] for v in blocking}
+        active_blockers = [r for r in self.occurrences if r['scope'] == 'active_source' and (r.get('sha256') in by_hash or r['categories'])]
+        sealed_roots = {r['sha256'] for r in self.occurrences if r['scope'] == 'sealed_candidate' and r['sha256']}
+        children = {}
+        for member in self.members:
+            children.setdefault(member['parentSha256'], []).append(member)
+        visited = set()
+        stack = list(sealed_roots)
+        sealed_blockers = set()
+        while stack:
+            parent = stack.pop()
+            if parent in visited:
+                continue
+            visited.add(parent)
+            if parent in by_hash:
+                sealed_blockers.add(parent)
+            for child in children.get(parent, []):
+                if child['categories']:
+                    sealed_blockers.add(child.get('sha256') or child['pathSha256'])
+                if child.get('sha256'):
+                    stack.append(child['sha256'])
+        return {'schemaVersion': 1, 'passed': not self.gaps and not blocking and not path_findings,
                 'coverageComplete': not self.gaps, 'matchedValuesIncluded': False, 'networkCalls': 0,
-                'limits': dataclasses.asdict(self.limits), 'summary': {'sourceOccurrences': sum(r['scope'] in ('active_source', 'retained_evidence') for r in self.occurrences),
+                'snapshot': self.snapshot, 'limits': dataclasses.asdict(self.limits), 'summary': {'sourceOccurrences': sum(r['scope'] in ('active_source', 'retained_evidence') for r in self.occurrences),
                 'reachableGitBlobs': sum(r['scope'] == 'reachable_git_blob' for r in self.occurrences),
                 'sealedArchives': sum(r['scope'] == 'sealed_candidate' for r in self.occurrences),
                 'uniqueContents': len(self.contents), 'archiveMembers': len(self.members), 'uniqueBytesRead': self.bytes_read,
-                'uniqueExpandedBytes': self.expanded_bytes, 'contentFindings': len(findings), 'pathFindings': len(path_findings), 'coverageGaps': len(self.gaps)},
+                'uniqueExpandedBytes': self.expanded_bytes, 'contentFindings': len(findings), 'blockingContentFindings': len(blocking),
+                'reviewedSyntheticContents': len({v['sha256'] for v in findings if not v['blocksAcceptance']}),
+                'activeSourceFindingLocations': len(active_blockers), 'sealedCandidateFindingContents': len(sealed_blockers),
+                'pathFindings': len(path_findings), 'coverageGaps': len(self.gaps)},
                 'contentFindings': findings, 'pathFindings': path_findings, 'coverageGaps': self.gaps,
                 'occurrences': self.occurrences, 'archiveMembers': self.members,
                 'contents': [self.contents[k] for k in sorted(self.contents)],
@@ -555,11 +646,15 @@ def source_open(root: Path, name: str):
         os.close(directory)
 
 
-def run(root: Path, archives: list[tuple[Path, str]], limits: Limits | None = None, *, progress=False) -> dict:
-    audit = Audit(limits, progress=progress)
+def run(root: Path, archives: list[tuple[Path, str]], limits: Limits | None = None, *, progress=False, reviews=None, review_sha256=None) -> dict:
+    audit = Audit(limits, progress=progress, reviews=reviews)
     try:
         refs_before = git(root, ['show-ref'])
         names_raw = git(root, ['ls-files', '--cached', '--others', '--exclude-standard', '-z'])
+        head = git(root, ['rev-parse', 'HEAD']).decode('ascii').strip()
+        audit.snapshot = {'head': head if re.fullmatch(r'[0-9a-f]{40,64}', head) else None,
+                          'refsSha256': digest(refs_before), 'sourceInventorySha256': digest(names_raw),
+                          'scannerSha256': digest(Path(__file__).read_bytes()), 'reviewPolicySha256': review_sha256}
         names = [n.decode('utf-8', 'surrogateescape') for n in names_raw.split(b'\x00') if n]
         audit.source(root, names)
         audit.history(root)
@@ -621,6 +716,7 @@ def main(argv=None) -> int:
     parser.add_argument('--report', type=Path, required=True)
     parser.add_argument('--sealed', nargs=2, action='append', metavar=('PATH', 'SHA256'), default=[])
     parser.add_argument('--progress', action='store_true')
+    parser.add_argument('--review-policy', type=Path)
     for field, default in dataclasses.asdict(Limits()).items():
         parser.add_argument('--'+field.replace('_', '-'), type=int, default=default)
     args = parser.parse_args(argv)
@@ -628,8 +724,9 @@ def main(argv=None) -> int:
         limits = Limits(**{f.name: getattr(args, f.name) for f in dataclasses.fields(Limits)})
         root = args.root.resolve()
         archives = [(Path(p), h) for p, h in args.sealed]
+        reviews, review_sha = review_policy(args.review_policy)
         destination = report_destination(root, args.report, archives)
-        report = run(root, archives, limits, progress=args.progress)
+        report = run(root, archives, limits, progress=args.progress, reviews=reviews, review_sha256=review_sha)
         write_report(destination, report)
         print(json.dumps({'passed': report['passed'], 'coverageComplete': report['coverageComplete'],
                           'summary': report['summary'], 'report': safe_path(str(args.report))}))

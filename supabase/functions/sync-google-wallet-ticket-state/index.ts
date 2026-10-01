@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import { HttpError, requireCronSecret } from "../_shared/auth.ts";
@@ -212,7 +213,7 @@ export function createSyncGoogleWalletTicketStateHandler(
       if (error instanceof HttpError) {
         return jsonError(error.message, error.status);
       }
-      console.error("sync-google-wallet-ticket-state failed");
+      logDiagnostic("error", "sync_google_wallet_ticket_state_sync_google_wallet_ticket_state_failed");
       return jsonError(
         "Google Wallet state synchronization failed.",
         500,

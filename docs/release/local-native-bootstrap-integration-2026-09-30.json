@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-30T20:58:24.628077+00:00",
+  "baselineHead": "7fa5292248d5776c6e255aa39ab7acdd658f24e9",
+  "status": "local_native_bootstrap_checkpoints_final_rebind_pending",
+  "scope": {
+    "clubs": 5,
+    "nativeHosts": 10,
+    "providerCalls": 0,
+    "deploymentActions": 0,
+    "releaseAccepted": false
+  },
+  "checks": {
+    "compositionCheckpointTestsPassed": 16,
+    "compositionCheckpointTestsFailed": 0,
+    "compositionCheckpointStrictRegistryAnalysisIssues": 0,
+    "rootReplacementTestsPassed": 2,
+    "foreignClubProtectedRouteTestsPassed": 2,
+    "currentRootStrictAnalysisIssues": 0,
+    "finalAllFiveNativeIntegrationCurrentSourceVerified": false,
+    "allFiveNativeAppBuildsAtCurrentSource": false
+  },
+  "sourceFiles": [
+    {
+      "path": "packages/app_registry/lib/src/native_bootstrap.dart",
+      "sha256": "e1c111c697f3c9568ae33641158e2f139c75af0fb985c3142434cec742700f4a",
+      "bytes": 1831,
+      "rationale": "Bind the explicitly supplied club journey to both module selection and its scoped provider; dispose the controller when that scope closes."
+    },
+    {
+      "path": "packages/app_registry/lib/app_registry.dart",
+      "sha256": "3fc279f85d8cb3fb3e732a7a1fc6a9914b4a55ef4df7bbba244a2f5f4887b288",
+      "bytes": 169,
+      "rationale": "Expose the common bootstrap helper and journey type to thin club entrypoints."
+    },
+    {
+      "path": "packages/app_registry/pubspec.yaml",
+      "sha256": "5d86dbc359d9622a6fa519126787463bf44732374f3a9f76195126e5f8a1c2e8",
+      "bytes": 1161,
+      "rationale": "Declare existing core_app and flutter_riverpod runtime composition dependencies; no new selected package version."
+    },
+    {
+      "path": "packages/app_registry/test/native_bootstrap_test.dart",
+      "sha256": "77937fac9d09fb87a4d73d3bc08b1bdcbacef7ac502fae74821077f256d2bbaf",
+      "bytes": 6211,
+      "rationale": "Exercise all five real club configurations, passive construction, matching module/provider, scope disposal and foreign-club rejection."
+    },
+    {
+      "path": "apps/as_vita/lib/main.dart",
+      "sha256": "e3dc536543cdd5b8c32375429aeacf2e1554b9f947e5f3479dfdb1e1613c43aa",
+      "bytes": 462,
+      "rationale": "Wire the common bootstrap options with an optional scoped journey while retaining the existing default startup/backend selection."
+    },
+    {
+      "path": "apps/costa_do_sol/lib/main.dart",
+      "sha256": "812ee35d37060c6cb16cd50eafa9d52b63c8289ed0e2c94062b59f209c8a497b",
+      "bytes": 484,
+      "rationale": "Wire the common bootstrap options with an optional scoped journey while retaining the existing default startup/backend selection."
+    },
+    {
+      "path": "apps/nkana/lib/main.dart",
+      "sha256": "b0ca220f41e7afcf3ae5bb5b05923d15fa2be7d44ab607350baa0b96664cf623",
+      "bytes": 455,
+      "rationale": "Wire the common bootstrap options with an optional scoped journey while retaining the existing default startup/backend selection."
+    },
+    {
+      "path": "apps/rayon_sports/lib/main.dart",
+      "sha256": "4066bd4a6a5cf078cd1f5c0ae6311ed696c8c0ca4c0955b34bb5f9c71d4506e2",
+      "bytes": 951,
+      "rationale": "Wire the common bootstrap options with an optional scoped journey while retaining the existing default startup/backend selection."
+    },
+    {
+      "path": "apps/vitalo/lib/main.dart",
+      "sha256": "00f2b4ec49e193872ac9d84402683fead46d60c5623a8637acd5a3683a7f706f",
+      "bytes": 460,
+      "rationale": "Wire the common bootstrap options with an optional scoped journey while retaining the existing default startup/backend selection."
+    },
+    {
+      "path": "packages/core/core_app/lib/bootstrap.dart",
+      "sha256": "d0c697ffe0a1e78ac0db12aa63fa8b477b52a3837aca93621a20480dc73bf892",
+      "bytes": 78,
+      "rationale": "Carry passive eager scope ownership and account invalidation through the common bootstrap options into the actual app."
+    },
+    {
+      "path": "packages/core/core_app/lib/src/app.dart",
+      "sha256": "d020e4518a4d8a295ba5d098a9add91593d4a699c6b4ad215ae071cb84ceec4b",
+      "bytes": 20138,
+      "rationale": "Own passive supplied controllers across root lifetime; replace authentication repositories, dispose old club/router scopes and deny foreign-club private-route grants."
+    },
+    {
+      "path": "packages/core/core_app/test/app_routing_guard_test.dart",
+      "sha256": "a63d516ab2a710d9a3f2c98f98806a513480da4ba70be1321c26defd866df205",
+      "bytes": 36107,
+      "rationale": "Execute actual account transitions, retained-root club/repository replacement, disposed router and foreign-club Settings/Admin rejection."
+    }
+  ],
+  "logs": [
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/native-bootstrap-offline-resolution-20260930.log",
+      "sha256": "d1e726b24697ac2eb3114068afec3ecc9ae22e41a290d2212b9394e7e3b8e713"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/native-bootstrap-format-20260930.log",
+      "sha256": "a549f2255e7413bed345427d726c79948b67dc3e2bf4b3d14a749048320ce096"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/native-bootstrap-composition-20260930.log",
+      "sha256": "37ba3d23c70777f576b28ed0297b140fb669bd15508b1e3548cfc8a2519f4a71"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/native-bootstrap-analyze-20260930.log",
+      "sha256": "8ae6ee31c7d31180856158df6c94a90080b00f6176633798d0f9919fb486311b"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/native-bootstrap-analyze-corrected-20260930.log",
+      "sha256": "f487eaa8532391aee0faaf03cbf7fad47c10c58b7ae402ce1d7368ccf3de437b"
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-bootstrap-current-owner-tests.log",
+      "sha256": "54e5b5afe0ae8eb0d94fc732adf842b49570983db30f29852ca06c03b05afbc9",
+      "bytes": 1449
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-bootstrap-current-owner-analysis.log",
+      "sha256": "d6344234512e3b46c5d6634a27b67ac85e79c8f8a2c7eade95ae473763c276f9",
+      "bytes": 97
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-root-replacement-before-fix.log",
+      "sha256": "92bb6a787e1a4c25a2c550ef3b002f72755a751b173597b5ac4e102d4df516b4",
+      "bytes": 4638
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-root-replacement-after-fix.log",
+      "sha256": "de1df0cd27f1f902bcfae02f9aa98ab6f61fc3db098beefb5e0b90a0a052d923",
+      "bytes": 633
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-root-foreign-club-guard.log",
+      "sha256": "6cbcdd5be3c51a8ce04550a83337a5187abfa410f936cf4382ded3dab4c59b75",
+      "bytes": 568
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-root-transitions-strict-analysis.log",
+      "sha256": "fbcf34d5c0e9e00ffc6794d32b188d03a2049d5ef47c09f5fa1fb9dc311bfef3",
+      "bytes": 417
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-root-transitions-strict-analysis-corrected.log",
+      "sha256": "5f6a53eca7005531e4aafd5a30043e8c4ffdb0b2ec937be44645514955c51bfb",
+      "bytes": 97
+    }
+  ],
+  "pending": [
+    "Final registry tests/strict analysis after current authentication and accessibility corrections.",
+    "Complete source-bound native route/state/accessibility and lifecycle bank.",
+    "Final exact source candidate commit and artifact/source readback."
+  ],
+  "limits": [
+    "The optional journey requires explicit reviewed configuration; default startup does not activate a native provider.",
+    "Protected OS store execution, physical devices, providers and store acceptance are not proved by these local composition tests."
+  ],
+  "historicalChecks": [
+    {
+      "compositionTestsPassed": 11,
+      "compositionTestsFailed": 0,
+      "strictRegistryAnalysisIssues": 0,
+      "offlineResolution": true,
+      "allFiveNativeAppBuildsAtCurrentSource": false
+    }
+  ],
+  "checkScopeNotes": [
+    "Earlier16-test all-five bootstrap checkpoint precedes the latest authority-transition and source-fixture edits; final current composition rebind is still required.",
+    "Two replacement and two foreign-grant widget tests verify separate concrete root invariants; neither is a complete lifecycle/native bank.",
+    "Strict root analysis is current after import ordering and super-parameter fixture corrections; original lint failure is retained."
+  ]
+}

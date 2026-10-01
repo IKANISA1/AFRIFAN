@@ -1,0 +1,1081 @@
+{
+  "schemaVersion": 1,
+  "generatedAtUtc": "2026-09-30T23:24:04.459639+00:00",
+  "status": "LOCAL_NATIVE_PERFORMANCE_PRIVACY_IMPLEMENTATION_VERIFIED",
+  "scopeImplementationComplete": true,
+  "goalComplete": false,
+  "productionReady": false,
+  "finalCandidateBound": false,
+  "scope": "Disable native Firebase Performance payload collection outside reviewed finite app telemetry on all five Android and five iOS host targets.",
+  "sourceChanges": [
+    {
+      "path": "packages/core/core_network/lib/src/firebase_bootstrap_service.dart",
+      "sha256": "ec374a1b2bb67459f34f8cc2d6e37e293295797f545c4dbcf0e454e5b47ee81a",
+      "bytes": 2344,
+      "changeType": "modified",
+      "reason": "Request disabled Performance collection for both new and existing native apps regardless of the general finite observability flag; retain best effort startup and retry disabling after setter failure."
+    },
+    {
+      "path": "packages/core/core_network/test/firebase_bootstrap_performance_privacy_test.dart",
+      "sha256": "f9f1e3b47b2c8d0eac4b1fb53bf6cc585786aaa666afcf6fa36f0becde49165e",
+      "bytes": 4109,
+      "changeType": "added",
+      "reason": "Execute installed Core/Performance Pigeon serializers with local native replies; prove false requests on both startup paths, best effort failure and retry without a provider."
+    },
+    {
+      "path": "apps/rayon_sports/test/firebase_startup_contract_test.dart",
+      "sha256": "8b5cef5998cae73798396807d8ee894b549028bd5f76e640b6678f4781e9600d",
+      "bytes": 6229,
+      "changeType": "modified",
+      "reason": "Require the permanent Performance control and always-disabled bootstrap while retaining finite SDK gates; make the retained push guard assertion whitespace tolerant."
+    },
+    {
+      "path": "tools/scripts/verify_native_performance_privacy.py",
+      "sha256": "99737c96e8fb964ee890401f7deef26be1916e0da340cb6940102e18ff95017c",
+      "bytes": 8373,
+      "changeType": "added",
+      "reason": "Parse all declared Android/iOS host controls with stdlib, reject missing/duplicate/contradictory/nonliteral controls and build-type/flavor overrides, emit finite failures and source hashes for CI."
+    },
+    {
+      "path": "tools/scripts/test_verify_native_performance_privacy.py",
+      "sha256": "886acf55db445864559f0b008314c804acef6d73dc729f2f43b44390791837bd",
+      "bytes": 10297,
+      "changeType": "added",
+      "reason": "Mutate copies of all actual ten host files across missing, duplicate, false/type/resource/placement/override/scope/unsafe and malformed cases; verify successful CLI and fail-closed diagnostics."
+    },
+    {
+      "path": "apps/as_vita/android/app/src/main/AndroidManifest.xml",
+      "sha256": "3e5a01201d11ea1377e5d105a678a1fbbe8abf083ab2a3a4fce28ddfb5c88466",
+      "bytes": 2670,
+      "changeType": "modified",
+      "reason": "Permanently deactivate Performance before native Firebase starts using the documented literal true control; preserve all existing branding and other configuration bytes."
+    },
+    {
+      "path": "apps/as_vita/ios/Runner/Info.plist",
+      "sha256": "aa5588cf3dee1a165ccd468c37ce7c4ee97c3eb8adb1c33b10191580288e6f6e",
+      "bytes": 2353,
+      "changeType": "modified",
+      "reason": "Permanently deactivate Performance before native Firebase starts using the documented literal true control; preserve all existing branding and other configuration bytes."
+    },
+    {
+      "path": "apps/costa_do_sol/android/app/src/main/AndroidManifest.xml",
+      "sha256": "3e5a01201d11ea1377e5d105a678a1fbbe8abf083ab2a3a4fce28ddfb5c88466",
+      "bytes": 2670,
+      "changeType": "modified",
+      "reason": "Permanently deactivate Performance before native Firebase starts using the documented literal true control; preserve all existing branding and other configuration bytes."
+    },
+    {
+      "path": "apps/costa_do_sol/ios/Runner/Info.plist",
+      "sha256": "2b8face460314ac84af56f21642d7274d399168fd6d69b6778df1eb72e1f992b",
+      "bytes": 2358,
+      "changeType": "modified",
+      "reason": "Permanently deactivate Performance before native Firebase starts using the documented literal true control; preserve all existing branding and other configuration bytes."
+    },
+    {
+      "path": "apps/nkana/android/app/src/main/AndroidManifest.xml",
+      "sha256": "3e5a01201d11ea1377e5d105a678a1fbbe8abf083ab2a3a4fce28ddfb5c88466",
+      "bytes": 2670,
+      "changeType": "modified",
+      "reason": "Permanently deactivate Performance before native Firebase starts using the documented literal true control; preserve all existing branding and other configuration bytes."
+    },
+    {
+      "path": "apps/nkana/ios/Runner/Info.plist",
+      "sha256": "814d0b4393e2593169e7605b9d40a640c2d8df9f717e61f09c73e059af88d8d1",
+      "bytes": 2351,
+      "changeType": "modified",
+      "reason": "Permanently deactivate Performance before native Firebase starts using the documented literal true control; preserve all existing branding and other configuration bytes."
+    },
+    {
+      "path": "apps/rayon_sports/android/app/src/main/AndroidManifest.xml",
+      "sha256": "47316bc15bdb1807bdcf6dc1fb1bedfc769c043d4fd526644bd31f821704bd39",
+      "bytes": 8282,
+      "changeType": "modified",
+      "reason": "Permanently deactivate Performance before native Firebase starts using the documented literal true control; preserve all existing branding and other configuration bytes."
+    },
+    {
+      "path": "apps/rayon_sports/ios/Runner/Info.plist",
+      "sha256": "8f3d883abbbf4c65c9966cdbc3ac4c1b7ea02a51dfa141b0c5b69bebb3761c4d",
+      "bytes": 2909,
+      "changeType": "modified",
+      "reason": "Permanently deactivate Performance before native Firebase starts using the documented literal true control; preserve all existing branding and other configuration bytes."
+    },
+    {
+      "path": "apps/vitalo/android/app/src/main/AndroidManifest.xml",
+      "sha256": "3e5a01201d11ea1377e5d105a678a1fbbe8abf083ab2a3a4fce28ddfb5c88466",
+      "bytes": 2670,
+      "changeType": "modified",
+      "reason": "Permanently deactivate Performance before native Firebase starts using the documented literal true control; preserve all existing branding and other configuration bytes."
+    },
+    {
+      "path": "apps/vitalo/ios/Runner/Info.plist",
+      "sha256": "d859c7ba030a62a178b50e49c49b4944c6e7c6ac108d259ec1574f7a73ea811e",
+      "bytes": 2352,
+      "changeType": "modified",
+      "reason": "Permanently deactivate Performance before native Firebase starts using the documented literal true control; preserve all existing branding and other configuration bytes."
+    }
+  ],
+  "counts": {
+    "added": 3,
+    "modified": 12,
+    "nativeTargets": 10
+  },
+  "implementedControls": {
+    "nativeStartup": "firebase_performance_collection_deactivated is literal true under every Android main application and boolean true under every used iOS Runner plist. All app/src Android manifests are checked for contradictory/duplicate overrides.",
+    "bootstrap": "New and already initialized native Firebase paths request Performance collection false. General observability no longer enables Performance. A setter failure preserves initialized best effort startup and the next bootstrap retries disabling. Web guard preserved.",
+    "finiteTelemetry": "Existing closed Analytics/Crashlytics/operational-health telemetry remains governed by its existing finite contracts; no new custom traces, HTTP metrics, dependencies or SDK versions introduced.",
+    "ciVerifier": "verify_native_controls(root, scopes) returns ten source-bound target records; NativeControlError extends ValueError and retains a finite structured report. CLI derives the real declared five-club release scope."
+  },
+  "installedPrimarySdkEvidence": {
+    "schemaVersion": 1,
+    "generatedAtUtc": "2026-09-30T23:09:19.578515+00:00",
+    "installedFlutterPackages": [
+      {
+        "name": "firebase_core",
+        "canonicalRoot": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0",
+        "pubspec": {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/pubspec.yaml",
+          "sha256": "9f4451b9d6c7c90356d18d339ff27b819ff85f2d1d2ec726b257e02e232170a0",
+          "bytes": 1163
+        },
+        "license": {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/LICENSE",
+          "sha256": "9f23ad2aa0fe3e877397294b6846868c2a7458fe394fbcd5b90ca4505a6b6ab8",
+          "bytes": 1558
+        }
+      },
+      {
+        "name": "firebase_core_platform_interface",
+        "canonicalRoot": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core_platform_interface-6.0.3",
+        "pubspec": {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core_platform_interface-6.0.3/pubspec.yaml",
+          "sha256": "6d831ca293a0dd07f00e674937a4758dcde9445530f25a09b0f0b1da9c6a1df1",
+          "bytes": 806
+        },
+        "license": {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core_platform_interface-6.0.3/LICENSE",
+          "sha256": "9f23ad2aa0fe3e877397294b6846868c2a7458fe394fbcd5b90ca4505a6b6ab8",
+          "bytes": 1558
+        }
+      },
+      {
+        "name": "firebase_performance",
+        "canonicalRoot": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2",
+        "pubspec": {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/pubspec.yaml",
+          "sha256": "9cd1857f811d9a01fb0353d2a736978d3cc2485f809097db4222bba0a83af69d",
+          "bytes": 1142
+        },
+        "license": {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/LICENSE",
+          "sha256": "34a5c58db7cc4d3265d14a9aa26e38067fe114311d8bec31f909d1c240e626c4",
+          "bytes": 1559
+        }
+      },
+      {
+        "name": "firebase_performance_platform_interface",
+        "canonicalRoot": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance_platform_interface-0.1.6+6",
+        "pubspec": {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance_platform_interface-0.1.6+6/pubspec.yaml",
+          "sha256": "3def9187e31f666bce8df2b32c47186ee362ff3533e6822eb27e352a6c14dc54",
+          "bytes": 521
+        },
+        "license": {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance_platform_interface-0.1.6+6/LICENSE",
+          "sha256": "34a5c58db7cc4d3265d14a9aa26e38067fe114311d8bec31f909d1c240e626c4",
+          "bytes": 1559
+        }
+      }
+    ],
+    "primaryInstalledSources": [
+      {
+        "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/lib/src/firebase_performance.dart",
+        "sha256": "61eb89b1f8e8c8056c808612e14d927a93e5180566171eff179c1290bb30a4c8",
+        "bytes": 3499,
+        "package": "firebase_performance",
+        "lineStart": 47,
+        "lineEnd": 63
+      },
+      {
+        "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance_platform_interface-0.1.6+6/lib/src/method_channel/method_channel_firebase_performance.dart",
+        "sha256": "d4be3c9b41b6740d795f78e917ccfc1f765ea965e2d2e4599af2808ceb30de0e",
+        "bytes": 2347,
+        "package": "firebase_performance_platform_interface",
+        "lineStart": 52,
+        "lineEnd": 58
+      },
+      {
+        "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance_platform_interface-0.1.6+6/lib/src/pigeon/messages.pigeon.dart",
+        "sha256": "f89a0c7aa0a8dbee5c151af45a9984dfa6d68e269553e91eab01542e4f4c19a5",
+        "bytes": 14094,
+        "package": "firebase_performance_platform_interface",
+        "lineStart": 269,
+        "lineEnd": 295
+      },
+      {
+        "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/src/main/kotlin/io/flutter/plugins/firebase/performance/FlutterFirebasePerformancePlugin.kt",
+        "sha256": "eaf6197f685bd63ca2c3dcd3cc2cb4316cabbf3a1c4a79aee372a4adeb1240cb",
+        "bytes": 7450,
+        "package": "firebase_performance",
+        "lineStart": 46,
+        "lineEnd": 54
+      },
+      {
+        "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/ios/firebase_performance/Sources/firebase_performance/FirebasePerformancePlugin.swift",
+        "sha256": "ced14f624dcbd57297aac7179c2bc7f3a5a073cc3a21b0bfa635ef33055667b1",
+        "bytes": 5246,
+        "package": "firebase_performance",
+        "lineStart": 61,
+        "lineEnd": 64
+      },
+      {
+        "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/android/gradle.properties",
+        "sha256": "8026e0170ae88414b8390067785f816f0db0e734221e12e4023c8c9a9b4307ec",
+        "bytes": 86,
+        "package": "firebase_core",
+        "lineStart": 2,
+        "lineEnd": 2
+      },
+      {
+        "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/ios/firebase_sdk_version.rb",
+        "sha256": "8ea023aa123e56dd7198079150ba772e149cf036746382869e86652135d377be",
+        "bytes": 99,
+        "package": "firebase_core",
+        "lineStart": 2,
+        "lineEnd": 4
+      }
+    ],
+    "packageConfig": {
+      "path": ".dart_tool/package_config.json",
+      "sha256": "8bc8f1fab9321d11f62371f2416e7769c842cbcfe0289047721c0a4f59f2fd40",
+      "bytes": 40560
+    },
+    "androidSelectedSdk": {
+      "coordinate": "com.google.firebase:firebase-perf:22.0.4",
+      "bom": "com.google.firebase:firebase-bom:34.9.0",
+      "resolverCheckpoint": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-missing-targets-retry-20260930T224117Z/android/rayon_sports.json",
+        "sha256": "9ee9abe0a2ce53294be0ea967b3f26adaea2387e1d303ee2e4b034926d6198c4",
+        "bytes": 14070616
+      },
+      "resolverConfiguration": ":app/releaseRuntimeClasspath",
+      "unresolved": [],
+      "selectedComponents": [
+        {
+          "id": "com.google.firebase:firebase-bom:34.9.0",
+          "group": "com.google.firebase",
+          "name": "firebase-bom",
+          "version": "34.9.0"
+        },
+        {
+          "id": "com.google.firebase:firebase-perf:22.0.4",
+          "group": "com.google.firebase",
+          "name": "firebase-perf",
+          "version": "22.0.4"
+        }
+      ],
+      "aar": {
+        "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.google.firebase/firebase-perf/22.0.4/65545d04fa43d381112e03619ed5c0c344a2f3f9/firebase-perf-22.0.4.aar",
+        "sha256": "3ef8afdb2663b218a073618297c028545f8433eb88e158d13c499dad526c0c7b",
+        "bytes": 312921
+      },
+      "extractedClasses": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy-audit/classes.jar",
+        "sha256": "96acceba6baf4ac9fa6a4e468dc77944eae212041686cc9da3fc58a49ee849da",
+        "bytes": 342441
+      }
+    },
+    "appleSdk": {
+      "declaredVersion": "12.9.0",
+      "builtOrResolvedPodVersionVerified": false
+    },
+    "nativeBinaryInspection": {
+      "javapReceipt": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy-audit/javap-receipt.json",
+        "sha256": "1cc1aa06e0e201e3fc062ce47ce4d58430c5fbf738bf096083ab4e46c366cb66",
+        "bytes": 5049
+      },
+      "allSevenCommandsExitZero": true
+    },
+    "actualUrlBaseline": {
+      "correctedReceipt": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy-audit/actual-url-utility-corrected-receipt.json",
+        "sha256": "f73e7b883c7491d415a101915df24cb5efd45e4db249fa8c2e6c0edec946b85e",
+        "bytes": 5490
+      },
+      "correctedExitCode": 0,
+      "correctedLog": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy-audit/actual-url-utility-corrected.log",
+        "sha256": "335527965415f337b3b83338b6a815be10b0e31be58c7bb13133dc43e207e112",
+        "bytes": 157
+      },
+      "fixture": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy-audit/PerformanceUrlFixture.java",
+        "sha256": "e62d07590db027133f68de0a18b288510ef1d1271cdc5e5450b44af4564c8e1a",
+        "bytes": 769
+      },
+      "originalSetupReceipt": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy-audit/actual-url-utility-receipt.json",
+        "sha256": "3c3a435306656fe2622c526e4412fda5e81909f7af770c15bda4429654f096bb",
+        "bytes": 3765
+      },
+      "originalSetupFailureNotCountedAsPrivacyReproduction": true,
+      "networkCalls": 0
+    },
+    "applicationPerformanceCallers": [
+      {
+        "path": "packages/core/core_network/lib/src/firebase_bootstrap_service.dart",
+        "sha256": "ec374a1b2bb67459f34f8cc2d6e37e293295797f545c4dbcf0e454e5b47ee81a",
+        "bytes": 2344,
+        "matches": [
+          {
+            "line": 61,
+            "source": "await FirebasePerformance.instance.setPerformanceCollectionEnabled(false);"
+          }
+        ]
+      }
+    ],
+    "androidGradleInstrumentationInventory": [
+      {
+        "path": "apps/as_vita/android/app/build.gradle.kts",
+        "sha256": "a3bd5af85749118a3e1effa808c1b2a98d815065c2df4f043fa675e58b68b665",
+        "bytes": 5022,
+        "performanceInstrumentationDeclarationFound": false
+      },
+      {
+        "path": "apps/as_vita/android/build.gradle.kts",
+        "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+        "bytes": 537,
+        "performanceInstrumentationDeclarationFound": false
+      },
+      {
+        "path": "apps/as_vita/android/settings.gradle.kts",
+        "sha256": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+        "bytes": 772,
+        "performanceInstrumentationDeclarationFound": false
+      },
+      {
+        "path": "apps/costa_do_sol/android/app/build.gradle.kts",
+        "sha256": "0b4d8b342217a9fb9eac0d78deb3eee038b7ceadf04598bb8137602006d6303d",
+        "bytes": 5028,
+        "performanceInstrumentationDeclarationFound": false
+      },
+      {
+        "path": "apps/costa_do_sol/android/build.gradle.kts",
+        "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+        "bytes": 537,
+        "performanceInstrumentationDeclarationFound": false
+      },
+      {
+        "path": "apps/costa_do_sol/android/settings.gradle.kts",
+        "sha256": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+        "bytes": 772,
+        "performanceInstrumentationDeclarationFound": false
+      },
+      {
+        "path": "apps/nkana/android/app/build.gradle.kts",
+        "sha256": "58ec4bc1a21761cab44660072ca189a737e844797e491f5713ca706a5534e7a3",
+        "bytes": 5006,
+        "performanceInstrumentationDeclarationFound": false
+      },
+      {
+        "path": "apps/nkana/android/build.gradle.kts",
+        "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+        "bytes": 537,
+        "performanceInstrumentationDeclarationFound": false
+      },
+      {
+        "path": "apps/nkana/android/settings.gradle.kts",
+        "sha256": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+        "bytes": 772,
+        "performanceInstrumentationDeclarationFound": false
+      },
+      {
+        "path": "apps/rayon_sports/android/app/build.gradle.kts",
+        "sha256": "ccb935c02f19c851fc27928db26c88d79faeae03f4cfad9848a1164afd39de20",
+        "bytes": 5714,
+        "performanceInstrumentationDeclarationFound": false
+      },
+      {
+        "path": "apps/rayon_sports/android/build.gradle.kts",
+        "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+        "bytes": 537,
+        "performanceInstrumentationDeclarationFound": false
+      },
+      {
+        "path": "apps/rayon_sports/android/settings.gradle.kts",
+        "sha256": "51d50f8f3713eaa43e1353369de99668dd8c4522a5ab9b2091fd411b3019e7fd",
+        "bytes": 841,
+        "performanceInstrumentationDeclarationFound": false
+      },
+      {
+        "path": "apps/vitalo/android/app/build.gradle.kts",
+        "sha256": "9a90f04c41410366921ee6d5be651500a0d8b7e6def2f8b020a5d1039d4cf484",
+        "bytes": 5005,
+        "performanceInstrumentationDeclarationFound": false
+      },
+      {
+        "path": "apps/vitalo/android/build.gradle.kts",
+        "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+        "bytes": 537,
+        "performanceInstrumentationDeclarationFound": false
+      },
+      {
+        "path": "apps/vitalo/android/settings.gradle.kts",
+        "sha256": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+        "bytes": 772,
+        "performanceInstrumentationDeclarationFound": false
+      },
+      {
+        "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/build.gradle",
+        "sha256": "960dbc23a97748cc9b6f7c0caa2cdf8335e56fb74bec15ff09869010e474ef21",
+        "bytes": 2652,
+        "performanceInstrumentationDeclarationFound": false
+      },
+      {
+        "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/local-config.gradle",
+        "sha256": "3afbe39a27f1155be33ec7397efdd43ea93342d1f5644d0dd282b9b2367f7cc0",
+        "bytes": 141,
+        "performanceInstrumentationDeclarationFound": false
+      },
+      {
+        "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/settings.gradle",
+        "sha256": "59c23bf28019bae4c0976f6d6ba3b19205448691f6b648f4fae87469a5a72070",
+        "bytes": 289,
+        "performanceInstrumentationDeclarationFound": false
+      },
+      {
+        "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/user-agent.gradle",
+        "sha256": "72d74e4901ce4a038b0d219f10b065f410268d9b461c8766838a2b8c746b1441",
+        "bytes": 829,
+        "performanceInstrumentationDeclarationFound": false
+      }
+    ],
+    "androidAutomaticHttpInstrumentationActivationProven": false,
+    "dartHttpAutomaticallyCollectedProven": false,
+    "providerOrPhysicalDeviceTelemetryObserved": false,
+    "auditArtifact": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/installed-sdk-primary-source-audit.json",
+      "sha256": "98cc7ebc521e11352c61fca530e3762e2e3bd408dc89fea9c2a79ba5ee78c5e1",
+      "bytes": 13854
+    },
+    "hashReadback": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/installed-sdk-primary-readback.json",
+      "sha256": "d234d70c43ac42c28b6580a80bf631fcc996056ff186349288833765f3457da1",
+      "bytes": 4023
+    }
+  },
+  "findings": [
+    {
+      "finding": "Installed native SDK URL redaction retains arbitrary private path segments.",
+      "primarySource": {
+        "class": "com.google.firebase.perf.util.Utils",
+        "method": "stripSensitiveInfo",
+        "compiledJavaSourceLines": [
+          39,
+          46
+        ],
+        "bytecode": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy-audit/Utils.javap.txt",
+          "sha256": "dcf938de3cf9e0fe1702e60923aa246b34366379f2aef7e73a55ad6ff60525e1",
+          "bytes": 10473
+        }
+      },
+      "evidence": "Actual installed SDK utility strips userinfo/query/fragment but preserves /orders/opaque_private_supporter_alias on a synthetic URL. Invalid URL parsing also returns the original string. This is a raw URL utility proof, not a live automatic trace or backend transmission."
+    },
+    {
+      "finding": "Native HTTP metric construction stores the URL after that redaction and length truncation.",
+      "primarySource": {
+        "class": "com.google.firebase.perf.metrics.NetworkRequestMetricBuilder",
+        "method": "setUrl",
+        "compiledJavaSourceLines": [
+          125,
+          133
+        ],
+        "bytecode": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy-audit/NetworkRequestMetricBuilder.javap.txt",
+          "sha256": "81640dcf9e464390fae7605b1a4b5aaa54ec37efb62c5dfd276ea02d7186c905",
+          "bytes": 41890
+        }
+      },
+      "instrumentedCallPath": {
+        "class": "com.google.firebase.perf.network.FirebasePerfOkHttpClient",
+        "method": "sendNetworkMetric",
+        "compiledJavaSourceLines": [
+          82,
+          87
+        ],
+        "bytecode": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy-audit/FirebasePerfOkHttpClient.javap.txt",
+          "sha256": "e936079ca8ff623bbc66d401f4c8bb1077dd3093e1cd7317bd56b347caf3ef7e",
+          "bytes": 12850
+        }
+      }
+    },
+    {
+      "finding": "Installed collection resolution checks permanent deactivation first, then persisted collection choice before manifest default.",
+      "primarySource": {
+        "class": "com.google.firebase.perf.config.ConfigResolver",
+        "method": "getIsPerformanceCollectionEnabled",
+        "compiledJavaSourceLines": [
+          134,
+          156
+        ],
+        "bytecode": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy-audit/ConfigResolver.javap.txt",
+          "sha256": "eeabcc9f062fac15926de992b8ba91fe15f4dbb5e942624fcba131fc700cb738",
+          "bytes": 118321
+        }
+      },
+      "permanentFlagResolutionSourceLines": [
+        171,
+        179
+      ],
+      "persistedSetterSourceLines": [
+        189,
+        204
+      ],
+      "note": "A default enabled=false flag or skipping the setter does not override a previously persisted true. Permanent deactivation returns disabled before those choices."
+    },
+    {
+      "finding": "Installed runtime setter cannot enable permanently deactivated Performance.",
+      "primarySource": {
+        "class": "com.google.firebase.perf.FirebasePerformance",
+        "method": "setPerformanceCollectionEnabled",
+        "compiledJavaSourceLines": [
+          280,
+          304
+        ],
+        "bytecode": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy-audit/FirebasePerformance.javap.txt",
+          "sha256": "e28b646836917270de32b0b7e9d027fab81e0f59709d2c5911030e70e1c39d6f",
+          "bytes": 30290
+        }
+      },
+      "note": "When permanently deactivated, the Android setter returns before writing persisted collection state; local proof claims a false request and permanent override, not erasure of old SDK cache values."
+    },
+    {
+      "finding": "Native Performance transport includes an SDK installation identifier outside the app finite diagnostic payload contract.",
+      "primarySource": {
+        "class": "com.google.firebase.perf.transport.TransportManager",
+        "method": "updateFirebaseInstallationIdIfPossibleAndNeeded",
+        "compiledJavaSourceLines": [
+          551,
+          585
+        ],
+        "bytecode": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy-audit/TransportManager.javap.txt",
+          "sha256": "6bd342ed4fb231568341d29ca50053fc7b8ae63f7981b1e78fb4c71753abc805",
+          "bytes": 80520
+        }
+      },
+      "note": "The method obtains FirebaseInstallationsApi.getId and writes ApplicationInfo.appInstanceId when enabled. This is an SDK identifier, not proof of a business user ID or of any actual transmission."
+    },
+    {
+      "finding": "Installed Apple Flutter setter forwards only dataCollectionEnabled, while automatic instrumentation has a separate native control.",
+      "primarySource": {
+        "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/ios/firebase_performance/Sources/firebase_performance/FirebasePerformancePlugin.swift",
+        "sha256": "ced14f624dcbd57297aac7179c2bc7f3a5a073cc3a21b0bfa635ef33055667b1",
+        "bytes": 5246,
+        "package": "firebase_performance",
+        "lineStart": 61,
+        "lineEnd": 64
+      },
+      "officialDocumentation": "https://firebase.google.com/docs/perf-mon/disable-sdk?platform=ios",
+      "note": "The installed Swift wrapper61\u201364 only changes isDataCollectionEnabled. Official Apple guidance distinguishes that custom collection setting from isInstrumentationEnabled for automatic monitoring, and documents permanent plist deactivation."
+    }
+  ],
+  "documentedControlSemantics": [
+    {
+      "url": "https://firebase.google.com/docs/perf-mon/disable-sdk?platform=android",
+      "claim": "Permanent Android deactivation overrides normal collection choice and cannot be reversed by a runtime enable call; library reporting and Gradle instrumentation are separate controls."
+    },
+    {
+      "url": "https://firebase.google.com/docs/perf-mon/disable-sdk?platform=ios",
+      "claim": "Permanent plist deactivation blocks runtime reenablement. Automatic instrumentation and custom data collection are distinct Apple properties."
+    }
+  ],
+  "retainedEvidence": {
+    "beforeAfterCheckpoint": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/retained-before-after-checkpoint.json",
+      "sha256": "102d33d97d5c396852e23031286e9d98d5f2ba6821b5d116f82b2c4eaf852c42",
+      "bytes": 2262
+    },
+    "opaqueUrlUtilityCorrectedReceipt": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy-audit/actual-url-utility-corrected-receipt.json",
+      "sha256": "f73e7b883c7491d415a101915df24cb5efd45e4db249fa8c2e6c0edec946b85e",
+      "bytes": 5490
+    },
+    "opaqueUrlUtilityInitialSetupReceipt": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy-audit/actual-url-utility-receipt.json",
+      "sha256": "3c3a435306656fe2622c526e4412fda5e81909f7af770c15bda4429654f096bb",
+      "bytes": 3765
+    },
+    "initialSetupFailureIsNotPrivacyReproduction": true,
+    "firstFullCurrentCheckpoint": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification/final-source-bound-verification.json",
+      "sha256": "f589fd33be4f373ff16747665051ad9f5e54b79dc14d7f4176fa610ab0d8c48a",
+      "bytes": 9360
+    },
+    "firstFullCheckpointDescription": "Runtime/package/enabled SDK/control/mutation checks passed; retained startup indentation assertion failed31/1 combined, and strict found one unnecessary test import. Both test-only corrections are included in the corrected current receipt."
+  },
+  "nativeControlProof": {
+    "declaredUsedRunnerPlists": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/used-runner-plist-primary-source.json",
+      "sha256": "48f3712019837665ed8017f980e988d4aa5c16d13334f3a930cbefa4041c11ab",
+      "bytes": 7145
+    },
+    "retainedReadOnlyInspectionAssumptionFailure": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/used-runner-plist-initial-assumption.json",
+      "sha256": "de8b690d3fa760489d0d5a74a18a0888de2644cc2ba739b4c4b50c9c2d14356d",
+      "bytes": 329
+    },
+    "receipt": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/native-control-result.json",
+      "sha256": "634edcd390e2e27feaa3daffd2ef2da50408b53a490a8c0a48ebadd6708fce7e",
+      "bytes": 5814
+    },
+    "targets": [
+      {
+        "club": "as_vita",
+        "platform": "android",
+        "path": "apps/as_vita/android/app/src/main/AndroidManifest.xml",
+        "permanentCollectionDeactivated": true
+      },
+      {
+        "club": "as_vita",
+        "platform": "ios",
+        "path": "apps/as_vita/ios/Runner/Info.plist",
+        "permanentCollectionDeactivated": true
+      },
+      {
+        "club": "costa_do_sol",
+        "platform": "android",
+        "path": "apps/costa_do_sol/android/app/src/main/AndroidManifest.xml",
+        "permanentCollectionDeactivated": true
+      },
+      {
+        "club": "costa_do_sol",
+        "platform": "ios",
+        "path": "apps/costa_do_sol/ios/Runner/Info.plist",
+        "permanentCollectionDeactivated": true
+      },
+      {
+        "club": "nkana",
+        "platform": "android",
+        "path": "apps/nkana/android/app/src/main/AndroidManifest.xml",
+        "permanentCollectionDeactivated": true
+      },
+      {
+        "club": "nkana",
+        "platform": "ios",
+        "path": "apps/nkana/ios/Runner/Info.plist",
+        "permanentCollectionDeactivated": true
+      },
+      {
+        "club": "rayon_sports",
+        "platform": "android",
+        "path": "apps/rayon_sports/android/app/src/main/AndroidManifest.xml",
+        "permanentCollectionDeactivated": true
+      },
+      {
+        "club": "rayon_sports",
+        "platform": "ios",
+        "path": "apps/rayon_sports/ios/Runner/Info.plist",
+        "permanentCollectionDeactivated": true
+      },
+      {
+        "club": "vitalo",
+        "platform": "android",
+        "path": "apps/vitalo/android/app/src/main/AndroidManifest.xml",
+        "permanentCollectionDeactivated": true
+      },
+      {
+        "club": "vitalo",
+        "platform": "ios",
+        "path": "apps/vitalo/ios/Runner/Info.plist",
+        "permanentCollectionDeactivated": true
+      }
+    ],
+    "sourceInputs": [
+      {
+        "path": "apps/as_vita/android/app/src/debug/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/as_vita/android/app/src/main/AndroidManifest.xml",
+        "sha256": "3e5a01201d11ea1377e5d105a678a1fbbe8abf083ab2a3a4fce28ddfb5c88466",
+        "bytes": 2670
+      },
+      {
+        "path": "apps/as_vita/android/app/src/profile/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/as_vita/ios/Runner/Info.plist",
+        "sha256": "aa5588cf3dee1a165ccd468c37ce7c4ee97c3eb8adb1c33b10191580288e6f6e",
+        "bytes": 2353
+      },
+      {
+        "path": "apps/costa_do_sol/android/app/src/debug/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/costa_do_sol/android/app/src/main/AndroidManifest.xml",
+        "sha256": "3e5a01201d11ea1377e5d105a678a1fbbe8abf083ab2a3a4fce28ddfb5c88466",
+        "bytes": 2670
+      },
+      {
+        "path": "apps/costa_do_sol/android/app/src/profile/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/costa_do_sol/ios/Runner/Info.plist",
+        "sha256": "2b8face460314ac84af56f21642d7274d399168fd6d69b6778df1eb72e1f992b",
+        "bytes": 2358
+      },
+      {
+        "path": "apps/nkana/android/app/src/debug/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/nkana/android/app/src/main/AndroidManifest.xml",
+        "sha256": "3e5a01201d11ea1377e5d105a678a1fbbe8abf083ab2a3a4fce28ddfb5c88466",
+        "bytes": 2670
+      },
+      {
+        "path": "apps/nkana/android/app/src/profile/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/nkana/ios/Runner/Info.plist",
+        "sha256": "814d0b4393e2593169e7605b9d40a640c2d8df9f717e61f09c73e059af88d8d1",
+        "bytes": 2351
+      },
+      {
+        "path": "apps/rayon_sports/android/app/src/debug/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/rayon_sports/android/app/src/main/AndroidManifest.xml",
+        "sha256": "47316bc15bdb1807bdcf6dc1fb1bedfc769c043d4fd526644bd31f821704bd39",
+        "bytes": 8282
+      },
+      {
+        "path": "apps/rayon_sports/android/app/src/profile/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/rayon_sports/ios/Runner/Info.plist",
+        "sha256": "8f3d883abbbf4c65c9966cdbc3ac4c1b7ea02a51dfa141b0c5b69bebb3761c4d",
+        "bytes": 2909
+      },
+      {
+        "path": "apps/vitalo/android/app/src/debug/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/vitalo/android/app/src/main/AndroidManifest.xml",
+        "sha256": "3e5a01201d11ea1377e5d105a678a1fbbe8abf083ab2a3a4fce28ddfb5c88466",
+        "bytes": 2670
+      },
+      {
+        "path": "apps/vitalo/android/app/src/profile/AndroidManifest.xml",
+        "sha256": "30b0832ed8b92dfbd6ae2abfa939ccf26333d37600056b1572bd4a397a18a74b",
+        "bytes": 378
+      },
+      {
+        "path": "apps/vitalo/ios/Runner/Info.plist",
+        "sha256": "d859c7ba030a62a178b50e49c49b4944c6e7c6ac108d259ec1574f7a73ea811e",
+        "bytes": 2352
+      },
+      {
+        "path": "docs/release/full_stack_qa_plan.md",
+        "sha256": "655333708ced9f155e83a242d8058bedf16bb0ae42dd964cbb29a12efe4bbe4c",
+        "bytes": 55656
+      }
+    ],
+    "allTenExistingNativeConfigurationsOtherwiseByteIdentical": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/native-ten-control-preservation.json",
+      "sha256": "2f9d79faa14d14f532e1dab41b1ef9e073e994fff279be18e77a010685fcc58b",
+      "bytes": 3070
+    }
+  },
+  "verification": {
+    "results": [
+      {
+        "name": "final-core-auth-bank",
+        "command": [
+          "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+          "--no-version-check",
+          "--suppress-analytics",
+          "test",
+          "--no-pub",
+          "--concurrency=4",
+          "--reporter",
+          "expanded"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/core/core_auth",
+        "exitCode": 0,
+        "elapsedSeconds": 77.587,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-core-auth-bank.log",
+          "sha256": "bf6e0a1c5d9ac19bee403a0d8131bb113401bbf5ce5f055051df530b21741319"
+        },
+        "passed": 406,
+        "skipped": 0,
+        "failed": 0,
+        "conclusion": "All tests passed!"
+      },
+      {
+        "name": "final-core-network-bank",
+        "command": [
+          "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+          "--no-version-check",
+          "--suppress-analytics",
+          "test",
+          "--no-pub",
+          "--concurrency=4",
+          "--reporter",
+          "expanded"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/packages/core/core_network",
+        "exitCode": 0,
+        "elapsedSeconds": 136.416,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-core-network-bank.log",
+          "sha256": "53f0eec87488dc13f3d55834e1b0eba7bc2257ccf9fa952b5ac4bfae15fc9d56"
+        },
+        "passed": 123,
+        "skipped": 0,
+        "failed": 0,
+        "conclusion": "All tests passed!"
+      },
+      {
+        "name": "final-actual-sdk-enabled-bank",
+        "command": [
+          "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+          "--no-version-check",
+          "--suppress-analytics",
+          "test",
+          "--no-pub",
+          "--dart-define=ENABLE_FIREBASE_OBSERVABILITY=true",
+          "packages/core/core_network/test/native_observability_payload_test.dart",
+          "packages/core/core_network/test/firebase_bootstrap_performance_privacy_test.dart",
+          "--reporter",
+          "expanded"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+        "exitCode": 0,
+        "elapsedSeconds": 48.484,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-actual-sdk-enabled-bank.log",
+          "sha256": "3dc1b7037366642dc3100e05b2bd69376c9dd2bb0f6075d4e99303b72c479e86"
+        },
+        "passed": 12,
+        "skipped": 0,
+        "failed": 0,
+        "conclusion": "All tests passed!"
+      },
+      {
+        "name": "final-diagnostic-startup-bank",
+        "command": [
+          "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+          "--no-version-check",
+          "--suppress-analytics",
+          "test",
+          "--no-pub",
+          "packages/core/core_utils/test/logger_privacy_test.dart",
+          "packages/core/core_theme/test/afri_error_boundary_privacy_test.dart",
+          "apps/rayon_sports/test/firebase_startup_contract_test.dart",
+          "--reporter",
+          "expanded"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+        "exitCode": 0,
+        "elapsedSeconds": 62.06,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-diagnostic-startup-bank.log",
+          "sha256": "ec543b314afea6e7fa6e83632cb2b77e8a346444692f0994316f10024595670e"
+        },
+        "passed": 32,
+        "skipped": 0,
+        "failed": 0,
+        "conclusion": "All tests passed!"
+      },
+      {
+        "name": "final-native-performance-control-mutations",
+        "command": [
+          "python3",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tools/scripts",
+          "-p",
+          "test_verify_native_performance_privacy.py",
+          "-v"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+        "exitCode": 0,
+        "elapsedSeconds": 19.006,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-native-performance-control-mutations.log",
+          "sha256": "2d0488a0e29b638798120da37e0c342255bcb164ab8184147230a091f9ad597e"
+        },
+        "passed": 12,
+        "failed": 0,
+        "skipped": 0
+      },
+      {
+        "name": "final-native-performance-controls",
+        "command": [
+          "python3",
+          "tools/scripts/verify_native_performance_privacy.py",
+          "--report",
+          "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/native-control-result.json"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+        "exitCode": 0,
+        "elapsedSeconds": 0.233,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-native-performance-controls.log",
+          "sha256": "634edcd390e2e27feaa3daffd2ef2da50408b53a490a8c0a48ebadd6708fce7e"
+        },
+        "targets": 10,
+        "configurationVerified": true
+      },
+      {
+        "name": "final-owned-source-strict-analysis",
+        "command": [
+          "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+          "--no-version-check",
+          "--suppress-analytics",
+          "analyze",
+          "--no-pub",
+          "--fatal-infos",
+          "packages/core/core_auth/lib/src/auth_repository.dart",
+          "packages/core/core_auth/lib/src/auth_notifier.dart",
+          "packages/core/core_auth/test/auth_repository_cleanup_test.dart",
+          "packages/core/core_network/lib/src/push_notification_service.dart",
+          "packages/core/core_network/lib/src/supabase_session_authority.dart",
+          "packages/core/core_network/lib/core_network.dart",
+          "packages/core/core_network/test/push_device_session_cleanup_test.dart",
+          "third_party/gotrue_2_27_2/lib",
+          "packages/core/core_network/lib/src/crashlytics_service.dart",
+          "packages/core/core_network/lib/src/firebase_analytics_service.dart",
+          "packages/core/core_network/lib/src/privacy_safe_analytics.dart",
+          "packages/core/core_network/lib/src/operational_health_service.dart",
+          "packages/core/core_network/lib/src/offline_event_queue.dart",
+          "packages/core/core_network/lib/src/native_health_payload.dart",
+          "packages/core/core_network/test/privacy_safe_analytics_test.dart",
+          "packages/core/core_network/test/native_health_payload_test.dart",
+          "packages/core/core_network/test/native_observability_payload_test.dart",
+          "packages/core/core_network/test/crashlytics_service_test.dart",
+          "packages/core/core_network/test/offline_event_queue_test.dart",
+          "packages/core/core_network/lib/src/firebase_bootstrap_service.dart",
+          "packages/core/core_network/test/firebase_bootstrap_performance_privacy_test.dart",
+          "packages/core/core_utils/lib/src/logger.dart",
+          "packages/core/core_utils/test/logger_privacy_test.dart",
+          "packages/core/core_theme/lib/src/widgets/afri_error_boundary.dart",
+          "packages/core/core_theme/test/afri_error_boundary_privacy_test.dart",
+          "packages/core/core_app/lib/src/bootstrap.dart",
+          "packages/core/core_app/lib/src/app.dart",
+          "apps/rayon_sports/test/firebase_startup_contract_test.dart"
+        ],
+        "cwd": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+        "exitCode": 0,
+        "elapsedSeconds": 94.823,
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-owned-source-strict-analysis.log",
+          "sha256": "2e636efeddaf969ef865faafc3d23f54795a534d8b37ff6fd84dbead3d4144eb"
+        },
+        "issues": 0,
+        "fatalInfos": true,
+        "fatalWarnings": true
+      }
+    ],
+    "completePackageTestsPassed": 529,
+    "actualEnabledSdkPayloadTestsPassed": 8,
+    "actualEnabledPerformanceBootstrapTestsPassed": 4,
+    "diagnosticPrivacyAndLifecycleTestsPassed": 28,
+    "startupContractTestsPassed": 4,
+    "totalFlutterTestExecutionsPassed": 573,
+    "nativeControlMutationTestsPassed": 12,
+    "totalTestExecutionsPassed": 585,
+    "nativeTargetControlsVerified": 10,
+    "failed": 0,
+    "skipped": 0,
+    "strictTargets": 28,
+    "strictIssues": 0,
+    "sourceBinding": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/final-source-bound-verification.json",
+      "sha256": "3a31a5b4cc166f98a08044c90e5c075d7f7195b602d4ffb38825a8e3f07c66b3",
+      "bytes": 9455,
+      "boundInputs": 1078,
+      "beforeAfterStable": true,
+      "currentHashReadbackPassed": true
+    },
+    "resolverInputs": [
+      {
+        "path": "pubspec.yaml",
+        "sha256": "ed12b835abf4388e5da87e98272eb0c9cb4c7a4f5a38a374ed1c81196516252d",
+        "bytes": 5237
+      },
+      {
+        "path": "pubspec.lock",
+        "sha256": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b",
+        "bytes": 41649
+      },
+      {
+        "path": ".dart_tool/package_config.json",
+        "sha256": "8bc8f1fab9321d11f62371f2416e7769c842cbcfe0289047721c0a4f59f2fd40",
+        "bytes": 40560
+      },
+      {
+        "path": ".dart_tool/package_graph.json",
+        "sha256": "44e4f3fd924a6a9cb5a7938ae9123811bb707657d0ca04dda1d97fe01f7a3f4a",
+        "bytes": 47097
+      }
+    ],
+    "originalInstalledCacheFileCount": 79,
+    "originalInstalledCacheUnchanged": true,
+    "vendorManifest": {
+      "path": "third_party/gotrue_2_27_2/LOCAL_PATCH_MANIFEST.json",
+      "sha256": "9e759b77dd234baaa5a9206bf4a674f52660f7502f5b27ad180a46527d71b6bc"
+    },
+    "vendorManifestCurrentHashReadbackPassed": true,
+    "resourceCoordination": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/final-current-verification-corrected/resource-hold.json",
+      "sha256": "89afb50df93c4249e640f5a26354c6451d2642d688f53334ae08431fc9b689f0",
+      "bytes": 619
+    }
+  },
+  "sourceFreeze": {
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/native-performance-privacy/current-source-freeze.json",
+    "sha256": "2372094400c0e18e4bc0bab6cce92a8cb756300841f5a06d3358cceab59c9a64",
+    "bytes": 31031
+  },
+  "coverageBeforeFix": {
+    "rayonStartupContractTests": 4,
+    "description": "Source assertions checked collection defaults/general gating, not actual Performance channel payloads or permanent controls across five hosts.",
+    "enabledActualFirebasePayloadTests": 8,
+    "note": "Those fixtures initialize Core directly and exercised Analytics/Crashlytics, bypassing FirebaseBootstrapService and the Performance channel.",
+    "customPerformanceCallersFound": 0,
+    "absenceOfCustomCallsWasNotUsedAsPrivacyClosure": true
+  },
+  "limits": [
+    "Actual installed Dart Core/Performance calls were executed with local native Pigeon replies; no Firebase provider, native device, automatic trace or SDK transport was started.",
+    "Exact installed Android firebase-perf22.0.4 bytecode and pure URL utility were inspected/executed. Current application/plugin Gradle source inventory declares no Firebase Performance instrumentation plugin; Android automatic HTTP or Dart HTTP instrumentation activation is not claimed.",
+    "Apple native SDK12.9.0 is declared by installed Firebase Core; a built/resolved Apple SDK, merged native artifact, physical device/provider acceptance and store release are not verified by this local source gate.",
+    "Goal-wide candidate acceptance and CI integration evidence are separately owned by the root readiness task."
+  ]
+}

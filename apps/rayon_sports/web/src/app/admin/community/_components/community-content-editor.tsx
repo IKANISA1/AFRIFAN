@@ -166,7 +166,7 @@ export function CommunityContentEditor({
           promptPlaceholder="Example: Supporters FanClubs banner with a vibrant crowd, local community energy, club colors throughout, cinematic but welcoming."
         />
 
-        <label className="flex min-h-12 items-center gap-3 rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-zinc-900)] px-4 py-3 text-sm text-[var(--admin-text-strong)]">
+        <label className="flex min-h-12 items-center gap-3 rounded-[22px] border border-[var(--admin-border)] bg-[var(--admin-widget)] px-4 py-3 text-sm text-[var(--admin-text-strong)]">
           <input
             type="checkbox"
             name="isActive"

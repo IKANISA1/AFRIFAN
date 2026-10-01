@@ -1,0 +1,339 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-30T20:38:00.925350+00:00",
+  "baselineHead": "7fa5292248d5776c6e255aa39ab7acdd658f24e9",
+  "status": "local_security_checkpoints_verified_final_candidate_pending",
+  "productionReady": false,
+  "goalComplete": false,
+  "sourceFiles": [
+    {
+      "path": "cloudflare/web-observations/sink.mjs",
+      "sha256": "0671fff5147acb2e36790d05dc5d87b3fa1f0bc31639688331fcbbc00280bcb9",
+      "bytes": 2859,
+      "rationale": "Scope expiry to the selected club and verify a finite bounded removal acknowledgement; provide disabled-by-default retention maintenance."
+    },
+    {
+      "path": "cloudflare/web-observations/worker.mjs",
+      "sha256": "da0f1fb2ba978f58bfa1c1be2932797190d301f3d016ea65174a5f9598a79164",
+      "bytes": 682,
+      "rationale": "Wire the actual scheduled callback to bounded private retention without HTTP capability."
+    },
+    {
+      "path": "cloudflare/web-observations/wrangler.staging.jsonc",
+      "sha256": "8ebea61d2a96350e27fbe93880fa9b4ee0b7baf2b7741d11dee41523cfe14db1",
+      "bytes": 690,
+      "rationale": "Declare disabled maintenance template every minute so its1000-row batch exceeds300 writes/minute."
+    },
+    {
+      "path": "cloudflare/web-observations/scripts/check-deployment.mjs",
+      "sha256": "e3db64d4f27909564e8f941857d16992103e4fb2ed94f23f6e4d4009011e92b0",
+      "bytes": 1613,
+      "rationale": "Reject absent or slower retention schedules and retain disabled/private template requirements."
+    },
+    {
+      "path": "cloudflare/web-observations/tests/observations.test.mjs",
+      "sha256": "3c0d8f3f5ff62c27e57a0efba021a34fc6a3ba96475f6d8715c5d9466daee406",
+      "bytes": 16258,
+      "rationale": "Prove backlog catchup, invalid acknowledgement rejection, storage-failure recovery and actual scheduled callback wiring."
+    },
+    {
+      "path": "cloudflare/web-observations/tests/retention-concurrency.test.mjs",
+      "sha256": "bf7ec67f425251ee646e2f7437fff8bea21c17e65eb429d918eb4590786482a4",
+      "bytes": 3177,
+      "rationale": "Race independent SQLite writers and cleanup for all five clubs; prove quota and other-club isolation."
+    },
+    {
+      "path": "cloudflare/web-observations/tests/retention-race-worker.mjs",
+      "sha256": "188f356cf0177d63e343149fc4caae7fabae7daf6c8834a05653ac02ac4225f2",
+      "bytes": 1707,
+      "rationale": "Execute independent connections behind a start barrier, without provider/network access."
+    },
+    {
+      "path": "cloudflare/web-observations/README.md",
+      "sha256": "c6a00c10acfde88bf2acb9541cf2546e0b3a98f37912eceb1fe201764728ef84",
+      "bytes": 3560,
+      "rationale": "Record executable retention and local test limits."
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/artifact-public-environment.mjs",
+      "sha256": "c4c81236470e89237eba0fe12aeb2b656e5ea25a2da17eed43a37d3fbd044610",
+      "bytes": 4617,
+      "rationale": "Passively extract only explicit public settings; reject credentials and dollar expressions; preserve literal adapter values."
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/artifact-public-environment.node-test.mjs",
+      "sha256": "bdcc2ad87abbc3bdc1820c918bbad6286a24d7e331ea3f1588613b04cb0340ae",
+      "bytes": 5066,
+      "rationale": "Execute actual installed parser roundtrips and prove discarded source commands remain inert."
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/build-opennext-isolated.mjs",
+      "sha256": "0c531caf116ff031d85f40be360f95f06cfd6b744db6b3bd900df7aedce9f4be",
+      "bytes": 8150,
+      "rationale": "Execute the installed adapter in an independent byte-sealed stage, pass only parsed public dotenv, and verify actual serialized values before promoting output."
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/web-build-provenance.mjs",
+      "sha256": "a7770d4e134c08475af7d46cc28af911292a1efefce2546b6db343507634c024",
+      "bytes": 11957,
+      "rationale": "Bind all eight dotenv files, guard controls and copy inventories; reject metadata tampering and stale source."
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/web-build-provenance.node-test.mjs",
+      "sha256": "bbbd27dd52b3da53618524aaec02fca6ee98821b73b91aa9c90a33782c335ce1",
+      "bytes": 14587,
+      "rationale": "Cover external controls, copied inventory tampering and source/mode changes."
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/sync-cloudflare-dev-vars.mjs",
+      "sha256": "b0db2e0802582690db08a1f7212733d7ef32d41b6800ce0664e585ea77c538c2",
+      "bytes": 2665,
+      "rationale": "Write private preview settings atomically with0600 permissions, reject symlink targets, and avoid credential reads on import."
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/sync-cloudflare-dev-vars.node-test.mjs",
+      "sha256": "ac8e5a7bd778b2cfd671d5b2f312e1ecc4366c418a930a9a8aca6f8dbefc1f13",
+      "bytes": 2008,
+      "rationale": "Verify fresh/replacement permissions, link rejection and hardlink preservation."
+    },
+    {
+      "path": "apps/rayon_sports/web/package.json",
+      "sha256": "749c63534880989556b22e048215032bc03c8a144ed7ced0c913dab3cd872c42",
+      "bytes": 5173,
+      "rationale": "Use isolated conversion and require public-environment/private-file/guard regression bank."
+    },
+    {
+      "path": ".github/workflows/ci.yaml",
+      "sha256": "fc4bf9341fa498d8a32a58503d48bc69bfd1f0810914b200437c81748cd8eaf5",
+      "bytes": 33345,
+      "rationale": "Require artifact environment and private settings security gate before conversion."
+    },
+    {
+      "path": ".github/workflows/free_self_hosted_release.yml",
+      "sha256": "4125804b109895164e6a5ba28b2e42bbfdd99aede5eb3663305a9edd373ef70e",
+      "bytes": 5830,
+      "rationale": "Use the isolated adapter conversion in the existing controlled release workflow."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/app/(site)/layout.tsx",
+      "sha256": "0b8cbb6146a7eb6f497848f9e3f05bb683b4d5ed1b0d7cd0221c1c5b946f2107",
+      "bytes": 3359,
+      "rationale": "Apply the validated request nonce to the public service-worker bootstrap script."
+    },
+    {
+      "path": "tools/scripts/local_ops_rehearsal_no_network.cjs",
+      "sha256": "bf5b463b5419d6296ed32295dcc99e204f908b4325088ff41b7df1ff6b794cc8",
+      "bytes": 1725,
+      "rationale": "Deny Node UDP and independent DNS Resolver APIs as well as TCP/HTTP/fetch; keep diagnostics on stderr."
+    },
+    {
+      "path": "tools/scripts/local_web_server_no_network.cjs",
+      "sha256": "0aa5dd1d6e2a9958a94e3e0acd606f46985fa72bfcad3eb6a22dd71d3460de8b",
+      "bytes": 643,
+      "rationale": "Allow only literal loopback bind lookup while retaining outbound Node API rejection."
+    },
+    {
+      "path": "tools/scripts/local_validation_network_guard.node-test.mjs",
+      "sha256": "c4e8b6cef1dab4dd7d01c83f6c34776f0c1b518d7b6e749408dcd3a643965320",
+      "bytes": 2446,
+      "rationale": "Prove both guards reject13 or14 actual API operations and preserve loopback binding."
+    },
+    {
+      "path": "tools/scripts/local_web_security_render.mjs",
+      "sha256": "7d466814314951009b7daabb75abaafebd0e439aa9703c6795e5265a8f0d8302",
+      "bytes": 12781,
+      "rationale": "Verify sealed production documents and hydration, with untrusted scripts delivered through HTML parsing under the actual response CSP."
+    },
+    {
+      "path": "tools/scripts/verify_converged_source.py",
+      "sha256": "7a9c3a5e611238b8d75a4780e94cdc092b6fe625394b47ac9ac404790549a9dc",
+      "bytes": 8393,
+      "rationale": "Keep runtime pins strict, admit only finite guard records, stream readable subprocess output and kill timed-out process groups; retain real test failures."
+    },
+    {
+      "path": "tools/scripts/test_converged_suite_inventory.py",
+      "sha256": "fdd4822571de021fba144c6e945ee2711a02bbcc5d9887fd7989a8010274a269",
+      "bytes": 7175,
+      "rationale": "Verify guarded runtime output cannot bypass the pin and all new security banks remain registered."
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/artifact-installed-inputs.mjs",
+      "sha256": "3e0baede37547137ce79e4c0b1ac454d614dea9f5580befb38b1357ade855c23",
+      "bytes": 14905,
+      "rationale": "Seal every installed converter input byte, mode and internal link; copy independent staged inputs and reject escaped links, special files and concurrent mutation."
+    },
+    {
+      "path": "apps/rayon_sports/web/scripts/artifact-installed-inputs.node-test.mjs",
+      "sha256": "6fba02e8aa0c83be342f934fe3364307ea960c117e49d33c991cf0d47d743b7c",
+      "bytes": 9133,
+      "rationale": "Exercise byte drift, stable-version mutation, link escape and independent-copy proofs using adversarial local fixtures."
+    },
+    {
+      "path": "apps/rayon_sports/web/src/app/layout.tsx",
+      "sha256": "b230ee3fb2fbe98bfaa7560879c0a4a1afe0c893a1ede93f8bc1a9edacd7e61c",
+      "bytes": 2949,
+      "rationale": "Use the byte-identical existing licensed local Inter font so production compilation requires no Google font fetch."
+    },
+    {
+      "path": "apps/rayon_sports/web/public/fonts/inter-latin-wght-normal.woff2",
+      "sha256": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62",
+      "bytes": 48256,
+      "rationale": "Supply the existing operator UI font bytes to the web build as a declared public input."
+    },
+    {
+      "path": "apps/rayon_sports/web/public/fonts/LICENSE.txt",
+      "sha256": "3b0a5fca3d17942cde889069889dedbbbd075e9b599968c82a95f4d944e9b345",
+      "bytes": 4477,
+      "rationale": "Retain the existing SIL Open Font License with the copied font."
+    },
+    {
+      "path": "apps/rayon_sports/web/public/fonts/README.md",
+      "sha256": "61034f9832edbc03f4c3ed211d69d2eaa733e3249dd1f587522e50f950f6e40d",
+      "bytes": 813,
+      "rationale": "Record exact local font source, hashes and license provenance without asserting upstream or rights approval."
+    }
+  ],
+  "checks": [
+    {
+      "scope": "Complete current backend aggregate and production/tooling contract gates",
+      "passed": 2789,
+      "failed": 0,
+      "evidence": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/backend-current-final-harness/source-bound-receipt.json",
+        "sha256": "91f7a26c2d103f244357a72a27af0ad63e02e93bef5d70c36cc918d453ab4aa6",
+        "bytes": 136339
+      },
+      "currentSourceFullyBound": true
+    },
+    {
+      "scope": "Installed input, passive public dotenv, provenance, private vars and Node guard regressions",
+      "passed": 91,
+      "failed": 0,
+      "evidence": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/installed-input-integrated-regressions.log",
+        "sha256": "996c390ec8acf88783c125595ee0253bd52093478f66c4b677cad5848cd2643e",
+        "bytes": 20181
+      },
+      "currentSourceFullyBound": true,
+      "currentSourceBindingEvidence": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/backend-current-final-harness/source-bound-receipt.json",
+        "sha256": "91f7a26c2d103f244357a72a27af0ad63e02e93bef5d70c36cc918d453ab4aa6",
+        "bytes": 136339
+      }
+    },
+    {
+      "scope": "Desktop/mobile production route, hydration, parser-delivered CSP injection and redirect checkpoint on the retained earlier build",
+      "passed": 13,
+      "failed": 0,
+      "evidence": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-render-security-parser-delivered.json",
+        "sha256": "557f0c2d6990a8b432c14e982208972ae56f3912f683b8c019d71877fa9d3ab3",
+        "bytes": 10109
+      },
+      "currentSourceFullyBound": false
+    },
+    {
+      "scope": "Fresh current guarded Next compilation, repair and source/artifact seal",
+      "passed": 4,
+      "failed": 0,
+      "evidence": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-final-coverage-build-20260930.json",
+        "sha256": "5d3ed89a448318f76f67e4516882a9ffa01bc057ce437663f1404d06664306ac",
+        "bytes": 1030
+      },
+      "currentSourceFullyBound": true
+    },
+    {
+      "scope": "Actual independent staged installed-adapter conversion",
+      "passed": 1,
+      "failed": 0,
+      "evidence": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-final-coverage-isolated-conversion-20260930.json",
+        "sha256": "5810504ed64dab75787bdeffcc02a08a90d051cf0294a5164b670bf3add5d937",
+        "bytes": 364
+      },
+      "currentSourceFullyBound": true
+    },
+    {
+      "scope": "Current local Wrangler dry-run compilation, declared assets and verified finite zero-attempt Node guard records",
+      "passed": 1,
+      "failed": 0,
+      "evidence": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/wrangler-final-coverage-dry-run.json",
+        "sha256": "57c563fb0ad0a6b274053fb7d7d35f3e8938cfe82b8a9b56c27140ae17773568",
+        "bytes": 905
+      },
+      "currentSourceFullyBound": false,
+      "limit": "No standalone artifact source/hash manifest is asserted by this raw CLI checkpoint; isolated conversion has independent seals."
+    },
+    {
+      "scope": "Actual current sealed build desktop/mobile SSR nonce/cache/hydration and parser-delivered CSP injection plus same-origin recovery redirect",
+      "passed": 13,
+      "failed": 0,
+      "evidence": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-render-security-final-coverage-build.json",
+        "sha256": "855ccb30f7567472db06a4738dd49a172296ec33e56250ecdcc69468f3059605",
+        "bytes": 9996
+      },
+      "currentSourceFullyBound": true
+    }
+  ],
+  "retainedFailures": [
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/web-current-safe-adapter-build-20260930.log",
+      "sha256": "5b15eeac0828026e3215365da08b2be51a88fb5cf9c04a45d30a516f9ae8bf14",
+      "bytes": 6784
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/backend-current-retention-guarded/verification.json",
+      "sha256": "912c54588c91183acdb04e097f8064f1c00290a1074f114199392a27484a0a97",
+      "bytes": 12851
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-render-security-current-local-font.json",
+      "sha256": "fbfa09d849267a8bdafb665aba8cb4aa6df8befe0889e73a873b460ab170799e",
+      "bytes": 7182
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/wrangler-final-coverage-dry-run-banner-checkpoint.json",
+      "sha256": "ffb0086bd5f27c64a7e8b5aa1f72c9cc9c95f34441c509faccd47d9973eaaaf4",
+      "bytes": 518,
+      "classification": "Compilation exit0 with one blocked update-check attempt; repeated using the installed banner suppression control."
+    }
+  ],
+  "pending": [
+    "Complete all-five browser/admin state/accessibility bank against the final source seal.",
+    "Final frozen source/reachable-Git/new sealed candidate secret audit.",
+    "Exact local candidate commit, artifact extraction/readback and complete per-file reports."
+  ],
+  "limits": [
+    "Node network controls cover specified Node APIs and are not operating-system network isolation.",
+    "Earlier backend and browser harness failures remain preserved; the current aggregate passed2789/2789 tests and21/21 steps with stable selected source hashes.",
+    "The earlier browser injection probe used privileged DevTools evaluation; the corrected parser-delivered13-case checkpoint passed on its explicitly bound earlier build.",
+    "The original phase3 artifact remains rejected by its complete secret audit."
+  ],
+  "historicalChecks": [
+    {
+      "scope": "Public passive dotenv, actual adapter roundtrips, private-file permissions and source/guard provenance",
+      "passed": 73,
+      "failed": 0,
+      "evidence": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/artifact-public-environment-guard-bound-final-tests-20260930.log",
+        "sha256": "0155777aeaa62b4f67aa009e0e6dc6333fb811ba1f75288f966ce4c05708d40b",
+        "bytes": 15300
+      },
+      "currentSourceFullyBound": false
+    },
+    {
+      "scope": "Private observations, actual scheduled callback harness, backlog and five-club independent SQLite writer/retention races",
+      "passed": 109,
+      "failed": 0,
+      "evidence": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260929/private-web-observations-retention-callback-final-20260930.log",
+        "sha256": "1bdba2baf375674d0aff1ee79be88a77d03193564d0e35ab4d7547f481e39328",
+        "bytes": 27836
+      },
+      "currentSourceFullyBound": true
+    }
+  ]
+}

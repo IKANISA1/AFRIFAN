@@ -424,7 +424,7 @@ export default function AdminAccessPage() {
           <button
             onClick={() => setDrawerOpen(true)}
             disabled={busy || status === "permission_denied"}
-            className="admin-action-button min-h-12 !bg-[var(--admin-accent)] !text-[var(--admin-zinc-950)] disabled:cursor-not-allowed disabled:!bg-[var(--admin-zinc-800)] disabled:!text-[var(--admin-text-strong)]"
+            className="admin-action-button min-h-12 !bg-[var(--admin-accent)] !text-[var(--admin-canvas)] disabled:cursor-not-allowed disabled:!bg-[var(--admin-raised)] disabled:!text-[var(--admin-text-strong)]"
           >
             <UserPlus size={16} />
             <span>Grant access</span>
@@ -441,7 +441,7 @@ export default function AdminAccessPage() {
             ? "border-error/30 bg-error/10"
             : status === "offline" || status === "conflict"
               ? "border-warning/30 bg-warning/10"
-              : "border-[var(--admin-border)] bg-[var(--admin-zinc-900)]",
+              : "border-[var(--admin-border)] bg-[var(--admin-widget)]",
         )}
         role={
           status === "error" ||
@@ -463,7 +463,7 @@ export default function AdminAccessPage() {
             <p className="font-medium text-[var(--admin-text-strong)]">
               {statusCopy.label}
             </p>
-            <p className="mt-1 text-sm leading-6 text-[var(--admin-zinc-400)]">
+            <p className="mt-1 text-sm leading-6 text-[var(--admin-secondary)]">
               {statusCopy.detail}
             </p>
           </div>
@@ -477,7 +477,7 @@ export default function AdminAccessPage() {
             onPointerUp={finishPointer}
             onPointerCancel={finishPointer}
             onLostPointerCapture={finishPointer}
-            className="admin-access-control inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[var(--admin-border)] px-4 py-3 text-sm font-medium text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-zinc-800)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:bg-[var(--admin-zinc-800)] disabled:text-[var(--admin-text-strong)] motion-reduce:transition-none"
+            className="admin-access-control inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[var(--admin-border)] px-4 py-3 text-sm font-medium text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-raised)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:bg-[var(--admin-raised)] disabled:text-[var(--admin-text-strong)] motion-reduce:transition-none"
           >
             <RefreshCw
               size={17}
@@ -504,12 +504,12 @@ export default function AdminAccessPage() {
       <div className="admin-surface">
         <AdminFilterBar
           actions={
-            <label className="flex items-center gap-2 text-xs font-medium normal-case tracking-normal text-[var(--admin-zinc-500)] cursor-pointer hover:text-[var(--admin-zinc-300)] transition-colors">
+            <label className="flex items-center gap-2 text-xs font-medium normal-case tracking-normal text-[var(--admin-secondary)] cursor-pointer hover:text-[var(--admin-foreground)] transition-colors">
               <input
                 type="checkbox"
                 checked={showInactive}
                 onChange={(event) => setShowInactive(event.target.checked)}
-                className="rounded border-[var(--admin-border)] bg-[var(--admin-zinc-950)] text-[var(--admin-accent)] focus:ring-action-neutral"
+                className="rounded border-[var(--admin-border)] bg-[var(--admin-canvas)] text-[var(--admin-accent)] focus:ring-action-neutral"
               />
               Show revoked
             </label>
@@ -547,7 +547,7 @@ export default function AdminAccessPage() {
             ))
           ) : assignmentCollection.pageResult.items.length === 0 ? (
             <tr>
-              <td colSpan={5} className="p-12 text-center text-sm text-[var(--admin-zinc-500)]">
+              <td colSpan={5} className="p-12 text-center text-sm text-[var(--admin-secondary)]">
                 {assignmentCollection.query ? "No assignments match the current search." : "No admin assignments found."}
               </td>
             </tr>
@@ -571,15 +571,15 @@ export default function AdminAccessPage() {
                 </td>
                 <td>
                   <div className="space-y-0.5">
-                    <p className="text-sm font-medium text-[var(--admin-zinc-100)]">{assignment.clubName ?? "Platform scope"}</p>
+                    <p className="text-sm font-medium text-[var(--admin-foreground)]">{assignment.clubName ?? "Platform scope"}</p>
                     {assignment.publicUserId && (
-                      <p className="text-xs normal-case font-medium text-[var(--admin-zinc-500)] tracking-tighter">ID: {assignment.publicUserId}</p>
+                      <p className="text-xs normal-case font-medium text-[var(--admin-secondary)] tracking-tighter">ID: {assignment.publicUserId}</p>
                     )}
                   </div>
                 </td>
                 <td>
-                  <div className="space-y-0.5 text-xs text-[var(--admin-zinc-400)]">
-                    <p className="font-medium text-[var(--admin-zinc-300)]">{new Date(assignment.grantedAt).toLocaleDateString("en-RW", { month: "short", day: "numeric", year: "numeric" })}</p>
+                  <div className="space-y-0.5 text-xs text-[var(--admin-secondary)]">
+                    <p className="font-medium text-[var(--admin-foreground)]">{new Date(assignment.grantedAt).toLocaleDateString("en-RW", { month: "short", day: "numeric", year: "numeric" })}</p>
                     <p className="text-xs">by {assignment.grantedByName ?? "system"}</p>
                   </div>
                 </td>
@@ -624,7 +624,7 @@ export default function AdminAccessPage() {
             <button
               onClick={() => handleAssign().catch(() => {})}
               disabled={busyAction != null || candidate == null || (selectedRole.requiresClub && !clubId)}
-              className="admin-action-button flex-1 !bg-[var(--admin-accent)] !text-[var(--admin-zinc-950)]"
+              className="admin-action-button flex-1 !bg-[var(--admin-accent)] !text-[var(--admin-canvas)]"
             >
               {busyAction === "assign" ? "Granting access..." : "Confirm access"}
             </button>
@@ -639,7 +639,7 @@ export default function AdminAccessPage() {
       >
         <div className="space-y-6">
           <div className="space-y-4">
-            <p className="text-xs font-medium normal-case tracking-normal text-[var(--admin-zinc-500)]">User identity</p>
+            <p className="text-xs font-medium normal-case tracking-normal text-[var(--admin-secondary)]">User identity</p>
             <label className="grid gap-2">
               <div className="flex gap-2">
                 <input
@@ -662,21 +662,21 @@ export default function AdminAccessPage() {
               <div className="rounded-xl border border-success/20 bg-success/5 p-4">
                 <p className="font-medium text-[var(--admin-text-strong)] text-lg">{candidate.fullName}</p>
                 <p className="text-xs text-[var(--admin-text-muted)] font-mono tracking-tighter mt-1">{candidate.userId}</p>
-                <div className="mt-4 grid gap-1 text-xs font-medium text-[var(--admin-zinc-400)]">
+                <div className="mt-4 grid gap-1 text-xs font-medium text-[var(--admin-secondary)]">
                   <p>{candidate.phone ?? "No phone"}</p>
                   <p>{candidate.email ?? "No email"}</p>
                 </div>
               </div>
             ) : (
                <div className="p-8 text-center rounded-xl border border-dashed border-[var(--admin-border)]">
-                 <p className="text-xs text-[var(--admin-zinc-500)]">Search for a registered user to assign them an administrative role.</p>
+                 <p className="text-xs text-[var(--admin-secondary)]">Search for a registered user to assign them an administrative role.</p>
                </div>
             )}
           </div>
 
           <div className="space-y-4 pt-6 border-t border-[var(--admin-border)]">
-            <p className="text-xs font-medium normal-case tracking-normal text-[var(--admin-zinc-500)]">Permission profile</p>
-            <label className="grid gap-2 text-sm font-semibold text-[var(--admin-zinc-100)]">
+            <p className="text-xs font-medium normal-case tracking-normal text-[var(--admin-secondary)]">Permission profile</p>
+            <label className="grid gap-2 text-sm font-semibold text-[var(--admin-foreground)]">
               Assign role
               <select
                 value={role}
@@ -688,7 +688,7 @@ export default function AdminAccessPage() {
             </label>
 
             {selectedRole.requiresClub && (
-              <label className="grid gap-2 text-sm font-semibold text-[var(--admin-zinc-100)]">
+              <label className="grid gap-2 text-sm font-semibold text-[var(--admin-foreground)]">
                 Club scope
                 <select
                   value={clubId}
@@ -702,7 +702,7 @@ export default function AdminAccessPage() {
               </label>
             )}
 
-            <label className="grid gap-2 text-sm font-semibold text-[var(--admin-zinc-100)]">
+            <label className="grid gap-2 text-sm font-semibold text-[var(--admin-foreground)]">
               Governance notes
               <textarea
                 value={notes}

@@ -1,0 +1,231 @@
+{
+  "schemaVersion": 1,
+  "reviewedAtUtc": "2026-09-30T20:01:21.449364+00:00",
+  "scope": "Independent read-only review of public-environment staging, installed OpenNext mechanics, source/artifact provenance, package promotion and local security-server network control.",
+  "status": "SOURCE_REVIEW_COMPLETE_AWAITING_BUILD_AND_FROZEN_AUDIT",
+  "productionReady": false,
+  "sourceFrozen": false,
+  "candidateArchiveAudited": false,
+  "fullSourceAndHistoryScanPerformed": false,
+  "matchedValuesIncluded": false,
+  "originalPrivateValuesRead": false,
+  "externalNetworkUsed": false,
+  "deploymentActions": 0,
+  "sourceSha256": {
+    "apps/rayon_sports/web/scripts/artifact-public-environment.mjs": "c4c81236470e89237eba0fe12aeb2b656e5ea25a2da17eed43a37d3fbd044610",
+    "apps/rayon_sports/web/scripts/build-opennext-isolated.mjs": "0c531caf116ff031d85f40be360f95f06cfd6b744db6b3bd900df7aedce9f4be",
+    "apps/rayon_sports/web/scripts/web-build-provenance.mjs": "a7770d4e134c08475af7d46cc28af911292a1efefce2546b6db343507634c024",
+    "apps/rayon_sports/web/scripts/sync-cloudflare-dev-vars.mjs": "b0db2e0802582690db08a1f7212733d7ef32d41b6800ce0664e585ea77c538c2",
+    "apps/rayon_sports/web/package.json": "749c63534880989556b22e048215032bc03c8a144ed7ced0c913dab3cd872c42",
+    ".github/workflows/free_self_hosted_release.yml": "4125804b109895164e6a5ba28b2e42bbfdd99aede5eb3663305a9edd373ef70e",
+    ".github/workflows/deploy-gikundiro-web.yml": "1798fc2534786b5d310fcb0ee328ef68b7b3e9aa0ca1d7c0e4e6da8205576f4b",
+    "tools/scripts/local_ops_rehearsal_no_network.cjs": "bf5b463b5419d6296ed32295dcc99e204f908b4325088ff41b7df1ff6b794cc8",
+    "tools/scripts/local_web_server_no_network.cjs": "0aa5dd1d6e2a9958a94e3e0acd606f46985fa72bfcad3eb6a22dd71d3460de8b",
+    "tools/scripts/local_web_security_render.mjs": "04ba1d19a5481222cbd481e3f9d7a664386d31c273163ccabd094ac311022ac7",
+    "apps/rayon_sports/web/node_modules/@opennextjs/cloudflare/dist/cli/build/open-next/compile-env-files.js": "264948fd4ee6153936cc71981f31bc9734ded6f4dc824aa725f1d8599a3fd88b",
+    "apps/rayon_sports/web/node_modules/@opennextjs/cloudflare/dist/cli/utils/extract-project-env-vars.js": "7b7d316e812f7064fd0f8778bf95a3b2ebd6033f4c2cae939ce9d5be664558b5",
+    "apps/rayon_sports/web/node_modules/@opennextjs/aws/dist/build/helper.js": "aa77fae59e2c5d6977d44f2028e7a87e3c81b2599b27701327c16847411d3d83",
+    "apps/rayon_sports/web/node_modules/@dotenvx/dotenvx/src/lib/helpers/parse.js": "1b593287522fd47637c1b2f9a586f99269a6ba2620e7ff47beff66b92a90815f",
+    "apps/rayon_sports/web/node_modules/@dotenvx/dotenvx/src/lib/main.js": "02c1746a3d7de2bf7a0a654d1c25edca3cc0c11c52691e4681c79ff2d3c2bca5",
+    "apps/rayon_sports/web/node_modules/next/dist/server/lib/start-server.js": "0c9c7a744db3fc1394e84ad39b7fda941ce993ec86c31c08023097b449483010",
+    "apps/rayon_sports/web/scripts/artifact-installed-inputs.mjs": "3e0baede37547137ce79e4c0b1ac454d614dea9f5580befb38b1357ade855c23",
+    "apps/rayon_sports/web/scripts/artifact-installed-inputs.node-test.mjs": "6fba02e8aa0c83be342f934fe3364307ea960c117e49d33c991cf0d47d743b7c",
+    "apps/rayon_sports/web/scripts/web-build-provenance.node-test.mjs": "bbbd27dd52b3da53618524aaec02fca6ee98821b73b91aa9c90a33782c335ce1"
+  },
+  "installedVersions": {
+    "@opennextjs/cloudflare": "1.20.2",
+    "@opennextjs/aws": "4.1.0",
+    "@dotenvx/dotenvx": "1.31.0",
+    "next": "16.3.5"
+  },
+  "confirmedControls": [
+    {
+      "id": "C01",
+      "result": "CONFIRMED",
+      "rationale": "Explicit public key allowlist rejects strong credential families, private-key markers, privileged/non-anonymous JWTs and generic assignments. Unknown/private keys are discarded."
+    },
+    {
+      "id": "C02",
+      "result": "CONFIRMED",
+      "rationale": "Production source inventory binds all eight dotenv filenames consumed across production, development and test; file ordering matches installed OpenNext extraction."
+    },
+    {
+      "id": "C03",
+      "result": "CONFIRMED",
+      "rationale": "The staged lockfile makes installed findPackagerAndRoot stop at stagedWeb. Installed compileEnvFiles serializes all three modes from staged dotenv, without reading the original parent files."
+    },
+    {
+      "id": "C04",
+      "result": "CONFIRMED",
+      "rationale": "Fresh source and Next inventories are compared to the seal; recorded file lists are validated; caches/traces/diagnostics are excluded. Every copied source/shared/Next target is checked against its inventoried content hash."
+    },
+    {
+      "id": "C05",
+      "result": "CONFIRMED",
+      "rationale": "Original dotenv uses a passive public-only parser. Public dollar expressions reject; staged literals are round-tripped through the actual installed parser with an empty process environment, and serialized modes must equal expected projected values."
+    },
+    {
+      "id": "C06",
+      "result": "CONFIRMED",
+      "rationale": "Package build/deploy/upload paths and self-hosted dry-run use the isolated converter. The promotion workflow verifies/extracts a sealed candidate and calls installed deploy, which does not run compileEnvFiles or rebuild Next."
+    },
+    {
+      "id": "C07",
+      "result": "CONFIRMED",
+      "rationale": "The local web guard permits only numeric loopback dns.lookup for server binding. Corrected guard denies UDP and independent Resolver queries in addition to TCP, HTTP, fetch and global DNS. Browser routing rejects foreign origins."
+    },
+    {
+      "id": "C08",
+      "result": "CONFIRMED",
+      "rationale": "Private preview variables are created and replaced owner-only through atomic rename, with symlink refusal and old hardlink target preservation."
+    },
+    {
+      "id": "C09",
+      "result": "CONFIRMED",
+      "rationale": "The external conversion guard is an explicit provenance input, checked before and after conversion and copied by the exact source inventory with staged target hashing."
+    },
+    {
+      "id": "C10",
+      "result": "CONFIRMED",
+      "rationale": "Installed executable content and original identity are bound at Next compilation, checked through sealing/conversion, and copied into an independently rehashed staging tree. Public parser preflight and adapter CLI run only from the verified staged dependencies."
+    }
+  ],
+  "findings": [
+    {
+      "id": "F01",
+      "status": "CORRECTED_AND_RECHECKED",
+      "severity": "P1",
+      "file": "apps/rayon_sports/web/scripts/artifact-public-environment.mjs",
+      "rationale": "Original installed dotenvx parse executes shell expressions before projection, including discarded keys. Passive original parsing and public expression rejection now prevent this route."
+    },
+    {
+      "id": "F02",
+      "status": "CORRECTED_AND_RECHECKED",
+      "severity": "P2",
+      "file": "apps/rayon_sports/web/scripts/build-opennext-isolated.mjs",
+      "rationale": "JSON double-quoted dotenv changed literals and could evaluate staged expressions. Safe raw delimiters, exact parser round-trip and serialized expected-value checks now fail closed."
+    },
+    {
+      "id": "F03",
+      "status": "CORRECTED_AND_RECHECKED",
+      "severity": "P2",
+      "file": "tools/scripts/local_ops_rehearsal_no_network.cjs",
+      "rationale": "A guarded synthetic child previously delivered a loopback UDP packet while reporting zero blocked attempts. UDP and independent Resolver APIs now reject; loopback DNS binding remains functional."
+    },
+    {
+      "id": "F04",
+      "status": "CORRECTED_SOURCE_VERIFIED",
+      "severity": "P2",
+      "file": "apps/rayon_sports/web/scripts/build-opennext-isolated.mjs",
+      "rationale": "Hashing originals before a separate copy could accept transient unsealed copied bytes. Source and Next targets now receive post-copy content-hash verification."
+    },
+    {
+      "id": "F05",
+      "status": "CORRECTED_AND_RECHECKED",
+      "severity": "P2",
+      "file": "apps/rayon_sports/web/scripts/sync-cloudflare-dev-vars.mjs",
+      "rationale": "The import-safe helper writes an exclusive no-follow temporary file with explicit 0600 permissions, fsyncs and atomically renames it. Existing and dangling symlinks are refused; replacement does not alter an old hardlink target. CLI input rejects line-break and NUL injection. Four focused existing tests independently passed."
+    },
+    {
+      "id": "F06",
+      "status": "CORRECTED_AND_RECHECKED",
+      "severity": "P2",
+      "file": "apps/rayon_sports/web/scripts/build-opennext-isolated.mjs",
+      "rationale": "Source provenance now includes the exact external Node network guard and rejects a linked control directory. The converter requires that inventory entry, records its hash and executes the staged hash-verified copy. Two focused existing negative tests independently passed for guard changes and missing or linked controls."
+    },
+    {
+      "id": "F07",
+      "status": "CORRECTED_AND_RECHECKED",
+      "severity": "P2",
+      "file": "apps/rayon_sports/web/scripts/build-opennext-isolated.mjs",
+      "rationale": "Next compilation source provenance now binds every selected installed dependency byte plus original filesystem identity. Wrapper stages independently verified regular files and internal-only links, runs preflight/CLI/serialized environment checks from staged code under the staged guard, and rechecks original and staged installed trees before promotion. Twenty-five focused installed-input/provenance negative and copy checks independently passed."
+    }
+  ],
+  "independentChecks": {
+    "initialInstalledParserProbe": {
+      "publicShellExpressionAccepted": true,
+      "projectedDotenvExecutedHarmlessExpression": true,
+      "discardedKeyEvaluatedBeforeProjection": true,
+      "dollarLiteralChanged": true
+    },
+    "correctedParserProbe": {
+      "originalPassiveCommandCalls": 0,
+      "privateKeyDiscarded": true,
+      "dollarExpressionFormsRejected": 3,
+      "literalCasesExactlyPreserved": 6
+    },
+    "initialGuardProbe": {
+      "syntheticLoopbackDatagramReceived": true,
+      "childExit": 0,
+      "reportedBlockedAttempts": 0,
+      "externalNetworkUsed": false
+    },
+    "correctedGuardProbe": {
+      "udpDenied": true,
+      "callbackResolverDenied": true,
+      "promiseResolverDenied": true,
+      "numericLoopbackLookupPreserved": true,
+      "childExit": 0,
+      "recordedBlockedAttempts": 3
+    },
+    "freshPrivateVarsProbe": {
+      "syntheticTemporaryDirectoryOnly": true,
+      "childExit": 0,
+      "fileMode": "0644",
+      "ownerOnly": false,
+      "temporaryFixtureRemoved": true
+    },
+    "correctedPrivateVarsTests": {
+      "testsPassed": 4,
+      "testsFailed": 0,
+      "log": "output/qa/full-stack-20260914/production-goal-20260929/local-private-dev-vars-review-20260930.log",
+      "syntheticTemporaryDirectoriesOnly": true,
+      "ownerOnlyMode": "0600",
+      "symlinkDestinationsRejected": true,
+      "oldHardlinkTargetPreserved": true
+    },
+    "correctedControlBindingTests": {
+      "testsPassed": 2,
+      "testsFailed": 0,
+      "log": "output/qa/full-stack-20260914/production-goal-20260929/local-isolated-control-binding-review-20260930.log",
+      "guardChangeInvalidatesSeal": true,
+      "missingAndOutsideLinkedControlsRejected": true
+    },
+    "installedDependencyAttribution": {
+      "actualInstalledExecutableTreeBoundBySeal": true,
+      "sourceContentAndIdentityDigestsBound": true,
+      "independentStagedCopyVerified": true,
+      "preflightAndCliUseStagedDependencies": true,
+      "originalAndStagedTreesRecheckedBeforePromotion": true,
+      "testsPassed": 25,
+      "testsFailed": 0,
+      "testsSkipped": 0,
+      "nonzeroGuardCounters": 0,
+      "log": "output/qa/full-stack-20260914/production-goal-20260930-phase4/backend-harness-review/installed-wrapper-review.log",
+      "logSha256": "f21c6437194fae4c800b1d8ee1a369fd695a87808fa2be792e90ed2bf3a6618f"
+    }
+  },
+  "limits": [
+    "Source remains mutable and current build completion/candidate integrity are outside this review. A frozen full source/history/new-archive scan remains required.",
+    "Credential shape checks do not establish provider validity, restrictions, rotation, production acceptance or arbitrary unknown-secret absence.",
+    "The network preload controls reviewed Node APIs; it is not an operating-system network sandbox. No external provider request or deployment was performed by these probes."
+  ],
+  "reviewProofSourceSha256": {
+    "apps/rayon_sports/web/scripts/artifact-public-environment.mjs": "c4c81236470e89237eba0fe12aeb2b656e5ea25a2da17eed43a37d3fbd044610",
+    "apps/rayon_sports/web/scripts/build-opennext-isolated.mjs": "2b40b5f257fcf1bed57bf9ee61dee90bba6a62ca2dc56f3040230484ec64b10f",
+    "apps/rayon_sports/web/scripts/web-build-provenance.mjs": "1c423c5634247c5ecb0e2a2b6885da4792d8303c5b3e435cf8fb4f73f3c08795",
+    "apps/rayon_sports/web/scripts/sync-cloudflare-dev-vars.mjs": "b0db2e0802582690db08a1f7212733d7ef32d41b6800ce0664e585ea77c538c2",
+    "apps/rayon_sports/web/package.json": "46d74097d4ccea9854bd578bf5bd5d4e16440d6a38cc9cf4bed02febef123386",
+    ".github/workflows/free_self_hosted_release.yml": "4125804b109895164e6a5ba28b2e42bbfdd99aede5eb3663305a9edd373ef70e",
+    ".github/workflows/deploy-gikundiro-web.yml": "1798fc2534786b5d310fcb0ee328ef68b7b3e9aa0ca1d7c0e4e6da8205576f4b",
+    "tools/scripts/local_ops_rehearsal_no_network.cjs": "f1f29ed907b62b4b873af2e3f1675541d5b2c0896de1afe3d302100d4baaf52e",
+    "tools/scripts/local_web_server_no_network.cjs": "0aa5dd1d6e2a9958a94e3e0acd606f46985fa72bfcad3eb6a22dd71d3460de8b",
+    "tools/scripts/local_web_security_render.mjs": "209adf81249272100e0dfd133246e6109045e607954b12af41533f1ae83fef1e",
+    "apps/rayon_sports/web/node_modules/@opennextjs/cloudflare/dist/cli/build/open-next/compile-env-files.js": "264948fd4ee6153936cc71981f31bc9734ded6f4dc824aa725f1d8599a3fd88b",
+    "apps/rayon_sports/web/node_modules/@opennextjs/cloudflare/dist/cli/utils/extract-project-env-vars.js": "7b7d316e812f7064fd0f8778bf95a3b2ebd6033f4c2cae939ce9d5be664558b5",
+    "apps/rayon_sports/web/node_modules/@opennextjs/aws/dist/build/helper.js": "aa77fae59e2c5d6977d44f2028e7a87e3c81b2599b27701327c16847411d3d83",
+    "apps/rayon_sports/web/node_modules/@dotenvx/dotenvx/src/lib/helpers/parse.js": "1b593287522fd47637c1b2f9a586f99269a6ba2620e7ff47beff66b92a90815f",
+    "apps/rayon_sports/web/node_modules/@dotenvx/dotenvx/src/lib/main.js": "02c1746a3d7de2bf7a0a654d1c25edca3cc0c11c52691e4681c79ff2d3c2bca5",
+    "apps/rayon_sports/web/node_modules/next/dist/server/lib/start-server.js": "0c9c7a744db3fc1394e84ad39b7fda941ce993ec86c31c08023097b449483010"
+  }
+}

@@ -2,18 +2,19 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
-import {UI_SOURCE_HASHES,UI_HTML,UI_ASSETS} from '../src/ui-assets.mjs';
+import {UI_SOURCE_HASHES,UI_HTML,UI_ASSETS,UI_BINARY_ASSETS} from '../src/ui-assets.mjs';
 const read=p=>readFileSync(new URL(p,import.meta.url),'utf8');
 const tokens=read('../../../apps/rayon_sports/web/src/ui-kit/tokens.css');
 const html=read('../ui/page.html'),app=read('../ui/app.mjs'),css=read('../ui/styles.css');
 // These are source/structure checks, NOT claims of rendered browser behavior.
 test('generated UI assets match every recorded source hash and inherited tokens',()=>{
  for(const [name,expected] of Object.entries(UI_SOURCE_HASHES)){
-  const text=name==='shared-ui-tokens'?tokens:read('../'+name);
+  const text=name==='shared-ui-tokens'?tokens:readFileSync(new URL('../'+name,import.meta.url));
   assert.equal(createHash('sha256').update(text).digest('hex'),expected,name);
  }
  assert.equal(UI_HTML,html);assert.equal(UI_ASSETS['app.js'],app);assert.equal(UI_ASSETS['controller.js'],read('../ui/controller.mjs'));
  assert.equal(UI_ASSETS['styles.css'],tokens+'\n'+css);
+ assert.deepEqual(Buffer.from(UI_BINARY_ASSETS['inter-latin-wght-normal.woff2'],'base64'),readFileSync(new URL('../ui/fonts/inter-latin-wght-normal.woff2',import.meta.url)));
 });
 test('all literal DOM bindings and form labels refer to unique existing IDs',()=>{
  const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);assert.equal(ids.length,new Set(ids).size);

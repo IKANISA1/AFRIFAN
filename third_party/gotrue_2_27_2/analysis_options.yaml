@@ -1,0 +1,7 @@
+# The publisher-only supabase_lints dev package is not in the consumer graph.
+# Preserve upstream style; retain normal Dart analyzer diagnostics for this
+# licensed path package and verify local behavior through the app SDK tests.
+analyzer:
+  errors:
+    dead_code: warning
+    unused_import: warning

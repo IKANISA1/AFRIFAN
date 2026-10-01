@@ -314,10 +314,11 @@ export default function AdminShopPage() {
       {initialLoading ? (
         <div
           className="grid gap-5 xl:grid-cols-2"
+          role="group"
           aria-label="Loading shop workspace"
         >
           {Array.from({ length: 2 }).map((_, index) => (
-            <div key={index} className="glass-panel rounded-[32px] p-6">
+            <div key={index} className="ui-panel rounded-[32px] p-6">
               <Skeleton className="skeleton-text h-7 w-2/5" />
               <Skeleton className="skeleton-text mt-5 h-52 w-full" />
             </div>
@@ -331,7 +332,7 @@ export default function AdminShopPage() {
         >
           <form
             onSubmit={handleSubmit}
-            className="glass-panel grid self-start content-start gap-4 rounded-[32px] p-6"
+            className="ui-panel grid self-start content-start gap-4 rounded-[32px] p-6"
           >
             <fieldset disabled={mutationLocked} className="contents">
               <div className="flex items-center justify-between gap-3">
@@ -476,7 +477,7 @@ export default function AdminShopPage() {
               </button>
             </fieldset>
           </form>
-          <section className="glass-panel rounded-[32px] p-6">
+          <section className="ui-panel rounded-[32px] p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <p className="font-display text-3xl font-medium normal-case leading-none">
                 Catalogue

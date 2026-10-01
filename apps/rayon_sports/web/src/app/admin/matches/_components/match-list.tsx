@@ -95,7 +95,7 @@ export function MatchList({
     <div className="admin-surface">
       <AdminFilterBar
         actions={
-          <div className="flex gap-1 bg-[var(--admin-zinc-950)] p-1 rounded-lg border border-[var(--admin-border)]">
+          <div className="flex gap-1 bg-[var(--admin-canvas)] p-1 rounded-lg border border-[var(--admin-border)]">
             {["ALL", "LIVE", "UPCOMING", "COMPLETED", "ON SALE"].map((item) => (
               <button
                 key={item}
@@ -104,8 +104,8 @@ export function MatchList({
                 className={cn(
                   "min-h-12 min-w-12 px-3 py-2 text-xs font-medium normal-case tracking-normal rounded-md transition-colors",
                   filter === item
-                    ? "bg-[var(--admin-zinc-800)] text-[var(--admin-zinc-100)] shadow-sm"
-                    : "text-[var(--admin-zinc-500)] hover:text-[var(--admin-zinc-300)]"
+                    ? "bg-[var(--admin-raised)] text-[var(--admin-foreground)] shadow-sm"
+                    : "text-[var(--admin-secondary)] hover:text-[var(--admin-foreground)]"
                 )}
               >
                 {item}
@@ -174,8 +174,8 @@ export function MatchList({
                 </td>
                 <td>
                   <div className="space-y-0.5 text-sm">
-                    <p className="font-medium text-[var(--admin-zinc-100)]">{formatDate(match.matchDate)}</p>
-                    <p className="text-xs text-[var(--admin-zinc-500)] normal-case font-medium">{match.kickoffTime}</p>
+                    <p className="font-medium text-[var(--admin-foreground)]">{formatDate(match.matchDate)}</p>
+                    <p className="text-xs text-[var(--admin-secondary)] normal-case font-medium">{match.kickoffTime}</p>
                   </div>
                 </td>
                 <td>
@@ -184,20 +184,20 @@ export function MatchList({
                       label={match.isOnSale ? "On sale" : "Closed"}
                       tone={match.isOnSale ? "success" : "neutral"}
                     />
-                    <p className="text-xs text-[var(--admin-zinc-500)] font-medium">{formatCurrency(match.generalPrice, currencyCode)}</p>
+                    <p className="text-xs text-[var(--admin-secondary)] font-medium">{formatCurrency(match.generalPrice, currencyCode)}</p>
                   </div>
                 </td>
                 <td>
                   <div className="space-y-0.5">
-                    <p className="text-sm font-medium text-[var(--admin-zinc-100)]">{match.homeScore} - {match.awayScore}</p>
-                    <p className="text-xs text-[var(--admin-zinc-500)] normal-case font-medium">
+                    <p className="text-sm font-medium text-[var(--admin-foreground)]">{match.homeScore} - {match.awayScore}</p>
+                    <p className="text-xs text-[var(--admin-secondary)] normal-case font-medium">
                       {isLive ? `${match.liveMinute ?? 0}' LIVE` : "Final"}
                     </p>
                   </div>
                 </td>
                 <td className="min-w-[140px]">
                   <ProgressBar value={match.soldCount} max={match.capacity} compact />
-                  <p className="mt-1.5 text-xs text-[var(--admin-zinc-500)] font-medium">
+                  <p className="mt-1.5 text-xs text-[var(--admin-secondary)] font-medium">
                     {match.soldCount} / {match.capacity} SOLD
                   </p>
                 </td>
@@ -205,14 +205,14 @@ export function MatchList({
                   <div className="flex justify-end gap-1">
                     <button
                       onClick={() => onEdit(match)}
-                      className="inline-flex min-h-12 min-w-12 items-center justify-center rounded hover:bg-[var(--admin-zinc-800)] text-[var(--admin-zinc-500)] hover:text-[var(--admin-zinc-100)] transition-colors"
+                      className="inline-flex min-h-12 min-w-12 items-center justify-center rounded hover:bg-[var(--admin-raised)] text-[var(--admin-secondary)] hover:text-[var(--admin-foreground)] transition-colors"
                       aria-label={`Edit ${match.homeTeam} versus ${match.awayTeam}`}
                     >
                       <PencilLine size={16} />
                     </button>
                     <button
                       onClick={() => onDelete(match)}
-                      className="inline-flex min-h-12 min-w-12 items-center justify-center rounded hover:bg-[var(--admin-zinc-800)] text-[var(--admin-zinc-500)] hover:text-error transition-colors"
+                      className="inline-flex min-h-12 min-w-12 items-center justify-center rounded hover:bg-[var(--admin-raised)] text-[var(--admin-secondary)] hover:text-error transition-colors"
                       aria-label={`Delete ${match.homeTeam} versus ${match.awayTeam}`}
                     >
                       <Trash2 size={16} />

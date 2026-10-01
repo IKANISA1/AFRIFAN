@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "recorded_at_utc": "2026-09-30T13:19:40.541742+00:00",
-  "status": "local_candidate_artifact_sealed_verified_and_extracted",
+  "status": "local_hash_verified_artifact_rejected_by_secret_audit",
   "candidate_commit": "9f2a658cc49c212f780b7906bbd37edd215e60bf",
   "local_execution_id": "1790774375474",
   "execution_id_is_github_run": false,
@@ -34,5 +34,17 @@
     "sha256": "dad49b773562b2d27e3fb3781641233e2389c6826177853958504a1ecbdca146",
     "rows": 2598,
     "format": "TSV path, bytes, SHA-256; immutable extracted artifact metadata"
+  },
+  "artifactEligibleForRelease": false,
+  "secretGate": {
+    "passed": false,
+    "coverageComplete": true,
+    "blockingFindings": 2,
+    "uniqueBlockingContents": 1,
+    "audit": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260929/local-secret-audit-rejected-archive-20260930.json",
+      "sha256": "850c0b717335188fa0fbf1f732a89113c0a1a9202eb9f08251b5df61b5afebbc"
+    },
+    "reason": "Privileged credential material was serialized by the adapter into next-env.mjs. Mechanical seal and extraction proof remains historical byte-integrity evidence."
   }
 }

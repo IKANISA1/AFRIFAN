@@ -1,3 +1,4 @@
+import { registerLocalHttpAssertions, httpFixtureOrigin, httpFixtureClub } from "../../../../../e2e/fixtures/local-http-route-assertions";
 import { NextRequest, NextResponse } from "next/server";
 
 const mocks = vi.hoisted(() => ({
@@ -41,7 +42,7 @@ const subscription = {
 };
 
 function request(body: unknown) {
-  return new NextRequest("https://gikundiro.com/api/pwa/push", {
+  return new NextRequest(`${httpFixtureOrigin("https://gikundiro.com")}/api/pwa/push`, {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -88,7 +89,7 @@ describe("POST /api/pwa/push", () => {
     delete process.env.VAPID_PRIVATE_KEY;
     mocks.rejectInsecureMutation.mockReturnValue(null);
     mocks.rejectRateLimitedRequest.mockResolvedValue(null);
-    mocks.getActiveClubReference.mockResolvedValue({ slug: "rayon-sports" });
+    mocks.getActiveClubReference.mockResolvedValue({ slug: httpFixtureClub.slug.replaceAll("_", "-") });
     mocks.getServerSupabase.mockResolvedValue({
       auth: {
         getUser: vi.fn().mockResolvedValue({
@@ -236,3 +237,36 @@ describe("POST /api/pwa/push", () => {
     expect(JSON.stringify(await response.json())).not.toContain("secret endpoint");
   });
 });
+
+registerLocalHttpAssertions([
+  {
+    "name": "returns the controlled empty state for malformed input",
+    "route": "/api/pwa/push",
+    "state": "empty"
+  },
+  {
+    "name": "honors the permission boundary before accessing storage",
+    "route": "/api/pwa/push",
+    "state": "permission_denied"
+  },
+  {
+    "name": "returns a controlled syncing response while delivery is unconfigured",
+    "route": "/api/pwa/push",
+    "state": "syncing"
+  },
+  {
+    "name": "maps a storage conflict without exposing database diagnostics",
+    "route": "/api/pwa/push",
+    "state": "conflict"
+  },
+  {
+    "name": "returns a stable timeout for stalled delivery",
+    "route": "/api/pwa/push",
+    "state": "security_timeout"
+  },
+  {
+    "name": "sanitizes push-provider failures",
+    "route": "/api/pwa/push",
+    "state": "error"
+  }
+]);

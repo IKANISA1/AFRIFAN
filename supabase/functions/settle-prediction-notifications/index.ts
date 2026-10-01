@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import { HttpError, requireCronSecret } from "../_shared/auth.ts";
@@ -115,19 +116,13 @@ export function createSettlePredictionNotificationsHandler(
             sentIds.push(notificationId);
           } else {
             failed++;
-            console.error(
-              `FCM send failed for user ${userId}:`,
-              result.errors,
-            );
+            logDiagnostic("error", "settle_prediction_notifications_fcm_send_failed_for_user", result.errors);
             // Still mark as sent to avoid infinite retry on token issues
             sentIds.push(notificationId);
           }
         } catch (sendError) {
           failed++;
-          console.error(
-            `FCM dispatch error for user ${userId}:`,
-            sendError,
-          );
+          logDiagnostic("error", "settle_prediction_notifications_fcm_dispatch_error_for_user", sendError);
           // Mark as sent to prevent re-processing on transient errors
           sentIds.push(notificationId);
         }
@@ -141,7 +136,7 @@ export function createSettlePredictionNotificationsHandler(
         );
 
         if (markError) {
-          console.error("Failed to mark notifications as sent:", markError);
+          logDiagnostic("error", "settle_prediction_notifications_failed_to_mark_notifications_as_sent", markError);
         }
       }
 
@@ -159,7 +154,7 @@ export function createSettlePredictionNotificationsHandler(
         return jsonError(error.message, error.status);
       }
 
-      console.error("settle-prediction-notifications failed:", error);
+      logDiagnostic("error", "settle_prediction_notifications_settle_prediction_notifications_failed", error);
       return jsonError(
         error instanceof Error
           ? error.message

@@ -4,6 +4,33 @@ import { middleware } from "./middleware";
 import { controlledAdminEvidenceRequestHeader } from "./lib/controlled-admin-evidence";
 
 describe("Cloudflare Edge routing entry", () => {
+  it.each([
+    "https://gikundiro.com/admin/contributions",
+    "https://admin.gikundiro.com/admin/contributions",
+    "https://admin.gikundiro.com/contributions",
+  ])("redirects contributions before protected rendering: %s", (entry) => {
+    const response = middleware(new NextRequest(`${entry}?club=24&tab=untrusted&returnTo=https://attacker.example`));
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe(new URL("/admin/community?club=24&tab=groups", entry).toString());
+    expect(response.headers.get("x-middleware-rewrite")).toBeNull();
+    expect(response.cookies.get("africlub_admin_club")?.value).toBe("24");
+    expect(response.headers.get("cache-control")).toBe("private, no-store");
+    expect(response.headers.get("cdn-cache-control")).toBe("no-store");
+    expect(response.headers.get("cloudflare-cdn-cache-control")).toBe("no-store");
+    expect(response.headers.get("content-security-policy")).toMatch(/'nonce-[^']+'/);
+  });
+
+  it("does not turn repeated club parameters into a scalar compatibility scope", () => {
+    const response = middleware(new NextRequest("https://gikundiro.com/admin/contributions?club=24&club=6"));
+    expect(response.headers.get("location")).toBe("https://gikundiro.com/admin/community?tab=groups");
+  });
+
+  it("keeps the canonical community route behind its ordinary layout", () => {
+    const response = middleware(new NextRequest("https://gikundiro.com/admin/community?club=24&tab=groups"));
+    expect(response.status).toBe(200);
+    expect(response.headers.get("location")).toBeNull();
+  });
+
   it("rewrites admin host paths while preserving the selected club and query", () => {
     const response = middleware(new NextRequest("https://admin.gikundiro.com/community?club=club-24&cursor=next"));
     expect(response.headers.get("x-middleware-rewrite")).toBe("https://admin.gikundiro.com/admin/community?club=club-24&cursor=next");

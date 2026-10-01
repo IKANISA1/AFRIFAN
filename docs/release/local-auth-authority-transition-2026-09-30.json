@@ -1,0 +1,248 @@
+{
+  "schemaVersion": 1,
+  "recordDateKigali": "2026-09-30",
+  "generatedAt": "2026-09-30T21:03:47.876621+00:00",
+  "currentGitHead": "7fa5292248d5776c6e255aa39ab7acdd658f24e9",
+  "scope": "Local AuthNotifier authority transitions and current full core_auth verification. Root composition, route guards and broader native coverage are owned by the root/coverage task.",
+  "localImplementationComplete": true,
+  "productionReady": false,
+  "releaseAuthorized": false,
+  "deploymentPerformed": false,
+  "realSecretsChanged": false,
+  "files": [
+    {
+      "path": "packages/core/core_auth/lib/src/auth_notifier.dart",
+      "action": "modified",
+      "bytes": 22264,
+      "sha256": "799c38730aa37d0ac40425558002a13d937c040c80d16497ef068fc54919458b",
+      "beforeSha256": "f16987dd491d7e0e9b6395a6fe603484d94468a496f7aeb6b325128a0a24e608",
+      "why": "Capture repository/session authority across every asynchronous path; invalidate pending state/observer work on repository rebuild, disposal, newer session and logout; close local logout immediately; validate numeric club/user identity before hydration and admin access; merge concurrent profile/admin results without restoring old snapshots; await trusted SDK hydration for matching sign-in completion."
+    },
+    {
+      "path": "packages/core/core_auth/test/auth_notifier_test.dart",
+      "action": "modified",
+      "bytes": 48155,
+      "sha256": "0b8c735a4a219612d63291e3e1944b8f74dad3eeb5c3b704dcd0dd80e1d70a89",
+      "beforeSha256": "cd4195c163af18ff7d119cdc04596901890d856b0488d27608d4d65330cd46f0",
+      "why": "Execute delayed success/error, repository replacement, disposal, old-subscription, account/club, OTP event ordering, second-await admin, concurrent profile/admin and logout races through real ProviderContainer/AuthNotifier instances using controlled fake repository responses."
+    }
+  ],
+  "methodInventory": [
+    {
+      "method": "restore",
+      "line": 172
+    },
+    {
+      "method": "syncWithAuthChange",
+      "line": 215
+    },
+    {
+      "method": "signInAnonymously",
+      "line": 301
+    },
+    {
+      "method": "requestPhoneSignInOtp",
+      "line": 330
+    },
+    {
+      "method": "requestPhoneSignInOtpResult",
+      "line": 339
+    },
+    {
+      "method": "verifyPhoneSignInOtp",
+      "line": 358
+    },
+    {
+      "method": "verifyPhoneSignInOtpResult",
+      "line": 365
+    },
+    {
+      "method": "requestPhoneVerificationOtp",
+      "line": 403
+    },
+    {
+      "method": "verifyPhoneVerificationOtp",
+      "line": 419
+    },
+    {
+      "method": "updateProfile",
+      "line": 461
+    },
+    {
+      "method": "refreshProfile",
+      "line": 493
+    },
+    {
+      "method": "refreshAdminAccess",
+      "line": 526
+    },
+    {
+      "method": "signOut",
+      "line": 552
+    },
+    {
+      "method": "signOutOtherSessions",
+      "line": 568
+    },
+    {
+      "method": "deleteAccount",
+      "line": 584
+    }
+  ],
+  "publicAsyncMethods": 15,
+  "authorityRules": {
+    "capturedRepository": "Every async repository invocation uses the repository captured with its authority scope, including restore failure cleanup. No await resumes through a replacement _repository field.",
+    "rebuildAndDisposal": "Generation/lifetime counters invalidate old continuations; old subscriptions are canceled and their callbacks cannot bind to a rebuilt notifier. Pending SDK completion waiters are released on invalidation.",
+    "sessionChange": "A new session removes the preceding user/profile/admin authority immediately, validates the returned profile user ID and numeric repository/profile club, and owns its separate hydration.",
+    "logout": "Local unauthenticated state and diagnostic consent closure occur before awaiting repository cleanup; the cleanup reply has no post-await state or identity write.",
+    "staleActions": "Existing AuthActionFailureKind.conflict and a finite session-changed message are returned; stale exceptions do not rewrite current state, resolve extra admin access or emit stale identity observations.",
+    "matchingSdkEvents": "OTP/phone-verification responses may await their matching newer trusted event. Success requires its authenticated state; null/foreign/error hydration cannot report success. Deletion completion recognizes only its own earlier intentional signed-out event without rewriting state.",
+    "numericClubScope": "Configured and returned numeric IDs must normalize to the same positive ID in 1..2147483647. Foreign/invalid profiles are not exposed or passed to admin resolution.",
+    "profileAndAdminConcurrency": "Profile and admin requests carry separate latest-started revisions and merge the current valid counterpart, preventing old profile/access snapshots from replacing newer changes.",
+    "localGuest": "Local offline guest fallback remains available and never resolves a server admin principal.",
+    "nativeAuthority": "No native credential/journal module, capability or remote revocation/retry protocol was changed."
+  },
+  "verification": {
+    "fullCoreAuthBank": {
+      "tests": 362,
+      "passed": 362,
+      "failed": 0,
+      "skipped": 0,
+      "notifierCases": 124,
+      "command": [
+        "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+        "test",
+        "--no-pub",
+        "--concurrency=1",
+        "--reporter",
+        "expanded"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 8.331,
+      "log": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-authority-transition/core-auth-final-bank.log",
+        "sha256": "d900eef1fda8a9536a3e85acdb8d90ff1718ddb341faed6def4a5821a183303f"
+      }
+    },
+    "strictChangedSourceAnalysis": {
+      "items": 2,
+      "issues": 0,
+      "fatalInfos": true,
+      "command": [
+        "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/bin/flutter",
+        "analyze",
+        "--no-pub",
+        "--fatal-infos",
+        "lib/src/auth_notifier.dart",
+        "test/auth_notifier_test.dart"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 8.288,
+      "log": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-authority-transition/changed-source-final-analysis.log",
+        "sha256": "b33a71c9085f205e66448a431db509363233f9eb507a4bebb58d718f4f0d957b"
+      }
+    },
+    "sourceBinding": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-authority-transition/final-source-bound-verification.json",
+      "sha256": "d9a9b3fc83612048e82f3291481495f0282a030eb675abc60b6c71b023e6edd9",
+      "boundInputs": 74,
+      "beforeAfterStable": true,
+      "currentHashReadbackPassed": true
+    },
+    "actualFiveClubScopeMatrix": {
+      "clubIds": [
+        6,
+        24,
+        26,
+        44,
+        1001
+      ],
+      "cases": 25,
+      "matchingProfilesAccepted": 5,
+      "crossClubPairsRejected": 20,
+      "checks": [
+        "Private profile omitted from state on rejection",
+        "No admin query for a foreign profile",
+        "No admin workspace privilege from foreign profile"
+      ]
+    },
+    "beforeFixFailures": {
+      "command": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-authority-transition/before-fix-command.json",
+        "sha256": "2f815a4edd93da187de5c128bb086bb7b40f82c1a5896cf7f4e899bab0c43426"
+      },
+      "log": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-authority-transition/before-fix-authority-regressions.log",
+        "sha256": "f91adf0fb50bc64e77681910e9bd44f48628d87295a2c125ceb795f0367322f4"
+      },
+      "cases": 4,
+      "failed": 4,
+      "failures": [
+        "Delayed restore resurrected explicit logout",
+        "Delayed restore failure signed out replacement repository",
+        "Delayed admin response restored preceding user and privileges",
+        "Logout retained local authenticated authority while repository reply was pending"
+      ],
+      "originalRuntime": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-authority-transition/auth_notifier.dart.before",
+        "sha256": "f16987dd491d7e0e9b6395a6fe603484d94468a496f7aeb6b325128a0a24e608"
+      },
+      "originalTests": {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-authority-transition/auth_notifier_test.dart.before",
+        "sha256": "cd4195c163af18ff7d119cdc04596901890d856b0488d27608d4d65330cd46f0"
+      }
+    },
+    "priorPassingCheckpoints": {
+      "focused79CaseBank": {
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-authority-transition/authority-regressions-current.log",
+          "sha256": "6e3af0334cb6cdcdda1a41f0866451b027e2477b231adf17d97b1023fecde5a6"
+        },
+        "command": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-authority-transition/authority-regressions-current-command.json",
+          "sha256": "8afacdb803b025a768d45efc7f474331e6330c169b496142137a936f34fb8211"
+        },
+        "passed": 79
+      },
+      "intermediate330CaseFullBank": {
+        "log": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-authority-transition/core-auth-full-bank.log",
+          "sha256": "6fe98d7b1290df84cac8d56c4f9fc1a54b8bc3350d1c7c4d79bf354665a21d0c"
+        },
+        "command": {
+          "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-authority-transition/core-auth-full-bank-command.json",
+          "sha256": "ec899e277f3a78b0e349268daa50f0eed314e05907ca2de4dec670b145bfe747"
+        },
+        "passed": 330,
+        "sourceBound": true
+      }
+    },
+    "retainedAnalysisFailures": [
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-authority-transition/changed-source-analysis-initial.log",
+        "sha256": "b5ecfff4e0a769f8ebc4cbccf21e9c683bad589514a8de4748174ef9d72c0012"
+      },
+      {
+        "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/auth-authority-transition/changed-source-analysis-final.log",
+        "sha256": "81b981eff1a4499af235de396aaa05ebe14b855bce95e9ffece4bc285b5d4f46"
+      }
+    ],
+    "diffCheckPassed": true
+  },
+  "remainingLocalGuardGapsInOwnedNotifierScope": [],
+  "limits": [
+    "The notifier fences local state, follow-up repository calls and observation calls. It does not roll back or cancel a backend action that was already dispatched.",
+    "All authority races use controlled fake repository responses and real Riverpod provider lifecycles; the full bank also executes existing core_auth contracts. No real provider, deployment or device acceptance is implied.",
+    "Flutter3.44.9 ran with --no-pub and analytics suppression. No OS network capture was performed.",
+    "Root/coverage must bind the final native composition and route/state banks to these current source hashes before claiming full goal completion."
+  ],
+  "reportPublication": "Tracked report write deferred pending root browser-capture freeze; this draft is retained in ignored evidence.",
+  "toolchain": {
+    "frameworkVersion": "3.44.9",
+    "dartSdkVersion": "3.12.2",
+    "frameworkRevision": "6b182d2c7585eba26d4edce0f97630effd256c33",
+    "channel": "[user-branch]",
+    "versionRecordSha256": "b2ace31623f88bc55972a326b4e753587d5abf0df26bec7af83b5ff745a2956b"
+  }
+}

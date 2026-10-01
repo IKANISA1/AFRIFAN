@@ -357,6 +357,9 @@ jobs:
       - name: Validate production build provenance
         run: corepack npm run test:build-provenance
 
+      - name: Validate public artifact environment and private settings permissions
+        run: corepack npm run test:artifact-environment
+
       - name: Validate unreviewed browser evidence staging
         run: node --test ../../../tools/scripts/register_web_route_state_evidence.test.mjs
 
@@ -414,7 +417,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: |
           node scripts/web-build-provenance.mjs check
-          corepack npm exec -- opennextjs-cloudflare build --skipNextBuild
+          node scripts/build-opennext-isolated.mjs
           node scripts/fix-route-group-manifests.mjs --open-next
 
       - name: Seal exact OpenNext candidate and configuration
@@ -697,6 +700,10 @@ jobs:
         run: |
           python3 -m pip install --target "$RUNNER_TEMP/africlub-python" -r tools/requirements-local-verification.txt
           echo "PYTHONPATH=$RUNNER_TEMP/africlub-python" >> "$GITHUB_ENV"
+      - name: Verify native performance privacy
+        run: python3 tools/scripts/verify_native_performance_privacy.py
+      - name: Test native privacy controls
+        run: python3 -m unittest discover -s tools/scripts -p test_verify_native_performance_privacy.py
       - name: Verify exact target matrix and disabled credential host registrations
         run: |
           python3 tools/scripts/local_native_ci.py verify

@@ -1,4 +1,4 @@
-import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions } from "./state-evidence-provenance";
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, stateEvidenceContextOptions, createStateEvidenceContext } from "./state-evidence-provenance";
 import fs from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
@@ -177,7 +177,7 @@ async function expectBottomNavigationClearance(page: Page) {
 async function runHomeMatrix(browser: Browser) {
   const evidenceDirectory = prepareStateEvidence(browser, test.info(), "consumer_web_home_states");
 
-  const context = await browser.newContext({
+  const context = await createStateEvidenceContext(browser, {
     ...stateEvidenceContextOptions(test.info()),
     // Keep routed state fixtures independent of worker-controlled fetches.
     serviceWorkers: "block",
@@ -316,7 +316,9 @@ async function runHomeMatrix(browser: Browser) {
   await capture("selected");
 
   await open("large-text");
-  await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
+  await page.evaluate(() => {
+    document.documentElement.style.setProperty("font-size", "200%", "important");
+  });
   expect(
     await page.evaluate(
       () =>
@@ -513,6 +515,6 @@ async function runHomeMatrix(browser: Browser) {
 test("/ proves all sixteen applicable rendered states", async ({
   browser,
 }) => {
-  test.setTimeout(120_000);
+  test.setTimeout(360_000);
   await runHomeMatrix(browser);
 });

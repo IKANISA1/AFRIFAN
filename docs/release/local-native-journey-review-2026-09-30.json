@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "reviewedAtUtc": "2026-09-30T18:21:15.602817+00:00",
+  "scope": "Independent read-only review of native goals 3/4/5 entrypoint, identity, recovery and membership composition across five club apps.",
+  "status": "TWO_CONFIRMED_WIRING_GAPS_REMEDIATION_ASSIGNED",
+  "sourceFrozen": false,
+  "productionReady": false,
+  "flutterSourceEdited": false,
+  "newFlutterTestsRun": false,
+  "externalNetworkUsed": false,
+  "protectedCredentialValuesRead": false,
+  "sourceSha256": {
+    "apps/rayon_sports/lib/main.dart": "4066bd4a6a5cf078cd1f5c0ae6311ed696c8c0ca4c0955b34bb5f9c71d4506e2",
+    "apps/as_vita/lib/main.dart": "e3dc536543cdd5b8c32375429aeacf2e1554b9f947e5f3479dfdb1e1613c43aa",
+    "apps/vitalo/lib/main.dart": "00f2b4ec49e193872ac9d84402683fead46d60c5623a8637acd5a3683a7f706f",
+    "apps/costa_do_sol/lib/main.dart": "812ee35d37060c6cb16cd50eafa9d52b63c8289ed0e2c94062b59f209c8a497b",
+    "apps/nkana/lib/main.dart": "b0ca220f41e7afcf3ae5bb5b05923d15fa2be7d44ab607350baa0b96664cf623",
+    "packages/app_registry/lib/src/native_bootstrap.dart": "1bef4e0f8c5bb046be291216a288fa9b05b8c9f4ce8ea9c06089d6c939696ae2",
+    "packages/app_registry/lib/src/module_registry.dart": "f8505af6ffbdcef6388830a084b6fe588dc2514bd156c624edf2054c5f2d807a",
+    "packages/core/core_app/lib/src/bootstrap.dart": "dda44bc95e972469a615beaa42efba08a03e8d32e584a0825cae25d2565818eb",
+    "packages/core/core_app/lib/src/app.dart": "634a9912fe3c06e8d2ede18e88d17f26e8ee2772bbce187c744860c5b9a893f2",
+    "packages/core/core_app/lib/src/shell.dart": "d1389155f8118842810f99d906f5f9936f1a2bc292ccbbd5276fa614defb20ea",
+    "packages/core/core_router/lib/src/app_router.dart": "aebfe3883bca1b8d64aa80ae5de8b8afed0ce9db38551239e65397b58230c623",
+    "packages/features/feat_membership/lib/src/membership_module.dart": "e084d99023d0f932cb8f7242d073d03d2a79b80c1d9e26d4890e00a6901a72fc",
+    "packages/features/feat_membership/lib/native_supporter_platform.dart": "7b70279bc2269b8a2d556fa9b2ee9ea1e865bc3009ece3d041fe188ad3cb8621",
+    "packages/features/feat_membership/lib/native_supporter_journey.dart": "e83d460cdc692c6d4484e6813d69e1d0d0156c3e032da869e5df51fe0ea932d7",
+    "packages/features/feat_membership/lib/native_membership_composition_flutter.dart": "4085c42c17e7b3fe9ad2a911d2cf1d8babbfb270bdda44f4c24346c2143bf2d6",
+    "packages/features/feat_membership/lib/src/screens/native_membership_journey_screen.dart": "1a18168b417fae6e65381fc69845d1194078564eadf126965ec79ac81ae8677a",
+    "packages/core/core_auth/lib/src/native_identity/controller.dart": "848d874184ada15c819ffbf009382d3b56b44fd28993137e25b1052143b95981",
+    "packages/core/core_auth/lib/src/native_identity/platform_store.dart": "1c852b1cd8da7a53a9ce130ea04ab0f525913d48bee6b1ea8fa6705ea8a8eae2",
+    "packages/app_registry/test/native_bootstrap_test.dart": "f37d0a43844026942671920a974a22f89f630e0be3d7c110b5ef0c354c2d5bfe",
+    "packages/features/feat_membership/test/native_supporter_journey_test.dart": "6e91204bfc738868300d22cb73d17a05a3fd95807d26ee9ab209fe854affbaeb",
+    "packages/features/feat_membership/test/native_membership_journey_screen_test.dart": "ebc273eb991f8dcca7b67e4972f0b4c0bf071388fa1e049eef5b0679f1998719",
+    "packages/core/core_app/test/app_routing_guard_test.dart": "0b5f130d598d167a13b3c3d648336d444eda9e56fdd1e23c651a77ba3162ca9c"
+  },
+  "entrypoints": [
+    {
+      "app": "rayon_sports",
+      "journeyInjection": "Shared clubBootstrapOptions called with explicit optional journey",
+      "defaultMainJourney": "Absent; native capability remains disabled without explicit supplied runtime"
+    },
+    {
+      "app": "as_vita",
+      "journeyInjection": "Shared clubBootstrapOptions called with explicit optional journey",
+      "defaultMainJourney": "Absent; native capability remains disabled without explicit supplied runtime"
+    },
+    {
+      "app": "vitalo",
+      "journeyInjection": "Shared clubBootstrapOptions called with explicit optional journey",
+      "defaultMainJourney": "Absent; native capability remains disabled without explicit supplied runtime"
+    },
+    {
+      "app": "costa_do_sol",
+      "journeyInjection": "Shared clubBootstrapOptions called with explicit optional journey",
+      "defaultMainJourney": "Absent; native capability remains disabled without explicit supplied runtime"
+    },
+    {
+      "app": "nkana",
+      "journeyInjection": "Shared clubBootstrapOptions called with explicit optional journey",
+      "defaultMainJourney": "Absent; native capability remains disabled without explicit supplied runtime"
+    }
+  ],
+  "confirmedControls": [
+    {
+      "id": "N-C01",
+      "rationale": "All five explicit startup entrypoints call the common club-scoped helper. Wrong club scope is rejected before module/provider pairing; absent journey selects existing legacy membership."
+    },
+    {
+      "id": "N-C02",
+      "rationale": "Native membership route exemption is declared by MembershipModule; screens reject missing runtime, mismatched club and query/fragment-bearing locations. Other routes retain the common authentication guard."
+    },
+    {
+      "id": "N-C03",
+      "rationale": "Journey construction submits no identity or membership request. Explicit identity, protected recovery, status, review and confirmation actions are separated. Dialer confirmation requires current review acknowledgement; handoff never claims paid success."
+    },
+    {
+      "id": "N-C04",
+      "rationale": "Identity-bound membership operations compare protected actor/session/club before and after awaiting replies. Generation fences preserve uncertain operation journals when late mutating replies arrive after invalidation."
+    },
+    {
+      "id": "N-C05",
+      "rationale": "Backgrounding synchronously invalidates identity/review and clears screen drafts; resume submits no native recovery or dialer action. Explicit native signout hides views first and exposes unknown revocation while preserving financial markers."
+    },
+    {
+      "id": "N-C06",
+      "rationale": "Widget replacement for a different club or journey, provider replacement, actual pop and disposal invoke invalidation. These mechanisms do not cover retained shell branches or uninitialized provider ownership."
+    }
+  ],
+  "findings": [
+    {
+      "id": "N-F01",
+      "severity": "P2",
+      "status": "CONFIRMED_REMEDIATION_ASSIGNED",
+      "file": "packages/app_registry/lib/src/native_bootstrap.dart",
+      "line": 35,
+      "rationale": "The disposal callback is registered inside the lazy nativeSupporterJourneyProvider override factory. The default home route never reads this provider; disposing the application ProviderScope before the first membership visit therefore never calls journey.dispose. The supplied journey and membership composition registered lifecycle observers during construction, so scope ownership and private in-memory teardown are incomplete. The existing bootstrap fixture reads the provider before disposal and does not cover this case.",
+      "relatedSources": [
+        "packages/core/core_app/lib/src/app.dart",
+        "packages/features/feat_membership/lib/native_supporter_journey.dart",
+        "packages/features/feat_membership/lib/native_membership_composition_flutter.dart",
+        "packages/app_registry/test/native_bootstrap_test.dart"
+      ],
+      "requiredRegression": "Start with a supplied journey on /home, never read the membership provider, close the application scope and prove the journey is disposed and cannot submit.",
+      "owner": "root core_app/bootstrap and app_registry lifetime"
+    },
+    {
+      "id": "N-F02",
+      "severity": "P1",
+      "status": "CONFIRMED_REMEDIATION_ASSIGNED",
+      "file": "packages/features/feat_membership/lib/src/screens/native_membership_journey_screen.dart",
+      "line": 49,
+      "rationale": "Screen invalidation observes lifecycle, widget replacement, pop and disposal, but actual membership tabs live in StatefulShellRoute.indexedStack. AppShell.goBranch retains the old screen mounted/offstage. Switching to another tab or covering membership with another pushed route therefore leaves the private identity, payment review/receipt, phone/code drafts and acknowledgement in memory; a late operation also remains in the old route generation. Existing route tests remove the tree or call invalidate manually instead of navigating the real retained shell.",
+      "relatedSources": [
+        "packages/core/core_router/lib/src/app_router.dart",
+        "packages/core/core_app/lib/src/shell.dart",
+        "packages/core/core_app/lib/src/app.dart",
+        "packages/features/feat_membership/test/native_membership_journey_screen_test.dart",
+        "packages/features/feat_membership/test/native_supporter_journey_test.dart"
+      ],
+      "requiredRegression": "Use the real router shell: prepare a native review or draft, switch tabs or push a covering route, and prove immediate identity/review/draft/ack clearing plus generation fencing, preserved protected markers and no replay on return.",
+      "owner": "coverage worker native screen and retained-shell regression"
+    }
+  ],
+  "testEvidenceReview": {
+    "bootstrap": "Existing tests explicitly instantiate the provider before container disposal.",
+    "screenRoute": "Existing route-disposal test pumps SizedBox and club-change test replaces configuredClubId.",
+    "journeyInvalidation": "Named route/account/club cases all manually invoke journey.invalidate; they verify controller fences, not real app event wiring.",
+    "nativeBank": "Concurrent owner will run final native fixture bank after source remediation; this read-only review did not duplicate that bank."
+  },
+  "limits": [
+    "No device credential attestation, provider validity, payment acceptance, store acceptance or production enablement is established by this source review.",
+    "Source and tests remain mutable; hashes capture this review checkpoint.",
+    "Native identity authority is separate from legacy Supabase authentication; internal actor/session fences were reviewed, but production native lifecycle acceptance remains open."
+  ],
+  "findingProofSourceSha256": {
+    "apps/rayon_sports/lib/main.dart": "4066bd4a6a5cf078cd1f5c0ae6311ed696c8c0ca4c0955b34bb5f9c71d4506e2",
+    "apps/as_vita/lib/main.dart": "e3dc536543cdd5b8c32375429aeacf2e1554b9f947e5f3479dfdb1e1613c43aa",
+    "apps/vitalo/lib/main.dart": "00f2b4ec49e193872ac9d84402683fead46d60c5623a8637acd5a3683a7f706f",
+    "apps/costa_do_sol/lib/main.dart": "812ee35d37060c6cb16cd50eafa9d52b63c8289ed0e2c94062b59f209c8a497b",
+    "apps/nkana/lib/main.dart": "b0ca220f41e7afcf3ae5bb5b05923d15fa2be7d44ab607350baa0b96664cf623",
+    "packages/app_registry/lib/src/native_bootstrap.dart": "1bef4e0f8c5bb046be291216a288fa9b05b8c9f4ce8ea9c06089d6c939696ae2",
+    "packages/app_registry/lib/src/module_registry.dart": "f8505af6ffbdcef6388830a084b6fe588dc2514bd156c624edf2054c5f2d807a",
+    "packages/core/core_app/lib/src/bootstrap.dart": "dda44bc95e972469a615beaa42efba08a03e8d32e584a0825cae25d2565818eb",
+    "packages/core/core_app/lib/src/app.dart": "634a9912fe3c06e8d2ede18e88d17f26e8ee2772bbce187c744860c5b9a893f2",
+    "packages/core/core_app/lib/src/shell.dart": "d1389155f8118842810f99d906f5f9936f1a2bc292ccbbd5276fa614defb20ea",
+    "packages/core/core_router/lib/src/app_router.dart": "aebfe3883bca1b8d64aa80ae5de8b8afed0ce9db38551239e65397b58230c623",
+    "packages/features/feat_membership/lib/src/membership_module.dart": "e084d99023d0f932cb8f7242d073d03d2a79b80c1d9e26d4890e00a6901a72fc",
+    "packages/features/feat_membership/lib/native_supporter_platform.dart": "7b70279bc2269b8a2d556fa9b2ee9ea1e865bc3009ece3d041fe188ad3cb8621",
+    "packages/features/feat_membership/lib/native_supporter_journey.dart": "e83d460cdc692c6d4484e6813d69e1d0d0156c3e032da869e5df51fe0ea932d7",
+    "packages/features/feat_membership/lib/native_membership_composition_flutter.dart": "4085c42c17e7b3fe9ad2a911d2cf1d8babbfb270bdda44f4c24346c2143bf2d6",
+    "packages/features/feat_membership/lib/src/screens/native_membership_journey_screen.dart": "1a18168b417fae6e65381fc69845d1194078564eadf126965ec79ac81ae8677a",
+    "packages/core/core_auth/lib/src/native_identity/controller.dart": "848d874184ada15c819ffbf009382d3b56b44fd28993137e25b1052143b95981",
+    "packages/core/core_auth/lib/src/native_identity/platform_store.dart": "1c852b1cd8da7a53a9ce130ea04ab0f525913d48bee6b1ea8fa6705ea8a8eae2",
+    "packages/app_registry/test/native_bootstrap_test.dart": "f37d0a43844026942671920a974a22f89f630e0be3d7c110b5ef0c354c2d5bfe",
+    "packages/features/feat_membership/test/native_supporter_journey_test.dart": "6e91204bfc738868300d22cb73d17a05a3fd95807d26ee9ab209fe854affbaeb",
+    "packages/features/feat_membership/test/native_membership_journey_screen_test.dart": "ebc273eb991f8dcca7b67e4972f0b4c0bf071388fa1e049eef5b0679f1998719",
+    "packages/core/core_app/test/app_routing_guard_test.dart": "0b5f130d598d167a13b3c3d648336d444eda9e56fdd1e23c651a77ba3162ca9c"
+  },
+  "additionalBoundaryForScopeDecision": {
+    "file": "packages/core/core_app/lib/src/app.dart",
+    "rationale": "The common legacy auth subscription refreshes the router but does not invalidate native private state on a global logout or principal change. Native exempt routes stay mounted. Native authority is deliberately separate from legacy Supabase authority, so whether global app account transitions must clear native private views is awaiting the root scope decision. Native controller account tests currently invoke invalidate manually.",
+    "screenDraftDetail": "Same-object journey invalidation clears identity/review, but screen AnimatedBuilder rebuild alone does not clear phone/code drafts; if a global account hook is added, screen invalidation must also clear drafts and acknowledgements.",
+    "status": "AWAITING_SCOPE_DECISION",
+    "notClaimed": "Missing native server revocation from legacy Supabase logout is not asserted."
+  }
+}

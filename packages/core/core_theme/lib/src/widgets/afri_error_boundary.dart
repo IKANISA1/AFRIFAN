@@ -39,14 +39,12 @@ class AfriErrorBoundary extends StatefulWidget {
 
 class _AfriErrorBoundaryState extends State<AfriErrorBoundary> {
   bool _hasError = false;
-  late ErrorWidgetBuilder _previousErrorWidgetBuilder;
-  bool _restoreScheduled = false;
+  late final ErrorWidgetBuilder _errorWidgetBuilder = _handleErrorWidget;
+  _ErrorWidgetBuilderLease? _builderLease;
 
   @override
   void dispose() {
-    if (identical(ErrorWidget.builder, _handleErrorWidget)) {
-      ErrorWidget.builder = _previousErrorWidgetBuilder;
-    }
+    _builderLease?.release();
     super.dispose();
   }
 
@@ -66,18 +64,12 @@ class _AfriErrorBoundaryState extends State<AfriErrorBoundary> {
   }
 
   void _installErrorWidgetBuilderForFrame() {
-    final currentBuilder = ErrorWidget.builder;
-    if (!identical(currentBuilder, _handleErrorWidget)) {
-      _previousErrorWidgetBuilder = currentBuilder;
-      ErrorWidget.builder = _handleErrorWidget;
-    }
-    if (_restoreScheduled) return;
-    _restoreScheduled = true;
+    if (_builderLease?.isActive ?? false) return;
+    final lease = _ErrorWidgetBuilderLease.install(_errorWidgetBuilder);
+    _builderLease = lease;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _restoreScheduled = false;
-      if (identical(ErrorWidget.builder, _handleErrorWidget)) {
-        ErrorWidget.builder = _previousErrorWidgetBuilder;
-      }
+      lease.release();
+      if (identical(_builderLease, lease)) _builderLease = null;
     });
   }
 
@@ -87,11 +79,58 @@ class _AfriErrorBoundaryState extends State<AfriErrorBoundary> {
         setState(() => _hasError = true);
         widget.onError?.call(details.exception, details.stack);
         if (kDebugMode) {
-          debugPrint('[AfriErrorBoundary] Caught: ${details.exception}');
+          debugPrint('[AfriErrorBoundary] runtime_failure');
         }
       }
     });
     return const SizedBox.shrink();
+  }
+}
+
+/// Frame leases may be released parent first while a nested boundary still
+/// owns the global builder. Keep the previous lease so a later child release
+/// skips inactive ancestors instead of reinstalling their stale callbacks.
+class _ErrorWidgetBuilderLease {
+  _ErrorWidgetBuilderLease._(
+    this.builder,
+    this._previousBuilder,
+    this._previousLease,
+  );
+
+  static final _installed =
+      Map<ErrorWidgetBuilder, _ErrorWidgetBuilderLease>.identity();
+  final ErrorWidgetBuilder builder;
+  final ErrorWidgetBuilder _previousBuilder;
+  final _ErrorWidgetBuilderLease? _previousLease;
+  bool _active = true;
+
+  bool get isActive => _active;
+
+  static _ErrorWidgetBuilderLease install(ErrorWidgetBuilder builder) {
+    final previous = ErrorWidget.builder;
+    final lease = _ErrorWidgetBuilderLease._(
+      builder,
+      previous,
+      _installed[previous],
+    );
+    _installed[builder] = lease;
+    ErrorWidget.builder = builder;
+    return lease;
+  }
+
+  ErrorWidgetBuilder get _restorationTarget {
+    final previous = _previousLease;
+    if (previous == null) return _previousBuilder;
+    return previous.isActive ? previous.builder : previous._restorationTarget;
+  }
+
+  void release() {
+    if (!_active) return;
+    _active = false;
+    if (identical(_installed[builder], this)) _installed.remove(builder);
+    if (identical(ErrorWidget.builder, builder)) {
+      ErrorWidget.builder = _restorationTarget;
+    }
   }
 }
 

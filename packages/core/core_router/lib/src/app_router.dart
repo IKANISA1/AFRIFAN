@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'feature_module.dart';
+import 'recovering_go_router.dart';
 import 'route_recovery_screens.dart';
 
 /// App router factory — builds GoRouter from registered feature modules.
@@ -30,7 +31,7 @@ class AppRouter {
   String get initialLocation =>
       _explicitInitialLocation ?? _resolveInitialLocation();
 
-  late final GoRouter router = GoRouter(
+  late final GoRouter router = RecoveringGoRouter(
     initialLocation: initialLocation,
     redirect: (context, state) {
       // 1. Feature Gate Check
@@ -60,7 +61,7 @@ class AppRouter {
         errorBuilder ??
         (context, state) => RouteRecoveryScreen(
           kind: RouteRecoveryKind.routerError,
-          fallbackLocation: initialLocation,
+          fallbackLocation: _resolveInitialLocation(),
           visualState: RouteRecoveryScreen.classifyRouterError(state.error),
           requestedPath: state.uri.path,
         ),
@@ -69,7 +70,7 @@ class AppRouter {
         path: '/feature-unavailable',
         builder: (context, state) => RouteRecoveryScreen(
           kind: RouteRecoveryKind.featureUnavailable,
-          fallbackLocation: initialLocation,
+          fallbackLocation: _resolveInitialLocation(),
           visualState: RouteRecoveryVisualState.disabled,
           requestedPath: state.uri.queryParameters['from'],
         ),

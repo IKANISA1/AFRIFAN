@@ -29,7 +29,7 @@ function render(){
  $('discard-rejected').hidden=!c.rejected;$('discard-rejected').disabled=locked||!$('retry-ack').checked;
  $('case-list').replaceChildren();
  if(!c.cases.length)$('case-list').append(text('p','No cases in this loaded page.','muted'));
- for(const r of c.cases){const b=text('button','');b.type='button';b.disabled=locked;b.append(text('span',r.category.replaceAll('_',' ')),text('span',`${r.state} · revision ${r.revision}`,'small'),text('span',r.caseId,'hash'));b.addEventListener('click',()=>run(async()=>{opening=false;await c.select(r.caseId);},'detail-heading'));$('case-list').append(b);}
+ for(const r of c.cases){const b=text('button','');b.type='button';b.disabled=locked;b.setAttribute('aria-current',String(r.caseId===c.record?.caseId));b.append(text('span',r.category.replaceAll('_',' ')),text('span',`${r.state} · revision ${r.revision}`,'small'),text('span',r.caseId,'hash'));b.addEventListener('click',()=>run(async()=>{opening=false;await c.select(r.caseId);},'detail-heading'));$('case-list').append(b);}
  $('more-cases').hidden=!c.nextCaseId;$('more-cases').disabled=locked;$('refresh-list').disabled=locked||!access;
  $('state-filter').disabled=locked||!access;$('new-case').disabled=locked||!access?.canMake||!!c.pending||c.storageFault;
  $('refresh-access').disabled=working||c.busy;

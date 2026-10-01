@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createAnonClient } from "../_shared/supabase.ts"
 import { corsHeaders, jsonError, jsonOk } from "../_shared/response.ts"
@@ -27,7 +28,7 @@ serve(async (req) => {
     })
 
     if (error) {
-      console.error('RPC Error:', error)
+      logDiagnostic("error", "get_platform_config_rpc_error", error)
       return jsonError(error.message, 500)
     }
 
@@ -45,7 +46,7 @@ serve(async (req) => {
 
     return response
   } catch (error) {
-    console.error('Unexpected error:', error)
+    logDiagnostic("error", "get_platform_config_unexpected_error", error)
     return jsonError('Internal server error', 500)
   }
 })

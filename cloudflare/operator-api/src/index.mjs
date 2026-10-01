@@ -37,7 +37,7 @@ const gateway = {
         return uiResponse(clubId,null,'cases');
       }
       const page=/^\/operator\/clubs\/([1-9]\d{0,9})\/public-source$/.exec(url.pathname);
-      const asset=/^\/operator\/assets\/(client\.js|controller\.js|app\.js|styles\.css|case-client\.js|case-controller\.js|cases\.js)$/.exec(url.pathname);
+      const asset=/^\/operator\/assets\/(client\.js|controller\.js|app\.js|styles\.css|case-client\.js|case-controller\.js|cases\.js|inter-latin-wght-normal\.woff2)$/.exec(url.pathname);
       if(page||asset) {
         requireThat(!url.search,'not_found',404);
         requireThat(request.method==='GET','method_not_allowed',405);

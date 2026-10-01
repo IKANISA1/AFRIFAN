@@ -2,13 +2,19 @@ import 'package:app_registry/app_registry.dart';
 import 'package:club_vitalo/club_vitalo.dart';
 import 'package:core_app/bootstrap.dart';
 
-void main() async {
+Future<void> startVitaloApp({
+  NativeSupporterJourney? nativeSupporterJourney,
+}) async {
   const config = VitaloConfig();
   await bootstrap(
     config,
-    options: AfriClubBootstrapOptions(
-      moduleBuilder: (snapshot) =>
-          AppModuleRegistry.build(config, configSnapshot: snapshot),
+    options: clubBootstrapOptions(
+      config,
+      nativeSupporterJourney: nativeSupporterJourney,
     ),
   );
+}
+
+void main() async {
+  await startVitaloApp();
 }

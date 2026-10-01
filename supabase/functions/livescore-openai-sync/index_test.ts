@@ -1,4 +1,5 @@
 import { assertEquals } from "jsr:@std/assert";
+import { assertFalse } from "jsr:@std/assert";
 
 import { createLiveScoreOpenAiSyncHandler } from "./index.ts";
 
@@ -59,6 +60,44 @@ function fakeSourceAdminClient(rows = [sourceRow]) {
       throw new Error("rpc should not be called during preview");
     },
   };
+}
+
+for (const providerError of [false, true]) {
+  Deno.test(
+    `LiveScore stored diagnostics exclude raw provider ${providerError ? "errors" : "notes and access issues"} while preserving safe counters`,
+    withEnv({ LIVESCORE_SYNC_SECRET: "cron-secret", OPENAI_API_KEY: "test-openai-key" }, async () => {
+      const privateValue = "person@example.test +250788123456 https://private.invalid/?token=secret";
+      const rows: Record<string, unknown>[] = [];
+      const sources = fakeSourceAdminClient();
+      const admin = {
+        from(table: string) {
+          if (table === "football_sync_log") return { insert(value: Record<string, unknown>) { rows.push(value); return Promise.resolve({ error: null }); } };
+          return sources.from(table);
+        },
+      };
+      const handler = createLiveScoreOpenAiSyncHandler({
+        createAdminClient: () => admin as never,
+        createFootballAdminClient: () => ({}) as never,
+        requireAdminCaller: async () => ({} as never),
+        fetch: async () => providerError
+          ? Response.json({ message: privateValue }, { status: 503 })
+          : Response.json({ output_text: JSON.stringify({ fixtures: [], source_notes: [privateValue], access_issues: [privateValue] }) }),
+      });
+      const response = await handler(new Request("https://example.test/livescore-openai-sync", {
+        method: "POST", headers: { "content-type": "application/json", "x-cron-secret": "cron-secret" }, body: JSON.stringify({ mode: "sync", dry_run: false }),
+      }));
+      assertEquals(response.status, providerError ? 500 : 200);
+      assertEquals(rows.length, 1);
+      assertFalse(JSON.stringify(rows).includes(privateValue));
+      const metadata = rows[0].metadata as Record<string, unknown>;
+      assertEquals(metadata.source_provider, "livescore"); assertEquals(metadata.mode, "sync");
+      assertEquals(metadata.allowed_competitions_loaded, 1);
+      assertEquals(metadata.error_count, providerError ? 1 : 0);
+      assertEquals(metadata.source_note_count, providerError ? 0 : 1);
+      assertEquals(metadata.access_issue_count, providerError ? 0 : 1);
+      assertEquals(rows[0].error_message, providerError ? "Football synchronization completed with errors." : null);
+    }),
+  );
 }
 
 Deno.test(

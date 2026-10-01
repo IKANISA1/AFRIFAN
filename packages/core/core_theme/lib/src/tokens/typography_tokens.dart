@@ -42,7 +42,7 @@ class TypographyTokens {
     'labelSmall': 12.0,
   };
 
-  static TextStyle monolithFont({
+  static TextStyle platformFont({
     TextStyle? textStyle,
     Color? color,
     double? fontSize,
@@ -211,7 +211,7 @@ class TypographyTokens {
     );
   }
 
-  static TextStyle displayLarge([Color? color]) => monolithFont(
+  static TextStyle displayLarge([Color? color]) => platformFont(
     fontSize: semanticSizes['displayLarge'],
     fontWeight: FontWeight.w700,
     color: color ?? ColorTokens.onSurface,
@@ -219,7 +219,7 @@ class TypographyTokens {
     letterSpacing: 0,
   );
 
-  static TextStyle displayMedium([Color? color]) => monolithFont(
+  static TextStyle displayMedium([Color? color]) => platformFont(
     fontSize: semanticSizes['displayMedium'],
     fontWeight: FontWeight.w700,
     color: color ?? ColorTokens.onSurface,
@@ -227,7 +227,7 @@ class TypographyTokens {
     letterSpacing: 0,
   );
 
-  static TextStyle displaySmall([Color? color]) => monolithFont(
+  static TextStyle displaySmall([Color? color]) => platformFont(
     fontSize: semanticSizes['displaySmall'],
     fontWeight: FontWeight.w700,
     color: color ?? ColorTokens.onSurface,
@@ -348,7 +348,7 @@ class TypographyTokens {
   );
 
   /// Large metric value (wallet balance, score, stat hero).
-  static TextStyle metricValue([Color? color]) => monolithFont(
+  static TextStyle metricValue([Color? color]) => platformFont(
     fontSize: 28,
     fontWeight: FontWeight.w600,
     color: color ?? ColorTokens.onSurface,

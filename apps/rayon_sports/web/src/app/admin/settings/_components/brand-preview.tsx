@@ -32,7 +32,7 @@ export function BrandPreview({
   }
 
   return (
-    <section className="glass-panel min-w-0 rounded-[32px] p-4 [overflow-wrap:anywhere] sm:p-6">
+    <section className="ui-panel min-w-0 rounded-[32px] p-4 [overflow-wrap:anywhere] sm:p-6">
       <p className="font-display text-3xl font-medium normal-case leading-none">
         Brand preview
       </p>
@@ -89,7 +89,7 @@ export function BrandPreview({
                   <div className="mt-3 flex flex-wrap items-center gap-3">
                     <span
                       className="h-8 w-8 shrink-0 rounded-full border border-white/15"
-                      style={{ backgroundColor: normalizeHexColorInput(value) || "#1A7A4E" }}
+                      style={{ backgroundColor: normalizeHexColorInput(value) || "var(--admin-surface-muted)" }}
                     />
                     <span className="text-sm font-semibold text-[var(--admin-text-strong)]">
                       {normalizeHexColorInput(value) || value}

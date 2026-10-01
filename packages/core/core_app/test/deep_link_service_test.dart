@@ -3,6 +3,21 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('DeepLinkParser', () {
+    test('rejects malformed UTF8 in website and custom-scheme links', () {
+      final parser = DeepLinkParser(
+        websiteUri: Uri.parse('https://gikundiro.com'),
+        customScheme: 'gikundiro',
+      );
+      for (final raw in [
+        'https://gikundiro.com/news/%FF',
+        'https://gikundiro.com/squad/men?group=%E0%A0',
+        'gikundiro://club/news/%FF',
+        'gikundiro://club/news?filter=%FF',
+        'gikundiro://club/news#%E0%A0',
+      ]) {
+        expect(parser.toInternalUri(Uri.parse(raw)), isNull, reason: raw);
+      }
+    });
     test(
       'translates website routes and resolves entity identities explicitly',
       () {
@@ -88,6 +103,27 @@ void main() {
   });
 
   group('InternalRouteUriPolicy', () {
+    test(
+      'rejects undecodable paths, queries and fragments without throwing',
+      () {
+        for (final raw in [
+          '/club/news/%FF',
+          '/club/news/%E0%A0',
+          '/club/news?filter=%FF',
+          '/club/news?%FF=value',
+          '/club/news#%E0%A0',
+        ]) {
+          expect(InternalRouteUriPolicy.parse(raw), isNull, reason: raw);
+          expect(
+            InternalRouteUriPolicy.validate(Uri.parse(raw)),
+            isNull,
+            reason: raw,
+          );
+        }
+        const valid = '/club/news/caf%C3%A9?search=na%C3%AFve#r%C3%A9sum%C3%A9';
+        expect(InternalRouteUriPolicy.parse(valid)?.toString(), valid);
+      },
+    );
     test('accepts local canonical paths with query and fragment', () {
       final route = InternalRouteUriPolicy.validate(
         Uri.parse('/predict/match/123?tab=stats#summary'),

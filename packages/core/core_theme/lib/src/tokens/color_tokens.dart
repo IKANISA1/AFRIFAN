@@ -38,6 +38,13 @@ class ColorTokens {
   static const Color shopEditorialSecondaryText = Color(0xFFE0E0E0);
   static const Color referenceStockTealBlack = Color(0xFF001010);
 
+  // Colour-managed 7×7 off-track and thumb samples from NEX-010, 5 September
+  // 2026. Visible Dark · Glow region only; these are rendered adapters, not
+  // native token exports. Light/disabled variants retain the same anatomy as
+  // accessible product adaptations.
+  static const Color switchInactiveTrack = Color(0xFF8B8A90);
+  static const Color switchThumb = Color(0xFFFFFFFF);
+
   static double _contrastRatio(Color first, Color second) {
     final firstLuminance = first.computeLuminance();
     final secondLuminance = second.computeLuminance();
@@ -165,7 +172,7 @@ class ColorTokens {
   static Color _darkPrimary = const Color(0xFF4D8DFF);
   static Color _darkPrimaryContainer = const Color(0xFF4D8DFF);
   static Color _darkSecondaryContainer = const Color(0xFF161618);
-  static Color _darkOutlineVariant = const Color(0x223F5A81);
+  static Color _darkOutlineVariant = const Color(0x1FFFFFFF);
 
   static Color _lightBackground = const Color(0xFFF5F5F7);
   static Color _lightSurfaceDim = const Color(0xFFF5F5F7);
@@ -179,7 +186,7 @@ class ColorTokens {
   static Color _lightPrimary = const Color(0xFF0063D9);
   static Color _lightPrimaryContainer = const Color(0xFF0063D9);
   static Color _lightSecondaryContainer = const Color(0xFFE6E6E8);
-  static Color _lightOutlineVariant = const Color(0x14334C70);
+  static Color _lightOutlineVariant = const Color(0x1F191C1F);
 
   static Color get background => isDark ? _darkBackground : _lightBackground;
   static Color get surfaceDim => isDark ? _darkSurfaceDim : _lightSurfaceDim;

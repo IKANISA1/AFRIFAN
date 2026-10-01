@@ -13,9 +13,9 @@ import 'tokens/typography_tokens.dart';
 
 /// Generates a complete [ThemeData] from any [ClubConfig].
 ///
-/// Club identity colors still come from tenant config, but the shared shell,
-/// surfaces, and typography flow through the universal mobile system in
-/// `core_theme`.
+/// The revolut-design skill controls shell, surfaces, controls and typography.
+/// Club configuration supplies product identity and content; its artwork
+/// palette never overrides runtime UI roles.
 class ClubTheme {
   ClubTheme._();
 
@@ -76,17 +76,35 @@ class ClubTheme {
       onSecondary: ColorTokens.background,
       secondaryContainer: ColorTokens.secondaryContainer,
       onSecondaryContainer: ColorTokens.onSurface,
+      tertiary: semanticColors.accent,
+      onTertiary: ColorTokens.contrastForeground(semanticColors.accent),
+      tertiaryContainer: semanticColors.accentSoft,
+      onTertiaryContainer: semanticColors.primaryText,
       surface: ColorTokens.surface,
       onSurface: ColorTokens.onSurface,
+      onSurfaceVariant: semanticColors.secondaryText,
+      surfaceDim: ColorTokens.surfaceDim,
+      surfaceBright: ColorTokens.surfaceBright,
       surfaceContainerLowest: ColorTokens.surfaceContainerLowest,
       surfaceContainerLow: ColorTokens.surfaceContainerLow,
       surfaceContainer: ColorTokens.surfaceContainer,
       surfaceContainerHigh: ColorTokens.surfaceContainerHigh,
       surfaceContainerHighest: ColorTokens.surfaceContainerHighest,
       error: ColorTokens.error,
-      onError: ColorTokens.background,
+      onError: ColorTokens.contrastForeground(ColorTokens.error),
+      errorContainer: Color.alphaBlend(
+        semanticColors.danger.withValues(alpha: 0.16),
+        semanticColors.cardSurface,
+      ),
+      onErrorContainer: semanticColors.danger,
       outline: highContrast ? highContrastBoundary : ColorTokens.outlineVariant,
       outlineVariant: boundaryColor,
+      surfaceTint: Colors.transparent,
+      shadow: semanticColors.shadowColor,
+      scrim: ColorTokens.scrim,
+      inverseSurface: semanticColors.primaryText,
+      onInverseSurface: semanticColors.appBackground,
+      inversePrimary: semanticColors.accent,
     );
 
     return ThemeData(
@@ -94,6 +112,43 @@ class ClubTheme {
       brightness: brightness,
       colorScheme: colorScheme,
       scaffoldBackgroundColor: ColorTokens.background,
+      applyElevationOverlayColor: false,
+      cupertinoOverrideTheme: CupertinoThemeData(
+        brightness: brightness,
+        primaryColor: semanticColors.accent,
+        primaryContrastingColor: ColorTokens.contrastForeground(
+          semanticColors.accent,
+        ),
+        barBackgroundColor: semanticColors.appBackground,
+        scaffoldBackgroundColor: semanticColors.appBackground,
+        selectionHandleColor: semanticColors.accent,
+        textTheme: CupertinoTextThemeData(
+          primaryColor: semanticColors.accent,
+          textStyle: TypographyTokens.bodyLarge(semanticColors.primaryText),
+          actionTextStyle: TypographyTokens.labelLarge(semanticColors.accent),
+          actionSmallTextStyle: TypographyTokens.labelMedium(
+            semanticColors.accent,
+          ),
+          tabLabelTextStyle: TypographyTokens.labelSmall(
+            semanticColors.secondaryText,
+          ),
+          navActionTextStyle: TypographyTokens.labelLarge(
+            semanticColors.accent,
+          ),
+          navTitleTextStyle: TypographyTokens.titleLarge(
+            semanticColors.primaryText,
+          ),
+          navLargeTitleTextStyle: TypographyTokens.headlineLarge(
+            semanticColors.primaryText,
+          ),
+          pickerTextStyle: TypographyTokens.bodyLarge(
+            semanticColors.primaryText,
+          ),
+          dateTimePickerTextStyle: TypographyTokens.bodyLarge(
+            semanticColors.primaryText,
+          ),
+        ),
+      ),
       dividerColor: Colors.transparent,
       extensions: <ThemeExtension>[
         semanticColors,
@@ -105,6 +160,12 @@ class ClubTheme {
       highlightColor: ColorTokens.primaryContainer.withValues(alpha: 0.14),
       hoverColor: ColorTokens.primaryContainer.withValues(alpha: 0.10),
       focusColor: ColorTokens.primaryContainer.withValues(alpha: 0.18),
+      iconTheme: IconThemeData(color: semanticColors.primaryText),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: semanticColors.accent,
+        selectionColor: semanticColors.accentSoft,
+        selectionHandleColor: semanticColors.accent,
+      ),
       splashFactory: InkRipple.splashFactory,
       pageTransitionsTheme: const PageTransitionsTheme(
         builders: {
@@ -242,62 +303,207 @@ class ClubTheme {
         shape: RoundedRectangleBorder(borderRadius: ShapeTokens.cardRadius),
         behavior: SnackBarBehavior.floating,
       ),
-      bottomSheetTheme: const BottomSheetThemeData(
+      // Neutral grouped-task and selected-control adaptations. The selected
+      // native cohort does not expose a date/time-picker geometry comparator.
+      dialogTheme: DialogThemeData(
+        backgroundColor: semanticColors.overlaySurface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        barrierColor: ColorTokens.scrim,
+        shape: RoundedRectangleBorder(borderRadius: ShapeTokens.cardRadius),
+        iconColor: semanticColors.primaryText,
+        titleTextStyle: TypographyTokens.titleLarge(semanticColors.primaryText),
+        contentTextStyle: TypographyTokens.bodyMedium(
+          semanticColors.secondaryText,
+        ),
+      ),
+      popupMenuTheme: PopupMenuThemeData(
+        color: semanticColors.overlaySurface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: ShapeTokens.cardRadius),
+        textStyle: TypographyTokens.bodyLarge(semanticColors.primaryText),
+      ),
+      menuTheme: MenuThemeData(
+        style: MenuStyle(
+          backgroundColor: WidgetStatePropertyAll(
+            semanticColors.overlaySurface,
+          ),
+          surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+          elevation: const WidgetStatePropertyAll(0),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(borderRadius: ShapeTokens.cardRadius),
+          ),
+        ),
+      ),
+      datePickerTheme: DatePickerThemeData(
+        backgroundColor: semanticColors.overlaySurface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: ShapeTokens.cardRadius),
+        headerBackgroundColor: semanticColors.overlaySurface,
+        headerForegroundColor: semanticColors.primaryText,
+        headerHeadlineStyle: TypographyTokens.headlineMedium(
+          semanticColors.primaryText,
+        ),
+        headerHelpStyle: TypographyTokens.bodySmall(
+          semanticColors.secondaryText,
+        ),
+        weekdayStyle: TypographyTokens.labelMedium(
+          semanticColors.secondaryText,
+        ),
+        dayStyle: TypographyTokens.bodyMedium(semanticColors.primaryText),
+        dayForegroundColor: _selectedForeground(semanticColors),
+        dayBackgroundColor: _selectedBackground(semanticColors),
+        dayOverlayColor: _controlInteractionOverlay(semanticColors),
+        todayForegroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return ColorTokens.contrastForeground(semanticColors.accent);
+          }
+          return semanticColors.accent;
+        }),
+        todayBackgroundColor: _selectedBackground(semanticColors),
+        todayBorder: BorderSide(color: semanticColors.accent),
+        yearStyle: TypographyTokens.bodyMedium(semanticColors.primaryText),
+        yearForegroundColor: _selectedForeground(semanticColors),
+        yearBackgroundColor: _selectedBackground(semanticColors),
+        yearOverlayColor: _controlInteractionOverlay(semanticColors),
+        rangePickerBackgroundColor: semanticColors.appBackground,
+        rangePickerSurfaceTintColor: Colors.transparent,
+        rangePickerHeaderBackgroundColor: semanticColors.appBackground,
+        rangePickerHeaderForegroundColor: semanticColors.primaryText,
+        rangeSelectionBackgroundColor: semanticColors.accentSoft,
+        rangeSelectionOverlayColor: _controlInteractionOverlay(semanticColors),
+      ),
+      timePickerTheme: TimePickerThemeData(
+        backgroundColor: semanticColors.overlaySurface,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: ShapeTokens.cardRadius),
+        hourMinuteColor: WidgetStateColor.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? semanticColors.accentSoft
+              : semanticColors.inputSurface,
+        ),
+        hourMinuteTextColor: semanticColors.primaryText,
+        hourMinuteTextStyle: TypographyTokens.displayMedium(
+          semanticColors.primaryText,
+        ),
+        dayPeriodColor: WidgetStateColor.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? semanticColors.accentSoft
+              : semanticColors.inputSurface,
+        ),
+        dayPeriodTextColor: semanticColors.primaryText,
+        dayPeriodTextStyle: TypographyTokens.bodyMedium(
+          semanticColors.primaryText,
+        ),
+        dialBackgroundColor: semanticColors.inputSurface,
+        dialHandColor: semanticColors.accent,
+        dialTextColor: WidgetStateColor.resolveWith(
+          (states) => states.contains(WidgetState.selected)
+              ? ColorTokens.contrastForeground(semanticColors.accent)
+              : semanticColors.primaryText,
+        ),
+        helpTextStyle: TypographyTokens.bodySmall(semanticColors.secondaryText),
+        entryModeIconColor: semanticColors.primaryText,
+      ),
+      tooltipTheme: TooltipThemeData(
+        decoration: BoxDecoration(
+          color: semanticColors.overlaySurface,
+          borderRadius: ShapeTokens.chipRadius,
+        ),
+        textStyle: TypographyTokens.bodySmall(semanticColors.primaryText),
+      ),
+      progressIndicatorTheme: ProgressIndicatorThemeData(
+        color: semanticColors.accent,
+        linearTrackColor: semanticColors.cardSurfaceStrong,
+        circularTrackColor: semanticColors.cardSurfaceStrong,
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: Colors.transparent,
+        modalBarrierColor: ColorTokens.scrim,
+        surfaceTintColor: Colors.transparent,
         elevation: 0,
         modalElevation: 0,
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(ShapeTokens.radiusXl),
           ),
         ),
       ),
       switchTheme: SwitchThemeData(
-        thumbColor: WidgetStateProperty.resolveWith<Color>((states) {
-          if (states.contains(WidgetState.selected)) {
-            return Colors.white;
-          }
-          return ColorTokens.surfaceContainerHighest;
-        }),
+        thumbColor: const WidgetStatePropertyAll(ColorTokens.switchThumb),
         trackColor: WidgetStateProperty.resolveWith<Color>((states) {
           if (states.contains(WidgetState.selected)) {
-            return ColorTokens.primaryContainer;
+            return semanticColors.accent;
           }
-          return ColorTokens.surfaceContainerLow;
+          return ColorTokens.switchInactiveTrack;
         }),
-        overlayColor: _controlInteractionOverlay,
+        trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
+        overlayColor: _controlInteractionOverlay(semanticColors),
       ),
       checkboxTheme: CheckboxThemeData(
         fillColor: WidgetStateProperty.resolveWith<Color>((states) {
           if (states.contains(WidgetState.selected)) {
-            return ColorTokens.primaryContainer;
+            return semanticColors.accent;
           }
           return Colors.transparent;
         }),
-        checkColor: WidgetStateProperty.all(ColorTokens.onSurface),
+        checkColor: WidgetStateProperty.all(
+          ColorTokens.contrastForeground(semanticColors.accent),
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(ShapeTokens.radiusSm),
         ),
         side: BorderTokens.side(color: boundaryColor, width: boundaryWidth),
-        overlayColor: _controlInteractionOverlay,
+        overlayColor: _controlInteractionOverlay(semanticColors),
       ),
-      radioTheme: RadioThemeData(overlayColor: _controlInteractionOverlay),
+      radioTheme: RadioThemeData(
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return semanticColors.tertiaryText;
+          }
+          return states.contains(WidgetState.selected)
+              ? semanticColors.accent
+              : semanticColors.secondaryText;
+        }),
+        overlayColor: _controlInteractionOverlay(semanticColors),
+      ),
     );
   }
 
-  static final WidgetStateProperty<Color?> _controlInteractionOverlay =
-      WidgetStateProperty.resolveWith((states) {
-        if (states.contains(WidgetState.focused)) {
-          return ColorTokens.primaryContainer.withValues(alpha: 0.22);
-        }
-        if (states.contains(WidgetState.pressed)) {
-          return ColorTokens.primaryContainer.withValues(alpha: 0.18);
-        }
-        if (states.contains(WidgetState.hovered)) {
-          return ColorTokens.primaryContainer.withValues(alpha: 0.12);
-        }
-        return null;
-      });
+  static WidgetStateProperty<Color?> _controlInteractionOverlay(
+    AfriSemanticColors colors,
+  ) => WidgetStateProperty.resolveWith((states) {
+    if (states.contains(WidgetState.focused)) {
+      return colors.accent.withValues(alpha: 0.22);
+    }
+    if (states.contains(WidgetState.pressed)) {
+      return colors.accent.withValues(alpha: 0.18);
+    }
+    if (states.contains(WidgetState.hovered)) {
+      return colors.accent.withValues(alpha: 0.12);
+    }
+    return null;
+  });
+
+  static WidgetStateProperty<Color?> _selectedForeground(
+    AfriSemanticColors colors,
+  ) => WidgetStateProperty.resolveWith((states) {
+    if (states.contains(WidgetState.disabled)) return colors.tertiaryText;
+    if (states.contains(WidgetState.selected)) {
+      return ColorTokens.contrastForeground(colors.accent);
+    }
+    return colors.primaryText;
+  });
+
+  static WidgetStateProperty<Color?> _selectedBackground(
+    AfriSemanticColors colors,
+  ) => WidgetStateProperty.resolveWith((states) {
+    return states.contains(WidgetState.selected)
+        ? colors.accent
+        : Colors.transparent;
+  });
 
   static TextTheme _buildTextTheme() {
     return TextTheme(

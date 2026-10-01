@@ -20,8 +20,8 @@ test('review status recovers receipt after publication and after review expiry',
 test('changed permission revisions mark old review invalidated',async t=>{const f=fixture(t),s=await imported(f),r=await f.review(s);f.db.sqlite.exec('UPDATE public_operator_grants SET can_publish=0');assert.equal((await data(await f.call(`reviews/${r.reviewId}`))).state,'invalidated');});
 test('expired review is reported without inventing a receipt',async t=>{const f=fixture(t),s=await imported(f),r=await f.review(s);f.clock.now+=6*60000;const d=await data(await f.call(`reviews/${r.reviewId}`));assert.equal(d.state,'expired');assert.equal(d.publication,null);});
 test('revoked operator cannot retrieve existing review status',async t=>{const f=fixture(t),s=await imported(f),r=await f.review(s);f.db.sqlite.exec('UPDATE public_operator_grants SET enabled=0');assert.equal((await f.call(`reviews/${r.reviewId}`)).status,403);});
-for(const path of ['/operator/clubs/24/public-source','/operator/assets/app.js'])test(`UI stays disabled by default ${path}`,async t=>{const f=fixture(t);assert.equal((await f.call('head',{url:`https://operator.example.invalid${path}`})).status,503);});
-for(const path of ['/operator/clubs/24/public-source','/operator/assets/app.js'])test(`UI and assets require live Access context ${path}`,async t=>{const f=fixture(t);const response=await f.call('head',{url:`https://operator.example.invalid${path}`,envOverride:{OPERATOR_UI_ENABLED:'true'},context:{},headers:{'cf-access-authenticated-user-email':'admin@example.com'}});assert.equal(response.status,401);});
+for(const path of ['/operator/clubs/24/public-source','/operator/assets/app.js','/operator/assets/inter-latin-wght-normal.woff2'])test(`UI stays disabled by default ${path}`,async t=>{const f=fixture(t);assert.equal((await f.call('head',{url:`https://operator.example.invalid${path}`})).status,503);});
+for(const path of ['/operator/clubs/24/public-source','/operator/assets/app.js','/operator/assets/inter-latin-wght-normal.woff2'])test(`UI and assets require live Access context ${path}`,async t=>{const f=fixture(t);const response=await f.call('head',{url:`https://operator.example.invalid${path}`,envOverride:{OPERATOR_UI_ENABLED:'true'},context:{},headers:{'cf-access-authenticated-user-email':'admin@example.com'}});assert.equal(response.status,401);});
 test('UI HTML is scoped and has a restrictive no-inline CSP',async t=>{const f=fixture(t),res=await f.call('head',{url:'https://operator.example.invalid/operator/clubs/24/public-source',envOverride:{OPERATOR_UI_ENABLED:'true'}});assert.equal(res.status,200);assert.match(await res.text(),/data-club-id="24"/);assert.equal(res.headers.get('cache-control'),'no-store');const csp=res.headers.get('content-security-policy');assert.ok(csp.includes("frame-ancestors 'none'"));assert.ok(!csp.includes('unsafe-inline'));assert.ok(csp.includes("connect-src 'self'"));});
 test('UI denies unauthorized club even though the URL is well formed',async t=>{const f=fixture(t);assert.equal((await f.call('head',{url:'https://operator.example.invalid/operator/clubs/26/public-source',envOverride:{OPERATOR_UI_ENABLED:'true'}})).status,404);});
 test('UI source assets do not accept arbitrary paths or query injection',async t=>{const f=fixture(t);for(const p of ['/operator/assets/secrets.js','/operator/assets/app.js?club=24'])assert.equal((await f.call('head',{url:`https://operator.example.invalid${p}`,envOverride:{OPERATOR_UI_ENABLED:'true'}})).status,404);});
@@ -31,4 +31,14 @@ test('candidate list uses its tenant-scoped partial index in local SQLite',t=>{
  WHERE source_club_id=? AND status IN ('importing','sealed','verified') ORDER BY captured_at_utc DESC,snapshot_id DESC LIMIT 21`,'source-24');
  assert.ok(plan.some(x=>x.detail.includes('public_snapshots_operator_candidates')));
  assert.ok(!plan.some(x=>x.detail.includes('TEMP B-TREE')));
+});
+
+
+test('self-hosted font preserves bytes and restrictive response policy',async t=>{
+ const f=fixture(t),res=await f.call('head',{url:'https://operator.example.invalid/operator/assets/inter-latin-wght-normal.woff2',envOverride:{OPERATOR_UI_ENABLED:'true'}});
+ assert.equal(res.status,200);assert.equal(res.headers.get('content-type'),'font/woff2');
+ assert.equal(res.headers.get('cache-control'),'no-store');assert.equal(res.headers.get('cross-origin-resource-policy'),'same-origin');
+ assert.ok(res.headers.get('content-security-policy').includes("font-src 'self'"));
+ const {readFileSync}=await import('node:fs');
+ assert.deepEqual(Buffer.from(await res.arrayBuffer()),readFileSync(new URL('../ui/fonts/inter-latin-wght-normal.woff2',import.meta.url)));
 });

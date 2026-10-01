@@ -18,6 +18,7 @@ import {
 } from "@/components/admin/admin-resource-status-banner";
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
+import { handleAdminTabKeyDown } from "@/components/admin/admin-tab-keyboard";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import type { AdminResourceStatus } from "@/lib/admin-resource-state";
@@ -280,7 +281,11 @@ export default function AdminSettingsPage() {
         <button
           type="button"
           role="tab"
+          id="settings-tab-organization"
           aria-selected={activeTab === "organization"}
+          aria-controls="settings-panel"
+          tabIndex={activeTab === "organization" ? 0 : -1}
+          onKeyDown={handleAdminTabKeyDown}
           onClick={() => {
             setActiveTab("organization");
             setInteraction("selected");
@@ -304,7 +309,11 @@ export default function AdminSettingsPage() {
         <button
           type="button"
           role="tab"
+          id="settings-tab-infrastructure"
           aria-selected={activeTab === "infrastructure"}
+          aria-controls="settings-panel"
+          tabIndex={activeTab === "infrastructure" ? 0 : -1}
+          onKeyDown={handleAdminTabKeyDown}
           onClick={() => {
             setActiveTab("infrastructure");
             setInteraction("selected");
@@ -327,6 +336,13 @@ export default function AdminSettingsPage() {
         </button>
       </div>
 
+      <div
+        id="settings-panel"
+        role="tabpanel"
+        aria-labelledby={`settings-tab-${activeTab}`}
+        tabIndex={0}
+        className="min-w-0"
+      >
       {activeTab === "organization" ? (
         unrecoveredFailure || status === "empty" ? null : (
           <div className="admin-settings-workspace grid gap-5 xl:grid-cols-[1.05fr_0.95fr]">
@@ -381,10 +397,10 @@ export default function AdminSettingsPage() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="glass-panel group min-h-48 min-w-0 overflow-hidden rounded-[28px] p-6 transition hover:-translate-y-0.5 hover:border-[var(--admin-accent)]/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transform-none motion-reduce:transition-none"
+                className="ui-panel group min-h-48 min-w-0 overflow-hidden rounded-[28px] p-6 transition hover:-translate-y-0.5 hover:border-[var(--admin-accent)]/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transform-none motion-reduce:transition-none"
               >
                 <div className="flex min-w-0 flex-wrap items-start justify-between gap-4">
-                  <span className="rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-zinc-950)] p-3 text-[var(--admin-accent)]">
+                  <span className="rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-canvas)] p-3 text-[var(--admin-accent)]">
                     <Icon size={20} aria-hidden="true" />
                   </span>
                   <AdminStatusBadge label="Separate route" tone="neutral" />
@@ -400,6 +416,7 @@ export default function AdminSettingsPage() {
           })}
         </section>
       )}
+      </div>
     </div>
   );
 }

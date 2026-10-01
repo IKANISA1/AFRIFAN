@@ -126,7 +126,7 @@ supabase/
   odds, staking, payout, or betting copy is permitted.
 - No frontend hardcoding that assumes Rayon outside reference defaults.
 - UI review across mobile, websites, Admin PWA follows the selected
-  [`revolut-design` skill](/Users/jeanbosco/.codex/skills/revolut-design/SKILL.md).
+  [`revolut-design` skill](</Volumes/PRO-G40/Application Data/Codex/Codex-Home/skills/revolut-design/SKILL.md>).
   It is the sole design authority, with a 100% fidelity target for the selected
   visual typologies and colours, preserving each club's identity and workflows.
   `DESIGN.md` is its product adapter; governance inventories, mappings, runbooks

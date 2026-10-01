@@ -143,7 +143,7 @@ export function GlobalNav({
       className={cn(
         "fixed inset-x-0 top-0 z-[100] transition-all duration-500",
         scrolled || pathname !== "/"
-          ? "bg-[var(--glass-fill)]"
+          ? "bg-[var(--chrome-surface)]"
           : "bg-transparent",
       )}
       onMouseLeave={() => setActiveMenu(null)}

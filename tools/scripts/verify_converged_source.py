@@ -4,27 +4,54 @@
 pure-Dart, platform builds, devices and approved real-environment evidence.
 """
 from __future__ import annotations
-import argparse,json,os,re,shutil,subprocess,sys,time
+import argparse,json,os,re,shutil,signal,subprocess,sys,time
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
+def run_logged_step(command,log,cwd=ROOT,timeout_seconds=300):
+ # Stream directly to disk so a live gate remains observable and a timeout
+ # preserves UTF-8 output rather than serializing captured bytes as repr().
+ timed_out=False
+ with Path(log).open('w',encoding='utf-8') as output:
+  try:
+   process=subprocess.Popen(command,cwd=cwd,stdout=output,stderr=subprocess.STDOUT,start_new_session=True)
+  except FileNotFoundError:
+   output.write('Required executable not installed\n');return 2,False
+  try:code=process.wait(timeout=timeout_seconds)
+  except subprocess.TimeoutExpired:
+   timed_out=True;output.write('\nRequired step timed out\n');output.flush()
+   # Stop this gate's descendants as well as the parent. An expired aggregate
+   # must not leave test children competing with a later invocation.
+   try:os.killpg(process.pid,signal.SIGTERM)
+   except ProcessLookupError:pass
+   try:process.wait(timeout=5)
+   except subprocess.TimeoutExpired:
+    try:os.killpg(process.pid,signal.SIGKILL)
+    except ProcessLookupError:pass
+    process.wait()
+   code=1
+ return code,timed_out
+def node_version_output(raw):
+ versions=[]
+ for line in raw.splitlines():
+  if re.fullmatch(r'[0-9]+\.[0-9]+\.[0-9]+',line):versions.append(line);continue
+  try:record=json.loads(line)
+  except (TypeError,json.JSONDecodeError):return None
+  if not (type(record) is dict and set(record)=={'localValidationNetworkGuard','outboundNetworkAttemptsBlocked'} and
+   record['localValidationNetworkGuard'] is True and type(record['outboundNetworkAttemptsBlocked']) is int and
+   record['outboundNetworkAttemptsBlocked']>=0):return None
+ return versions[0] if len(versions)==1 else None
 def main():
  p=argparse.ArgumentParser(description=__doc__);p.add_argument('--results',type=Path,required=True);p.add_argument('--profile',choices=['backend','portable-native','complete'],default='complete');a=p.parse_args()
  a.results.mkdir(parents=True,exist_ok=True);steps=[]
- def run(name,command,cwd=ROOT):
+ def run(name,command,cwd=ROOT,timeout_seconds=300):
   start=time.monotonic()
-  try:
-   result=subprocess.run(command,cwd=cwd,capture_output=True,text=True,timeout=300)
-   (a.results/(name+'.log')).write_text(result.stdout+result.stderr)
-   code=result.returncode
-  except FileNotFoundError:code=2;(a.results/(name+'.log')).write_text('Required executable not installed\n')
-  except subprocess.TimeoutExpired as e:
-   code=1;(a.results/(name+'.log')).write_text('Required step timed out\n'+str(e.stdout or '')+str(e.stderr or ''))
-  steps.append({'name':name,'command':command,'exitCode':code,'elapsedSeconds':round(time.monotonic()-start,2)});return code
+  code,timed_out=run_logged_step(command,a.results/(name+'.log'),cwd,timeout_seconds)
+  steps.append({'name':name,'command':command,'exitCode':code,'timedOut':timed_out,'timeoutSeconds':timeout_seconds,'elapsedSeconds':round(time.monotonic()-start,2)});return code
  blocked=False
  if a.profile in ('backend','complete'):
   # Preserve actual repository version, not a lower ad-hoc CI requirement.
   expected=(ROOT/'.nvmrc').read_text().strip()
-  try:actual=subprocess.check_output(['node','-p','process.versions.node'],text=True).strip()
+  try:actual=node_version_output(subprocess.check_output(['node','-p','process.versions.node'],text=True))
   except (FileNotFoundError,subprocess.CalledProcessError):actual=None
   if actual!=expected:
    blocked=True;steps.append({'name':'node-runtime-pin','exitCode':2,'expected':expected,'actual':actual})
@@ -37,8 +64,15 @@ def main():
    else:
     os.environ['PATH']=str(tsc.parent)+os.pathsep+os.environ.get('PATH','')
    node_tests=sorted(str(x.relative_to(ROOT)) for base in ['cloudflare/rayon-public/tests','cloudflare/operator-api/tests','cloudflare/supporter-auth/tests','cloudflare/auth-code-delivery/tests','cloudflare/payment-allocation/tests','cloudflare/supporter-membership-api/tests','cloudflare/payment-exceptions/tests','cloudflare/supporter-browser-api/tests','cloudflare/supporter-web-router/tests','cloudflare/allocation-delivery/tests','cloudflare/shared-telemetry/tests','cloudflare/web-observations/tests'] for x in (ROOT/base).glob('*.test.mjs'))
-   node_tests+=['tools/scripts/validate_repository_boundary.test.mjs','tools/scripts/validate_predict_economics_contract.test.mjs']
-   run('backend-contracts',['node','--test',*node_tests])
+   node_tests+=['tools/scripts/validate_repository_boundary.test.mjs','tools/scripts/validate_predict_economics_contract.test.mjs',
+    'tools/scripts/local_validation_network_guard.node-test.mjs',
+    'apps/rayon_sports/web/scripts/artifact-public-environment.node-test.mjs',
+    'apps/rayon_sports/web/scripts/artifact-installed-inputs.node-test.mjs',
+    'apps/rayon_sports/web/scripts/web-build-provenance.node-test.mjs',
+    'apps/rayon_sports/web/scripts/sync-cloudflare-dev-vars.node-test.mjs']
+   # Individual race suites still create independent writers. Limit competing
+   # test files so wall-clock deadline assertions do not measure unrelated jobs.
+   run('backend-contracts',['node','--test','--test-concurrency=4',*node_tests],timeout_seconds=1800)
    for name,script in [('operator-assets','cloudflare/operator-api/scripts/build-ui.mjs'),('operator-config','cloudflare/operator-api/scripts/check-deployment.mjs'),('public-config','cloudflare/rayon-public/scripts/check-deployment.mjs'),('case-config','cloudflare/payment-exceptions/scripts/check-deployment.mjs'),('browser-config','cloudflare/supporter-browser-api/scripts/check-deployment.mjs'),('web-router-config','cloudflare/supporter-web-router/scripts/validate-config.mjs'),('delivery-outbox-config','cloudflare/allocation-delivery/scripts/check-deployment.mjs'),('allocation-config','cloudflare/payment-allocation/scripts/check-deployment.mjs'),('checkout-config','cloudflare/payment-allocation/scripts/check-checkout-deployment.mjs'),('gateway-config','cloudflare/supporter-membership-api/scripts/check-deployment.mjs'),('identity-config','cloudflare/supporter-auth/scripts/check-deployment.mjs'),('queue-health-config','cloudflare/supporter-auth/scripts/check-reliable-delivery.mjs'),('delivery-config','cloudflare/auth-code-delivery/scripts/check-deployment.mjs'),('receipt-config','cloudflare/auth-code-delivery/scripts/check-receipts-deployment.mjs'),('delivery-review-config','cloudflare/auth-code-delivery/scripts/check-review-deployment.mjs'),('allocation-recovery-config','cloudflare/allocation-delivery/scripts/check-recovery-deployment.mjs'),('private-metrics-config','cloudflare/shared-telemetry/scripts/check-deployment.mjs'),('private-web-observations-config','cloudflare/web-observations/scripts/check-deployment.mjs')]:
     run(name,['node',script]+(['--check'] if name=='operator-assets' else []))
   run('python-source-gates',[sys.executable,'-m','unittest','-v','test_supporter_sms_boundary','test_public_snapshot_import','test_migration_release','test_release_artifact','test_release_evidence','test_ci_contract','test_sensitive_source','test_migration_lineage','test_migration_compare','test_task_execution_plan','test_converged_suite_inventory','test_local_native_ci'],ROOT/'tools/scripts')

@@ -43,16 +43,17 @@ Supabase RPC  →  SafeRpc (timeout + retry)
 
 ## Screen-Level Behavior
 
-`../DESIGN.md` is the sole design authority for loading, empty, error,
-offline, and recovery UI. This strategy only records data-fetching behavior.
+The selected `revolut-design` skill is the sole design authority for loading,
+empty, error, offline and recovery UI. `../DESIGN.md` records product mappings
+only. This strategy records data-fetching behavior.
 
 ### Loading States
 Screens expose loading state distinctly so runtime UI can render the
-`DESIGN.md`-required loading treatment.
+selected skill's loading treatment.
 
 ### Error States
 Screens catch recoverable errors and expose retry actions through the relevant
-provider or view model. The visual treatment is governed by `DESIGN.md`.
+provider or view model. The visual treatment is governed by the selected `revolut-design` skill.
 
 ### Empty States
 When data loads successfully but is empty, providers expose an empty state.

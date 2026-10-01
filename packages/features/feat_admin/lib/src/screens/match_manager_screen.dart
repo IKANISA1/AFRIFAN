@@ -372,6 +372,8 @@ class _MatchCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: SpacingTokens.spacing3),
       child: AfriPressFeedback(
+        // Keep nested controls at their full touch size while the card is held.
+        scaleEnd: 1,
         key: ValueKey<String>('admin-match-${match.id}'),
         onTap: enabled ? onOpen : null,
         focusNode: focusNode,

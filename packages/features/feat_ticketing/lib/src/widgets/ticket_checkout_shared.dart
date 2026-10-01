@@ -35,45 +35,42 @@ class SeatTypeCard extends StatelessWidget {
       ),
     );
 
-    return Semantics(
-      button: true,
+    return AfriPressFeedback(
       selected: selected,
-      label: selected
-          ? 'Selected ticket access $title'
-          : 'Ticket access $title',
-      child: AfriPressFeedback(
-        onTap: onTap,
-        builder: (context, state) => AfriSurfaceCard(
-          padding: const EdgeInsets.all(SpacingTokens.spacing4),
-          child: AnimatedContainer(
-            duration: AfriMotion.quick,
-            decoration: BoxDecoration(
-              color: selected
-                  ? ColorTokens.primary.withValues(alpha: 0.1)
-                  : ColorTokens.transparent,
-              borderRadius: ShapeTokens.cardRadius,
-              border: BorderTokens.all(
-                color: selected ? ColorTokens.primary : ColorTokens.transparent,
-              ),
+      semanticsLabel:
+          '${selected ? 'Selected ticket access' : 'Ticket access'} $title, $subtitle, $amount',
+      excludeChildSemantics: true,
+      onTap: onTap,
+      builder: (context, state) => AfriSurfaceCard(
+        padding: const EdgeInsets.all(SpacingTokens.spacing4),
+        child: AnimatedContainer(
+          duration: AfriMotion.quick,
+          decoration: BoxDecoration(
+            color: selected
+                ? ColorTokens.primary.withValues(alpha: 0.1)
+                : ColorTokens.transparent,
+            borderRadius: ShapeTokens.cardRadius,
+            border: BorderTokens.all(
+              color: selected ? ColorTokens.primary : ColorTokens.transparent,
             ),
-            padding: const EdgeInsets.all(SpacingTokens.spacing2),
-            child: stackContent
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      description,
-                      const SizedBox(height: SpacingTokens.spacing3),
-                      price,
-                    ],
-                  )
-                : Row(
-                    children: [
-                      Expanded(child: description),
-                      const SizedBox(width: SpacingTokens.spacing4),
-                      price,
-                    ],
-                  ),
           ),
+          padding: const EdgeInsets.all(SpacingTokens.spacing2),
+          child: stackContent
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    description,
+                    const SizedBox(height: SpacingTokens.spacing3),
+                    price,
+                  ],
+                )
+              : Row(
+                  children: [
+                    Expanded(child: description),
+                    const SizedBox(width: SpacingTokens.spacing4),
+                    price,
+                  ],
+                ),
         ),
       ),
     );

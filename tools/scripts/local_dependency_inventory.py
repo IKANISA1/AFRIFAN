@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import base64
 import collections
+import copy
 import concurrent.futures
 import hashlib
 import importlib.metadata
@@ -16,6 +17,7 @@ import json
 import os
 from pathlib import Path
 import re
+import stat
 import subprocess
 import sys
 import tarfile
@@ -64,6 +66,117 @@ def load_json(path):
     return json.loads(Path(path).read_text(), object_pairs_hook=unique_pairs)
 
 
+TABLE_HEADER = b'key\tjson\n'
+MAX_SHARD_BYTES = 2 * 1024 * 1024
+
+
+def write_bounded_report(value, path, table_paths, max_bytes=MAX_SHARD_BYTES):
+    """Lossless JSON index plus bounded UTF-8 TSV rows bound by SHA256.
+
+    Both cells contain canonical JSON; tabs/newlines inside values are escaped
+    by JSON, so arbitrary license/source values remain lossless.
+    """
+    path = Path(path)
+    result = copy.deepcopy(value)
+    tables = []
+    for table_path in table_paths:
+        parent = result
+        for field in table_path[:-1]:
+            parent = parent[field]
+        values = parent.pop(table_path[-1])
+        kind = 'dict' if isinstance(values, dict) else 'list'
+        if not isinstance(values, (dict, list)):
+            raise InventoryError('Unsupported report table kind')
+        records = sorted(values.items()) if kind == 'dict' else enumerate(values)
+        shards = []; content = bytearray(TABLE_HEADER); rows = 0
+        table_name = '-'.join(table_path)
+        if not re.fullmatch('[A-Za-z0-9_-]+', table_name):
+            raise InventoryError('Unsafe table name')
+
+        def flush():
+            nonlocal content, rows
+            if not rows:
+                return
+            filename = path.stem + '.' + table_name + '.' + str(len(shards) + 1).zfill(3) + '.tsv'
+            target = path.parent / filename
+            target.write_bytes(content)
+            shards.append({'path': filename, 'sha256': digest_file(target), 'bytes': len(content), 'rows': rows})
+            content = bytearray(TABLE_HEADER); rows = 0
+
+        for key, record in records:
+            row = (canonical(key) + '\t' + canonical(record) + '\n').encode()
+            if len(row) + len(TABLE_HEADER) > max_bytes:
+                raise InventoryError('Report row exceeds shard byte bound')
+            if len(content) + len(row) > max_bytes:
+                flush()
+            content.extend(row); rows += 1
+        flush()
+        tables.append({'fieldPath': table_path, 'kind': kind, 'rows': len(values),
+                       'sha256': hashlib.sha256(canonical(values).encode()).hexdigest(), 'shards': shards})
+    result['payloadTables'] = {'encoding': 'json-cells-tsv-v1', 'maxShardBytes': max_bytes, 'tables': tables}
+    path.write_text(json.dumps(result, indent=2, sort_keys=True, ensure_ascii=False) + '\n')
+    if load_report(path) != value:
+        raise InventoryError('Bounded report differs after strict readback')
+    return result
+
+
+def load_report(path):
+    """Read and fully authenticate every row of a bounded report locally."""
+    path = Path(path); result = load_json(path)
+    manifest = result.pop('payloadTables', None)
+    if manifest is None:
+        return result  # Older author-machine snapshots remain readable.
+    if manifest.get('encoding') != 'json-cells-tsv-v1' or not 0 < manifest.get('maxShardBytes', 0) <= MAX_SHARD_BYTES:
+        raise InventoryError('Unsupported report table encoding or bound')
+    seen_paths = set(); seen_files = set()
+    for table in manifest['tables']:
+        fields = table['fieldPath']
+        if not fields or not all(isinstance(field, str) for field in fields) or tuple(fields) in seen_paths:
+            raise InventoryError('Invalid or duplicate report field path')
+        seen_paths.add(tuple(fields))
+        if table['kind'] not in ('list', 'dict'):
+            raise InventoryError('Unsupported report table kind')
+        values = [] if table['kind'] == 'list' else {}
+        for shard in table['shards']:
+            name = shard['path']
+            if not isinstance(name, str) or not re.fullmatch(r'[A-Za-z0-9_.-]+\.tsv', name) or name in seen_files:
+                raise InventoryError('Unsafe or repeated report shard path')
+            seen_files.add(name)
+            target = path.parent / name
+            if target.is_symlink() or not target.resolve().is_relative_to(path.parent.resolve()):
+                raise InventoryError('Report shard escapes index directory')
+            raw = target.read_bytes()
+            if len(raw) != shard['bytes'] or len(raw) > manifest['maxShardBytes'] or hashlib.sha256(raw).hexdigest() != shard['sha256']:
+                raise InventoryError('Report shard differs from hash or byte bound')
+            if not raw.startswith(TABLE_HEADER) or not raw.endswith(b'\n'):
+                raise InventoryError('Invalid report TSV envelope')
+            rows = raw[len(TABLE_HEADER):].decode().splitlines()
+            if len(rows) != shard['rows'] or not rows:
+                raise InventoryError('Report shard row count differs')
+            for row in rows:
+                cells = row.split('\t')
+                if len(cells) != 2:
+                    raise InventoryError('Invalid report TSV row')
+                key, record = (json.loads(cell, object_pairs_hook=unique_pairs) for cell in cells)
+                if table['kind'] == 'list':
+                    if type(key) is not int or key != len(values):
+                        raise InventoryError('Report list row ordinal differs')
+                    values.append(record)
+                else:
+                    if not isinstance(key, str) or key in values:
+                        raise InventoryError('Report dict key invalid or duplicated')
+                    values[key] = record
+        if len(values) != table['rows'] or hashlib.sha256(canonical(values).encode()).hexdigest() != table['sha256']:
+            raise InventoryError('Report table count or reconstructed hash differs')
+        parent = result
+        for field in fields[:-1]:
+            parent = parent[field]
+        if fields[-1] in parent:
+            raise InventoryError('Report table collides with inline field')
+        parent[fields[-1]] = values
+    return result
+
+
 def load_yaml(path):
     return yaml.load(Path(path).read_text(), Loader=UniqueYamlLoader)
 
@@ -106,6 +219,8 @@ def license_paths(root):
         directory = root / name
         if directory.is_dir() and directory.resolve().is_relative_to(root):
             candidates.extend(directory.glob('*'))
+            if name.lower() == 'legal':
+                candidates.extend(directory.glob('*/*'))
     result = []
     for path in sorted(set(candidates)):
         if path.is_file() and LICENSE_NAME.match(path.name):
@@ -113,6 +228,68 @@ def license_paths(root):
                 raise InventoryError('License symlink escapes package root')
             if path.stat().st_size <= 4 * 1024 * 1024:
                 result.append(path)
+    return result
+
+
+def repository_directory(root, value, relative):
+    """Resolve a declared local source without following any directory links."""
+    if type(relative) is not bool or not isinstance(value, str) or not value or '\\' in value or any(ord(c) < 32 for c in value):
+        raise InventoryError('Invalid local Dart source path')
+    declared = Path(value)
+    if declared.is_absolute() == relative or str(declared) != value or any(part in ('.', '..') for part in value.split('/') if part):
+        raise InventoryError('Noncanonical local Dart source path')
+    selected = root / declared if relative else declared
+    try:
+        parts = selected.relative_to(root).parts
+    except ValueError as error:
+        raise InventoryError('Local Dart source escapes repository') from error
+    if not parts:
+        raise InventoryError('Local Dart source cannot be repository root')
+    current = root
+    for part in parts:
+        current /= part
+        if current.is_symlink() or not current.is_dir():
+            raise InventoryError('Local Dart source requires regular repository directories')
+    if selected.resolve() != selected:
+        raise InventoryError('Local Dart source path differs from canonical selection')
+    return selected
+
+
+def regular_package_manifest(root, excluded=()):
+    """Hash every local package file with finite bounds; reject links and specials."""
+    files = []
+    total = 0
+    for path in sorted(root.rglob('*')):
+        mode = path.lstat().st_mode
+        if stat.S_ISDIR(mode):
+            continue
+        if not stat.S_ISREG(mode):
+            raise InventoryError('Local Dart source contains link or special file')
+        relative = path.relative_to(root).as_posix()
+        if '\\' in relative or any(ord(c) < 32 for c in relative):
+            raise InventoryError('Unsafe local Dart source file path')
+        size = path.stat().st_size
+        total += size
+        if len(files) >= 10000 or size > 32 * 1024 * 1024 or total > 256 * 1024 * 1024:
+            raise InventoryError('Local Dart source exceeds bounded inventory')
+        if relative not in excluded:
+            files.append({'path': relative, 'size': size, 'sha256': digest_file(path)})
+    return files
+
+
+def exact_file_records(records, fields):
+    if not isinstance(records, list) or not records:
+        raise InventoryError('Local Dart source file manifest required')
+    result = {}
+    for record in records:
+        if not isinstance(record, dict) or set(record) != fields:
+            raise InventoryError('Invalid local Dart source file record')
+        name = record['path']
+        if not isinstance(name, str) or not name or Path(name).is_absolute() or '\\' in name or Path(name).as_posix() != name or any(part in ('', '.', '..') for part in name.split('/')) or any(ord(c) < 32 for c in name):
+            raise InventoryError('Unsafe local Dart source manifest path')
+        if name in result or type(record['size']) is not int or record['size'] < 0 or not re.fullmatch('[0-9a-f]{64}', str(record['sha256'])):
+            raise InventoryError('Duplicate or invalid local Dart source file record')
+        result[name] = record
     return result
 
 
@@ -149,13 +326,14 @@ def sri_records(value):
 
 
 class Inventory:
-    def __init__(self, root, android_resolutions=None, pub_cache=None, npm_cache=None, swift_cache=None, action_sources=None):
+    def __init__(self, root, android_resolutions=None, pub_cache=None, npm_cache=None, swift_cache=None, action_sources=None, jsr_licenses=None):
         self.root = Path(root).resolve()
         self.pub_cache = Path(pub_cache or Path.home() / '.pub-cache')
         self.npm_cache = Path(npm_cache or Path.home() / '.npm')
         self.swift_cache = Path(swift_cache or Path.home() / 'Library/Developer/Xcode/DerivedData')
         self.android_resolutions = Path(android_resolutions) if android_resolutions else None
         self.action_sources = Path(action_sources) if action_sources else None
+        self.jsr_licenses = Path(jsr_licenses) if jsr_licenses else None
         self.evidence = {}
         self.components = {}
         self.edges = set()
@@ -206,6 +384,124 @@ class Inventory:
             key = self.file_evidence(path, 'license-text')
             if key:
                 component['licenseEvidence'].append(key)
+
+    def local_dart_source(self, name, version, description, manifest, config, resolved):
+        """Authenticate a licensed in-repository patch separately from its upstream."""
+        if not exact_version(version) or not isinstance(description, dict) or set(description) != {'path', 'relative'}:
+            raise InventoryError('Invalid locked local Dart source description')
+        package = repository_directory(self.root, description['path'], description['relative'])
+        relative = package.relative_to(self.root).as_posix()
+        overrides = manifest.get('dependency_overrides', {})
+        override = overrides.get(name) if isinstance(overrides, dict) else None
+        if not isinstance(override, dict) or set(override) != {'path'} or not isinstance(override['path'], str) or repository_directory(self.root, override['path'], not Path(override['path']).is_absolute()) != package:
+            raise InventoryError('Local Dart source differs from root path override')
+        selection = next((p for p in config['packages'] if p['name'] == name), None)
+        if selection is None or resolved.get(name, Path('/')).resolve() != package:
+            raise InventoryError('Local Dart source differs from package_config selection')
+        uri = urllib.parse.urlsplit(selection['rootUri'])
+        if uri.netloc or uri.query or uri.fragment or selection.get('packageUri') != 'lib/':
+            raise InventoryError('Noncanonical local Dart package_config selection')
+        declared_selection = Path(urllib.parse.unquote(uri.path))
+        if not uri.scheme:
+            declared_selection = self.root / '.dart_tool' / declared_selection
+        declared_selection = Path(os.path.abspath(declared_selection))
+        if declared_selection != package or repository_directory(self.root, str(declared_selection), False) != package:
+            raise InventoryError('Local Dart package_config selection uses a different source path')
+
+        final_files = regular_package_manifest(package, ('LOCAL_PATCH_MANIFEST.json',))
+        actual_files = {f['path']: f for f in final_files}
+        for required in ('pubspec.yaml', 'LICENSE', 'UPSTREAM_PUBSPEC.yaml', 'UPSTREAM_PROVENANCE.json'):
+            if required not in actual_files:
+                raise InventoryError('Local Dart source provenance or license missing')
+        local_path = package / 'LOCAL_PATCH_MANIFEST.json'
+        if not local_path.is_file() or local_path.is_symlink():
+            raise InventoryError('Local Dart patch manifest missing')
+        local_bytes = local_path.read_bytes()
+        local = json.loads(local_bytes, object_pairs_hook=unique_pairs)
+        patch_sha = hashlib.sha256(local_bytes).hexdigest()
+        if local.get('schemaVersion') != 1 or type(local.get('schemaVersion')) is not int or local.get('sourceType') != 'local_path_patch' or local.get('package') != name or local.get('version') != version or local.get('vendorPath') != relative:
+            raise InventoryError('Local Dart patch identity differs from resolution')
+        records = exact_file_records(local.get('files'), {'path', 'size', 'sha256', 'upstreamSha256', 'matchesUpstream'})
+        if type(local.get('fileCount')) is not int or local['fileCount'] != len(records) or set(records) != set(actual_files):
+            raise InventoryError('Local Dart patch manifest file coverage differs')
+        for filename, record in records.items():
+            if any(record[key] != actual_files[filename][key] for key in ('path', 'size', 'sha256')):
+                raise InventoryError('Local Dart patched file differs from manifest')
+
+        def binding(field, expected_path, expected_sha):
+            record = local.get(field)
+            if not isinstance(record, dict) or record.get('path') != expected_path or record.get('sha256') != expected_sha:
+                raise InventoryError('Local Dart provenance binding differs: ' + field)
+            return record
+
+        upstream_path = package / 'UPSTREAM_PROVENANCE.json'
+        upstream_sha = digest_file(upstream_path)
+        binding('upstreamProvenance', 'UPSTREAM_PROVENANCE.json', upstream_sha)
+        binding('upstreamPubspec', 'UPSTREAM_PUBSPEC.yaml', actual_files['UPSTREAM_PUBSPEC.yaml']['sha256'])
+        binding('license', 'LICENSE', actual_files['LICENSE']['sha256'])
+        root_binding = binding('rootOverride', 'pubspec.yaml', digest_file(self.root / 'pubspec.yaml'))
+        if root_binding.get('package') != name or root_binding.get('declaredPath') != override['path']:
+            raise InventoryError('Local Dart root override provenance differs')
+        config_binding = binding('packageConfig', '.dart_tool/package_config.json', digest_file(self.root / '.dart_tool/package_config.json'))
+        if config_binding.get('name') != name or config_binding.get('canonicalSelection') != relative:
+            raise InventoryError('Local Dart active selection provenance differs')
+
+        upstream = load_json(upstream_path)
+        if type(upstream.get('schemaVersion')) is not int or upstream['schemaVersion'] != 1 or upstream.get('upstreamPackage') != name or upstream.get('upstreamVersion') != version:
+            raise InventoryError('Local Dart upstream provenance identity differs')
+        upstream_files = exact_file_records(upstream.get('files'), {'path', 'size', 'sha256'})
+        if type(upstream.get('fileCount')) is not int or type(upstream.get('copyHashCoverage')) is not int or upstream['fileCount'] != len(upstream_files) or upstream.get('copyHashCoverage') != len(upstream_files):
+            raise InventoryError('Local Dart upstream provenance file coverage differs')
+        if not isinstance(upstream.get('sourceAbsolutePath'), str):
+            raise InventoryError('Local Dart upstream cache provenance path required')
+        original = Path(upstream['sourceAbsolutePath'])
+        if not original.is_absolute() or original.name != name + '-' + version or original.parent.parent.resolve() != (self.pub_cache / 'hosted').resolve() or not original.is_dir() or original.is_symlink():
+            raise InventoryError('Local Dart upstream cache provenance is not exact installed package')
+        original_files = regular_package_manifest(original)
+        if {f['path']: f for f in original_files} != upstream_files:
+            raise InventoryError('Local Dart original cached bytes differ from upstream provenance')
+        original_pub = load_yaml(original / 'pubspec.yaml')
+        actual_pub = load_yaml(package / 'pubspec.yaml')
+        if original_pub.get('name') != name or str(original_pub.get('version')) != version or actual_pub != {k: v for k, v in original_pub.items() if k != 'resolution'}:
+            raise InventoryError('Local Dart package metadata differs from permitted published metadata correction')
+        if actual_files['UPSTREAM_PUBSPEC.yaml'] != {**upstream_files.get('pubspec.yaml', {}), 'path': 'UPSTREAM_PUBSPEC.yaml'}:
+            raise InventoryError('Local Dart preserved upstream pubspec differs')
+        if actual_files['LICENSE'] != upstream_files.get('LICENSE'):
+            raise InventoryError('Local Dart license differs from original package')
+        if set(upstream_files) - set(records):
+            raise InventoryError('Local Dart patch omits original package files')
+        changed = {p for p, record in upstream_files.items() if record['sha256'] != records[p]['sha256']}
+        declared_changes = upstream.get('localPatchFiles')
+        if not isinstance(declared_changes, list) or not all(isinstance(p, str) for p in declared_changes) or len(declared_changes) != len(set(declared_changes)) or set(declared_changes) != changed:
+            raise InventoryError('Local Dart changed upstream files differ from declared patch')
+        for filename, record in records.items():
+            baseline = upstream_files.get('pubspec.yaml' if filename == 'UPSTREAM_PUBSPEC.yaml' else filename)
+            expected_sha = baseline['sha256'] if baseline else None
+            expected_match = record['sha256'] == expected_sha if baseline else None
+            if record['upstreamSha256'] != expected_sha or record['matchesUpstream'] is not expected_match:
+                raise InventoryError('Local Dart upstream-to-patch byte relationship differs')
+        upstream_repository = safe_url(upstream.get('upstreamRepository'))
+        if not isinstance(upstream_repository, str) or urllib.parse.urlsplit(upstream_repository).scheme != 'https' or original_pub.get('repository') != upstream_repository:
+            raise InventoryError('Local Dart upstream repository differs from original metadata')
+        def bind_file(path, role, expected):
+            key = self.file_evidence(path, role)
+            if key is None or any(self.evidence[key][field] != expected[expected_field] for field, expected_field in (('sha256', 'sha256'), ('bytes', 'size'))):
+                raise InventoryError('Local Dart source changed during byte attribution')
+            return key
+
+        keys = [bind_file(local_path, 'local-dart-patch-manifest', {'sha256': patch_sha, 'size': len(local_bytes)})]
+        keys.extend(bind_file(package / p, 'local-dart-patched-source', actual_files[p]) for p in sorted(records))
+        keys.extend(bind_file(original / p, 'original-installed-dart-source', upstream_files[p]) for p in sorted(upstream_files))
+        content_sha = hashlib.sha256(canonical(final_files).encode()).hexdigest()
+        source = {'kind': 'path', 'path': relative, 'patched': True, 'upstreamVersion': version,
+                  'contentSha256': content_sha, 'patchManifestSha256': patch_sha,
+                  'upstreamProvenanceSha256': upstream_sha}
+        provenance = {'upstreamPackage': name, 'upstreamVersion': version, 'upstreamRepository': upstream_repository,
+                      'upstreamProvenanceEvidence': self.path_name(upstream_path), 'patchManifestEvidence': self.path_name(local_path),
+                      'regularFileCount': len(final_files), 'changedUpstreamFiles': sorted(changed),
+                      'contentManifestSha256': content_sha, 'licenseByteEqualityVerified': True,
+                      'upstreamArchiveByteEqualityClaimed': False, 'upstreamLicenseApprovalAssessed': False}
+        return source, provenance, keys
 
     def read_dart(self):
         root_manifest = self.root / 'pubspec.yaml'
@@ -266,14 +562,21 @@ class Inventory:
             version, kind = entry['version'], entry['source']
             description = entry['description']
             source = {'kind': kind}
+            local_provenance = None
+            local_evidence = []
             if kind == 'hosted':
                 source['url'] = safe_url(description['url'])
             elif kind == 'sdk':
                 source.update(sdk='flutter', revision=sdk.get('frameworkRevision'))
+            elif kind == 'path':
+                source, local_provenance, local_evidence = self.local_dart_source(name, version, description, manifest, config, resolved)
             else:
                 self.gap('unsupported-dart-source', name, kind, True)
             item = self.component('dart', name, version, source, dependencyClass=entry['dependency'])
             item['evidence'].extend([lock_key, config_key])
+            if local_provenance is not None:
+                item['localSourceProvenance'] = local_provenance
+                item['evidence'].extend(local_evidence)
             package_root = resolved.get(name)
             if not package_root:
                 self.gap('dart-not-resolved', name, 'Locked package absent from package_config', True)
@@ -283,7 +586,7 @@ class Inventory:
                 key = self.file_evidence(pubspec, 'cached-dart-pubspec')
                 if key:
                     actual = load_yaml(pubspec)
-                    if actual.get('name') != name or (kind == 'hosted' and str(actual.get('version')) != version):
+                    if actual.get('name') != name or (kind in ('hosted', 'path') and str(actual.get('version')) != version):
                         raise InventoryError('Dart cached package differs from lockfile')
                     item['evidence'].append(key)
                     if actual.get('license'):
@@ -302,8 +605,14 @@ class Inventory:
                         if hash_path.read_text().strip() != declared:
                             raise InventoryError('Pub cache archive hash record differs from lockfile')
                         item['evidence'].append(hash_key)
-            else:
+            elif kind == 'path':
+                item['integrities'].append({'algorithm': 'sha256', 'value': source['contentSha256'],
+                                           'basis': 'canonical complete local patched-source file manifest; not upstream hosted archive digest'})
+                item['integrities'].append({'algorithm': 'sha256', 'value': source['patchManifestSha256'],
+                                           'basis': 'local patch manifest bytes; original and modified file relationships explicitly recorded'})
+            elif kind == 'sdk':
                 item['integrities'].append({'algorithm': 'sha1', 'value': sdk.get('frameworkRevision', ''), 'basis': 'sdk-git-revision; not archive digest'})
+                item['licenseEvidence'].extend(sdk_component['licenseEvidence'])
             self.dart_by_name[name] = item
         # Pubspec declarations are mapped to the selected workspace resolution;
         # dev_dependencies are included only for active workspace members.
@@ -324,6 +633,7 @@ class Inventory:
             self.gap('dart-active-unlocked', name, 'Package config has no workspace or lockfile entry', True)
         self.coverage['dart'] = {'workspaceMembers': len(member_paths) - 1, 'workspaceWithRoot': len(member_paths),
                                  'lockedPackages': len(locked), 'hostedPackages': sum(e['source'] == 'hosted' for e in locked.values()),
+                                 'localPatchedPathPackages': sum(e['source'] == 'path' for e in locked.values()),
                                  'activeResolvedPackages': len(resolved), 'flutterVersion': sdk.get('frameworkVersion'),
                                  'dartVersion': sdk.get('dartSdkVersion')}
 
@@ -583,6 +893,10 @@ class Inventory:
                         continue
                     enriched.add(item['ref'])
                     cache = module_cache / node['group'] / node['name'] / node['version']
+                    if node['group'] == 'io.flutter':
+                        # The exact engine revision is carried by every Flutter
+                        # Maven version; the SDK license texts apply to its artifacts.
+                        item['licenseEvidence'].extend(self.flutter_component['licenseEvidence'])
                     artifacts = list(cache.glob('*/*'))
                     if mirror:
                         artifacts.extend((mirror / node['group'].replace('.', '/') / node['name'] / node['version']).glob('*'))
@@ -608,6 +922,27 @@ class Inventory:
                             for license_node in tree.findall('.//{*}licenses/{*}license'):
                                 declaration = {child.tag.rsplit('}', 1)[-1]: child.text for child in license_node}
                                 item['licenseDeclarations'].append(canonical(declaration))
+                            if not item['licenseDeclarations'] and mirror:
+                                visited = set()
+                                parent = tree.find('{*}parent')
+                                while parent is not None:
+                                    parts = tuple(parent.findtext('{*}' + k, '') for k in ('groupId', 'artifactId', 'version'))
+                                    if parts in visited or not all(re.fullmatch('[A-Za-z0-9_.+-]+', p) for p in parts):
+                                        break
+                                    visited.add(parts)
+                                    group, name, version = parts
+                                    parent_file = mirror / group.replace('.', '/') / name / version / (name + '-' + version + '.pom')
+                                    if not parent_file.is_file():
+                                        break
+                                    parent_key = self.file_evidence(parent_file, 'parent-pom-license-declaration')
+                                    item['evidence'].append(parent_key)
+                                    parent_tree = ET.parse(parent_file).getroot()
+                                    for license_node in parent_tree.findall('.//{*}licenses/{*}license'):
+                                        declaration = {child.tag.rsplit('}', 1)[-1]: child.text for child in license_node}
+                                        item['licenseDeclarations'].append(canonical({'parentPom': ':'.join(parts), 'declaration': declaration}))
+                                    if item['licenseDeclarations']:
+                                        break
+                                    parent = parent_tree.find('{*}parent')
                         elif artifact.suffix in ('.jar', '.aar'):
                             with zipfile.ZipFile(artifact) as archive:
                                 for member in archive.namelist():
@@ -619,7 +954,13 @@ class Inventory:
                         self.gap('android-artifact-integrity-unavailable', node['id'], 'Resolved component has no local cached artifact bytes', True)
                 for artifact in config['artifacts']:
                     item = nodes.get(artifact['component'])
+                    if not Path(artifact['file']).is_file() and artifact['component'].startswith('project '):
+                        self.gap('native-project-artifact-not-built', self.path_name(artifact['file']),
+                                 'Resolution names a local plugin output; inventory collection does not compile it')
+                        continue
                     artifact_key = self.file_evidence(artifact['file'], 'selected-gradle-classpath-bytes')
+                    if not artifact_key and item:
+                        self.gap('selected-native-artifact-bytes-missing', artifact['component'], context, True)
                     if item and artifact_key:
                         item['evidence'].append(artifact_key)
                 for edge in config['edges']:
@@ -633,6 +974,19 @@ class Inventory:
                              'appConfigurations': [{'name': c['configuration'], 'components': len(c['components']),
                                                     'artifacts': len(c['artifacts']), 'unresolved': len(c['unresolved'])}
                                                    for c in snapshot['configurations'] if c['project'] == ':app']}
+            if snapshot.get('frozenInput'):
+                initial_path = Path(snapshot['frozenInput'])
+                self.file_evidence(initial_path, 'initial-observed-version-freeze:' + app)
+                initial = load_json(initial_path)
+                index = lambda data: {(c['project'], c['configuration'], n['group'], n['name']): n['version']
+                                      for c in data['configurations'] for n in c['components'] if n.get('group')}
+                before, after = index(initial), index(snapshot)
+                changed = [list(k) + [before[k], version] for k, version in sorted(after.items()) if k in before and before[k] != version]
+                if changed:
+                    raise InventoryError('Public hydration changed an already observed selected native version')
+                targets[app]['versionStability'] = {'changedPreviouslySelectedVersions': changed,
+                                                     'newlyResolvedObservations': sum(k not in before for k in after),
+                                                     'initialSnapshot': self.path_name(initial_path)}
         self.coverage['android'] = targets
 
     def read_backend_imports(self):
@@ -717,6 +1071,12 @@ class Inventory:
                         for file_name, declaration in sorted(meta.get('manifest', {}).items()):
                             file_url = url + file_name
                             if file_url not in remote_cache:
+                                local_license = self.jsr_licenses / name.replace('/', '__') / version / Path(file_name).name if self.jsr_licenses else None
+                                if LICENSE_NAME.match(Path(file_name).name) and local_license and local_license.is_file():
+                                    expected = declaration['checksum'].removeprefix('sha256-')
+                                    if digest_file(local_license) != expected:
+                                        raise InventoryError('JSR license text differs from exact version manifest')
+                                    item['licenseEvidence'].append(self.file_evidence(local_license, 'manifest-verified-jsr-license-text'))
                                 continue
                             checksum = declaration['checksum'].removeprefix('sha256-')
                             file_key, file_body = observe_body(file_url, checksum)
@@ -882,11 +1242,12 @@ class Inventory:
         self.read_dart(); self.read_npm(); self.read_ios(); self.read_android(); self.read_backend_imports(); self.read_python_and_ci()
         self.file_evidence(Path(__file__), 'inventory-generator')
         self.file_evidence(self.root / 'tools/scripts/collect_android_dependency_inventory.gradle', 'android-collector')
+        self.file_evidence(self.root / 'tools/scripts/test_local_dependency_inventory.py', 'inventory-regression-tests')
         for item in self.components.values():
             for field in ('occurrences', 'evidence', 'licenseDeclarations', 'licenseEvidence', 'integrities', 'platforms', 'binaryDeclarations', 'artifactOrigins', 'sourceOrigins'):
                 if field in item:
                     item[field] = [json.loads(value) for value in sorted(set(canonical(x) for x in item[field] if x is not None))]
-            if item['ecosystem'] not in ('dart-local', 'backend-import') and not item['licenseDeclarations'] and not item['licenseEvidence']:
+            if item['ecosystem'] not in ('dart-local', 'backend-import') and item['source']['kind'] != 'workspace' and not item['licenseDeclarations'] and not item['licenseEvidence']:
                 self.gap('license-evidence-unavailable', item['ref'], item['name'] + '@' + str(item['version']))
         components = sorted(self.components.values(), key=lambda c: c['ref'])
         gaps = sorted(self.gaps.values(), key=canonical)
@@ -934,10 +1295,193 @@ def evidence_bytes(item, root):
     raise InventoryError('Unsupported evidence kind')
 
 
-def validate_inventory(inventory, require_exact=False):
+def recover_local_license_evidence(inventory, npm_cache=None, deno_cache=None, maven_cache=None):
+    """Enrich an existing inventory without resolving, fetching or changing versions.
+
+    CDN package associations identify an exact upstream npm name/version; they
+    do not assert a byte match with the transformed HTTP module. Maven reuse
+    requires fresh equality of the actual JAR bytes and a coordinate-bound POM.
+    """
+    result = copy.deepcopy(inventory)
+    observer = Inventory(result['repositoryRoot'])
+    observer.evidence = result['evidence']
+    npm_cache = Path(npm_cache or Path.home() / '.npm')
+    deno_cache = Path(deno_cache or Path.home() / 'Library/Caches/deno')
+    maven_cache = Path(maven_cache or Path.home() / '.gradle/caches/modules-2/files-2.1')
+    missing = {g['subject'] for g in result['unresolved'] if g['kind'] == 'license-evidence-unavailable'}
+    recovery = result.get('licenseRecovery', {'originalGapCount': len(missing), 'recoveredComponents': [], 'findings': []})
+    findings = {f['ref']: f for f in recovery['findings']}
+    registry_records = {}
+    wanted = set()
+    for component in result['components']:
+        if component['ref'] not in missing:
+            continue
+        if component['ecosystem'] == 'deno-remote':
+            match = re.match(r'https://esm\.sh/(@[^/]+/[^/@]+|[^/@]+)@(\d+\.\d+\.\d+)(?:[/\?]|$)', component['source']['url'])
+            if match:
+                wanted.add(match[1])
+    # Only public registry packument cache records for the required package
+    # names. Never print or copy request headers or other cache metadata.
+    for path in sorted((npm_cache / '_cacache/index-v5').glob('*/*/*')):
+        for line in path.read_text(errors='replace').splitlines():
+            if '\t' not in line:
+                continue
+            try:
+                record = json.loads(line.split('\t', 1)[1], object_pairs_hook=unique_pairs)
+            except json.JSONDecodeError:
+                continue
+            prefix = 'make-fetch-happen:request-cache:'
+            key = record.get('key', '')
+            if not key.startswith(prefix):
+                continue
+            url = key[len(prefix):]; parsed = urllib.parse.urlsplit(url)
+            name = urllib.parse.unquote(parsed.path).strip('/')
+            if parsed.hostname != 'registry.npmjs.org' or name not in wanted:
+                continue
+            safe_url(url)
+            for integrity in sri_records(record.get('integrity')):
+                value = integrity['value']
+                content = npm_cache / '_cacache/content-v2' / integrity['algorithm'] / value[:2] / value[2:4] / value[4:]
+                if not content.is_file():
+                    continue
+                if digest_file(content, integrity['algorithm']) != value:
+                    raise InventoryError('Local license registry body differs from cache SRI')
+                metadata = load_json(content)
+                if metadata.get('name') != name:
+                    raise InventoryError('Local license registry package identity differs')
+                registry_records.setdefault(name, []).append((url, content, metadata))
+
+    for component in result['components']:
+        if component['ref'] not in missing:
+            continue
+        associations = []; partial = []
+        if component['ecosystem'] == 'deno-remote':
+            match = re.match(r'https://esm\.sh/(@[^/]+/[^/@]+|[^/@]+)@(\d+\.\d+\.\d+)(?:[/\?]|$)', component['source']['url'])
+            if match:
+                name, version = match.groups()
+                for root in (deno_cache / 'npm/registry.npmjs.org' / name / version,
+                             observer.root / 'apps/rayon_sports/web/node_modules' / name):
+                    manifest = root / 'package.json'
+                    if not manifest.is_file():
+                        continue
+                    actual = load_json(manifest)
+                    if actual.get('name') != name or str(actual.get('version')) != version:
+                        continue
+                    declaration = actual.get('license') or actual.get('licenses')
+                    if not declaration:
+                        continue
+                    key = observer.file_evidence(manifest, 'exact-upstream-npm-license-declaration-for-cdn')
+                    component['evidence'].append(key)
+                    component['licenseDeclarations'].append(canonical({'upstreamPackage': name + '@' + version, 'declaration': declaration}))
+                    text_keys = []
+                    for license_path in license_paths(root):
+                        license_key = observer.file_evidence(license_path, 'exact-upstream-npm-license-text-for-cdn')
+                        component['licenseEvidence'].append(license_key); text_keys.append(license_key)
+                    associations.append({'basis': 'Exact upstream npm name/version; transformed CDN bytes are separately locked, not asserted identical',
+                                         'upstreamPackage': name + '@' + version, 'declarationEvidence': key, 'licenseTextEvidence': text_keys})
+                    break
+                if not associations:
+                    for url, content, metadata in registry_records.get(name, []):
+                        release = metadata.get('versions', {}).get(version, {})
+                        declaration = release.get('license') or release.get('licenses')
+                        if release.get('name', metadata.get('name')) != name or str(release.get('version', version)) != version or not declaration:
+                            continue
+                        key = observer.file_evidence(content, 'SRI-verified-cached-upstream-registry-license-declaration')
+                        component['evidence'].append(key)
+                        component['licenseDeclarations'].append(canonical({'upstreamPackage': name + '@' + version, 'declaration': declaration}))
+                        associations.append({'basis': 'Exact upstream npm version declaration in SRI-verified local registry cache; transformed CDN bytes remain separately locked',
+                                             'upstreamPackage': name + '@' + version, 'registryUrl': url, 'declarationEvidence': key})
+                        break
+        elif component['ecosystem'] == 'maven':
+            group, artifact = component['name'].split(':', 1)
+            targets = [key for key in component['evidence'] if observer.evidence[key]['kind'] == 'file' and key.endswith('.jar')]
+            if targets:
+                target_key = targets[0]; target = observer.root / observer.evidence[target_key]['path']
+                target_digest = digest_file(target)
+                if target_digest != observer.evidence[target_key]['sha256']:
+                    raise InventoryError('Target Maven JAR changed before license recovery')
+                for pom in sorted((maven_cache / group / artifact).glob('*/*/*.pom')):
+                    if re.fullmatch('[0-9a-f]{40}', pom.parent.name) and digest_file(pom, 'sha1') != pom.parent.name:
+                        raise InventoryError('Cached Maven license POM differs from content-addressed identity')
+                    tree = ET.parse(pom).getroot(); observed_version = pom.parent.parent.name
+                    coordinates = (tree.findtext('{*}groupId', '') or tree.findtext('{*}parent/{*}groupId', ''),
+                                   tree.findtext('{*}artifactId', ''), tree.findtext('{*}version', '') or tree.findtext('{*}parent/{*}version', ''))
+                    if coordinates != (group, artifact, observed_version):
+                        continue
+                    declarations = [{child.tag.rsplit('}', 1)[-1]: child.text for child in node} for node in tree.findall('{*}licenses/{*}license')]
+                    if not declarations:
+                        continue
+                    same = next((jar for jar in sorted((maven_cache / group / artifact / observed_version).glob('*/*.jar')) if digest_file(jar) == target_digest), None)
+                    if same is None:
+                        continue
+                    pom_key = observer.file_evidence(pom, 'license-declaration-for-identical-Maven-JAR')
+                    jar_key = observer.file_evidence(same, 'identical-Maven-JAR-license-binding')
+                    component['evidence'].extend([pom_key, jar_key])
+                    coordinate = ':'.join(coordinates)
+                    for declaration in declarations:
+                        component['licenseDeclarations'].append(canonical({'identicalJarCoordinate': coordinate, 'declaration': declaration}))
+                    associations.append({'basis': 'Fresh SHA256 equality of JAR bytes with a local license-declared Maven coordinate; target selected version is unchanged',
+                                         'observedCoordinate': coordinate, 'jarSha256': target_digest,
+                                         'targetArtifactEvidence': target_key, 'identicalArtifactEvidence': jar_key, 'declarationEvidence': pom_key})
+                    break
+                if not associations:
+                    with zipfile.ZipFile(target) as archive:
+                        for member in archive.namelist():
+                            if not member.endswith('/pom.xml'):
+                                continue
+                            content = archive.read(member)
+                            if re.search(rb'licenses this file.{0,80}Apache License', content, re.S):
+                                key = observer.bytes_evidence('zip-member', {'archive': observer.path_name(target), 'member': member}, content, 'embedded-POM-only-license-scope')
+                                partial.append({'evidence': key, 'scope': 'Embedded POM file only; does not establish the package-wide license'})
+        if associations:
+            component['licenseAssociations'] = associations
+            recovery['recoveredComponents'].append(component['ref'])
+        findings[component['ref']] = {'ref': component['ref'], 'ecosystem': component['ecosystem'], 'name': component['name'],
+                                    'version': component['version'], 'recovered': bool(associations), 'associations': associations,
+                                    'partialEvidence': partial,
+                                    'remainingReason': None if associations else 'No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots'}
+        for field in ('evidence', 'licenseDeclarations', 'licenseEvidence'):
+            component[field] = sorted(set(component[field]))
+    recovered = set(recovery['recoveredComponents'])
+    result['unresolved'] = [g for g in result['unresolved'] if not (g['kind'] == 'license-evidence-unavailable' and g['subject'] in recovered)]
+    recovery['recoveredComponents'] = sorted(recovered); recovery['findings'] = [findings[key] for key in sorted(findings)]
+    recovery['remainingGapCount'] = sum(g['kind'] == 'license-evidence-unavailable' for g in result['unresolved'])
+    recovery['networkRequests'] = 0; recovery['selectedVersionsChanged'] = 0
+    result['licenseRecovery'] = recovery
+    result['summary'].update(evidenceItems=len(result['evidence']), unresolvedFields=len(result['unresolved']),
+        componentsWithLicenseText=sum(bool(c['licenseEvidence']) for c in result['components']),
+        componentsWithLicenseDeclaration=sum(bool(c['licenseDeclarations']) for c in result['components']))
+    return result
+
+
+def portable_evidence_exclusion(item, root):
+    """Keep the portable scope explicit; tracked inputs are never auto-skipped."""
+    if item['kind'] != 'file':
+        return 'non-file local cache/object evidence'
+    path = item['path']
+    if Path(path).is_absolute():
+        return 'absolute author-machine cache/runtime evidence'
+    if path.startswith('output/'):
+        return 'existing ignored output evidence scope'
+    roles = item.get('roles', [])
+    generated = ((path == '.dart_tool/package_config.json' and 'dart-active-resolution' in roles) or
+                 (path in {f'apps/{app}/.flutter-plugins-dependencies' for app in APPS} and
+                  'native-resolution-source-input' in roles))
+    if generated:
+        environment = {**os.environ, 'GIT_OPTIONAL_LOCKS': '0'}
+        for key in ('GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE'):
+            environment.pop(key, None)
+        result = subprocess.run(['git', '-C', str(root), 'check-ignore', '--quiet', '--', path],
+                                env=environment, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=10)
+        if result.returncode == 0:
+            return 'exact generated Pub/plugin input confirmed ignored by Git'
+    return None
+
+
+def validate_inventory(inventory, require_exact=False, root_override=None, repository_only=False):
     if inventory.get('schemaVersion') != SCHEMA_VERSION:
         raise InventoryError('Unsupported inventory schema')
-    root = Path(inventory['repositoryRoot'])
+    root = Path(root_override or inventory['repositoryRoot'])
     components = inventory['components']; references = [c['ref'] for c in components]
     if len(references) != len(set(references)):
         raise InventoryError('Duplicate component reference')
@@ -946,6 +1490,8 @@ def validate_inventory(inventory, require_exact=False):
         if edge['from'] not in known or edge['to'] not in known:
             raise InventoryError('Dependency edge points to absent component')
     for key, item in inventory['evidence'].items():
+        if repository_only and portable_evidence_exclusion(item, root):
+            continue
         content = evidence_bytes(item, root)
         if len(content) != item['bytes'] or hashlib.sha256(content).hexdigest() != item['sha256']:
             raise InventoryError('Evidence changed or corrupt: ' + key)
@@ -967,6 +1513,17 @@ def validate_inventory(inventory, require_exact=False):
     complete = not any(g['blocksExact'] for g in inventory['unresolved'])
     if complete != inventory['summary']['exactInventoryComplete'] or len(components) != inventory['summary']['components']:
         raise InventoryError('Inventory summary differs from facts')
+    summary_facts = {
+        'byEcosystem': dict(sorted(collections.Counter(c['ecosystem'] for c in components).items())),
+        'evidenceItems': len(inventory['evidence']), 'dependencyEdges': len(inventory['edges']),
+        'dependencyEdgeOccurrences': sum(len(edge['contexts']) for edge in inventory['edges']),
+        'unresolvedFields': len(inventory['unresolved']),
+        'componentsWithLicenseText': sum(bool(c['licenseEvidence']) for c in components),
+        'componentsWithLicenseDeclaration': sum(bool(c['licenseDeclarations']) for c in components),
+    }
+    for key, expected in summary_facts.items():
+        if key in inventory['summary'] and inventory['summary'][key] != expected:
+            raise InventoryError('Inventory coverage summary differs from facts: ' + key)
     if require_exact and not complete:
         raise InventoryError('Exact dependency inventory is incomplete; inspect unresolved fields')
 
@@ -983,6 +1540,8 @@ def component_purl(component):
         path = '/'.join(quote(part) for part in name.split('/'))
         return 'pkg:npm/' + path + '@' + quote(version)
     if ecosystem == 'dart':
+        if component['source']['kind'] == 'path':
+            return None  # An upstream registry PURL would misidentify a local patch.
         return 'pkg:pub/' + quote(name) + '@' + quote(version)
     if ecosystem == 'cocoapods':
         return 'pkg:cocoapods/' + quote(name) + '@' + quote(version)
@@ -1011,6 +1570,10 @@ def cyclonedx(inventory):
             component['purl'] = purl
         if item['licenseDeclarations']:
             component['licenses'] = [{'license': {'name': value}} for value in item['licenseDeclarations']]
+        if item.get('licenseAssociations'):
+            component['properties'].append({'name': 'africlub:license-associations', 'value': canonical(item['licenseAssociations'])})
+        if item.get('localSourceProvenance'):
+            component['properties'].append({'name': 'africlub:local-source-provenance', 'value': canonical(item['localSourceProvenance'])})
         # Lockfile archive/checksum, podspec and Git identity hashes have different
         # meanings. Preserve bases as properties; do not conflate them as one binary hash.
         components.append(component)
@@ -1035,33 +1598,42 @@ def report_markdown(inventory):
     lines.extend('| ' + key + ' | ' + str(value) + ' |' for key, value in s['byEcosystem'].items())
     lines.extend(['', f"Evidence items: {s['evidenceItems']}; dependency edges: {s['dependencyEdges']}; components with license text: {s['componentsWithLicenseText']}; with license declarations: {s['componentsWithLicenseDeclaration']}.", '',
                   'Dart: one workspace lock and active package_config reconciled against cached pubspecs and hosted hash records. Npm: every lock location retained, including absent platform optional packages; available cached archives rehashed against SRI. iOS: both SwiftPM lock containers for each app, immutable commit manifests/license blobs, generated local plugin manifests, and four CocoaPods locks. Android: offline resolved component/artifact graphs for each supplied target; unresolved selectors are retained.', '',
-                  'A pub cache hash record confirms the stored archive declaration, not a fresh archive rehash. Git commit identities and CocoaPods spec checksums are not binary archive hashes. Cached Maven and available npm archive bytes are rehashed. Swift binary checksums remain exact-revision manifest declarations unless archive bytes are available.', '',
-                  '## Reproduce', '', 'Requires Python >=3.10, PyYAML==6.0.3, cached Dart/npm/Swift/Maven packages, and the pinned JDK/Gradle/Flutter environment. No network or Flutter compilation is required.', '', '```sh',
-                  'python3 tools/scripts/local_dependency_inventory.py collect-android --output-dir output/dependency-inventory/android --jdk /path/to/jdk',
-                  'python3 tools/scripts/local_dependency_inventory.py generate --android-resolutions output/dependency-inventory/android --output-prefix ' + DEFAULT_PREFIX,
+                  'A pub cache hash record confirms the stored archive declaration, not a fresh archive rehash. Git commit identities and CocoaPods spec checksums are not binary archive hashes. Cached Maven and available npm archive bytes are rehashed. Swift binary checksums remain exact-revision manifest declarations unless archive bytes are available. Parent POM declarations and SDK distribution license texts retain their source relationship; they do not grant license approval.', '',
+                  '## Version selection corrections', '',
+                  'The backend now has a committed Deno v5 lock and explicit import map: Supabase npm 2.116.0, Supabase JSR functions 2.110.7, and Deno assert 1.0.19. These replace floating selectors with new reviewed exact selections; the repo contained no prior selected-version evidence. Exact HTTP imports retain their original declarations and transitive frozen hashes.', '',
+                  'Android hydration retained every previously selected version. The public SDK runner selector `androidx.test:runner:1.2+` resolves to 1.2.0 from published Maven metadata. Initial and final observations, selected versions, immutable artifact origins, source bindings and stability comparisons are recorded in JSON. Collection does not compile or sign an app.', '',
+                  '## Reproduce', '', 'Requires Python >=3.10, PyYAML==6.0.3, cached Dart/npm/Swift/Maven packages, and the pinned JDK/Gradle/Flutter environment. Generation and validation run locally. Optional hydration fetches public immutable artifacts/metadata; it does not execute an app or change dependency declarations.', '', '```sh',
+                  'python3 tools/scripts/local_dependency_inventory.py collect-android --output-dir output/dependency-inventory/initial --jdk /path/to/jdk',
+                  'python3 tools/scripts/local_dependency_inventory.py hydrate-maven --android-resolutions output/dependency-inventory/initial --mirror output/dependency-inventory/maven-mirror',
+                  'python3 tools/scripts/local_dependency_inventory.py collect-android --output-dir output/dependency-inventory/android --jdk /path/to/jdk --freeze-inputs output/dependency-inventory/initial --maven-mirror output/dependency-inventory/maven-mirror',
+                  'python3 tools/scripts/local_dependency_inventory.py hydrate-actions --output-dir output/dependency-inventory/action-sources',
+                  'python3 tools/scripts/local_dependency_inventory.py hydrate-jsr-licenses --output-dir output/dependency-inventory/jsr-licenses',
+                  'python3 tools/scripts/local_dependency_inventory.py generate --android-resolutions output/dependency-inventory/android --action-sources output/dependency-inventory/action-sources --jsr-licenses output/dependency-inventory/jsr-licenses --output-prefix ' + DEFAULT_PREFIX,
                   'python3 tools/scripts/local_dependency_inventory.py validate --inventory ' + DEFAULT_PREFIX + '.json',
                   '# Release exactness gate; fails whenever any exactness-blocking field is unresolved:',
                   'python3 tools/scripts/local_dependency_inventory.py validate --inventory ' + DEFAULT_PREFIX + '.json --require-exact',
                   'python3 -m unittest discover -s tools/scripts -p test_local_dependency_inventory.py', '```', '',
-                  'Validation rehashes every evidence file, Git blob and archive license member; confirms graph references and summary facts; and checks the companion SBOM for exact equality with the inventory-derived document.', '',
+                  'Full validation rehashes every evidence file, Git blob, original Deno cache body and archive license member; confirms graph references and summary facts; and checks the companion SBOM for exact equality with the inventory-derived document. Portable CI source validation can use `--repository-only --require-exact`; it explicitly skips author-machine cache/ignored-output rehashing and prints that limitation.', '',
                   '## Remaining evidence fields', '', '| Kind | Count | Blocks exactness |', '| --- | ---: | --- |'])
     for kind, count in sorted(collections.Counter(g['kind'] for g in inventory['unresolved']).items()):
         lines.append('| ' + kind + ' | ' + str(count) + ' | ' + str(any(g['blocksExact'] for g in inventory['unresolved'] if g['kind'] == kind)).lower() + ' |')
-    lines.extend(['', 'Each unresolved field, target/configuration, source input SHA256, license declaration and text evidence SHA256 is listed in the JSON. The license TSV has one row per component, with exact version/source and evidence references.', '',
-                  'Backend floating npm/jsr imports and remote imports without a committed dependency lock remain explicit. Offline native cache gaps are not repaired by assigning a different version. Lock absence is supplemented by actual Gradle resolution and generated SwiftPM inputs.', '',
+    lines.extend(['', 'The small JSON indexes reference SHA256-bound TSV shards (at most 2 MiB each). Canonical JSON cells preserve every component, dependency edge, evidence item, unresolved field and Android configuration losslessly. Full validation verifies shard bytes, row ordinals/counts, unique keys and reconstructed table hashes before validating source evidence. The license TSV has one row per component, with exact version/source and evidence references.', '',
+                  'Exactness concerns selected component versions, source identities and recorded integrity evidence. Missing license declarations/text and unbuilt local plugin outputs remain explicit non-exactness fields. Full target compilation, legal license approval, provider/device/store acceptance and fresh vulnerability clearance are separate work. Declared archive hashes are identified separately from fresh byte rehashes.', '',
+                  'Local license recovery uses exact upstream npm name/version declarations for transformed CDN modules, and fresh SHA256 equality when a Maven JAR shares bytes with a cached license-declared coordinate. These relationships are explicit in `licenseAssociations`; they do not assert CDN/archive byte equality or license approval. Embedded-POM-only licenses retain a package-wide gap. Recovery performs no network requests and changes no selected versions.', '',
                   '## Added files and rationale', '',
                   '- Generator/validator: repeatable exact source, integrity, dependency-edge and license evidence reconciliation.',
                   '- Gradle collector: observes all five active targets and plugin configurations using actual offline resolution.',
                   '- Regression tests: reject duplicate input keys, integrity mismatches, unsafe paths/URLs, stale evidence, unresolved exactness, and graph corruption.',
-                  '- JSON, CycloneDX1.6, license TSV and this report: reviewable inventory with explicit incompleteness; none grants license approval.', '',
-                  'Standards: [CycloneDX1.6 JSON schema](https://raw.githubusercontent.com/CycloneDX/specification/1.6/schema/bom-1.6.schema.json), [Package URL specification](https://www.packageurl.org/docs/purl/introduction).', ''])
+                  '- Backend import map/lock: reproducible exact backend selections and transitive HTTP/JSR/npm integrity records.',
+                  '- JSON, CycloneDX 1.6, license TSV and this report: reviewable inventory with explicit evidence coverage; none grants license approval.', '',
+                  'Standards: [CycloneDX 1.6 JSON schema](https://raw.githubusercontent.com/CycloneDX/specification/1.6/schema/bom-1.6.schema.json), [Package URL specification](https://www.packageurl.org/docs/purl/introduction).', ''])
     return '\n'.join(lines)
 
 
 def write_reports(inventory, prefix):
     prefix = Path(prefix); prefix.parent.mkdir(parents=True, exist_ok=True)
-    for suffix, value in (('.json', inventory), ('.cdx.json', cyclonedx(inventory))):
-        Path(str(prefix) + suffix).write_text(json.dumps(value, indent=2, sort_keys=True, ensure_ascii=False) + '\n')
+    write_bounded_report(inventory, Path(str(prefix) + '.json'), [[key] for key in ('components', 'edges', 'evidence', 'unresolved')])
+    Path(str(prefix) + '.cdx.json').write_text(json.dumps(cyclonedx(inventory), indent=2, sort_keys=True, ensure_ascii=False) + '\n')
     rows = ['ref\tecosystem\tname\tversion\tsource\tlicense_declarations\tlicense_evidence']
     for item in inventory['components']:
         fields = [item['ref'], item['ecosystem'], item['name'], str(item['version'] or ''), canonical(item['source']),
@@ -1069,9 +1641,16 @@ def write_reports(inventory, prefix):
         rows.append('\t'.join(value.replace('\t', '\\t').replace('\n', '\\n') for value in fields))
     Path(str(prefix) + '.licenses.tsv').write_text('\n'.join(rows) + '\n')
     Path(str(prefix) + '.md').write_text(report_markdown(inventory))
+    targets = {}
+    for app, coverage in inventory.get('coverage', {}).get('android', {}).items():
+        if coverage.get('resolution'):
+            targets[app] = load_json(Path(inventory['repositoryRoot']) / coverage['resolution'])
+    if targets:
+        write_bounded_report({'schemaVersion': 1, 'purpose': 'Portable lossless five-target offline Android resolution evidence', 'targets': targets},
+                             Path(str(prefix) + '.android.json'), [['targets', app, 'configurations'] for app in sorted(targets)])
 
 
-def collect_android(root, output, jdk):
+def collect_android(root, output, jdk, freeze_inputs=None, maven_mirror=None):
     root = root.resolve(); output = output.resolve(); output.mkdir(parents=True, exist_ok=True)
     environment = os.environ.copy()
     if jdk:
@@ -1083,6 +1662,10 @@ def collect_android(root, output, jdk):
         snapshot.unlink(missing_ok=True)  # Never accept a stale previous successful snapshot.
         command = ['./gradlew', '-I', str(root / 'tools/scripts/collect_android_dependency_inventory.gradle'),
                    'collectAfriDependencyInventory', '-PafriInventoryOutput=' + str(snapshot), '--offline', '--console=plain', '--max-workers=2']
+        if freeze_inputs:
+            command.append('-PafriInventoryFreezeInput=' + str(freeze_inputs.resolve() / (app + '.json')))
+        if maven_mirror:
+            command.append('-PafriInventoryMavenMirror=' + str(maven_mirror.resolve()))
         with (output / (app + '.log')).open('w') as log:
             result = subprocess.run(command, cwd=root / 'apps' / app / 'android', env=environment,
                                     stdout=log, stderr=subprocess.STDOUT, timeout=300)
@@ -1232,6 +1815,29 @@ def hydrate_actions(root, output):
     print('Immutable action source facts=' + str(len(facts)))
 
 
+def hydrate_jsr_licenses(root, output):
+    lock = load_json(root / 'supabase/deno.lock')
+    for identifier, entry in lock.get('jsr', {}).items():
+        name, version = identifier.rsplit('@', 1)
+        base = 'https://jsr.io/' + name + '/' + version
+        with urllib.request.urlopen(base + '_meta.json', timeout=15) as response:
+            manifest_bytes = response.read()
+        if hashlib.sha256(manifest_bytes).hexdigest() != entry['integrity']:
+            raise InventoryError('JSR public manifest differs from pinned lock')
+        manifest = json.loads(manifest_bytes)
+        for path, declaration in manifest.get('manifest', {}).items():
+            if not LICENSE_NAME.match(Path(path).name):
+                continue
+            with urllib.request.urlopen(base + path, timeout=15) as response:
+                content = response.read()
+            expected = declaration['checksum'].removeprefix('sha256-')
+            if hashlib.sha256(content).hexdigest() != expected:
+                raise InventoryError('JSR public license text differs from pinned manifest')
+            target = output / name.replace('/', '__') / version / Path(path).name
+            target.parent.mkdir(parents=True, exist_ok=True); target.write_bytes(content)
+    print('Exact JSR license texts hydrated')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, default=Path(__file__).resolve().parents[2])
@@ -1243,37 +1849,56 @@ def main():
     generate.add_argument('--npm-cache', type=Path)
     generate.add_argument('--swift-cache', type=Path)
     generate.add_argument('--action-sources', type=Path)
+    generate.add_argument('--jsr-licenses', type=Path)
+    recover = commands.add_parser('recover-local-licenses')
+    recover.add_argument('--inventory', type=Path, required=True)
     validate = commands.add_parser('validate')
     validate.add_argument('--inventory', type=Path, required=True)
     validate.add_argument('--require-exact', action='store_true')
+    validate.add_argument('--repository-only', action='store_true', help='Verify portable committed source inputs; explicitly skip local caches and ignored outputs')
     collect = commands.add_parser('collect-android')
     collect.add_argument('--output-dir', type=Path, required=True)
     collect.add_argument('--jdk', type=Path)
+    collect.add_argument('--freeze-inputs', type=Path)
+    collect.add_argument('--maven-mirror', type=Path)
     hydrate = commands.add_parser('hydrate-maven')
     hydrate.add_argument('--android-resolutions', type=Path, required=True)
     hydrate.add_argument('--mirror', type=Path, required=True)
     actions = commands.add_parser('hydrate-actions')
     actions.add_argument('--output-dir', type=Path, required=True)
+    jsr = commands.add_parser('hydrate-jsr-licenses')
+    jsr.add_argument('--output-dir', type=Path, required=True)
     args = parser.parse_args()
     try:
         if args.command == 'generate':
-            inventory = Inventory(args.root, args.android_resolutions, args.pub_cache, args.npm_cache, args.swift_cache, args.action_sources).build()
+            inventory = Inventory(args.root, args.android_resolutions, args.pub_cache, args.npm_cache, args.swift_cache, args.action_sources, args.jsr_licenses).build()
+            inventory = recover_local_license_evidence(inventory)
             write_reports(inventory, args.output_prefix)
             print(canonical(inventory['summary']))
+        elif args.command == 'recover-local-licenses':
+            inventory = load_report(args.inventory)
+            validate_inventory(inventory, require_exact=True, root_override=args.root, repository_only=True)
+            inventory = recover_local_license_evidence(inventory)
+            write_reports(inventory, args.inventory.with_suffix(''))
+            print(canonical({'summary': inventory['summary'], 'recovered': len(inventory['licenseRecovery']['recoveredComponents']),
+                             'remainingLicenseGaps': inventory['licenseRecovery']['remainingGapCount']}))
         elif args.command == 'validate':
-            inventory = load_json(args.inventory)
-            validate_inventory(inventory, args.require_exact)
+            inventory = load_report(args.inventory)
+            validate_inventory(inventory, args.require_exact, args.root, args.repository_only)
             companion = args.inventory.with_name(args.inventory.stem + '.cdx.json')
             if not companion.is_file() or load_json(companion) != cyclonedx(inventory):
                 raise InventoryError('Companion SBOM missing or differs from inventory')
-            print('Inventory and companion SBOM verified; exact=' + str(inventory['summary']['exactInventoryComplete']).lower())
+            print(('Repository evidence and companion SBOM verified; local cache/ignored evidence skipped; ' if args.repository_only else
+                   'Inventory and companion SBOM verified; ') + 'exact=' + str(inventory['summary']['exactInventoryComplete']).lower())
         elif args.command == 'collect-android':
-            collect_android(args.root, args.output_dir, args.jdk)
+            collect_android(args.root, args.output_dir, args.jdk, args.freeze_inputs, args.maven_mirror)
             print('Collected all five Android targets offline')
         elif args.command == 'hydrate-maven':
             hydrate_maven(args.android_resolutions, args.mirror)
-        else:
+        elif args.command == 'hydrate-actions':
             hydrate_actions(args.root, args.output_dir)
+        else:
+            hydrate_jsr_licenses(args.root, args.output_dir)
     except (InventoryError, OSError, KeyError, yaml.YAMLError, json.JSONDecodeError, subprocess.SubprocessError, zipfile.BadZipFile) as error:
         # Do not dump manifests, source URLs, or credential-bearing exception contents.
         if isinstance(error, InventoryError):

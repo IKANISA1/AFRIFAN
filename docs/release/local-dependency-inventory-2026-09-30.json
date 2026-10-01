@@ -1,0 +1,1116 @@
+{
+  "coverage": {
+    "android": {
+      "as_vita": {
+        "appConfigurations": [
+          {
+            "artifacts": 54,
+            "components": 59,
+            "name": "debugCompileClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 156,
+            "components": 172,
+            "name": "debugRuntimeClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 53,
+            "components": 58,
+            "name": "profileCompileClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 155,
+            "components": 171,
+            "name": "profileRuntimeClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 53,
+            "components": 58,
+            "name": "releaseCompileClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 155,
+            "components": 171,
+            "name": "releaseRuntimeClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 0,
+            "components": 1,
+            "name": "classpath",
+            "unresolved": 0
+          }
+        ],
+        "configurationsObserved": 106,
+        "gradleVersion": "8.14",
+        "resolution": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/android/as_vita.json",
+        "unresolvedObservations": 0,
+        "versionStability": {
+          "changedPreviouslySelectedVersions": [],
+          "initialSnapshot": "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/as_vita.json",
+          "newlyResolvedObservations": 0
+        }
+      },
+      "costa_do_sol": {
+        "appConfigurations": [
+          {
+            "artifacts": 54,
+            "components": 59,
+            "name": "debugCompileClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 156,
+            "components": 172,
+            "name": "debugRuntimeClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 53,
+            "components": 58,
+            "name": "profileCompileClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 155,
+            "components": 171,
+            "name": "profileRuntimeClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 53,
+            "components": 58,
+            "name": "releaseCompileClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 155,
+            "components": 171,
+            "name": "releaseRuntimeClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 0,
+            "components": 1,
+            "name": "classpath",
+            "unresolved": 0
+          }
+        ],
+        "configurationsObserved": 106,
+        "gradleVersion": "8.14",
+        "resolution": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/android/costa_do_sol.json",
+        "unresolvedObservations": 0,
+        "versionStability": {
+          "changedPreviouslySelectedVersions": [],
+          "initialSnapshot": "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/costa_do_sol.json",
+          "newlyResolvedObservations": 0
+        }
+      },
+      "nkana": {
+        "appConfigurations": [
+          {
+            "artifacts": 54,
+            "components": 59,
+            "name": "debugCompileClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 156,
+            "components": 172,
+            "name": "debugRuntimeClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 53,
+            "components": 58,
+            "name": "profileCompileClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 155,
+            "components": 171,
+            "name": "profileRuntimeClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 53,
+            "components": 58,
+            "name": "releaseCompileClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 155,
+            "components": 171,
+            "name": "releaseRuntimeClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 0,
+            "components": 1,
+            "name": "classpath",
+            "unresolved": 0
+          }
+        ],
+        "configurationsObserved": 106,
+        "gradleVersion": "8.14",
+        "resolution": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/android/nkana.json",
+        "unresolvedObservations": 0,
+        "versionStability": {
+          "changedPreviouslySelectedVersions": [],
+          "initialSnapshot": "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/nkana.json",
+          "newlyResolvedObservations": 0
+        }
+      },
+      "rayon_sports": {
+        "appConfigurations": [
+          {
+            "artifacts": 71,
+            "components": 76,
+            "name": "debugCompileClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 168,
+            "components": 184,
+            "name": "debugRuntimeClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 70,
+            "components": 75,
+            "name": "profileCompileClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 167,
+            "components": 183,
+            "name": "profileRuntimeClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 57,
+            "components": 62,
+            "name": "releaseCompileClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 156,
+            "components": 172,
+            "name": "releaseRuntimeClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 0,
+            "components": 1,
+            "name": "classpath",
+            "unresolved": 0
+          }
+        ],
+        "configurationsObserved": 113,
+        "gradleVersion": "8.14",
+        "resolution": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/android/rayon_sports.json",
+        "unresolvedObservations": 0,
+        "versionStability": {
+          "changedPreviouslySelectedVersions": [],
+          "initialSnapshot": "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/rayon_sports.json",
+          "newlyResolvedObservations": 0
+        }
+      },
+      "vitalo": {
+        "appConfigurations": [
+          {
+            "artifacts": 54,
+            "components": 59,
+            "name": "debugCompileClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 156,
+            "components": 172,
+            "name": "debugRuntimeClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 53,
+            "components": 58,
+            "name": "profileCompileClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 155,
+            "components": 171,
+            "name": "profileRuntimeClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 53,
+            "components": 58,
+            "name": "releaseCompileClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 155,
+            "components": 171,
+            "name": "releaseRuntimeClasspath",
+            "unresolved": 0
+          },
+          {
+            "artifacts": 0,
+            "components": 1,
+            "name": "classpath",
+            "unresolved": 0
+          }
+        ],
+        "configurationsObserved": 106,
+        "gradleVersion": "8.14",
+        "resolution": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/android/vitalo.json",
+        "unresolvedObservations": 0,
+        "versionStability": {
+          "changedPreviouslySelectedVersions": [],
+          "initialSnapshot": "output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/vitalo.json",
+          "newlyResolvedObservations": 0
+        }
+      }
+    },
+    "backend": {
+      "committedDenoLock": true,
+      "explicitFreezes": {
+        "jsr:@std/assert": "jsr:@std/assert@1.0.19",
+        "jsr:@supabase/functions-js/edge-runtime.d.ts": "jsr:@supabase/functions-js@2.110.7/edge-runtime.d.ts",
+        "npm:@supabase/supabase-js@2": "npm:@supabase/supabase-js@2.116.0"
+      },
+      "externalImportSpecifiers": 7,
+      "lockedHttpModules": 98,
+      "lockedJsrPackages": 3,
+      "lockedNpmPackages": 46,
+      "scope": "Static remote/npm/jsr imports in active Supabase and Cloudflare JS/TS sources, including tests",
+      "versionSelectionCorrection": "Floating backend declarations had no prior repo selection evidence; reviewed explicit freezes are new exact selections"
+    },
+    "dart": {
+      "activeResolvedPackages": 211,
+      "dartVersion": "3.12.2",
+      "flutterVersion": "3.44.9",
+      "hostedPackages": 168,
+      "localPatchedPathPackages": 1,
+      "lockedPackages": 177,
+      "workspaceMembers": 33,
+      "workspaceWithRoot": 34
+    },
+    "ios": {
+      "as_vita": {
+        "localFlutterPackages": 14,
+        "podLockfile": "apps/as_vita/ios/Podfile.lock",
+        "remotePins": 14,
+        "swiftLockfiles": [
+          "apps/as_vita/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+          "apps/as_vita/ios/Runner.xcworkspace/xcshareddata/swiftpm/Package.resolved"
+        ]
+      },
+      "costa_do_sol": {
+        "localFlutterPackages": 14,
+        "podLockfile": "apps/costa_do_sol/ios/Podfile.lock",
+        "remotePins": 14,
+        "swiftLockfiles": [
+          "apps/costa_do_sol/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+          "apps/costa_do_sol/ios/Runner.xcworkspace/xcshareddata/swiftpm/Package.resolved"
+        ]
+      },
+      "nkana": {
+        "localFlutterPackages": 14,
+        "podLockfile": "apps/nkana/ios/Podfile.lock",
+        "remotePins": 14,
+        "swiftLockfiles": [
+          "apps/nkana/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+          "apps/nkana/ios/Runner.xcworkspace/xcshareddata/swiftpm/Package.resolved"
+        ]
+      },
+      "rayon_sports": {
+        "localFlutterPackages": 15,
+        "podLockfile": null,
+        "podLockfileAbsenceReason": "Target uses generated Flutter SwiftPM packages; absence does not imply missing native inventory",
+        "remotePins": 14,
+        "swiftLockfiles": [
+          "apps/rayon_sports/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+          "apps/rayon_sports/ios/Runner.xcworkspace/xcshareddata/swiftpm/Package.resolved"
+        ]
+      },
+      "vitalo": {
+        "localFlutterPackages": 14,
+        "podLockfile": "apps/vitalo/ios/Podfile.lock",
+        "remotePins": 14,
+        "swiftLockfiles": [
+          "apps/vitalo/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+          "apps/vitalo/ios/Runner.xcworkspace/xcshareddata/swiftpm/Package.resolved"
+        ]
+      }
+    },
+    "npm": {
+      "cacheArchivesVerifiedAgainstSRI": 945,
+      "installedLocations": 940,
+      "lockedLocations": 1106,
+      "lockfileVersion": 3,
+      "packageManager": "npm@12.0.2",
+      "platformOptionalAbsentLocations": 166
+    },
+    "verificationToolchain": {
+      "pythonRequirements": [
+        "PyYAML"
+      ],
+      "scope": "Pinned local Python requirements and action declarations; action source/license caches not yet supplied",
+      "workflowFiles": 7
+    }
+  },
+  "licenseApproval": "not assessed; declarations and text evidence only",
+  "licenseRecovery": {
+    "findings": [
+      {
+        "associations": [],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/ws@8.21.1?target=denonext",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:116b679d715d9c76e9443724",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "8.21.1"
+      },
+      {
+        "associations": [],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/@supabase/node-fetch@2.6.15/denonext/node-fetch.mjs",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:192d8a5dd4e8fd0bb27e85a4",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "2.6.15"
+      },
+      {
+        "associations": [],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/@supabase/storage-js@2.7.1/denonext/storage-js.mjs",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:1bcfccad0c5416ef1a0cfe27",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "2.7.1"
+      },
+      {
+        "associations": [],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/@supabase/postgrest-js@1.19.4/denonext/postgrest-js.mjs",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:1e7a2c66f844a684e2c4b127",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "1.19.4"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Exact upstream npm version declaration in SRI-verified local registry cache; transformed CDN bytes remain separately locked",
+            "declarationEvidence": "/Users/jeanbosco/.npm/_cacache/content-v2/sha512/22/68/dccfb91fb4c432cd0e50a2159f20bec1cfacad6f0b718d3ae179e4a43e5efe9539570a9f2024b380127ee8bcc08652f4296071db4d085472562288a8688a",
+            "registryUrl": "https://registry.npmjs.org/bufferutil",
+            "upstreamPackage": "bufferutil@4.1.0"
+          }
+        ],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/bufferutil@4.1.0/denonext/bufferutil.mjs",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:23b754387a752b235c389102",
+        "remainingReason": null,
+        "version": "4.1.0"
+      },
+      {
+        "associations": [],
+        "ecosystem": "maven",
+        "name": "org.tensorflow:tensorflow-lite-metadata",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:24f95a88e32d2f627f988c45",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "0.1.0-rc2"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Fresh SHA256 equality of JAR bytes with a local license-declared Maven coordinate; target selected version is unchanged",
+            "declarationEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
+            "identicalArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
+            "jarSha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f",
+            "observedCoordinate": "com.android:signflinger:8.5.2",
+            "targetArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.13.1/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.13.1.jar"
+          }
+        ],
+        "ecosystem": "maven",
+        "name": "com.android:signflinger",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:2bcab586cd757cb4fde44497",
+        "remainingReason": null,
+        "version": "8.13.1"
+      },
+      {
+        "associations": [],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/@supabase/node-fetch@2.6.15?target=denonext",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:2e19b98ce51742b34e474ebd",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "2.6.15"
+      },
+      {
+        "associations": [],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/@supabase/auth-js@2.69.1/denonext/auth-js.mjs",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:3243aa2a5cde3a0357102cd4",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "2.69.1"
+      },
+      {
+        "associations": [],
+        "ecosystem": "maven",
+        "name": "com.android:zipflinger",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:3400b2fb8cd4027da5367510",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "8.11.0"
+      },
+      {
+        "associations": [],
+        "ecosystem": "maven",
+        "name": "com.android:zipflinger",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:349cd2d9e88c7cadcd9dec12",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "8.13.2"
+      },
+      {
+        "associations": [],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/node-gyp-build@4.8.4?target=denonext",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:37f7a899935c047f105184a3",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "4.8.4"
+      },
+      {
+        "associations": [],
+        "ecosystem": "maven",
+        "name": "io.netty:netty-tcnative-classes",
+        "partialEvidence": [
+          {
+            "evidence": "zip-member:b9e7089f00b3a203baea2f3640b8d8c2164f019bb605d602376f8ac49555b7d4",
+            "scope": "Embedded POM file only; does not establish the package-wide license"
+          }
+        ],
+        "recovered": false,
+        "ref": "dependency:3f54d7028ef0e7064f34d5ff",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "2.0.46.Final"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Fresh SHA256 equality of JAR bytes with a local license-declared Maven coordinate; target selected version is unchanged",
+            "declarationEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
+            "identicalArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
+            "jarSha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f",
+            "observedCoordinate": "com.android:signflinger:8.5.2",
+            "targetArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.13.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.13.2.jar"
+          }
+        ],
+        "ecosystem": "maven",
+        "name": "com.android:signflinger",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:4254fca3db356a288e40f060",
+        "remainingReason": null,
+        "version": "8.13.2"
+      },
+      {
+        "associations": [],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/ws@8.21.1/denonext/ws.mjs",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:491c7fa6a243dc7c87140484",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "8.21.1"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Exact upstream npm name/version; transformed CDN bytes are separately locked, not asserted identical",
+            "declarationEvidence": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/whatwg-url/5.0.0/package.json",
+            "licenseTextEvidence": [
+              "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/whatwg-url/5.0.0/LICENSE.txt"
+            ],
+            "upstreamPackage": "whatwg-url@5.0.0"
+          }
+        ],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/whatwg-url@5.0.0?target=denonext",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:564ea2c8cce3a57c6b5987e1",
+        "remainingReason": null,
+        "version": "5.0.0"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Fresh SHA256 equality of JAR bytes with a local license-declared Maven coordinate; target selected version is unchanged",
+            "declarationEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
+            "identicalArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
+            "jarSha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f",
+            "observedCoordinate": "com.android:signflinger:8.5.2",
+            "targetArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.1.4/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.1.4.jar"
+          }
+        ],
+        "ecosystem": "maven",
+        "name": "com.android:signflinger",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:6dc1de230c353f14c9c7c293",
+        "remainingReason": null,
+        "version": "8.1.4"
+      },
+      {
+        "associations": [],
+        "ecosystem": "maven",
+        "name": "com.android:zipflinger",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:7adbcf0ab3093ccd1b6ccd8d",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "8.11.1"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Exact upstream npm name/version; transformed CDN bytes are separately locked, not asserted identical",
+            "declarationEvidence": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/whatwg-url/5.0.0/package.json",
+            "licenseTextEvidence": [
+              "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/whatwg-url/5.0.0/LICENSE.txt"
+            ],
+            "upstreamPackage": "whatwg-url@5.0.0"
+          }
+        ],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/whatwg-url@5.0.0/denonext/whatwg-url.mjs",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:7ba3ebe4d0a8e469fc61fcfd",
+        "remainingReason": null,
+        "version": "5.0.0"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Exact upstream npm name/version; transformed CDN bytes are separately locked, not asserted identical",
+            "declarationEvidence": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/webidl-conversions/3.0.1/package.json",
+            "licenseTextEvidence": [
+              "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/webidl-conversions/3.0.1/LICENSE.md"
+            ],
+            "upstreamPackage": "webidl-conversions@3.0.1"
+          }
+        ],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/webidl-conversions@3.0.1/denonext/webidl-conversions.mjs",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:81c2da632f31594dd4c9696f",
+        "remainingReason": null,
+        "version": "3.0.1"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Fresh SHA256 equality of JAR bytes with a local license-declared Maven coordinate; target selected version is unchanged",
+            "declarationEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
+            "identicalArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
+            "jarSha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f",
+            "observedCoordinate": "com.android:signflinger:8.5.2",
+            "targetArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.3.1/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.3.1.jar"
+          }
+        ],
+        "ecosystem": "maven",
+        "name": "com.android:signflinger",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:8326e1d0ee398125e7f824f1",
+        "remainingReason": null,
+        "version": "8.3.1"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Exact upstream npm name/version; transformed CDN bytes are separately locked, not asserted identical",
+            "declarationEvidence": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/tr46/0.0.3/package.json",
+            "licenseTextEvidence": [],
+            "upstreamPackage": "tr46@0.0.3"
+          }
+        ],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/tr46@0.0.3/denonext/tr46.mjs",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:839d74d68a054fa4bd8adfa4",
+        "remainingReason": null,
+        "version": "0.0.3"
+      },
+      {
+        "associations": [],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/node-gyp-build@4.8.4/denonext/node-gyp-build.mjs",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:83ac19cdb62d03c380cbb093",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "4.8.4"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Exact upstream npm version declaration in SRI-verified local registry cache; transformed CDN bytes remain separately locked",
+            "declarationEvidence": "/Users/jeanbosco/.npm/_cacache/content-v2/sha512/80/51/47a72a1a59b7ab4eea6e4d33d6b4670be06a8984741a9c7e391dd04f3ea48a255f35f415b30f87d4bae16b374f2a16d8f8d598143e7d95dca8b27476bc09",
+            "registryUrl": "https://registry.npmjs.org/utf-8-validate",
+            "upstreamPackage": "utf-8-validate@6.0.6"
+          }
+        ],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/utf-8-validate@6.0.6?target=denonext",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:85840cb418d492a0599d0080",
+        "remainingReason": null,
+        "version": "6.0.6"
+      },
+      {
+        "associations": [],
+        "ecosystem": "deno-jsr",
+        "name": "@supabase/functions-js",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:8a84156d6f756270ed77a573",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "2.110.7"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Exact upstream npm version declaration in SRI-verified local registry cache; transformed CDN bytes remain separately locked",
+            "declarationEvidence": "/Users/jeanbosco/.npm/_cacache/content-v2/sha512/80/51/47a72a1a59b7ab4eea6e4d33d6b4670be06a8984741a9c7e391dd04f3ea48a255f35f415b30f87d4bae16b374f2a16d8f8d598143e7d95dca8b27476bc09",
+            "registryUrl": "https://registry.npmjs.org/utf-8-validate",
+            "upstreamPackage": "utf-8-validate@6.0.6"
+          }
+        ],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/utf-8-validate@6.0.6/denonext/utf-8-validate.mjs",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:947bbb446cc6bf212028678a",
+        "remainingReason": null,
+        "version": "6.0.6"
+      },
+      {
+        "associations": [],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/@supabase/functions-js@2.4.4/denonext/functions-js.mjs",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:9961b2726fd85678065ecffa",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "2.4.4"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Exact upstream npm name/version; transformed CDN bytes are separately locked, not asserted identical",
+            "declarationEvidence": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/webidl-conversions/3.0.1/package.json",
+            "licenseTextEvidence": [
+              "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/webidl-conversions/3.0.1/LICENSE.md"
+            ],
+            "upstreamPackage": "webidl-conversions@3.0.1"
+          }
+        ],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/webidl-conversions@3.0.1?target=denonext",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:9d88dc10ce1762ac2b82eacc",
+        "remainingReason": null,
+        "version": "3.0.1"
+      },
+      {
+        "associations": [],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/@supabase/realtime-js@2.11.2/denonext/realtime-js.mjs",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:a0584e133516275e046f2aa4",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "2.11.2"
+      },
+      {
+        "associations": [],
+        "ecosystem": "maven",
+        "name": "com.android:zipflinger",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:aa12cd4170c1c3dbc2d16a4e",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "8.13.1"
+      },
+      {
+        "associations": [],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/@supabase/supabase-js@2.49.4/denonext/supabase-js.mjs",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:aa79094b130b11b57909a9c9",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "2.49.4"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Exact upstream npm name/version; transformed CDN bytes are separately locked, not asserted identical",
+            "declarationEvidence": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/tr46/0.0.3/package.json",
+            "licenseTextEvidence": [],
+            "upstreamPackage": "tr46@0.0.3"
+          }
+        ],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/tr46@0.0.3?target=denonext",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:ab11f52f6e07d9455eed347f",
+        "remainingReason": null,
+        "version": "0.0.3"
+      },
+      {
+        "associations": [],
+        "ecosystem": "npm",
+        "name": "buffers",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:ac85ba85e0a56279d4fec26a",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "0.1.1"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Fresh SHA256 equality of JAR bytes with a local license-declared Maven coordinate; target selected version is unchanged",
+            "declarationEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
+            "identicalArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
+            "jarSha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f",
+            "observedCoordinate": "com.android:signflinger:8.5.2",
+            "targetArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.11.0/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.11.0.jar"
+          }
+        ],
+        "ecosystem": "maven",
+        "name": "com.android:signflinger",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:b62189b4eb2f4590eff49ae4",
+        "remainingReason": null,
+        "version": "8.11.0"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Fresh SHA256 equality of JAR bytes with a local license-declared Maven coordinate; target selected version is unchanged",
+            "declarationEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
+            "identicalArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
+            "jarSha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f",
+            "observedCoordinate": "com.android:signflinger:8.5.2",
+            "targetArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.3.0/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.3.0.jar"
+          }
+        ],
+        "ecosystem": "maven",
+        "name": "com.android:signflinger",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:c4f00d0236c69df31f9c33af",
+        "remainingReason": null,
+        "version": "8.3.0"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Fresh SHA256 equality of JAR bytes with a local license-declared Maven coordinate; target selected version is unchanged",
+            "declarationEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.5.2/630061e6d18c23551b6e294a89a5314a20d93e5f/zipflinger-8.5.2.pom",
+            "identicalArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.5.2/de8e3267995699af356740cf562cbedb485f5763/zipflinger-8.5.2.jar",
+            "jarSha256": "81dd485618a509a3235929b9eb13091d884452661de6ce5a45cc38b1c555421c",
+            "observedCoordinate": "com.android:zipflinger:8.5.2",
+            "targetArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.3.0/de8e3267995699af356740cf562cbedb485f5763/zipflinger-8.3.0.jar"
+          }
+        ],
+        "ecosystem": "maven",
+        "name": "com.android:zipflinger",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:c86fba338e09e5edcdaf0fe3",
+        "remainingReason": null,
+        "version": "8.3.0"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Fresh SHA256 equality of JAR bytes with a local license-declared Maven coordinate; target selected version is unchanged",
+            "declarationEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.5.2/630061e6d18c23551b6e294a89a5314a20d93e5f/zipflinger-8.5.2.pom",
+            "identicalArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.5.2/de8e3267995699af356740cf562cbedb485f5763/zipflinger-8.5.2.jar",
+            "jarSha256": "81dd485618a509a3235929b9eb13091d884452661de6ce5a45cc38b1c555421c",
+            "observedCoordinate": "com.android:zipflinger:8.5.2",
+            "targetArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.3.1/de8e3267995699af356740cf562cbedb485f5763/zipflinger-8.3.1.jar"
+          }
+        ],
+        "ecosystem": "maven",
+        "name": "com.android:zipflinger",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:e17bb75a00cc5200f0e77b6d",
+        "remainingReason": null,
+        "version": "8.3.1"
+      },
+      {
+        "associations": [],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/@supabase/supabase-js@2.49.4",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:e4e36157a8ab214755e9d7fa",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "2.49.4"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Exact upstream npm version declaration in SRI-verified local registry cache; transformed CDN bytes remain separately locked",
+            "declarationEvidence": "/Users/jeanbosco/.npm/_cacache/content-v2/sha512/22/68/dccfb91fb4c432cd0e50a2159f20bec1cfacad6f0b718d3ae179e4a43e5efe9539570a9f2024b380127ee8bcc08652f4296071db4d085472562288a8688a",
+            "registryUrl": "https://registry.npmjs.org/bufferutil",
+            "upstreamPackage": "bufferutil@4.1.0"
+          }
+        ],
+        "ecosystem": "deno-remote",
+        "name": "https://esm.sh/bufferutil@4.1.0?target=denonext",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:f31c4cb9059e1429e4446127",
+        "remainingReason": null,
+        "version": "4.1.0"
+      },
+      {
+        "associations": [
+          {
+            "basis": "Fresh SHA256 equality of JAR bytes with a local license-declared Maven coordinate; target selected version is unchanged",
+            "declarationEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
+            "identicalArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
+            "jarSha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f",
+            "observedCoordinate": "com.android:signflinger:8.5.2",
+            "targetArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.11.1/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.11.1.jar"
+          }
+        ],
+        "ecosystem": "maven",
+        "name": "com.android:signflinger",
+        "partialEvidence": [],
+        "recovered": true,
+        "ref": "dependency:f5f92377517f062122915a63",
+        "remainingReason": null,
+        "version": "8.11.1"
+      },
+      {
+        "associations": [],
+        "ecosystem": "maven",
+        "name": "com.android:zipflinger",
+        "partialEvidence": [],
+        "recovered": false,
+        "ref": "dependency:fb7e2849f69b7f11f4a29e1f",
+        "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
+        "version": "8.1.4"
+      }
+    ],
+    "networkRequests": 0,
+    "originalGapCount": 41,
+    "recoveredComponents": [
+      "dependency:23b754387a752b235c389102",
+      "dependency:2bcab586cd757cb4fde44497",
+      "dependency:4254fca3db356a288e40f060",
+      "dependency:564ea2c8cce3a57c6b5987e1",
+      "dependency:6dc1de230c353f14c9c7c293",
+      "dependency:7ba3ebe4d0a8e469fc61fcfd",
+      "dependency:81c2da632f31594dd4c9696f",
+      "dependency:8326e1d0ee398125e7f824f1",
+      "dependency:839d74d68a054fa4bd8adfa4",
+      "dependency:85840cb418d492a0599d0080",
+      "dependency:947bbb446cc6bf212028678a",
+      "dependency:9d88dc10ce1762ac2b82eacc",
+      "dependency:ab11f52f6e07d9455eed347f",
+      "dependency:b62189b4eb2f4590eff49ae4",
+      "dependency:c4f00d0236c69df31f9c33af",
+      "dependency:c86fba338e09e5edcdaf0fe3",
+      "dependency:e17bb75a00cc5200f0e77b6d",
+      "dependency:f31c4cb9059e1429e4446127",
+      "dependency:f5f92377517f062122915a63"
+    ],
+    "remainingGapCount": 22,
+    "selectedVersionsChanged": 0
+  },
+  "payloadTables": {
+    "encoding": "json-cells-tsv-v1",
+    "maxShardBytes": 2097152,
+    "tables": [
+      {
+        "fieldPath": [
+          "components"
+        ],
+        "kind": "list",
+        "rows": 2265,
+        "sha256": "43d776627b37f37ab7d69c3a4273188a0bcf6c18a3b475f7c05d92cec2a20349",
+        "shards": [
+          {
+            "bytes": 2095322,
+            "path": "local-dependency-inventory-2026-09-30.components.001.tsv",
+            "rows": 889,
+            "sha256": "e406173921233a33882b9025725588d051edaa7866607ad9eaea53c66e74934c"
+          },
+          {
+            "bytes": 2097106,
+            "path": "local-dependency-inventory-2026-09-30.components.002.tsv",
+            "rows": 839,
+            "sha256": "689c535f8dda8cd635ce0159069d0db5252069a70b5181b4e773284c77ee3735"
+          },
+          {
+            "bytes": 1468358,
+            "path": "local-dependency-inventory-2026-09-30.components.003.tsv",
+            "rows": 537,
+            "sha256": "ed99a5333df61a005ee28be6b11402460112dae2f6150bbc435f2b43c5918f56"
+          }
+        ]
+      },
+      {
+        "fieldPath": [
+          "edges"
+        ],
+        "kind": "list",
+        "rows": 7199,
+        "sha256": "5ddfef8524a1d9bd04e36c478838d5fc8d0f1f049a55defbcd46aaaaaf1375e6",
+        "shards": [
+          {
+            "bytes": 2096784,
+            "path": "local-dependency-inventory-2026-09-30.edges.001.tsv",
+            "rows": 1643,
+            "sha256": "cfdb3ddfececb0eb6275be8439b5ee2d9e5f4b96c077d023dedfd9d3a720cafa"
+          },
+          {
+            "bytes": 2079249,
+            "path": "local-dependency-inventory-2026-09-30.edges.002.tsv",
+            "rows": 2080,
+            "sha256": "ee91ed60be9cd7a3d9cd5b343ad213e33316961a8e56cc2906e076acc48a5bc1"
+          },
+          {
+            "bytes": 2081941,
+            "path": "local-dependency-inventory-2026-09-30.edges.003.tsv",
+            "rows": 1456,
+            "sha256": "25ce7bb965b4b48b9c2d1076127676a5320caa651d302d62284b172369e75934"
+          },
+          {
+            "bytes": 2087299,
+            "path": "local-dependency-inventory-2026-09-30.edges.004.tsv",
+            "rows": 1375,
+            "sha256": "73b811248dfcd0885325fdd3b5bed0ce11ded34414789efce7c6229507dccd58"
+          },
+          {
+            "bytes": 490367,
+            "path": "local-dependency-inventory-2026-09-30.edges.005.tsv",
+            "rows": 645,
+            "sha256": "2f71ea2bdb60315c23597a6a13b06498273d56e75381f3ae44e881de904e74d5"
+          }
+        ]
+      },
+      {
+        "fieldPath": [
+          "evidence"
+        ],
+        "kind": "dict",
+        "rows": 8290,
+        "sha256": "91a5d6a2970338cb7012b645e9ec2f22f8513535f4a3daf57dfbf0a94e2d0afb",
+        "shards": [
+          {
+            "bytes": 2096882,
+            "path": "local-dependency-inventory-2026-09-30.evidence.001.tsv",
+            "rows": 5515,
+            "sha256": "4f0b869d9195f43d205f02279b944ae0b13b568d0ee8a0ccce8ac1e9ee3a28e6"
+          },
+          {
+            "bytes": 1285248,
+            "path": "local-dependency-inventory-2026-09-30.evidence.002.tsv",
+            "rows": 2775,
+            "sha256": "34963d92d4ea1f66913fde74bbb01894692d51cde4c986e8262b82df4b0eda08"
+          }
+        ]
+      },
+      {
+        "fieldPath": [
+          "unresolved"
+        ],
+        "kind": "list",
+        "rows": 304,
+        "sha256": "d69e6eceedaf5c81f58eea1f1493f76bd3e6d3f16b63cc8afdbf67e479322d4b",
+        "shards": [
+          {
+            "bytes": 89217,
+            "path": "local-dependency-inventory-2026-09-30.unresolved.001.tsv",
+            "rows": 304,
+            "sha256": "bdb990ee67927ce6c0a2d0fa834b02a592e15fe6c358641cf08221892397f27f"
+          }
+        ]
+      }
+    ]
+  },
+  "repositoryRoot": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB",
+  "runtime": {
+    "pythonRequirement": ">=3.10",
+    "yamlRequirement": "PyYAML==6.0.3"
+  },
+  "schemaVersion": 1,
+  "scope": "Active workspace dependencies and five native targets; historical Drive archives excluded",
+  "summary": {
+    "byEcosystem": {
+      "backend-import": 7,
+      "cocoapods": 1,
+      "dart": 177,
+      "dart-local": 34,
+      "deno-jsr": 3,
+      "deno-npm": 46,
+      "deno-remote": 98,
+      "github-action": 7,
+      "maven": 802,
+      "npm": 1068,
+      "python": 1,
+      "sdk": 3,
+      "swift": 18
+    },
+    "components": 2265,
+    "componentsWithLicenseDeclaration": 1984,
+    "componentsWithLicenseText": 1412,
+    "dependencyEdgeOccurrences": 137849,
+    "dependencyEdges": 7199,
+    "evidenceItems": 8290,
+    "exactInventoryComplete": true,
+    "unresolvedFields": 304
+  }
+}

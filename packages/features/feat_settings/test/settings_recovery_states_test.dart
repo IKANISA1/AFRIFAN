@@ -17,6 +17,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUp(() => ConnectivityService.setOnlineForTest(true));
@@ -568,7 +570,7 @@ Widget _buildSettingsHarness({
 
   return ProviderScope(
     overrides: <Override>[
-      currentUserProvider.overrideWith((ref) => profile),
+      currentUserProvider.overrideWith((ref) => localRouteProfile(profile)),
       supportWhatsAppProvider.overrideWith((ref) async => supportWhatsApp),
       ...overrides,
     ],
@@ -682,8 +684,8 @@ class _OverlayHarnessState extends State<_OverlayHarness> {
 
 class _FailingProfileAuthNotifier extends AuthNotifier {
   @override
-  AuthState build() => const AuthAuthenticated(
-    profile: _profile,
+  AuthState build() => AuthAuthenticated(
+    profile: localRouteProfile(_profile)!,
     workspace: AdminWorkspaceAccess.none,
   );
 
@@ -700,8 +702,8 @@ class _BlockingProfileAuthNotifier extends AuthNotifier {
   int updateCount = 0;
 
   @override
-  AuthState build() => const AuthAuthenticated(
-    profile: _profile,
+  AuthState build() => AuthAuthenticated(
+    profile: localRouteProfile(_profile)!,
     workspace: AdminWorkspaceAccess.none,
   );
 

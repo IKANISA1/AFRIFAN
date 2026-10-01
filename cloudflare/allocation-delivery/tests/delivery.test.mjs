@@ -1,11 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {fixture,claimed,ids,CONSUMER} from './fixture.mjs';
+import {claimed,ids,CONSUMER} from './fixture.mjs';
 import {drain} from '../src/dispatcher.mjs';
+import {withTransportClock,deferred,expireTransportDeadline} from './transport-clock.mjs';
 const fail=(f,c)=>assert.rejects(f,e=>e.code===c);
 const scope={clubId:24,state:'dead',afterEventId:null,limit:50};
 const finish=(f,c,patch={})=>f.source.finish({clubId:24,eventId:c.eventId,leaseId:c.leaseId,expectedRevision:c.revision,requestId:crypto.randomUUID(),outcome:'retry',reason:'sink_unavailable',receiptId:null,...patch});
-async function withFixture(t,fn){const f=await fixture();t.after(()=>f.close());return fn(f);}
+const withFixture=withTransportClock;
 test('actual allocation event becomes one durable operational inbox record and acknowledgement',t=>withFixture(t,async f=>{
  const before={ledger:f.count('pa_ledger'),members:f.count('pa_memberships'),claims:f.count('pa_external_claims')};
  const result=await drain(f.runner);assert.equal(result.stored,1);
@@ -121,9 +122,12 @@ test('wrong receiver receipt cannot acknowledge the source',t=>withFixture(t,asy
  assert.equal((await drain(f.runner)).deadRecorded,1);assert.equal((await f.review.inspect({...scope,state:'delivered'})).items.length,0);
 }));
 test('timeout does not mean remote cancellation; late sink commit deduplicates',t=>withFixture(t,async f=>{
- let pending;
- f.runner.INBOX={accept:event=>(pending=new Promise(resolve=>setTimeout(async()=>resolve(await f.sink.accept(event)),140)))};
- assert.equal((await drain(f.runner)).retryRecorded,1);await pending;
+ const entered=deferred(),release=deferred();let pending;
+ f.runner.INBOX={accept:event=>{entered.resolve();return (pending=release.promise.then(()=>f.sink.accept(event)));}};
+ const operation=drain(f.runner);
+ assert.equal((await expireTransportDeadline(t,operation,entered.promise,Number(f.runner.DELIVERY_TIMEOUT_MS))).retryRecorded,1);
+ assert.equal(f.sinkDb.sql.prepare('SELECT count(*) n FROM adi_events').get().n,0);
+ release.resolve();await pending;
  f.advance(1000);f.runner.INBOX=f.sink;assert.equal((await drain(f.runner)).stored,1);
  assert.equal(f.sinkDb.sql.prepare('SELECT count(*) n FROM adi_events').get().n,1);
 }));

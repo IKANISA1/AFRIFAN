@@ -1,3 +1,4 @@
+import { logDiagnostic } from "./diagnostics.ts";
 import { createAdminClient } from "./supabase.ts";
 import { sendTextMessage } from "./whatsapp.ts";
 
@@ -605,7 +606,7 @@ async function maybeSendWhatsAppConfirmation(
     await sendTextMessage({ phone, body });
     return true;
   } catch (error) {
-    console.error("Failed to send WhatsApp confirmation", error);
+    logDiagnostic("error", "payments_failed_to_send_whatsapp_confirmation", error);
     return false;
   }
 }

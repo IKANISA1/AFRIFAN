@@ -51,6 +51,9 @@ describe("AdminDialogFrame focus contract", () => {
     await waitFor(() => expect(close).toHaveFocus());
 
     await user.tab();
+    expect(within(dialog).getByRole("region", { name: "Review membership" })).toHaveFocus();
+
+    await user.tab();
     expect(screen.getByRole("textbox", { name: "Reviewer note" })).toHaveFocus();
 
     await user.tab();

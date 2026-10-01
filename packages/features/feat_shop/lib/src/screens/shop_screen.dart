@@ -499,7 +499,14 @@ class ShopCatalogSlivers extends StatelessWidget {
                     ),
                     labelStyle: TypographyTokens.labelSmall(
                       isSelected
-                          ? ColorTokens.primaryContainer
+                          ? ColorTokens.contrastForeground(
+                              Color.alphaBlend(
+                                ColorTokens.primaryContainer.withValues(
+                                  alpha: 0.2,
+                                ),
+                                Theme.of(context).colorScheme.surface,
+                              ),
+                            )
                           : ColorTokens.onSurfaceVariant,
                     ),
                     backgroundColor: ColorTokens.transparent,

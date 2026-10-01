@@ -13,6 +13,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
 
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -466,7 +468,7 @@ Future<void> _pumpPrivacyStateGolden(
     ProviderScope(
       key: UniqueKey(),
       overrides: <Override>[
-        currentUserProvider.overrideWith((ref) => profile),
+        currentUserProvider.overrideWith((ref) => localRouteProfile(profile)),
         privacySettingsReaderProvider.overrideWithValue(
           reader ?? _ValuePrivacySettingsReader(settings),
         ),
@@ -476,7 +478,7 @@ Future<void> _pumpPrivacyStateGolden(
         ...overrides,
       ],
       child: ClubConfigScope(
-        config: ClubConfig.fallback(),
+        config: localRouteConfigOrFallback(),
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,
           builder: (context, child) {
@@ -493,11 +495,11 @@ Future<void> _pumpPrivacyStateGolden(
             );
           },
           theme: ClubTheme.from(
-            ClubConfig.fallback(),
+            localRouteConfigOrFallback(),
             brightness: Brightness.light,
           ),
           darkTheme: ClubTheme.from(
-            ClubConfig.fallback(),
+            localRouteConfigOrFallback(),
             brightness: Brightness.dark,
           ),
           themeMode: brightness == Brightness.dark
@@ -529,11 +531,12 @@ Future<void> _pumpPrivacyStateGolden(
   }
 
   expect(tester.takeException(), isNull);
-  await expectLater(
+  await expectGoldenOrClubAssertions(
+    tester,
     routeBoundary,
-    matchesGoldenFile(
-      'goldens/privacy_state_${id}_${brightness.name}_${size.width.toInt()}x${size.height.toInt()}.png',
-    ),
+    'goldens/privacy_state_${id}_${brightness.name}_${size.width.toInt()}x${size.height.toInt()}.png',
+    route: '/settings/privacy',
+    kind: 'route',
   );
 
   await afterCapture?.call(tester);

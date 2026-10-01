@@ -10,6 +10,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
 
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
 const _size = Size(390, 844);
 
 void main() {
@@ -234,11 +236,11 @@ Future<ProviderContainer> _pump(
         builder: (context, ref, _) {
           container = ProviderScope.containerOf(context);
           return ClubConfigScope(
-            config: ClubConfig.fallback(),
+            config: localRouteConfigOrFallback(),
             child: MaterialApp.router(
               debugShowCheckedModeBanner: false,
               theme: ClubTheme.from(
-                ClubConfig.fallback(),
+                localRouteConfigOrFallback(),
                 brightness: brightness,
               ),
               builder: (context, child) => MediaQuery(
@@ -263,10 +265,15 @@ Future<ProviderContainer> _pump(
   return container;
 }
 
-Future<void> _golden(WidgetTester tester, String state) => expectLater(
-  find.byType(MaterialApp),
-  matchesGoldenFile('goldens/admin_notifications_state_${state}_390x844.png'),
-);
+Future<void> _golden(WidgetTester tester, String state) =>
+    expectGoldenOrClubAssertions(
+      tester,
+      find.byType(MaterialApp),
+      'goldens/admin_notifications_state_${state}_390x844.png',
+      route: '/admin/notifications',
+      kind: 'route',
+      surface: 'mobile_internal_admin',
+    );
 
 Future<void> _scrollTo(WidgetTester tester, Finder finder) async {
   await tester.scrollUntilVisible(

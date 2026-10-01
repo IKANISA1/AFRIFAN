@@ -69,6 +69,35 @@ class AfriListRow extends StatelessWidget {
     final secondary = enabled
         ? colors.secondaryText
         : ColorTokens.accessibleDisabledColor(colors.secondaryText);
+    final textContent = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TypographyTokens.bodyLarge(
+            foreground,
+          ).copyWith(height: TypographyTokens.lineHeightRow),
+        ),
+        if (subtitle != null) ...[
+          const SizedBox(height: SpacingTokens.spacing1),
+          Text(subtitle!, style: TypographyTokens.bodySmall(secondary)),
+        ],
+      ],
+    );
+    final leadingIcon = Icon(
+      icon,
+      size: AfriComponentSizes.listIcon,
+      color: foreground,
+    );
+    final trailingControl =
+        trailing ??
+        (onTap == null
+            ? null
+            : Icon(
+                AfriIcons.chevronRight,
+                size: AfriComponentSizes.listChevron,
+                color: secondary,
+              ));
     return AfriPressFeedback(
       enabled: enabled,
       onTap: onTap,
@@ -96,40 +125,45 @@ class AfriListRow extends StatelessWidget {
                 )
               : null,
         ),
-        child: Row(
-          children: [
-            Icon(icon, size: AfriComponentSizes.listIcon, color: foreground),
-            const SizedBox(width: SpacingTokens.spacing4),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // Keep the selected row anatomy at ordinary text sizes. At narrow
+            // enlarged text, give labels the whole row width so icon/chevron
+            // gutters do not split words. This is an accessibility adaptation;
+            // current native reference captures do not show enlarged text.
+            final expandedLabels =
+                constraints.maxWidth < AfriResponsive.mobileContentMax &&
+                MediaQuery.textScalerOf(context).scale(1) >= 1.5;
+            if (expandedLabels) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(
-                    title,
-                    style: TypographyTokens.bodyLarge(
-                      foreground,
-                    ).copyWith(height: TypographyTokens.lineHeightRow),
+                  Row(
+                    children: [
+                      leadingIcon,
+                      if (trailingControl != null) ...[
+                        const Spacer(),
+                        trailingControl,
+                      ],
+                    ],
                   ),
-                  if (subtitle != null) ...[
-                    const SizedBox(height: SpacingTokens.spacing1),
-                    Text(
-                      subtitle!,
-                      style: TypographyTokens.bodySmall(secondary),
-                    ),
-                  ],
+                  const SizedBox(height: SpacingTokens.spacing2),
+                  textContent,
                 ],
-              ),
-            ),
-            if (trailing != null || onTap != null) ...[
-              const SizedBox(width: SpacingTokens.spacing3),
-              trailing ??
-                  Icon(
-                    AfriIcons.chevronRight,
-                    size: AfriComponentSizes.listChevron,
-                    color: secondary,
-                  ),
-            ],
-          ],
+              );
+            }
+            return Row(
+              children: [
+                leadingIcon,
+                const SizedBox(width: SpacingTokens.spacing4),
+                Expanded(child: textContent),
+                if (trailingControl != null) ...[
+                  const SizedBox(width: SpacingTokens.spacing3),
+                  trailingControl,
+                ],
+              ],
+            );
+          },
         ),
       ),
     );
@@ -234,7 +268,7 @@ class AfriSwitchListTile extends StatelessWidget {
       return LayoutBuilder(
         builder: (context, constraints) {
           if (constraints.maxWidth >= AfriResponsive.mobileContentMax) {
-            return _standardTile();
+            return _standardTile(context);
           }
           return MergeSemantics(
             child: Material(
@@ -276,8 +310,10 @@ class AfriSwitchListTile extends StatelessWidget {
                             value: value,
                             onChanged: onChanged,
                             activeThumbColor:
-                                activeThumbColor ?? ColorTokens.onDark,
-                            activeTrackColor: ColorTokens.primary,
+                                activeThumbColor ?? ColorTokens.switchThumb,
+                            activeTrackColor: context.afriSemanticColors.accent,
+                            inactiveThumbColor: ColorTokens.switchThumb,
+                            inactiveTrackColor: ColorTokens.switchInactiveTrack,
                           ),
                         ),
                       ),
@@ -290,10 +326,10 @@ class AfriSwitchListTile extends StatelessWidget {
         },
       );
     }
-    return _standardTile();
+    return _standardTile(context);
   }
 
-  Widget _standardTile() {
+  Widget _standardTile(BuildContext context) {
     return Material(
       type: MaterialType.transparency,
       child: SwitchListTile.adaptive(
@@ -302,8 +338,10 @@ class AfriSwitchListTile extends StatelessWidget {
         title: title,
         subtitle: subtitle,
         secondary: secondary,
-        activeThumbColor: activeThumbColor ?? ColorTokens.onDark,
-        activeTrackColor: ColorTokens.primary,
+        activeThumbColor: activeThumbColor ?? ColorTokens.switchThumb,
+        activeTrackColor: context.afriSemanticColors.accent,
+        inactiveThumbColor: ColorTokens.switchThumb,
+        inactiveTrackColor: ColorTokens.switchInactiveTrack,
         contentPadding:
             contentPadding ??
             const EdgeInsets.symmetric(horizontal: SpacingTokens.spacing2),

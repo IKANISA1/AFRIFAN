@@ -6,7 +6,10 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./vitest.setup.ts"],
-    exclude: ["e2e/**", "node_modules/**", ".next/**"],
+    // Keep installed context lookup inside Vitest's module boundary so its
+    // optional Wrangler factory is intercepted by the context regression.
+    server: { deps: { inline: ["@opennextjs/cloudflare"] } },
+    exclude: ["e2e/**", "node_modules/**", ".next/**", ".open-next/**", "tmp/**", "coverage/**"],
     coverage: {
       provider: "v8",
       reporter: ["text", "html", "json-summary"],

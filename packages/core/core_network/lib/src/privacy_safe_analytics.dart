@@ -45,13 +45,210 @@ class PrivacySafeAnalyticsPolicy {
     'task_abandonment': <String>{'task', 'stage'},
   };
 
-  static final RegExp _safeValue = RegExp(r'^[a-z0-9][a-z0-9_:/.-]{0,47}$');
-  static final RegExp _uuid = RegExp(
-    r'^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$',
-    caseSensitive: false,
-  );
-  static final RegExp _longDigits = RegExp(r'\d{6,}');
-  static final RegExp _routeNumericSegment = RegExp(r'^\d+$');
+  static const _valueBuckets = <String>{
+    'zero',
+    'under_100',
+    '100_999',
+    '1000_9999',
+    '10000_99999',
+    '100000_plus',
+  };
+  static const _features = <String>{
+    'home',
+    'club',
+    'live',
+    'predict',
+    'settings',
+    'onboarding',
+    'membership',
+    'contributions',
+    'ticketing',
+    'fan_clubs',
+    'admin',
+    'shop',
+    'news',
+    'squad',
+  };
+
+  /// Values are closed per event and parameter. A syntactically coded string
+  /// is not sufficient: backend-supplied labels and opaque aliases fail closed.
+  static const parameterValues = <String, Map<String, Set<String>>>{
+    'sign_in': {
+      'method': {'anonymous', 'phone_otp'},
+    },
+    'onboarding_complete': {},
+    'profile_update': {
+      'field': {'display_name', 'avatar', 'language', 'phone'},
+    },
+    'prediction_placed': {
+      'market': {'wdw'},
+      'outcome': {'home', 'draw', 'away'},
+      'value_bucket': _valueBuckets,
+    },
+    'prediction_settled': {
+      'status': {'won', 'lost', 'void', 'refunded'},
+      'value_bucket': _valueBuckets,
+    },
+    'wallet_transfer': {
+      'direction': {'sent', 'received'},
+      'value_bucket': _valueBuckets,
+    },
+    'challenge_created': {'value_bucket': _valueBuckets},
+    'challenge_joined': {},
+    'membership_action': {
+      'action': {'created', 'renewed'},
+    },
+    'feature_gated': {'feature': _features},
+    'home_action_selected': {
+      'action': {'tickets', 'membership', 'predict', 'shop'},
+      'layer': {'primary', 'secondary'},
+    },
+    'search_entry': {},
+    'search_success': {
+      'category': {
+        'all',
+        'club',
+        'supporters',
+        'fixtures',
+        'commerce',
+        'services',
+      },
+      'result_count_bucket': {
+        'zero',
+        'one',
+        'two_to_five',
+        'six_to_twenty',
+        'twenty_one_plus',
+      },
+    },
+    'ticket_completion': {
+      'ticket_type': {'general', 'vip'},
+      'payment_channel': {'momo'},
+    },
+    'contribution_completion': {
+      'payment_channel': {'momo'},
+      'value_bucket': _valueBuckets,
+    },
+    'predict_engagement': {
+      'surface': {'predict', 'match_detail'},
+      'action': {'view', 'select', 'review', 'submit'},
+    },
+    'support_access': {
+      'channel': {'whatsapp'},
+    },
+    'error_recovery': {
+      'surface': {
+        'notification_settings',
+        'profile_settings',
+        'privacy_settings',
+        'search',
+      },
+      'outcome': {'conflict_refresh', 'retry_requested'},
+    },
+    'task_abandonment': {
+      'task': {'predict', 'ticket_checkout'},
+      'stage': {'review', 'checkout_review'},
+    },
+  };
+
+  /// Mobile registry public path shapes; parameter contents are never copied.
+  /// The two legacy tickets/orders shapes retain existing coarse SDK labels.
+  static const screenTemplates = <String>{
+    '/admin',
+    '/admin/cms',
+    '/admin/competitions',
+    '/admin/contributions',
+    '/admin/features',
+    '/admin/features/:item',
+    '/admin/matches',
+    '/admin/notifications',
+    '/admin/predict',
+    '/admin/settle',
+    '/auth/otp',
+    '/auth/phone',
+    '/club',
+    '/club/fixtures',
+    '/club/fixtures/:item',
+    '/club/history',
+    '/club/news',
+    '/club/news/:item',
+    '/club/open-web',
+    '/club/partners',
+    '/club/partners/:item',
+    '/club/projects',
+    '/club/projects/:item',
+    '/club/results',
+    '/club/standings',
+    '/club/team',
+    '/club/team/:item',
+    '/contribute',
+    '/contribute/group/:item',
+    '/contribute/group/:item/statement',
+    '/contribute/groups',
+    '/contribute/projects',
+    '/e-ticket/:item',
+    '/fan-clubs',
+    '/fan-clubs/:item',
+    '/feature-unavailable',
+    '/home',
+    '/live',
+    '/live-match',
+    '/live/news/:item',
+    '/membership',
+    '/membership/fans',
+    '/membership/native',
+    '/membership/tier/:item',
+    '/my-tickets',
+    '/onboarding',
+    '/orders/:item',
+    '/predict',
+    '/predict/match/:item',
+    '/predict/picks/:item',
+    '/predict/share',
+    '/search',
+    '/settings',
+    '/settings/edit-profile',
+    '/settings/notifications',
+    '/settings/privacy',
+    '/shop',
+    '/shop/cart',
+    '/shop/product/:item',
+    '/splash',
+    '/tickets',
+    '/tickets/:item',
+    '/tickets/detail/:item',
+    '/tickets/map/:item',
+  };
+  static const screenAliases = <String, String>{
+    'club': '/club',
+    'club-fixture-detail': '/club/fixtures/:item',
+    'club-fixtures': '/club/fixtures',
+    'club-history': '/club/history',
+    'club-news': '/club/news',
+    'club-news-detail': '/club/news/:item',
+    'club-partner-detail': '/club/partners/:item',
+    'club-partners': '/club/partners',
+    'club-player-detail': '/club/team/:item',
+    'club-project-detail': '/club/projects/:item',
+    'club-projects': '/club/projects',
+    'club-public-link': '/club/open-web',
+    'club-results': '/club/results',
+    'club-standings': '/club/standings',
+    'club-team': '/club/team',
+    'contribute': '/contribute',
+    'discovery-search': '/search',
+    'group-detail': '/contribute/group/:item',
+    'home': '/home',
+    'live': '/live',
+    'membership': '/membership',
+    'membership-fans': '/membership/fans',
+    'membership-native': '/membership/native',
+    'predict': '/predict',
+    'product-detail': '/shop/product/:item',
+    'settings': '/settings',
+    'shop': '/shop',
+    'shop-cart': '/shop/cart',
+  };
 
   static PrivacySafeAnalyticsEvent? prepare(
     String name, {
@@ -68,14 +265,11 @@ class PrivacySafeAnalyticsPolicy {
     final sanitized = <String, Object>{};
     for (final entry in incoming.entries) {
       final value = entry.value;
-      if (value is bool) {
-        sanitized[entry.key] = value;
-        continue;
-      }
       if (value is! String) return null;
-
       final normalized = value.trim().toLowerCase();
-      if (!_isSafeCodedValue(normalized)) return null;
+      if (!(parameterValues[name]?[entry.key]?.contains(normalized) ?? false)) {
+        return null;
+      }
       sanitized[entry.key] = normalized;
     }
 
@@ -83,19 +277,6 @@ class PrivacySafeAnalyticsPolicy {
       name: name,
       parameters: Map<String, Object>.unmodifiable(sanitized),
     );
-  }
-
-  static bool _isSafeCodedValue(String value) {
-    if (!_safeValue.hasMatch(value)) return false;
-    if (value.contains('@') ||
-        _uuid.hasMatch(value) ||
-        _longDigits.hasMatch(value) ||
-        value.startsWith('eyj') ||
-        value.contains('bearer') ||
-        value.contains('token')) {
-      return false;
-    }
-    return true;
   }
 
   /// Converts a precise monetary or points value into a non-identifying band.
@@ -117,29 +298,32 @@ class PrivacySafeAnalyticsPolicy {
     return 'twenty_one_plus';
   }
 
-  /// Removes query strings and replaces numeric or UUID path segments before
-  /// a screen name can be emitted.
+  /// Emits only a public template or an approved route-name alias.
   static String? sanitizeScreenName(String screenName) {
-    final rawPath = screenName.split(RegExp(r'[?#]')).first.trim();
-    if (rawPath.isEmpty || rawPath.contains('@')) return null;
-
-    final segments = rawPath
-        .split('/')
-        .map((segment) {
-          final normalized = segment.trim().toLowerCase();
-          if (_routeNumericSegment.hasMatch(normalized) ||
-              _uuid.hasMatch(normalized)) {
-            return ':item';
-          }
-          return normalized;
-        })
-        .toList(growable: false);
-    final sanitized = segments.join('/');
-    if (sanitized.length > 80 ||
-        _longDigits.hasMatch(sanitized) ||
-        sanitized.contains('token')) {
+    final raw = screenName.split(RegExp(r'[?#]')).first.trim();
+    final alias = screenAliases[raw];
+    if (alias != null) return alias;
+    if (!raw.startsWith('/') || raw.contains('@') || raw.contains('\\')) {
       return null;
     }
-    return sanitized;
+    final incoming = raw.split('/');
+    if (incoming.any((part) => part == '.' || part == '..')) return null;
+    for (final template in screenTemplates) {
+      final expected = template.split('/');
+      if (incoming.length != expected.length) continue;
+      var matches = true;
+      for (var index = 0; index < expected.length; index++) {
+        if (expected[index] == ':item') {
+          if (incoming[index].isEmpty) matches = false;
+        } else if (expected[index] != incoming[index]) {
+          matches = false;
+        }
+      }
+      if (matches) return template;
+    }
+    return null;
   }
+
+  static String? sanitizeScreenClass(String value) =>
+      value == 'Flutter' ? 'Flutter' : null;
 }

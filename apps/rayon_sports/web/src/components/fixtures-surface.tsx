@@ -503,7 +503,8 @@ export function FixturesSurface({
                   <div>
                     <TeamCard name={selectedFixture.homeTeam} vertical />
                   </div>
-                  <b aria-label="Score">
+                  <b>
+                    <span className="sr-only">Score: </span>
                     {isLive(selectedFixture.matchStatus) ||
                     isResult(selectedFixture.matchStatus)
                       ? `${selectedFixture.homeScore}–${selectedFixture.awayScore}`
@@ -552,7 +553,7 @@ export function FixturesSurface({
                 </Link>
               </article>
 
-              <div className="fixtures-list" aria-label={localized.listed}>
+              <div className="fixtures-list" role="group" aria-label={localized.listed}>
                 {fixtures.map((fixture) => (
                   <button
                     type="button"

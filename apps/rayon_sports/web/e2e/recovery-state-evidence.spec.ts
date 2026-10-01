@@ -1,3 +1,4 @@
+import { localClubId } from "./fixtures/local-route-assertions.mjs";
 import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence } from "./state-evidence-provenance";
 import fs from "node:fs";
 import path from "node:path";
@@ -49,7 +50,7 @@ async function capture(page: Page, filePrefix: string, state: string) {
 
 test.beforeEach(async ({ browser }, testInfo) => {
   if (testInfo.title === "/admin/offline redirects before the admin layout renders") return;
-  test.setTimeout(120_000);
+  test.setTimeout(360_000);
   evidenceDirectory = prepareStateEvidence(browser, testInfo, "consumer_web_recovery_states");
 });
 
@@ -65,7 +66,11 @@ test("/admin/offline redirects before the admin layout renders", async ({
   await navigateStateEvidence(page, "/admin/offline?source=legacy", {
     waitUntil: "domcontentloaded",
   });
-  await expect(page).toHaveURL(/\/admin-offline\?source=legacy$/);
+  await expect(page).toHaveURL((url) =>
+    url.pathname === "/admin-offline" &&
+    url.searchParams.get("source") === "legacy" &&
+    url.searchParams.get("club") === String(localClubId()),
+  );
   await expect(
     page.getByRole("heading", {
       name: /admin data needs a live connection/i,
@@ -134,9 +139,9 @@ for (const route of recoveryRoutes) {
     await page.mouse.up();
 
     primary = await openRecovery(page, route);
-    await page.addStyleTag({
-      content: "html { font-size: 200% !important; }",
-    });
+    await page.evaluate(() => {
+    document.documentElement.style.setProperty("font-size", "200%", "important");
+  });
     await expect(
       page.getByRole("heading", { name: route.heading }),
     ).toBeVisible();

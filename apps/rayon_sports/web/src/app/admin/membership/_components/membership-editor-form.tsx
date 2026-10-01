@@ -116,7 +116,7 @@ export function MembershipEditorForm({
       aria-labelledby="membership-form-title"
       aria-describedby={errorMessage ? "membership-form-error" : undefined}
       data-keyboard-safe-form="true"
-      className="glass-panel grid gap-4 rounded-[32px] p-6 max-sm:max-h-[calc(100dvh-8rem)] max-sm:overflow-y-auto max-sm:overscroll-contain max-sm:scroll-pb-24"
+      className="ui-panel grid gap-4 rounded-[32px] p-6 max-sm:max-h-[calc(100dvh-8rem)] max-sm:overflow-y-auto max-sm:overscroll-contain max-sm:scroll-pb-24"
     >
       <div className="flex items-center gap-3">
         <p

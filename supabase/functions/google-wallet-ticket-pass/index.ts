@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import {
@@ -167,7 +168,7 @@ export function createGoogleWalletTicketPassHandler(
           : undefined;
         return jsonError(error.message, error.status, code);
       }
-      console.error("google-wallet-ticket-pass failed");
+      logDiagnostic("error", "google_wallet_ticket_pass_google_wallet_ticket_pass_failed");
       return jsonError(
         "Google Wallet pass could not be prepared.",
         502,

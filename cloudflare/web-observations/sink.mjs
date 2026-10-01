@@ -24,10 +24,20 @@ export class PrivateWebObservationStore {
   demand(result.meta?.changes===1);return {schemaVersion:1,recorded:true};
  }catch{throw Error('web_observation_unavailable');}}
  async expire(input){try{
-  this.config();demand(exact(input,['limit'])&&Number.isInteger(input.limit)&&input.limit>=1&&input.limit<=1000);
+  const config=this.config();demand(exact(input,['limit'])&&Number.isInteger(input.limit)&&input.limit>=1&&input.limit<=1000);
   const result=await this.env.WEB_OBSERVATIONS_DB.prepare(`DELETE FROM private_web_observations WHERE record_id IN
-   (SELECT record_id FROM private_web_observations WHERE expires_at_ms<=${NOW_SQL}
-    ORDER BY expires_at_ms,record_id LIMIT ?)`).bind(input.limit).run();
-  return {schemaVersion:1,removed:Number(result.meta.changes)};
+   (SELECT record_id FROM private_web_observations WHERE club_id=? AND expires_at_ms<=${NOW_SQL}
+    ORDER BY expires_at_ms,record_id LIMIT ?)`).bind(config.clubId,input.limit).run();
+  const removed=result?.meta?.changes;
+  demand(Number.isInteger(removed)&&removed>=0&&removed<=input.limit);
+  return {schemaVersion:1,removed};
  }catch{throw Error('web_observation_unavailable');}}
+}
+
+/** A disabled deployment has no database access. Enabled maintenance is scoped
+ * to the same club/policy selection as writes and bounded to one batch per tick. */
+export async function runWebObservationRetention(env){
+ if(!observationConfiguration(env,true))return {schemaVersion:1,enabled:false,removed:0};
+ const result=await new PrivateWebObservationStore(env).expire({limit:1000});
+ return {...result,enabled:true};
 }

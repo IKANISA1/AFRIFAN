@@ -14,7 +14,11 @@ import 'fixtures/five_club_configs.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  setUpAll(loadAppFonts);
+  setUpAll(() async {
+    await loadAppFonts();
+    TypographyTokens.debugUseFallbackFonts = true;
+  });
+  tearDownAll(() => TypographyTokens.debugUseFallbackFonts = false);
   final workspace = resolveRouteInventoryWorkspace(Directory.current);
   final clubs = fiveClubFixtures(workspace);
   for (final club in clubs.entries) {
@@ -33,6 +37,12 @@ void main() {
             final large = state == RouteRecoveryVisualState.largeText;
             final motion = state == RouteRecoveryVisualState.reducedMotion;
             final light = state == RouteRecoveryVisualState.light;
+            // Match the production root's active token brightness and the
+            // real Android font loaded above; do not test Ahem placeholders.
+            ColorTokens.setBrightness(
+              light ? Brightness.light : Brightness.dark,
+            );
+            addTearDown(() => ColorTokens.setBrightness(Brightness.dark));
             await tester.pumpWidget(
               MaterialApp(
                 theme: ClubTheme.from(

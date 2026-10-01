@@ -9,6 +9,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
 
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
 const _goldens = <String, String>{
   'loading': 'goldens/tier_detail_state_loading_dark_390x844.png',
   'empty': 'goldens/tier_detail_state_empty_dark_390x844.png',
@@ -149,9 +151,13 @@ void main() {
         expect(find.text('GOLD'), findsOneWidget);
       }
 
-      await expectLater(
+      await expectGoldenOrClubAssertions(
+        tester,
         find.byKey(const ValueKey<String>('tier-detail-state-golden')),
-        matchesGoldenFile(_goldens[id]!),
+        _goldens[id]!,
+        route: '/membership/tier/:tierId',
+        kind: 'route',
+        surface: 'mobile',
       );
     });
   }
@@ -280,7 +286,10 @@ Future<void> _pumpRoute(
             child: child ?? const SizedBox.shrink(),
           );
         },
-        theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
+        theme: ClubTheme.from(
+          localRouteConfigOrFallback(),
+          brightness: brightness,
+        ),
         routerConfig: router,
       ),
     ),

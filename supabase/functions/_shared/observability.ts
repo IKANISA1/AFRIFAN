@@ -1,3 +1,12 @@
+import {
+  catalogValue,
+  diagnosticError,
+  diagnosticMetadata,
+  HEALTH_FUNCTIONS,
+  HEALTH_ISSUES,
+  HEALTH_SERVICES,
+  logDiagnostic,
+} from "./diagnostics.ts";
 import type { createAdminClient } from "./supabase.ts";
 
 type AdminClient = ReturnType<typeof createAdminClient>;
@@ -22,15 +31,6 @@ export type OperationalHealthEventInput = {
   ingestOrigin?: OperationalEventIngestOrigin;
 };
 
-function normalizeNullableString(value: unknown): string | null {
-  if (typeof value !== "string") {
-    return null;
-  }
-
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : null;
-}
-
 function defaultSeverity(
   status: OperationalEventStatus | undefined,
 ): OperationalEventSeverity {
@@ -49,30 +49,68 @@ export async function recordOperationalHealthEvent(
   event: OperationalHealthEventInput,
 ) {
   try {
+    const service = catalogValue(event.service, HEALTH_SERVICES, "client");
+    const functionName = catalogValue(
+      event.functionName,
+      HEALTH_FUNCTIONS,
+      null,
+    );
+    const issueCode = event.issueCode == null
+      ? null
+      : catalogValue(event.issueCode, HEALTH_ISSUES, "operational_event");
+    const status = ["ok", "warn", "error"].includes(event.status ?? "")
+      ? event.status
+      : "ok";
+    const severity =
+      ["info", "warning", "critical"].includes(event.severity ?? "")
+        ? event.severity
+        : defaultSeverity(status);
+    const occurredAt = typeof event.occurredAt === "string" &&
+        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,3})?Z$/.test(
+          event.occurredAt,
+        ) &&
+        Number.isFinite(Date.parse(event.occurredAt))
+      ? event.occurredAt
+      : new Date().toISOString();
     const { error } = await adminClient
       .from("operational_health_events")
       .insert({
-        service: event.service,
-        component: normalizeNullableString(event.component) ?? "general",
-        status: event.status ?? "ok",
-        severity: event.severity ?? defaultSeverity(event.status),
-        issue_code: normalizeNullableString(event.issueCode),
-        message: event.message,
-        function_name: normalizeNullableString(event.functionName),
-        user_id: normalizeNullableString(event.userId),
-        subject_type: normalizeNullableString(event.subjectType),
-        subject_id: normalizeNullableString(event.subjectId),
-        metadata: event.metadata ?? {},
-        occurred_at: normalizeNullableString(event.occurredAt) ??
-          new Date().toISOString(),
-        ingest_origin: event.ingestOrigin ?? "system",
+        service,
+        component: catalogValue(event.component, HEALTH_FUNCTIONS, "general"),
+        status,
+        severity,
+        issue_code: issueCode,
+        message: status === "error"
+          ? "Operational health failure."
+          : status === "warn"
+          ? "Operational health requires review."
+          : "Operational health event.",
+        function_name: functionName,
+        // These are diagnostics. Transaction/receipt/audit tables keep their
+        // authorised identities; health telemetry does not duplicate them.
+        user_id: null,
+        subject_type: null,
+        subject_id: null,
+        metadata: diagnosticMetadata(event.metadata),
+        occurred_at: occurredAt,
+        ingest_origin: event.ingestOrigin === "mobile_app"
+          ? "mobile_app"
+          : "system",
       });
 
     if (error) {
-      console.error("operational health event insert failed", error);
+      logDiagnostic(
+        "error",
+        "observability_operational_health_event_insert_failed",
+        error,
+      );
     }
   } catch (error) {
-    console.error("operational health event insert crashed", error);
+    logDiagnostic(
+      "error",
+      "observability_operational_health_event_insert_crashed",
+      error,
+    );
   }
 }
 
@@ -88,26 +126,20 @@ export async function recordEdgeFunctionFailure(
     metadata?: Record<string, unknown>;
   },
 ) {
-  const message = options.error instanceof Error
-    ? options.error.message
-    : "Unexpected Edge Function failure";
-
   await recordOperationalHealthEvent(adminClient, {
     service: "edge_function",
     component: options.functionName,
     status: "error",
     severity: "critical",
     issueCode: options.issueCode ?? "function_invocation_failed",
-    message,
+    message: "Edge Function invocation failed.",
     functionName: options.functionName,
     userId: options.userId,
     subjectType: options.subjectType,
     subjectId: options.subjectId,
     metadata: {
-      ...(options.metadata ?? {}),
-      error_name: options.error instanceof Error
-        ? options.error.name
-        : typeof options.error,
+      ...diagnosticMetadata(options.metadata),
+      ...diagnosticError(options.error),
     },
   });
 }

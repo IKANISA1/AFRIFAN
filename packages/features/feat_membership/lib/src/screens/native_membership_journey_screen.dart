@@ -4,6 +4,7 @@ import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../native_supporter_journey.dart';
 
@@ -27,6 +28,9 @@ class _NativeMembershipJourneyScreenState
     with WidgetsBindingObserver {
   final _phone = TextEditingController(), _code = TextEditingController();
   NativeSupporterJourney? _journey;
+  GoRouter? _router;
+  String? _routePath;
+  int? _invalidationEpoch;
   String? _acknowledgedReview;
   bool _releaseAcknowledged = false;
   bool _restartAcknowledged = false;
@@ -43,6 +47,43 @@ class _NativeMembershipJourneyScreenState
     _acknowledgedReview = null;
     _releaseAcknowledged = false;
     _restartAcknowledged = false;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final router = GoRouter.maybeOf(context);
+    if (_router != router) {
+      _router?.routeInformationProvider.removeListener(_routeChanged);
+      _router = router;
+      router?.routeInformationProvider.addListener(_routeChanged);
+    }
+    if (router != null) _routePath = GoRouterState.of(context).matchedLocation;
+  }
+
+  void _routeChanged() {
+    // Indexed-stack branches stay mounted offstage. Invalidate on the route
+    // notification, before the next frame can hide the previous branch.
+    if (_router?.routeInformationProvider.value.uri.path != _routePath) {
+      _clearDrafts();
+      _journey?.invalidate();
+    }
+  }
+
+  void _journeyChanged() {
+    final epoch = _journey?.invalidationEpoch;
+    if (_invalidationEpoch != epoch) {
+      _invalidationEpoch = epoch;
+      _clearDrafts();
+    }
+  }
+
+  void _bindJourney(NativeSupporterJourney? journey) {
+    if (_journey == journey) return;
+    _journey?.removeListener(_journeyChanged);
+    _journey = journey;
+    _invalidationEpoch = journey?.invalidationEpoch;
+    journey?.addListener(_journeyChanged);
   }
 
   @override
@@ -63,6 +104,8 @@ class _NativeMembershipJourneyScreenState
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _router?.routeInformationProvider.removeListener(_routeChanged);
+    _journey?.removeListener(_journeyChanged);
     _journey?.invalidate();
     _phone.dispose();
     _code.dispose();
@@ -81,7 +124,7 @@ class _NativeMembershipJourneyScreenState
       }
     });
     final journey = widget.journey ?? ref.watch(nativeSupporterJourneyProvider);
-    _journey = journey;
+    _bindJourney(journey);
     final l10n = context.afriL10n;
     if (journey == null || !journey.matchesClub(widget.configuredClubId)) {
       return AfriScreenScaffold(
@@ -94,7 +137,10 @@ class _NativeMembershipJourneyScreenState
     }
     return PopScope(
       onPopInvokedWithResult: (didPop, _) {
-        if (didPop) journey.invalidate();
+        if (didPop) {
+          _clearDrafts();
+          journey.invalidate();
+        }
       },
       child: AnimatedBuilder(
         animation: journey,
@@ -143,11 +189,10 @@ class _NativeMembershipJourneyScreenState
                 ],
                 if (journey.identity != null && !journey.busy) ...[
                   const SizedBox(height: SpacingTokens.spacing6),
-                  _button(
-                    l10n.nativeMembershipSignOut,
-                    journey.signOut,
-                    secondary: true,
-                  ),
+                  _button(l10n.nativeMembershipSignOut, () {
+                    _clearDrafts();
+                    return journey.signOut();
+                  }, secondary: true),
                 ],
               ],
             ),

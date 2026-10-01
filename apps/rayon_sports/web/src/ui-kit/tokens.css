@@ -6,12 +6,7 @@
   --void: #000;
   --background: #000;
   --surface-dim: #000;
-  --surface-container-lowest: #161618;
-  --surface-container-low: #161618;
-  --surface-container: #161618;
   --surface: #161618;
-  --surface-container-high: #242426;
-  --surface-container-highest: #2c2c2e;
   --surface-bright: #2c2c2e;
   --surface-variant: rgba(255, 255, 255, 0.06);
   --surface-strong: #161618;
@@ -19,12 +14,9 @@
   --surface-elevated: #242426;
   --surface-hero: #000d19;
   --primary: #6fa0ff;
-  --primary-container: #4f55f1;
-  --secondary-container: #242426;
-  --outline-variant: rgba(255, 255, 255, 0.12);
   --outline-ghost: rgba(255, 255, 255, 0.1);
   --outline-focus: #6fa0ff;
-  --glass-fill: rgba(22, 22, 24, 0.9);
+  --chrome-surface: rgba(22, 22, 24, 0.9);
   --foreground: #f4f4f4;
   --foreground-muted: #a1a1a3;
   --foreground-soft: #a1a1a3;
@@ -56,6 +48,14 @@
   --success-wash: #e4f7f0;
   --warning-wash: #fff3d6;
   --error-wash: #ffe9ec;
+  /* Screen-family gradients are provisional render adapters for the selected
+   * blue website and violet membership/rewards compositions, not native exports. */
+  --overview-blue: linear-gradient(155deg, #304df8, #05129a 55%, #000445);
+  --overview-membership: linear-gradient(145deg, #6219e5, #352b7d 55%, #161618);
+  --overview-rewards: linear-gradient(155deg, #814bf3, #352b7d);
+  --membership-code: linear-gradient(125deg, #8017ee, #6219e5);
+  --action-dark: #191c1f;
+  --action-dark-hover: #2c2c2e;
   --radius-sm: 12px;
   --radius-md: 16px;
   --radius-lg: 24px;
@@ -65,9 +65,9 @@
   --blur-standard: 20px;
   --blur-overlay: 28px;
   --blur-atmospheric: 40px;
+  --scrim: rgba(0, 0, 0, 0.6);
   --border-hairline: 1px;
   --border-focus: 2px;
   --shadow-standard: 0 8px 24px rgba(0, 0, 0, 0.12);
   --shadow-floating: 0 16px 48px rgba(0, 0, 0, 0.24);
-  --shadow-glass: none;
 }

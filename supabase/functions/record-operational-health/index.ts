@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import {
@@ -144,7 +145,7 @@ export function createRecordOperationalHealthHandler(
 
       return jsonOk({ success: true });
     } catch (error) {
-      console.error("record-operational-health error:", error);
+      logDiagnostic("error", "record_operational_health_record_operational_health_error", error);
       return jsonError(
         error instanceof Error ? error.message : "Unknown error",
         500,

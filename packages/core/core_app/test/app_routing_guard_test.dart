@@ -8,6 +8,7 @@ import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
@@ -33,6 +34,211 @@ void main() {
       config = const _FakeClubConfig();
       ColorTokens.init();
     });
+
+    testWidgets('root club replacement disposes the previous private scope', (
+      tester,
+    ) async {
+      var created = 0;
+      var disposed = 0;
+      var closed = 0;
+      final owner = Provider<Object>((ref) {
+        created++;
+        ref.onDispose(() => disposed++);
+        return Object();
+      });
+      final first = FakeAuthRepository(clubId: '1');
+      final second = FakeAuthRepository(clubId: '2');
+      final modules = [_HomeModule(), _IndependentIdentityModule()];
+      AfriClubApp app(ClubConfig club, AuthRepository repository) =>
+          AfriClubApp(
+            key: const ValueKey('retained-root'),
+            config: club,
+            modules: modules,
+            authRepository: repository,
+            eagerProviders: [owner],
+            initialLocation: '/native-identity-entry',
+            onAccountChanged: () => closed++,
+          );
+      await tester.pumpWidget(app(config, first));
+      await tester.pumpAndSettle();
+      final oldContext = tester.element(
+        find.text('Independent identity entry'),
+      );
+      final oldContainer = ProviderScope.containerOf(oldContext);
+      final oldRoutes = GoRouter.of(oldContext).routeInformationProvider;
+      expect(oldContainer.read(authRepositoryProvider), same(first));
+      expect(created, 1);
+
+      await tester.pumpWidget(app(const _FakeClubConfig(clubId: '2'), second));
+      await tester.pumpAndSettle();
+      final newContext = tester.element(
+        find.text('Independent identity entry'),
+      );
+      final newContainer = ProviderScope.containerOf(newContext);
+      expect(closed, 1);
+      expect(newContainer, isNot(same(oldContainer)));
+      expect(newContainer.read(authRepositoryProvider), same(second));
+      expect(first.authenticationInvalidations, greaterThan(0));
+      expect(second.authenticationInvalidations, 0);
+      expect(created, 2);
+      expect(disposed, 1);
+      expect(
+        GoRouter.of(newContext).routeInformationProvider,
+        isNot(same(oldRoutes)),
+      );
+      expect(() => oldRoutes.addListener(() {}), throwsFlutterError);
+      await tester.pumpWidget(const SizedBox.shrink());
+      expect(disposed, 2);
+      expect(second.authenticationInvalidations, greaterThan(0));
+    });
+
+    testWidgets(
+      'same-club repository replacement restores the new account without disposing its protected owner',
+      (tester) async {
+        var disposed = 0;
+        var closed = 0;
+        final owner = Provider<Object>((ref) {
+          ref.onDispose(() => disposed++);
+          return Object();
+        });
+        final first = FakeAuthRepository(
+          restoreResult: const UserProfile(
+            id: 'first-account',
+            clubId: '1',
+            publicUserId: 'synthetic-first',
+          ),
+        );
+        final second = FakeAuthRepository(
+          restoreResult: const UserProfile(
+            id: 'second-account',
+            clubId: '1',
+            publicUserId: 'synthetic-second',
+          ),
+        );
+        final modules = [_HomeModule(), _IndependentIdentityModule()];
+        AfriClubApp app(AuthRepository repository) => AfriClubApp(
+          key: const ValueKey('retained-root'),
+          config: config,
+          modules: modules,
+          authRepository: repository,
+          eagerProviders: [owner],
+          initialLocation: '/native-identity-entry',
+          onAccountChanged: () => closed++,
+        );
+        await tester.pumpWidget(app(first));
+        await tester.pumpAndSettle();
+        final context = tester.element(find.text('Independent identity entry'));
+        final container = ProviderScope.containerOf(context);
+        final routes = GoRouter.of(context).routeInformationProvider;
+        final protectedOwner = container.read(owner);
+        expect(container.read(authStateProvider).user?.id, 'first-account');
+
+        await tester.pumpWidget(app(second));
+        await tester.pumpAndSettle();
+        final newContext = tester.element(
+          find.text('Independent identity entry'),
+        );
+        expect(ProviderScope.containerOf(newContext), same(container));
+        expect(container.read(authRepositoryProvider), same(second));
+        expect(first.authenticationInvalidations, greaterThan(0));
+        expect(second.authenticationInvalidations, 0);
+        expect(container.read(authStateProvider).user?.id, 'second-account');
+        expect(container.read(owner), same(protectedOwner));
+        expect(GoRouter.of(newContext).routeInformationProvider, same(routes));
+        expect(closed, greaterThanOrEqualTo(1));
+        expect(disposed, 0);
+        await tester.pumpWidget(const SizedBox.shrink());
+        expect(disposed, 1);
+        expect(second.authenticationInvalidations, greaterThan(0));
+      },
+    );
+
+    testWidgets(
+      'global account changes synchronously close independent private views',
+      (tester) async {
+        final auth = _AccountTransitionNotifier();
+        var closed = 0;
+        await tester.pumpWidget(
+          AfriClubApp(
+            config: config,
+            modules: [_HomeModule(), _IndependentIdentityModule()],
+            authRepository: FakeAuthRepository(),
+            initialLocation: '/native-identity-entry',
+            providerOverrides: [authStateProvider.overrideWith(() => auth)],
+            onAccountChanged: () {
+              closed++;
+            },
+          ),
+        );
+        await tester.pumpAndSettle();
+        auth.change(
+          const AuthAuthenticated(
+            profile: UserProfile(
+              id: 'legacy-first',
+              clubId: '1',
+              publicUserId: 'synthetic',
+            ),
+          ),
+        );
+        expect(closed, 0);
+        auth.change(
+          const AuthAuthenticated(
+            profile: UserProfile(
+              id: 'legacy-second',
+              clubId: '1',
+              publicUserId: 'synthetic',
+            ),
+          ),
+        );
+        expect(closed, 1);
+        auth.change(
+          const AuthAuthenticated(
+            profile: UserProfile(
+              id: 'legacy-second',
+              clubId: '2',
+              publicUserId: 'synthetic',
+            ),
+          ),
+        );
+        expect(closed, 2);
+        auth.change(const AuthUnauthenticated());
+        expect(closed, 3);
+        await tester.pump();
+        expect(find.text('Independent identity entry'), findsOneWidget);
+        final routeInformation = GoRouter.of(
+          tester.element(find.text('Independent identity entry')),
+        ).routeInformationProvider;
+        await tester.pumpWidget(const SizedBox.shrink());
+        await tester.pump();
+        expect(() => routeInformation.addListener(() {}), throwsFlutterError);
+      },
+    );
+
+    for (final path in ['/settings', '/admin']) {
+      testWidgets('foreign-club grant cannot authorize $path', (tester) async {
+        await tester.pumpWidget(
+          AfriClubApp(
+            config: const _FakeClubConfig(clubId: '2'),
+            modules: [
+              _HomeModule(),
+              _OnboardingModule(),
+              _SettingsModule(),
+              _AdminModule(),
+            ],
+            authRepository: FakeAuthRepository(clubId: '2'),
+            initialLocation: path,
+            providerOverrides: [
+              authStateProvider.overrideWith(_AccountTransitionNotifier.new),
+            ],
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(find.byType(_FakePhoneAuthScreen), findsOneWidget);
+        expect(find.text('reauth-from:$path'), findsOneWidget);
+        expect(find.byType(_FakeSettingsScreen), findsNothing);
+        await tester.pumpWidget(const SizedBox.shrink());
+      });
+    }
 
     for (final signedIn in [false, true]) {
       testWidgets(
@@ -199,6 +405,33 @@ void main() {
         );
       },
     );
+
+    for (final malformed in ['%FF', '%2Fsettings%2F%25FF']) {
+      testWidgets(
+        'rejects malformed deferred destination $malformed after authentication',
+        (tester) async {
+          await tester.pumpWidget(
+            AfriClubApp(
+              config: config,
+              modules: [_HomeModule(), _OnboardingModule(), _SettingsModule()],
+              authRepository: FakeAuthRepository(
+                restoreResult: const UserProfile(
+                  id: 'user-1',
+                  clubId: '1',
+                  publicUserId: '483912',
+                ),
+              ),
+              initialLocation: '/onboarding?from=$malformed',
+            ),
+          );
+          await tester.pump();
+          await tester.pumpAndSettle();
+          expect(tester.takeException(), isNull);
+          expect(find.byType(_FakeHomeScreen), findsOneWidget);
+          expect(find.byType(_FakeSettingsScreen), findsNothing);
+        },
+      );
+    }
 
     testWidgets('rejects external deferred destinations after authentication', (
       tester,
@@ -678,18 +911,40 @@ class _FakeSettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) => const Scaffold(body: Text('Settings'));
 }
 
+class _AccountTransitionNotifier extends AuthNotifier {
+  @override
+  AuthState build() => const AuthAuthenticated(
+    profile: UserProfile(
+      id: 'legacy-first',
+      clubId: '1',
+      publicUserId: 'synthetic',
+    ),
+  );
+  void change(AuthState next) {
+    state = next;
+  }
+}
+
 class FakeAuthRepository extends AuthRepository {
   FakeAuthRepository({
+    super.clubId = '1',
     this.restoreResult,
     this.restoreError,
     this.adminAccess = AdminWorkspaceAccess.none,
     this.authChanges,
-  }) : super(clubId: '1');
+  });
 
   final UserProfile? restoreResult;
   final Object? restoreError;
   final AdminWorkspaceAccess adminAccess;
   final Stream<supabase.AuthState>? authChanges;
+  int authenticationInvalidations = 0;
+
+  @override
+  void invalidatePendingAuthentication() {
+    authenticationInvalidations++;
+    super.invalidatePendingAuthentication();
+  }
 
   @override
   Future<UserProfile?> restoreCurrentUser() async {
@@ -713,13 +968,13 @@ class FakeAuthRepository extends AuthRepository {
 }
 
 class _FakeClubConfig implements ClubConfig {
-  const _FakeClubConfig();
+  const _FakeClubConfig({this.clubId = '1'});
 
   @override
   String get appName => 'AFRICLUB Test';
 
   @override
-  String get clubId => '1';
+  final String clubId;
 
   @override
   String get clubName => 'AFRICLUB Test Club';

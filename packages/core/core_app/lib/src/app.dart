@@ -25,6 +25,8 @@ class AfriClubApp extends StatefulWidget {
   final Map<String, dynamic>? platformConfigSnapshot;
   final AuthRepository? authRepository;
   final List<Override> providerOverrides;
+  final List<ProviderListenable<Object?>> eagerProviders;
+  final VoidCallback? onAccountChanged;
   final String? initialLocation;
   final DeepLinkParser? deepLinkParser;
   final DeepLinkService? deepLinkService;
@@ -37,6 +39,8 @@ class AfriClubApp extends StatefulWidget {
     this.platformConfigSnapshot,
     this.authRepository,
     this.providerOverrides = const <Override>[],
+    this.eagerProviders = const <ProviderListenable<Object?>>[],
+    this.onAccountChanged,
     this.initialLocation,
     this.deepLinkParser,
     this.deepLinkService,
@@ -48,8 +52,9 @@ class AfriClubApp extends StatefulWidget {
 }
 
 class _AfriClubAppState extends State<AfriClubApp> {
-  late final AuthRepository _authRepository;
-  late final List<Locale> _supportedLocales;
+  late AuthRepository _authRepository;
+  late List<Locale> _supportedLocales;
+  var _clubScopeGeneration = 0;
 
   @override
   void initState() {
@@ -60,6 +65,38 @@ class _AfriClubAppState extends State<AfriClubApp> {
     _supportedLocales = _buildSupportedLocales(
       widget.config.supportedLanguages,
     );
+  }
+
+  @override
+  void didUpdateWidget(covariant AfriClubApp oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final clubChanged = oldWidget.config.clubId != widget.config.clubId;
+    final repositoryChanged = !identical(
+      oldWidget.authRepository,
+      widget.authRepository,
+    );
+    if (clubChanged || repositoryChanged) {
+      _authRepository.invalidatePendingAuthentication();
+      // Close the previous account's in-memory views before replacing its
+      // repository. Protected operation journals keep their existing authority.
+      oldWidget.onAccountChanged?.call();
+      _authRepository =
+          widget.authRepository ?? AuthRepository(clubId: widget.config.clubId);
+    }
+    if (clubChanged) {
+      // A router and its providers are scoped to one club. Recreate both rather
+      // than retaining old route, feature and account state under new branding.
+      _clubScopeGeneration++;
+    }
+    _supportedLocales = _buildSupportedLocales(
+      widget.config.supportedLanguages,
+    );
+  }
+
+  @override
+  void dispose() {
+    _authRepository.invalidatePendingAuthentication();
+    super.dispose();
   }
 
   @override
@@ -77,10 +114,14 @@ class _AfriClubAppState extends State<AfriClubApp> {
     ];
 
     return ProviderScope(
+      key: ValueKey(_clubScopeGeneration),
       overrides: providerOverrides,
       child: _AfriClubMaterialApp(
+        authRepository: _authRepository,
         config: widget.config,
         modules: widget.modules,
+        eagerProviders: widget.eagerProviders,
+        onAccountChanged: widget.onAccountChanged,
         supportedLocales: _supportedLocales,
         platformConfigSnapshot: widget.platformConfigSnapshot,
         initialLocation: widget.initialLocation,
@@ -105,9 +146,12 @@ class _AfriClubAppState extends State<AfriClubApp> {
 
 class _AfriClubMaterialApp extends ConsumerStatefulWidget {
   const _AfriClubMaterialApp({
+    required this.authRepository,
     required this.config,
     required this.modules,
     required this.supportedLocales,
+    this.eagerProviders = const <ProviderListenable<Object?>>[],
+    this.onAccountChanged,
     required this.frameworkLocaleForLanguageCode,
     required this.appLocaleForLanguageCode,
     this.platformConfigSnapshot,
@@ -118,8 +162,11 @@ class _AfriClubMaterialApp extends ConsumerStatefulWidget {
   });
 
   final ClubConfig config;
+  final AuthRepository authRepository;
   final List<FeatureModule> modules;
   final List<Locale> supportedLocales;
+  final List<ProviderListenable<Object?>> eagerProviders;
+  final VoidCallback? onAccountChanged;
   final Map<String, dynamic>? platformConfigSnapshot;
   final String? initialLocation;
   final DeepLinkParser? deepLinkParser;
@@ -158,7 +205,18 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
 
     _normalizedClubId = int.tryParse(widget.config.clubId);
     _routerRefreshTick = ValueNotifier<int>(0);
-    _authSubscription = ref.listenManual<AuthState>(authStateProvider, (_, __) {
+    _authSubscription = ref.listenManual<AuthState>(authStateProvider, (
+      old,
+      next,
+    ) {
+      if (old is AuthAuthenticated &&
+          (next is! AuthAuthenticated ||
+              old.user.id != next.user.id ||
+              old.user.clubId != next.user.clubId)) {
+        // Private native views close on a global account transition. Their
+        // separate protected authority/journals are not revoked or retried.
+        widget.onAccountChanged?.call();
+      }
       _routerRefreshTick.value = _routerRefreshTick.value + 1;
     });
     _featureConfigSubscription = ref
@@ -193,7 +251,8 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
         onError: (Object error, StackTrace stackTrace) {
           AfriLogger.warn(
             'AfriClubApp',
-            'Ignoring malformed inbound deep link: $error',
+            'Ignoring malformed inbound deep link.',
+            error,
           );
           unawaited(CrashlyticsService.recordError(error, stackTrace));
         },
@@ -205,7 +264,8 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
       onError: (Object error, StackTrace stackTrace) {
         AfriLogger.warn(
           'AfriClubApp',
-          'Ignoring malformed notification route: $error',
+          'Ignoring malformed notification route.',
+          error,
         );
         unawaited(CrashlyticsService.recordError(error, stackTrace));
       },
@@ -217,12 +277,25 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
   }
 
   @override
+  void didUpdateWidget(covariant _AfriClubMaterialApp oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.authRepository, widget.authRepository)) {
+      // Riverpod rebuilds auth against the replacement repository. Restore the
+      // new session after that update without disposing the same-club protected
+      // journey owner supplied by the caller.
+      _scheduleAuthRestore();
+      _routerRefreshTick.value = _routerRefreshTick.value + 1;
+    }
+  }
+
+  @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     unawaited(_deepLinkSubscription?.cancel());
     unawaited(_notificationRouteSubscription?.cancel());
     _authSubscription.close();
     _featureConfigSubscription.close();
+    _appRouter.router.dispose();
     _routerRefreshTick.dispose();
     super.dispose();
   }
@@ -386,6 +459,15 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
     }
 
     if (authState is AuthAuthenticated) {
+      final profileClubId = int.tryParse(authState.user.clubId);
+      if (_normalizedClubId == null || profileClubId != _normalizedClubId) {
+        // A session for another club cannot authorize private destinations in
+        // this router. Independently scoped native entry routes use their own
+        // authority above; public reads remain available without this grant.
+        return _isPublicPath(location)
+            ? null
+            : _buildRedirectUri('/auth/phone', state);
+      }
       if (location == '/feature-unavailable') {
         return null;
       }
@@ -431,7 +513,12 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
   }
 
   String? _safeDeferredDestination(GoRouterState state) {
-    final raw = state.uri.queryParameters['from']?.trim();
+    final String? raw;
+    try {
+      raw = state.uri.queryParameters['from']?.trim();
+    } on FormatException {
+      return null;
+    }
     if (raw == null || raw.isEmpty) {
       return null;
     }
@@ -455,6 +542,9 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
 
   @override
   Widget build(BuildContext context) {
+    for (final provider in widget.eagerProviders) {
+      ref.watch(provider);
+    }
     final languageCode =
         ref.watch(currentUserProvider)?.languageCode ?? widget.config.language;
     final appLocale = widget.appLocaleForLanguageCode(languageCode);

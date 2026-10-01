@@ -72,19 +72,29 @@ class OnboardingModule extends FeatureModule {
 }
 
 String _splashRedirect(GoRouterState state) {
-  final raw = state.uri.queryParameters['from']?.trim();
-  final uri = raw == null || raw.isEmpty ? null : Uri.tryParse(raw);
-  final path = uri?.path;
-  if (path == null ||
-      path.isEmpty ||
-      !path.startsWith('/') ||
-      path == '/splash' ||
-      path == '/onboarding') {
+  try {
+    final raw = state.uri.queryParameters['from']?.trim();
+    final uri = raw == null || raw.isEmpty ? null : Uri.tryParse(raw);
+    if (uri == null || uri.hasScheme || uri.hasAuthority) {
+      return '/onboarding';
+    }
+    final path = uri.path;
+    if (path.isEmpty ||
+        !path.startsWith('/') ||
+        path == '/splash' ||
+        path == '/onboarding') {
+      return '/onboarding';
+    }
+    // Validate nested percent-encoded UTF-8 without rewriting a valid internal
+    // destination. Parsing alone does not decode its path/query components.
+    Uri.decodeFull(uri.toString());
+    return Uri(
+      path: '/onboarding',
+      queryParameters: <String, String>{'from': uri.toString()},
+    ).toString();
+  } on FormatException {
+    // A malformed query must not escape the compatibility redirect into the
+    // router/parser. The canonical first-run route owns the next interaction.
     return '/onboarding';
   }
-
-  return Uri(
-    path: '/onboarding',
-    queryParameters: <String, String>{'from': uri.toString()},
-  ).toString();
 }

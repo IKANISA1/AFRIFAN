@@ -65,7 +65,7 @@ export function StandingEditorForm({
   }
 
   return (
-    <form action={submitForm} className="glass-panel grid gap-4 rounded-[32px] p-6">
+    <form action={submitForm} className="ui-panel grid gap-4 rounded-[32px] p-6">
       <div className="flex items-center justify-between gap-3">
         <p className="font-display text-3xl font-medium normal-case leading-none">
           {form.id ? "Edit row" : "New row"}

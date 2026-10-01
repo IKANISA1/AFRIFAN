@@ -10,6 +10,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
 
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
 const _goldenViewport = Size(390, 844);
 const _goldenViewportId = '390x844';
 
@@ -382,7 +384,7 @@ Future<ProviderContainer> _pumpDashboard(
         builder: (context, ref, child) {
           container = ProviderScope.containerOf(context);
           return ClubConfigScope(
-            config: ClubConfig.fallback(),
+            config: localRouteConfigOrFallback(),
             child: MaterialApp.router(
               debugShowCheckedModeBanner: false,
               builder: (context, child) {
@@ -396,7 +398,7 @@ Future<ProviderContainer> _pumpDashboard(
                 );
               },
               theme: ClubTheme.from(
-                ClubConfig.fallback(),
+                localRouteConfigOrFallback(),
                 brightness: brightness,
               ),
               routerConfig: router,
@@ -414,11 +416,13 @@ Future<ProviderContainer> _pumpDashboard(
 Future<void> _expectStateGolden(WidgetTester tester, String id) async {
   final suffix = id == 'light' ? 'light' : 'dark';
   expect(tester.view.physicalSize, _goldenViewport);
-  await expectLater(
+  await expectGoldenOrClubAssertions(
+    tester,
     find.byType(MaterialApp),
-    matchesGoldenFile(
-      'goldens/admin_dashboard_state_${id}_${suffix}_$_goldenViewportId.png',
-    ),
+    'goldens/admin_dashboard_state_${id}_${suffix}_$_goldenViewportId.png',
+    route: '/admin',
+    kind: 'route',
+    surface: 'mobile_internal_admin',
   );
 }
 

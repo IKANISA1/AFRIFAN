@@ -57,8 +57,11 @@ class ClubModule extends FeatureModule {
       path: 'open-web',
       name: 'club-public-link',
       redirect: (context, state) async {
-        final path = state.uri.queryParameters['path'] ?? '';
+        var path = '';
         try {
+          // Decoding malformed percent-encoded UTF-8 can throw before provider
+          // access. Keep it inside the same finite native fallback boundary.
+          path = state.uri.queryParameters['path'] ?? '';
           final destination = await ProviderScope.containerOf(
             context,
           ).read(clubPublicLinkProvider(path).future);

@@ -552,12 +552,11 @@ packages:
     source: hosted
     version: "14.8.1"
   gotrue:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: gotrue
-      sha256: cd73a6de4198baca71341177bed233673d7965aca2a0257ab5561feb2abdaf59
-      url: "https://pub.dev"
-    source: hosted
+      path: "third_party/gotrue_2_27_2"
+      relative: true
+    source: path
     version: "2.27.2"
   graphs:
     dependency: transitive

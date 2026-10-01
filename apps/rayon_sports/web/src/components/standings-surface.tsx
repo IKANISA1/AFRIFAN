@@ -429,7 +429,7 @@ export function StandingsSurface({
                     <dd>{selected.points}</dd>
                   </div>
                 </dl>
-                <div className="standings-form" aria-label={copy.form}>
+                <div className="standings-form" role="group" aria-label={copy.form}>
                   {selected.form.map((entry, index) => (
                     <span
                       key={`${entry}-${index}`}
@@ -454,7 +454,7 @@ export function StandingsSurface({
                 </Link>
               </article>
 
-              <div className="standings-list" aria-label={copy.title}>
+              <div className="standings-list" role="group" aria-label={copy.title}>
                 {rows.map((row) => {
                   const key = `${row.position}|${row.club}`;
                   return (
@@ -500,6 +500,7 @@ export function StandingsSurface({
           ) : status === "loading" ? (
             <div
               className="standings-skeleton"
+              role="group"
               aria-label={message.label}
               aria-busy="true"
             >

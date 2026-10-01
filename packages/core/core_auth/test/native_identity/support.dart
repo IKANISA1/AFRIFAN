@@ -14,30 +14,32 @@ String syntheticSecret(int byte) =>
 Map<String, Object?> credentialFixture({
   int generation = 0,
   int? authenticatedAt,
+  int clubId = 24,
 }) => {
   'schemaVersion': 1,
   'sessionId': fixtureSession,
   'accessToken': '$fixtureSession.${syntheticSecret(10 + generation * 2)}',
   'refreshToken': '$fixtureSession.${syntheticSecret(11 + generation * 2)}',
   'userId': fixtureUser,
-  'clubId': 24,
+  'clubId': clubId,
   'accessExpiresAt': fixtureNow + 300000,
   'refreshExpiresAt': fixtureNow + 86400000,
   'authenticatedAt': authenticatedAt ?? fixtureNow,
 };
-Map<String, Object?> sessionFixture({int? authenticatedAt}) => {
-  'schemaVersion': 1,
-  'userId': fixtureUser,
-  'clubId': 24,
-  'sessionId': fixtureSession,
-  'phoneVerified': true,
-  'role': 'supporter',
-  'authenticatedAt': authenticatedAt ?? fixtureNow,
-};
-Map<String, Object?> challengeFixture() => {
+Map<String, Object?> sessionFixture({int? authenticatedAt, int clubId = 24}) =>
+    {
+      'schemaVersion': 1,
+      'userId': fixtureUser,
+      'clubId': clubId,
+      'sessionId': fixtureSession,
+      'phoneVerified': true,
+      'role': 'supporter',
+      'authenticatedAt': authenticatedAt ?? fixtureNow,
+    };
+Map<String, Object?> challengeFixture({int clubId = 24}) => {
   'schemaVersion': 1,
   'challengeId': fixtureChallenge,
-  'clubId': 24,
+  'clubId': clubId,
   'expiresAt': fixtureNow + 600000,
   'delivery': 'queued_or_pending',
 };
@@ -73,6 +75,7 @@ final class TestEntropy implements NativeIdentityEntropy {
 }
 
 final class TestTransport implements NativeIdentityTransport {
+  int clubId = 24;
   final requests = <NativeIdentityRequest>[];
   FutureOr<NativeIdentityResponse> Function(NativeIdentityRequest request)?
   handler;
@@ -85,13 +88,15 @@ final class TestTransport implements NativeIdentityTransport {
     requests.add(request);
     if (handler != null) return handler!(request);
     if (request.uri.path.endsWith('/otp/challenges')) {
-      return jsonResponse(challengeFixture(), status: 202);
+      return jsonResponse(challengeFixture(clubId: clubId), status: 202);
     }
     if (request.uri.path.endsWith('/otp/verifications')) {
-      return jsonResponse(credentialFixture());
+      return jsonResponse(credentialFixture(clubId: clubId));
     }
     if (request.uri.path.endsWith('/sessions/refresh')) {
-      return jsonResponse(credentialFixture(generation: ++generation));
+      return jsonResponse(
+        credentialFixture(generation: ++generation, clubId: clubId),
+      );
     }
     if (request.uri.path.endsWith('/sessions/revoke')) {
       final body = jsonDecode(request.body!) as Map<String, dynamic>;
@@ -101,7 +106,7 @@ final class TestTransport implements NativeIdentityTransport {
         'revoked': true,
       });
     }
-    return jsonResponse(sessionFixture());
+    return jsonResponse(sessionFixture(clubId: clubId));
   }
 }
 
@@ -199,9 +204,11 @@ final class IdentityFixture {
     this.timeout = const Duration(milliseconds: 100),
     this.enabled = true,
     this.invalidated,
+    NativeIdentityScope? scope,
   }) {
+    transport.clubId = scope?.clubId ?? 24;
     client = NativeIdentityWireClient(
-      scope: fixtureScope(),
+      scope: scope ?? fixtureScope(),
       transport: transport,
       enabled: enabled,
       timeout: timeout,

@@ -4,28 +4,31 @@ import 'package:core_app/bootstrap.dart';
 
 import 'firebase_options.dart';
 
-Future<void> startRayonSportsApp({AfriClubBootstrapOptions? options}) async {
+Future<void> startRayonSportsApp({
+  AfriClubBootstrapOptions? options,
+  NativeSupporterJourney? nativeSupporterJourney,
+  AppStartupOptions startupOptions = const AppStartupOptions(),
+}) async {
   const config = RayonSportsConfig();
+  if (options != null && nativeSupporterJourney != null) {
+    throw ArgumentError('Supply bootstrap options or a native journey.');
+  }
   await bootstrap(
     config,
     options:
         options ??
-        AfriClubBootstrapOptions(
-          moduleBuilder: (snapshot) =>
-              AppModuleRegistry.build(config, configSnapshot: snapshot),
+        clubBootstrapOptions(
+          config,
+          nativeSupporterJourney: nativeSupporterJourney,
+          startupOptions: startupOptions,
         ),
   );
 }
 
 void main() async {
-  const config = RayonSportsConfig();
   await startRayonSportsApp(
-    options: AfriClubBootstrapOptions(
-      moduleBuilder: (snapshot) =>
-          AppModuleRegistry.build(config, configSnapshot: snapshot),
-      startupOptions: AppStartupOptions(
-        firebaseOptions: DefaultFirebaseOptions.currentPlatform,
-      ),
+    startupOptions: AppStartupOptions(
+      firebaseOptions: DefaultFirebaseOptions.currentPlatform,
     ),
   );
 }

@@ -6,8 +6,10 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import shlex
 import sys
 import yaml
+from verify_native_performance_privacy import verify_native_controls
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -82,6 +84,7 @@ def verify_workflow(text, scopes):
                 'verify_native_identity_credentials.py --configuration-only']
     if any(command not in commands for command in required):
         raise ValueError('Missing required native CI source/configuration/build check')
+    verify_native_performance_gate(steps)
     build_steps = {step.get('if'): step['run'] for step in steps if 'flutter build' in step.get('run', '')}
     if len(build_steps) != 2 or 'flutter build apk' not in build_steps.get("matrix.platform == 'android'", '') or \
             'flutter build ios' not in build_steps.get("matrix.platform == 'ios'", ''):
@@ -90,7 +93,20 @@ def verify_workflow(text, scopes):
     if 'native-target-ci' not in promotion:
         raise ValueError('Release promotion must wait for the ten-target source gate')
     return {'targets': [{'club': club, 'platform': platform} for club, platform in sorted(actual)],
-            'configurationVerified': True, 'hostedJobsExecuted': False, 'releaseAccepted': False}
+            'configurationVerified': True, 'nativePerformanceGateVerified': True,
+            'hostedJobsExecuted': False, 'releaseAccepted': False}
+
+
+def verify_native_performance_gate(steps):
+    command = 'python3 tools/scripts/verify_native_performance_privacy.py'
+    gates = [(index, step) for index, step in enumerate(steps)
+             if step.get('run', '').strip() == command]
+    builds = [index for index, step in enumerate(steps) if 'flutter build' in step.get('run', '')]
+    if len(gates) != 1 or not builds:
+        raise ValueError('Native performance privacy needs one required gate before compilation')
+    index, gate = gates[0]
+    if 'if' in gate or gate.get('continue-on-error', 'false') != 'false' or index >= min(builds):
+        raise ValueError('Native performance privacy gate cannot be skipped, ignored or run after compilation')
 
 
 def verify_flutter_action(text):
@@ -106,6 +122,46 @@ def verify_flutter_action(text):
             '[[ "$flutter_version" =~ ^[0-9]+\\.[0-9]+\\.[0-9]+$ ]]' not in steps[0]['run'] or \
             'echo "version=$flutter_version" >> "$GITHUB_OUTPUT"' not in steps[0]['run']:
         raise ValueError('Missing exact runtime pin extraction')
+
+
+def verify_adapter_configuration(package_text, workflow_texts):
+    """Check source wiring to the controlled adapter without running a build."""
+    package = json.loads(package_text, object_pairs_hook=unique_json)
+    wrapper = 'node scripts/build-opennext-isolated.mjs'
+    for name in ('preview', 'deploy', 'upload'):
+        command = package['scripts'][name]
+        if command.count(wrapper) != 1 or 'opennextjs-cloudflare build' in command:
+            raise ValueError('Web package command bypasses the isolated adapter')
+        consumer = 'opennextjs-cloudflare ' + name
+        if consumer not in command or command.index(wrapper) >= command.index(consumer):
+            raise ValueError('Isolated adapter must run before consuming its artifact')
+    environment_tests = ['scripts/artifact-public-environment.node-test.mjs',
+                         'scripts/artifact-installed-inputs.node-test.mjs',
+                         'scripts/sync-cloudflare-dev-vars.node-test.mjs',
+                         '../../../tools/scripts/local_validation_network_guard.node-test.mjs']
+    arguments = shlex.split(package['scripts'].get('test:artifact-environment', ''))
+    if arguments[:2] != ['node', '--test'] or sorted(arguments[2:]) != sorted(environment_tests):
+        raise ValueError('Artifact environment gate must run all reviewed environment, private-vars and network guard regressions')
+    for name, text in workflow_texts.items():
+        workflow = yaml.load(text, Loader=StrictYaml)
+        commands = [step.get('run', '') for job in workflow['jobs'].values() for step in job.get('steps', [])]
+        if sum(command.count(wrapper) for command in commands) != 1:
+            raise ValueError('Workflow needs exactly one isolated adapter conversion')
+        if any(re.search(r'opennextjs-cloudflare\s+build', command) for command in commands):
+            raise ValueError('Workflow bypasses the isolated adapter')
+        if name == '.github/workflows/ci.yaml':
+            conversions = [(job, index) for job in workflow['jobs'].values()
+                           for index, step in enumerate(job.get('steps', [])) if wrapper in step.get('run', '')]
+            job, conversion_index = conversions[0]
+            gates = [(index, step) for index, step in enumerate(job['steps'])
+                     if step.get('run', '').strip() == 'corepack npm run test:artifact-environment']
+            if len(gates) != 1 or gates[0][0] >= conversion_index or \
+                    'if' in gates[0][1] or gates[0][1].get('continue-on-error', 'false') != 'false':
+                raise ValueError('CI must require the artifact environment gate before adapter conversion')
+    return {'packageCommands': ['preview', 'deploy', 'upload'],
+            'workflowDefinitions': sorted(workflow_texts), 'isolatedAdapterWiringVerified': True,
+            'artifactEnvironmentRegressionInputs': environment_tests, 'requiredCiEnvironmentGateVerified': True,
+            'adapterExecutedByThisCheck': False}
 
 
 def synthetic_configuration(root, club, scopes):
@@ -142,6 +198,38 @@ def main():
             verify_flutter_action(action.read_text())
             result['flutterSetupActionSha256'] = hashlib.sha256(action.read_bytes()).hexdigest()
             result['workflowSha256'] = hashlib.sha256(source.read_bytes()).hexdigest()
+            web = ROOT / 'apps/rayon_sports/web'
+            definitions = {str(path.relative_to(ROOT)): path.read_text() for path in
+                           (source, ROOT / '.github/workflows/free_self_hosted_release.yml')}
+            result['webAdapterConfiguration'] = verify_adapter_configuration((web / 'package.json').read_text(), definitions)
+            result['nativePerformanceConfiguration'] = verify_native_controls(ROOT, scopes)
+            inputs = [source, ROOT / '.github/workflows/free_self_hosted_release.yml', action,
+                      ROOT / '.fvmrc', ROOT / 'docs/release/full_stack_qa_plan.md', web / 'package.json',
+                      web / 'scripts/build-opennext-isolated.mjs', web / 'scripts/artifact-public-environment.mjs',
+                      web / 'scripts/artifact-installed-inputs.mjs', web / 'scripts/artifact-installed-inputs.node-test.mjs',
+                      web / 'scripts/web-build-provenance.mjs', Path(__file__),
+                      ROOT / 'tools/scripts/test_local_native_ci.py',
+                      web / 'scripts/artifact-public-environment.node-test.mjs',
+                      web / 'scripts/sync-cloudflare-dev-vars.mjs', web / 'scripts/sync-cloudflare-dev-vars.node-test.mjs',
+                      ROOT / 'tools/scripts/local_validation_network_guard.node-test.mjs',
+                      ROOT / 'tools/scripts/local_ops_rehearsal_no_network.cjs',
+                      ROOT / 'tools/scripts/local_web_server_no_network.cjs']
+            inputs += [ROOT / 'tools/scripts/verify_native_performance_privacy.py',
+                       ROOT / 'tools/scripts/test_verify_native_performance_privacy.py']
+            inputs += [ROOT / source['path'] for source in result['nativePerformanceConfiguration']['sourceInputs']]
+            result['syntheticClubConfigurations'] = []
+            for club in sorted(scopes):
+                flavor = ROOT / 'apps' / club / 'assets/flavors/production.json'
+                value = synthetic_configuration(ROOT, club, scopes)
+                inputs.append(flavor)
+                result['syntheticClubConfigurations'].append({'club': club, 'clubId': scopes[club],
+                    'platforms': ['android', 'ios'], 'syntheticOnly': True,
+                    'configurationSha256': hashlib.sha256(json.dumps(value, sort_keys=True, separators=(',', ':')).encode()).hexdigest()})
+            result['sourceInputs'] = [{'path': str(path.relative_to(ROOT)), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest(),
+                                      'bytes': path.stat().st_size} for path in inputs]
+            result['remainingGates'] = ['Hosted native jobs were not executed by this source check',
+                                      'Five Android and five iOS compilation outcomes need their own build evidence',
+                                      'Provider, signing, device/store and deployment acceptance remain external to configuration verification']
             if args.report:
                 args.report.parent.mkdir(parents=True, exist_ok=True)
                 args.report.write_text(json.dumps(result, indent=2) + '\n')

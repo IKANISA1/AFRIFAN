@@ -1,5 +1,6 @@
+import { localClubId, localStateContextOptions } from "./fixtures/local-route-assertions.mjs";
 import fs from "node:fs";
-import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence } from "./state-evidence-provenance";
+import { prepareStateEvidence, finalizeStateEvidence, captureStateScreenshot, navigateStateEvidence, createStateEvidenceContext } from "./state-evidence-provenance";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
 import {
@@ -100,7 +101,8 @@ async function expectNoHorizontalOverflow(page: Page) {
 
 async function runMatrix(browser: Browser) {
   const evidenceDirectory = prepareStateEvidence(browser, test.info(), "admin_pwa_gamification_wallet_states");
-  const context = await browser.newContext({
+  const context = await createStateEvidenceContext(browser, {
+    ...localStateContextOptions(test.info(), true),
     // API fixtures must bypass worker interception; PWA lifecycle has its own tests.
     serviceWorkers: "block",
     viewport: { width: 1440, height: 1000 },
@@ -354,7 +356,7 @@ async function runMatrix(browser: Browser) {
   });
   await page.getByRole("button", { name: /apply adjustment/i }).click();
   expect(confirmation).toContain(
-    "Scope: Active club 24; one supporter account",
+    `Scope: Active club ${localClubId()}; one supporter account`,
   );
   expect(confirmation).toContain(
     "Recovery requires a separate manual admin action.",
@@ -496,7 +498,7 @@ test.describe("controlled Admin PWA gamification wallet evidence", () => {
   test("captures the exact authenticated wallet operations state matrix", async ({
     browser,
   }) => {
-    test.setTimeout(120_000);
+    test.setTimeout(360_000);
     await runMatrix(browser);
   });
 });

@@ -83,6 +83,18 @@ export function routeHostRequest(request: NextRequest) {
     return response;
   };
 
+  // Resolve the compatibility entry before a protected layout can stream.
+  if (pathname === "/admin/contributions" ||
+      (isAdminHostname(hostname) && pathname === "/contributions")) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = "/admin/community";
+    redirectUrl.search = "";
+    const clubs = request.nextUrl.searchParams.getAll("club");
+    if (clubs.length === 1) redirectUrl.searchParams.set("club", clubs[0]);
+    redirectUrl.searchParams.set("tab", "groups");
+    return applyAdminScopeCookie(NextResponse.redirect(redirectUrl, 307));
+  }
+
   const recoveryPath = canonicalRecoveryPath(pathname);
   if (recoveryPath != null) {
     const redirectUrl = request.nextUrl.clone();

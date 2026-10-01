@@ -587,7 +587,7 @@ export function SupportersSurface({
               <ol>
                 {snapshot.leaderboard.map((entry) => (
                   <li key={`${entry.rank}-${entry.supporterAlias}`}>
-                    <span aria-label={`Rank ${entry.rank}`}>{entry.rank}</span>
+                    <span><span className="sr-only">Rank </span>{entry.rank}</span>
                     <div>
                       <strong>#{entry.supporterAlias}</strong>
                       <small>

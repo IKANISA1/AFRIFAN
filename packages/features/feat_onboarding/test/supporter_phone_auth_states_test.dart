@@ -12,6 +12,8 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'package:test_support/app_font_loader.dart';
 
+import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+
 const supporterPhoneAuthTestNumber = '+250700000001';
 const supporterPhoneAuthTestOtp = '00000';
 
@@ -228,9 +230,12 @@ Future<void> _pumpAuthGolden(
     ProviderScope(
       overrides: [authRepositoryProvider.overrideWithValue(repository)],
       child: ClubConfigScope(
-        config: ClubConfig.fallback(),
+        config: localRouteConfigOrFallback(),
         child: MaterialApp.router(
-          theme: ClubTheme.from(ClubConfig.fallback(), brightness: brightness),
+          theme: ClubTheme.from(
+            localRouteConfigOrFallback(),
+            brightness: brightness,
+          ),
           routerConfig: router,
           builder: (context, child) => RepaintBoundary(
             key: const ValueKey<String>('auth-state-golden'),
@@ -455,11 +460,12 @@ Future<void> _captureAuthGolden(
   }
   final viewport = state == _AuthGoldenState.largeText ? '320x720' : '390x844';
   final theme = state == _AuthGoldenState.light ? 'light' : 'dark';
-  await expectLater(
+  await expectGoldenOrClubAssertions(
+    tester,
     find.byKey(const ValueKey<String>('auth-state-golden')),
-    matchesGoldenFile(
-      'goldens/auth_${route.name}_state_${state.id}_${theme}_$viewport.png',
-    ),
+    'goldens/auth_${route.name}_state_${state.id}_${theme}_$viewport.png',
+    route: route == _AuthGoldenRoute.phone ? '/auth/phone' : '/auth/otp',
+    kind: 'route',
   );
 }
 
@@ -469,7 +475,7 @@ class _GoldenAuthRepository extends AuthRepository {
     this.verifyGate,
     this.requestError,
     this.verifyError,
-  }) : super(clubId: '24');
+  }) : super(clubId: localRouteFixtureConfig?.clubId ?? '24');
 
   final Completer<void>? requestGate;
   final Completer<void>? verifyGate;
@@ -493,9 +499,9 @@ class _GoldenAuthRepository extends AuthRepository {
   }) async {
     if (verifyGate case final gate?) await gate.future;
     if (verifyError case final error?) throw error;
-    return const UserProfile(
+    return UserProfile(
       id: 'supporter-golden',
-      clubId: '24',
+      clubId: clubId,
       publicUserId: '000000',
     );
   }

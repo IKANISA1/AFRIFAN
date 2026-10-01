@@ -1,14 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import { headers } from "next/headers";
 import "./globals.css";
 import { getClubProfile } from "@/lib/data/public";
 import { buildSiteJsonLd, getClubWebsiteIdentity, renderJsonLdScriptContent } from "@/lib/metadata";
 import { validCspNonce } from "@/lib/content-security-policy";
 
-const inter = Inter({
+const inter = localFont({
+  src: "../../public/fonts/inter-latin-wght-normal.woff2",
   variable: "--font-inter",
-  subsets: ["latin"],
+  weight: "100 900",
   display: "swap",
 });
 

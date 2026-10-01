@@ -58,7 +58,7 @@ void main() {
     await Future<void>.delayed(const Duration(milliseconds: 20));
 
     expect(sent, hasLength(1));
-    expect(sent.single['message'], equals('offline failure'));
+    expect(sent.single['message'], equals('Operational health failure.'));
     expect(OfflineEventQueue.pendingCount, equals(0));
   });
 }

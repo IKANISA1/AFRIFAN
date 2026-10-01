@@ -1,0 +1,369 @@
+{
+  "payloadTables": {
+    "encoding": "json-cells-tsv-v1",
+    "maxShardBytes": 2097152,
+    "tables": [
+      {
+        "fieldPath": [
+          "targets",
+          "as_vita",
+          "configurations"
+        ],
+        "kind": "list",
+        "rows": 106,
+        "sha256": "1f4a7d487b0b79f973dcb09228dfe464e6b735977aa2fab1d15fecbbca6b6bfc",
+        "shards": [
+          {
+            "bytes": 2011486,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-as_vita-configurations.001.tsv",
+            "rows": 25,
+            "sha256": "0840f3b184e47bd8499c2aaea079041d44c2c6822447abe09c0c9a11bbab97b3"
+          },
+          {
+            "bytes": 2066418,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-as_vita-configurations.002.tsv",
+            "rows": 27,
+            "sha256": "3dd3f9642eca3f949912c9bb0dfcf768655b148d2f9869b6d7f08a75f0a1ca35"
+          },
+          {
+            "bytes": 2055782,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-as_vita-configurations.003.tsv",
+            "rows": 30,
+            "sha256": "b83887a8dc8ee01c5a419e0ee50ced5a6e46ed7224f1076414356500723d243d"
+          },
+          {
+            "bytes": 1866921,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-as_vita-configurations.004.tsv",
+            "rows": 24,
+            "sha256": "6dfc6cc2951b1aa83e9e27a8c8e4668797ed47578878431751abbcea29a8af17"
+          }
+        ]
+      },
+      {
+        "fieldPath": [
+          "targets",
+          "costa_do_sol",
+          "configurations"
+        ],
+        "kind": "list",
+        "rows": 106,
+        "sha256": "fe83f098f8af2b454b49158d7dd25407ab56d23debe9e6612f48905323b1baea",
+        "shards": [
+          {
+            "bytes": 2011961,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-costa_do_sol-configurations.001.tsv",
+            "rows": 25,
+            "sha256": "359719a1f18f00f0d5bc816bcb0d9d9f449858b1e16aaacbacea65e410f286f1"
+          },
+          {
+            "bytes": 2066503,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-costa_do_sol-configurations.002.tsv",
+            "rows": 27,
+            "sha256": "1d7a9dd35760de513461b6204df2db51f50c267f3037795bd50c9953aa7d05ea"
+          },
+          {
+            "bytes": 2055832,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-costa_do_sol-configurations.003.tsv",
+            "rows": 30,
+            "sha256": "1ca9c778be33a94b22f7177f4c54fbbe5e6df53cc9a954746f28d5207750d04a"
+          },
+          {
+            "bytes": 1866921,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-costa_do_sol-configurations.004.tsv",
+            "rows": 24,
+            "sha256": "6dfc6cc2951b1aa83e9e27a8c8e4668797ed47578878431751abbcea29a8af17"
+          }
+        ]
+      },
+      {
+        "fieldPath": [
+          "targets",
+          "nkana",
+          "configurations"
+        ],
+        "kind": "list",
+        "rows": 106,
+        "sha256": "1b3e1025e4999d4dd5d7f1cb6deb3a4876b6d1dc2d773e306c8848036b2f0931",
+        "shards": [
+          {
+            "bytes": 2011296,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-nkana-configurations.001.tsv",
+            "rows": 25,
+            "sha256": "766ab782c9d84fcc06245d63f2e9474238b429625038e24983f082fc9704e2a8"
+          },
+          {
+            "bytes": 2066384,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-nkana-configurations.002.tsv",
+            "rows": 27,
+            "sha256": "1f8a5c06b7d99089642aab6aca1146cd8ec50bc5f65398e79c48ab2f788d006b"
+          },
+          {
+            "bytes": 2055762,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-nkana-configurations.003.tsv",
+            "rows": 30,
+            "sha256": "d711c8f27108638779c982db0356b4808a44f896ff09578a7097ed8cff60447e"
+          },
+          {
+            "bytes": 1866921,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-nkana-configurations.004.tsv",
+            "rows": 24,
+            "sha256": "6dfc6cc2951b1aa83e9e27a8c8e4668797ed47578878431751abbcea29a8af17"
+          }
+        ]
+      },
+      {
+        "fieldPath": [
+          "targets",
+          "rayon_sports",
+          "configurations"
+        ],
+        "kind": "list",
+        "rows": 113,
+        "sha256": "f3237b9b7698b293c904c7f72fd8d185d6c286632bcb4b85806d9e5864f8d554",
+        "shards": [
+          {
+            "bytes": 2061727,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-rayon_sports-configurations.001.tsv",
+            "rows": 25,
+            "sha256": "be30d0da4b737614d6a35b4e423224f9a6f7f65055da8b7bfcf1222383a430c6"
+          },
+          {
+            "bytes": 2066503,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-rayon_sports-configurations.002.tsv",
+            "rows": 27,
+            "sha256": "df3b64f6012de02fbcf4344f2deaaefe283d604d9f2c5a5131fb284a04db4e35"
+          },
+          {
+            "bytes": 2070618,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-rayon_sports-configurations.003.tsv",
+            "rows": 29,
+            "sha256": "45746bd8f7363bd2429e120f2172ec008a96d7a3a38cdff67e5d5dad3efb4962"
+          },
+          {
+            "bytes": 2083845,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-rayon_sports-configurations.004.tsv",
+            "rows": 28,
+            "sha256": "1eab3728a1e6d959da0b7322fe89a748717f5b932732400dd7efc8df6b5e9870"
+          },
+          {
+            "bytes": 288255,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-rayon_sports-configurations.005.tsv",
+            "rows": 4,
+            "sha256": "a814b6390383f78a65e607cb277e71eaac8a07116b3d5489d81a338415d294e0"
+          }
+        ]
+      },
+      {
+        "fieldPath": [
+          "targets",
+          "vitalo",
+          "configurations"
+        ],
+        "kind": "list",
+        "rows": 106,
+        "sha256": "01db64c1261e07643a34d9040d6537362e73663007241accad100e95b54d0803",
+        "shards": [
+          {
+            "bytes": 2011391,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-vitalo-configurations.001.tsv",
+            "rows": 25,
+            "sha256": "c7c213e55c05acff49a1f9e6f62db2b6c48c84c4b130a4623fca33a00a95b049"
+          },
+          {
+            "bytes": 2066401,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-vitalo-configurations.002.tsv",
+            "rows": 27,
+            "sha256": "ad752f238447509f0b91905f56ecce276f9c2c80364b48032fdae6faaae8ec6e"
+          },
+          {
+            "bytes": 2055772,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-vitalo-configurations.003.tsv",
+            "rows": 30,
+            "sha256": "6c4f19c18b423e7020d7420771ae7c840be7ca2e2f595cee946f459ce82bf6b3"
+          },
+          {
+            "bytes": 1866921,
+            "path": "local-dependency-inventory-2026-09-30.android.targets-vitalo-configurations.004.tsv",
+            "rows": 24,
+            "sha256": "6dfc6cc2951b1aa83e9e27a8c8e4668797ed47578878431751abbcea29a8af17"
+          }
+        ]
+      }
+    ]
+  },
+  "purpose": "Portable lossless five-target offline Android resolution evidence",
+  "schemaVersion": 1,
+  "targets": {
+    "as_vita": {
+      "frozenInput": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/as_vita.json",
+      "gradleVersion": "8.14",
+      "javaHome": "/Volumes/PRO-G40/Applications/Android Studio.app/Contents/jbr/Contents/Home",
+      "javaVendor": "JetBrains s.r.o.",
+      "javaVersion": "21.0.8",
+      "mavenMirror": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/maven-mirror",
+      "offline": true,
+      "rootDirectory": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/android",
+      "schemaVersion": 1,
+      "sourceInputs": {
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/app_links-7.0.0/android/build.gradle": "cf74b6d9a729dbad13d1acbd87332cad6262b1b5a587060e9dfbfadda69978e0",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.5/android/build.gradle": "3c343089242ccda6037df2d75fd813f122fa905234166f552d5e52b748972c78",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics-12.2.0/android/build.gradle": "a144843e8065b6ce4042954f72114cb163b9685e7f33b3902ed432d67c7a3c7e",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_app_check-0.4.2/android/build.gradle": "9803525fad17bcd34204b5c8e3c003ab8cd9ff0103550790439a831cdd94734d",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/android/build.gradle": "760219911b257857a814dc9bc0237c262f4bd3f0ffa1e27db7ddebd8bc328c27",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.1.0/android/build.gradle": "31289bce8a72ad33c77e9c9e14b87d45d420c042c524c447eb3e296cab110519",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_messaging-16.1.3/android/build.gradle": "c2598140aac8ffd58d42ad7d149c8d5b331c1c9b7e3eb3277e0386f35d2425c0",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/build.gradle": "960dbc23a97748cc9b6f7c0caa2cdf8335e56fb74bec15ff09869010e474ef21",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.3.1/android/build.gradle": "5c4a6b3dee00a19ae77083ded682324b1fd7a62dfb25e1146051d926c0c5b995",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/path_provider_android-2.2.23/android/build.gradle.kts": "6e965b8d9f2b76bdf02bf390d1a2d4ec70c2d908dfb501dc0d5880311ab41f5f",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/share_plus-11.1.0/android/build.gradle": "b3571246114239c8e63a8332ff05b1de594ab320736bfb6434462a34411859d9",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.23/android/build.gradle.kts": "da70c2c309867579219fcf6e9d5ed206a66e261792906271903900dc49693e78",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/sqflite_android-2.4.2+3/android/build.gradle": "5238b6d2e464795594a7bf8443b11a0fee55f31aa56e831c91b161c92cebf4d4",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.29/android/build.gradle.kts": "08a9b42356a3eab27d6cc3623e08b9ead5415953913ac72f09758fd55abc0bc5",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/.flutter-plugins-dependencies": "815c4db226f4533a18c5492152f928ecf55877accb3ea8f68d697bdcbb9639a1",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/android/app/build.gradle.kts": "a3bd5af85749118a3e1effa808c1b2a98d815065c2df4f043fa675e58b68b665",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/android/build.gradle.kts": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/android/gradle.properties": "41969d939b4558ba8cb884a574f2bdcde05fc36f62183c5d46eebe15a2bf1156",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/android/gradle/wrapper/gradle-wrapper.properties": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/android/settings.gradle.kts": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/pubspec.lock": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b"
+      }
+    },
+    "costa_do_sol": {
+      "frozenInput": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/costa_do_sol.json",
+      "gradleVersion": "8.14",
+      "javaHome": "/Volumes/PRO-G40/Applications/Android Studio.app/Contents/jbr/Contents/Home",
+      "javaVendor": "JetBrains s.r.o.",
+      "javaVersion": "21.0.8",
+      "mavenMirror": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/maven-mirror",
+      "offline": true,
+      "rootDirectory": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/android",
+      "schemaVersion": 1,
+      "sourceInputs": {
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/app_links-7.0.0/android/build.gradle": "cf74b6d9a729dbad13d1acbd87332cad6262b1b5a587060e9dfbfadda69978e0",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.5/android/build.gradle": "3c343089242ccda6037df2d75fd813f122fa905234166f552d5e52b748972c78",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics-12.2.0/android/build.gradle": "a144843e8065b6ce4042954f72114cb163b9685e7f33b3902ed432d67c7a3c7e",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_app_check-0.4.2/android/build.gradle": "9803525fad17bcd34204b5c8e3c003ab8cd9ff0103550790439a831cdd94734d",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/android/build.gradle": "760219911b257857a814dc9bc0237c262f4bd3f0ffa1e27db7ddebd8bc328c27",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.1.0/android/build.gradle": "31289bce8a72ad33c77e9c9e14b87d45d420c042c524c447eb3e296cab110519",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_messaging-16.1.3/android/build.gradle": "c2598140aac8ffd58d42ad7d149c8d5b331c1c9b7e3eb3277e0386f35d2425c0",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/build.gradle": "960dbc23a97748cc9b6f7c0caa2cdf8335e56fb74bec15ff09869010e474ef21",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.3.1/android/build.gradle": "5c4a6b3dee00a19ae77083ded682324b1fd7a62dfb25e1146051d926c0c5b995",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/path_provider_android-2.2.23/android/build.gradle.kts": "6e965b8d9f2b76bdf02bf390d1a2d4ec70c2d908dfb501dc0d5880311ab41f5f",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/share_plus-11.1.0/android/build.gradle": "b3571246114239c8e63a8332ff05b1de594ab320736bfb6434462a34411859d9",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.23/android/build.gradle.kts": "da70c2c309867579219fcf6e9d5ed206a66e261792906271903900dc49693e78",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/sqflite_android-2.4.2+3/android/build.gradle": "5238b6d2e464795594a7bf8443b11a0fee55f31aa56e831c91b161c92cebf4d4",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.29/android/build.gradle.kts": "08a9b42356a3eab27d6cc3623e08b9ead5415953913ac72f09758fd55abc0bc5",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/.flutter-plugins-dependencies": "26cb7dd1b1509f67c98476545f90b73f8d1e9da43f35a5b48ba49cff69c3da1a",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/android/app/build.gradle.kts": "0b4d8b342217a9fb9eac0d78deb3eee038b7ceadf04598bb8137602006d6303d",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/android/build.gradle.kts": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/android/gradle.properties": "41969d939b4558ba8cb884a574f2bdcde05fc36f62183c5d46eebe15a2bf1156",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/android/gradle/wrapper/gradle-wrapper.properties": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/android/settings.gradle.kts": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/pubspec.lock": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b"
+      }
+    },
+    "nkana": {
+      "frozenInput": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/nkana.json",
+      "gradleVersion": "8.14",
+      "javaHome": "/Volumes/PRO-G40/Applications/Android Studio.app/Contents/jbr/Contents/Home",
+      "javaVendor": "JetBrains s.r.o.",
+      "javaVersion": "21.0.8",
+      "mavenMirror": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/maven-mirror",
+      "offline": true,
+      "rootDirectory": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/android",
+      "schemaVersion": 1,
+      "sourceInputs": {
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/app_links-7.0.0/android/build.gradle": "cf74b6d9a729dbad13d1acbd87332cad6262b1b5a587060e9dfbfadda69978e0",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.5/android/build.gradle": "3c343089242ccda6037df2d75fd813f122fa905234166f552d5e52b748972c78",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics-12.2.0/android/build.gradle": "a144843e8065b6ce4042954f72114cb163b9685e7f33b3902ed432d67c7a3c7e",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_app_check-0.4.2/android/build.gradle": "9803525fad17bcd34204b5c8e3c003ab8cd9ff0103550790439a831cdd94734d",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/android/build.gradle": "760219911b257857a814dc9bc0237c262f4bd3f0ffa1e27db7ddebd8bc328c27",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.1.0/android/build.gradle": "31289bce8a72ad33c77e9c9e14b87d45d420c042c524c447eb3e296cab110519",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_messaging-16.1.3/android/build.gradle": "c2598140aac8ffd58d42ad7d149c8d5b331c1c9b7e3eb3277e0386f35d2425c0",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/build.gradle": "960dbc23a97748cc9b6f7c0caa2cdf8335e56fb74bec15ff09869010e474ef21",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.3.1/android/build.gradle": "5c4a6b3dee00a19ae77083ded682324b1fd7a62dfb25e1146051d926c0c5b995",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/path_provider_android-2.2.23/android/build.gradle.kts": "6e965b8d9f2b76bdf02bf390d1a2d4ec70c2d908dfb501dc0d5880311ab41f5f",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/share_plus-11.1.0/android/build.gradle": "b3571246114239c8e63a8332ff05b1de594ab320736bfb6434462a34411859d9",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.23/android/build.gradle.kts": "da70c2c309867579219fcf6e9d5ed206a66e261792906271903900dc49693e78",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/sqflite_android-2.4.2+3/android/build.gradle": "5238b6d2e464795594a7bf8443b11a0fee55f31aa56e831c91b161c92cebf4d4",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.29/android/build.gradle.kts": "08a9b42356a3eab27d6cc3623e08b9ead5415953913ac72f09758fd55abc0bc5",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/.flutter-plugins-dependencies": "26a415fcd86279d34ef82b8c0e00c20b5056ffa057a80d447363b0e042bb218d",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/android/app/build.gradle.kts": "58ec4bc1a21761cab44660072ca189a737e844797e491f5713ca706a5534e7a3",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/android/build.gradle.kts": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/android/gradle.properties": "4922e39cd2ea910bd97156fd4320b0be9217df262fc45435ce408bad534a20d0",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/android/gradle/wrapper/gradle-wrapper.properties": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/android/settings.gradle.kts": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/pubspec.lock": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b"
+      }
+    },
+    "rayon_sports": {
+      "frozenInput": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/rayon_sports.json",
+      "gradleVersion": "8.14",
+      "javaHome": "/Volumes/PRO-G40/Applications/Android Studio.app/Contents/jbr/Contents/Home",
+      "javaVendor": "JetBrains s.r.o.",
+      "javaVersion": "21.0.8",
+      "mavenMirror": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/maven-mirror",
+      "offline": true,
+      "rootDirectory": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android",
+      "schemaVersion": 1,
+      "sourceInputs": {
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/app_links-7.0.0/android/build.gradle": "cf74b6d9a729dbad13d1acbd87332cad6262b1b5a587060e9dfbfadda69978e0",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.5/android/build.gradle": "3c343089242ccda6037df2d75fd813f122fa905234166f552d5e52b748972c78",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics-12.2.0/android/build.gradle": "a144843e8065b6ce4042954f72114cb163b9685e7f33b3902ed432d67c7a3c7e",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_app_check-0.4.2/android/build.gradle": "9803525fad17bcd34204b5c8e3c003ab8cd9ff0103550790439a831cdd94734d",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/android/build.gradle": "760219911b257857a814dc9bc0237c262f4bd3f0ffa1e27db7ddebd8bc328c27",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.1.0/android/build.gradle": "31289bce8a72ad33c77e9c9e14b87d45d420c042c524c447eb3e296cab110519",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_messaging-16.1.3/android/build.gradle": "c2598140aac8ffd58d42ad7d149c8d5b331c1c9b7e3eb3277e0386f35d2425c0",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/build.gradle": "960dbc23a97748cc9b6f7c0caa2cdf8335e56fb74bec15ff09869010e474ef21",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.3.1/android/build.gradle": "5c4a6b3dee00a19ae77083ded682324b1fd7a62dfb25e1146051d926c0c5b995",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/path_provider_android-2.2.23/android/build.gradle.kts": "6e965b8d9f2b76bdf02bf390d1a2d4ec70c2d908dfb501dc0d5880311ab41f5f",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/share_plus-11.1.0/android/build.gradle": "b3571246114239c8e63a8332ff05b1de594ab320736bfb6434462a34411859d9",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.23/android/build.gradle.kts": "da70c2c309867579219fcf6e9d5ed206a66e261792906271903900dc49693e78",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/sqflite_android-2.4.2+3/android/build.gradle": "5238b6d2e464795594a7bf8443b11a0fee55f31aa56e831c91b161c92cebf4d4",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.29/android/build.gradle.kts": "08a9b42356a3eab27d6cc3623e08b9ead5415953913ac72f09758fd55abc0bc5",
+        "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/packages/integration_test/android/build.gradle.kts": "0839288b76144c10774df10c04161f58c8f4c75a9a3eac12dab4fc3c4c9e8f9b",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/.flutter-plugins-dependencies": "7dfab6be96775e9237a5426b847d3cd8554889d1d1dc46f814aefcd33be4e259",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/app/build.gradle.kts": "ccb935c02f19c851fc27928db26c88d79faeae03f4cfad9848a1164afd39de20",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/build.gradle.kts": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/gradle.properties": "1e972aab14714887ccb35633fee6f867616f334482e3e2a1d61112575616d1e6",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/gradle/wrapper/gradle-wrapper.properties": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/settings.gradle.kts": "51d50f8f3713eaa43e1353369de99668dd8c4522a5ab9b2091fd411b3019e7fd",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/pubspec.lock": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b"
+      }
+    },
+    "vitalo": {
+      "frozenInput": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/android-final2/vitalo.json",
+      "gradleVersion": "8.14",
+      "javaHome": "/Volumes/PRO-G40/Applications/Android Studio.app/Contents/jbr/Contents/Home",
+      "javaVendor": "JetBrains s.r.o.",
+      "javaVersion": "21.0.8",
+      "mavenMirror": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/maven-mirror",
+      "offline": true,
+      "rootDirectory": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/android",
+      "schemaVersion": 1,
+      "sourceInputs": {
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/app_links-7.0.0/android/build.gradle": "cf74b6d9a729dbad13d1acbd87332cad6262b1b5a587060e9dfbfadda69978e0",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.5/android/build.gradle": "3c343089242ccda6037df2d75fd813f122fa905234166f552d5e52b748972c78",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics-12.2.0/android/build.gradle": "a144843e8065b6ce4042954f72114cb163b9685e7f33b3902ed432d67c7a3c7e",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_app_check-0.4.2/android/build.gradle": "9803525fad17bcd34204b5c8e3c003ab8cd9ff0103550790439a831cdd94734d",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/android/build.gradle": "760219911b257857a814dc9bc0237c262f4bd3f0ffa1e27db7ddebd8bc328c27",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.1.0/android/build.gradle": "31289bce8a72ad33c77e9c9e14b87d45d420c042c524c447eb3e296cab110519",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_messaging-16.1.3/android/build.gradle": "c2598140aac8ffd58d42ad7d149c8d5b331c1c9b7e3eb3277e0386f35d2425c0",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/build.gradle": "960dbc23a97748cc9b6f7c0caa2cdf8335e56fb74bec15ff09869010e474ef21",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.3.1/android/build.gradle": "5c4a6b3dee00a19ae77083ded682324b1fd7a62dfb25e1146051d926c0c5b995",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/path_provider_android-2.2.23/android/build.gradle.kts": "6e965b8d9f2b76bdf02bf390d1a2d4ec70c2d908dfb501dc0d5880311ab41f5f",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/share_plus-11.1.0/android/build.gradle": "b3571246114239c8e63a8332ff05b1de594ab320736bfb6434462a34411859d9",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.23/android/build.gradle.kts": "da70c2c309867579219fcf6e9d5ed206a66e261792906271903900dc49693e78",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/sqflite_android-2.4.2+3/android/build.gradle": "5238b6d2e464795594a7bf8443b11a0fee55f31aa56e831c91b161c92cebf4d4",
+        "/Users/jeanbosco/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.29/android/build.gradle.kts": "08a9b42356a3eab27d6cc3623e08b9ead5415953913ac72f09758fd55abc0bc5",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/.flutter-plugins-dependencies": "ef31fccd41fe2a99c6b15107f369b26d5e0993dff99f5bdedd581cd1b245a932",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/android/app/build.gradle.kts": "9a90f04c41410366921ee6d5be651500a0d8b7e6def2f8b020a5d1039d4cf484",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/android/build.gradle.kts": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/android/gradle.properties": "41969d939b4558ba8cb884a574f2bdcde05fc36f62183c5d46eebe15a2bf1156",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/android/gradle/wrapper/gradle-wrapper.properties": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/android/settings.gradle.kts": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/pubspec.lock": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b"
+      }
+    }
+  }
+}

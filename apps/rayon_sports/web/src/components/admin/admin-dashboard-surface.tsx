@@ -577,7 +577,7 @@ export function AdminDashboardSurface() {
             ? "border-error/30 bg-error/10"
             : status === "offline" || status === "conflict"
               ? "border-warning/30 bg-warning/10"
-              : "border-[var(--admin-border)] bg-[var(--admin-zinc-900)]",
+              : "border-[var(--admin-border)] bg-[var(--admin-widget)]",
         )}
         role={
           status === "error" ||
@@ -599,7 +599,7 @@ export function AdminDashboardSurface() {
             <p className="font-medium text-[var(--admin-text-strong)]">
               {copy.label}
             </p>
-            <p className="mt-1 text-sm leading-6 text-[var(--admin-zinc-400)]">
+            <p className="mt-1 text-sm leading-6 text-[var(--admin-secondary)]">
               {copy.detail}
             </p>
           </div>
@@ -613,7 +613,7 @@ export function AdminDashboardSurface() {
             onPointerUp={finishPointer}
             onPointerCancel={finishPointer}
             onLostPointerCapture={finishPointer}
-            className="admin-dashboard-control inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[var(--admin-border)] px-4 py-3 text-sm font-medium text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-zinc-800)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:bg-[var(--admin-zinc-800)] disabled:text-[var(--admin-text-strong)] motion-reduce:transition-none"
+            className="admin-dashboard-control inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-[var(--admin-border)] px-4 py-3 text-sm font-medium text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-raised)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:bg-[var(--admin-raised)] disabled:text-[var(--admin-text-strong)] motion-reduce:transition-none"
           >
             <RefreshCw
               size={17}
@@ -674,7 +674,7 @@ export function AdminDashboardSurface() {
         <div className="admin-dashboard-content-grid min-w-0 gap-6">
           <AdminSurface title="Authorized quick actions">
             {overview.quickActions.length === 0 ? (
-              <div className="rounded-xl border border-[var(--admin-border)] p-5 text-sm text-[var(--admin-zinc-400)]">
+              <div className="rounded-xl border border-[var(--admin-border)] p-5 text-sm text-[var(--admin-secondary)]">
                 No dashboard actions are active for this role and club scope.
               </div>
             ) : (
@@ -701,7 +701,7 @@ export function AdminDashboardSurface() {
                         "admin-dashboard-action min-h-12 min-w-0 rounded-xl border p-4 text-left transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent motion-reduce:transition-none",
                         selected
                           ? "border-[var(--admin-accent)] bg-[var(--admin-accent)]/10"
-                          : "border-[var(--admin-border)] bg-[var(--admin-zinc-900)] hover:bg-[var(--admin-zinc-800)]",
+                          : "border-[var(--admin-border)] bg-[var(--admin-widget)] hover:bg-[var(--admin-raised)]",
                       )}
                     >
                       <span className="flex min-w-0 items-start gap-3">
@@ -715,7 +715,7 @@ export function AdminDashboardSurface() {
                             {item.title}
                           </span>
                           {item.subtitle ? (
-                            <span className="mt-1 block break-words text-xs leading-5 text-[var(--admin-zinc-400)]">
+                            <span className="mt-1 block break-words text-xs leading-5 text-[var(--admin-secondary)]">
                               {item.subtitle}
                             </span>
                           ) : null}
@@ -746,7 +746,7 @@ export function AdminDashboardSurface() {
               ) : (
                 <span
                   aria-disabled="true"
-                  className="admin-dashboard-control inline-flex min-h-12 items-center rounded-xl border border-[var(--admin-border)] px-4 py-3 text-sm font-medium text-[var(--admin-zinc-500)]"
+                  className="admin-dashboard-control inline-flex min-h-12 items-center rounded-xl border border-[var(--admin-border)] px-4 py-3 text-sm font-medium text-[var(--admin-secondary)]"
                 >
                   Select an authorized action
                 </span>
@@ -795,7 +795,7 @@ export function AdminDashboardSurface() {
           >
             <div className="p-4 sm:p-5">
               {activityCollection.pageResult.items.length === 0 ? (
-                <div className="rounded-xl border border-[var(--admin-border)] p-5 text-sm text-[var(--admin-zinc-400)]">
+                <div className="rounded-xl border border-[var(--admin-border)] p-5 text-sm text-[var(--admin-secondary)]">
                   {activityCollection.query
                     ? "No recent activity matches the current search."
                     : "No recent activity is recorded for this club scope."}
@@ -818,12 +818,12 @@ export function AdminDashboardSurface() {
                           <p className="break-words text-sm font-medium text-[var(--admin-text-strong)]">
                             {item.title}
                           </p>
-                          <p className="mt-1 break-words text-xs leading-5 text-[var(--admin-zinc-400)]">
+                          <p className="mt-1 break-words text-xs leading-5 text-[var(--admin-secondary)]">
                             {item.detail}
                           </p>
                           <time
                             dateTime={item.createdAt}
-                            className="mt-2 block text-xs font-medium text-[var(--admin-zinc-500)]"
+                            className="mt-2 block text-xs font-medium text-[var(--admin-secondary)]"
                           >
                             {new Intl.DateTimeFormat("en-RW", {
                               dateStyle: "medium",

@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import {
@@ -365,7 +366,7 @@ export function createGenerateProductImageHandler(
         product_type: productType,
       });
     } catch (error) {
-      console.error("generate-product-image failed:", error);
+      logDiagnostic("error", "generate_product_image_generate_product_image_failed", error);
       return jsonError(
         error instanceof Error ? error.message : "Image generation failed.",
         500,

@@ -19,7 +19,7 @@ export function CMSContentEditor({
   onClear,
 }: CMSContentEditorProps) {
   return (
-    <form action={onSubmit} className="glass-panel grid gap-4 rounded-[32px] p-6">
+    <form action={onSubmit} className="ui-panel grid gap-4 rounded-[32px] p-6">
       <fieldset disabled={disabled} className="contents">
       <div className="flex items-center justify-between gap-3">
         <p className="font-display text-3xl font-medium normal-case leading-none">

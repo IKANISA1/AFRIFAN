@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 /**
  * sync-history — Backfills past results for tracked leagues.
  *
@@ -43,7 +44,7 @@ export async function syncHistory(
 
   const { data: configs, error: configError } = await query;
   if (configError || !configs || configs.length === 0) {
-    console.error("[sync-history] No sync configs found:", configError);
+    logDiagnostic("error", "football_sync_sync_history__sync_history_no_sync_configs_found", configError);
     return [];
   }
 
@@ -57,7 +58,7 @@ export async function syncHistory(
     // Budget check
     const rateLimit = getRateLimit();
     if (rateLimit.dailyRemaining <= 5) {
-      console.warn("[sync-history] Near daily limit, stopping.");
+      logDiagnostic("warn", "football_sync_sync_history__sync_history_near_daily_limit_stopping");
       results.push({
         league: leagueName,
         fixtures_fetched: 0,
@@ -151,15 +152,10 @@ export async function syncHistory(
         api_requests_used: apiRequestsUsed,
       });
 
-      console.log(
-        `[sync-history] ${leagueName}: ${upsertedCount}/${apiFixtures.length} fixtures backfilled`,
-      );
+      logDiagnostic("info", "football_sync_sync_history__sync_history");
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);
-      console.error(
-        `[sync-history] Error for league ${leagueId}:`,
-        errorMessage,
-      );
+      logDiagnostic("error", "football_sync_sync_history__sync_history_error_for_league", errorMessage);
       results.push({
         league: leagueName,
         fixtures_fetched: 0,

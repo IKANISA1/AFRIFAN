@@ -12,86 +12,222 @@ import 'auth_state.dart';
 import 'models/admin_workspace_access.dart';
 import 'models/user_profile.dart';
 
-/// Core auth state notifier — manages the auth lifecycle.
-///
-/// State machine:
-///   AuthInitial → AuthLoading → AuthAuthenticated / AuthUnauthenticated / AuthError
-///
-/// Uses Riverpod v2 `Notifier` (replaces deprecated `StateNotifier`).
+/// Auth work belongs to the repository and session that started it. A delayed
+/// response cannot restore authority after logout, a repository change or dispose.
 class AuthNotifier extends Notifier<AuthState> {
   late AuthRepository _repository;
+  bool _active = false;
+  int _lifetime = 0;
+  int _generation = 0;
+  int _transition = 0;
+  int _profileRevision = 0;
+  int _adminRevision = 0;
   String? _hydratingSessionUserId;
-  int _authHydrationEpoch = 0;
-
-  /// Tracks whether the current sign-out was intentional (user-initiated).
-  /// When false, a signedOut event while previously authenticated indicates
-  /// an involuntary session loss (e.g. token refresh failure on a flaky
-  /// network), and the app transitions to [AuthRecoveryRequired] instead
-  /// of [AuthUnauthenticated] so the UI can prompt re-authentication.
+  String? _sessionUserId;
   bool _intentionalSignOut = false;
+  AuthRecoveryRequired? _recoveryCleanup;
+  int? _completedIntentionalSignOut;
+  Completer<void>? _sessionHydrationCompletion;
+
+  static const _changedSessionMessage =
+      'Your session changed. Start this action again.';
+  static const _changedSessionFailure = AuthActionFailure(
+    kind: AuthActionFailureKind.conflict,
+    message: _changedSessionMessage,
+  );
 
   @override
   AuthState build() {
-    _repository = ref.watch(authRepositoryProvider);
-    final subscription = _repository.authStateChanges.listen(
-      syncWithAuthChange,
-    );
-    ref.onDispose(subscription.cancel);
+    if (_active) _repository.invalidatePendingAuthentication();
+    _invalidate(transition: true);
+    final lifetime = ++_lifetime;
+    final repository = ref.watch(authRepositoryProvider);
+    _repository = repository;
+    _active = true;
+    _intentionalSignOut = false;
+    final subscription = repository.authStateChanges.listen((change) {
+      // Cancellation may itself complete asynchronously. An old stream never
+      // acquires the authority of a rebuilt notifier with the same instance.
+      if (_active &&
+          lifetime == _lifetime &&
+          identical(repository, _repository)) {
+        unawaited(syncWithAuthChange(change));
+      }
+    });
+    ref.onDispose(() {
+      repository.invalidatePendingAuthentication();
+      _active = false;
+      _lifetime++;
+      _invalidate(transition: true);
+      unawaited(subscription.cancel());
+    });
     return const AuthInitial();
   }
 
-  /// Restore the current session on app start.
-  ///
-  /// If a session exists, loads the profile from the server.
-  /// Preserves the current authenticated identity with a local fallback profile
-  /// if remote hydration fails.
-  Future<void> restore() async {
-    state = const AuthLoading();
+  void _invalidate({bool transition = false}) {
+    final completion = _sessionHydrationCompletion;
+    _sessionHydrationCompletion = null;
+    if (completion != null && !completion.isCompleted) completion.complete();
+    _generation++;
+    _hydratingSessionUserId = null;
+    if (transition) {
+      _transition++;
+      _sessionUserId = null;
+      _recoveryCleanup = null;
+      _completedIntentionalSignOut = null;
+    }
+  }
 
+  _AuthWork _capture() => _AuthWork(_repository, _generation, _transition);
+
+  _AuthWork _beginTransition() {
+    _invalidate(transition: true);
+    _intentionalSignOut = false;
+    return _capture();
+  }
+
+  bool _sameTransition(_AuthWork work) =>
+      _active &&
+      work.transition == _transition &&
+      identical(work.repository, _repository);
+
+  bool _current(_AuthWork work) =>
+      _sameTransition(work) && work.generation == _generation;
+
+  /// SDK sign-in can announce its new session before the initiating future
+  /// returns. Its independent hydration owns state; the matching result may
+  /// finish the UI action, without any stale state, admin query or telemetry.
+  Future<bool> _currentSessionMatches(
+    _AuthWork work,
+    UserProfile profile,
+  ) async {
+    if (!_sameTransition(work) ||
+        _sessionUserId != profile.id ||
+        !_profileMatchesRepository(work, profile)) {
+      return false;
+    }
+    final completion = _sessionHydrationCompletion;
+    if (completion != null) await completion.future;
+    if (!_sameTransition(work) || _sessionUserId != profile.id) return false;
+    final current = state;
+    return current is AuthAuthenticated && _sameUser(current.profile, profile);
+  }
+
+  int? _numericClub(String value) {
+    final text = value.trim();
+    if (!RegExp(r'^[0-9]+$').hasMatch(text)) return null;
+    final id = int.tryParse(text);
+    return id != null && id > 0 && id <= 2147483647 ? id : null;
+  }
+
+  bool _profileMatchesRepository(_AuthWork work, UserProfile profile) {
+    final club = _numericClub(work.repository.clubId);
+    return profile.id.isNotEmpty &&
+        club != null &&
+        _numericClub(profile.clubId) == club;
+  }
+
+  bool _sameUser(UserProfile left, UserProfile right) =>
+      left.id == right.id &&
+      _numericClub(left.clubId) != null &&
+      _numericClub(left.clubId) == _numericClub(right.clubId);
+
+  void _rejectProfileScope(_AuthWork work) {
+    if (!_current(work)) return;
+    _sessionUserId = null;
+    state = const AuthRecoveryRequired(
+      'Your session is unavailable for this club. Please sign in again.',
+    );
+    _observeIdentity(null, work: work);
+  }
+
+  AuthAuthenticated? _authenticatedFor(_AuthWork work, UserProfile profile) {
+    if (!_current(work)) return null;
+    final current = state;
+    return current is AuthAuthenticated && _sameUser(current.profile, profile)
+        ? current
+        : null;
+  }
+
+  void _observeIdentity(String? userId, {_AuthWork? work}) {
+    if (!_active || (work != null && !_current(work))) return;
+    unawaited(FirebaseAnalyticsService.setUserId(userId));
+    unawaited(CrashlyticsService.setUserId(userId));
+  }
+
+  void _commitAuthenticated(
+    _AuthWork work,
+    UserProfile profile,
+    AdminWorkspaceAccess access,
+  ) {
+    if (!_current(work)) return;
+    if (!_profileMatchesRepository(work, profile)) {
+      _rejectProfileScope(work);
+      return;
+    }
+    _sessionUserId = profile.id;
+    state = AuthAuthenticated(profile: profile, workspace: access);
+    _observeIdentity(profile.id, work: work);
+  }
+
+  /// Restore the current session on app start.
+  Future<void> restore() async {
+    if (!_active) return;
+    final work = _beginTransition();
+    state = const AuthLoading();
     try {
-      final profile = await _repository.restoreCurrentUser();
-      if (profile != null) {
-        unawaited(FirebaseAnalyticsService.setUserId(profile.id));
-        unawaited(CrashlyticsService.setUserId(profile.id));
-        final adminAccess = await _repository.resolveAdminAccess(profile.id);
-        state = AuthAuthenticated(profile: profile, workspace: adminAccess);
-      } else {
-        unawaited(FirebaseAnalyticsService.setUserId(null));
-        unawaited(CrashlyticsService.setUserId(null));
+      final profile = await work.repository.restoreCurrentUser();
+      if (!_current(work)) return;
+      if (profile == null) {
+        _observeIdentity(null, work: work);
         state = const AuthUnauthenticated();
+        return;
       }
-    } catch (e) {
-      try {
-        await _repository.signOut();
-      } catch (signOutError) {
-        // Best-effort cleanup of a stale or partially restored session.
-        AfriLogger.warn(
-          'AuthNotifier',
-          'Best-effort sign-out during recovery failed: $signOutError',
-        );
+      if (!_profileMatchesRepository(work, profile)) {
+        _rejectProfileScope(work);
+        return;
       }
-      state = AuthRecoveryRequired(
+      final adminAccess = await work.repository.resolveAdminAccess(profile.id);
+      _commitAuthenticated(work, profile, adminAccess);
+    } catch (error) {
+      if (!_current(work)) return;
+      final recovery = AuthRecoveryRequired(
         'Existing session could not be restored and was cleared.',
-        e,
+        error,
       );
+      _recoveryCleanup = recovery;
+      state = recovery;
+      _observeIdentity(null, work: work);
+      try {
+        await work.repository.signOut();
+      } catch (_) {
+        if (_sameTransition(work)) {
+          AfriLogger.warn(
+            'AuthNotifier',
+            'Best-effort sign-out during recovery failed.',
+          );
+        }
+      } finally {
+        if (_sameTransition(work)) _recoveryCleanup = null;
+      }
     }
   }
 
   /// Keep local auth state aligned with the underlying Supabase session.
   Future<void> syncWithAuthChange(supabase.AuthState change) async {
+    if (!_active) return;
     final session = change.session;
     if (change.event == supabase.AuthChangeEvent.signedOut || session == null) {
-      _authHydrationEpoch += 1;
-      _hydratingSessionUserId = null;
-      unawaited(FirebaseAnalyticsService.setUserId(null));
-      unawaited(CrashlyticsService.setUserId(null));
-
-      // Distinguish intentional sign-out from involuntary session loss.
+      final recovery = _recoveryCleanup;
       final wasAuthenticated = state is AuthAuthenticated;
-      if (wasAuthenticated && !_intentionalSignOut) {
-        // Involuntary session loss — token refresh failed or backend revoked
-        // the session. Transition to recovery state so the UI can offer a
-        // "session expired" prompt instead of silently dropping to onboarding.
+      final intentional = _intentionalSignOut;
+      final closingTransition = _transition;
+      _invalidate(transition: true);
+      if (intentional) _completedIntentionalSignOut = closingTransition;
+      _observeIdentity(null, work: _capture());
+      if (recovery != null) {
+        state = recovery;
+      } else if (wasAuthenticated && !intentional) {
         state = const AuthRecoveryRequired(
           'Your session expired. Please sign in again.',
         );
@@ -103,225 +239,276 @@ class AuthNotifier extends Notifier<AuthState> {
     }
 
     final sessionUserId = session.user.id;
-    final current = state;
-
+    final previous = state;
     if (change.event == supabase.AuthChangeEvent.tokenRefreshed &&
-        current is AuthAuthenticated &&
-        current.profile.id == sessionUserId) {
+        previous is AuthAuthenticated &&
+        previous.profile.id == sessionUserId) {
       return;
     }
+    if (_hydratingSessionUserId == sessionUserId) return;
 
-    if (_hydratingSessionUserId == sessionUserId) {
-      return;
-    }
-
-    final hydrationEpoch = ++_authHydrationEpoch;
+    _invalidate();
+    _intentionalSignOut = false;
+    _recoveryCleanup = null;
+    _completedIntentionalSignOut = null;
+    _sessionUserId = sessionUserId;
     _hydratingSessionUserId = sessionUserId;
+    final completion = Completer<void>();
+    _sessionHydrationCompletion = completion;
+    final work = _capture();
+    if (previous is! AuthAuthenticated ||
+        previous.profile.id != sessionUserId) {
+      // Remove the preceding user's profile and admin authority immediately.
+      state = const AuthLoading();
+    }
     try {
-      final profile = await _repository.restoreCurrentUser();
-      if (hydrationEpoch != _authHydrationEpoch) {
-        return;
-      }
+      final profile = await work.repository.restoreCurrentUser();
+      if (!_current(work)) return;
       if (profile == null) {
-        unawaited(FirebaseAnalyticsService.setUserId(null));
-        unawaited(CrashlyticsService.setUserId(null));
+        _observeIdentity(null, work: work);
         state = const AuthUnauthenticated();
         return;
       }
-      unawaited(FirebaseAnalyticsService.setUserId(profile.id));
-      unawaited(CrashlyticsService.setUserId(profile.id));
-      final adminAccess = await _repository.resolveAdminAccess(profile.id);
-      if (hydrationEpoch != _authHydrationEpoch) {
+      if (profile.id != sessionUserId) {
+        throw StateError(
+          'Session profile did not match the authenticated user.',
+        );
+      }
+      if (!_profileMatchesRepository(work, profile)) {
+        _rejectProfileScope(work);
         return;
       }
-      state = AuthAuthenticated(profile: profile, workspace: adminAccess);
+      final adminAccess = await work.repository.resolveAdminAccess(profile.id);
+      _commitAuthenticated(work, profile, adminAccess);
     } catch (error) {
-      if (hydrationEpoch != _authHydrationEpoch) {
-        return;
-      }
-      if (current is AuthAuthenticated && current.profile.id == sessionUserId) {
-        state = current;
+      if (!_current(work)) return;
+      if (previous is AuthAuthenticated &&
+          previous.profile.id == sessionUserId) {
+        state = previous;
       } else {
         state = AuthError('Session refresh failed', error);
       }
     } finally {
-      if (hydrationEpoch == _authHydrationEpoch &&
-          _hydratingSessionUserId == sessionUserId) {
+      if (!completion.isCompleted) completion.complete();
+      if (identical(_sessionHydrationCompletion, completion)) {
+        _sessionHydrationCompletion = null;
+      }
+      if (_current(work) && _hydratingSessionUserId == sessionUserId) {
         _hydratingSessionUserId = null;
       }
     }
   }
 
-  /// Sign in anonymously, injecting club_id into metadata.
+  /// Sign in anonymously, with the repository's configured club.
   Future<void> signInAnonymously() async {
+    if (!_active) return;
+    final work = _beginTransition();
     state = const AuthLoading();
-
     try {
-      final profile = await _repository.signInAnonymously();
-      unawaited(FirebaseAnalyticsService.setUserId(profile.id));
-      unawaited(CrashlyticsService.setUserId(profile.id));
-      final adminAccess = await _repository.resolveAdminAccess(profile.id);
-      state = AuthAuthenticated(profile: profile, workspace: adminAccess);
-    } catch (e) {
-      if (_isAnonymousGuestFallbackError(e)) {
-        final profile = UserProfile.guest(clubId: _repository.clubId);
-        AfriLogger.warn(
-          'AuthNotifier',
-          'Anonymous sign-in could not reach the backend; continuing with a local guest session: $e',
-        );
-        unawaited(FirebaseAnalyticsService.setUserId(null));
-        unawaited(CrashlyticsService.setUserId(null));
-        state = AuthAuthenticated(
-          profile: profile,
-          workspace: AdminWorkspaceAccess.none,
-        );
+      final profile = await work.repository.signInAnonymously();
+      if (!_current(work)) return;
+      if (!_profileMatchesRepository(work, profile)) {
+        _rejectProfileScope(work);
         return;
       }
-      state = AuthError('Sign-in failed', e);
+      final adminAccess = await work.repository.resolveAdminAccess(profile.id);
+      _commitAuthenticated(work, profile, adminAccess);
+    } catch (error) {
+      if (!_current(work)) return;
+      if (_isAnonymousGuestFallbackError(error)) {
+        final profile = UserProfile.guest(clubId: work.repository.clubId);
+        AfriLogger.warn(
+          'AuthNotifier',
+          'Anonymous sign-in could not reach the backend; using a local guest session.',
+        );
+        _observeIdentity(null, work: work);
+        state = AuthAuthenticated(profile: profile);
+      } else {
+        state = AuthError('Sign-in failed', error);
+      }
     }
   }
 
-  /// Send a one-time code for supporter phone sign-in.
   Future<String?> requestPhoneSignInOtp({
     required String phone,
     supabase.OtpChannel channel = supabase.OtpChannel.whatsapp,
-  }) async {
-    final failure = await requestPhoneSignInOtpResult(
-      phone: phone,
-      channel: channel,
-    );
-    return failure?.message;
-  }
+  }) async => (await requestPhoneSignInOtpResult(
+    phone: phone,
+    channel: channel,
+  ))?.message;
 
   /// Send a one-time code with a stable failure category for stateful UI.
   Future<AuthActionFailure?> requestPhoneSignInOtpResult({
     required String phone,
     supabase.OtpChannel channel = supabase.OtpChannel.whatsapp,
   }) async {
+    if (!_active) return _changedSessionFailure;
+    final work = _capture();
     try {
-      await _repository.requestPhoneSignInOtp(phone: phone, channel: channel);
-      return null;
-    } catch (e) {
-      return AuthActionFailure.fromRequestError(e);
+      await work.repository.requestPhoneSignInOtp(
+        phone: phone,
+        channel: channel,
+      );
+      return _current(work) ? null : _changedSessionFailure;
+    } catch (error) {
+      return _current(work)
+          ? AuthActionFailure.fromRequestError(error)
+          : _changedSessionFailure;
     }
   }
 
-  /// Confirm a supporter phone sign-in code and complete session hydration.
   Future<String?> verifyPhoneSignInOtp({
     required String phone,
     required String token,
-  }) async {
-    final failure = await verifyPhoneSignInOtpResult(
-      phone: phone,
-      token: token,
-    );
-    return failure?.message;
-  }
+  }) async =>
+      (await verifyPhoneSignInOtpResult(phone: phone, token: token))?.message;
 
   /// Confirm a phone code with a stable failure category for stateful UI.
   Future<AuthActionFailure?> verifyPhoneSignInOtpResult({
     required String phone,
     required String token,
   }) async {
+    if (!_active) return _changedSessionFailure;
     final previous = state;
+    final work = _beginTransition();
     state = const AuthLoading();
-
     try {
-      final profile = await _repository.verifyPhoneSignInOtp(
+      final profile = await work.repository.verifyPhoneSignInOtp(
         phone: phone,
         token: token,
       );
-      unawaited(FirebaseAnalyticsService.setUserId(profile.id));
-      unawaited(CrashlyticsService.setUserId(profile.id));
-      final adminAccess = await _repository.resolveAdminAccess(profile.id);
-      state = AuthAuthenticated(profile: profile, workspace: adminAccess);
+      if (!_current(work)) {
+        return await _currentSessionMatches(work, profile)
+            ? null
+            : _changedSessionFailure;
+      }
+      if (!_profileMatchesRepository(work, profile)) {
+        _rejectProfileScope(work);
+        return _changedSessionFailure;
+      }
+      final adminAccess = await work.repository.resolveAdminAccess(profile.id);
+      if (!_current(work)) {
+        return await _currentSessionMatches(work, profile)
+            ? null
+            : _changedSessionFailure;
+      }
+      _commitAuthenticated(work, profile, adminAccess);
       return null;
-    } catch (e) {
+    } catch (error) {
+      if (!_current(work)) return _changedSessionFailure;
       state = _recoverState(previous);
-      return AuthActionFailure.fromVerificationError(e);
+      return AuthActionFailure.fromVerificationError(error);
     }
   }
 
-  /// Send a phone verification code for the current authenticated user.
+  /// Request phone verification without rewriting a captured profile later.
   Future<String?> requestPhoneVerificationOtp({required String phone}) async {
-    final current = state;
-    if (current is! AuthAuthenticated) {
+    if (!_active) return _changedSessionMessage;
+    if (state is! AuthAuthenticated) {
       return 'You must be signed in to verify a phone number.';
     }
-
+    final work = _capture();
     try {
-      await _repository.requestPhoneVerificationOtp(phone: phone);
-      state = AuthAuthenticated(
-        profile: current.profile,
-        workspace: current.workspace,
-      );
-      return null;
-    } catch (e) {
-      state = AuthAuthenticated(
-        profile: current.profile,
-        workspace: current.workspace,
-      );
-      return _describeError(e, 'Could not send the verification code.');
+      await work.repository.requestPhoneVerificationOtp(phone: phone);
+      return _current(work) ? null : _changedSessionMessage;
+    } catch (error) {
+      return _current(work)
+          ? _describeError(error, 'Could not send the verification code.')
+          : _changedSessionMessage;
     }
   }
 
-  /// Confirm a phone verification code for the current authenticated user.
   Future<String?> verifyPhoneVerificationOtp({
     required String phone,
     required String token,
   }) async {
+    if (!_active) return _changedSessionMessage;
     final previous = state;
     if (previous is! AuthAuthenticated) {
       return 'You must be signed in to verify a phone number.';
     }
-
+    final work = _beginTransition();
     state = const AuthLoading();
     try {
-      final profile = await _repository.verifyPhoneVerificationOtp(
+      final profile = await work.repository.verifyPhoneVerificationOtp(
         phone: phone,
         token: token,
       );
-      unawaited(FirebaseAnalyticsService.setUserId(profile.id));
-      unawaited(CrashlyticsService.setUserId(profile.id));
-      final adminAccess = await _repository.resolveAdminAccess(profile.id);
-      state = AuthAuthenticated(profile: profile, workspace: adminAccess);
+      if (!_current(work)) {
+        return _sameUser(profile, previous.profile) &&
+                await _currentSessionMatches(work, profile)
+            ? null
+            : _changedSessionMessage;
+      }
+      if (!_sameUser(profile, previous.profile) ||
+          !_profileMatchesRepository(work, profile)) {
+        _rejectProfileScope(work);
+        return _changedSessionMessage;
+      }
+      final adminAccess = await work.repository.resolveAdminAccess(profile.id);
+      if (!_current(work)) {
+        return await _currentSessionMatches(work, profile)
+            ? null
+            : _changedSessionMessage;
+      }
+      _commitAuthenticated(work, profile, adminAccess);
       return null;
-    } catch (e) {
+    } catch (error) {
+      if (!_current(work)) return _changedSessionMessage;
       state = previous;
-      return _describeError(e, 'Could not confirm the verification code.');
+      return _describeError(error, 'Could not confirm the verification code.');
     }
   }
 
-  /// Create or update the user profile.
   Future<String?> updateProfile(UserProfile profile) async {
-    final current = state;
-    if (current is! AuthAuthenticated) {
+    if (!_active) return _changedSessionMessage;
+    final previous = state;
+    if (previous is! AuthAuthenticated) {
       return 'You must be signed in to update your profile.';
     }
-
+    if (!_sameUser(profile, previous.profile) ||
+        !_profileMatchesRepository(_capture(), profile)) {
+      return _changedSessionMessage;
+    }
+    final work = _capture();
+    final revision = ++_profileRevision;
     try {
-      final updated = await _repository.updateProfile(profile);
+      final updated = await work.repository.updateProfile(profile);
+      final current = _authenticatedFor(work, previous.profile);
+      if (current == null ||
+          revision != _profileRevision ||
+          (!_sameUser(updated, previous.profile) ||
+              !_profileMatchesRepository(work, updated))) {
+        return _changedSessionMessage;
+      }
       state = AuthAuthenticated(profile: updated, workspace: current.workspace);
       return null;
-    } catch (e) {
-      state = AuthAuthenticated(
-        profile: current.profile,
-        workspace: current.workspace,
-      );
-      return _describeError(e, 'Profile update failed.');
+    } catch (error) {
+      if (_authenticatedFor(work, previous.profile) == null ||
+          revision != _profileRevision) {
+        return _changedSessionMessage;
+      }
+      return _describeError(error, 'Profile update failed.');
     }
   }
 
-  /// Refresh the current profile without discarding an authenticated session.
   Future<String?> refreshProfile() async {
-    final current = state;
-    if (current is! AuthAuthenticated) {
+    if (!_active) return _changedSessionMessage;
+    final previous = state;
+    if (previous is! AuthAuthenticated) {
       return 'You must be signed in to refresh your profile.';
     }
-
+    final work = _capture();
+    final revision = ++_profileRevision;
     try {
-      final refreshed = await _repository.restoreCurrentUser();
-      if (refreshed == null || refreshed.id != current.profile.id) {
+      final refreshed = await work.repository.restoreCurrentUser();
+      final current = _authenticatedFor(work, previous.profile);
+      if (current == null || revision != _profileRevision) {
+        return _changedSessionMessage;
+      }
+      if (refreshed == null ||
+          !_sameUser(refreshed, previous.profile) ||
+          !_profileMatchesRepository(work, refreshed)) {
         return 'The latest profile could not be loaded.';
       }
       state = AuthAuthenticated(
@@ -330,112 +517,115 @@ class AuthNotifier extends Notifier<AuthState> {
       );
       return null;
     } catch (error) {
-      state = current;
+      if (_authenticatedFor(work, previous.profile) == null ||
+          revision != _profileRevision) {
+        return _changedSessionMessage;
+      }
       return _describeError(error, 'The latest profile could not be loaded.');
     }
   }
 
-  /// Refresh admin access (e.g. after roles change).
   Future<void> refreshAdminAccess() async {
-    final current = state;
-    if (current is! AuthAuthenticated) return;
-
+    if (!_active) return;
+    final previous = state;
+    if (previous is! AuthAuthenticated) return;
+    final work = _capture();
+    if (!_profileMatchesRepository(work, previous.profile)) return;
+    final revision = ++_adminRevision;
     try {
-      final adminAccess = await _repository.resolveAdminAccess(
-        current.profile.id,
+      final access = await work.repository.resolveAdminAccess(
+        previous.profile.id,
       );
-      state = AuthAuthenticated(
-        profile: current.profile,
-        workspace: adminAccess,
-      );
-    } catch (e) {
-      // Non-fatal — keep current access level but log for diagnostics.
-      AfriLogger.warn(
-        'AuthNotifier',
-        'Admin access refresh failed (keeping current level): $e',
-      );
+      final current = _authenticatedFor(work, previous.profile);
+      if (current == null || revision != _adminRevision) return;
+      state = AuthAuthenticated(profile: current.profile, workspace: access);
+    } catch (_) {
+      if (_authenticatedFor(work, previous.profile) != null &&
+          revision == _adminRevision) {
+        AfriLogger.warn(
+          'AuthNotifier',
+          'Admin access refresh failed (keeping current level).',
+        );
+      }
     }
   }
 
-  /// Sign out and clear session.
+  /// Close local authority synchronously; cleanup may be slow or fail.
   Future<void> signOut() async {
+    if (!_active) return;
+    final work = _beginTransition();
     _intentionalSignOut = true;
-    try {
-      await _repository.signOut();
-    } catch (signOutError) {
-      // Best-effort sign-out — log but do not propagate.
-      AfriLogger.warn(
-        'AuthNotifier',
-        'Best-effort sign-out failed: $signOutError',
-      );
-    }
-    unawaited(FirebaseAnalyticsService.setUserId(null));
-    unawaited(CrashlyticsService.setUserId(null));
     state = const AuthUnauthenticated();
+    _observeIdentity(null, work: work);
+    try {
+      await work.repository.signOut();
+    } catch (_) {
+      if (_current(work)) {
+        AfriLogger.warn('AuthNotifier', 'Best-effort sign-out failed.');
+      }
+    }
+    // No post-await state or identity write can erase a newer session.
   }
 
-  /// Revoke all other active sessions while keeping the current device signed in.
   Future<String?> signOutOtherSessions() async {
-    final current = state;
-    if (current is! AuthAuthenticated) {
+    if (!_active) return _changedSessionMessage;
+    if (state is! AuthAuthenticated) {
       return 'You must be signed in to manage sessions.';
     }
-
+    final work = _capture();
     try {
-      await _repository.signOutOtherSessions();
-      state = AuthAuthenticated(
-        profile: current.profile,
-        workspace: current.workspace,
-      );
-      return null;
-    } catch (e) {
-      state = AuthAuthenticated(
-        profile: current.profile,
-        workspace: current.workspace,
-      );
-      return _describeError(e, 'Sign out other sessions failed.');
+      await work.repository.signOutOtherSessions();
+      return _current(work) ? null : _changedSessionMessage;
+    } catch (error) {
+      return _current(work)
+          ? _describeError(error, 'Sign out other sessions failed.')
+          : _changedSessionMessage;
     }
   }
 
-  /// Delete account and all associated data.
   Future<String?> deleteAccount() async {
-    final current = state;
-    if (current is! AuthAuthenticated) {
+    if (!_active) return _changedSessionMessage;
+    final previous = state;
+    if (previous is! AuthAuthenticated) {
       return 'You must be signed in to delete your account.';
     }
-
+    final work = _beginTransition();
     _intentionalSignOut = true;
     state = const AuthLoading();
-
     try {
-      await _repository.deleteAccount(current.profile.id);
-      unawaited(FirebaseAnalyticsService.setUserId(null));
-      unawaited(CrashlyticsService.setUserId(null));
+      await work.repository.deleteAccount(previous.profile.id);
+      if (!_current(work)) {
+        // The SDK may announce this deletion's intentional logout before the
+        // successful deletion response. No state or telemetry is written here.
+        if (_active &&
+            identical(work.repository, _repository) &&
+            _completedIntentionalSignOut == work.transition &&
+            state is AuthUnauthenticated) {
+          return null;
+        }
+        return _changedSessionMessage;
+      }
+      _observeIdentity(null, work: work);
       state = const AuthUnauthenticated();
       return null;
-    } catch (e) {
+    } catch (error) {
+      if (!_current(work)) return _changedSessionMessage;
       _intentionalSignOut = false;
-      state = AuthAuthenticated(
-        profile: current.profile,
-        workspace: current.workspace,
-      );
-      return _describeError(e, 'Account deletion failed.');
+      state = previous;
+      return _describeError(error, 'Account deletion failed.');
     }
   }
 
   String _describeError(Object error, String fallback) {
     final message = error.toString().trim();
     if (message.isEmpty) return fallback;
-
     if (message.startsWith('Exception: ')) {
       return message.substring('Exception: '.length);
     }
     if (message.startsWith('Bad state: ')) {
       return message.substring('Bad state: '.length);
     }
-    if (message.startsWith('PostgrestException(')) {
-      return fallback;
-    }
+    if (message.startsWith('PostgrestException(')) return fallback;
     return message;
   }
 
@@ -457,4 +647,11 @@ class AuthNotifier extends Notifier<AuthState> {
         message.contains('network is unreachable') ||
         message.contains('connection refused');
   }
+}
+
+class _AuthWork {
+  const _AuthWork(this.repository, this.generation, this.transition);
+  final AuthRepository repository;
+  final int generation;
+  final int transition;
 }

@@ -4,7 +4,7 @@ import '../extensions.dart';
 import '../tokens/afri_semantic_colors.dart';
 import '../tokens/color_tokens.dart';
 
-/// Full-screen route background using universal premium mobile gradient families.
+/// Full-screen route background using the mapped Revolut colour families.
 class GradientBackground extends StatelessWidget {
   final Widget child;
   final List<Color>? colors;
@@ -55,7 +55,7 @@ class GradientBackground extends StatelessWidget {
                         )
                       : semantic.cardSurfaceStrong,
                   secondaryText: ColorTokens.onDark.withValues(
-                    alpha: auth ? 0.85 : 0.8,
+                    alpha: auth ? 0.85 : 0.9,
                   ),
                   tertiaryText: ColorTokens.onDark.withValues(alpha: 0.75),
                 ),

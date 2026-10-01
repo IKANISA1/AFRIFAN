@@ -14,6 +14,14 @@ void main() {
       expect(manifest, contains('firebase_analytics_collection_enabled'));
       expect(manifest, contains('firebase_crashlytics_collection_enabled'));
       expect(manifest, contains('firebase_performance_collection_enabled'));
+      expect(
+        manifest,
+        contains(
+          '<meta-data\n'
+          '            android:name="firebase_performance_collection_deactivated"\n'
+          '            android:value="true" />',
+        ),
+      );
       expect(manifest, contains('firebase_sessions_enabled'));
       expect(manifest, contains('ComponentDiscoveryService'));
       expect(
@@ -94,7 +102,9 @@ void main() {
       expect(
         initializeBody,
         contains(
-          'if (_lastKnownToken != null) {\n            unawaited(syncToken());',
+          RegExp(
+            r'if \(_lastKnownToken != null\) \{\s+unawaited\(syncToken\(\)\);',
+          ),
         ),
       );
     });
@@ -118,7 +128,7 @@ void main() {
       expect(application, contains('invoke(messaging, false)'));
     });
 
-    test('Dart observability SDKs are compile-time gated by default', () {
+    test('finite SDKs are gated and Performance is always disabled', () {
       final config = File(
         '${_workspacePrefix()}packages/core/core_network/lib/src/firebase_observability_config.dart',
       ).readAsStringSync();
@@ -137,11 +147,8 @@ void main() {
 
       expect(config, contains('ENABLE_FIREBASE_OBSERVABILITY'));
       expect(config, contains('ENABLE_FIREBASE_APP_CHECK'));
-      expect(bootstrap, contains('FirebaseObservabilityConfig.enabled'));
-      expect(
-        bootstrap,
-        contains('!kIsWeb && FirebaseObservabilityConfig.enabled'),
-      );
+      expect(bootstrap, isNot(contains('FirebaseObservabilityConfig.enabled')));
+      expect(bootstrap, contains('setPerformanceCollectionEnabled(false)'));
       expect(appCheck, contains('FirebaseObservabilityConfig.appCheckEnabled'));
       expect(crashlytics, contains('FirebaseObservabilityConfig.enabled'));
       expect(

@@ -1,3 +1,4 @@
+import { registerLocalHttpAssertions, httpFixtureOrigin } from "../../../../../../e2e/fixtures/local-http-route-assertions";
 import { NextRequest, NextResponse } from "next/server";
 
 const mocks = vi.hoisted(() => ({
@@ -26,7 +27,7 @@ import { POST } from "./route";
 
 function request(phone: string) {
   return new NextRequest(
-    "https://admin.gikundiro.com/api/admin/auth/eligible",
+    `${httpFixtureOrigin("https://admin.gikundiro.com")}/api/admin/auth/eligible`,
     {
       method: "POST",
       headers: {
@@ -151,6 +152,21 @@ describe("POST /api/admin/auth/eligible", () => {
     expect(text).not.toContain("secret");
   });
 
+  it("does not confirm OTP readiness while eligibility is unsettled", async () => {
+    let release: ((value: null) => void) | undefined;
+    mocks.findEligibleAdminPhoneCandidate.mockReturnValue(new Promise((resolve) => { release = resolve; }));
+    let settled = false;
+    const pending = POST(request("+250788123456")).then((response) => { settled = true; return response; });
+    for (let i = 0; i < 12; i++) await Promise.resolve();
+    expect(mocks.findEligibleAdminPhoneCandidate).toHaveBeenCalledTimes(1);
+    expect(settled).toBe(false);
+    expect(signInWithOtp).not.toHaveBeenCalled();
+    release?.(null);
+    const response = await pending;
+    expect(response.status).toBe(202);
+    expect(await response.json()).toMatchObject({ code: "ADMIN_OTP_REQUEST_ACCEPTED", accepted: true });
+  });
+
   it("returns a controlled conflict without revealing candidate details", async () => {
     mocks.findEligibleAdminPhoneCandidate.mockRejectedValue({
       status: 409,
@@ -172,3 +188,36 @@ describe("POST /api/admin/auth/eligible", () => {
     expect(JSON.stringify(body)).not.toContain("+250788123456");
   });
 });
+
+registerLocalHttpAssertions([
+  {
+    "name": "returns the controlled empty state for an invalid phone",
+    "route": "/api/admin/auth/eligible",
+    "state": "empty"
+  },
+  {
+    "name": "honors the permission boundary before checking eligibility",
+    "route": "/api/admin/auth/eligible",
+    "state": "permission_denied"
+  },
+  {
+    "name": "returns a stable timeout while eligibility lookup is stalled",
+    "route": "/api/admin/auth/eligible",
+    "state": "security_timeout"
+  },
+  {
+    "name": "sanitizes OTP-provider failures",
+    "route": "/api/admin/auth/eligible",
+    "state": "error"
+  },
+  {
+    "name": "returns a controlled conflict without revealing candidate details",
+    "route": "/api/admin/auth/eligible",
+    "state": "conflict"
+  },
+  {
+    "name": "does not confirm OTP readiness while eligibility is unsettled",
+    "route": "/api/admin/auth/eligible",
+    "state": "syncing"
+  }
+]);

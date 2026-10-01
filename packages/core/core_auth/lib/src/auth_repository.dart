@@ -32,7 +32,14 @@ class AuthRepository {
     required this.clubId,
     Future<dynamic> Function(String userId)? adminAssignmentsLoader,
     Map<String, dynamic> Function()? appMetadataLoader,
-  }) : rbacResolver = RbacResolver(
+    SupabaseClient Function()? clientProvider,
+    Future<void> Function({String? userId})? unregisterDevice,
+  }) : _clientProvider = clientProvider ?? (() => SupabaseClientFactory.client),
+       _unregisterDevice =
+           unregisterDevice ??
+           (({String? userId}) =>
+               PushNotificationService.unregisterCurrentDevice(userId: userId)),
+       rbacResolver = RbacResolver(
          tag: _tag,
          adminAssignmentsLoader: adminAssignmentsLoader,
          appMetadataLoader: appMetadataLoader,
@@ -41,11 +48,55 @@ class AuthRepository {
   static const _tag = 'AuthRepository';
 
   final String clubId; // This must now be a numeric string matching DB `id`
+  final SupabaseClient Function() _clientProvider;
+  final Future<void> Function({String? userId}) _unregisterDevice;
+  int _scopeGeneration = 0;
+  final Set<GoTrueSessionMutationScope> _ownedMutations = {};
 
   /// Exposed for direct RBAC resolution without going through AuthRepository.
   final RbacResolver rbacResolver;
 
-  SupabaseClient get _client => SupabaseClientFactory.client;
+  SupabaseClient get _client => _clientProvider();
+
+  /// Invalidate replies owned by a disposed or replaced app/account scope.
+  /// This is a synchronous local fence, not a server session revocation.
+  void invalidatePendingAuthentication() {
+    _scopeGeneration++;
+    for (final operation in _ownedMutations) {
+      operation.invalidate();
+    }
+  }
+
+  SupabaseSessionAuthority _captureAuthority() {
+    final generation = _scopeGeneration;
+    return SupabaseSessionAuthority.capture(
+      clientProvider: _clientProvider,
+      isOwnerCurrent: () => generation == _scopeGeneration,
+    );
+  }
+
+  Future<(SupabaseClient, int, T)> _runSessionMutation<T>(
+    Future<T> Function(SupabaseClient client) operation, {
+    required String description,
+  }) async {
+    invalidatePendingAuthentication();
+    final generation = _scopeGeneration;
+    final client = _client;
+    final owner = client.auth.createSessionMutationScope();
+    _ownedMutations.add(owner);
+    try {
+      final response = await _runOperation<T>(
+        () => owner.run(() => operation(client)),
+        description: description,
+      );
+      if (generation != _scopeGeneration) {
+        throw const SupabaseSessionChangedException();
+      }
+      return (client, generation, response);
+    } finally {
+      _ownedMutations.remove(owner);
+    }
+  }
 
   // ─── Authentication ─────────────────────────────────────────
 
@@ -53,8 +104,12 @@ class AuthRepository {
   /// through the governed bootstrap RPC. User metadata is never tenant
   /// authority.
   Future<UserProfile> signInAnonymously() async {
-    final response = await _runOperation<AuthResponse>(
-      () => _client.auth.signInAnonymously(),
+    final (
+      client,
+      generation,
+      response,
+    ) = await _runSessionMutation<AuthResponse>(
+      (client) => client.auth.signInAnonymously(),
       description: 'signInAnonymously',
     );
 
@@ -63,14 +118,7 @@ class AuthRepository {
       throw Exception('Anonymous sign-in failed');
     }
 
-    await _ensureProfileRow(user);
-
-    final profile = await _loadProfile(user.id);
-    if (profile == null) {
-      throw Exception('Server did not return a profile row following sign in.');
-    }
-
-    return profile;
+    return _hydrateAuthenticatedUser(client, generation, user);
   }
 
   /// Send a one-time code for a supporter phone sign-in flow.
@@ -95,33 +143,28 @@ class AuthRepository {
     required String token,
   }) async {
     // Supabase uses its phone-verification type for WhatsApp delivery too.
-    final response = await _runOperation<AuthResponse>(
-      () =>
-          _client.auth.verifyOTP(phone: phone, token: token, type: OtpType.sms),
+    final (
+      client,
+      generation,
+      response,
+    ) = await _runSessionMutation<AuthResponse>(
+      (client) =>
+          client.auth.verifyOTP(phone: phone, token: token, type: OtpType.sms),
       description: 'verifyPhoneSignInOtp',
     );
 
-    final user = response.user ?? _client.auth.currentUser;
+    final user = response.user ?? client.auth.currentUser;
     if (user == null) {
       throw Exception('Phone verification did not produce an active session.');
     }
 
-    await _ensureProfileRow(user);
-
-    final profile = await _loadProfile(user.id);
-    if (profile == null) {
-      throw Exception(
-        'Server did not return a profile row following OTP verification.',
-      );
-    }
-
-    return profile;
+    return _hydrateAuthenticatedUser(client, generation, user);
   }
 
   /// Start a phone change / verification flow for the current authenticated user.
   Future<void> requestPhoneVerificationOtp({required String phone}) async {
-    await _runAction(
-      () => _client.auth.updateUser(UserAttributes(phone: phone)),
+    await _runSessionMutation<UserResponse>(
+      (client) => client.auth.updateUser(UserAttributes(phone: phone)),
       description: 'requestPhoneVerificationOtp',
     );
   }
@@ -131,8 +174,12 @@ class AuthRepository {
     required String phone,
     required String token,
   }) async {
-    final response = await _runOperation<AuthResponse>(
-      () => _client.auth.verifyOTP(
+    final (
+      client,
+      generation,
+      response,
+    ) = await _runSessionMutation<AuthResponse>(
+      (client) => client.auth.verifyOTP(
         phone: phone,
         token: token,
         type: OtpType.phoneChange,
@@ -140,19 +187,12 @@ class AuthRepository {
       description: 'verifyPhoneVerificationOtp',
     );
 
-    final user = response.user ?? _client.auth.currentUser;
+    final user = response.user ?? client.auth.currentUser;
     if (user == null) {
       throw Exception('Phone verification could not be confirmed.');
     }
 
-    await _ensureProfileRow(user);
-
-    final profile = await _loadProfile(user.id);
-    if (profile == null) {
-      throw Exception('Server did not return the verified profile.');
-    }
-
-    return profile;
+    return _hydrateAuthenticatedUser(client, generation, user);
   }
 
   // ─── Session Restore ────────────────────────────────────────
@@ -160,15 +200,14 @@ class AuthRepository {
   /// Restore the current user profile strictly from Supabase.
   /// Silent upserts are avoided to prevent overwriting server data.
   Future<UserProfile?> restoreCurrentUser() async {
-    final user = _client.auth.currentUser;
-    if (user == null) return null;
-
+    final authority = _captureAuthority();
+    final user = authority.session?.user;
     try {
-      final profile = await _loadProfile(user.id);
+      if (user == null) return null;
+      final profile = await _loadProfile(user.id, authority: authority);
       if (profile == null) {
-        // If the profile row is legitimately missing but session exists, try to recover it
-        await _ensureProfileRow(user);
-        return _loadProfile(user.id);
+        await _ensureProfileRow(user, authority: authority);
+        return await _loadProfile(user.id, authority: authority);
       }
       return profile;
     } catch (error, stackTrace) {
@@ -182,6 +221,8 @@ class AuthRepository {
         'Existing session could not be restored safely.',
         error,
       );
+    } finally {
+      await authority.dispose();
     }
   }
 
@@ -189,68 +230,106 @@ class AuthRepository {
 
   /// Update the user profile in Supabase.
   Future<UserProfile> updateProfile(UserProfile profile) async {
-    final expectedUpdatedAt = profile.updatedAt;
-    if (expectedUpdatedAt == null) {
-      await _bootstrapProfile(profile);
-    } else {
-      final updateResult = await SafeRpc.query<dynamic>(
-        () => _client
-            .from('profiles')
-            .update(_editableProfileRow(profile))
-            .eq('id', profile.id)
-            .eq('updated_at', expectedUpdatedAt)
-            .select('id')
-            .maybeSingle(),
-        tag: _tag,
-        description: 'updateProfile.compareAndSetProfile',
-        maxAttempts: 1,
-      );
-      if (!updateResult.isSuccess) {
+    final authority = _captureAuthority();
+    try {
+      if (authority.session?.user.id != profile.id ||
+          int.tryParse(clubId) == null ||
+          int.tryParse(profile.clubId) != int.tryParse(clubId)) {
         throw StateError(
-          updateResult.error ?? 'Profile update could not be completed.',
+          'Profile update requires the current account and club.',
         );
       }
-      final updated = updateResult.data;
-      if (updated == null) {
-        AfriLogger.warn(
-          _tag,
-          'Profile update rejected because the server row changed.',
+      final expectedUpdatedAt = profile.updatedAt;
+      if (expectedUpdatedAt == null) {
+        await _bootstrapProfile(profile, authority: authority);
+      } else {
+        final updateResult = await SafeRpc.query<dynamic>(
+          () {
+            authority.requireCurrent();
+            return authority.client
+                .from('profiles')
+                .update(_editableProfileRow(profile))
+                .eq('id', profile.id)
+                .eq('updated_at', expectedUpdatedAt)
+                .select('id')
+                .maybeSingle()
+                .retry(enabled: false)
+                .setHeader('Authorization', _requestBearer(authority));
+          },
+          tag: _tag,
+          description: 'updateProfile.compareAndSetProfile',
+          maxAttempts: 1,
         );
-        throw const ProfileConflictException();
+        authority.requireCurrent();
+        if (!updateResult.isSuccess) {
+          throw StateError(
+            updateResult.error ?? 'Profile update could not be completed.',
+          );
+        }
+        if (updateResult.data == null) {
+          AfriLogger.warn(
+            _tag,
+            'Profile update rejected because the server row changed.',
+          );
+          throw const ProfileConflictException();
+        }
       }
+      final refreshed = await _loadProfile(profile.id, authority: authority);
+      if (refreshed == null) {
+        throw StateError(
+          'Profile update failed: Server returned null profile.',
+        );
+      }
+      return refreshed;
+    } finally {
+      await authority.dispose();
     }
-
-    final refreshed = await _loadProfile(profile.id);
-    if (refreshed == null) {
-      throw StateError('Profile update failed: Server returned null profile.');
-    }
-
-    return refreshed;
   }
 
   /// Delete the user account and cascade delete via edge function.
   Future<void> deleteAccount(String userId) async {
-    await PushNotificationService.unregisterCurrentDevice(userId: userId);
-
-    final response = await _runOperation<FunctionResponse>(
-      () => _client.functions.invoke(
-        'delete-account',
-        body: <String, dynamic>{'user_id': userId},
-      ),
-      description: 'deleteAccount',
-    );
-
-    final data = response.data;
-    if (data is Map<String, dynamic> && data['success'] == true) {
-      return;
+    if (_client.auth.currentSession?.user.id != userId) {
+      throw StateError('Account deletion requires the current account.');
     }
+    invalidatePendingAuthentication();
+    final authority = _captureAuthority();
+    try {
+      if (authority.session?.user.id != userId) {
+        throw StateError('Account deletion requires the current account.');
+      }
+      authority.client.auth.invalidatePendingSessionMutations();
+      await _unregisterDevice(userId: userId);
+      authority.requireCurrent();
 
-    final message = switch (data) {
-      {'error': final Object error} => error.toString(),
-      {'message': final Object message} => message.toString(),
-      _ => 'Account deletion failed on the backend.',
-    };
-    throw StateError(message);
+      // FunctionsClient awaits JSON encoding and AuthHttpClient awaits token
+      // resolution. An explicit bearer keeps that request bound to the checked
+      // session even if a new login occurs during either SDK await.
+      final accessToken = authority.client.auth.currentSession!.accessToken;
+      final response = await _runOperation<FunctionResponse>(() {
+        authority.requireCurrent();
+        return authority.client.functions.invoke(
+          'delete-account',
+          headers: <String, String>{'Authorization': 'Bearer $accessToken'},
+          body: <String, dynamic>{'user_id': userId},
+        );
+      }, description: 'deleteAccount');
+
+      final data = response.data;
+      if (data is Map<String, dynamic> && data['success'] == true) {
+        return;
+      }
+
+      final message = switch (data) {
+        {'error': final Object error} => error.toString(),
+        {'message': final Object message} => message.toString(),
+        _ => 'Account deletion failed on the backend.',
+      };
+      throw StateError(message);
+    } on SupabaseSessionChangedException catch (error) {
+      throw StateError(error.toString());
+    } finally {
+      await authority.dispose();
+    }
   }
 
   // ─── RBAC ───────────────────────────────────────────────────
@@ -265,33 +344,89 @@ class AuthRepository {
 
   /// Sign out locally.
   Future<void> signOut() async {
-    await PushNotificationService.unregisterCurrentDevice();
-    await _runAction(() => _client.auth.signOut(), description: 'signOut');
+    invalidatePendingAuthentication();
+    final authority = _captureAuthority();
+    try {
+      authority.client.auth.invalidatePendingSessionMutations();
+      final userId = authority.session?.user.id;
+      if (userId != null) await _unregisterDevice(userId: userId);
+      authority.requireCurrent();
+      // GoTrue captures the bearer and clears its local session synchronously
+      // before its first await. Never retry this destructive SDK operation.
+      await _runAction(() {
+        authority.requireCurrent();
+        return authority.client.auth.signOut();
+      }, description: 'signOut');
+    } on SupabaseSessionChangedException catch (error) {
+      throw StateError(error.toString());
+    } finally {
+      await authority.dispose();
+    }
   }
 
   /// Sign out all other active sessions for the current user.
   Future<void> signOutOtherSessions() async {
-    await _runAction(
-      () => _client.auth.signOut(scope: SignOutScope.others),
-      description: 'signOutOtherSessions',
-    );
+    final authority = _captureAuthority();
+    try {
+      await _runAction(() {
+        authority.requireCurrent();
+        return authority.client.auth.signOut(scope: SignOutScope.others);
+      }, description: 'signOutOtherSessions');
+    } finally {
+      await authority.dispose();
+    }
   }
 
   /// Listen to auth state changes.
-  Stream<AuthState> get authStateChanges =>
-      SupabaseClientFactory.authStateChanges;
+  Stream<AuthState> get authStateChanges => _client.auth.onAuthStateChange;
 
   // ─── Helpers ────────────────────────────────────────────────
 
-  Future<void> _ensureProfileRow(User user) async {
+  Future<UserProfile> _hydrateAuthenticatedUser(
+    SupabaseClient client,
+    int generation,
+    User user,
+  ) async {
+    if (generation != _scopeGeneration || !identical(client, _client)) {
+      throw const SupabaseSessionChangedException();
+    }
+    final authority = _captureAuthority();
+    try {
+      if (authority.session?.user.id != user.id) {
+        throw const SupabaseSessionChangedException();
+      }
+      await _ensureProfileRow(user, authority: authority);
+      final profile = await _loadProfile(user.id, authority: authority);
+      if (profile == null) {
+        throw StateError('Server did not return a profile following sign in.');
+      }
+      return profile;
+    } finally {
+      await authority.dispose();
+    }
+  }
+
+  String _requestBearer(SupabaseSessionAuthority authority) {
+    authority.requireCurrent();
+    final session = authority.client.auth.currentSession;
+    if (session == null) throw const SupabaseSessionChangedException();
+    return 'Bearer ${session.accessToken}';
+  }
+
+  Future<void> _ensureProfileRow(
+    User user, {
+    required SupabaseSessionAuthority authority,
+  }) async {
     final seededProfile = _buildSeededProfile(user);
 
     // Profile bootstrap is critical and server-authoritative for club scope.
-    await _bootstrapProfile(seededProfile);
+    await _bootstrapProfile(seededProfile, authority: authority);
 
     // Private contact is best-effort — table may not exist yet.
     try {
-      await _upsertPrivateContact(seededProfile);
+      await _upsertPrivateContact(seededProfile, authority: authority);
+    } on SupabaseSessionChangedException {
+      rethrow;
     } catch (error) {
       AfriLogger.warn(
         'AuthRepository',
@@ -300,37 +435,51 @@ class AuthRepository {
     }
   }
 
-  Future<UserProfile?> _loadProfile(String userId) async {
+  Future<UserProfile?> _loadProfile(
+    String userId, {
+    required SupabaseSessionAuthority authority,
+  }) async {
     // Parallelize the two independent queries to halve latency.
     final results = await Future.wait(<Future<RpcResult<dynamic>>>[
       SafeRpc.query<dynamic>(
-        () => _client
-            .from('profiles')
-            .select(
-              'id, club_id, full_name, public_user_id, country, '
-              'language_code, avatar_url, is_admin, theme_preference, '
-              'created_at, updated_at, display_name, country_code, is_active, '
-              'favorite_team_slug, privacy_show_real_name, '
-              'privacy_findable_by_phone',
-            )
-            .eq('id', userId)
-            .maybeSingle(),
+        () {
+          authority.requireCurrent();
+          return authority.client
+              .from('profiles')
+              .select(
+                'id, club_id, full_name, public_user_id, country, '
+                'language_code, avatar_url, is_admin, theme_preference, '
+                'created_at, updated_at, display_name, country_code, is_active, '
+                'favorite_team_slug, privacy_show_real_name, '
+                'privacy_findable_by_phone',
+              )
+              .eq('id', userId)
+              .maybeSingle()
+              .retry(enabled: false)
+              .setHeader('Authorization', _requestBearer(authority));
+        },
         tag: _tag,
         description: '_loadProfile.profile',
         maxAttempts: 3,
       ),
       SafeRpc.query<dynamic>(
-        () => _client
-            .from('user_private_contacts')
-            .select()
-            .eq('user_id', userId)
-            .maybeSingle(),
+        () {
+          authority.requireCurrent();
+          return authority.client
+              .from('user_private_contacts')
+              .select()
+              .eq('user_id', userId)
+              .maybeSingle()
+              .retry(enabled: false)
+              .setHeader('Authorization', _requestBearer(authority));
+        },
         tag: _tag,
         description: '_loadProfile.privateContact',
         maxAttempts: 2,
       ),
     ]);
 
+    authority.requireCurrent();
     final profileResult = results[0];
     final privateContactResult = results[1];
 
@@ -357,7 +506,7 @@ class AuthRepository {
       );
     }
 
-    return UserProfile.fromJson(<String, dynamic>{
+    final profile = UserProfile.fromJson(<String, dynamic>{
       ...Map<String, dynamic>.from(row),
       if (privateContact != null) ...<String, dynamic>{
         'momo_number': privateContact['momo_number'],
@@ -365,39 +514,60 @@ class AuthRepository {
         'country_code': privateContact['country_code'] ?? row['country_code'],
       },
     });
+    if (profile.id != userId ||
+        int.tryParse(clubId) == null ||
+        int.tryParse(profile.clubId) != int.tryParse(clubId)) {
+      throw StateError(
+        'Restored profile does not belong to this account and club.',
+      );
+    }
+    return profile;
   }
 
-  Future<void> _upsertPrivateContact(UserProfile profile) async {
+  Future<void> _upsertPrivateContact(
+    UserProfile profile, {
+    required SupabaseSessionAuthority authority,
+  }) async {
     await _runAction(
-      () => _client
+      () => authority.client
           .from('user_private_contacts')
           .upsert(
             profile.toPrivateContactRow(includeId: true),
             onConflict: 'user_id',
-          ),
+          )
+          .retry(enabled: false)
+          .setHeader('Authorization', _requestBearer(authority)),
       description: '_upsertPrivateContact',
+      authority: authority,
     );
   }
 
-  Future<void> _bootstrapProfile(UserProfile profile) async {
+  Future<void> _bootstrapProfile(
+    UserProfile profile, {
+    required SupabaseSessionAuthority authority,
+  }) async {
     final normalizedClubId = int.tryParse(clubId);
     if (normalizedClubId == null) {
       throw StateError('Configured club id must be numeric.');
     }
 
     await _runOperation<dynamic>(
-      () => _client.rpc(
-        'bootstrap_supporter_profile',
-        params: <String, dynamic>{
-          'p_club_id': normalizedClubId,
-          'p_display_name': _asOptionalString(profile.displayName),
-          'p_country_code':
-              _asOptionalString(profile.countryCode)?.toUpperCase() ?? 'RW',
-          'p_language_code': 'en',
-          'p_avatar_url': _asOptionalString(profile.avatarUrl),
-        },
-      ),
+      () => authority.client
+          .rpc(
+            'bootstrap_supporter_profile',
+            params: <String, dynamic>{
+              'p_club_id': normalizedClubId,
+              'p_display_name': _asOptionalString(profile.displayName),
+              'p_country_code':
+                  _asOptionalString(profile.countryCode)?.toUpperCase() ?? 'RW',
+              'p_language_code': 'en',
+              'p_avatar_url': _asOptionalString(profile.avatarUrl),
+            },
+          )
+          .retry(enabled: false)
+          .setHeader('Authorization', _requestBearer(authority)),
       description: 'bootstrap_supporter_profile',
+      authority: authority,
     );
   }
 
@@ -444,13 +614,18 @@ class AuthRepository {
     Future<T> Function() operation, {
     required String description,
     int maxAttempts = 1,
+    SupabaseSessionAuthority? authority,
   }) async {
     final result = await SafeRpc.query<T>(
-      operation,
+      () {
+        authority?.requireCurrent();
+        return operation();
+      },
       tag: _tag,
       description: description,
       maxAttempts: maxAttempts,
     );
+    authority?.requireCurrent();
     if (result.isSuccess) {
       return result.requireData;
     }
@@ -461,9 +636,11 @@ class AuthRepository {
     Future<void> Function() operation, {
     required String description,
     int maxAttempts = 1,
+    SupabaseSessionAuthority? authority,
   }) async {
     final result = await SafeRpc.query<bool>(
       () async {
+        authority?.requireCurrent();
         await operation();
         return true;
       },
@@ -471,6 +648,7 @@ class AuthRepository {
       description: description,
       maxAttempts: maxAttempts,
     );
+    authority?.requireCurrent();
     if (!result.isSuccess) {
       throw StateError(result.error ?? '$description failed.');
     }

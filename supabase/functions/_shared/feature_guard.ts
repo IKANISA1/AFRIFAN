@@ -1,3 +1,4 @@
+import { logDiagnostic } from "./diagnostics.ts";
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { jsonError } from "./response.ts";
 
@@ -28,18 +29,12 @@ async function fetchFeatureAccessState(
   });
 
   if (error) {
-    console.error(
-      `[feature-guard] RPC error for ${options.featureKey}:`,
-      error.message,
-    );
+    logDiagnostic("error", "feature_guard__feature_guard_rpc_error_for", error);
     return null;
   }
 
   if (data == null || typeof data !== "object" || Array.isArray(data)) {
-    console.error(
-      `[feature-guard] Invalid access state payload for ${options.featureKey}:`,
-      data,
-    );
+    logDiagnostic("error", "feature_guard__feature_guard_invalid_access_state_payload_for", data);
     return null;
   }
 
@@ -59,10 +54,7 @@ export async function isFeatureEnabled(
     const state = await fetchFeatureAccessState(client, options);
     return state?.is_available === true;
   } catch (err) {
-    console.error(
-      `[feature-guard] Unexpected error checking ${options.featureKey}:`,
-      err,
-    );
+    logDiagnostic("error", "feature_guard__feature_guard_unexpected_error_checking", err);
     return false;
   }
 }
@@ -97,10 +89,7 @@ export async function enforceFeature(
       403,
     );
   } catch (err) {
-    console.error(
-      `[feature-guard] Unexpected error checking ${options.featureKey}:`,
-      err,
-    );
+    logDiagnostic("error", "feature_guard__feature_guard_unexpected_error_checking_2", err);
     return jsonError(
       `Feature access could not be resolved for '${options.featureKey}'.`,
       503,

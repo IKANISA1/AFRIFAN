@@ -298,7 +298,7 @@ export default function AdminBannersPage() {
         <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,32rem),1fr))] gap-5">
           <form
             onSubmit={submit}
-            className="glass-panel grid gap-4 rounded-[28px] p-6"
+            className="ui-panel grid gap-4 rounded-[28px] p-6"
           >
             <fieldset disabled={mutationLocked} className="contents">
               <div className="flex flex-wrap items-center justify-between gap-3">
@@ -449,7 +449,7 @@ export default function AdminBannersPage() {
             </fieldset>
           </form>
 
-          <div className="glass-panel min-w-0 rounded-[28px] p-6">
+          <div className="ui-panel min-w-0 rounded-[28px] p-6">
             <AdminFilterBar
               actions={
                 <div className="flex flex-wrap gap-2">

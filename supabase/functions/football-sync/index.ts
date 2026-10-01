@@ -1,3 +1,4 @@
+import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import {
@@ -128,7 +129,7 @@ async function handler(request: Request): Promise<Response> {
     if (err instanceof HttpError) {
       return jsonError(err.message, err.status);
     }
-    console.error("[football-sync] Unhandled error:", err);
+    logDiagnostic("error", "football_sync__football_sync_unhandled_error", err);
     return jsonError(
       err instanceof Error ? err.message : "Internal error",
       500,

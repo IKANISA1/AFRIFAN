@@ -24,6 +24,8 @@ class AfriClubBootstrapOptions {
     this.startupOptions = const AppStartupOptions(),
     this.authRepository,
     this.providerOverrides = const <Override>[],
+    this.eagerProviders = const <ProviderListenable<Object?>>[],
+    this.onAccountChanged,
     this.initialLocation,
     this.deepLinkParser,
     this.deepLinkService,
@@ -42,6 +44,11 @@ class AfriClubBootstrapOptions {
   final AppStartupOptions startupOptions;
   final AuthRepository? authRepository;
   final List<Override> providerOverrides;
+
+  /// Passive scoped owners that must mount even when their feature is unvisited.
+  /// Initialization registers disposal; it must not trigger product requests.
+  final List<ProviderListenable<Object?>> eagerProviders;
+  final VoidCallback? onAccountChanged;
   final String? initialLocation;
   final DeepLinkParser? deepLinkParser;
   final DeepLinkService? deepLinkService;
@@ -169,6 +176,8 @@ Future<void> bootstrap(
           modules: modules,
           authRepository: options.authRepository,
           providerOverrides: options.providerOverrides,
+          eagerProviders: options.eagerProviders,
+          onAccountChanged: options.onAccountChanged,
           initialLocation: options.initialLocation,
           deepLinkParser: deepLinkService == null ? null : deepLinkParser,
           deepLinkService: deepLinkService,
@@ -197,7 +206,9 @@ void _installGlobalErrorHandlers() {
 
   final previousFlutterErrorHandler = FlutterError.onError;
   FlutterError.onError = (details) {
-    previousFlutterErrorHandler?.call(details);
+    previousFlutterErrorHandler?.call(
+      AfriLogger.frameworkErrorDetails(details),
+    );
     unawaited(CrashlyticsService.recordFlutterError(details));
     unawaited(
       _reportUnhandledError(
@@ -228,8 +239,6 @@ Future<void> _reportUnhandledError({
   required Object error,
   required StackTrace stackTrace,
 }) async {
-  final summarizedStackTrace = _summarizeStackTrace(stackTrace);
-
   AfriLogger.error(
     'Bootstrap',
     'Unhandled error in $component.',
@@ -239,8 +248,8 @@ Future<void> _reportUnhandledError({
   if (!SupabaseClientFactory.isInitialized) {
     _pendingPreInitErrors.add({
       'component': component,
-      'error': error,
-      'stackTrace': stackTrace,
+      'error': StateError('native_runtime_failure'),
+      'stackTrace': StackTrace.empty,
     });
     return;
   }
@@ -250,14 +259,11 @@ Future<void> _reportUnhandledError({
   ).recordEvent(
     service: 'mobile_app',
     component: component,
-    message: error.toString(),
+    message: 'Operational health failure.',
     status: OperationalHealthStatus.error,
     severity: OperationalHealthSeverity.critical,
     issueCode: 'unhandled_exception',
-    metadata: <String, dynamic>{
-      'error': error.toString(),
-      'stack_trace': summarizedStackTrace,
-    },
+    metadata: const <String, dynamic>{},
   );
 }
 
@@ -276,18 +282,4 @@ Future<void> flushPendingPreInitErrors() async {
       stackTrace: error['stackTrace'] as StackTrace,
     );
   }
-}
-
-String _summarizeStackTrace(StackTrace stackTrace) {
-  final lines = stackTrace
-      .toString()
-      .split('\n')
-      .where((line) => line.trim().isNotEmpty)
-      .take(20)
-      .toList(growable: false);
-  final summary = lines.join('\n');
-  if (summary.length <= 4000) {
-    return summary;
-  }
-  return '${summary.substring(0, 4000)}...';
 }
