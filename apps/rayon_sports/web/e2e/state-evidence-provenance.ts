@@ -5,6 +5,7 @@ import path from "node:path";
 import type { Browser, BrowserContextOptions, Page, TestInfo } from "@playwright/test";
 import { assertLocalRouteState, localClub, localStateContextOptions } from "./fixtures/local-route-assertions.mjs";
 import { guardStateEvidenceContext } from "./fixtures/local-browser-network.mjs";
+import { checkedProductionBuild } from "./fixtures/local-build-proof-cache.mjs";
 export { createStateEvidenceContext } from "./fixtures/local-browser-network.mjs";
 
 const sha256 = (bytes: Buffer) => createHash("sha256").update(bytes).digest("hex");
@@ -31,9 +32,9 @@ export function trackedSourceHash(workspace: string) {
 function validateProductionBuild(web: string): Record<string, string> {
   // Run the shared verifier with Node directly. Playwright's CommonJS test
   // transform must not rewrite the build pipeline's native ESM module.
-  return JSON.parse(execFileSync(process.execPath,
+  return checkedProductionBuild(web, () => JSON.parse(execFileSync(process.execPath,
     [path.join(web, "scripts/web-build-provenance.mjs"), "check"],
-    { cwd: web, encoding: "utf8" }));
+    { cwd: web, encoding: "utf8" })));
 }
 
 export function stateEvidenceContextOptions(testInfo: TestInfo): BrowserContextOptions {

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-01T11:29:03.879660+00:00",
+  "generatedAt": "2026-10-01T12:52:53.644994+00:00",
   "baselineHead": "7fa5292248d5776c6e255aa39ab7acdd658f24e9",
-  "goalStatus": "CLOSED_REVISED_SCOPE",
+  "goalStatus": "ACTIVE_LOCAL_EIGHT_TASKS",
   "goalComplete": false,
   "productionReady": false,
   "externalReleaseAcceptance": false,
@@ -1304,7 +1304,7 @@
     }
   },
   "finalCandidateBound": false,
-  "status": "closed_user_revised_essential_scope",
+  "status": "REQUIRED_LOCAL_CHECKS_COMPLETE_DELIVERY_IN_PROGRESS",
   "retainedReportSnapshots": [
     {
       "report": {
@@ -1323,7 +1323,7 @@
       "scope": "Full previous report bytes retained; former current fields are historical."
     }
   ],
-  "revisedGoalComplete": true,
+  "revisedGoalComplete": false,
   "originalFull16RequirementsVerified": false,
   "scopeRevision": {
     "requestedAt": "2026-10-01",
@@ -1369,5 +1369,115 @@
     "Repeated full unit, native and verifier-method suites for unchanged implementation.",
     "New production rebuild, conversion, artifact seal/extraction and artifact secret admission.",
     "Final candidate commit and comprehensive all-16 candidate/evidence binding audit."
+  ],
+  "previousScopeRevision": {
+    "requestedAt": "2026-10-01",
+    "reason": "User requested immediate finish after prolonged execution and canceled nonessential work.",
+    "scope": "Apply diagnosed ticket overflow correction and verify the affected source page across all five clubs; publish truthful closeout.",
+    "complete": true,
+    "closedAt": "2026-10-01T11:29:03.879660+00:00",
+    "completed": [
+      "Scoped table containment correction applied.",
+      "Five clubs passed desktop dark/mobile light at 200 percent text, keyboard drawer recovery and ten Axe analyses.",
+      "Repeated broad validation runs stopped; prior receipts and staged/unstaged work preserved.",
+      "Closeout and file rationale published."
+    ],
+    "canceledWork": [
+      "Remaining full 305-case browser matrix and its aggregate route/accessibility admission.",
+      "Repeated full unit, native and verifier-method suites for unchanged implementation.",
+      "New production rebuild, conversion, artifact seal/extraction and artifact secret admission.",
+      "Final candidate commit and comprehensive all-16 candidate/evidence binding audit."
+    ],
+    "focusedEvidence": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/essential-ticket-five-club-pagination-corrected-20261001/verification.json",
+      "sha256": "6bb347f5f1580a1df3742cc3937ca3dbf7eac2928c4ced62d45bcb8bee94528c",
+      "bytes": 11262
+    },
+    "serverTerminationAndRestoration": {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/essential-source-dev-emulator-free-20261001/configuration-restoration.json",
+      "sha256": "648b5f41281283fc6e84830ec2d98577e7f0c05481f983ac378af29454b6fefe",
+      "bytes": 1381
+    },
+    "originalFull16RequirementsVerified": false,
+    "productionReady": false,
+    "externalReleaseAcceptance": false
+  },
+  "resumedLocalTasks": [
+    {
+      "id": 1,
+      "task": "Native regression/integration/static analysis across five clubs",
+      "status": "local_verified"
+    },
+    {
+      "id": 2,
+      "task": "Browser HTTP and WebSocket network isolation",
+      "status": "local_verified"
+    },
+    {
+      "id": 3,
+      "task": "Complete HTTP/browser/route-state/accessibility coverage",
+      "status": "local_verified"
+    },
+    {
+      "id": 4,
+      "task": "Dependency/SBOM/license inventories with explicit unknowns",
+      "status": "local_verified"
+    },
+    {
+      "id": 5,
+      "task": "Final local candidate preserving staged changes",
+      "status": "final_delivery_in_progress"
+    },
+    {
+      "id": 6,
+      "task": "Sealed/extracted archive with every file and hash verified",
+      "status": "final_delivery_in_progress"
+    },
+    {
+      "id": 7,
+      "task": "Final source/all reachable Git/archive secret scans",
+      "status": "final_delivery_in_progress"
+    },
+    {
+      "id": 8,
+      "task": "Per-file rationale/evidence hashes/completion report",
+      "status": "final_delivery_in_progress"
+    }
+  ],
+  "updatedAtUtc": "2026-10-01T14:58:10.756228+00:00",
+  "finalLocalOutcomeReceipt": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-eight-task-delivery-20261001/completion.json",
+  "finalLocalOutcomeReport": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-eight-task-delivery-20261001/completion.md",
+  "finalStatusAuthority": "The completion receipt is written only after the source candidate, every archive file/hash and the final source/all-reachable-Git/archive secret admission pass. Source reports are frozen before candidate creation to avoid recursive commit/archive hashes.",
+  "currentLocalEvidence": [
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-coverage-essential-final-20261001-final-admission-fan-club-contract/verification.json",
+      "sha256": "a866e7fad99369868c3f9c9167e644c4392b9460e343b10f61371d1b9b9cc3b9",
+      "bytes": 8716973
+    },
+    {
+      "path": "docs/release/local-final-native-dependencies-2026-10-01.json",
+      "sha256": "dfa50ab9217cc87080f2b460da22df13a5f7dcf25ce8a74102611db7999fd548",
+      "bytes": 963698
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-final-network-isolation-20261001.json",
+      "sha256": "f5bd98d2452ac30b6080edb46237cdd5235e991f6b8b1dff925bcd4abf3164fe",
+      "bytes": 1957076
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/web-final-essential-build-20261001/verification.json",
+      "sha256": "05c71754484ff3a6548ed9a4ba69017a4a854a4d5b76c158bd21a20675ba7078",
+      "bytes": 244906
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-essential-final-conversion-20261001/output-bound-conversion.json",
+      "sha256": "aaf11959bf2b06062bf1d3a36f2f2344fd32329b6733d37af797448d9c14834e",
+      "bytes": 579319
+    },
+    {
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/local-essential-final-dry-run-20261001/output-bound-dry-run.json",
+      "sha256": "d485d2eb91b6b8c1eee39cb9940a265616f0c75fcc632742b3f1310569b0ac5d",
+      "bytes": 1195844
+    }
   ]
 }

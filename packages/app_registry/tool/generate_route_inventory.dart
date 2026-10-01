@@ -1068,6 +1068,16 @@ List<String> _readRouteEvidencePaths({
 
 (bool, String) _classifyClosureState(Map<String, Object?> route, String state) {
   final kind = route['kind'] as String;
+  if (route['surface'] == 'consumer_web' &&
+      route['path'] == '/fan-clubs' &&
+      kind == 'next_page' &&
+      state == 'selected') {
+    return (
+      false,
+      'Fan-club directory entries do not implement persistent selection; '
+          'campaign selection controls are rendered only for circles.',
+    );
+  }
   if (route['rendered_state_contract'] == 'static_contact_surface') {
     const contactStates = <String>{
       'focused',

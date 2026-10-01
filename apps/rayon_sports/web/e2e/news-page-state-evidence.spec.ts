@@ -219,6 +219,7 @@ test("news proves all sixteen applicable rendered states", async ({
 
   mode = "ready";
   await openNews(page, "focused");
+  await expectStatus(page, "ready", /news feed confirmed/i);
   const matchday = page.getByRole("link", { name: "Matchday" });
   await matchday.focus();
   await expect(page.locator(".news-surface")).toHaveAttribute(
