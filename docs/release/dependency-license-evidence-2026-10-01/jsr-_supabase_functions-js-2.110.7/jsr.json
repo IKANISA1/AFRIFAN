@@ -1,0 +1,9 @@
+{
+  "name": "@supabase/functions-js",
+  "version": "2.110.7",
+  "license": "MIT",
+  "exports": {
+    ".": "./src/index.ts",
+    "./edge-runtime.d.ts": "./src/edge-runtime.d.ts"
+  }
+}

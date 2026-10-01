@@ -1,0 +1,24 @@
+{
+  "kind": "npm",
+  "name": "@supabase/postgrest-js",
+  "version": "1.19.4",
+  "componentRefs": [
+    "dependency:1e7a2c66f844a684e2c4b127"
+  ],
+  "records": [
+    {
+      "url": "https://registry.npmjs.org/@supabase%2Fpostgrest-js/1.19.4",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_postgrest-js-1.19.4/version.json",
+      "status": 200,
+      "sha256": "e472879f75d4bf91693316fc0479827f96c3e00ad31b4d05a2d595a23c0583f9",
+      "bytes": 3506
+    },
+    {
+      "url": "https://registry.npmjs.org/@supabase/postgrest-js/-/postgrest-js-1.19.4.tgz",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/npm-_supabase_postgrest-js-1.19.4.tgz",
+      "status": 200,
+      "sha256": "06ce095d79c557bcaf83eaea1474043076bf5466e7feb885219caec245ed9291",
+      "bytes": 60508
+    }
+  ]
+}

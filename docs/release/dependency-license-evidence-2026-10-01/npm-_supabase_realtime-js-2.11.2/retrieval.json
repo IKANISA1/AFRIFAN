@@ -1,0 +1,24 @@
+{
+  "kind": "npm",
+  "name": "@supabase/realtime-js",
+  "version": "2.11.2",
+  "componentRefs": [
+    "dependency:a0584e133516275e046f2aa4"
+  ],
+  "records": [
+    {
+      "url": "https://registry.npmjs.org/@supabase%2Frealtime-js/2.11.2",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_realtime-js-2.11.2/version.json",
+      "status": 200,
+      "sha256": "1d53e5b848deb6af3f0475f4ac78729f6f364d876e1b5b02b50925de1d814454",
+      "bytes": 3095
+    },
+    {
+      "url": "https://registry.npmjs.org/@supabase/realtime-js/-/realtime-js-2.11.2.tgz",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/npm-_supabase_realtime-js-2.11.2.tgz",
+      "status": 200,
+      "sha256": "9b2eabb222f08b508f9e231f3c6222f8bca4f120ec2501d86c019addc82a130b",
+      "bytes": 57015
+    }
+  ]
+}

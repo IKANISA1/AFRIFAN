@@ -1,0 +1,25 @@
+{
+  "kind": "npm",
+  "name": "ws",
+  "version": "8.21.1",
+  "componentRefs": [
+    "dependency:116b679d715d9c76e9443724",
+    "dependency:491c7fa6a243dc7c87140484"
+  ],
+  "records": [
+    {
+      "url": "https://registry.npmjs.org/ws/8.21.1",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/version.json",
+      "status": 200,
+      "sha256": "653f51558b07509b2ad83682b42621f12eeaaca0024ebadb14772f22a8d0a473",
+      "bytes": 2442
+    },
+    {
+      "url": "https://registry.npmjs.org/ws/-/ws-8.21.1.tgz",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/npm-ws-8.21.1.tgz",
+      "status": 200,
+      "sha256": "bb0f7e58ba1f64746672734d36175fe185f226491e336abc0743e2a8f4472ec1",
+      "bytes": 34995
+    }
+  ]
+}

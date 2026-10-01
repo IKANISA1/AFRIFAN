@@ -190,6 +190,21 @@
       }
     ]
   },
+  "currentGapClosure": {
+    "bytes": 1160,
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/canonical-verification.json",
+    "pluginBuildReceipt": {
+      "bytes": 183505,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/plugin-output-builds.json",
+      "sha256": "6ba5d46ef024084995233169c8d17df62d55856938579c488b90fc1344a5dba3"
+    },
+    "publisherManifest": {
+      "bytes": 53585,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+      "sha256": "a3e34134eae83727575ef5e70f21683aacc3fac95556c24c8c02a39703cab1db"
+    },
+    "sha256": "43a59fd1dd90d34015c6ff3cef752378a945a7b01713279ce398d3b42425a66f"
+  },
   "currentSourceRebind": {
     "acceptance": false,
     "addedDirectEdges": [
@@ -398,6 +413,11 @@
   },
   "cycloneDxSchemaValidation": {
     "cachedSchemaOnly": true,
+    "currentReceipt": {
+      "bytes": 1160,
+      "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/canonical-verification.json",
+      "sha256": "43a59fd1dd90d34015c6ff3cef752378a945a7b01713279ce398d3b42425a66f"
+    },
     "errors": 0,
     "jsonschemaVersion": "4.26.0",
     "networkFallbackRejected": true,
@@ -421,17 +441,18 @@
     "specVersion": "1.6"
   },
   "fullEvidenceValidation": {
-    "bytes": 50,
+    "bytes": 1160,
+    "evidenceItems": 8664,
     "passed": true,
-    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/full-validation.log",
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/canonical-verification.json",
     "requireExact": true,
-    "sha256": "ee59b7f8f33e1eda89865675ccd9401b5a7782af6a8c638f9822de15dbc9529f"
+    "sha256": "43a59fd1dd90d34015c6ff3cef752378a945a7b01713279ce398d3b42425a66f"
   },
   "implementationFiles": [
     {
-      "bytes": 130308,
+      "bytes": 130994,
       "path": "tools/scripts/local_dependency_inventory.py",
-      "sha256": "86ff08a45009a4d298393f762553942dc78dbfbaafd63358fb3afdb98081557d",
+      "sha256": "a604715ca2c6a7cb03d5b08cb0f210adab25f509d0cbde7448344b09eabef546",
       "why": "Repeatable active dependency source/version/integrity/license reconciliation; exactness gate, bounded lossless TSV exports and strict row/hash/coverage readback"
     },
     {
@@ -457,6 +478,18 @@
       "path": "supabase/deno.lock",
       "sha256": "19dc91a3f9606d1d2301693348a73e7be17b17ac7ca494597c6f69c9c89fc0d8",
       "why": "Frozen npm/JSR/HTTP dependency and integrity graph; Edge checks run cached-only without modifying the lock"
+    },
+    {
+      "bytes": 17775,
+      "path": "tools/scripts/dependency_gap_closure.py",
+      "sha256": "4e6424f4e1bf33a5258105e1e1ea1f07a2a71d40a22ada39ac488d3223f93893",
+      "why": "Admit version-bound publisher licenses and complete, unchanged-input plugin build receipts; reject missing or altered evidence"
+    },
+    {
+      "bytes": 3145,
+      "path": "tools/scripts/test_dependency_gap_closure.py",
+      "sha256": "a1e87afe634683e9fdcae2ed36e2368805f141f28ef35a4b11154e74bf240bd1",
+      "why": "Seven focused positive and negative publisher/output admission regressions"
     }
   ],
   "inventorySummary": {
@@ -476,33 +509,42 @@
       "swift": 18
     },
     "components": 2265,
-    "componentsWithLicenseDeclaration": 1984,
-    "componentsWithLicenseText": 1412,
+    "componentsWithLicenseDeclaration": 2006,
+    "componentsWithLicenseText": 1427,
     "dependencyEdgeOccurrences": 137849,
     "dependencyEdges": 7199,
-    "evidenceItems": 8290,
+    "evidenceItems": 8664,
     "exactInventoryComplete": true,
-    "unresolvedFields": 304
+    "unresolvedFields": 0
   },
   "licenseRecovery": {
     "allOriginalFindingsRetained": true,
+    "networkRequestScope": "Original local cache recovery/application only; publisher retrieval used network",
     "networkRequests": 0,
     "originalGapCount": 41,
     "partialEvidenceDoesNotClearPackageLicense": true,
-    "recoveredComponents": 19,
-    "remainingGapCount": 22,
+    "publisherEvidenceComponents": 22,
+    "recoveredComponents": 41,
+    "remainingGapCount": 0,
     "selectedVersionsChanged": 0
   },
   "limitations": [
-    "22 components lack exact package-wide license evidence in the inspected local caches/packages; all original finite findings remain and license approval is not assessed",
-    "282 native local plugin outputs remain unbuilt by inventory collection",
     "GoTrue 2.27.2 uses explicitly patched local source with complete content/provenance binding; upstream archive equality and upstream approval of the local patch are not asserted",
     "Dependency input freezing excludes AndroidManifest.xml, Info.plist and runtime/bootstrap privacy controls; native collector deactivation and runtime privacy outcomes require separate current evidence",
     "Manifest/lock/cache dependency attribution differs from the separate installed converter byte inventory; neither asserts a clean-install comparison or production runtime outcome",
     "Portable validation intentionally skips the exact hash-bound cache/object/output scope and generated Pub/plugin evidence confirmed ignored; full validation verifies those bytes",
     "Font upstream package/version comes from the retained README; local font/license equality is freshly verified without upstream archive revalidation or an added npm selection",
-    "No online downloads, package upgrades, provider/deployed dependency or vulnerability clearance, device/store or production acceptance was performed by this rebind"
+    "All 22 license gaps and 282 plugin output gaps were resolved without an application release build.",
+    "Publisher evidence retrieval used the network; saved-evidence application and schema validation did not.",
+    "TensorFlow publisher source association is not an exact binary release commit or a reproducible build."
   ],
+  "newAdmissionRegressions": {
+    "bytes": 1012,
+    "passed": true,
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/admission-regressions-final.log",
+    "sha256": "aa1d80d15f01e68999ef9825ec02d5ff29fc127a0dcd11795256a345d9cedefd",
+    "tests": 7
+  },
   "portableSourceValidation": {
     "bytes": 98,
     "exactGeneratedIgnoredExclusions": [
@@ -561,6 +603,11 @@
     },
     "sha256": "c6bbf5cf173000126e1bcbd0b42481235e8dd0eb030d33ad3afd2af579a141ec",
     "verifiedEvidenceCount": 2214
+  },
+  "previousVerification": {
+    "bytes": 98425,
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/previous-canonical-reports/local-dependency-inventory-2026-09-30.verification.json",
+    "sha256": "a2359878def3818db64e0bbfe994dc8cc6e3b3e3d8f9e4d1a971287b6d36f64a"
   },
   "projectAssetProvenance": [
     {
@@ -625,13 +672,11 @@
     "bytes": 153,
     "passed": true,
     "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/regression-tests.log",
+    "scope": "Retained original 54-case bank; new publisher admission is separately verified by seven current regressions",
     "sha256": "8a325b63561a46a429e1016b8865c896de124d081a1457c427805151520578a1",
     "tests": 54
   },
-  "remainingFields": {
-    "license-evidence-unavailable": 22,
-    "native-project-artifact-not-built": 282
-  },
+  "remainingFields": {},
   "reportArtifacts": [
     {
       "bytes": 29233,
@@ -744,24 +789,24 @@
       "sha256": "6dfc6cc2951b1aa83e9e27a8c8e4668797ed47578878431751abbcea29a8af17"
     },
     {
-      "bytes": 5550727,
+      "bytes": 5486508,
       "path": "docs/release/local-dependency-inventory-2026-09-30.cdx.json",
-      "sha256": "916ce6db334cfa02d0ba93f8c58bb8dcc6e92f8ab9bce132a46d8984252739f4"
+      "sha256": "2327f25791ca07aed2e8b9728a267832bd70be271da38ee058723fb72e4763d5"
     },
     {
-      "bytes": 2095322,
+      "bytes": 2095605,
       "path": "docs/release/local-dependency-inventory-2026-09-30.components.001.tsv",
-      "sha256": "e406173921233a33882b9025725588d051edaa7866607ad9eaea53c66e74934c"
+      "sha256": "77348b0e0faa6937be921e87b61f18a3b53a46ef0f65636e331e656f099b2980"
     },
     {
-      "bytes": 2097106,
+      "bytes": 2097081,
       "path": "docs/release/local-dependency-inventory-2026-09-30.components.002.tsv",
-      "sha256": "689c535f8dda8cd635ce0159069d0db5252069a70b5181b4e773284c77ee3735"
+      "sha256": "dc27dc521fbbb6a9bf408777650702483abfc7a5a88dfe81c0f148794cadddad"
     },
     {
-      "bytes": 1468358,
+      "bytes": 1502927,
       "path": "docs/release/local-dependency-inventory-2026-09-30.components.003.tsv",
-      "sha256": "ed99a5333df61a005ee28be6b11402460112dae2f6150bbc435f2b43c5918f56"
+      "sha256": "6cd356a61325f7a88840e1e47e0b02f64ec5c2eb98980582b57709a53a400a5e"
     },
     {
       "bytes": 2096784,
@@ -789,44 +834,39 @@
       "sha256": "2f71ea2bdb60315c23597a6a13b06498273d56e75381f3ae44e881de904e74d5"
     },
     {
-      "bytes": 2096882,
+      "bytes": 2097018,
       "path": "docs/release/local-dependency-inventory-2026-09-30.evidence.001.tsv",
-      "sha256": "4f0b869d9195f43d205f02279b944ae0b13b568d0ee8a0ccce8ac1e9ee3a28e6"
+      "sha256": "9ab70a01930bc2c688dde5ec6587088ee48d948acb066b613c5d5a17fb2168f9"
     },
     {
-      "bytes": 1285248,
+      "bytes": 1439214,
       "path": "docs/release/local-dependency-inventory-2026-09-30.evidence.002.tsv",
-      "sha256": "34963d92d4ea1f66913fde74bbb01894692d51cde4c986e8262b82df4b0eda08"
+      "sha256": "23699e2f88eafbe30c51aa15367a6466714a7de00f6182dd059cf3a785c6a958"
     },
     {
-      "bytes": 46507,
+      "bytes": 71899,
       "path": "docs/release/local-dependency-inventory-2026-09-30.json",
-      "sha256": "76a680586b50c978f920a8b6d1c04ef041c39a82c66faa35eccaaf1e1edc4cf2"
+      "sha256": "d151168f941e8a5430226f2b1e5a447304feaf0281da157ba6f5a69ddf1042cd"
     },
     {
-      "bytes": 67601,
+      "bytes": 53951,
       "path": "docs/release/local-dependency-inventory-2026-09-30.license-recovery.json",
-      "sha256": "78d517ff8d4122e1bf71778f2806dc1cebc94509ff3c7d4158d8dc196f1cb4e7"
+      "sha256": "f30f4937b56931d756eaa84247ac16f1d7ac12f3be303c8044c9da25f2c1a2bb"
     },
     {
-      "bytes": 4306,
+      "bytes": 3359,
       "path": "docs/release/local-dependency-inventory-2026-09-30.license-recovery.md",
-      "sha256": "6594832b6790b599fa9b1fbe4134556f8ecc38014b492db9ffb1cfed1830f938"
+      "sha256": "4346447d252d9031c76efb24140ba56973a650e563335fa70543471a462a8476"
     },
     {
-      "bytes": 612029,
+      "bytes": 613575,
       "path": "docs/release/local-dependency-inventory-2026-09-30.licenses.tsv",
-      "sha256": "51598e74fe8f5d9954b37c1df7b37b5afc4f8a3e4cf22616aedcaaf450e08685"
+      "sha256": "424bb0b6bcf6286cef29ebed5b50dae1d1e6d8f55f9be3a4b8d92367c421790c"
     },
     {
-      "bytes": 9475,
+      "bytes": 7067,
       "path": "docs/release/local-dependency-inventory-2026-09-30.md",
-      "sha256": "60f263c03277847d1f610a49365dd7736ce3cd3ceffa9c404b8d788818fa033c"
-    },
-    {
-      "bytes": 89217,
-      "path": "docs/release/local-dependency-inventory-2026-09-30.unresolved.001.tsv",
-      "sha256": "bdb990ee67927ce6c0a2d0fa834b02a592e15fe6c358641cf08221892397f27f"
+      "sha256": "57b554f733f1574fa429c0a1e552aa9dfbfc76a1eb0bfa8b99d6b2ba7483f4ea"
     }
   ],
   "schemaVersion": 1,

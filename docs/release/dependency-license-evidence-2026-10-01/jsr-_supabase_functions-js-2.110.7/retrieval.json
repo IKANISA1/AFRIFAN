@@ -1,0 +1,24 @@
+{
+  "kind": "jsr",
+  "name": "@supabase/functions-js",
+  "version": "2.110.7",
+  "componentRefs": [
+    "dependency:8a84156d6f756270ed77a573"
+  ],
+  "records": [
+    {
+      "url": "https://jsr.io/@supabase/functions-js/2.110.7_meta.json",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/docs/release/dependency-license-evidence-2026-10-01/jsr-_supabase_functions-js-2.110.7/version-meta.json",
+      "status": 200,
+      "sha256": "07e0d01291f07ff34bbfbffdd567c2c32a5b3c5fbeacddc62f12f0147d7b5c3d",
+      "bytes": 4913
+    },
+    {
+      "url": "https://jsr.io/@supabase/functions-js/2.110.7/jsr.json",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/docs/release/dependency-license-evidence-2026-10-01/jsr-_supabase_functions-js-2.110.7/jsr.json",
+      "status": 200,
+      "sha256": "c29aa8d3713f199712c932904587a4dad5bedede4b300053bda9831f3230e405",
+      "bytes": 183
+    }
+  ]
+}

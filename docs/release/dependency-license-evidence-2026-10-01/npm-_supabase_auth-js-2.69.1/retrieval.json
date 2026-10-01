@@ -1,0 +1,24 @@
+{
+  "kind": "npm",
+  "name": "@supabase/auth-js",
+  "version": "2.69.1",
+  "componentRefs": [
+    "dependency:3243aa2a5cde3a0357102cd4"
+  ],
+  "records": [
+    {
+      "url": "https://registry.npmjs.org/@supabase%2Fauth-js/2.69.1",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_auth-js-2.69.1/version.json",
+      "status": 200,
+      "sha256": "4f76dd934a21275089409719a904b12ac70473f9c3a4f261d8ca8ca2c1921b85",
+      "bytes": 3781
+    },
+    {
+      "url": "https://registry.npmjs.org/@supabase/auth-js/-/auth-js-2.69.1.tgz",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/npm-_supabase_auth-js-2.69.1.tgz",
+      "status": 200,
+      "sha256": "f078d4254a74dff988d484654ae794c1b73842c0340f6d57926be34d442fc757",
+      "bytes": 152519
+    }
+  ]
+}

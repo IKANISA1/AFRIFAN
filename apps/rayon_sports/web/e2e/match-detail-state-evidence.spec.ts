@@ -233,6 +233,7 @@ for (const routeConfig of routes) {
 
     mode = "ready";
     await open("focused");
+    await expectStatus(page, "ready", /match details confirmed/i);
     const back = page
       .getByRole("navigation", {
         name: routeConfig.mode === "ticket" ? "Ticketing" : "Fixtures",

@@ -1,67 +1,107 @@
 {
   "findings": [
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/LICENSE",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/published.tgz",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/version.json"
+          ],
+          "license": "MIT",
+          "licenseTextEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/LICENSE"
+          ],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-npm-release"
+        }
+      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/ws@8.21.1?target=denonext",
       "partialEvidence": [],
-      "provenanceConclusion": "The HTTP body remains hash-locked. No exact upstream package-version license declaration/text was available in the inspected Deno npm, installed web npm, or SRI-verified public registry cache records. Nearby versions cannot fill this gap.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:116b679d715d9c76e9443724",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/ws@8.21.1?target=denonext"
-      },
+      "remainingReason": null,
       "version": "8.21.1"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/LICENSE.md",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/published.tgz",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/version.json"
+          ],
+          "license": "MIT",
+          "licenseTextEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/LICENSE.md"
+          ],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-npm-release"
+        }
+      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/@supabase/node-fetch@2.6.15/denonext/node-fetch.mjs",
       "partialEvidence": [],
-      "provenanceConclusion": "The HTTP body remains hash-locked. No exact upstream package-version license declaration/text was available in the inspected Deno npm, installed web npm, or SRI-verified public registry cache records. Nearby versions cannot fill this gap.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:192d8a5dd4e8fd0bb27e85a4",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/@supabase/node-fetch@2.6.15/denonext/node-fetch.mjs"
-      },
+      "remainingReason": null,
       "version": "2.6.15"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_storage-js-2.7.1/LICENSE",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_storage-js-2.7.1/published.tgz",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_storage-js-2.7.1/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_storage-js-2.7.1/version.json"
+          ],
+          "license": "MIT",
+          "licenseTextEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_storage-js-2.7.1/LICENSE"
+          ],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-npm-release"
+        }
+      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/@supabase/storage-js@2.7.1/denonext/storage-js.mjs",
       "partialEvidence": [],
-      "provenanceConclusion": "The HTTP body remains hash-locked. No exact upstream package-version license declaration/text was available in the inspected Deno npm, installed web npm, or SRI-verified public registry cache records. Nearby versions cannot fill this gap.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:1bcfccad0c5416ef1a0cfe27",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/@supabase/storage-js@2.7.1/denonext/storage-js.mjs"
-      },
+      "remainingReason": null,
       "version": "2.7.1"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_postgrest-js-1.19.4/LICENSE",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_postgrest-js-1.19.4/published.tgz",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_postgrest-js-1.19.4/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_postgrest-js-1.19.4/version.json"
+          ],
+          "license": "MIT",
+          "licenseTextEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_postgrest-js-1.19.4/LICENSE"
+          ],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-npm-release"
+        }
+      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/@supabase/postgrest-js@1.19.4/denonext/postgrest-js.mjs",
       "partialEvidence": [],
-      "provenanceConclusion": "The HTTP body remains hash-locked. No exact upstream package-version license declaration/text was available in the inspected Deno npm, installed web npm, or SRI-verified public registry cache records. Nearby versions cannot fill this gap.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:1e7a2c66f844a684e2c4b127",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/@supabase/postgrest-js@1.19.4/denonext/postgrest-js.mjs"
-      },
+      "remainingReason": null,
       "version": "1.19.4"
     },
     {
@@ -73,44 +113,57 @@
           "upstreamPackage": "bufferutil@4.1.0"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 52668,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.npm/_cacache/content-v2/sha512/22/68/dccfb91fb4c432cd0e50a2159f20bec1cfacad6f0b718d3ae179e4a43e5efe9539570a9f2024b380127ee8bcc08652f4296071db4d085472562288a8688a",
-          "reference": "/Users/jeanbosco/.npm/_cacache/content-v2/sha512/22/68/dccfb91fb4c432cd0e50a2159f20bec1cfacad6f0b718d3ae179e4a43e5efe9539570a9f2024b380127ee8bcc08652f4296071db4d085472562288a8688a",
-          "roles": [
-            "SRI-verified-cached-upstream-registry-license-declaration"
-          ],
-          "sha256": "23471499c03d397f1ff5947ba52f28c894193b0c67cf5ee5bad6ef8796c76942"
-        }
-      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/bufferutil@4.1.0/denonext/bufferutil.mjs",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:23b754387a752b235c389102",
       "remainingReason": null,
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/bufferutil@4.1.0/denonext/bufferutil.mjs"
-      },
       "version": "4.1.0"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Official Maven JAR bytes equal the selected 0.1.0-rc2 artifact. Immutable TensorFlow publisher package BUILD grants and root LICENSE declare Apache-2.0; all 301 compiled classes map to granted Java sources or schema types. This publisher source relationship is corroboration, not an assertion of the exact binary release commit or a reproducible build. Neighboring release JARs were rejected as byte-equivalence evidence.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-BUILD",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-BoundedInputStream.java",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ByteBufferChannel.java",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-MetadataExtractor.java",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-MetadataParser.java",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ModelInfo.java",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ModelMetadataInfo.java",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-Preconditions.java",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-SeekableByteChannelCompat.java",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-WORKSPACE",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ZipFile.java",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-era-LICENSE",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-era-commit.json",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-era-tree.json",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-metadata_schema.fbs",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-model-schema.fbs",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-schema-BUILD",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-source-evidence.json",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-tensorflow-LICENSE",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/source-license-coverage.json",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/tensorflow-lite-metadata-0.1.0-rc2.jar",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/tensorflow-lite-metadata-0.1.0-rc2.pom"
+          ],
+          "license": "Apache-2.0",
+          "licenseTextEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-era-LICENSE"
+          ],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "publisher-package-source-grant"
+        }
+      ],
       "ecosystem": "maven",
       "name": "org.tensorflow:tensorflow-lite-metadata",
       "partialEvidence": [],
-      "provenanceConclusion": "No exact package-wide cached POM declaration/text or license-declared cached JAR with fresh SHA256 equality was available for the selected artifact.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:24f95a88e32d2f627f988c45",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "gradle-module-cache"
-      },
+      "remainingReason": null,
       "version": "0.1.0-rc2"
     },
     {
@@ -124,142 +177,153 @@
           "targetArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.13.1/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.13.1.jar"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 15339,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.13.1/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.13.1.jar",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.13.1/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.13.1.jar",
-          "roles": [
-            "resolved-native-cache-artifact",
-            "selected-gradle-classpath-bytes"
-          ],
-          "sha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f"
-        },
-        {
-          "bytes": 15339,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
-          "roles": [
-            "identical-Maven-JAR-license-binding"
-          ],
-          "sha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f"
-        },
-        {
-          "bytes": 1437,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
-          "roles": [
-            "license-declaration-for-identical-Maven-JAR"
-          ],
-          "sha256": "62c8ec50b943b7347c3dc5f0333851b52883155f0ccb04d642338d952ce0448a"
-        }
-      ],
       "ecosystem": "maven",
       "name": "com.android:signflinger",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:2bcab586cd757cb4fde44497",
       "remainingReason": null,
-      "source": {
-        "kind": "gradle-module-cache"
-      },
       "version": "8.13.1"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/LICENSE.md",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/published.tgz",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/version.json"
+          ],
+          "license": "MIT",
+          "licenseTextEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/LICENSE.md"
+          ],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-npm-release"
+        }
+      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/@supabase/node-fetch@2.6.15?target=denonext",
       "partialEvidence": [],
-      "provenanceConclusion": "The HTTP body remains hash-locked. No exact upstream package-version license declaration/text was available in the inspected Deno npm, installed web npm, or SRI-verified public registry cache records. Nearby versions cannot fill this gap.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:2e19b98ce51742b34e474ebd",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/@supabase/node-fetch@2.6.15?target=denonext"
-      },
+      "remainingReason": null,
       "version": "2.6.15"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_auth-js-2.69.1/LICENSE",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_auth-js-2.69.1/published.tgz",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_auth-js-2.69.1/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_auth-js-2.69.1/version.json"
+          ],
+          "license": "MIT",
+          "licenseTextEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_auth-js-2.69.1/LICENSE"
+          ],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-npm-release"
+        }
+      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/@supabase/auth-js@2.69.1/denonext/auth-js.mjs",
       "partialEvidence": [],
-      "provenanceConclusion": "The HTTP body remains hash-locked. No exact upstream package-version license declaration/text was available in the inspected Deno npm, installed web npm, or SRI-verified public registry cache records. Nearby versions cannot fill this gap.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:3243aa2a5cde3a0357102cd4",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/@supabase/auth-js@2.69.1/denonext/auth-js.mjs"
-      },
+      "remainingReason": null,
       "version": "2.69.1"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Official Google Maven POM for the exact selected coordinate declares Apache-2.0; downloaded JAR SHA256 equals every selected cached artifact. No version was changed.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.0/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.0/zipflinger-8.11.0.jar",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.0/zipflinger-8.11.0.pom"
+          ],
+          "license": "Apache-2.0",
+          "licenseTextEvidence": [],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-maven-pom"
+        }
+      ],
       "ecosystem": "maven",
       "name": "com.android:zipflinger",
       "partialEvidence": [],
-      "provenanceConclusion": "No exact package-wide cached POM declaration/text or license-declared cached JAR with fresh SHA256 equality was available for the selected artifact.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:3400b2fb8cd4027da5367510",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "gradle-module-cache"
-      },
+      "remainingReason": null,
       "version": "8.11.0"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Official Google Maven POM for the exact selected coordinate declares Apache-2.0; downloaded JAR SHA256 equals every selected cached artifact. No version was changed.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.2/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.2/zipflinger-8.13.2.jar",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.2/zipflinger-8.13.2.pom"
+          ],
+          "license": "Apache-2.0",
+          "licenseTextEvidence": [],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-maven-pom"
+        }
+      ],
       "ecosystem": "maven",
       "name": "com.android:zipflinger",
       "partialEvidence": [],
-      "provenanceConclusion": "No exact package-wide cached POM declaration/text or license-declared cached JAR with fresh SHA256 equality was available for the selected artifact.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:349cd2d9e88c7cadcd9dec12",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "gradle-module-cache"
-      },
+      "remainingReason": null,
       "version": "8.13.2"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/LICENSE",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/published.tgz",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/version.json"
+          ],
+          "license": "MIT",
+          "licenseTextEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/LICENSE"
+          ],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-npm-release"
+        }
+      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/node-gyp-build@4.8.4?target=denonext",
       "partialEvidence": [],
-      "provenanceConclusion": "The HTTP body remains hash-locked. No exact upstream package-version license declaration/text was available in the inspected Deno npm, installed web npm, or SRI-verified public registry cache records. Nearby versions cannot fill this gap.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:37f7a899935c047f105184a3",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/node-gyp-build@4.8.4?target=denonext"
-      },
+      "remainingReason": null,
       "version": "4.8.4"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [
+      "associations": [
         {
-          "archive": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/io.netty/netty-tcnative-classes/2.0.46.Final/9937a832d9c19861822d345b48ced388b645aa5f/netty-tcnative-classes-2.0.46.Final.jar",
-          "bytes": 1949,
-          "kind": "zip-member",
-          "member": "META-INF/maven/io.netty/netty-tcnative-classes/pom.xml",
-          "reference": "zip-member:b9e7089f00b3a203baea2f3640b8d8c2164f019bb605d602376f8ac49555b7d4",
-          "roles": [
-            "embedded-POM-only-license-scope"
+          "basis": "Exact published Maven sources release has Apache-2.0 grants on all 23 Java files; all 27 compiled classes map through SourceFile to those licensed sources. An embedded POM-only header is not used as a package grant.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/netty-tcnative-classes-2.0.46.Final-sources.jar",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/netty-tcnative-classes-2.0.46.Final.jar",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/netty-tcnative-classes-2.0.46.Final.pom",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/source-license-coverage.json"
           ],
-          "sha256": "40a7319c07946d47997f82b34cfea6db20d4583c8ac99dc1ff8c12a4db685726"
+          "license": "Apache-2.0",
+          "licenseTextEvidence": [],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-maven-source-grants"
         }
       ],
       "ecosystem": "maven",
@@ -270,13 +334,9 @@
           "scope": "Embedded POM file only; does not establish the package-wide license"
         }
       ],
-      "provenanceConclusion": "The cached JAR contains a license comment scoped only to its embedded POM. It does not establish the whole-package license. No license-declared cached JAR with identical bytes was available.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:3f54d7028ef0e7064f34d5ff",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "gradle-module-cache"
-      },
+      "remainingReason": null,
       "version": "2.0.46.Final"
     },
     {
@@ -290,65 +350,38 @@
           "targetArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.13.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.13.2.jar"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 15339,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.13.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.13.2.jar",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.13.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.13.2.jar",
-          "roles": [
-            "resolved-native-cache-artifact",
-            "selected-gradle-classpath-bytes"
-          ],
-          "sha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f"
-        },
-        {
-          "bytes": 15339,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
-          "roles": [
-            "identical-Maven-JAR-license-binding"
-          ],
-          "sha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f"
-        },
-        {
-          "bytes": 1437,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
-          "roles": [
-            "license-declaration-for-identical-Maven-JAR"
-          ],
-          "sha256": "62c8ec50b943b7347c3dc5f0333851b52883155f0ccb04d642338d952ce0448a"
-        }
-      ],
       "ecosystem": "maven",
       "name": "com.android:signflinger",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:4254fca3db356a288e40f060",
       "remainingReason": null,
-      "source": {
-        "kind": "gradle-module-cache"
-      },
       "version": "8.13.2"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/LICENSE",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/published.tgz",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/version.json"
+          ],
+          "license": "MIT",
+          "licenseTextEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/LICENSE"
+          ],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-npm-release"
+        }
+      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/ws@8.21.1/denonext/ws.mjs",
       "partialEvidence": [],
-      "provenanceConclusion": "The HTTP body remains hash-locked. No exact upstream package-version license declaration/text was available in the inspected Deno npm, installed web npm, or SRI-verified public registry cache records. Nearby versions cannot fill this gap.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:491c7fa6a243dc7c87140484",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/ws@8.21.1/denonext/ws.mjs"
-      },
+      "remainingReason": null,
       "version": "8.21.1"
     },
     {
@@ -362,41 +395,12 @@
           "upstreamPackage": "whatwg-url@5.0.0"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 1088,
-          "kind": "file",
-          "path": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/whatwg-url/5.0.0/LICENSE.txt",
-          "reference": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/whatwg-url/5.0.0/LICENSE.txt",
-          "roles": [
-            "exact-upstream-npm-license-text-for-cdn",
-            "license-text"
-          ],
-          "sha256": "6b7a1792144374d84dc5ed3655b8bbe2754d06f4f1f64a9fb8b9de2d6f448b85"
-        },
-        {
-          "bytes": 886,
-          "kind": "file",
-          "path": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/whatwg-url/5.0.0/package.json",
-          "reference": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/whatwg-url/5.0.0/package.json",
-          "roles": [
-            "deno-npm-package-manifest",
-            "exact-upstream-npm-license-declaration-for-cdn"
-          ],
-          "sha256": "05a015c4176246f051bbaa3a543ed82480a4a4d85360283e049f159ba014b008"
-        }
-      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/whatwg-url@5.0.0?target=denonext",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:564ea2c8cce3a57c6b5987e1",
       "remainingReason": null,
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/whatwg-url@5.0.0?target=denonext"
-      },
       "version": "5.0.0"
     },
     {
@@ -410,64 +414,35 @@
           "targetArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.1.4/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.1.4.jar"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 15339,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.1.4/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.1.4.jar",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.1.4/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.1.4.jar",
-          "roles": [
-            "resolved-native-cache-artifact",
-            "selected-gradle-classpath-bytes"
-          ],
-          "sha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f"
-        },
-        {
-          "bytes": 15339,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
-          "roles": [
-            "identical-Maven-JAR-license-binding"
-          ],
-          "sha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f"
-        },
-        {
-          "bytes": 1437,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
-          "roles": [
-            "license-declaration-for-identical-Maven-JAR"
-          ],
-          "sha256": "62c8ec50b943b7347c3dc5f0333851b52883155f0ccb04d642338d952ce0448a"
-        }
-      ],
       "ecosystem": "maven",
       "name": "com.android:signflinger",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:6dc1de230c353f14c9c7c293",
       "remainingReason": null,
-      "source": {
-        "kind": "gradle-module-cache"
-      },
       "version": "8.1.4"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Official Google Maven POM for the exact selected coordinate declares Apache-2.0; downloaded JAR SHA256 equals every selected cached artifact. No version was changed.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.1/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.1/zipflinger-8.11.1.jar",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.1/zipflinger-8.11.1.pom"
+          ],
+          "license": "Apache-2.0",
+          "licenseTextEvidence": [],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-maven-pom"
+        }
+      ],
       "ecosystem": "maven",
       "name": "com.android:zipflinger",
       "partialEvidence": [],
-      "provenanceConclusion": "No exact package-wide cached POM declaration/text or license-declared cached JAR with fresh SHA256 equality was available for the selected artifact.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:7adbcf0ab3093ccd1b6ccd8d",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "gradle-module-cache"
-      },
+      "remainingReason": null,
       "version": "8.11.1"
     },
     {
@@ -481,41 +456,12 @@
           "upstreamPackage": "whatwg-url@5.0.0"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 1088,
-          "kind": "file",
-          "path": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/whatwg-url/5.0.0/LICENSE.txt",
-          "reference": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/whatwg-url/5.0.0/LICENSE.txt",
-          "roles": [
-            "exact-upstream-npm-license-text-for-cdn",
-            "license-text"
-          ],
-          "sha256": "6b7a1792144374d84dc5ed3655b8bbe2754d06f4f1f64a9fb8b9de2d6f448b85"
-        },
-        {
-          "bytes": 886,
-          "kind": "file",
-          "path": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/whatwg-url/5.0.0/package.json",
-          "reference": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/whatwg-url/5.0.0/package.json",
-          "roles": [
-            "deno-npm-package-manifest",
-            "exact-upstream-npm-license-declaration-for-cdn"
-          ],
-          "sha256": "05a015c4176246f051bbaa3a543ed82480a4a4d85360283e049f159ba014b008"
-        }
-      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/whatwg-url@5.0.0/denonext/whatwg-url.mjs",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:7ba3ebe4d0a8e469fc61fcfd",
       "remainingReason": null,
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/whatwg-url@5.0.0/denonext/whatwg-url.mjs"
-      },
       "version": "5.0.0"
     },
     {
@@ -529,41 +475,12 @@
           "upstreamPackage": "webidl-conversions@3.0.1"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 1323,
-          "kind": "file",
-          "path": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/webidl-conversions/3.0.1/LICENSE.md",
-          "reference": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/webidl-conversions/3.0.1/LICENSE.md",
-          "roles": [
-            "exact-upstream-npm-license-text-for-cdn",
-            "license-text"
-          ],
-          "sha256": "a889cc4dbee2ae172c179856b25d75b0b7a5a136e1b97109b9b590b2ff1a879c"
-        },
-        {
-          "bytes": 511,
-          "kind": "file",
-          "path": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/webidl-conversions/3.0.1/package.json",
-          "reference": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/webidl-conversions/3.0.1/package.json",
-          "roles": [
-            "deno-npm-package-manifest",
-            "exact-upstream-npm-license-declaration-for-cdn"
-          ],
-          "sha256": "e26568c06b82596d754c7490fd568b4b3f970b3b97c55020d42f65990d0c86af"
-        }
-      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/webidl-conversions@3.0.1/denonext/webidl-conversions.mjs",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:81c2da632f31594dd4c9696f",
       "remainingReason": null,
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/webidl-conversions@3.0.1/denonext/webidl-conversions.mjs"
-      },
       "version": "3.0.1"
     },
     {
@@ -577,49 +494,12 @@
           "targetArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.3.1/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.3.1.jar"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 15339,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.3.1/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.3.1.jar",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.3.1/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.3.1.jar",
-          "roles": [
-            "resolved-native-cache-artifact",
-            "selected-gradle-classpath-bytes"
-          ],
-          "sha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f"
-        },
-        {
-          "bytes": 15339,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
-          "roles": [
-            "identical-Maven-JAR-license-binding"
-          ],
-          "sha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f"
-        },
-        {
-          "bytes": 1437,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
-          "roles": [
-            "license-declaration-for-identical-Maven-JAR"
-          ],
-          "sha256": "62c8ec50b943b7347c3dc5f0333851b52883155f0ccb04d642338d952ce0448a"
-        }
-      ],
       "ecosystem": "maven",
       "name": "com.android:signflinger",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:8326e1d0ee398125e7f824f1",
       "remainingReason": null,
-      "source": {
-        "kind": "gradle-module-cache"
-      },
       "version": "8.3.1"
     },
     {
@@ -631,46 +511,38 @@
           "upstreamPackage": "tr46@0.0.3"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 732,
-          "kind": "file",
-          "path": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/tr46/0.0.3/package.json",
-          "reference": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/tr46/0.0.3/package.json",
-          "roles": [
-            "deno-npm-package-manifest",
-            "exact-upstream-npm-license-declaration-for-cdn"
-          ],
-          "sha256": "615087f58ee138fd35c2b414c355b72e36e5919725b8aecc1c34f6a5585b9779"
-        }
-      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/tr46@0.0.3/denonext/tr46.mjs",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:839d74d68a054fa4bd8adfa4",
       "remainingReason": null,
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/tr46@0.0.3/denonext/tr46.mjs"
-      },
       "version": "0.0.3"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/LICENSE",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/published.tgz",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/version.json"
+          ],
+          "license": "MIT",
+          "licenseTextEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/LICENSE"
+          ],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-npm-release"
+        }
+      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/node-gyp-build@4.8.4/denonext/node-gyp-build.mjs",
       "partialEvidence": [],
-      "provenanceConclusion": "The HTTP body remains hash-locked. No exact upstream package-version license declaration/text was available in the inspected Deno npm, installed web npm, or SRI-verified public registry cache records. Nearby versions cannot fill this gap.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:83ac19cdb62d03c380cbb093",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/node-gyp-build@4.8.4/denonext/node-gyp-build.mjs"
-      },
+      "remainingReason": null,
       "version": "4.8.4"
     },
     {
@@ -682,45 +554,35 @@
           "upstreamPackage": "utf-8-validate@6.0.6"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 77012,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.npm/_cacache/content-v2/sha512/80/51/47a72a1a59b7ab4eea6e4d33d6b4670be06a8984741a9c7e391dd04f3ea48a255f35f415b30f87d4bae16b374f2a16d8f8d598143e7d95dca8b27476bc09",
-          "reference": "/Users/jeanbosco/.npm/_cacache/content-v2/sha512/80/51/47a72a1a59b7ab4eea6e4d33d6b4670be06a8984741a9c7e391dd04f3ea48a255f35f415b30f87d4bae16b374f2a16d8f8d598143e7d95dca8b27476bc09",
-          "roles": [
-            "SRI-verified-cached-upstream-registry-license-declaration"
-          ],
-          "sha256": "b0c480a09bbeb93d196c7041f2453cfb5bc919a29c33c7a954e9691266a56e2a"
-        }
-      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/utf-8-validate@6.0.6?target=denonext",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:85840cb418d492a0599d0080",
       "remainingReason": null,
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/utf-8-validate@6.0.6?target=denonext"
-      },
       "version": "6.0.6"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Exact JSR release metadata hash equals the selected Deno lock; jsr.json is bound by the release manifest SHA256 and declares MIT for this package. No standalone license text is asserted.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/jsr-_supabase_functions-js-2.110.7/jsr.json",
+            "docs/release/dependency-license-evidence-2026-10-01/jsr-_supabase_functions-js-2.110.7/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/jsr-_supabase_functions-js-2.110.7/version-meta.json"
+          ],
+          "license": "MIT",
+          "licenseTextEvidence": [],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "locked-jsr-declaration"
+        }
+      ],
       "ecosystem": "deno-jsr",
       "name": "@supabase/functions-js",
       "partialEvidence": [],
-      "provenanceConclusion": "The locked JSR manifest supplies no LICENSE file. Nearby cached npm releases do not match the exact locked package.json digest and cannot establish this JSR package license.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:8a84156d6f756270ed77a573",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "jsr",
-        "url": "https://jsr.io/@supabase/functions-js/2.110.7"
-      },
+      "remainingReason": null,
       "version": "2.110.7"
     },
     {
@@ -732,45 +594,38 @@
           "upstreamPackage": "utf-8-validate@6.0.6"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 77012,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.npm/_cacache/content-v2/sha512/80/51/47a72a1a59b7ab4eea6e4d33d6b4670be06a8984741a9c7e391dd04f3ea48a255f35f415b30f87d4bae16b374f2a16d8f8d598143e7d95dca8b27476bc09",
-          "reference": "/Users/jeanbosco/.npm/_cacache/content-v2/sha512/80/51/47a72a1a59b7ab4eea6e4d33d6b4670be06a8984741a9c7e391dd04f3ea48a255f35f415b30f87d4bae16b374f2a16d8f8d598143e7d95dca8b27476bc09",
-          "roles": [
-            "SRI-verified-cached-upstream-registry-license-declaration"
-          ],
-          "sha256": "b0c480a09bbeb93d196c7041f2453cfb5bc919a29c33c7a954e9691266a56e2a"
-        }
-      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/utf-8-validate@6.0.6/denonext/utf-8-validate.mjs",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:947bbb446cc6bf212028678a",
       "remainingReason": null,
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/utf-8-validate@6.0.6/denonext/utf-8-validate.mjs"
-      },
       "version": "6.0.6"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_functions-js-2.4.4/LICENSE",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_functions-js-2.4.4/published.tgz",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_functions-js-2.4.4/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_functions-js-2.4.4/version.json"
+          ],
+          "license": "MIT",
+          "licenseTextEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_functions-js-2.4.4/LICENSE"
+          ],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-npm-release"
+        }
+      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/@supabase/functions-js@2.4.4/denonext/functions-js.mjs",
       "partialEvidence": [],
-      "provenanceConclusion": "The HTTP body remains hash-locked. No exact upstream package-version license declaration/text was available in the inspected Deno npm, installed web npm, or SRI-verified public registry cache records. Nearby versions cannot fill this gap.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:9961b2726fd85678065ecffa",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/@supabase/functions-js@2.4.4/denonext/functions-js.mjs"
-      },
+      "remainingReason": null,
       "version": "2.4.4"
     },
     {
@@ -784,88 +639,87 @@
           "upstreamPackage": "webidl-conversions@3.0.1"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 1323,
-          "kind": "file",
-          "path": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/webidl-conversions/3.0.1/LICENSE.md",
-          "reference": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/webidl-conversions/3.0.1/LICENSE.md",
-          "roles": [
-            "exact-upstream-npm-license-text-for-cdn",
-            "license-text"
-          ],
-          "sha256": "a889cc4dbee2ae172c179856b25d75b0b7a5a136e1b97109b9b590b2ff1a879c"
-        },
-        {
-          "bytes": 511,
-          "kind": "file",
-          "path": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/webidl-conversions/3.0.1/package.json",
-          "reference": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/webidl-conversions/3.0.1/package.json",
-          "roles": [
-            "deno-npm-package-manifest",
-            "exact-upstream-npm-license-declaration-for-cdn"
-          ],
-          "sha256": "e26568c06b82596d754c7490fd568b4b3f970b3b97c55020d42f65990d0c86af"
-        }
-      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/webidl-conversions@3.0.1?target=denonext",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:9d88dc10ce1762ac2b82eacc",
       "remainingReason": null,
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/webidl-conversions@3.0.1?target=denonext"
-      },
       "version": "3.0.1"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_realtime-js-2.11.2/LICENSE.md",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_realtime-js-2.11.2/published.tgz",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_realtime-js-2.11.2/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_realtime-js-2.11.2/version.json"
+          ],
+          "license": "MIT",
+          "licenseTextEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_realtime-js-2.11.2/LICENSE.md"
+          ],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-npm-release"
+        }
+      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/@supabase/realtime-js@2.11.2/denonext/realtime-js.mjs",
       "partialEvidence": [],
-      "provenanceConclusion": "The HTTP body remains hash-locked. No exact upstream package-version license declaration/text was available in the inspected Deno npm, installed web npm, or SRI-verified public registry cache records. Nearby versions cannot fill this gap.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:a0584e133516275e046f2aa4",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/@supabase/realtime-js@2.11.2/denonext/realtime-js.mjs"
-      },
+      "remainingReason": null,
       "version": "2.11.2"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Official Google Maven POM for the exact selected coordinate declares Apache-2.0; downloaded JAR SHA256 equals every selected cached artifact. No version was changed.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.1/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.1/zipflinger-8.13.1.jar",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.1/zipflinger-8.13.1.pom"
+          ],
+          "license": "Apache-2.0",
+          "licenseTextEvidence": [],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-maven-pom"
+        }
+      ],
       "ecosystem": "maven",
       "name": "com.android:zipflinger",
       "partialEvidence": [],
-      "provenanceConclusion": "No exact package-wide cached POM declaration/text or license-declared cached JAR with fresh SHA256 equality was available for the selected artifact.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:aa12cd4170c1c3dbc2d16a4e",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "gradle-module-cache"
-      },
+      "remainingReason": null,
       "version": "8.13.1"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/LICENSE",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/published.tgz",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/version.json"
+          ],
+          "license": "MIT",
+          "licenseTextEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/LICENSE"
+          ],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-npm-release"
+        }
+      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/@supabase/supabase-js@2.49.4/denonext/supabase-js.mjs",
       "partialEvidence": [],
-      "provenanceConclusion": "The HTTP body remains hash-locked. No exact upstream package-version license declaration/text was available in the inspected Deno npm, installed web npm, or SRI-verified public registry cache records. Nearby versions cannot fill this gap.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:aa79094b130b11b57909a9c9",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/@supabase/supabase-js@2.49.4/denonext/supabase-js.mjs"
-      },
+      "remainingReason": null,
       "version": "2.49.4"
     },
     {
@@ -877,46 +731,40 @@
           "upstreamPackage": "tr46@0.0.3"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 732,
-          "kind": "file",
-          "path": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/tr46/0.0.3/package.json",
-          "reference": "/Users/jeanbosco/Library/Caches/deno/npm/registry.npmjs.org/tr46/0.0.3/package.json",
-          "roles": [
-            "deno-npm-package-manifest",
-            "exact-upstream-npm-license-declaration-for-cdn"
-          ],
-          "sha256": "615087f58ee138fd35c2b414c355b72e36e5919725b8aecc1c34f6a5585b9779"
-        }
-      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/tr46@0.0.3?target=denonext",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:ab11f52f6e07d9455eed347f",
       "remainingReason": null,
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/tr46@0.0.3?target=denonext"
-      },
       "version": "0.0.3"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "All six selected npm release files are byte-identical to Debian upstream buffers 0.1.1; Debian Files: * copyright assigns MIT to upstream James Halliday. The similarly named node-buffers npm fork was rejected because its bytes differ.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/byte-equivalence.json",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/debian-copyright",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/debian-upstream.orig.tar.gz",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/published.tgz",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/version.json"
+          ],
+          "license": "MIT",
+          "licenseTextEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/debian-copyright"
+          ],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "identical-debian-upstream"
+        }
+      ],
       "ecosystem": "npm",
       "name": "buffers",
       "partialEvidence": [],
-      "provenanceConclusion": "The exact installed manifest and locally verified package archive have no license declaration/text; README content does not establish the package license.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:ac85ba85e0a56279d4fec26a",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "npm-registry",
-        "url": "https://registry.npmjs.org/buffers/-/buffers-0.1.1.tgz"
-      },
+      "remainingReason": null,
       "version": "0.1.1"
     },
     {
@@ -930,49 +778,12 @@
           "targetArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.11.0/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.11.0.jar"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 15339,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.11.0/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.11.0.jar",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.11.0/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.11.0.jar",
-          "roles": [
-            "resolved-native-cache-artifact",
-            "selected-gradle-classpath-bytes"
-          ],
-          "sha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f"
-        },
-        {
-          "bytes": 15339,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
-          "roles": [
-            "identical-Maven-JAR-license-binding"
-          ],
-          "sha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f"
-        },
-        {
-          "bytes": 1437,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
-          "roles": [
-            "license-declaration-for-identical-Maven-JAR"
-          ],
-          "sha256": "62c8ec50b943b7347c3dc5f0333851b52883155f0ccb04d642338d952ce0448a"
-        }
-      ],
       "ecosystem": "maven",
       "name": "com.android:signflinger",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:b62189b4eb2f4590eff49ae4",
       "remainingReason": null,
-      "source": {
-        "kind": "gradle-module-cache"
-      },
       "version": "8.11.0"
     },
     {
@@ -986,49 +797,12 @@
           "targetArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.3.0/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.3.0.jar"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 15339,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.3.0/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.3.0.jar",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.3.0/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.3.0.jar",
-          "roles": [
-            "resolved-native-cache-artifact",
-            "selected-gradle-classpath-bytes"
-          ],
-          "sha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f"
-        },
-        {
-          "bytes": 15339,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
-          "roles": [
-            "identical-Maven-JAR-license-binding"
-          ],
-          "sha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f"
-        },
-        {
-          "bytes": 1437,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
-          "roles": [
-            "license-declaration-for-identical-Maven-JAR"
-          ],
-          "sha256": "62c8ec50b943b7347c3dc5f0333851b52883155f0ccb04d642338d952ce0448a"
-        }
-      ],
       "ecosystem": "maven",
       "name": "com.android:signflinger",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:c4f00d0236c69df31f9c33af",
       "remainingReason": null,
-      "source": {
-        "kind": "gradle-module-cache"
-      },
       "version": "8.3.0"
     },
     {
@@ -1042,49 +816,12 @@
           "targetArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.3.0/de8e3267995699af356740cf562cbedb485f5763/zipflinger-8.3.0.jar"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 66853,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.3.0/de8e3267995699af356740cf562cbedb485f5763/zipflinger-8.3.0.jar",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.3.0/de8e3267995699af356740cf562cbedb485f5763/zipflinger-8.3.0.jar",
-          "roles": [
-            "resolved-native-cache-artifact",
-            "selected-gradle-classpath-bytes"
-          ],
-          "sha256": "81dd485618a509a3235929b9eb13091d884452661de6ce5a45cc38b1c555421c"
-        },
-        {
-          "bytes": 1110,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.5.2/630061e6d18c23551b6e294a89a5314a20d93e5f/zipflinger-8.5.2.pom",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.5.2/630061e6d18c23551b6e294a89a5314a20d93e5f/zipflinger-8.5.2.pom",
-          "roles": [
-            "license-declaration-for-identical-Maven-JAR"
-          ],
-          "sha256": "4afd8e1ccea8df993683909bc1538f041deadb6a119f73dcb3d76d27e8ad0758"
-        },
-        {
-          "bytes": 66853,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.5.2/de8e3267995699af356740cf562cbedb485f5763/zipflinger-8.5.2.jar",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.5.2/de8e3267995699af356740cf562cbedb485f5763/zipflinger-8.5.2.jar",
-          "roles": [
-            "identical-Maven-JAR-license-binding"
-          ],
-          "sha256": "81dd485618a509a3235929b9eb13091d884452661de6ce5a45cc38b1c555421c"
-        }
-      ],
       "ecosystem": "maven",
       "name": "com.android:zipflinger",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:c86fba338e09e5edcdaf0fe3",
       "remainingReason": null,
-      "source": {
-        "kind": "gradle-module-cache"
-      },
       "version": "8.3.0"
     },
     {
@@ -1098,65 +835,38 @@
           "targetArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.3.1/de8e3267995699af356740cf562cbedb485f5763/zipflinger-8.3.1.jar"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 66853,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.3.1/de8e3267995699af356740cf562cbedb485f5763/zipflinger-8.3.1.jar",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.3.1/de8e3267995699af356740cf562cbedb485f5763/zipflinger-8.3.1.jar",
-          "roles": [
-            "resolved-native-cache-artifact",
-            "selected-gradle-classpath-bytes"
-          ],
-          "sha256": "81dd485618a509a3235929b9eb13091d884452661de6ce5a45cc38b1c555421c"
-        },
-        {
-          "bytes": 1110,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.5.2/630061e6d18c23551b6e294a89a5314a20d93e5f/zipflinger-8.5.2.pom",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.5.2/630061e6d18c23551b6e294a89a5314a20d93e5f/zipflinger-8.5.2.pom",
-          "roles": [
-            "license-declaration-for-identical-Maven-JAR"
-          ],
-          "sha256": "4afd8e1ccea8df993683909bc1538f041deadb6a119f73dcb3d76d27e8ad0758"
-        },
-        {
-          "bytes": 66853,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.5.2/de8e3267995699af356740cf562cbedb485f5763/zipflinger-8.5.2.jar",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/8.5.2/de8e3267995699af356740cf562cbedb485f5763/zipflinger-8.5.2.jar",
-          "roles": [
-            "identical-Maven-JAR-license-binding"
-          ],
-          "sha256": "81dd485618a509a3235929b9eb13091d884452661de6ce5a45cc38b1c555421c"
-        }
-      ],
       "ecosystem": "maven",
       "name": "com.android:zipflinger",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:e17bb75a00cc5200f0e77b6d",
       "remainingReason": null,
-      "source": {
-        "kind": "gradle-module-cache"
-      },
       "version": "8.3.1"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/LICENSE",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/published.tgz",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/version.json"
+          ],
+          "license": "MIT",
+          "licenseTextEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/LICENSE"
+          ],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-npm-release"
+        }
+      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/@supabase/supabase-js@2.49.4",
       "partialEvidence": [],
-      "provenanceConclusion": "The HTTP body remains hash-locked. No exact upstream package-version license declaration/text was available in the inspected Deno npm, installed web npm, or SRI-verified public registry cache records. Nearby versions cannot fill this gap.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:e4e36157a8ab214755e9d7fa",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/@supabase/supabase-js@2.49.4"
-      },
+      "remainingReason": null,
       "version": "2.49.4"
     },
     {
@@ -1168,29 +878,12 @@
           "upstreamPackage": "bufferutil@4.1.0"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 52668,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.npm/_cacache/content-v2/sha512/22/68/dccfb91fb4c432cd0e50a2159f20bec1cfacad6f0b718d3ae179e4a43e5efe9539570a9f2024b380127ee8bcc08652f4296071db4d085472562288a8688a",
-          "reference": "/Users/jeanbosco/.npm/_cacache/content-v2/sha512/22/68/dccfb91fb4c432cd0e50a2159f20bec1cfacad6f0b718d3ae179e4a43e5efe9539570a9f2024b380127ee8bcc08652f4296071db4d085472562288a8688a",
-          "roles": [
-            "SRI-verified-cached-upstream-registry-license-declaration"
-          ],
-          "sha256": "23471499c03d397f1ff5947ba52f28c894193b0c67cf5ee5bad6ef8796c76942"
-        }
-      ],
       "ecosystem": "deno-remote",
       "name": "https://esm.sh/bufferutil@4.1.0?target=denonext",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:f31c4cb9059e1429e4446127",
       "remainingReason": null,
-      "source": {
-        "kind": "http",
-        "url": "https://esm.sh/bufferutil@4.1.0?target=denonext"
-      },
       "version": "4.1.0"
     },
     {
@@ -1204,64 +897,35 @@
           "targetArtifactEvidence": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.11.1/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.11.1.jar"
         }
       ],
-      "boundLicenseSourceEvidence": [
-        {
-          "bytes": 15339,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.11.1/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.11.1.jar",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.11.1/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.11.1.jar",
-          "roles": [
-            "resolved-native-cache-artifact",
-            "selected-gradle-classpath-bytes"
-          ],
-          "sha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f"
-        },
-        {
-          "bytes": 15339,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/13f035dd8e7e470ff8f3216a0b46333187f26df5/signflinger-8.5.2.jar",
-          "roles": [
-            "identical-Maven-JAR-license-binding"
-          ],
-          "sha256": "c1dca2c683634ee1a294298f9c7179578af6a86e080bdc40f961915bc5c8142f"
-        },
-        {
-          "bytes": 1437,
-          "kind": "file",
-          "path": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
-          "reference": "/Users/jeanbosco/.gradle/caches/modules-2/files-2.1/com.android/signflinger/8.5.2/92f3b05fb4313b02b0ea438e8f0c84dac9c17ae8/signflinger-8.5.2.pom",
-          "roles": [
-            "license-declaration-for-identical-Maven-JAR"
-          ],
-          "sha256": "62c8ec50b943b7347c3dc5f0333851b52883155f0ccb04d642338d952ce0448a"
-        }
-      ],
       "ecosystem": "maven",
       "name": "com.android:signflinger",
       "partialEvidence": [],
-      "provenanceConclusion": "Recovered from the stated upstream source or fresh binary-equality relationship; this does not grant license approval.",
       "recovered": true,
       "ref": "dependency:f5f92377517f062122915a63",
       "remainingReason": null,
-      "source": {
-        "kind": "gradle-module-cache"
-      },
       "version": "8.11.1"
     },
     {
-      "associations": [],
-      "boundLicenseSourceEvidence": [],
+      "associations": [
+        {
+          "basis": "Official Google Maven POM for the exact selected coordinate declares Apache-2.0; downloaded JAR SHA256 equals every selected cached artifact. No version was changed.",
+          "declarationEvidence": [
+            "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.1.4/retrieval.json",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.1.4/zipflinger-8.1.4.jar",
+            "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.1.4/zipflinger-8.1.4.pom"
+          ],
+          "license": "Apache-2.0",
+          "licenseTextEvidence": [],
+          "manifest": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+          "method": "exact-maven-pom"
+        }
+      ],
       "ecosystem": "maven",
       "name": "com.android:zipflinger",
       "partialEvidence": [],
-      "provenanceConclusion": "No exact package-wide cached POM declaration/text or license-declared cached JAR with fresh SHA256 equality was available for the selected artifact.",
-      "recovered": false,
+      "recovered": true,
       "ref": "dependency:fb7e2849f69b7f11f4a29e1f",
-      "remainingReason": "No exact package-wide declaration/text or byte-identical license binding in the inspected local package/cache roots",
-      "source": {
-        "kind": "gradle-module-cache"
-      },
+      "remainingReason": null,
       "version": "8.1.4"
     }
   ],
@@ -1273,29 +937,73 @@
     "Locked JSR manifest/package file digests and available exact cache files"
   ],
   "inventoryIndex": {
-    "bytes": 46507,
+    "bytes": 71899,
     "path": "docs/release/local-dependency-inventory-2026-09-30.json",
-    "sha256": "76a680586b50c978f920a8b6d1c04ef041c39a82c66faa35eccaaf1e1edc4cf2"
+    "sha256": "d151168f941e8a5430226f2b1e5a447304feaf0281da157ba6f5a69ddf1042cd"
   },
   "licenseApprovalAssessed": false,
   "licenseSourceRelationshipsFreshlyVerified": true,
   "limitations": [
-    "CDN transformations remain locked separately; upstream name/version association does not prove archive/HTTP byte equality",
-    "Maven reuse is limited to actual SHA256 equality of JAR bytes; target selected versions stay unchanged",
-    "Embedded-POM-only evidence retains the package license gap",
-    "Unavailable exact declarations/text remain explicit; vulnerability, provider, deployed dependency and release acceptance are not assessed"
+    "License evidence does not grant legal approval.",
+    "Transformed CDN modules remain separately locked; npm archive equality is not asserted.",
+    "TensorFlow publisher package grants and source-class corroboration are explicit; the exact binary release Git commit and reproducible build are not asserted."
   ],
+  "networkRequestScope": "Saved-evidence application only; publisher retrieval used the network",
   "networkRequests": 0,
   "originalGapCount": 41,
-  "recoveredComponents": 19,
-  "remainingByEcosystem": {
-    "deno-jsr": 1,
-    "deno-remote": 13,
-    "maven": 7,
-    "npm": 1
+  "publisherEvidenceManifest": {
+    "applicationPerformedNetworkRequests": 0,
+    "components": 22,
+    "path": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+    "retrievalUsedNetwork": true,
+    "sha256": "a3e34134eae83727575ef5e70f21683aacc3fac95556c24c8c02a39703cab1db"
   },
-  "remainingGapCount": 22,
+  "recoveredComponents": [
+    "dependency:116b679d715d9c76e9443724",
+    "dependency:192d8a5dd4e8fd0bb27e85a4",
+    "dependency:1bcfccad0c5416ef1a0cfe27",
+    "dependency:1e7a2c66f844a684e2c4b127",
+    "dependency:23b754387a752b235c389102",
+    "dependency:24f95a88e32d2f627f988c45",
+    "dependency:2bcab586cd757cb4fde44497",
+    "dependency:2e19b98ce51742b34e474ebd",
+    "dependency:3243aa2a5cde3a0357102cd4",
+    "dependency:3400b2fb8cd4027da5367510",
+    "dependency:349cd2d9e88c7cadcd9dec12",
+    "dependency:37f7a899935c047f105184a3",
+    "dependency:3f54d7028ef0e7064f34d5ff",
+    "dependency:4254fca3db356a288e40f060",
+    "dependency:491c7fa6a243dc7c87140484",
+    "dependency:564ea2c8cce3a57c6b5987e1",
+    "dependency:6dc1de230c353f14c9c7c293",
+    "dependency:7adbcf0ab3093ccd1b6ccd8d",
+    "dependency:7ba3ebe4d0a8e469fc61fcfd",
+    "dependency:81c2da632f31594dd4c9696f",
+    "dependency:8326e1d0ee398125e7f824f1",
+    "dependency:839d74d68a054fa4bd8adfa4",
+    "dependency:83ac19cdb62d03c380cbb093",
+    "dependency:85840cb418d492a0599d0080",
+    "dependency:8a84156d6f756270ed77a573",
+    "dependency:947bbb446cc6bf212028678a",
+    "dependency:9961b2726fd85678065ecffa",
+    "dependency:9d88dc10ce1762ac2b82eacc",
+    "dependency:a0584e133516275e046f2aa4",
+    "dependency:aa12cd4170c1c3dbc2d16a4e",
+    "dependency:aa79094b130b11b57909a9c9",
+    "dependency:ab11f52f6e07d9455eed347f",
+    "dependency:ac85ba85e0a56279d4fec26a",
+    "dependency:b62189b4eb2f4590eff49ae4",
+    "dependency:c4f00d0236c69df31f9c33af",
+    "dependency:c86fba338e09e5edcdaf0fe3",
+    "dependency:e17bb75a00cc5200f0e77b6d",
+    "dependency:e4e36157a8ab214755e9d7fa",
+    "dependency:f31c4cb9059e1429e4446127",
+    "dependency:f5f92377517f062122915a63",
+    "dependency:fb7e2849f69b7f11f4a29e1f"
+  ],
+  "remainingByEcosystem": {},
+  "remainingGapCount": 0,
   "schemaVersion": 1,
-  "scope": "Local package/cache license evidence recovery; no fetching, resolution, version changes or legal license approval",
+  "scope": "Original 41 findings retained: 19 recovered from local cache, remaining 22 recovered from authenticated publisher evidence",
   "selectedVersionsChanged": 0
 }

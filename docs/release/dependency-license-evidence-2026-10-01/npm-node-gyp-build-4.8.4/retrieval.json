@@ -1,0 +1,25 @@
+{
+  "kind": "npm",
+  "name": "node-gyp-build",
+  "version": "4.8.4",
+  "componentRefs": [
+    "dependency:37f7a899935c047f105184a3",
+    "dependency:83ac19cdb62d03c380cbb093"
+  ],
+  "records": [
+    {
+      "url": "https://registry.npmjs.org/node-gyp-build/4.8.4",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/version.json",
+      "status": 200,
+      "sha256": "8d0857602014be960fffb17291e645b5d68ad290ace080ebb5513a47306b6247",
+      "bytes": 1759
+    },
+    {
+      "url": "https://registry.npmjs.org/node-gyp-build/-/node-gyp-build-4.8.4.tgz",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/npm-node-gyp-build-4.8.4.tgz",
+      "status": 200,
+      "sha256": "940450fb4158bddc23ae156432a67338a4d7ab6a585b639c61b3b0a14d2bac24",
+      "bytes": 5449
+    }
+  ]
+}

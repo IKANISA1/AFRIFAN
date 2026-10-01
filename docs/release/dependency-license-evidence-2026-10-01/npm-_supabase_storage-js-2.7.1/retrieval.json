@@ -1,0 +1,24 @@
+{
+  "kind": "npm",
+  "name": "@supabase/storage-js",
+  "version": "2.7.1",
+  "componentRefs": [
+    "dependency:1bcfccad0c5416ef1a0cfe27"
+  ],
+  "records": [
+    {
+      "url": "https://registry.npmjs.org/@supabase%2Fstorage-js/2.7.1",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_storage-js-2.7.1/version.json",
+      "status": 200,
+      "sha256": "a08ffa26257d08ff0056468d34c0e7ba0c99c9d13fabd330017a14e15ad6526b",
+      "bytes": 3449
+    },
+    {
+      "url": "https://registry.npmjs.org/@supabase/storage-js/-/storage-js-2.7.1.tgz",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/npm-_supabase_storage-js-2.7.1.tgz",
+      "status": 200,
+      "sha256": "5fe6b6362ce29512888d3787c8be179ff40f5b37bda8d0b4e7a0afb73dec8819",
+      "bytes": 36967
+    }
+  ]
+}

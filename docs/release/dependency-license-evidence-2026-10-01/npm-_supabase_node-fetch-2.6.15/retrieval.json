@@ -1,0 +1,25 @@
+{
+  "kind": "npm",
+  "name": "@supabase/node-fetch",
+  "version": "2.6.15",
+  "componentRefs": [
+    "dependency:192d8a5dd4e8fd0bb27e85a4",
+    "dependency:2e19b98ce51742b34e474ebd"
+  ],
+  "records": [
+    {
+      "url": "https://registry.npmjs.org/@supabase%2Fnode-fetch/2.6.15",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/version.json",
+      "status": 200,
+      "sha256": "6a22272b442df079c9d6ba81132d14953214636b0c7bf3a23ffc21bdfbed9c5e",
+      "bytes": 24716
+    },
+    {
+      "url": "https://registry.npmjs.org/@supabase/node-fetch/-/node-fetch-2.6.15.tgz",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/npm-_supabase_node-fetch-2.6.15.tgz",
+      "status": 200,
+      "sha256": "6fa94be6c412bcab9283f0e6854a7cd12c3d8d57e3b51f8075fb5d883304c950",
+      "bytes": 44407
+    }
+  ]
+}

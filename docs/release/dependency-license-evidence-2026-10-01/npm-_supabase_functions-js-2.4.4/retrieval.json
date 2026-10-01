@@ -1,0 +1,24 @@
+{
+  "kind": "npm",
+  "name": "@supabase/functions-js",
+  "version": "2.4.4",
+  "componentRefs": [
+    "dependency:9961b2726fd85678065ecffa"
+  ],
+  "records": [
+    {
+      "url": "https://registry.npmjs.org/@supabase%2Ffunctions-js/2.4.4",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_functions-js-2.4.4/version.json",
+      "status": 200,
+      "sha256": "59039f9ec8aa8fe002d5847ec70f08ace9c62044477bb01fdb1f21a6f6729c3c",
+      "bytes": 3064
+    },
+    {
+      "url": "https://registry.npmjs.org/@supabase/functions-js/-/functions-js-2.4.4.tgz",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/npm-_supabase_functions-js-2.4.4.tgz",
+      "status": 200,
+      "sha256": "8d722d6ca9078d7a48b50abec630bbb372487c6b3352667b586f58fda92af00e",
+      "bytes": 11053
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "kind": "maven",
+  "name": "com.android:zipflinger",
+  "version": "8.13.2",
+  "componentRefs": [
+    "dependency:349cd2d9e88c7cadcd9dec12"
+  ],
+  "records": [
+    {
+      "url": "https://dl.google.com/dl/android/maven2/com/android/zipflinger/8.13.2/zipflinger-8.13.2.pom",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.2/zipflinger-8.13.2.pom",
+      "status": 200,
+      "sha256": "e2eed37782da4d8c799d4c4b737c35ad88d3912f5136cfdfe2c014ccd40b350c",
+      "bytes": 1112
+    },
+    {
+      "url": "https://dl.google.com/dl/android/maven2/com/android/zipflinger/8.13.2/zipflinger-8.13.2.jar",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.2/zipflinger-8.13.2.jar",
+      "status": 200,
+      "sha256": "07060069c35e469d7c343abc15f1d6362bc1356b81bf462539db88a53ed653f1",
+      "bytes": 66972
+    },
+    {
+      "url": "https://dl.google.com/dl/android/maven2/com/android/zipflinger/8.13.2/zipflinger-8.13.2-sources.jar",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.2/zipflinger-8.13.2-sources.jar",
+      "status": 200,
+      "sha256": "7271e8c351e78fedc8a57069529ce3941064515c76de648273b705af71cfdf80",
+      "bytes": 49912
+    }
+  ]
+}

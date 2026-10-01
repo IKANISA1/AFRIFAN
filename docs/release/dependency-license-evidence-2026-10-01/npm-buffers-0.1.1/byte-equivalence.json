@@ -1,0 +1,15 @@
+{
+  "selectedTarSha256": "f8de49c60e467005182d9687b5d87775bbcec6385ac63220b7741327441deb6d",
+  "licensedTarSha256": "f8de49c60e467005182d9687b5d87775bbcec6385ac63220b7741327441deb6d",
+  "copyrightUrl": "https://sources.debian.org/data/main/n/node-buffers/0.1.1-2/debian/copyright",
+  "licensedTarUrl": "https://deb.debian.org/debian/pool/main/n/node-buffers/node-buffers_0.1.1.orig.tar.gz",
+  "files": {
+    "README.markdown": "99e8a68c4949c4cbe64b480c8717fb616d1d78ea7715c0e394a5186e6c3a5ace",
+    "examples/slice.js": "8bff15364cb53bc2c6523dbec1dea1017696eb8b59fdf4c8d7cd31eea3a3750b",
+    "examples/splice.js": "edf9fc9a0cfab7ed73edfff9a1409e65918b8f2cd34eeef04b3c6a1838ffc1cb",
+    "index.js": "97801e296ba5f3c32242f647e1daac5917e300367fed7935ab1e62f40adb1b8a",
+    "package.json": "7091616d3b687b0de9dfbc6a1f8ab61e01742a3ec87f977bef64d1f299e231b9",
+    "test/buffers.js": "9d0d9671bde206620d50e08f9f855fe7898efd74727d4b6f0913650ea252997f"
+  },
+  "completeFileEquality": true
+}

@@ -1,0 +1,25 @@
+{
+  "kind": "npm",
+  "name": "@supabase/supabase-js",
+  "version": "2.49.4",
+  "componentRefs": [
+    "dependency:aa79094b130b11b57909a9c9",
+    "dependency:e4e36157a8ab214755e9d7fa"
+  ],
+  "records": [
+    {
+      "url": "https://registry.npmjs.org/@supabase%2Fsupabase-js/2.49.4",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/version.json",
+      "status": 200,
+      "sha256": "c5fc5c652edae46a106e1f999b277e5839fe1697526b66e0259aba7010c7dc0d",
+      "bytes": 3790
+    },
+    {
+      "url": "https://registry.npmjs.org/@supabase/supabase-js/-/supabase-js-2.49.4.tgz",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/npm-_supabase_supabase-js-2.49.4.tgz",
+      "status": 200,
+      "sha256": "d1a41bab7cca3501565a943064dd4e410551a7e89a75ca1ac86ceb5c57ff410e",
+      "bytes": 53441
+    }
+  ]
+}

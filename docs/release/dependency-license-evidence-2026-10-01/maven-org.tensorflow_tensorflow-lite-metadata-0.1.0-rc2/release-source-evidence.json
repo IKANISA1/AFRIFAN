@@ -1,0 +1,123 @@
+{
+  "commit": "cb3714af0494a394531347ca0b7c12fca3a63070",
+  "records": [
+    {
+      "path": "tensorflow_lite_support/metadata/java/src/java/org/tensorflow/lite/support/metadata/BoundedInputStream.java",
+      "gitBlob": "6c3d23270f3f02a52d74b82fe88e1b9fae6507b8",
+      "url": "https://raw.githubusercontent.com/tensorflow/tflite-support/cb3714af0494a394531347ca0b7c12fca3a63070/tensorflow_lite_support/metadata/java/src/java/org/tensorflow/lite/support/metadata/BoundedInputStream.java",
+      "local": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-BoundedInputStream.java",
+      "sha256": "22c1553d3cf3c862d4085e45312fb11618dd5284534955a641ed6be3c4603db4",
+      "bytes": 3889,
+      "apacheHeader": true
+    },
+    {
+      "path": "tensorflow_lite_support/metadata/java/src/java/org/tensorflow/lite/support/metadata/ByteBufferChannel.java",
+      "gitBlob": "e5d54a415edc41d0c1e58301c5a2246fdd58fedf",
+      "url": "https://raw.githubusercontent.com/tensorflow/tflite-support/cb3714af0494a394531347ca0b7c12fca3a63070/tensorflow_lite_support/metadata/java/src/java/org/tensorflow/lite/support/metadata/ByteBufferChannel.java",
+      "local": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ByteBufferChannel.java",
+      "sha256": "53991e96e3c0477e912ad56304dad52d9dad3d3621d4d863654848597d9d6b54",
+      "bytes": 4025,
+      "apacheHeader": true
+    },
+    {
+      "path": "tensorflow_lite_support/metadata/java/src/java/org/tensorflow/lite/support/metadata/MetadataExtractor.java",
+      "gitBlob": "183d416481156ae74a0c8860390e27d5b592adab",
+      "url": "https://raw.githubusercontent.com/tensorflow/tflite-support/cb3714af0494a394531347ca0b7c12fca3a63070/tensorflow_lite_support/metadata/java/src/java/org/tensorflow/lite/support/metadata/MetadataExtractor.java",
+      "local": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-MetadataExtractor.java",
+      "sha256": "ef940f2d8bbc58b895f171a8e160126504d0a86824111dcf99b1237e01e8b6a3",
+      "bytes": 14721,
+      "apacheHeader": true
+    },
+    {
+      "path": "tensorflow_lite_support/metadata/java/src/java/org/tensorflow/lite/support/metadata/MetadataParser.java",
+      "gitBlob": "75766fb9120808f035b13e6beb322baf824c75be",
+      "url": "https://raw.githubusercontent.com/tensorflow/tflite-support/cb3714af0494a394531347ca0b7c12fca3a63070/tensorflow_lite_support/metadata/java/src/java/org/tensorflow/lite/support/metadata/MetadataParser.java",
+      "local": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-MetadataParser.java",
+      "sha256": "16306d0d8735dfc5081c4e1640a7ff6cf7f57c5ae8276948e7673225cedcf60c",
+      "bytes": 1130,
+      "apacheHeader": true
+    },
+    {
+      "path": "tensorflow_lite_support/metadata/java/src/java/org/tensorflow/lite/support/metadata/ModelInfo.java",
+      "gitBlob": "309a3dbe774704c0f2a1d5a9922d303fdc9aa8c4",
+      "url": "https://raw.githubusercontent.com/tensorflow/tflite-support/cb3714af0494a394531347ca0b7c12fca3a63070/tensorflow_lite_support/metadata/java/src/java/org/tensorflow/lite/support/metadata/ModelInfo.java",
+      "local": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ModelInfo.java",
+      "sha256": "671dad47ab7adf152ffd6dc86f427ee258c8938220ea300868ec1dd1563f0b59",
+      "bytes": 9666,
+      "apacheHeader": true
+    },
+    {
+      "path": "tensorflow_lite_support/metadata/java/src/java/org/tensorflow/lite/support/metadata/ModelMetadataInfo.java",
+      "gitBlob": "751ed500dc2fce0c1fc60256ca847aba3b38eafc",
+      "url": "https://raw.githubusercontent.com/tensorflow/tflite-support/cb3714af0494a394531347ca0b7c12fca3a63070/tensorflow_lite_support/metadata/java/src/java/org/tensorflow/lite/support/metadata/ModelMetadataInfo.java",
+      "local": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ModelMetadataInfo.java",
+      "sha256": "033022c563fdfc12a9993b60a455b1abc376ff56f9119cf5c754e52b91f6fc81",
+      "bytes": 5960,
+      "apacheHeader": true
+    },
+    {
+      "path": "tensorflow_lite_support/metadata/java/src/java/org/tensorflow/lite/support/metadata/Preconditions.java",
+      "gitBlob": "c2f20fbaacd764235d73df73e54a97906c0fb103",
+      "url": "https://raw.githubusercontent.com/tensorflow/tflite-support/cb3714af0494a394531347ca0b7c12fca3a63070/tensorflow_lite_support/metadata/java/src/java/org/tensorflow/lite/support/metadata/Preconditions.java",
+      "local": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-Preconditions.java",
+      "sha256": "bea1277c279ae6ecf6b700b7a404012e3096fdffb02c0b9b745126a2299f540c",
+      "bytes": 7229,
+      "apacheHeader": true
+    },
+    {
+      "path": "tensorflow_lite_support/metadata/java/src/java/org/tensorflow/lite/support/metadata/SeekableByteChannelCompat.java",
+      "gitBlob": "c655786755baa42769f1eb54d5365b6364885d82",
+      "url": "https://raw.githubusercontent.com/tensorflow/tflite-support/cb3714af0494a394531347ca0b7c12fca3a63070/tensorflow_lite_support/metadata/java/src/java/org/tensorflow/lite/support/metadata/SeekableByteChannelCompat.java",
+      "local": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-SeekableByteChannelCompat.java",
+      "sha256": "4ff1b1921cb6981c323eeea75f82d87796df16b161955c2402a433197edd7080",
+      "bytes": 4703,
+      "apacheHeader": true
+    },
+    {
+      "path": "tensorflow_lite_support/metadata/java/src/java/org/tensorflow/lite/support/metadata/ZipFile.java",
+      "gitBlob": "6b43e724fd814e1d47d52f86d9c469909718a28d",
+      "url": "https://raw.githubusercontent.com/tensorflow/tflite-support/cb3714af0494a394531347ca0b7c12fca3a63070/tensorflow_lite_support/metadata/java/src/java/org/tensorflow/lite/support/metadata/ZipFile.java",
+      "local": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ZipFile.java",
+      "sha256": "20c2c435eec392f4e652a487580a415e5bf43f62481bc6d303bf46f6c3e3902b",
+      "bytes": 15485,
+      "apacheHeader": true
+    },
+    {
+      "path": "WORKSPACE",
+      "gitBlob": "33e44e82b110f1f5572dd959e88dd011223777ae",
+      "url": "https://raw.githubusercontent.com/tensorflow/tflite-support/cb3714af0494a394531347ca0b7c12fca3a63070/WORKSPACE",
+      "local": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-WORKSPACE",
+      "sha256": "d2c7e2bf90c89eb8d900711fcdee1451cb870bf3f94d59c374be586242445b12",
+      "bytes": 14645,
+      "apacheHeader": false
+    },
+    {
+      "path": "tensorflow_lite_support/metadata/README.md",
+      "gitBlob": "ff7d25f27cb831a84516ce6892ceac4b82900949",
+      "url": "https://raw.githubusercontent.com/tensorflow/tflite-support/cb3714af0494a394531347ca0b7c12fca3a63070/tensorflow_lite_support/metadata/README.md",
+      "local": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-README.md",
+      "sha256": "9af0947906b98589d9ee8834ee656c6835fc44c2b1df9ad642fc20a22939f9cb",
+      "bytes": 855,
+      "apacheHeader": false
+    },
+    {
+      "path": "tensorflow_lite_support/metadata/java/BUILD",
+      "gitBlob": "0fbe02877daf401bc48ba3d3cc2b01e12271fe12",
+      "url": "https://raw.githubusercontent.com/tensorflow/tflite-support/cb3714af0494a394531347ca0b7c12fca3a63070/tensorflow_lite_support/metadata/java/BUILD",
+      "local": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-BUILD",
+      "sha256": "33a0f190043f2b938d5adb2cf7ab9ba623733115df34db44e02d7949147e6b40",
+      "bytes": 1456,
+      "apacheHeader": false
+    },
+    {
+      "path": "tensorflow_lite_support/metadata/metadata_schema.fbs",
+      "gitBlob": "8faae0a8f6138af8b50747c587745798f5cefb1b",
+      "url": "https://raw.githubusercontent.com/tensorflow/tflite-support/cb3714af0494a394531347ca0b7c12fca3a63070/tensorflow_lite_support/metadata/metadata_schema.fbs",
+      "local": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-metadata_schema.fbs",
+      "sha256": "1a9c6354f4506bc00d3d6a4e50dea10146a12dbc24fbeaba2df1d380a36dd358",
+      "bytes": 26697,
+      "apacheHeader": true
+    }
+  ],
+  "exactArtifactReleaseCommitClaimed": false
+}

@@ -1,0 +1,31 @@
+{
+  "kind": "maven",
+  "name": "io.netty:netty-tcnative-classes",
+  "version": "2.0.46.Final",
+  "componentRefs": [
+    "dependency:3f54d7028ef0e7064f34d5ff"
+  ],
+  "records": [
+    {
+      "url": "https://repo.maven.apache.org/maven2/io/netty/netty-tcnative-classes/2.0.46.Final/netty-tcnative-classes-2.0.46.Final.pom",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/netty-tcnative-classes-2.0.46.Final.pom",
+      "status": 200,
+      "sha256": "40a7319c07946d47997f82b34cfea6db20d4583c8ac99dc1ff8c12a4db685726",
+      "bytes": 1949
+    },
+    {
+      "url": "https://repo.maven.apache.org/maven2/io/netty/netty-tcnative-classes/2.0.46.Final/netty-tcnative-classes-2.0.46.Final.jar",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/netty-tcnative-classes-2.0.46.Final.jar",
+      "status": 200,
+      "sha256": "d3ec888dcc4ac7915bf88b417c5e04fd354f4311032a748a6882df09347eed9a",
+      "bytes": 33919
+    },
+    {
+      "url": "https://repo.maven.apache.org/maven2/io/netty/netty-tcnative-classes/2.0.46.Final/netty-tcnative-classes-2.0.46.Final-sources.jar",
+      "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/netty-tcnative-classes-2.0.46.Final-sources.jar",
+      "status": 200,
+      "sha256": "ca3be3cb23d170977e7c1199f83adff9217b50855a94e31c527a85fe8ea65bf8",
+      "bytes": 41883
+    }
+  ]
+}

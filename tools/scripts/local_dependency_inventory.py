@@ -1619,7 +1619,7 @@ def report_markdown(inventory):
         lines.append('| ' + kind + ' | ' + str(count) + ' | ' + str(any(g['blocksExact'] for g in inventory['unresolved'] if g['kind'] == kind)).lower() + ' |')
     lines.extend(['', 'The small JSON indexes reference SHA256-bound TSV shards (at most 2 MiB each). Canonical JSON cells preserve every component, dependency edge, evidence item, unresolved field and Android configuration losslessly. Full validation verifies shard bytes, row ordinals/counts, unique keys and reconstructed table hashes before validating source evidence. The license TSV has one row per component, with exact version/source and evidence references.', '',
                   'Exactness concerns selected component versions, source identities and recorded integrity evidence. Missing license declarations/text and unbuilt local plugin outputs remain explicit non-exactness fields. Full target compilation, legal license approval, provider/device/store acceptance and fresh vulnerability clearance are separate work. Declared archive hashes are identified separately from fresh byte rehashes.', '',
-                  'Local license recovery uses exact upstream npm name/version declarations for transformed CDN modules, and fresh SHA256 equality when a Maven JAR shares bytes with a cached license-declared coordinate. These relationships are explicit in `licenseAssociations`; they do not assert CDN/archive byte equality or license approval. Embedded-POM-only licenses retain a package-wide gap. Recovery performs no network requests and changes no selected versions.', '',
+                  'Local cache recovery and authenticated publisher recovery are recorded separately. License associations identify exact package declarations, byte-identical licensed distributions, or explicit publisher source grants with their stated provenance limits. CDN/archive byte equality and legal approval are not inferred. Publisher retrieval used the network; applying saved evidence performs no network requests and changes no selected versions. See `licenseRecovery.publisherEvidenceManifest` and `dependencyGapClosure` when present.', '',
                   '## Added files and rationale', '',
                   '- Generator/validator: repeatable exact source, integrity, dependency-edge and license evidence reconciliation.',
                   '- Gradle collector: observes all five active targets and plugin configurations using actual offline resolution.',
@@ -1850,8 +1850,10 @@ def main():
     generate.add_argument('--swift-cache', type=Path)
     generate.add_argument('--action-sources', type=Path)
     generate.add_argument('--jsr-licenses', type=Path)
+    generate.add_argument('--publisher-license-manifest', type=Path, help='Authenticate saved publisher evidence after local cache recovery')
     recover = commands.add_parser('recover-local-licenses')
     recover.add_argument('--inventory', type=Path, required=True)
+    recover.add_argument('--publisher-license-manifest', type=Path)
     validate = commands.add_parser('validate')
     validate.add_argument('--inventory', type=Path, required=True)
     validate.add_argument('--require-exact', action='store_true')
@@ -1873,12 +1875,18 @@ def main():
         if args.command == 'generate':
             inventory = Inventory(args.root, args.android_resolutions, args.pub_cache, args.npm_cache, args.swift_cache, args.action_sources, args.jsr_licenses).build()
             inventory = recover_local_license_evidence(inventory)
+            if args.publisher_license_manifest:
+                from dependency_gap_closure import apply_closure
+                inventory = apply_closure(inventory, args.publisher_license_manifest)
             write_reports(inventory, args.output_prefix)
             print(canonical(inventory['summary']))
         elif args.command == 'recover-local-licenses':
             inventory = load_report(args.inventory)
             validate_inventory(inventory, require_exact=True, root_override=args.root, repository_only=True)
             inventory = recover_local_license_evidence(inventory)
+            if args.publisher_license_manifest:
+                from dependency_gap_closure import apply_closure
+                inventory = apply_closure(inventory, args.publisher_license_manifest)
             write_reports(inventory, args.inventory.with_suffix(''))
             print(canonical({'summary': inventory['summary'], 'recovered': len(inventory['licenseRecovery']['recoveredComponents']),
                              'remainingLicenseGaps': inventory['licenseRecovery']['remainingGapCount']}))

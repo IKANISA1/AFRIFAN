@@ -228,6 +228,7 @@ test("/squad proves all sixteen applicable rendered states", async ({
 
   responseMode = "ready";
   await open("focused");
+  await expectStatus(page, "ready", /squad list confirmed/i);
   const primaryAction = page.getByRole("link", { name: /fixture hub/i }).first();
   await primaryAction.focus();
   await expect(page.locator(".squad-surface")).toHaveAttribute(

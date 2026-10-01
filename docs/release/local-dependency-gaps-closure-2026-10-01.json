@@ -1,0 +1,835 @@
+{
+  "after": {
+    "allUnresolvedFields": 0,
+    "license-evidence-unavailable": 0,
+    "native-project-artifact-not-built": 0
+  },
+  "before": {
+    "license-evidence-unavailable": 22,
+    "native-project-artifact-not-built": 282
+  },
+  "completedAtUtc": "2026-10-01T15:47:51.058154+00:00",
+  "files": [
+    {
+      "action": "added",
+      "bytes": 183,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/jsr-_supabase_functions-js-2.110.7/jsr.json",
+      "sha256": "c29aa8d3713f199712c932904587a4dad5bedede4b300053bda9831f3230e405",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 922,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/jsr-_supabase_functions-js-2.110.7/retrieval.json",
+      "sha256": "9068c3a4092ffa0059c7a7db1879130c55ad652295c845cf80c2686eeb06807b",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 4913,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/jsr-_supabase_functions-js-2.110.7/version-meta.json",
+      "sha256": "07e0d01291f07ff34bbfbffdd567c2c32a5b3c5fbeacddc62f12f0147d7b5c3d",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 53585,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+      "sha256": "a3e34134eae83727575ef5e70f21683aacc3fac95556c24c8c02a39703cab1db",
+      "why": "Bind all 22 license relationships to exact selected component identities and evidence file hashes"
+    },
+    {
+      "action": "added",
+      "bytes": 1445,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.1.4/retrieval.json",
+      "sha256": "7f7a3d7e0bf46610eccb031ac3b03eafc2e290613ef2cdfa64cc7900681c484e",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 66860,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.1.4/zipflinger-8.1.4.jar",
+      "sha256": "56589abf965af58ea1d31c15d676fe0d62b9db92983fbdfe8e72c983ea577dbb",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 1109,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.1.4/zipflinger-8.1.4.pom",
+      "sha256": "5002c44c5ecb8703623118c95611e6f20955ef35bc8a21c5e7ab42efe9306cf7",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 1458,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.0/retrieval.json",
+      "sha256": "3d7a36e26529c80735048a4c7fab58a0d94795776368f7aae090cc0101ecccf9",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 66836,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.0/zipflinger-8.11.0.jar",
+      "sha256": "a6a68f03e8d9f8944688c36c6d16c253e81a625930af1d0eb5e592bd2b2da9e8",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 1112,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.0/zipflinger-8.11.0.pom",
+      "sha256": "58d9b6fae91d3e35ece0363e6944a4e8de6f8ba9b9adc09147b03d8587165443",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 1458,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.1/retrieval.json",
+      "sha256": "ec3380a4e8eab36a3ac48953e339404ffb4f31cdab545f004676079117287832",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 66836,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.1/zipflinger-8.11.1.jar",
+      "sha256": "a6a68f03e8d9f8944688c36c6d16c253e81a625930af1d0eb5e592bd2b2da9e8",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 1112,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.1/zipflinger-8.11.1.pom",
+      "sha256": "4fcdea59c78057abb5ae065bb7dff1ad68f674f90401bdf09481ff161c46b8fd",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 1458,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.1/retrieval.json",
+      "sha256": "d4cc08ba226d200a8845287fba82d004a9671a833847f4855bc8f6c040561b1d",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 66972,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.1/zipflinger-8.13.1.jar",
+      "sha256": "07060069c35e469d7c343abc15f1d6362bc1356b81bf462539db88a53ed653f1",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 1112,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.1/zipflinger-8.13.1.pom",
+      "sha256": "ad177b4a4cf61a38cdbefa6131141648959ec883ae232085638416680f939d1d",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 1458,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.2/retrieval.json",
+      "sha256": "9781da2f2ae6252ee9b26a4045e87d3c01dfd522df2c94cbd9affc1eb1eafe45",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 66972,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.2/zipflinger-8.13.2.jar",
+      "sha256": "07060069c35e469d7c343abc15f1d6362bc1356b81bf462539db88a53ed653f1",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 1112,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.2/zipflinger-8.13.2.pom",
+      "sha256": "e2eed37782da4d8c799d4c4b737c35ad88d3912f5136cfdfe2c014ccd40b350c",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 41883,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/netty-tcnative-classes-2.0.46.Final-sources.jar",
+      "sha256": "ca3be3cb23d170977e7c1199f83adff9217b50855a94e31c527a85fe8ea65bf8",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 33919,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/netty-tcnative-classes-2.0.46.Final.jar",
+      "sha256": "d3ec888dcc4ac7915bf88b417c5e04fd354f4311032a748a6882df09347eed9a",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 1949,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/netty-tcnative-classes-2.0.46.Final.pom",
+      "sha256": "40a7319c07946d47997f82b34cfea6db20d4583c8ac99dc1ff8c12a4db685726",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 1662,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/retrieval.json",
+      "sha256": "fdd8af14dc8d688f08df3c0603441484e3751df7a8076a1b369abd20592eec3b",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 4854,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/source-license-coverage.json",
+      "sha256": "51f3ef57c614279ae5890f0e9853af8c56e5185f4d33d8a32e8249d7f8d06ecd",
+      "why": "Retain complete class/source coverage or byte-equivalence details for metadata-poor releases"
+    },
+    {
+      "action": "added",
+      "bytes": 1456,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-BUILD",
+      "sha256": "33a0f190043f2b938d5adb2cf7ab9ba623733115df34db44e02d7949147e6b40",
+      "why": "Verify publisher Apache package/source grants and compiled SourceFile coverage"
+    },
+    {
+      "action": "added",
+      "bytes": 3889,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-BoundedInputStream.java",
+      "sha256": "22c1553d3cf3c862d4085e45312fb11618dd5284534955a641ed6be3c4603db4",
+      "why": "Verify publisher Apache package/source grants and compiled SourceFile coverage"
+    },
+    {
+      "action": "added",
+      "bytes": 4025,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ByteBufferChannel.java",
+      "sha256": "53991e96e3c0477e912ad56304dad52d9dad3d3621d4d863654848597d9d6b54",
+      "why": "Verify publisher Apache package/source grants and compiled SourceFile coverage"
+    },
+    {
+      "action": "added",
+      "bytes": 14721,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-MetadataExtractor.java",
+      "sha256": "ef940f2d8bbc58b895f171a8e160126504d0a86824111dcf99b1237e01e8b6a3",
+      "why": "Verify publisher Apache package/source grants and compiled SourceFile coverage"
+    },
+    {
+      "action": "added",
+      "bytes": 1130,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-MetadataParser.java",
+      "sha256": "16306d0d8735dfc5081c4e1640a7ff6cf7f57c5ae8276948e7673225cedcf60c",
+      "why": "Verify publisher Apache package/source grants and compiled SourceFile coverage"
+    },
+    {
+      "action": "added",
+      "bytes": 9666,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ModelInfo.java",
+      "sha256": "671dad47ab7adf152ffd6dc86f427ee258c8938220ea300868ec1dd1563f0b59",
+      "why": "Verify publisher Apache package/source grants and compiled SourceFile coverage"
+    },
+    {
+      "action": "added",
+      "bytes": 5960,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ModelMetadataInfo.java",
+      "sha256": "033022c563fdfc12a9993b60a455b1abc376ff56f9119cf5c754e52b91f6fc81",
+      "why": "Verify publisher Apache package/source grants and compiled SourceFile coverage"
+    },
+    {
+      "action": "added",
+      "bytes": 7229,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-Preconditions.java",
+      "sha256": "bea1277c279ae6ecf6b700b7a404012e3096fdffb02c0b9b745126a2299f540c",
+      "why": "Verify publisher Apache package/source grants and compiled SourceFile coverage"
+    },
+    {
+      "action": "added",
+      "bytes": 4703,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-SeekableByteChannelCompat.java",
+      "sha256": "4ff1b1921cb6981c323eeea75f82d87796df16b161955c2402a433197edd7080",
+      "why": "Verify publisher Apache package/source grants and compiled SourceFile coverage"
+    },
+    {
+      "action": "added",
+      "bytes": 14645,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-WORKSPACE",
+      "sha256": "d2c7e2bf90c89eb8d900711fcdee1451cb870bf3f94d59c374be586242445b12",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 15485,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ZipFile.java",
+      "sha256": "20c2c435eec392f4e652a487580a415e5bf43f62481bc6d303bf46f6c3e3902b",
+      "why": "Verify publisher Apache package/source grants and compiled SourceFile coverage"
+    },
+    {
+      "action": "added",
+      "bytes": 11419,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-era-LICENSE",
+      "sha256": "6c3f6ee3067cb3d74ad4e8f2e39da8ffcd4560391a4a228a9a8c3bf872e89a32",
+      "why": "Retain the authentic package grant or copyright/license text"
+    },
+    {
+      "action": "added",
+      "bytes": 3541,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-era-commit.json",
+      "sha256": "4a3ec6db7aab1fa8966668b8e7190b03366ed0554b3e21d872bd3dae6f191f5f",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 153144,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-era-tree.json",
+      "sha256": "78fcd6650d0950931c6d2598aefb9946730dc5c3d3cc0afd2b72966103c1a6ae",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 26697,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-metadata_schema.fbs",
+      "sha256": "1a9c6354f4506bc00d3d6a4e50dea10146a12dbc24fbeaba2df1d380a36dd358",
+      "why": "Verify publisher Apache package/source grants and compiled SourceFile coverage"
+    },
+    {
+      "action": "added",
+      "bytes": 26964,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-model-schema.fbs",
+      "sha256": "e01be033b3a3be8e3dffa46d65492d107b5c97f38a240999514df6a1e821d944",
+      "why": "Verify publisher Apache package/source grants and compiled SourceFile coverage"
+    },
+    {
+      "action": "added",
+      "bytes": 1391,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-schema-BUILD",
+      "sha256": "1fd103fa5b11228fee684576ee59befc1669b8de87a8e4966b31e79f93cbf9eb",
+      "why": "Verify publisher Apache package/source grants and compiled SourceFile coverage"
+    },
+    {
+      "action": "added",
+      "bytes": 8723,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-source-evidence.json",
+      "sha256": "ba822224479f04d651a95cc6335bcd3d14755670a1de50f8be3e031e7e8c47b0",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 11419,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-tensorflow-LICENSE",
+      "sha256": "37dbed59a6aef0803f24a7dac146679491c460faa8bc3834974d786acf56a40f",
+      "why": "Retain the authentic package grant or copyright/license text"
+    },
+    {
+      "action": "added",
+      "bytes": 1690,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/retrieval.json",
+      "sha256": "ca4d667d5946274cd7ad4ab1f4f798a7d541b24faa008b06918022edbb82f3c8",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 31784,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/source-license-coverage.json",
+      "sha256": "0af01e6513277d42911f579708a2c4839c26ddd10889080c8074a02832af2014",
+      "why": "Retain complete class/source coverage or byte-equivalence details for metadata-poor releases"
+    },
+    {
+      "action": "added",
+      "bytes": 348389,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/tensorflow-lite-metadata-0.1.0-rc2.jar",
+      "sha256": "2c2a264f842498c36d34d2a7b91342490d9a962862c85baac1acd54ec2fca6d9",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 1375,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/tensorflow-lite-metadata-0.1.0-rc2.pom",
+      "sha256": "9a4f5e5674366c156c90391662f03ed7c5971d6aa63832df74a271da6ff82e96",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 1065,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_auth-js-2.69.1/LICENSE",
+      "sha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936",
+      "why": "Retain the authentic package grant or copyright/license text"
+    },
+    {
+      "action": "added",
+      "bytes": 152519,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_auth-js-2.69.1/published.tgz",
+      "sha256": "f078d4254a74dff988d484654ae794c1b73842c0340f6d57926be34d442fc757",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 949,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_auth-js-2.69.1/retrieval.json",
+      "sha256": "6921b5710e3c14ea6983f6195dc88af2b3f660c96f0225dd8a5dacca1f89e4a3",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 3781,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_auth-js-2.69.1/version.json",
+      "sha256": "4f76dd934a21275089409719a904b12ac70473f9c3a4f261d8ca8ca2c1921b85",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 1065,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_functions-js-2.4.4/LICENSE",
+      "sha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936",
+      "why": "Retain the authentic package grant or copyright/license text"
+    },
+    {
+      "action": "added",
+      "bytes": 11053,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_functions-js-2.4.4/published.tgz",
+      "sha256": "8d722d6ca9078d7a48b50abec630bbb372487c6b3352667b586f58fda92af00e",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 973,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_functions-js-2.4.4/retrieval.json",
+      "sha256": "d4dc5fdc9b424f395c3df8f656f31f5db1184a5acd337885b7a81f23dfdc8ce1",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 3064,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_functions-js-2.4.4/version.json",
+      "sha256": "59039f9ec8aa8fe002d5847ec70f08ace9c62044477bb01fdb1f21a6f6729c3c",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 1079,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/LICENSE.md",
+      "sha256": "84eaa985e1ef71b8c630e8aba73404c219ff425c6fdb45c62e998b58d4fbdc8e",
+      "why": "Retain the authentic package grant or copyright/license text"
+    },
+    {
+      "action": "added",
+      "bytes": 44407,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/published.tgz",
+      "sha256": "6fa94be6c412bcab9283f0e6854a7cd12c3d8d57e3b51f8075fb5d883304c950",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 1010,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/retrieval.json",
+      "sha256": "c034f1c3b13ba744836fb67c5f189d65026b35885efbdb4239e7e0e57f26591f",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 24716,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/version.json",
+      "sha256": "6a22272b442df079c9d6ba81132d14953214636b0c7bf3a23ffc21bdfbed9c5e",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 1065,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_postgrest-js-1.19.4/LICENSE",
+      "sha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936",
+      "why": "Retain the authentic package grant or copyright/license text"
+    },
+    {
+      "action": "added",
+      "bytes": 60508,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_postgrest-js-1.19.4/published.tgz",
+      "sha256": "06ce095d79c557bcaf83eaea1474043076bf5466e7feb885219caec245ed9291",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 978,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_postgrest-js-1.19.4/retrieval.json",
+      "sha256": "c0113f7aa9581bbaacb526cb019f0ab1be89a281783795acb4859e9999f357a3",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 3506,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_postgrest-js-1.19.4/version.json",
+      "sha256": "e472879f75d4bf91693316fc0479827f96c3e00ad31b4d05a2d595a23c0583f9",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 1067,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_realtime-js-2.11.2/LICENSE.md",
+      "sha256": "400341ae19d1175be5313b721687f2b1d6b974ecafcbea35c8cf872bc77aa514",
+      "why": "Retain the authentic package grant or copyright/license text"
+    },
+    {
+      "action": "added",
+      "bytes": 57015,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_realtime-js-2.11.2/published.tgz",
+      "sha256": "9b2eabb222f08b508f9e231f3c6222f8bca4f120ec2501d86c019addc82a130b",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 972,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_realtime-js-2.11.2/retrieval.json",
+      "sha256": "b3dc63bcf8bfa6109cd8edf8783ae5fc265d4c9107529b6ded3ef24b0f35e8e7",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 3095,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_realtime-js-2.11.2/version.json",
+      "sha256": "1d53e5b848deb6af3f0475f4ac78729f6f364d876e1b5b02b50925de1d814454",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 11357,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_storage-js-2.7.1/LICENSE",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+      "why": "Retain the authentic package grant or copyright/license text"
+    },
+    {
+      "action": "added",
+      "bytes": 36967,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_storage-js-2.7.1/published.tgz",
+      "sha256": "5fe6b6362ce29512888d3787c8be179ff40f5b37bda8d0b4e7a0afb73dec8819",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 961,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_storage-js-2.7.1/retrieval.json",
+      "sha256": "e87716a7627ce0579e6c6a7cecadf121af4d09e2da62ae4f7b938815a0063ee0",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 3449,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_storage-js-2.7.1/version.json",
+      "sha256": "a08ffa26257d08ff0056468d34c0e7ba0c99c9d13fabd330017a14e15ad6526b",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 1065,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/LICENSE",
+      "sha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936",
+      "why": "Retain the authentic package grant or copyright/license text"
+    },
+    {
+      "action": "added",
+      "bytes": 53441,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/published.tgz",
+      "sha256": "d1a41bab7cca3501565a943064dd4e410551a7e89a75ca1ac86ceb5c57ff410e",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 1015,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/retrieval.json",
+      "sha256": "95e7d6bbe35e5118083bf2e3e3f0120c6250a5670bd1c54493a433612d064a35",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 3790,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/version.json",
+      "sha256": "c5fc5c652edae46a106e1f999b277e5839fe1697526b66e0259aba7010c7dc0d",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 982,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/byte-equivalence.json",
+      "sha256": "9a93bc6283c9129dcb47a74157ee5c18f6fd3c3d71e0240f248fe74e2cb0ad72",
+      "why": "Retain complete class/source coverage or byte-equivalence details for metadata-poor releases"
+    },
+    {
+      "action": "added",
+      "bytes": 1649,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/debian-copyright",
+      "sha256": "97423a03bc4476a98de2bf3fa7efff55b3f338da76a7b3cbf747b4dc6f52a056",
+      "why": "Retain the authentic package grant or copyright/license text"
+    },
+    {
+      "action": "added",
+      "bytes": 4195,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/debian-upstream.orig.tar.gz",
+      "sha256": "f8de49c60e467005182d9687b5d87775bbcec6385ac63220b7741327441deb6d",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 4195,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/published.tgz",
+      "sha256": "f8de49c60e467005182d9687b5d87775bbcec6385ac63220b7741327441deb6d",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 890,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/retrieval.json",
+      "sha256": "6a3432a7b6f056d787dbf6f00f8959605ff808a95aec9de0c5e26847e5e4c82a",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 1170,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/version.json",
+      "sha256": "e42a7c058587a50fa7d026e9a00c57d8d366167ae9a6e412aa9cc7cd9b517f91",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 1079,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/LICENSE",
+      "sha256": "7b3638496004b2daed183a91c4ba45d3ef6331db6c9d0eb1dd882a505630c172",
+      "why": "Retain the authentic package grant or copyright/license text"
+    },
+    {
+      "action": "added",
+      "bytes": 5449,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/published.tgz",
+      "sha256": "940450fb4158bddc23ae156432a67338a4d7ab6a585b639c61b3b0a14d2bac24",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 975,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/retrieval.json",
+      "sha256": "29aeecabb7e00bc97cde5a6e5552b12dc3fd7c9717083f43d1f28f99b3bc4699",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 1759,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/version.json",
+      "sha256": "8d0857602014be960fffb17291e645b5d68ad290ace080ebb5513a47306b6247",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 1183,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/LICENSE",
+      "sha256": "2b29dcfe0d6471f7e8c92c5fb38c9f93edee10330937055440192f1832b1ecef",
+      "why": "Retain the authentic package grant or copyright/license text"
+    },
+    {
+      "action": "added",
+      "bytes": 34995,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/published.tgz",
+      "sha256": "bb0f7e58ba1f64746672734d36175fe185f226491e336abc0743e2a8f4472ec1",
+      "why": "Bind license evidence to the selected binary or byte-identical licensed source release"
+    },
+    {
+      "action": "added",
+      "bytes": 909,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/retrieval.json",
+      "sha256": "34c30ccac333758227e33bfe642bb2c62ff4a4aeb529d7e841395fd44a3f8a3d",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 2442,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/version.json",
+      "sha256": "653f51558b07509b2ad83682b42621f12eeaaca0024ebadb14772f22a8d0a473",
+      "why": "Authenticate the package publisher identity, selected release and retrieved bytes"
+    },
+    {
+      "action": "added",
+      "bytes": 183505,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/plugin-output-builds.json",
+      "sha256": "6ba5d46ef024084995233169c8d17df62d55856938579c488b90fc1344a5dba3",
+      "why": "Retain all five successful plugin-only build commands, input freezes and every one of the 282 output hashes"
+    },
+    {
+      "action": "added",
+      "bytes": 17775,
+      "path": "tools/scripts/dependency_gap_closure.py",
+      "sha256": "4e6424f4e1bf33a5258105e1e1ea1f07a2a71d40a22ada39ac488d3223f93893",
+      "why": "Publish and validate the current zero-gap inventory, license recovery, SBOM and source/output proof"
+    },
+    {
+      "action": "added",
+      "bytes": 3145,
+      "path": "tools/scripts/test_dependency_gap_closure.py",
+      "sha256": "a1e87afe634683e9fdcae2ed36e2368805f141f28ef35a4b11154e74bf240bd1",
+      "why": "Publish and validate the current zero-gap inventory, license recovery, SBOM and source/output proof"
+    },
+    {
+      "action": "updated",
+      "bytes": 130994,
+      "path": "tools/scripts/local_dependency_inventory.py",
+      "sha256": "a604715ca2c6a7cb03d5b08cb0f210adab25f509d0cbde7448344b09eabef546",
+      "why": "Publish and validate the current zero-gap inventory, license recovery, SBOM and source/output proof"
+    },
+    {
+      "action": "updated",
+      "bytes": 957521,
+      "path": "docs/release/local-final-native-dependencies-2026-10-01.json",
+      "sha256": "75efc40afbc390e171715b206c55bcd05ed2dccf4d806062c33c2372a49107a1",
+      "why": "Publish and validate the current zero-gap inventory, license recovery, SBOM and source/output proof"
+    },
+    {
+      "action": "updated",
+      "bytes": 4714,
+      "path": "docs/release/local-final-native-dependencies-2026-10-01.md",
+      "sha256": "87990f9deef1a6a2295aefafb3b886cdaf0624c528790e2af9822a212da37630",
+      "why": "Publish and validate the current zero-gap inventory, license recovery, SBOM and source/output proof"
+    },
+    {
+      "action": "updated",
+      "bytes": 5486508,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.cdx.json",
+      "sha256": "2327f25791ca07aed2e8b9728a267832bd70be271da38ee058723fb72e4763d5",
+      "why": "Publish and validate the current zero-gap inventory, license recovery, SBOM and source/output proof"
+    },
+    {
+      "action": "updated",
+      "bytes": 2095605,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.components.001.tsv",
+      "sha256": "77348b0e0faa6937be921e87b61f18a3b53a46ef0f65636e331e656f099b2980",
+      "why": "Publish and validate the current zero-gap inventory, license recovery, SBOM and source/output proof"
+    },
+    {
+      "action": "updated",
+      "bytes": 2097081,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.components.002.tsv",
+      "sha256": "dc27dc521fbbb6a9bf408777650702483abfc7a5a88dfe81c0f148794cadddad",
+      "why": "Publish and validate the current zero-gap inventory, license recovery, SBOM and source/output proof"
+    },
+    {
+      "action": "updated",
+      "bytes": 1502927,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.components.003.tsv",
+      "sha256": "6cd356a61325f7a88840e1e47e0b02f64ec5c2eb98980582b57709a53a400a5e",
+      "why": "Publish and validate the current zero-gap inventory, license recovery, SBOM and source/output proof"
+    },
+    {
+      "action": "updated",
+      "bytes": 2097018,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.evidence.001.tsv",
+      "sha256": "9ab70a01930bc2c688dde5ec6587088ee48d948acb066b613c5d5a17fb2168f9",
+      "why": "Publish and validate the current zero-gap inventory, license recovery, SBOM and source/output proof"
+    },
+    {
+      "action": "updated",
+      "bytes": 1439214,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.evidence.002.tsv",
+      "sha256": "23699e2f88eafbe30c51aa15367a6466714a7de00f6182dd059cf3a785c6a958",
+      "why": "Publish and validate the current zero-gap inventory, license recovery, SBOM and source/output proof"
+    },
+    {
+      "action": "updated",
+      "bytes": 71899,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.json",
+      "sha256": "d151168f941e8a5430226f2b1e5a447304feaf0281da157ba6f5a69ddf1042cd",
+      "why": "Publish and validate the current zero-gap inventory, license recovery, SBOM and source/output proof"
+    },
+    {
+      "action": "updated",
+      "bytes": 53951,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.license-recovery.json",
+      "sha256": "f30f4937b56931d756eaa84247ac16f1d7ac12f3be303c8044c9da25f2c1a2bb",
+      "why": "Publish and validate the current zero-gap inventory, license recovery, SBOM and source/output proof"
+    },
+    {
+      "action": "updated",
+      "bytes": 3359,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.license-recovery.md",
+      "sha256": "4346447d252d9031c76efb24140ba56973a650e563335fa70543471a462a8476",
+      "why": "Publish and validate the current zero-gap inventory, license recovery, SBOM and source/output proof"
+    },
+    {
+      "action": "updated",
+      "bytes": 613575,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.licenses.tsv",
+      "sha256": "424bb0b6bcf6286cef29ebed5b50dae1d1e6d8f55f9be3a4b8d92367c421790c",
+      "why": "Publish and validate the current zero-gap inventory, license recovery, SBOM and source/output proof"
+    },
+    {
+      "action": "updated",
+      "bytes": 7067,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.md",
+      "sha256": "57b554f733f1574fa429c0a1e552aa9dfbfc76a1eb0bfa8b99d6b2ba7483f4ea",
+      "why": "Publish and validate the current zero-gap inventory, license recovery, SBOM and source/output proof"
+    },
+    {
+      "action": "updated",
+      "bytes": 100517,
+      "path": "docs/release/local-dependency-inventory-2026-09-30.verification.json",
+      "sha256": "0bad5cf5530fa0505e684447066edb14aee5870d25c4c39903afb5ee508edfe9",
+      "why": "Publish and validate the current zero-gap inventory, license recovery, SBOM and source/output proof"
+    }
+  ],
+  "inventory": {
+    "bytes": 71899,
+    "path": "docs/release/local-dependency-inventory-2026-09-30.json",
+    "sha256": "d151168f941e8a5430226f2b1e5a447304feaf0281da157ba6f5a69ddf1042cd"
+  },
+  "licenseRecovery": {
+    "newlyRecovered": 22,
+    "originalFindings": 41,
+    "previouslyRecovered": 19,
+    "selectedVersionsChanged": 0,
+    "totalRecovered": 41
+  },
+  "limits": [
+    "License evidence is not legal approval.",
+    "TensorFlow package-wide publisher licensing and class/source corroboration are explicit; exact binary release commit and reproducible build are not asserted.",
+    "The previous candidate/archive remains a historical snapshot; this follow-up does not relabel its hashes or repeat its builds/scans."
+  ],
+  "localComplete": true,
+  "pluginOutputs": {
+    "applicationReleaseBuilds": 0,
+    "buildReceipt": {
+      "bytes": 183505,
+      "path": "docs/release/dependency-license-evidence-2026-10-01/plugin-output-builds.json",
+      "sha256": "6ba5d46ef024084995233169c8d17df62d55856938579c488b90fc1344a5dba3"
+    },
+    "byClub": {
+      "as_vita": 56,
+      "costa_do_sol": 56,
+      "nkana": 56,
+      "rayon_sports": 58,
+      "vitalo": 56
+    },
+    "total": 282
+  },
+  "productionReadyClaimed": false,
+  "publisherManifest": {
+    "bytes": 53585,
+    "path": "docs/release/dependency-license-evidence-2026-10-01/manifest.json",
+    "sha256": "a3e34134eae83727575ef5e70f21683aacc3fac95556c24c8c02a39703cab1db"
+  },
+  "removedStaleGeneratedFiles": [
+    {
+      "path": "docs/release/local-dependency-inventory-2026-09-30.unresolved.001.tsv",
+      "why": "Its 304 records are resolved; original bytes were preserved in the previous canonical snapshot before removal"
+    }
+  ],
+  "sbom": {
+    "bytes": 5486508,
+    "path": "docs/release/local-dependency-inventory-2026-09-30.cdx.json",
+    "sha256": "2327f25791ca07aed2e8b9728a267832bd70be271da38ee058723fb72e4763d5"
+  },
+  "schemaVersion": 1,
+  "status": "ALL_304_DEPENDENCY_EVIDENCE_GAPS_RESOLVED",
+  "supportingReportFiles": [
+    {
+      "path": "docs/release/local-dependency-gaps-closure-2026-10-01.json",
+      "why": "Publish every closure result, source relationship, file hash and change rationale; final hash is in the external closeout receipt"
+    },
+    {
+      "path": "docs/release/local-dependency-gaps-closure-2026-10-01.md",
+      "why": "Provide a concise readable explanation of the 22 license records and 282 plugin JAR outputs"
+    },
+    {
+      "path": "docs/release/local-production-goal-progress-2026-09-30.json",
+      "why": "Point the existing progress register at the completed follow-up while preserving the original delivery receipt"
+    }
+  ],
+  "verification": {
+    "bytes": 1160,
+    "path": "output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/canonical-verification.json",
+    "sha256": "43a59fd1dd90d34015c6ff3cef752378a945a7b01713279ce398d3b42425a66f"
+  }
+}

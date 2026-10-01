@@ -1,0 +1,3216 @@
+{
+  "passed": true,
+  "outputCount": 282,
+  "results": [
+    {
+      "club": "as_vita",
+      "command": [
+        "./gradlew",
+        "-I",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/tools/scripts/collect_android_dependency_inventory.gradle",
+        "-I",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/build-inventory-plugin-artifacts.gradle",
+        "buildAfriInventoryProjectArtifacts",
+        "--offline",
+        "--console=plain",
+        "--max-workers=2",
+        "--build-cache",
+        "-PafriPluginBuildPlan=/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/plugin-build-plan.json",
+        "-PafriInventoryFreezeInput=/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/android/as_vita.json",
+        "-PafriInventoryMavenMirror=/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/maven-mirror"
+      ],
+      "startedAt": "2026-10-01T15:22:42.188667+00:00",
+      "finishedAt": "2026-10-01T15:25:04.041978+00:00",
+      "exitCode": 0,
+      "sourceBefore": [
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/app_links-7.0.0/android/build.gradle",
+          "sha256": "cf74b6d9a729dbad13d1acbd87332cad6262b1b5a587060e9dfbfadda69978e0",
+          "bytes": 775
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.5/android/build.gradle",
+          "sha256": "3c343089242ccda6037df2d75fd813f122fa905234166f552d5e52b748972c78",
+          "bytes": 757
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics-12.2.0/android/build.gradle",
+          "sha256": "a144843e8065b6ce4042954f72114cb163b9685e7f33b3902ed432d67c7a3c7e",
+          "bytes": 2760
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_app_check-0.4.2/android/build.gradle",
+          "sha256": "9803525fad17bcd34204b5c8e3c003ab8cd9ff0103550790439a831cdd94734d",
+          "bytes": 2114
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/android/build.gradle",
+          "sha256": "760219911b257857a814dc9bc0237c262f4bd3f0ffa1e27db7ddebd8bc328c27",
+          "bytes": 1454
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.1.0/android/build.gradle",
+          "sha256": "31289bce8a72ad33c77e9c9e14b87d45d420c042c524c447eb3e296cab110519",
+          "bytes": 1933
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_messaging-16.1.3/android/build.gradle",
+          "sha256": "c2598140aac8ffd58d42ad7d149c8d5b331c1c9b7e3eb3277e0386f35d2425c0",
+          "bytes": 2120
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/build.gradle",
+          "sha256": "960dbc23a97748cc9b6f7c0caa2cdf8335e56fb74bec15ff09869010e474ef21",
+          "bytes": 2652
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.3.1/android/build.gradle",
+          "sha256": "5c4a6b3dee00a19ae77083ded682324b1fd7a62dfb25e1146051d926c0c5b995",
+          "bytes": 2004
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/path_provider_android-2.2.23/android/build.gradle.kts",
+          "sha256": "6e965b8d9f2b76bdf02bf390d1a2d4ec70c2d908dfb501dc0d5880311ab41f5f",
+          "bytes": 1462
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/share_plus-11.1.0/android/build.gradle",
+          "sha256": "b3571246114239c8e63a8332ff05b1de594ab320736bfb6434462a34411859d9",
+          "bytes": 1160
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.23/android/build.gradle.kts",
+          "sha256": "da70c2c309867579219fcf6e9d5ed206a66e261792906271903900dc49693e78",
+          "bytes": 2469
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/sqflite_android-2.4.2+3/android/build.gradle",
+          "sha256": "5238b6d2e464795594a7bf8443b11a0fee55f31aa56e831c91b161c92cebf4d4",
+          "bytes": 1361
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.29/android/build.gradle.kts",
+          "sha256": "08a9b42356a3eab27d6cc3623e08b9ead5415953913ac72f09758fd55abc0bc5",
+          "bytes": 1819
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/.flutter-plugins-dependencies",
+          "sha256": "815c4db226f4533a18c5492152f928ecf55877accb3ea8f68d697bdcbb9639a1",
+          "bytes": 15293
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/android/app/build.gradle.kts",
+          "sha256": "a3bd5af85749118a3e1effa808c1b2a98d815065c2df4f043fa675e58b68b665",
+          "bytes": 5022
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/android/build.gradle.kts",
+          "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+          "bytes": 537
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/android/gradle.properties",
+          "sha256": "41969d939b4558ba8cb884a574f2bdcde05fc36f62183c5d46eebe15a2bf1156",
+          "bytes": 260
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/android/gradle/wrapper/gradle-wrapper.properties",
+          "sha256": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+          "bytes": 201
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/android/settings.gradle.kts",
+          "sha256": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+          "bytes": 772
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/pubspec.lock",
+          "sha256": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b",
+          "bytes": 41649
+        }
+      ],
+      "sourceAfter": [
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/app_links-7.0.0/android/build.gradle",
+          "sha256": "cf74b6d9a729dbad13d1acbd87332cad6262b1b5a587060e9dfbfadda69978e0",
+          "bytes": 775
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.5/android/build.gradle",
+          "sha256": "3c343089242ccda6037df2d75fd813f122fa905234166f552d5e52b748972c78",
+          "bytes": 757
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics-12.2.0/android/build.gradle",
+          "sha256": "a144843e8065b6ce4042954f72114cb163b9685e7f33b3902ed432d67c7a3c7e",
+          "bytes": 2760
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_app_check-0.4.2/android/build.gradle",
+          "sha256": "9803525fad17bcd34204b5c8e3c003ab8cd9ff0103550790439a831cdd94734d",
+          "bytes": 2114
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/android/build.gradle",
+          "sha256": "760219911b257857a814dc9bc0237c262f4bd3f0ffa1e27db7ddebd8bc328c27",
+          "bytes": 1454
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.1.0/android/build.gradle",
+          "sha256": "31289bce8a72ad33c77e9c9e14b87d45d420c042c524c447eb3e296cab110519",
+          "bytes": 1933
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_messaging-16.1.3/android/build.gradle",
+          "sha256": "c2598140aac8ffd58d42ad7d149c8d5b331c1c9b7e3eb3277e0386f35d2425c0",
+          "bytes": 2120
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/build.gradle",
+          "sha256": "960dbc23a97748cc9b6f7c0caa2cdf8335e56fb74bec15ff09869010e474ef21",
+          "bytes": 2652
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.3.1/android/build.gradle",
+          "sha256": "5c4a6b3dee00a19ae77083ded682324b1fd7a62dfb25e1146051d926c0c5b995",
+          "bytes": 2004
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/path_provider_android-2.2.23/android/build.gradle.kts",
+          "sha256": "6e965b8d9f2b76bdf02bf390d1a2d4ec70c2d908dfb501dc0d5880311ab41f5f",
+          "bytes": 1462
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/share_plus-11.1.0/android/build.gradle",
+          "sha256": "b3571246114239c8e63a8332ff05b1de594ab320736bfb6434462a34411859d9",
+          "bytes": 1160
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.23/android/build.gradle.kts",
+          "sha256": "da70c2c309867579219fcf6e9d5ed206a66e261792906271903900dc49693e78",
+          "bytes": 2469
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/sqflite_android-2.4.2+3/android/build.gradle",
+          "sha256": "5238b6d2e464795594a7bf8443b11a0fee55f31aa56e831c91b161c92cebf4d4",
+          "bytes": 1361
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.29/android/build.gradle.kts",
+          "sha256": "08a9b42356a3eab27d6cc3623e08b9ead5415953913ac72f09758fd55abc0bc5",
+          "bytes": 1819
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/.flutter-plugins-dependencies",
+          "sha256": "815c4db226f4533a18c5492152f928ecf55877accb3ea8f68d697bdcbb9639a1",
+          "bytes": 15293
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/android/app/build.gradle.kts",
+          "sha256": "a3bd5af85749118a3e1effa808c1b2a98d815065c2df4f043fa675e58b68b665",
+          "bytes": 5022
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/android/build.gradle.kts",
+          "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+          "bytes": 537
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/android/gradle.properties",
+          "sha256": "41969d939b4558ba8cb884a574f2bdcde05fc36f62183c5d46eebe15a2bf1156",
+          "bytes": 260
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/android/gradle/wrapper/gradle-wrapper.properties",
+          "sha256": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+          "bytes": 201
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/android/settings.gradle.kts",
+          "sha256": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+          "bytes": 772
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/pubspec.lock",
+          "sha256": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b",
+          "bytes": 41649
+        }
+      ],
+      "log": {
+        "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/as_vita-plugin-build.log",
+        "sha256": "6a065c67234e2256a3a66fc06d8d9ac8005b6095818c4442a5fb11291c8a526d",
+        "bytes": 23025
+      },
+      "outputs": [
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/app_links/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "e818708c17b83d050f78c40575dc2e497d21d8e573c52230c1efe0f657495bd4",
+          "bytes": 7510,
+          "task": ":app_links:bundleLibCompileToJarProfile",
+          "classCount": 3
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/app_links/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "e818708c17b83d050f78c40575dc2e497d21d8e573c52230c1efe0f657495bd4",
+          "bytes": 7510,
+          "task": ":app_links:bundleLibCompileToJarRelease",
+          "classCount": 3
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/app_links/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "50cec74ea3f4d73fbba517bd463048c10b6e21d5a315c2b2bcec6ccf24678f55",
+          "bytes": 7232,
+          "task": ":app_links:bundleLibRuntimeToJarProfile",
+          "classCount": 2
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/app_links/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "50cec74ea3f4d73fbba517bd463048c10b6e21d5a315c2b2bcec6ccf24678f55",
+          "bytes": 7232,
+          "task": ":app_links:bundleLibRuntimeToJarRelease",
+          "classCount": 2
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/connectivity_plus/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "7d85797c3661374943065c652a69557fa885f7818821bde09004d35d3d4b71a1",
+          "bytes": 17350,
+          "task": ":connectivity_plus:bundleLibCompileToJarProfile",
+          "classCount": 6
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/connectivity_plus/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "7d85797c3661374943065c652a69557fa885f7818821bde09004d35d3d4b71a1",
+          "bytes": 17350,
+          "task": ":connectivity_plus:bundleLibCompileToJarRelease",
+          "classCount": 6
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/connectivity_plus/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "862bb7499e7930aee68c5fe6df05289fc325e357c2ba27202b08a63ac5d76c9e",
+          "bytes": 17027,
+          "task": ":connectivity_plus:bundleLibRuntimeToJarProfile",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/connectivity_plus/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "862bb7499e7930aee68c5fe6df05289fc325e357c2ba27202b08a63ac5d76c9e",
+          "bytes": 17027,
+          "task": ":connectivity_plus:bundleLibRuntimeToJarRelease",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_analytics/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "4f4ad76673a7dbae848677921815389d8b08cdafe2cd999924c291b7b46f19eb",
+          "bytes": 73522,
+          "task": ":firebase_analytics:bundleLibCompileToJarProfile",
+          "classCount": 12
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_analytics/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "297f45905323817b64121667ac3d8f98f00ee17116d6aafac82b215fb1cff2e2",
+          "bytes": 73385,
+          "task": ":firebase_analytics:bundleLibCompileToJarRelease",
+          "classCount": 12
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_analytics/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "88b41aa33b396ad7445fbb09df299b94dd79855d08bd275102785a64705eda85",
+          "bytes": 73202,
+          "task": ":firebase_analytics:bundleLibRuntimeToJarProfile",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_analytics/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "a4c3926a3603ca4814015d31c0c4c67c70e3dd9efb0cde2fe26c791f49dacf52",
+          "bytes": 73065,
+          "task": ":firebase_analytics:bundleLibRuntimeToJarRelease",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_app_check/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "e2863492b4fea7bff7148c9c107f4f076a7fbd1ebbc0461e2faf2b59bc0e4968",
+          "bytes": 22831,
+          "task": ":firebase_app_check:bundleLibCompileToJarProfile",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_app_check/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "c7e4f344de8e58861fee96bc23fb518f8512840957a007be0ba648f542696cbe",
+          "bytes": 22694,
+          "task": ":firebase_app_check:bundleLibCompileToJarRelease",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_app_check/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d955910fee3d5ae5901c843ec206c7c7e21cfa511337bc0771eac83e0ee7d197",
+          "bytes": 22514,
+          "task": ":firebase_app_check:bundleLibRuntimeToJarProfile",
+          "classCount": 4
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_app_check/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "7dd9bdeba438407ed3d589709aa3070651dfb86facca6a89c638536901d0d9a9",
+          "bytes": 22377,
+          "task": ":firebase_app_check:bundleLibRuntimeToJarRelease",
+          "classCount": 4
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_core/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "afb6a9f060c55745b2cab6cc49cd98337b4282efb7e38d83cfce9340f6a1718c",
+          "bytes": 86554,
+          "task": ":firebase_core:bundleLibCompileToJarProfile",
+          "classCount": 25
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_core/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "a7bb92acb992f6edf0aef0bad4e8389caefc95a46b6c2542b99cdd4908f1517d",
+          "bytes": 86417,
+          "task": ":firebase_core:bundleLibCompileToJarRelease",
+          "classCount": 25
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_core/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "27954ed2b9970f1049b46d0903e279f982495261c6675c08c58a473d3555ec88",
+          "bytes": 86249,
+          "task": ":firebase_core:bundleLibRuntimeToJarProfile",
+          "classCount": 24
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_core/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "1453350048d0f24ecea362325077f56dcb3b43084f7423b58a872f5a279fae51",
+          "bytes": 86112,
+          "task": ":firebase_core:bundleLibRuntimeToJarRelease",
+          "classCount": 24
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_crashlytics/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "b36c28f8a7cfef322cfd3aed2254fcff3a3373e98afa94f4539891d65d022f10",
+          "bytes": 37932,
+          "task": ":firebase_crashlytics:bundleLibCompileToJarProfile",
+          "classCount": 13
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_crashlytics/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "fcb5cfc46f08598c03009817a6b0b5d307be4afb950ac8e58dc8bdd5e55a29b9",
+          "bytes": 37795,
+          "task": ":firebase_crashlytics:bundleLibCompileToJarRelease",
+          "classCount": 13
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_crashlytics/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "f435c0c6540685f4a6434662afd034239e1c2525f37c37edec4950d7f52bad19",
+          "bytes": 37016,
+          "task": ":firebase_crashlytics:bundleLibRuntimeToJarProfile",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_crashlytics/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "f122215afdc6d07c83be77e177255e185cbf0ddef2271f6b2f6c7d4467219c3d",
+          "bytes": 36879,
+          "task": ":firebase_crashlytics:bundleLibRuntimeToJarRelease",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_messaging/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "33e1d17448d4547b9f60077d6a93f8806591f700d0b5c87fae930cf345485b69",
+          "bytes": 114475,
+          "task": ":firebase_messaging:bundleLibCompileToJarProfile",
+          "classCount": 35
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_messaging/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "e99075b94f55c080f0bc4706739821c8ea84118bb5f0c6a7f6c95413559a7a49",
+          "bytes": 114338,
+          "task": ":firebase_messaging:bundleLibCompileToJarRelease",
+          "classCount": 35
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_messaging/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "e9fad29f80d0c785b2e60460a548bb4d4fcba7d31802986b7b905ce1d830e407",
+          "bytes": 114155,
+          "task": ":firebase_messaging:bundleLibRuntimeToJarProfile",
+          "classCount": 34
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_messaging/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "f03f24160c5955a4502c9ae3b1e5698ccd69a1aa5d65777bc80c1bcaad03e358",
+          "bytes": 114018,
+          "task": ":firebase_messaging:bundleLibRuntimeToJarRelease",
+          "classCount": 34
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_performance/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "d458dbc7df42de1509f2d0a4e2073d0f4c0a9e5d7a59187ea884df578ec6ed4b",
+          "bytes": 87106,
+          "task": ":firebase_performance:bundleLibCompileToJarProfile",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_performance/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "ec98a9711c0d352dc3931aca5368e498f4a0361ed2f2c956ddcc30feeb41025b",
+          "bytes": 86969,
+          "task": ":firebase_performance:bundleLibCompileToJarRelease",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_performance/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "c5fe01cc90ca44dd211cffd96f0edf81593049991d5c7bf9def51e3978ee50f5",
+          "bytes": 86780,
+          "task": ":firebase_performance:bundleLibRuntimeToJarProfile",
+          "classCount": 18
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/firebase_performance/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "c10d6f8528df593754fcfd0a85f500625f1587842b63102ed277cae30bd721ba",
+          "bytes": 86643,
+          "task": ":firebase_performance:bundleLibRuntimeToJarRelease",
+          "classCount": 18
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/flutter_secure_storage/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "9ee6b874952fb0c4249158e4f1c5336651551b13e046b71922a59ef0ef0efb17",
+          "bytes": 259863,
+          "task": ":flutter_secure_storage:bundleLibCompileToJarProfile",
+          "classCount": 52
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/flutter_secure_storage/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "932a47bafc120638d106a0d50a596c7066199eb01de3bf4202c36eee3b331da9",
+          "bytes": 259726,
+          "task": ":flutter_secure_storage:bundleLibCompileToJarRelease",
+          "classCount": 52
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/flutter_secure_storage/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d4ecfcf09bdc576681da21352729d95d61312173fcc3891bc7c8705b6976701e",
+          "bytes": 259552,
+          "task": ":flutter_secure_storage:bundleLibRuntimeToJarProfile",
+          "classCount": 51
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/flutter_secure_storage/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "ba471acf0d987334aa8348de15f38e569e1afe4a3a38bcc3e25585c7a80caa9f",
+          "bytes": 259415,
+          "task": ":flutter_secure_storage:bundleLibRuntimeToJarRelease",
+          "classCount": 51
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/path_provider_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "613ab08b8039da9227a81effef602a67b78bbaf02c2c04bdd02c872c851d290b",
+          "bytes": 23790,
+          "task": ":path_provider_android:bundleLibCompileToJarProfile",
+          "classCount": 8
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/path_provider_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "613ab08b8039da9227a81effef602a67b78bbaf02c2c04bdd02c872c851d290b",
+          "bytes": 23790,
+          "task": ":path_provider_android:bundleLibCompileToJarRelease",
+          "classCount": 8
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/path_provider_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d70343ab0a71839c303dcd4d7ad35008d4d3a739114ad9a1c625b8c8ad5ea0b8",
+          "bytes": 23488,
+          "task": ":path_provider_android:bundleLibRuntimeToJarProfile",
+          "classCount": 7
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/path_provider_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "d70343ab0a71839c303dcd4d7ad35008d4d3a739114ad9a1c625b8c8ad5ea0b8",
+          "bytes": 23488,
+          "task": ":path_provider_android:bundleLibRuntimeToJarRelease",
+          "classCount": 7
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/share_plus/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "ba0b3ad7b738aada8b5c0b55bd4940291663c7905f0210d9e4a521bccc0520f1",
+          "bytes": 38090,
+          "task": ":share_plus:bundleLibCompileToJarProfile",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/share_plus/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "9cbd435839f047173498450c1529a6f371f0ad8805237164f5bd6a9aef8a95ce",
+          "bytes": 38090,
+          "task": ":share_plus:bundleLibCompileToJarRelease",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/share_plus/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "c0c6bea6ee9337ec87153801b2d7a00a13bf647ae6592f2889e0e017beee55ef",
+          "bytes": 37250,
+          "task": ":share_plus:bundleLibRuntimeToJarProfile",
+          "classCount": 9
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/share_plus/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "5d4fb5d0c6a5d9cfb26e618db0e0c55286e2828232f6562e40ee212b7ea3abd4",
+          "bytes": 37250,
+          "task": ":share_plus:bundleLibRuntimeToJarRelease",
+          "classCount": 9
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/shared_preferences_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "87a49ce5b047c0f33c9052d8f8876a4b2b78ff9413089ea4c221b89baa0014c1",
+          "bytes": 301903,
+          "task": ":shared_preferences_android:bundleLibCompileToJarProfile",
+          "classCount": 61
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/shared_preferences_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "eaf2c2ab91fdef7f056f20b5938798dbe226b813944471f6cfb535b3a71bea0d",
+          "bytes": 301903,
+          "task": ":shared_preferences_android:bundleLibCompileToJarRelease",
+          "classCount": 61
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/shared_preferences_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "27ce1da4c7ac5ac1b52c7af43df38fa32453cce5853507114ad3e75e204715fc",
+          "bytes": 301586,
+          "task": ":shared_preferences_android:bundleLibRuntimeToJarProfile",
+          "classCount": 60
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/shared_preferences_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "8cdc75278cf87a5d5e697df8b8eb9d1cbf6089d81149101fb8622d0b9ea86f1e",
+          "bytes": 301586,
+          "task": ":shared_preferences_android:bundleLibRuntimeToJarRelease",
+          "classCount": 60
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/sqflite_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "24f3a676baeec88b947579055202c3214237b0bc5f78e526cf055cb919ffa2e6",
+          "bytes": 93549,
+          "task": ":sqflite_android:bundleLibCompileToJarProfile",
+          "classCount": 30
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/sqflite_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "24f3a676baeec88b947579055202c3214237b0bc5f78e526cf055cb919ffa2e6",
+          "bytes": 93549,
+          "task": ":sqflite_android:bundleLibCompileToJarRelease",
+          "classCount": 30
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/sqflite_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "4ffcb44a216a0a167493a0e38a670c4e544380e8bb55b61d2ae18b316f37b753",
+          "bytes": 93280,
+          "task": ":sqflite_android:bundleLibRuntimeToJarProfile",
+          "classCount": 29
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/sqflite_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "4ffcb44a216a0a167493a0e38a670c4e544380e8bb55b61d2ae18b316f37b753",
+          "bytes": 93280,
+          "task": ":sqflite_android:bundleLibRuntimeToJarRelease",
+          "classCount": 29
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/url_launcher_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "873cee55a5c28e81ecf9d78937297d7e344e3d1a20b20e62bb9b48aee4cb77ef",
+          "bytes": 51538,
+          "task": ":url_launcher_android:bundleLibCompileToJarProfile",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/url_launcher_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "a29b8cab0435a4bd1809af0516fe5f3cf5570f5f957c325dd94ef7ac9856cc1d",
+          "bytes": 51097,
+          "task": ":url_launcher_android:bundleLibCompileToJarRelease",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/url_launcher_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d165ca85e7c4473e8600279db29fb622636723dd286688cd5c2b4dbb89477431",
+          "bytes": 51239,
+          "task": ":url_launcher_android:bundleLibRuntimeToJarProfile",
+          "classCount": 18
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/as_vita/build/url_launcher_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "5dc6d30ee89498afd6827a8562ca89613e84240bff421a67490526845c2f8d09",
+          "bytes": 50798,
+          "task": ":url_launcher_android:bundleLibRuntimeToJarRelease",
+          "classCount": 18
+        }
+      ],
+      "expectedOutputs": 56,
+      "passed": true,
+      "appTasksRequested": false
+    },
+    {
+      "club": "costa_do_sol",
+      "command": [
+        "./gradlew",
+        "-I",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/tools/scripts/collect_android_dependency_inventory.gradle",
+        "-I",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/build-inventory-plugin-artifacts.gradle",
+        "buildAfriInventoryProjectArtifacts",
+        "--offline",
+        "--console=plain",
+        "--max-workers=2",
+        "--build-cache",
+        "-PafriPluginBuildPlan=/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/plugin-build-plan.json",
+        "-PafriInventoryFreezeInput=/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/android/costa_do_sol.json",
+        "-PafriInventoryMavenMirror=/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/maven-mirror"
+      ],
+      "startedAt": "2026-10-01T15:25:04.081121+00:00",
+      "finishedAt": "2026-10-01T15:25:19.568922+00:00",
+      "exitCode": 0,
+      "sourceBefore": [
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/app_links-7.0.0/android/build.gradle",
+          "sha256": "cf74b6d9a729dbad13d1acbd87332cad6262b1b5a587060e9dfbfadda69978e0",
+          "bytes": 775
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.5/android/build.gradle",
+          "sha256": "3c343089242ccda6037df2d75fd813f122fa905234166f552d5e52b748972c78",
+          "bytes": 757
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics-12.2.0/android/build.gradle",
+          "sha256": "a144843e8065b6ce4042954f72114cb163b9685e7f33b3902ed432d67c7a3c7e",
+          "bytes": 2760
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_app_check-0.4.2/android/build.gradle",
+          "sha256": "9803525fad17bcd34204b5c8e3c003ab8cd9ff0103550790439a831cdd94734d",
+          "bytes": 2114
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/android/build.gradle",
+          "sha256": "760219911b257857a814dc9bc0237c262f4bd3f0ffa1e27db7ddebd8bc328c27",
+          "bytes": 1454
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.1.0/android/build.gradle",
+          "sha256": "31289bce8a72ad33c77e9c9e14b87d45d420c042c524c447eb3e296cab110519",
+          "bytes": 1933
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_messaging-16.1.3/android/build.gradle",
+          "sha256": "c2598140aac8ffd58d42ad7d149c8d5b331c1c9b7e3eb3277e0386f35d2425c0",
+          "bytes": 2120
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/build.gradle",
+          "sha256": "960dbc23a97748cc9b6f7c0caa2cdf8335e56fb74bec15ff09869010e474ef21",
+          "bytes": 2652
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.3.1/android/build.gradle",
+          "sha256": "5c4a6b3dee00a19ae77083ded682324b1fd7a62dfb25e1146051d926c0c5b995",
+          "bytes": 2004
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/path_provider_android-2.2.23/android/build.gradle.kts",
+          "sha256": "6e965b8d9f2b76bdf02bf390d1a2d4ec70c2d908dfb501dc0d5880311ab41f5f",
+          "bytes": 1462
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/share_plus-11.1.0/android/build.gradle",
+          "sha256": "b3571246114239c8e63a8332ff05b1de594ab320736bfb6434462a34411859d9",
+          "bytes": 1160
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.23/android/build.gradle.kts",
+          "sha256": "da70c2c309867579219fcf6e9d5ed206a66e261792906271903900dc49693e78",
+          "bytes": 2469
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/sqflite_android-2.4.2+3/android/build.gradle",
+          "sha256": "5238b6d2e464795594a7bf8443b11a0fee55f31aa56e831c91b161c92cebf4d4",
+          "bytes": 1361
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.29/android/build.gradle.kts",
+          "sha256": "08a9b42356a3eab27d6cc3623e08b9ead5415953913ac72f09758fd55abc0bc5",
+          "bytes": 1819
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/.flutter-plugins-dependencies",
+          "sha256": "26cb7dd1b1509f67c98476545f90b73f8d1e9da43f35a5b48ba49cff69c3da1a",
+          "bytes": 15293
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/android/app/build.gradle.kts",
+          "sha256": "0b4d8b342217a9fb9eac0d78deb3eee038b7ceadf04598bb8137602006d6303d",
+          "bytes": 5028
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/android/build.gradle.kts",
+          "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+          "bytes": 537
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/android/gradle.properties",
+          "sha256": "41969d939b4558ba8cb884a574f2bdcde05fc36f62183c5d46eebe15a2bf1156",
+          "bytes": 260
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/android/gradle/wrapper/gradle-wrapper.properties",
+          "sha256": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+          "bytes": 201
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/android/settings.gradle.kts",
+          "sha256": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+          "bytes": 772
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/pubspec.lock",
+          "sha256": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b",
+          "bytes": 41649
+        }
+      ],
+      "sourceAfter": [
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/app_links-7.0.0/android/build.gradle",
+          "sha256": "cf74b6d9a729dbad13d1acbd87332cad6262b1b5a587060e9dfbfadda69978e0",
+          "bytes": 775
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.5/android/build.gradle",
+          "sha256": "3c343089242ccda6037df2d75fd813f122fa905234166f552d5e52b748972c78",
+          "bytes": 757
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics-12.2.0/android/build.gradle",
+          "sha256": "a144843e8065b6ce4042954f72114cb163b9685e7f33b3902ed432d67c7a3c7e",
+          "bytes": 2760
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_app_check-0.4.2/android/build.gradle",
+          "sha256": "9803525fad17bcd34204b5c8e3c003ab8cd9ff0103550790439a831cdd94734d",
+          "bytes": 2114
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/android/build.gradle",
+          "sha256": "760219911b257857a814dc9bc0237c262f4bd3f0ffa1e27db7ddebd8bc328c27",
+          "bytes": 1454
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.1.0/android/build.gradle",
+          "sha256": "31289bce8a72ad33c77e9c9e14b87d45d420c042c524c447eb3e296cab110519",
+          "bytes": 1933
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_messaging-16.1.3/android/build.gradle",
+          "sha256": "c2598140aac8ffd58d42ad7d149c8d5b331c1c9b7e3eb3277e0386f35d2425c0",
+          "bytes": 2120
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/build.gradle",
+          "sha256": "960dbc23a97748cc9b6f7c0caa2cdf8335e56fb74bec15ff09869010e474ef21",
+          "bytes": 2652
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.3.1/android/build.gradle",
+          "sha256": "5c4a6b3dee00a19ae77083ded682324b1fd7a62dfb25e1146051d926c0c5b995",
+          "bytes": 2004
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/path_provider_android-2.2.23/android/build.gradle.kts",
+          "sha256": "6e965b8d9f2b76bdf02bf390d1a2d4ec70c2d908dfb501dc0d5880311ab41f5f",
+          "bytes": 1462
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/share_plus-11.1.0/android/build.gradle",
+          "sha256": "b3571246114239c8e63a8332ff05b1de594ab320736bfb6434462a34411859d9",
+          "bytes": 1160
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.23/android/build.gradle.kts",
+          "sha256": "da70c2c309867579219fcf6e9d5ed206a66e261792906271903900dc49693e78",
+          "bytes": 2469
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/sqflite_android-2.4.2+3/android/build.gradle",
+          "sha256": "5238b6d2e464795594a7bf8443b11a0fee55f31aa56e831c91b161c92cebf4d4",
+          "bytes": 1361
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.29/android/build.gradle.kts",
+          "sha256": "08a9b42356a3eab27d6cc3623e08b9ead5415953913ac72f09758fd55abc0bc5",
+          "bytes": 1819
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/.flutter-plugins-dependencies",
+          "sha256": "26cb7dd1b1509f67c98476545f90b73f8d1e9da43f35a5b48ba49cff69c3da1a",
+          "bytes": 15293
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/android/app/build.gradle.kts",
+          "sha256": "0b4d8b342217a9fb9eac0d78deb3eee038b7ceadf04598bb8137602006d6303d",
+          "bytes": 5028
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/android/build.gradle.kts",
+          "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+          "bytes": 537
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/android/gradle.properties",
+          "sha256": "41969d939b4558ba8cb884a574f2bdcde05fc36f62183c5d46eebe15a2bf1156",
+          "bytes": 260
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/android/gradle/wrapper/gradle-wrapper.properties",
+          "sha256": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+          "bytes": 201
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/android/settings.gradle.kts",
+          "sha256": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+          "bytes": 772
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/pubspec.lock",
+          "sha256": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b",
+          "bytes": 41649
+        }
+      ],
+      "log": {
+        "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/costa_do_sol-plugin-build.log",
+        "sha256": "39d886582fcef4123de8bba5871b4f36766d175a264bcd42a797d406adadd471",
+        "bytes": 22468
+      },
+      "outputs": [
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/app_links/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "e818708c17b83d050f78c40575dc2e497d21d8e573c52230c1efe0f657495bd4",
+          "bytes": 7510,
+          "task": ":app_links:bundleLibCompileToJarProfile",
+          "classCount": 3
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/app_links/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "e818708c17b83d050f78c40575dc2e497d21d8e573c52230c1efe0f657495bd4",
+          "bytes": 7510,
+          "task": ":app_links:bundleLibCompileToJarRelease",
+          "classCount": 3
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/app_links/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "50cec74ea3f4d73fbba517bd463048c10b6e21d5a315c2b2bcec6ccf24678f55",
+          "bytes": 7232,
+          "task": ":app_links:bundleLibRuntimeToJarProfile",
+          "classCount": 2
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/app_links/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "50cec74ea3f4d73fbba517bd463048c10b6e21d5a315c2b2bcec6ccf24678f55",
+          "bytes": 7232,
+          "task": ":app_links:bundleLibRuntimeToJarRelease",
+          "classCount": 2
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/connectivity_plus/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "7d85797c3661374943065c652a69557fa885f7818821bde09004d35d3d4b71a1",
+          "bytes": 17350,
+          "task": ":connectivity_plus:bundleLibCompileToJarProfile",
+          "classCount": 6
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/connectivity_plus/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "7d85797c3661374943065c652a69557fa885f7818821bde09004d35d3d4b71a1",
+          "bytes": 17350,
+          "task": ":connectivity_plus:bundleLibCompileToJarRelease",
+          "classCount": 6
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/connectivity_plus/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "862bb7499e7930aee68c5fe6df05289fc325e357c2ba27202b08a63ac5d76c9e",
+          "bytes": 17027,
+          "task": ":connectivity_plus:bundleLibRuntimeToJarProfile",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/connectivity_plus/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "862bb7499e7930aee68c5fe6df05289fc325e357c2ba27202b08a63ac5d76c9e",
+          "bytes": 17027,
+          "task": ":connectivity_plus:bundleLibRuntimeToJarRelease",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_analytics/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "4f4ad76673a7dbae848677921815389d8b08cdafe2cd999924c291b7b46f19eb",
+          "bytes": 73522,
+          "task": ":firebase_analytics:bundleLibCompileToJarProfile",
+          "classCount": 12
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_analytics/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "297f45905323817b64121667ac3d8f98f00ee17116d6aafac82b215fb1cff2e2",
+          "bytes": 73385,
+          "task": ":firebase_analytics:bundleLibCompileToJarRelease",
+          "classCount": 12
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_analytics/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "88b41aa33b396ad7445fbb09df299b94dd79855d08bd275102785a64705eda85",
+          "bytes": 73202,
+          "task": ":firebase_analytics:bundleLibRuntimeToJarProfile",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_analytics/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "a4c3926a3603ca4814015d31c0c4c67c70e3dd9efb0cde2fe26c791f49dacf52",
+          "bytes": 73065,
+          "task": ":firebase_analytics:bundleLibRuntimeToJarRelease",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_app_check/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "e2863492b4fea7bff7148c9c107f4f076a7fbd1ebbc0461e2faf2b59bc0e4968",
+          "bytes": 22831,
+          "task": ":firebase_app_check:bundleLibCompileToJarProfile",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_app_check/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "c7e4f344de8e58861fee96bc23fb518f8512840957a007be0ba648f542696cbe",
+          "bytes": 22694,
+          "task": ":firebase_app_check:bundleLibCompileToJarRelease",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_app_check/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d955910fee3d5ae5901c843ec206c7c7e21cfa511337bc0771eac83e0ee7d197",
+          "bytes": 22514,
+          "task": ":firebase_app_check:bundleLibRuntimeToJarProfile",
+          "classCount": 4
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_app_check/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "7dd9bdeba438407ed3d589709aa3070651dfb86facca6a89c638536901d0d9a9",
+          "bytes": 22377,
+          "task": ":firebase_app_check:bundleLibRuntimeToJarRelease",
+          "classCount": 4
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_core/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "afb6a9f060c55745b2cab6cc49cd98337b4282efb7e38d83cfce9340f6a1718c",
+          "bytes": 86554,
+          "task": ":firebase_core:bundleLibCompileToJarProfile",
+          "classCount": 25
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_core/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "a7bb92acb992f6edf0aef0bad4e8389caefc95a46b6c2542b99cdd4908f1517d",
+          "bytes": 86417,
+          "task": ":firebase_core:bundleLibCompileToJarRelease",
+          "classCount": 25
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_core/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "27954ed2b9970f1049b46d0903e279f982495261c6675c08c58a473d3555ec88",
+          "bytes": 86249,
+          "task": ":firebase_core:bundleLibRuntimeToJarProfile",
+          "classCount": 24
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_core/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "1453350048d0f24ecea362325077f56dcb3b43084f7423b58a872f5a279fae51",
+          "bytes": 86112,
+          "task": ":firebase_core:bundleLibRuntimeToJarRelease",
+          "classCount": 24
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_crashlytics/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "b36c28f8a7cfef322cfd3aed2254fcff3a3373e98afa94f4539891d65d022f10",
+          "bytes": 37932,
+          "task": ":firebase_crashlytics:bundleLibCompileToJarProfile",
+          "classCount": 13
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_crashlytics/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "fcb5cfc46f08598c03009817a6b0b5d307be4afb950ac8e58dc8bdd5e55a29b9",
+          "bytes": 37795,
+          "task": ":firebase_crashlytics:bundleLibCompileToJarRelease",
+          "classCount": 13
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_crashlytics/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "f435c0c6540685f4a6434662afd034239e1c2525f37c37edec4950d7f52bad19",
+          "bytes": 37016,
+          "task": ":firebase_crashlytics:bundleLibRuntimeToJarProfile",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_crashlytics/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "f122215afdc6d07c83be77e177255e185cbf0ddef2271f6b2f6c7d4467219c3d",
+          "bytes": 36879,
+          "task": ":firebase_crashlytics:bundleLibRuntimeToJarRelease",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_messaging/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "33e1d17448d4547b9f60077d6a93f8806591f700d0b5c87fae930cf345485b69",
+          "bytes": 114475,
+          "task": ":firebase_messaging:bundleLibCompileToJarProfile",
+          "classCount": 35
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_messaging/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "e99075b94f55c080f0bc4706739821c8ea84118bb5f0c6a7f6c95413559a7a49",
+          "bytes": 114338,
+          "task": ":firebase_messaging:bundleLibCompileToJarRelease",
+          "classCount": 35
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_messaging/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "e9fad29f80d0c785b2e60460a548bb4d4fcba7d31802986b7b905ce1d830e407",
+          "bytes": 114155,
+          "task": ":firebase_messaging:bundleLibRuntimeToJarProfile",
+          "classCount": 34
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_messaging/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "f03f24160c5955a4502c9ae3b1e5698ccd69a1aa5d65777bc80c1bcaad03e358",
+          "bytes": 114018,
+          "task": ":firebase_messaging:bundleLibRuntimeToJarRelease",
+          "classCount": 34
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_performance/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "d458dbc7df42de1509f2d0a4e2073d0f4c0a9e5d7a59187ea884df578ec6ed4b",
+          "bytes": 87106,
+          "task": ":firebase_performance:bundleLibCompileToJarProfile",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_performance/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "ec98a9711c0d352dc3931aca5368e498f4a0361ed2f2c956ddcc30feeb41025b",
+          "bytes": 86969,
+          "task": ":firebase_performance:bundleLibCompileToJarRelease",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_performance/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "c5fe01cc90ca44dd211cffd96f0edf81593049991d5c7bf9def51e3978ee50f5",
+          "bytes": 86780,
+          "task": ":firebase_performance:bundleLibRuntimeToJarProfile",
+          "classCount": 18
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/firebase_performance/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "c10d6f8528df593754fcfd0a85f500625f1587842b63102ed277cae30bd721ba",
+          "bytes": 86643,
+          "task": ":firebase_performance:bundleLibRuntimeToJarRelease",
+          "classCount": 18
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/flutter_secure_storage/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "9ee6b874952fb0c4249158e4f1c5336651551b13e046b71922a59ef0ef0efb17",
+          "bytes": 259863,
+          "task": ":flutter_secure_storage:bundleLibCompileToJarProfile",
+          "classCount": 52
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/flutter_secure_storage/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "932a47bafc120638d106a0d50a596c7066199eb01de3bf4202c36eee3b331da9",
+          "bytes": 259726,
+          "task": ":flutter_secure_storage:bundleLibCompileToJarRelease",
+          "classCount": 52
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/flutter_secure_storage/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d4ecfcf09bdc576681da21352729d95d61312173fcc3891bc7c8705b6976701e",
+          "bytes": 259552,
+          "task": ":flutter_secure_storage:bundleLibRuntimeToJarProfile",
+          "classCount": 51
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/flutter_secure_storage/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "ba471acf0d987334aa8348de15f38e569e1afe4a3a38bcc3e25585c7a80caa9f",
+          "bytes": 259415,
+          "task": ":flutter_secure_storage:bundleLibRuntimeToJarRelease",
+          "classCount": 51
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/path_provider_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "613ab08b8039da9227a81effef602a67b78bbaf02c2c04bdd02c872c851d290b",
+          "bytes": 23790,
+          "task": ":path_provider_android:bundleLibCompileToJarProfile",
+          "classCount": 8
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/path_provider_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "613ab08b8039da9227a81effef602a67b78bbaf02c2c04bdd02c872c851d290b",
+          "bytes": 23790,
+          "task": ":path_provider_android:bundleLibCompileToJarRelease",
+          "classCount": 8
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/path_provider_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d70343ab0a71839c303dcd4d7ad35008d4d3a739114ad9a1c625b8c8ad5ea0b8",
+          "bytes": 23488,
+          "task": ":path_provider_android:bundleLibRuntimeToJarProfile",
+          "classCount": 7
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/path_provider_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "d70343ab0a71839c303dcd4d7ad35008d4d3a739114ad9a1c625b8c8ad5ea0b8",
+          "bytes": 23488,
+          "task": ":path_provider_android:bundleLibRuntimeToJarRelease",
+          "classCount": 7
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/share_plus/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "ba0b3ad7b738aada8b5c0b55bd4940291663c7905f0210d9e4a521bccc0520f1",
+          "bytes": 38090,
+          "task": ":share_plus:bundleLibCompileToJarProfile",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/share_plus/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "9cbd435839f047173498450c1529a6f371f0ad8805237164f5bd6a9aef8a95ce",
+          "bytes": 38090,
+          "task": ":share_plus:bundleLibCompileToJarRelease",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/share_plus/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "c0c6bea6ee9337ec87153801b2d7a00a13bf647ae6592f2889e0e017beee55ef",
+          "bytes": 37250,
+          "task": ":share_plus:bundleLibRuntimeToJarProfile",
+          "classCount": 9
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/share_plus/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "5d4fb5d0c6a5d9cfb26e618db0e0c55286e2828232f6562e40ee212b7ea3abd4",
+          "bytes": 37250,
+          "task": ":share_plus:bundleLibRuntimeToJarRelease",
+          "classCount": 9
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/shared_preferences_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "87a49ce5b047c0f33c9052d8f8876a4b2b78ff9413089ea4c221b89baa0014c1",
+          "bytes": 301903,
+          "task": ":shared_preferences_android:bundleLibCompileToJarProfile",
+          "classCount": 61
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/shared_preferences_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "eaf2c2ab91fdef7f056f20b5938798dbe226b813944471f6cfb535b3a71bea0d",
+          "bytes": 301903,
+          "task": ":shared_preferences_android:bundleLibCompileToJarRelease",
+          "classCount": 61
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/shared_preferences_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "27ce1da4c7ac5ac1b52c7af43df38fa32453cce5853507114ad3e75e204715fc",
+          "bytes": 301586,
+          "task": ":shared_preferences_android:bundleLibRuntimeToJarProfile",
+          "classCount": 60
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/shared_preferences_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "8cdc75278cf87a5d5e697df8b8eb9d1cbf6089d81149101fb8622d0b9ea86f1e",
+          "bytes": 301586,
+          "task": ":shared_preferences_android:bundleLibRuntimeToJarRelease",
+          "classCount": 60
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/sqflite_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "24f3a676baeec88b947579055202c3214237b0bc5f78e526cf055cb919ffa2e6",
+          "bytes": 93549,
+          "task": ":sqflite_android:bundleLibCompileToJarProfile",
+          "classCount": 30
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/sqflite_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "24f3a676baeec88b947579055202c3214237b0bc5f78e526cf055cb919ffa2e6",
+          "bytes": 93549,
+          "task": ":sqflite_android:bundleLibCompileToJarRelease",
+          "classCount": 30
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/sqflite_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "4ffcb44a216a0a167493a0e38a670c4e544380e8bb55b61d2ae18b316f37b753",
+          "bytes": 93280,
+          "task": ":sqflite_android:bundleLibRuntimeToJarProfile",
+          "classCount": 29
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/sqflite_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "4ffcb44a216a0a167493a0e38a670c4e544380e8bb55b61d2ae18b316f37b753",
+          "bytes": 93280,
+          "task": ":sqflite_android:bundleLibRuntimeToJarRelease",
+          "classCount": 29
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/url_launcher_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "873cee55a5c28e81ecf9d78937297d7e344e3d1a20b20e62bb9b48aee4cb77ef",
+          "bytes": 51538,
+          "task": ":url_launcher_android:bundleLibCompileToJarProfile",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/url_launcher_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "a29b8cab0435a4bd1809af0516fe5f3cf5570f5f957c325dd94ef7ac9856cc1d",
+          "bytes": 51097,
+          "task": ":url_launcher_android:bundleLibCompileToJarRelease",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/url_launcher_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d165ca85e7c4473e8600279db29fb622636723dd286688cd5c2b4dbb89477431",
+          "bytes": 51239,
+          "task": ":url_launcher_android:bundleLibRuntimeToJarProfile",
+          "classCount": 18
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/costa_do_sol/build/url_launcher_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "5dc6d30ee89498afd6827a8562ca89613e84240bff421a67490526845c2f8d09",
+          "bytes": 50798,
+          "task": ":url_launcher_android:bundleLibRuntimeToJarRelease",
+          "classCount": 18
+        }
+      ],
+      "expectedOutputs": 56,
+      "passed": true,
+      "appTasksRequested": false
+    },
+    {
+      "club": "nkana",
+      "command": [
+        "./gradlew",
+        "-I",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/tools/scripts/collect_android_dependency_inventory.gradle",
+        "-I",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/build-inventory-plugin-artifacts.gradle",
+        "buildAfriInventoryProjectArtifacts",
+        "--offline",
+        "--console=plain",
+        "--max-workers=2",
+        "--build-cache",
+        "-PafriPluginBuildPlan=/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/plugin-build-plan.json",
+        "-PafriInventoryFreezeInput=/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/android/nkana.json",
+        "-PafriInventoryMavenMirror=/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/maven-mirror"
+      ],
+      "startedAt": "2026-10-01T15:25:19.603187+00:00",
+      "finishedAt": "2026-10-01T15:25:33.867781+00:00",
+      "exitCode": 0,
+      "sourceBefore": [
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/app_links-7.0.0/android/build.gradle",
+          "sha256": "cf74b6d9a729dbad13d1acbd87332cad6262b1b5a587060e9dfbfadda69978e0",
+          "bytes": 775
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.5/android/build.gradle",
+          "sha256": "3c343089242ccda6037df2d75fd813f122fa905234166f552d5e52b748972c78",
+          "bytes": 757
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics-12.2.0/android/build.gradle",
+          "sha256": "a144843e8065b6ce4042954f72114cb163b9685e7f33b3902ed432d67c7a3c7e",
+          "bytes": 2760
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_app_check-0.4.2/android/build.gradle",
+          "sha256": "9803525fad17bcd34204b5c8e3c003ab8cd9ff0103550790439a831cdd94734d",
+          "bytes": 2114
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/android/build.gradle",
+          "sha256": "760219911b257857a814dc9bc0237c262f4bd3f0ffa1e27db7ddebd8bc328c27",
+          "bytes": 1454
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.1.0/android/build.gradle",
+          "sha256": "31289bce8a72ad33c77e9c9e14b87d45d420c042c524c447eb3e296cab110519",
+          "bytes": 1933
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_messaging-16.1.3/android/build.gradle",
+          "sha256": "c2598140aac8ffd58d42ad7d149c8d5b331c1c9b7e3eb3277e0386f35d2425c0",
+          "bytes": 2120
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/build.gradle",
+          "sha256": "960dbc23a97748cc9b6f7c0caa2cdf8335e56fb74bec15ff09869010e474ef21",
+          "bytes": 2652
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.3.1/android/build.gradle",
+          "sha256": "5c4a6b3dee00a19ae77083ded682324b1fd7a62dfb25e1146051d926c0c5b995",
+          "bytes": 2004
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/path_provider_android-2.2.23/android/build.gradle.kts",
+          "sha256": "6e965b8d9f2b76bdf02bf390d1a2d4ec70c2d908dfb501dc0d5880311ab41f5f",
+          "bytes": 1462
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/share_plus-11.1.0/android/build.gradle",
+          "sha256": "b3571246114239c8e63a8332ff05b1de594ab320736bfb6434462a34411859d9",
+          "bytes": 1160
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.23/android/build.gradle.kts",
+          "sha256": "da70c2c309867579219fcf6e9d5ed206a66e261792906271903900dc49693e78",
+          "bytes": 2469
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/sqflite_android-2.4.2+3/android/build.gradle",
+          "sha256": "5238b6d2e464795594a7bf8443b11a0fee55f31aa56e831c91b161c92cebf4d4",
+          "bytes": 1361
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.29/android/build.gradle.kts",
+          "sha256": "08a9b42356a3eab27d6cc3623e08b9ead5415953913ac72f09758fd55abc0bc5",
+          "bytes": 1819
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/.flutter-plugins-dependencies",
+          "sha256": "26a415fcd86279d34ef82b8c0e00c20b5056ffa057a80d447363b0e042bb218d",
+          "bytes": 15293
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/android/app/build.gradle.kts",
+          "sha256": "58ec4bc1a21761cab44660072ca189a737e844797e491f5713ca706a5534e7a3",
+          "bytes": 5006
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/android/build.gradle.kts",
+          "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+          "bytes": 537
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/android/gradle.properties",
+          "sha256": "4922e39cd2ea910bd97156fd4320b0be9217df262fc45435ce408bad534a20d0",
+          "bytes": 320
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/android/gradle/wrapper/gradle-wrapper.properties",
+          "sha256": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+          "bytes": 201
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/android/settings.gradle.kts",
+          "sha256": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+          "bytes": 772
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/pubspec.lock",
+          "sha256": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b",
+          "bytes": 41649
+        }
+      ],
+      "sourceAfter": [
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/app_links-7.0.0/android/build.gradle",
+          "sha256": "cf74b6d9a729dbad13d1acbd87332cad6262b1b5a587060e9dfbfadda69978e0",
+          "bytes": 775
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.5/android/build.gradle",
+          "sha256": "3c343089242ccda6037df2d75fd813f122fa905234166f552d5e52b748972c78",
+          "bytes": 757
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics-12.2.0/android/build.gradle",
+          "sha256": "a144843e8065b6ce4042954f72114cb163b9685e7f33b3902ed432d67c7a3c7e",
+          "bytes": 2760
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_app_check-0.4.2/android/build.gradle",
+          "sha256": "9803525fad17bcd34204b5c8e3c003ab8cd9ff0103550790439a831cdd94734d",
+          "bytes": 2114
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/android/build.gradle",
+          "sha256": "760219911b257857a814dc9bc0237c262f4bd3f0ffa1e27db7ddebd8bc328c27",
+          "bytes": 1454
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.1.0/android/build.gradle",
+          "sha256": "31289bce8a72ad33c77e9c9e14b87d45d420c042c524c447eb3e296cab110519",
+          "bytes": 1933
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_messaging-16.1.3/android/build.gradle",
+          "sha256": "c2598140aac8ffd58d42ad7d149c8d5b331c1c9b7e3eb3277e0386f35d2425c0",
+          "bytes": 2120
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/build.gradle",
+          "sha256": "960dbc23a97748cc9b6f7c0caa2cdf8335e56fb74bec15ff09869010e474ef21",
+          "bytes": 2652
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.3.1/android/build.gradle",
+          "sha256": "5c4a6b3dee00a19ae77083ded682324b1fd7a62dfb25e1146051d926c0c5b995",
+          "bytes": 2004
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/path_provider_android-2.2.23/android/build.gradle.kts",
+          "sha256": "6e965b8d9f2b76bdf02bf390d1a2d4ec70c2d908dfb501dc0d5880311ab41f5f",
+          "bytes": 1462
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/share_plus-11.1.0/android/build.gradle",
+          "sha256": "b3571246114239c8e63a8332ff05b1de594ab320736bfb6434462a34411859d9",
+          "bytes": 1160
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.23/android/build.gradle.kts",
+          "sha256": "da70c2c309867579219fcf6e9d5ed206a66e261792906271903900dc49693e78",
+          "bytes": 2469
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/sqflite_android-2.4.2+3/android/build.gradle",
+          "sha256": "5238b6d2e464795594a7bf8443b11a0fee55f31aa56e831c91b161c92cebf4d4",
+          "bytes": 1361
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.29/android/build.gradle.kts",
+          "sha256": "08a9b42356a3eab27d6cc3623e08b9ead5415953913ac72f09758fd55abc0bc5",
+          "bytes": 1819
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/.flutter-plugins-dependencies",
+          "sha256": "26a415fcd86279d34ef82b8c0e00c20b5056ffa057a80d447363b0e042bb218d",
+          "bytes": 15293
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/android/app/build.gradle.kts",
+          "sha256": "58ec4bc1a21761cab44660072ca189a737e844797e491f5713ca706a5534e7a3",
+          "bytes": 5006
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/android/build.gradle.kts",
+          "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+          "bytes": 537
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/android/gradle.properties",
+          "sha256": "4922e39cd2ea910bd97156fd4320b0be9217df262fc45435ce408bad534a20d0",
+          "bytes": 320
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/android/gradle/wrapper/gradle-wrapper.properties",
+          "sha256": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+          "bytes": 201
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/android/settings.gradle.kts",
+          "sha256": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+          "bytes": 772
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/pubspec.lock",
+          "sha256": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b",
+          "bytes": 41649
+        }
+      ],
+      "log": {
+        "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/nkana-plugin-build.log",
+        "sha256": "753f5da02a341582f92ae05da55bcb0a54e64398ab0a5b82846250a8aa7a1d47",
+        "bytes": 22461
+      },
+      "outputs": [
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/app_links/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "e818708c17b83d050f78c40575dc2e497d21d8e573c52230c1efe0f657495bd4",
+          "bytes": 7510,
+          "task": ":app_links:bundleLibCompileToJarProfile",
+          "classCount": 3
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/app_links/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "e818708c17b83d050f78c40575dc2e497d21d8e573c52230c1efe0f657495bd4",
+          "bytes": 7510,
+          "task": ":app_links:bundleLibCompileToJarRelease",
+          "classCount": 3
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/app_links/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "50cec74ea3f4d73fbba517bd463048c10b6e21d5a315c2b2bcec6ccf24678f55",
+          "bytes": 7232,
+          "task": ":app_links:bundleLibRuntimeToJarProfile",
+          "classCount": 2
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/app_links/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "50cec74ea3f4d73fbba517bd463048c10b6e21d5a315c2b2bcec6ccf24678f55",
+          "bytes": 7232,
+          "task": ":app_links:bundleLibRuntimeToJarRelease",
+          "classCount": 2
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/connectivity_plus/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "7d85797c3661374943065c652a69557fa885f7818821bde09004d35d3d4b71a1",
+          "bytes": 17350,
+          "task": ":connectivity_plus:bundleLibCompileToJarProfile",
+          "classCount": 6
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/connectivity_plus/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "7d85797c3661374943065c652a69557fa885f7818821bde09004d35d3d4b71a1",
+          "bytes": 17350,
+          "task": ":connectivity_plus:bundleLibCompileToJarRelease",
+          "classCount": 6
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/connectivity_plus/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "862bb7499e7930aee68c5fe6df05289fc325e357c2ba27202b08a63ac5d76c9e",
+          "bytes": 17027,
+          "task": ":connectivity_plus:bundleLibRuntimeToJarProfile",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/connectivity_plus/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "862bb7499e7930aee68c5fe6df05289fc325e357c2ba27202b08a63ac5d76c9e",
+          "bytes": 17027,
+          "task": ":connectivity_plus:bundleLibRuntimeToJarRelease",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_analytics/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "4f4ad76673a7dbae848677921815389d8b08cdafe2cd999924c291b7b46f19eb",
+          "bytes": 73522,
+          "task": ":firebase_analytics:bundleLibCompileToJarProfile",
+          "classCount": 12
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_analytics/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "297f45905323817b64121667ac3d8f98f00ee17116d6aafac82b215fb1cff2e2",
+          "bytes": 73385,
+          "task": ":firebase_analytics:bundleLibCompileToJarRelease",
+          "classCount": 12
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_analytics/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "88b41aa33b396ad7445fbb09df299b94dd79855d08bd275102785a64705eda85",
+          "bytes": 73202,
+          "task": ":firebase_analytics:bundleLibRuntimeToJarProfile",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_analytics/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "a4c3926a3603ca4814015d31c0c4c67c70e3dd9efb0cde2fe26c791f49dacf52",
+          "bytes": 73065,
+          "task": ":firebase_analytics:bundleLibRuntimeToJarRelease",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_app_check/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "e2863492b4fea7bff7148c9c107f4f076a7fbd1ebbc0461e2faf2b59bc0e4968",
+          "bytes": 22831,
+          "task": ":firebase_app_check:bundleLibCompileToJarProfile",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_app_check/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "c7e4f344de8e58861fee96bc23fb518f8512840957a007be0ba648f542696cbe",
+          "bytes": 22694,
+          "task": ":firebase_app_check:bundleLibCompileToJarRelease",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_app_check/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d955910fee3d5ae5901c843ec206c7c7e21cfa511337bc0771eac83e0ee7d197",
+          "bytes": 22514,
+          "task": ":firebase_app_check:bundleLibRuntimeToJarProfile",
+          "classCount": 4
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_app_check/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "7dd9bdeba438407ed3d589709aa3070651dfb86facca6a89c638536901d0d9a9",
+          "bytes": 22377,
+          "task": ":firebase_app_check:bundleLibRuntimeToJarRelease",
+          "classCount": 4
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_core/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "afb6a9f060c55745b2cab6cc49cd98337b4282efb7e38d83cfce9340f6a1718c",
+          "bytes": 86554,
+          "task": ":firebase_core:bundleLibCompileToJarProfile",
+          "classCount": 25
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_core/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "a7bb92acb992f6edf0aef0bad4e8389caefc95a46b6c2542b99cdd4908f1517d",
+          "bytes": 86417,
+          "task": ":firebase_core:bundleLibCompileToJarRelease",
+          "classCount": 25
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_core/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "27954ed2b9970f1049b46d0903e279f982495261c6675c08c58a473d3555ec88",
+          "bytes": 86249,
+          "task": ":firebase_core:bundleLibRuntimeToJarProfile",
+          "classCount": 24
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_core/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "1453350048d0f24ecea362325077f56dcb3b43084f7423b58a872f5a279fae51",
+          "bytes": 86112,
+          "task": ":firebase_core:bundleLibRuntimeToJarRelease",
+          "classCount": 24
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_crashlytics/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "b36c28f8a7cfef322cfd3aed2254fcff3a3373e98afa94f4539891d65d022f10",
+          "bytes": 37932,
+          "task": ":firebase_crashlytics:bundleLibCompileToJarProfile",
+          "classCount": 13
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_crashlytics/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "fcb5cfc46f08598c03009817a6b0b5d307be4afb950ac8e58dc8bdd5e55a29b9",
+          "bytes": 37795,
+          "task": ":firebase_crashlytics:bundleLibCompileToJarRelease",
+          "classCount": 13
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_crashlytics/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "f435c0c6540685f4a6434662afd034239e1c2525f37c37edec4950d7f52bad19",
+          "bytes": 37016,
+          "task": ":firebase_crashlytics:bundleLibRuntimeToJarProfile",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_crashlytics/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "f122215afdc6d07c83be77e177255e185cbf0ddef2271f6b2f6c7d4467219c3d",
+          "bytes": 36879,
+          "task": ":firebase_crashlytics:bundleLibRuntimeToJarRelease",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_messaging/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "33e1d17448d4547b9f60077d6a93f8806591f700d0b5c87fae930cf345485b69",
+          "bytes": 114475,
+          "task": ":firebase_messaging:bundleLibCompileToJarProfile",
+          "classCount": 35
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_messaging/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "e99075b94f55c080f0bc4706739821c8ea84118bb5f0c6a7f6c95413559a7a49",
+          "bytes": 114338,
+          "task": ":firebase_messaging:bundleLibCompileToJarRelease",
+          "classCount": 35
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_messaging/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "e9fad29f80d0c785b2e60460a548bb4d4fcba7d31802986b7b905ce1d830e407",
+          "bytes": 114155,
+          "task": ":firebase_messaging:bundleLibRuntimeToJarProfile",
+          "classCount": 34
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_messaging/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "f03f24160c5955a4502c9ae3b1e5698ccd69a1aa5d65777bc80c1bcaad03e358",
+          "bytes": 114018,
+          "task": ":firebase_messaging:bundleLibRuntimeToJarRelease",
+          "classCount": 34
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_performance/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "d458dbc7df42de1509f2d0a4e2073d0f4c0a9e5d7a59187ea884df578ec6ed4b",
+          "bytes": 87106,
+          "task": ":firebase_performance:bundleLibCompileToJarProfile",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_performance/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "ec98a9711c0d352dc3931aca5368e498f4a0361ed2f2c956ddcc30feeb41025b",
+          "bytes": 86969,
+          "task": ":firebase_performance:bundleLibCompileToJarRelease",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_performance/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "c5fe01cc90ca44dd211cffd96f0edf81593049991d5c7bf9def51e3978ee50f5",
+          "bytes": 86780,
+          "task": ":firebase_performance:bundleLibRuntimeToJarProfile",
+          "classCount": 18
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/firebase_performance/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "c10d6f8528df593754fcfd0a85f500625f1587842b63102ed277cae30bd721ba",
+          "bytes": 86643,
+          "task": ":firebase_performance:bundleLibRuntimeToJarRelease",
+          "classCount": 18
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/flutter_secure_storage/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "9ee6b874952fb0c4249158e4f1c5336651551b13e046b71922a59ef0ef0efb17",
+          "bytes": 259863,
+          "task": ":flutter_secure_storage:bundleLibCompileToJarProfile",
+          "classCount": 52
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/flutter_secure_storage/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "932a47bafc120638d106a0d50a596c7066199eb01de3bf4202c36eee3b331da9",
+          "bytes": 259726,
+          "task": ":flutter_secure_storage:bundleLibCompileToJarRelease",
+          "classCount": 52
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/flutter_secure_storage/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d4ecfcf09bdc576681da21352729d95d61312173fcc3891bc7c8705b6976701e",
+          "bytes": 259552,
+          "task": ":flutter_secure_storage:bundleLibRuntimeToJarProfile",
+          "classCount": 51
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/flutter_secure_storage/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "ba471acf0d987334aa8348de15f38e569e1afe4a3a38bcc3e25585c7a80caa9f",
+          "bytes": 259415,
+          "task": ":flutter_secure_storage:bundleLibRuntimeToJarRelease",
+          "classCount": 51
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/path_provider_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "613ab08b8039da9227a81effef602a67b78bbaf02c2c04bdd02c872c851d290b",
+          "bytes": 23790,
+          "task": ":path_provider_android:bundleLibCompileToJarProfile",
+          "classCount": 8
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/path_provider_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "613ab08b8039da9227a81effef602a67b78bbaf02c2c04bdd02c872c851d290b",
+          "bytes": 23790,
+          "task": ":path_provider_android:bundleLibCompileToJarRelease",
+          "classCount": 8
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/path_provider_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d70343ab0a71839c303dcd4d7ad35008d4d3a739114ad9a1c625b8c8ad5ea0b8",
+          "bytes": 23488,
+          "task": ":path_provider_android:bundleLibRuntimeToJarProfile",
+          "classCount": 7
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/path_provider_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "d70343ab0a71839c303dcd4d7ad35008d4d3a739114ad9a1c625b8c8ad5ea0b8",
+          "bytes": 23488,
+          "task": ":path_provider_android:bundleLibRuntimeToJarRelease",
+          "classCount": 7
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/share_plus/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "ba0b3ad7b738aada8b5c0b55bd4940291663c7905f0210d9e4a521bccc0520f1",
+          "bytes": 38090,
+          "task": ":share_plus:bundleLibCompileToJarProfile",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/share_plus/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "9cbd435839f047173498450c1529a6f371f0ad8805237164f5bd6a9aef8a95ce",
+          "bytes": 38090,
+          "task": ":share_plus:bundleLibCompileToJarRelease",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/share_plus/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "c0c6bea6ee9337ec87153801b2d7a00a13bf647ae6592f2889e0e017beee55ef",
+          "bytes": 37250,
+          "task": ":share_plus:bundleLibRuntimeToJarProfile",
+          "classCount": 9
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/share_plus/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "5d4fb5d0c6a5d9cfb26e618db0e0c55286e2828232f6562e40ee212b7ea3abd4",
+          "bytes": 37250,
+          "task": ":share_plus:bundleLibRuntimeToJarRelease",
+          "classCount": 9
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/shared_preferences_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "87a49ce5b047c0f33c9052d8f8876a4b2b78ff9413089ea4c221b89baa0014c1",
+          "bytes": 301903,
+          "task": ":shared_preferences_android:bundleLibCompileToJarProfile",
+          "classCount": 61
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/shared_preferences_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "eaf2c2ab91fdef7f056f20b5938798dbe226b813944471f6cfb535b3a71bea0d",
+          "bytes": 301903,
+          "task": ":shared_preferences_android:bundleLibCompileToJarRelease",
+          "classCount": 61
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/shared_preferences_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "27ce1da4c7ac5ac1b52c7af43df38fa32453cce5853507114ad3e75e204715fc",
+          "bytes": 301586,
+          "task": ":shared_preferences_android:bundleLibRuntimeToJarProfile",
+          "classCount": 60
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/shared_preferences_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "8cdc75278cf87a5d5e697df8b8eb9d1cbf6089d81149101fb8622d0b9ea86f1e",
+          "bytes": 301586,
+          "task": ":shared_preferences_android:bundleLibRuntimeToJarRelease",
+          "classCount": 60
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/sqflite_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "24f3a676baeec88b947579055202c3214237b0bc5f78e526cf055cb919ffa2e6",
+          "bytes": 93549,
+          "task": ":sqflite_android:bundleLibCompileToJarProfile",
+          "classCount": 30
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/sqflite_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "24f3a676baeec88b947579055202c3214237b0bc5f78e526cf055cb919ffa2e6",
+          "bytes": 93549,
+          "task": ":sqflite_android:bundleLibCompileToJarRelease",
+          "classCount": 30
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/sqflite_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "4ffcb44a216a0a167493a0e38a670c4e544380e8bb55b61d2ae18b316f37b753",
+          "bytes": 93280,
+          "task": ":sqflite_android:bundleLibRuntimeToJarProfile",
+          "classCount": 29
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/sqflite_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "4ffcb44a216a0a167493a0e38a670c4e544380e8bb55b61d2ae18b316f37b753",
+          "bytes": 93280,
+          "task": ":sqflite_android:bundleLibRuntimeToJarRelease",
+          "classCount": 29
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/url_launcher_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "873cee55a5c28e81ecf9d78937297d7e344e3d1a20b20e62bb9b48aee4cb77ef",
+          "bytes": 51538,
+          "task": ":url_launcher_android:bundleLibCompileToJarProfile",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/url_launcher_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "a29b8cab0435a4bd1809af0516fe5f3cf5570f5f957c325dd94ef7ac9856cc1d",
+          "bytes": 51097,
+          "task": ":url_launcher_android:bundleLibCompileToJarRelease",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/url_launcher_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d165ca85e7c4473e8600279db29fb622636723dd286688cd5c2b4dbb89477431",
+          "bytes": 51239,
+          "task": ":url_launcher_android:bundleLibRuntimeToJarProfile",
+          "classCount": 18
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/nkana/build/url_launcher_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "5dc6d30ee89498afd6827a8562ca89613e84240bff421a67490526845c2f8d09",
+          "bytes": 50798,
+          "task": ":url_launcher_android:bundleLibRuntimeToJarRelease",
+          "classCount": 18
+        }
+      ],
+      "expectedOutputs": 56,
+      "passed": true,
+      "appTasksRequested": false
+    },
+    {
+      "club": "rayon_sports",
+      "command": [
+        "./gradlew",
+        "-I",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/tools/scripts/collect_android_dependency_inventory.gradle",
+        "-I",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/build-inventory-plugin-artifacts.gradle",
+        "buildAfriInventoryProjectArtifacts",
+        "--offline",
+        "--console=plain",
+        "--max-workers=2",
+        "--build-cache",
+        "-PafriPluginBuildPlan=/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/plugin-build-plan.json",
+        "-PafriInventoryFreezeInput=/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/android/rayon_sports.json",
+        "-PafriInventoryMavenMirror=/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/maven-mirror"
+      ],
+      "startedAt": "2026-10-01T15:25:33.918908+00:00",
+      "finishedAt": "2026-10-01T15:27:20.875306+00:00",
+      "exitCode": 0,
+      "sourceBefore": [
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/app_links-7.0.0/android/build.gradle",
+          "sha256": "cf74b6d9a729dbad13d1acbd87332cad6262b1b5a587060e9dfbfadda69978e0",
+          "bytes": 775
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.5/android/build.gradle",
+          "sha256": "3c343089242ccda6037df2d75fd813f122fa905234166f552d5e52b748972c78",
+          "bytes": 757
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics-12.2.0/android/build.gradle",
+          "sha256": "a144843e8065b6ce4042954f72114cb163b9685e7f33b3902ed432d67c7a3c7e",
+          "bytes": 2760
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_app_check-0.4.2/android/build.gradle",
+          "sha256": "9803525fad17bcd34204b5c8e3c003ab8cd9ff0103550790439a831cdd94734d",
+          "bytes": 2114
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/android/build.gradle",
+          "sha256": "760219911b257857a814dc9bc0237c262f4bd3f0ffa1e27db7ddebd8bc328c27",
+          "bytes": 1454
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.1.0/android/build.gradle",
+          "sha256": "31289bce8a72ad33c77e9c9e14b87d45d420c042c524c447eb3e296cab110519",
+          "bytes": 1933
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_messaging-16.1.3/android/build.gradle",
+          "sha256": "c2598140aac8ffd58d42ad7d149c8d5b331c1c9b7e3eb3277e0386f35d2425c0",
+          "bytes": 2120
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/build.gradle",
+          "sha256": "960dbc23a97748cc9b6f7c0caa2cdf8335e56fb74bec15ff09869010e474ef21",
+          "bytes": 2652
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.3.1/android/build.gradle",
+          "sha256": "5c4a6b3dee00a19ae77083ded682324b1fd7a62dfb25e1146051d926c0c5b995",
+          "bytes": 2004
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/path_provider_android-2.2.23/android/build.gradle.kts",
+          "sha256": "6e965b8d9f2b76bdf02bf390d1a2d4ec70c2d908dfb501dc0d5880311ab41f5f",
+          "bytes": 1462
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/share_plus-11.1.0/android/build.gradle",
+          "sha256": "b3571246114239c8e63a8332ff05b1de594ab320736bfb6434462a34411859d9",
+          "bytes": 1160
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.23/android/build.gradle.kts",
+          "sha256": "da70c2c309867579219fcf6e9d5ed206a66e261792906271903900dc49693e78",
+          "bytes": 2469
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/sqflite_android-2.4.2+3/android/build.gradle",
+          "sha256": "5238b6d2e464795594a7bf8443b11a0fee55f31aa56e831c91b161c92cebf4d4",
+          "bytes": 1361
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.29/android/build.gradle.kts",
+          "sha256": "08a9b42356a3eab27d6cc3623e08b9ead5415953913ac72f09758fd55abc0bc5",
+          "bytes": 1819
+        },
+        {
+          "path": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/packages/integration_test/android/build.gradle.kts",
+          "sha256": "0839288b76144c10774df10c04161f58c8f4c75a9a3eac12dab4fc3c4c9e8f9b",
+          "bytes": 1604
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/.flutter-plugins-dependencies",
+          "sha256": "7dfab6be96775e9237a5426b847d3cd8554889d1d1dc46f814aefcd33be4e259",
+          "bytes": 15709
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/app/build.gradle.kts",
+          "sha256": "ccb935c02f19c851fc27928db26c88d79faeae03f4cfad9848a1164afd39de20",
+          "bytes": 5714
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/build.gradle.kts",
+          "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+          "bytes": 537
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/gradle.properties",
+          "sha256": "1e972aab14714887ccb35633fee6f867616f334482e3e2a1d61112575616d1e6",
+          "bytes": 473
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/gradle/wrapper/gradle-wrapper.properties",
+          "sha256": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+          "bytes": 201
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/settings.gradle.kts",
+          "sha256": "51d50f8f3713eaa43e1353369de99668dd8c4522a5ab9b2091fd411b3019e7fd",
+          "bytes": 841
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/pubspec.lock",
+          "sha256": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b",
+          "bytes": 41649
+        }
+      ],
+      "sourceAfter": [
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/app_links-7.0.0/android/build.gradle",
+          "sha256": "cf74b6d9a729dbad13d1acbd87332cad6262b1b5a587060e9dfbfadda69978e0",
+          "bytes": 775
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.5/android/build.gradle",
+          "sha256": "3c343089242ccda6037df2d75fd813f122fa905234166f552d5e52b748972c78",
+          "bytes": 757
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics-12.2.0/android/build.gradle",
+          "sha256": "a144843e8065b6ce4042954f72114cb163b9685e7f33b3902ed432d67c7a3c7e",
+          "bytes": 2760
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_app_check-0.4.2/android/build.gradle",
+          "sha256": "9803525fad17bcd34204b5c8e3c003ab8cd9ff0103550790439a831cdd94734d",
+          "bytes": 2114
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/android/build.gradle",
+          "sha256": "760219911b257857a814dc9bc0237c262f4bd3f0ffa1e27db7ddebd8bc328c27",
+          "bytes": 1454
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.1.0/android/build.gradle",
+          "sha256": "31289bce8a72ad33c77e9c9e14b87d45d420c042c524c447eb3e296cab110519",
+          "bytes": 1933
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_messaging-16.1.3/android/build.gradle",
+          "sha256": "c2598140aac8ffd58d42ad7d149c8d5b331c1c9b7e3eb3277e0386f35d2425c0",
+          "bytes": 2120
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/build.gradle",
+          "sha256": "960dbc23a97748cc9b6f7c0caa2cdf8335e56fb74bec15ff09869010e474ef21",
+          "bytes": 2652
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.3.1/android/build.gradle",
+          "sha256": "5c4a6b3dee00a19ae77083ded682324b1fd7a62dfb25e1146051d926c0c5b995",
+          "bytes": 2004
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/path_provider_android-2.2.23/android/build.gradle.kts",
+          "sha256": "6e965b8d9f2b76bdf02bf390d1a2d4ec70c2d908dfb501dc0d5880311ab41f5f",
+          "bytes": 1462
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/share_plus-11.1.0/android/build.gradle",
+          "sha256": "b3571246114239c8e63a8332ff05b1de594ab320736bfb6434462a34411859d9",
+          "bytes": 1160
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.23/android/build.gradle.kts",
+          "sha256": "da70c2c309867579219fcf6e9d5ed206a66e261792906271903900dc49693e78",
+          "bytes": 2469
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/sqflite_android-2.4.2+3/android/build.gradle",
+          "sha256": "5238b6d2e464795594a7bf8443b11a0fee55f31aa56e831c91b161c92cebf4d4",
+          "bytes": 1361
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.29/android/build.gradle.kts",
+          "sha256": "08a9b42356a3eab27d6cc3623e08b9ead5415953913ac72f09758fd55abc0bc5",
+          "bytes": 1819
+        },
+        {
+          "path": "/Volumes/PRO-G40/Development/Flutter/flutter_3_44_9_africlub/packages/integration_test/android/build.gradle.kts",
+          "sha256": "0839288b76144c10774df10c04161f58c8f4c75a9a3eac12dab4fc3c4c9e8f9b",
+          "bytes": 1604
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/.flutter-plugins-dependencies",
+          "sha256": "7dfab6be96775e9237a5426b847d3cd8554889d1d1dc46f814aefcd33be4e259",
+          "bytes": 15709
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/app/build.gradle.kts",
+          "sha256": "ccb935c02f19c851fc27928db26c88d79faeae03f4cfad9848a1164afd39de20",
+          "bytes": 5714
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/build.gradle.kts",
+          "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+          "bytes": 537
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/gradle.properties",
+          "sha256": "1e972aab14714887ccb35633fee6f867616f334482e3e2a1d61112575616d1e6",
+          "bytes": 473
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/gradle/wrapper/gradle-wrapper.properties",
+          "sha256": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+          "bytes": 201
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/android/settings.gradle.kts",
+          "sha256": "51d50f8f3713eaa43e1353369de99668dd8c4522a5ab9b2091fd411b3019e7fd",
+          "bytes": 841
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/pubspec.lock",
+          "sha256": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b",
+          "bytes": 41649
+        }
+      ],
+      "log": {
+        "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/rayon_sports-plugin-build.log",
+        "sha256": "a69ad756eecbc222518a9293b6e6f4aeddf00368b45fb6d8df2ef7d3c41d7144",
+        "bytes": 24376
+      },
+      "outputs": [
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/app_links/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "e818708c17b83d050f78c40575dc2e497d21d8e573c52230c1efe0f657495bd4",
+          "bytes": 7510,
+          "task": ":app_links:bundleLibCompileToJarProfile",
+          "classCount": 3
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/app_links/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "e818708c17b83d050f78c40575dc2e497d21d8e573c52230c1efe0f657495bd4",
+          "bytes": 7510,
+          "task": ":app_links:bundleLibCompileToJarRelease",
+          "classCount": 3
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/app_links/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "50cec74ea3f4d73fbba517bd463048c10b6e21d5a315c2b2bcec6ccf24678f55",
+          "bytes": 7232,
+          "task": ":app_links:bundleLibRuntimeToJarProfile",
+          "classCount": 2
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/app_links/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "50cec74ea3f4d73fbba517bd463048c10b6e21d5a315c2b2bcec6ccf24678f55",
+          "bytes": 7232,
+          "task": ":app_links:bundleLibRuntimeToJarRelease",
+          "classCount": 2
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/connectivity_plus/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "7d85797c3661374943065c652a69557fa885f7818821bde09004d35d3d4b71a1",
+          "bytes": 17350,
+          "task": ":connectivity_plus:bundleLibCompileToJarProfile",
+          "classCount": 6
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/connectivity_plus/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "7d85797c3661374943065c652a69557fa885f7818821bde09004d35d3d4b71a1",
+          "bytes": 17350,
+          "task": ":connectivity_plus:bundleLibCompileToJarRelease",
+          "classCount": 6
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/connectivity_plus/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "862bb7499e7930aee68c5fe6df05289fc325e357c2ba27202b08a63ac5d76c9e",
+          "bytes": 17027,
+          "task": ":connectivity_plus:bundleLibRuntimeToJarProfile",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/connectivity_plus/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "862bb7499e7930aee68c5fe6df05289fc325e357c2ba27202b08a63ac5d76c9e",
+          "bytes": 17027,
+          "task": ":connectivity_plus:bundleLibRuntimeToJarRelease",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_analytics/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "4f4ad76673a7dbae848677921815389d8b08cdafe2cd999924c291b7b46f19eb",
+          "bytes": 73522,
+          "task": ":firebase_analytics:bundleLibCompileToJarProfile",
+          "classCount": 12
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_analytics/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "297f45905323817b64121667ac3d8f98f00ee17116d6aafac82b215fb1cff2e2",
+          "bytes": 73385,
+          "task": ":firebase_analytics:bundleLibCompileToJarRelease",
+          "classCount": 12
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_analytics/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "88b41aa33b396ad7445fbb09df299b94dd79855d08bd275102785a64705eda85",
+          "bytes": 73202,
+          "task": ":firebase_analytics:bundleLibRuntimeToJarProfile",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_analytics/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "a4c3926a3603ca4814015d31c0c4c67c70e3dd9efb0cde2fe26c791f49dacf52",
+          "bytes": 73065,
+          "task": ":firebase_analytics:bundleLibRuntimeToJarRelease",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_app_check/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "e2863492b4fea7bff7148c9c107f4f076a7fbd1ebbc0461e2faf2b59bc0e4968",
+          "bytes": 22831,
+          "task": ":firebase_app_check:bundleLibCompileToJarProfile",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_app_check/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "c7e4f344de8e58861fee96bc23fb518f8512840957a007be0ba648f542696cbe",
+          "bytes": 22694,
+          "task": ":firebase_app_check:bundleLibCompileToJarRelease",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_app_check/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d955910fee3d5ae5901c843ec206c7c7e21cfa511337bc0771eac83e0ee7d197",
+          "bytes": 22514,
+          "task": ":firebase_app_check:bundleLibRuntimeToJarProfile",
+          "classCount": 4
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_app_check/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "7dd9bdeba438407ed3d589709aa3070651dfb86facca6a89c638536901d0d9a9",
+          "bytes": 22377,
+          "task": ":firebase_app_check:bundleLibRuntimeToJarRelease",
+          "classCount": 4
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_core/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "afb6a9f060c55745b2cab6cc49cd98337b4282efb7e38d83cfce9340f6a1718c",
+          "bytes": 86554,
+          "task": ":firebase_core:bundleLibCompileToJarProfile",
+          "classCount": 25
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_core/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "a7bb92acb992f6edf0aef0bad4e8389caefc95a46b6c2542b99cdd4908f1517d",
+          "bytes": 86417,
+          "task": ":firebase_core:bundleLibCompileToJarRelease",
+          "classCount": 25
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_core/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "27954ed2b9970f1049b46d0903e279f982495261c6675c08c58a473d3555ec88",
+          "bytes": 86249,
+          "task": ":firebase_core:bundleLibRuntimeToJarProfile",
+          "classCount": 24
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_core/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "1453350048d0f24ecea362325077f56dcb3b43084f7423b58a872f5a279fae51",
+          "bytes": 86112,
+          "task": ":firebase_core:bundleLibRuntimeToJarRelease",
+          "classCount": 24
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_crashlytics/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "b36c28f8a7cfef322cfd3aed2254fcff3a3373e98afa94f4539891d65d022f10",
+          "bytes": 37932,
+          "task": ":firebase_crashlytics:bundleLibCompileToJarProfile",
+          "classCount": 13
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_crashlytics/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "fcb5cfc46f08598c03009817a6b0b5d307be4afb950ac8e58dc8bdd5e55a29b9",
+          "bytes": 37795,
+          "task": ":firebase_crashlytics:bundleLibCompileToJarRelease",
+          "classCount": 13
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_crashlytics/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "f435c0c6540685f4a6434662afd034239e1c2525f37c37edec4950d7f52bad19",
+          "bytes": 37016,
+          "task": ":firebase_crashlytics:bundleLibRuntimeToJarProfile",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_crashlytics/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "f122215afdc6d07c83be77e177255e185cbf0ddef2271f6b2f6c7d4467219c3d",
+          "bytes": 36879,
+          "task": ":firebase_crashlytics:bundleLibRuntimeToJarRelease",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_messaging/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "33e1d17448d4547b9f60077d6a93f8806591f700d0b5c87fae930cf345485b69",
+          "bytes": 114475,
+          "task": ":firebase_messaging:bundleLibCompileToJarProfile",
+          "classCount": 35
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_messaging/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "e99075b94f55c080f0bc4706739821c8ea84118bb5f0c6a7f6c95413559a7a49",
+          "bytes": 114338,
+          "task": ":firebase_messaging:bundleLibCompileToJarRelease",
+          "classCount": 35
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_messaging/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "e9fad29f80d0c785b2e60460a548bb4d4fcba7d31802986b7b905ce1d830e407",
+          "bytes": 114155,
+          "task": ":firebase_messaging:bundleLibRuntimeToJarProfile",
+          "classCount": 34
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_messaging/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "f03f24160c5955a4502c9ae3b1e5698ccd69a1aa5d65777bc80c1bcaad03e358",
+          "bytes": 114018,
+          "task": ":firebase_messaging:bundleLibRuntimeToJarRelease",
+          "classCount": 34
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_performance/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "d458dbc7df42de1509f2d0a4e2073d0f4c0a9e5d7a59187ea884df578ec6ed4b",
+          "bytes": 87106,
+          "task": ":firebase_performance:bundleLibCompileToJarProfile",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_performance/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "ec98a9711c0d352dc3931aca5368e498f4a0361ed2f2c956ddcc30feeb41025b",
+          "bytes": 86969,
+          "task": ":firebase_performance:bundleLibCompileToJarRelease",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_performance/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "c5fe01cc90ca44dd211cffd96f0edf81593049991d5c7bf9def51e3978ee50f5",
+          "bytes": 86780,
+          "task": ":firebase_performance:bundleLibRuntimeToJarProfile",
+          "classCount": 18
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/firebase_performance/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "c10d6f8528df593754fcfd0a85f500625f1587842b63102ed277cae30bd721ba",
+          "bytes": 86643,
+          "task": ":firebase_performance:bundleLibRuntimeToJarRelease",
+          "classCount": 18
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/flutter_secure_storage/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "9ee6b874952fb0c4249158e4f1c5336651551b13e046b71922a59ef0ef0efb17",
+          "bytes": 259863,
+          "task": ":flutter_secure_storage:bundleLibCompileToJarProfile",
+          "classCount": 52
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/flutter_secure_storage/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "932a47bafc120638d106a0d50a596c7066199eb01de3bf4202c36eee3b331da9",
+          "bytes": 259726,
+          "task": ":flutter_secure_storage:bundleLibCompileToJarRelease",
+          "classCount": 52
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/flutter_secure_storage/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d4ecfcf09bdc576681da21352729d95d61312173fcc3891bc7c8705b6976701e",
+          "bytes": 259552,
+          "task": ":flutter_secure_storage:bundleLibRuntimeToJarProfile",
+          "classCount": 51
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/flutter_secure_storage/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "ba471acf0d987334aa8348de15f38e569e1afe4a3a38bcc3e25585c7a80caa9f",
+          "bytes": 259415,
+          "task": ":flutter_secure_storage:bundleLibRuntimeToJarRelease",
+          "classCount": 51
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/integration_test/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "a59cce4bcf06d3105816ba76ca968399941c122b24eb4b4fada72ff88b2a165e",
+          "bytes": 21791,
+          "task": ":integration_test:bundleLibCompileToJarProfile",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/integration_test/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "9a434f65b05fd52306e3e342bcc033081bf80c0eb05c0f170a00810be8262e8d",
+          "bytes": 21498,
+          "task": ":integration_test:bundleLibRuntimeToJarProfile",
+          "classCount": 4
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/path_provider_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "613ab08b8039da9227a81effef602a67b78bbaf02c2c04bdd02c872c851d290b",
+          "bytes": 23790,
+          "task": ":path_provider_android:bundleLibCompileToJarProfile",
+          "classCount": 8
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/path_provider_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "613ab08b8039da9227a81effef602a67b78bbaf02c2c04bdd02c872c851d290b",
+          "bytes": 23790,
+          "task": ":path_provider_android:bundleLibCompileToJarRelease",
+          "classCount": 8
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/path_provider_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d70343ab0a71839c303dcd4d7ad35008d4d3a739114ad9a1c625b8c8ad5ea0b8",
+          "bytes": 23488,
+          "task": ":path_provider_android:bundleLibRuntimeToJarProfile",
+          "classCount": 7
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/path_provider_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "d70343ab0a71839c303dcd4d7ad35008d4d3a739114ad9a1c625b8c8ad5ea0b8",
+          "bytes": 23488,
+          "task": ":path_provider_android:bundleLibRuntimeToJarRelease",
+          "classCount": 7
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/share_plus/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "ba0b3ad7b738aada8b5c0b55bd4940291663c7905f0210d9e4a521bccc0520f1",
+          "bytes": 38090,
+          "task": ":share_plus:bundleLibCompileToJarProfile",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/share_plus/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "9cbd435839f047173498450c1529a6f371f0ad8805237164f5bd6a9aef8a95ce",
+          "bytes": 38090,
+          "task": ":share_plus:bundleLibCompileToJarRelease",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/share_plus/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "c0c6bea6ee9337ec87153801b2d7a00a13bf647ae6592f2889e0e017beee55ef",
+          "bytes": 37250,
+          "task": ":share_plus:bundleLibRuntimeToJarProfile",
+          "classCount": 9
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/share_plus/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "5d4fb5d0c6a5d9cfb26e618db0e0c55286e2828232f6562e40ee212b7ea3abd4",
+          "bytes": 37250,
+          "task": ":share_plus:bundleLibRuntimeToJarRelease",
+          "classCount": 9
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/shared_preferences_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "87a49ce5b047c0f33c9052d8f8876a4b2b78ff9413089ea4c221b89baa0014c1",
+          "bytes": 301903,
+          "task": ":shared_preferences_android:bundleLibCompileToJarProfile",
+          "classCount": 61
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/shared_preferences_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "eaf2c2ab91fdef7f056f20b5938798dbe226b813944471f6cfb535b3a71bea0d",
+          "bytes": 301903,
+          "task": ":shared_preferences_android:bundleLibCompileToJarRelease",
+          "classCount": 61
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/shared_preferences_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "27ce1da4c7ac5ac1b52c7af43df38fa32453cce5853507114ad3e75e204715fc",
+          "bytes": 301586,
+          "task": ":shared_preferences_android:bundleLibRuntimeToJarProfile",
+          "classCount": 60
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/shared_preferences_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "8cdc75278cf87a5d5e697df8b8eb9d1cbf6089d81149101fb8622d0b9ea86f1e",
+          "bytes": 301586,
+          "task": ":shared_preferences_android:bundleLibRuntimeToJarRelease",
+          "classCount": 60
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/sqflite_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "24f3a676baeec88b947579055202c3214237b0bc5f78e526cf055cb919ffa2e6",
+          "bytes": 93549,
+          "task": ":sqflite_android:bundleLibCompileToJarProfile",
+          "classCount": 30
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/sqflite_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "24f3a676baeec88b947579055202c3214237b0bc5f78e526cf055cb919ffa2e6",
+          "bytes": 93549,
+          "task": ":sqflite_android:bundleLibCompileToJarRelease",
+          "classCount": 30
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/sqflite_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "4ffcb44a216a0a167493a0e38a670c4e544380e8bb55b61d2ae18b316f37b753",
+          "bytes": 93280,
+          "task": ":sqflite_android:bundleLibRuntimeToJarProfile",
+          "classCount": 29
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/sqflite_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "4ffcb44a216a0a167493a0e38a670c4e544380e8bb55b61d2ae18b316f37b753",
+          "bytes": 93280,
+          "task": ":sqflite_android:bundleLibRuntimeToJarRelease",
+          "classCount": 29
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/url_launcher_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "873cee55a5c28e81ecf9d78937297d7e344e3d1a20b20e62bb9b48aee4cb77ef",
+          "bytes": 51538,
+          "task": ":url_launcher_android:bundleLibCompileToJarProfile",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/url_launcher_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "a29b8cab0435a4bd1809af0516fe5f3cf5570f5f957c325dd94ef7ac9856cc1d",
+          "bytes": 51097,
+          "task": ":url_launcher_android:bundleLibCompileToJarRelease",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/url_launcher_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d165ca85e7c4473e8600279db29fb622636723dd286688cd5c2b4dbb89477431",
+          "bytes": 51239,
+          "task": ":url_launcher_android:bundleLibRuntimeToJarProfile",
+          "classCount": 18
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/rayon_sports/build/url_launcher_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "5dc6d30ee89498afd6827a8562ca89613e84240bff421a67490526845c2f8d09",
+          "bytes": 50798,
+          "task": ":url_launcher_android:bundleLibRuntimeToJarRelease",
+          "classCount": 18
+        }
+      ],
+      "expectedOutputs": 58,
+      "passed": true,
+      "appTasksRequested": false
+    },
+    {
+      "club": "vitalo",
+      "command": [
+        "./gradlew",
+        "-I",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/tools/scripts/collect_android_dependency_inventory.gradle",
+        "-I",
+        "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/build-inventory-plugin-artifacts.gradle",
+        "buildAfriInventoryProjectArtifacts",
+        "--offline",
+        "--console=plain",
+        "--max-workers=2",
+        "--build-cache",
+        "-PafriPluginBuildPlan=/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/plugin-build-plan.json",
+        "-PafriInventoryFreezeInput=/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-core-auth-http-rebind-20260930T213716Z/frozen-1800-setup-final-20260930T231748Z/android/vitalo.json",
+        "-PafriInventoryMavenMirror=/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930/dependency-inventory/maven-mirror"
+      ],
+      "startedAt": "2026-10-01T15:27:20.915970+00:00",
+      "finishedAt": "2026-10-01T15:27:29.915303+00:00",
+      "exitCode": 0,
+      "sourceBefore": [
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/app_links-7.0.0/android/build.gradle",
+          "sha256": "cf74b6d9a729dbad13d1acbd87332cad6262b1b5a587060e9dfbfadda69978e0",
+          "bytes": 775
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.5/android/build.gradle",
+          "sha256": "3c343089242ccda6037df2d75fd813f122fa905234166f552d5e52b748972c78",
+          "bytes": 757
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics-12.2.0/android/build.gradle",
+          "sha256": "a144843e8065b6ce4042954f72114cb163b9685e7f33b3902ed432d67c7a3c7e",
+          "bytes": 2760
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_app_check-0.4.2/android/build.gradle",
+          "sha256": "9803525fad17bcd34204b5c8e3c003ab8cd9ff0103550790439a831cdd94734d",
+          "bytes": 2114
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/android/build.gradle",
+          "sha256": "760219911b257857a814dc9bc0237c262f4bd3f0ffa1e27db7ddebd8bc328c27",
+          "bytes": 1454
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.1.0/android/build.gradle",
+          "sha256": "31289bce8a72ad33c77e9c9e14b87d45d420c042c524c447eb3e296cab110519",
+          "bytes": 1933
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_messaging-16.1.3/android/build.gradle",
+          "sha256": "c2598140aac8ffd58d42ad7d149c8d5b331c1c9b7e3eb3277e0386f35d2425c0",
+          "bytes": 2120
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/build.gradle",
+          "sha256": "960dbc23a97748cc9b6f7c0caa2cdf8335e56fb74bec15ff09869010e474ef21",
+          "bytes": 2652
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.3.1/android/build.gradle",
+          "sha256": "5c4a6b3dee00a19ae77083ded682324b1fd7a62dfb25e1146051d926c0c5b995",
+          "bytes": 2004
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/path_provider_android-2.2.23/android/build.gradle.kts",
+          "sha256": "6e965b8d9f2b76bdf02bf390d1a2d4ec70c2d908dfb501dc0d5880311ab41f5f",
+          "bytes": 1462
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/share_plus-11.1.0/android/build.gradle",
+          "sha256": "b3571246114239c8e63a8332ff05b1de594ab320736bfb6434462a34411859d9",
+          "bytes": 1160
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.23/android/build.gradle.kts",
+          "sha256": "da70c2c309867579219fcf6e9d5ed206a66e261792906271903900dc49693e78",
+          "bytes": 2469
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/sqflite_android-2.4.2+3/android/build.gradle",
+          "sha256": "5238b6d2e464795594a7bf8443b11a0fee55f31aa56e831c91b161c92cebf4d4",
+          "bytes": 1361
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.29/android/build.gradle.kts",
+          "sha256": "08a9b42356a3eab27d6cc3623e08b9ead5415953913ac72f09758fd55abc0bc5",
+          "bytes": 1819
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/.flutter-plugins-dependencies",
+          "sha256": "ef31fccd41fe2a99c6b15107f369b26d5e0993dff99f5bdedd581cd1b245a932",
+          "bytes": 15293
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/android/app/build.gradle.kts",
+          "sha256": "9a90f04c41410366921ee6d5be651500a0d8b7e6def2f8b020a5d1039d4cf484",
+          "bytes": 5005
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/android/build.gradle.kts",
+          "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+          "bytes": 537
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/android/gradle.properties",
+          "sha256": "41969d939b4558ba8cb884a574f2bdcde05fc36f62183c5d46eebe15a2bf1156",
+          "bytes": 260
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/android/gradle/wrapper/gradle-wrapper.properties",
+          "sha256": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+          "bytes": 201
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/android/settings.gradle.kts",
+          "sha256": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+          "bytes": 772
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/pubspec.lock",
+          "sha256": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b",
+          "bytes": 41649
+        }
+      ],
+      "sourceAfter": [
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/app_links-7.0.0/android/build.gradle",
+          "sha256": "cf74b6d9a729dbad13d1acbd87332cad6262b1b5a587060e9dfbfadda69978e0",
+          "bytes": 775
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/connectivity_plus-6.1.5/android/build.gradle",
+          "sha256": "3c343089242ccda6037df2d75fd813f122fa905234166f552d5e52b748972c78",
+          "bytes": 757
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_analytics-12.2.0/android/build.gradle",
+          "sha256": "a144843e8065b6ce4042954f72114cb163b9685e7f33b3902ed432d67c7a3c7e",
+          "bytes": 2760
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_app_check-0.4.2/android/build.gradle",
+          "sha256": "9803525fad17bcd34204b5c8e3c003ab8cd9ff0103550790439a831cdd94734d",
+          "bytes": 2114
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_core-4.6.0/android/build.gradle",
+          "sha256": "760219911b257857a814dc9bc0237c262f4bd3f0ffa1e27db7ddebd8bc328c27",
+          "bytes": 1454
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_crashlytics-5.1.0/android/build.gradle",
+          "sha256": "31289bce8a72ad33c77e9c9e14b87d45d420c042c524c447eb3e296cab110519",
+          "bytes": 1933
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_messaging-16.1.3/android/build.gradle",
+          "sha256": "c2598140aac8ffd58d42ad7d149c8d5b331c1c9b7e3eb3277e0386f35d2425c0",
+          "bytes": 2120
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/firebase_performance-0.11.2/android/build.gradle",
+          "sha256": "960dbc23a97748cc9b6f7c0caa2cdf8335e56fb74bec15ff09869010e474ef21",
+          "bytes": 2652
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.3.1/android/build.gradle",
+          "sha256": "5c4a6b3dee00a19ae77083ded682324b1fd7a62dfb25e1146051d926c0c5b995",
+          "bytes": 2004
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/path_provider_android-2.2.23/android/build.gradle.kts",
+          "sha256": "6e965b8d9f2b76bdf02bf390d1a2d4ec70c2d908dfb501dc0d5880311ab41f5f",
+          "bytes": 1462
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/share_plus-11.1.0/android/build.gradle",
+          "sha256": "b3571246114239c8e63a8332ff05b1de594ab320736bfb6434462a34411859d9",
+          "bytes": 1160
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.23/android/build.gradle.kts",
+          "sha256": "da70c2c309867579219fcf6e9d5ed206a66e261792906271903900dc49693e78",
+          "bytes": 2469
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/sqflite_android-2.4.2+3/android/build.gradle",
+          "sha256": "5238b6d2e464795594a7bf8443b11a0fee55f31aa56e831c91b161c92cebf4d4",
+          "bytes": 1361
+        },
+        {
+          "path": "/Users/jeanbosco/.pub-cache/hosted/pub.dev/url_launcher_android-6.3.29/android/build.gradle.kts",
+          "sha256": "08a9b42356a3eab27d6cc3623e08b9ead5415953913ac72f09758fd55abc0bc5",
+          "bytes": 1819
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/.flutter-plugins-dependencies",
+          "sha256": "ef31fccd41fe2a99c6b15107f369b26d5e0993dff99f5bdedd581cd1b245a932",
+          "bytes": 15293
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/android/app/build.gradle.kts",
+          "sha256": "9a90f04c41410366921ee6d5be651500a0d8b7e6def2f8b020a5d1039d4cf484",
+          "bytes": 5005
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/android/build.gradle.kts",
+          "sha256": "6a26dba2cb8dfba1e74f540b0d17a89d96c1301d3c3bfda14348bed257fddcba",
+          "bytes": 537
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/android/gradle.properties",
+          "sha256": "41969d939b4558ba8cb884a574f2bdcde05fc36f62183c5d46eebe15a2bf1156",
+          "bytes": 260
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/android/gradle/wrapper/gradle-wrapper.properties",
+          "sha256": "297c9e63b6fa6e7e8b221900fa1787c1a0e38869d8957da66389fd0f6b00f78e",
+          "bytes": 201
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/android/settings.gradle.kts",
+          "sha256": "a9b5756048f668d4ebf355116678fd334cd5f2169b7d4518ad19b8df14d3af36",
+          "bytes": 772
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/pubspec.lock",
+          "sha256": "ce6bd5ee1dc1f9dc5d243abb6c7ccd1471c9da57458350857b9bfbd92478e74b",
+          "bytes": 41649
+        }
+      ],
+      "log": {
+        "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/output/qa/full-stack-20260914/production-goal-20260930-phase4/dependency-gaps-closure-20261001/vitalo-plugin-build.log",
+        "sha256": "4ce7b08815867dc24c1543f9ed54640b3010daf6a48591b1f19c64e3c100c97d",
+        "bytes": 22461
+      },
+      "outputs": [
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/app_links/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "e818708c17b83d050f78c40575dc2e497d21d8e573c52230c1efe0f657495bd4",
+          "bytes": 7510,
+          "task": ":app_links:bundleLibCompileToJarProfile",
+          "classCount": 3
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/app_links/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "e818708c17b83d050f78c40575dc2e497d21d8e573c52230c1efe0f657495bd4",
+          "bytes": 7510,
+          "task": ":app_links:bundleLibCompileToJarRelease",
+          "classCount": 3
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/app_links/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "50cec74ea3f4d73fbba517bd463048c10b6e21d5a315c2b2bcec6ccf24678f55",
+          "bytes": 7232,
+          "task": ":app_links:bundleLibRuntimeToJarProfile",
+          "classCount": 2
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/app_links/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "50cec74ea3f4d73fbba517bd463048c10b6e21d5a315c2b2bcec6ccf24678f55",
+          "bytes": 7232,
+          "task": ":app_links:bundleLibRuntimeToJarRelease",
+          "classCount": 2
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/connectivity_plus/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "7d85797c3661374943065c652a69557fa885f7818821bde09004d35d3d4b71a1",
+          "bytes": 17350,
+          "task": ":connectivity_plus:bundleLibCompileToJarProfile",
+          "classCount": 6
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/connectivity_plus/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "7d85797c3661374943065c652a69557fa885f7818821bde09004d35d3d4b71a1",
+          "bytes": 17350,
+          "task": ":connectivity_plus:bundleLibCompileToJarRelease",
+          "classCount": 6
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/connectivity_plus/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "862bb7499e7930aee68c5fe6df05289fc325e357c2ba27202b08a63ac5d76c9e",
+          "bytes": 17027,
+          "task": ":connectivity_plus:bundleLibRuntimeToJarProfile",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/connectivity_plus/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "862bb7499e7930aee68c5fe6df05289fc325e357c2ba27202b08a63ac5d76c9e",
+          "bytes": 17027,
+          "task": ":connectivity_plus:bundleLibRuntimeToJarRelease",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_analytics/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "4f4ad76673a7dbae848677921815389d8b08cdafe2cd999924c291b7b46f19eb",
+          "bytes": 73522,
+          "task": ":firebase_analytics:bundleLibCompileToJarProfile",
+          "classCount": 12
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_analytics/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "297f45905323817b64121667ac3d8f98f00ee17116d6aafac82b215fb1cff2e2",
+          "bytes": 73385,
+          "task": ":firebase_analytics:bundleLibCompileToJarRelease",
+          "classCount": 12
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_analytics/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "88b41aa33b396ad7445fbb09df299b94dd79855d08bd275102785a64705eda85",
+          "bytes": 73202,
+          "task": ":firebase_analytics:bundleLibRuntimeToJarProfile",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_analytics/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "a4c3926a3603ca4814015d31c0c4c67c70e3dd9efb0cde2fe26c791f49dacf52",
+          "bytes": 73065,
+          "task": ":firebase_analytics:bundleLibRuntimeToJarRelease",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_app_check/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "e2863492b4fea7bff7148c9c107f4f076a7fbd1ebbc0461e2faf2b59bc0e4968",
+          "bytes": 22831,
+          "task": ":firebase_app_check:bundleLibCompileToJarProfile",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_app_check/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "c7e4f344de8e58861fee96bc23fb518f8512840957a007be0ba648f542696cbe",
+          "bytes": 22694,
+          "task": ":firebase_app_check:bundleLibCompileToJarRelease",
+          "classCount": 5
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_app_check/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d955910fee3d5ae5901c843ec206c7c7e21cfa511337bc0771eac83e0ee7d197",
+          "bytes": 22514,
+          "task": ":firebase_app_check:bundleLibRuntimeToJarProfile",
+          "classCount": 4
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_app_check/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "7dd9bdeba438407ed3d589709aa3070651dfb86facca6a89c638536901d0d9a9",
+          "bytes": 22377,
+          "task": ":firebase_app_check:bundleLibRuntimeToJarRelease",
+          "classCount": 4
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_core/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "afb6a9f060c55745b2cab6cc49cd98337b4282efb7e38d83cfce9340f6a1718c",
+          "bytes": 86554,
+          "task": ":firebase_core:bundleLibCompileToJarProfile",
+          "classCount": 25
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_core/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "a7bb92acb992f6edf0aef0bad4e8389caefc95a46b6c2542b99cdd4908f1517d",
+          "bytes": 86417,
+          "task": ":firebase_core:bundleLibCompileToJarRelease",
+          "classCount": 25
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_core/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "27954ed2b9970f1049b46d0903e279f982495261c6675c08c58a473d3555ec88",
+          "bytes": 86249,
+          "task": ":firebase_core:bundleLibRuntimeToJarProfile",
+          "classCount": 24
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_core/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "1453350048d0f24ecea362325077f56dcb3b43084f7423b58a872f5a279fae51",
+          "bytes": 86112,
+          "task": ":firebase_core:bundleLibRuntimeToJarRelease",
+          "classCount": 24
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_crashlytics/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "b36c28f8a7cfef322cfd3aed2254fcff3a3373e98afa94f4539891d65d022f10",
+          "bytes": 37932,
+          "task": ":firebase_crashlytics:bundleLibCompileToJarProfile",
+          "classCount": 13
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_crashlytics/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "fcb5cfc46f08598c03009817a6b0b5d307be4afb950ac8e58dc8bdd5e55a29b9",
+          "bytes": 37795,
+          "task": ":firebase_crashlytics:bundleLibCompileToJarRelease",
+          "classCount": 13
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_crashlytics/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "f435c0c6540685f4a6434662afd034239e1c2525f37c37edec4950d7f52bad19",
+          "bytes": 37016,
+          "task": ":firebase_crashlytics:bundleLibRuntimeToJarProfile",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_crashlytics/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "f122215afdc6d07c83be77e177255e185cbf0ddef2271f6b2f6c7d4467219c3d",
+          "bytes": 36879,
+          "task": ":firebase_crashlytics:bundleLibRuntimeToJarRelease",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_messaging/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "33e1d17448d4547b9f60077d6a93f8806591f700d0b5c87fae930cf345485b69",
+          "bytes": 114475,
+          "task": ":firebase_messaging:bundleLibCompileToJarProfile",
+          "classCount": 35
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_messaging/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "e99075b94f55c080f0bc4706739821c8ea84118bb5f0c6a7f6c95413559a7a49",
+          "bytes": 114338,
+          "task": ":firebase_messaging:bundleLibCompileToJarRelease",
+          "classCount": 35
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_messaging/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "e9fad29f80d0c785b2e60460a548bb4d4fcba7d31802986b7b905ce1d830e407",
+          "bytes": 114155,
+          "task": ":firebase_messaging:bundleLibRuntimeToJarProfile",
+          "classCount": 34
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_messaging/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "f03f24160c5955a4502c9ae3b1e5698ccd69a1aa5d65777bc80c1bcaad03e358",
+          "bytes": 114018,
+          "task": ":firebase_messaging:bundleLibRuntimeToJarRelease",
+          "classCount": 34
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_performance/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "d458dbc7df42de1509f2d0a4e2073d0f4c0a9e5d7a59187ea884df578ec6ed4b",
+          "bytes": 87106,
+          "task": ":firebase_performance:bundleLibCompileToJarProfile",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_performance/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "ec98a9711c0d352dc3931aca5368e498f4a0361ed2f2c956ddcc30feeb41025b",
+          "bytes": 86969,
+          "task": ":firebase_performance:bundleLibCompileToJarRelease",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_performance/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "c5fe01cc90ca44dd211cffd96f0edf81593049991d5c7bf9def51e3978ee50f5",
+          "bytes": 86780,
+          "task": ":firebase_performance:bundleLibRuntimeToJarProfile",
+          "classCount": 18
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/firebase_performance/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "c10d6f8528df593754fcfd0a85f500625f1587842b63102ed277cae30bd721ba",
+          "bytes": 86643,
+          "task": ":firebase_performance:bundleLibRuntimeToJarRelease",
+          "classCount": 18
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/flutter_secure_storage/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "9ee6b874952fb0c4249158e4f1c5336651551b13e046b71922a59ef0ef0efb17",
+          "bytes": 259863,
+          "task": ":flutter_secure_storage:bundleLibCompileToJarProfile",
+          "classCount": 52
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/flutter_secure_storage/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "932a47bafc120638d106a0d50a596c7066199eb01de3bf4202c36eee3b331da9",
+          "bytes": 259726,
+          "task": ":flutter_secure_storage:bundleLibCompileToJarRelease",
+          "classCount": 52
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/flutter_secure_storage/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d4ecfcf09bdc576681da21352729d95d61312173fcc3891bc7c8705b6976701e",
+          "bytes": 259552,
+          "task": ":flutter_secure_storage:bundleLibRuntimeToJarProfile",
+          "classCount": 51
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/flutter_secure_storage/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "ba471acf0d987334aa8348de15f38e569e1afe4a3a38bcc3e25585c7a80caa9f",
+          "bytes": 259415,
+          "task": ":flutter_secure_storage:bundleLibRuntimeToJarRelease",
+          "classCount": 51
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/path_provider_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "613ab08b8039da9227a81effef602a67b78bbaf02c2c04bdd02c872c851d290b",
+          "bytes": 23790,
+          "task": ":path_provider_android:bundleLibCompileToJarProfile",
+          "classCount": 8
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/path_provider_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "613ab08b8039da9227a81effef602a67b78bbaf02c2c04bdd02c872c851d290b",
+          "bytes": 23790,
+          "task": ":path_provider_android:bundleLibCompileToJarRelease",
+          "classCount": 8
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/path_provider_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d70343ab0a71839c303dcd4d7ad35008d4d3a739114ad9a1c625b8c8ad5ea0b8",
+          "bytes": 23488,
+          "task": ":path_provider_android:bundleLibRuntimeToJarProfile",
+          "classCount": 7
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/path_provider_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "d70343ab0a71839c303dcd4d7ad35008d4d3a739114ad9a1c625b8c8ad5ea0b8",
+          "bytes": 23488,
+          "task": ":path_provider_android:bundleLibRuntimeToJarRelease",
+          "classCount": 7
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/share_plus/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "ba0b3ad7b738aada8b5c0b55bd4940291663c7905f0210d9e4a521bccc0520f1",
+          "bytes": 38090,
+          "task": ":share_plus:bundleLibCompileToJarProfile",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/share_plus/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "9cbd435839f047173498450c1529a6f371f0ad8805237164f5bd6a9aef8a95ce",
+          "bytes": 38090,
+          "task": ":share_plus:bundleLibCompileToJarRelease",
+          "classCount": 11
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/share_plus/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "c0c6bea6ee9337ec87153801b2d7a00a13bf647ae6592f2889e0e017beee55ef",
+          "bytes": 37250,
+          "task": ":share_plus:bundleLibRuntimeToJarProfile",
+          "classCount": 9
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/share_plus/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "5d4fb5d0c6a5d9cfb26e618db0e0c55286e2828232f6562e40ee212b7ea3abd4",
+          "bytes": 37250,
+          "task": ":share_plus:bundleLibRuntimeToJarRelease",
+          "classCount": 9
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/shared_preferences_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "87a49ce5b047c0f33c9052d8f8876a4b2b78ff9413089ea4c221b89baa0014c1",
+          "bytes": 301903,
+          "task": ":shared_preferences_android:bundleLibCompileToJarProfile",
+          "classCount": 61
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/shared_preferences_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "eaf2c2ab91fdef7f056f20b5938798dbe226b813944471f6cfb535b3a71bea0d",
+          "bytes": 301903,
+          "task": ":shared_preferences_android:bundleLibCompileToJarRelease",
+          "classCount": 61
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/shared_preferences_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "27ce1da4c7ac5ac1b52c7af43df38fa32453cce5853507114ad3e75e204715fc",
+          "bytes": 301586,
+          "task": ":shared_preferences_android:bundleLibRuntimeToJarProfile",
+          "classCount": 60
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/shared_preferences_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "8cdc75278cf87a5d5e697df8b8eb9d1cbf6089d81149101fb8622d0b9ea86f1e",
+          "bytes": 301586,
+          "task": ":shared_preferences_android:bundleLibRuntimeToJarRelease",
+          "classCount": 60
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/sqflite_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "24f3a676baeec88b947579055202c3214237b0bc5f78e526cf055cb919ffa2e6",
+          "bytes": 93549,
+          "task": ":sqflite_android:bundleLibCompileToJarProfile",
+          "classCount": 30
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/sqflite_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "24f3a676baeec88b947579055202c3214237b0bc5f78e526cf055cb919ffa2e6",
+          "bytes": 93549,
+          "task": ":sqflite_android:bundleLibCompileToJarRelease",
+          "classCount": 30
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/sqflite_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "4ffcb44a216a0a167493a0e38a670c4e544380e8bb55b61d2ae18b316f37b753",
+          "bytes": 93280,
+          "task": ":sqflite_android:bundleLibRuntimeToJarProfile",
+          "classCount": 29
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/sqflite_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "4ffcb44a216a0a167493a0e38a670c4e544380e8bb55b61d2ae18b316f37b753",
+          "bytes": 93280,
+          "task": ":sqflite_android:bundleLibRuntimeToJarRelease",
+          "classCount": 29
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/url_launcher_android/intermediates/compile_library_classes_jar/profile/bundleLibCompileToJarProfile/classes.jar",
+          "sha256": "873cee55a5c28e81ecf9d78937297d7e344e3d1a20b20e62bb9b48aee4cb77ef",
+          "bytes": 51538,
+          "task": ":url_launcher_android:bundleLibCompileToJarProfile",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/url_launcher_android/intermediates/compile_library_classes_jar/release/bundleLibCompileToJarRelease/classes.jar",
+          "sha256": "a29b8cab0435a4bd1809af0516fe5f3cf5570f5f957c325dd94ef7ac9856cc1d",
+          "bytes": 51097,
+          "task": ":url_launcher_android:bundleLibCompileToJarRelease",
+          "classCount": 19
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/url_launcher_android/intermediates/runtime_library_classes_jar/profile/bundleLibRuntimeToJarProfile/classes.jar",
+          "sha256": "d165ca85e7c4473e8600279db29fb622636723dd286688cd5c2b4dbb89477431",
+          "bytes": 51239,
+          "task": ":url_launcher_android:bundleLibRuntimeToJarProfile",
+          "classCount": 18
+        },
+        {
+          "path": "/Volumes/PRO-G40/Projects/Recovered-G-PRO/AFRICLUB/apps/vitalo/build/url_launcher_android/intermediates/runtime_library_classes_jar/release/bundleLibRuntimeToJarRelease/classes.jar",
+          "sha256": "5dc6d30ee89498afd6827a8562ca89613e84240bff421a67490526845c2f8d09",
+          "bytes": 50798,
+          "task": ":url_launcher_android:bundleLibRuntimeToJarRelease",
+          "classCount": 18
+        }
+      ],
+      "expectedOutputs": 56,
+      "passed": true,
+      "appTasksRequested": false
+    }
+  ],
+  "applicationReleaseBuilds": 0
+}

@@ -1,38 +1,43 @@
-# Local package license recovery — 2026-09-30
+# Package license recovery — current closure 2026-10-01
 
-Recovered evidence for **19 of 41** packages from existing local caches. **22 package license gaps remain**. No network request or dependency version change was made. License approval was not assessed.
+**All 41 original findings are retained and recovered. Zero license evidence gaps remain.** The first 19 were recovered from local caches; the final 22 required saved publisher evidence. Applying that evidence performs no network requests or dependency upgrades. Publisher retrieval used the network. Legal approval is not claimed.
 
-Ten transformed HTTP modules have an exact upstream npm name/version license relationship. Nine Maven coordinates share freshly rehashed JAR bytes with a cached license-declared coordinate. The companion JSON retains the relationship, source hash and all 41 original findings.
+| Final recovery method | Component records |
+| --- | ---: |
+| exact-maven-pom | 5 |
+| exact-maven-source-grants | 1 |
+| exact-npm-release | 13 |
+| identical-debian-upstream | 1 |
+| locked-jsr-declaration | 1 |
+| publisher-package-source-grant | 1 |
 
-The Netty embedded POM licenses only that file and retains the package-wide gap. Nearby npm package versions and unmatched JSR file digests were rejected as a license source for the exact selected package.
+## Final 22 recovered component records
 
-## Remaining exact package license evidence
+| Selected component | Version | License | Relationship |
+| --- | --- | --- | --- |
+| https://esm.sh/ws@8.21.1?target=denonext | 8.21.1 | MIT | exact-npm-release |
+| https://esm.sh/@supabase/node-fetch@2.6.15/denonext/node-fetch.mjs | 2.6.15 | MIT | exact-npm-release |
+| https://esm.sh/@supabase/storage-js@2.7.1/denonext/storage-js.mjs | 2.7.1 | MIT | exact-npm-release |
+| https://esm.sh/@supabase/postgrest-js@1.19.4/denonext/postgrest-js.mjs | 1.19.4 | MIT | exact-npm-release |
+| org.tensorflow:tensorflow-lite-metadata | 0.1.0-rc2 | Apache-2.0 | publisher-package-source-grant |
+| https://esm.sh/@supabase/node-fetch@2.6.15?target=denonext | 2.6.15 | MIT | exact-npm-release |
+| https://esm.sh/@supabase/auth-js@2.69.1/denonext/auth-js.mjs | 2.69.1 | MIT | exact-npm-release |
+| com.android:zipflinger | 8.11.0 | Apache-2.0 | exact-maven-pom |
+| com.android:zipflinger | 8.13.2 | Apache-2.0 | exact-maven-pom |
+| https://esm.sh/node-gyp-build@4.8.4?target=denonext | 4.8.4 | MIT | exact-npm-release |
+| io.netty:netty-tcnative-classes | 2.0.46.Final | Apache-2.0 | exact-maven-source-grants |
+| https://esm.sh/ws@8.21.1/denonext/ws.mjs | 8.21.1 | MIT | exact-npm-release |
+| com.android:zipflinger | 8.11.1 | Apache-2.0 | exact-maven-pom |
+| https://esm.sh/node-gyp-build@4.8.4/denonext/node-gyp-build.mjs | 4.8.4 | MIT | exact-npm-release |
+| @supabase/functions-js | 2.110.7 | MIT | locked-jsr-declaration |
+| https://esm.sh/@supabase/functions-js@2.4.4/denonext/functions-js.mjs | 2.4.4 | MIT | exact-npm-release |
+| https://esm.sh/@supabase/realtime-js@2.11.2/denonext/realtime-js.mjs | 2.11.2 | MIT | exact-npm-release |
+| com.android:zipflinger | 8.13.1 | Apache-2.0 | exact-maven-pom |
+| https://esm.sh/@supabase/supabase-js@2.49.4/denonext/supabase-js.mjs | 2.49.4 | MIT | exact-npm-release |
+| buffers | 0.1.1 | MIT | identical-debian-upstream |
+| https://esm.sh/@supabase/supabase-js@2.49.4 | 2.49.4 | MIT | exact-npm-release |
+| com.android:zipflinger | 8.1.4 | Apache-2.0 | exact-maven-pom |
 
-| Ecosystem | Package/version | Evidence gap |
-| --- | --- | --- |
-| deno-remote | https://esm.sh/ws@8.21.1?target=denonext 8.21.1 | Exact package-wide declaration/text unavailable in inspected sources |
-| deno-remote | https://esm.sh/@supabase/node-fetch@2.6.15/denonext/node-fetch.mjs 2.6.15 | Exact package-wide declaration/text unavailable in inspected sources |
-| deno-remote | https://esm.sh/@supabase/storage-js@2.7.1/denonext/storage-js.mjs 2.7.1 | Exact package-wide declaration/text unavailable in inspected sources |
-| deno-remote | https://esm.sh/@supabase/postgrest-js@1.19.4/denonext/postgrest-js.mjs 1.19.4 | Exact package-wide declaration/text unavailable in inspected sources |
-| maven | org.tensorflow:tensorflow-lite-metadata 0.1.0-rc2 | Exact package-wide declaration/text unavailable in inspected sources |
-| deno-remote | https://esm.sh/@supabase/node-fetch@2.6.15?target=denonext 2.6.15 | Exact package-wide declaration/text unavailable in inspected sources |
-| deno-remote | https://esm.sh/@supabase/auth-js@2.69.1/denonext/auth-js.mjs 2.69.1 | Exact package-wide declaration/text unavailable in inspected sources |
-| maven | com.android:zipflinger 8.11.0 | Exact package-wide declaration/text unavailable in inspected sources |
-| maven | com.android:zipflinger 8.13.2 | Exact package-wide declaration/text unavailable in inspected sources |
-| deno-remote | https://esm.sh/node-gyp-build@4.8.4?target=denonext 4.8.4 | Exact package-wide declaration/text unavailable in inspected sources |
-| maven | io.netty:netty-tcnative-classes 2.0.46.Final | Embedded POM scope only |
-| deno-remote | https://esm.sh/ws@8.21.1/denonext/ws.mjs 8.21.1 | Exact package-wide declaration/text unavailable in inspected sources |
-| maven | com.android:zipflinger 8.11.1 | Exact package-wide declaration/text unavailable in inspected sources |
-| deno-remote | https://esm.sh/node-gyp-build@4.8.4/denonext/node-gyp-build.mjs 4.8.4 | Exact package-wide declaration/text unavailable in inspected sources |
-| deno-jsr | @supabase/functions-js 2.110.7 | Exact package-wide declaration/text unavailable in inspected sources |
-| deno-remote | https://esm.sh/@supabase/functions-js@2.4.4/denonext/functions-js.mjs 2.4.4 | Exact package-wide declaration/text unavailable in inspected sources |
-| deno-remote | https://esm.sh/@supabase/realtime-js@2.11.2/denonext/realtime-js.mjs 2.11.2 | Exact package-wide declaration/text unavailable in inspected sources |
-| maven | com.android:zipflinger 8.13.1 | Exact package-wide declaration/text unavailable in inspected sources |
-| deno-remote | https://esm.sh/@supabase/supabase-js@2.49.4/denonext/supabase-js.mjs 2.49.4 | Exact package-wide declaration/text unavailable in inspected sources |
-| npm | buffers 0.1.1 | Exact package-wide declaration/text unavailable in inspected sources |
-| deno-remote | https://esm.sh/@supabase/supabase-js@2.49.4 2.49.4 | Exact package-wide declaration/text unavailable in inspected sources |
-| maven | com.android:zipflinger 8.1.4 | Exact package-wide declaration/text unavailable in inspected sources |
+The Netty evidence covers all 23 Java source files and 27 compiled classes in the exact published release. All six files in buffers 0.1.1 equal the licensed Debian upstream distribution byte for byte. TensorFlow has explicit immutable publisher package grants and coverage for all 301 compiled classes; its binary release commit is not asserted. Neighboring package versions and differing fork archives were rejected.
 
-HTTP URL variants are retained as distinct locked components. The JSON provides each source URL, every available recovery source/hash, and an explicit conclusion for each unavailable field. No unavailable declaration was invented.
-
-All selected component versions, Android resolution snapshots, source identities and integrity bases remain in the inventory and CycloneDX export. The license TSV has one lossless row for each of 2,265 components.
+The companion JSON retains every original finding and each evidence association. The current inventory, license TSV and CycloneDX SBOM include these recovered declarations. See [the closure report](local-dependency-gaps-closure-2026-10-01.md).

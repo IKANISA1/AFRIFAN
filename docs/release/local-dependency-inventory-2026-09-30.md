@@ -24,7 +24,7 @@ This is local source/cache evidence. License approval, vulnerability clearance, 
 | sdk | 3 |
 | swift | 18 |
 
-Evidence items: 8290; dependency edges: 7199; components with license text: 1412; with license declarations: 1984.
+Evidence items: 8664; dependency edges: 7199; components with license text: 1427; with license declarations: 2006.
 
 Dart: one workspace lock and active package_config reconciled against cached pubspecs and hosted hash records. Npm: every lock location retained, including absent platform optional packages; available cached archives rehashed against SRI. iOS: both SwiftPM lock containers for each app, immutable commit manifests/license blobs, generated local plugin manifests, and four CocoaPods locks. Android: offline resolved component/artifact graphs for each supplied target; unresolved selectors are retained.
 
@@ -59,14 +59,12 @@ Full validation rehashes every evidence file, Git blob, original Deno cache body
 
 | Kind | Count | Blocks exactness |
 | --- | ---: | --- |
-| license-evidence-unavailable | 22 | false |
-| native-project-artifact-not-built | 282 | false |
 
 The small JSON indexes reference SHA256-bound TSV shards (at most 2 MiB each). Canonical JSON cells preserve every component, dependency edge, evidence item, unresolved field and Android configuration losslessly. Full validation verifies shard bytes, row ordinals/counts, unique keys and reconstructed table hashes before validating source evidence. The license TSV has one row per component, with exact version/source and evidence references.
 
 Exactness concerns selected component versions, source identities and recorded integrity evidence. Missing license declarations/text and unbuilt local plugin outputs remain explicit non-exactness fields. Full target compilation, legal license approval, provider/device/store acceptance and fresh vulnerability clearance are separate work. Declared archive hashes are identified separately from fresh byte rehashes.
 
-Local license recovery uses exact upstream npm name/version declarations for transformed CDN modules, and fresh SHA256 equality when a Maven JAR shares bytes with a cached license-declared coordinate. These relationships are explicit in `licenseAssociations`; they do not assert CDN/archive byte equality or license approval. Embedded-POM-only licenses retain a package-wide gap. Recovery performs no network requests and changes no selected versions.
+Local cache recovery and authenticated publisher recovery are recorded separately. License associations identify exact package declarations, byte-identical licensed distributions, or explicit publisher source grants with their stated provenance limits. CDN/archive byte equality and legal approval are not inferred. Publisher retrieval used the network; applying saved evidence performs no network requests and changes no selected versions. See `licenseRecovery.publisherEvidenceManifest` and `dependencyGapClosure` when present.
 
 ## Added files and rationale
 
@@ -77,13 +75,3 @@ Local license recovery uses exact upstream npm name/version declarations for tra
 - JSON, CycloneDX 1.6, license TSV and this report: reviewable inventory with explicit evidence coverage; none grants license approval.
 
 Standards: [CycloneDX 1.6 JSON schema](https://raw.githubusercontent.com/CycloneDX/specification/1.6/schema/bom-1.6.schema.json), [Package URL specification](https://www.packageurl.org/docs/purl/introduction).
-
-## Current source rebind, local font asset and GoTrue patch
-
-The frozen local regeneration retains 2,265 selected package identities by name/version and adds exactly six direct test dependency edges: core_auth → http and test_support → go_router, http, supabase_flutter, core_l10n, feat_membership. Every earlier graph relationship is preserved after explicitly mapping the GoTrue source replacement. Edges changed from 7,193 to 7,199; edge occurrences changed from 137,843 to 137,849. Selected upstream versions were not changed.
-
-GoTrue 2.27.2 now resolves through the declared third_party/gotrue_2_27_2 path override. This replaces its hosted source identity with authenticated local patched bytes. The complete regular-file manifest, root override, active package selection, original installed source and preserved license are bound separately. Patched bytes are not attributed to the upstream hosted archive or Flutter SDK; the local patch has no misleading registry package URL. Five-target Android observations use existing offline caches and preserve prior Maven selections. Any reused completed target is named with its original execution receipt and exact current native resolver-input proof; broader Dart manifest changes bind separately. Full validation checks all local evidence; portable validation excludes only its stated author-machine/cache/output scope and exact generated Pub/plugin inputs confirmed ignored by Git. Its complete exclusion receipt is hash-bound in the verification JSON.
-
-The Inter variable WOFF2 and SIL Open Font License 1.1 in web/public/fonts remain byte-identical to the retained operator UI copies. Font SHA256 is 3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62. The retained source README declares @fontsource-variable/inter 5.3.0; this local asset is not an added npm selection. No upstream font archive revalidation or license approval is asserted.
-
-All 41 original package-license findings and their finite recovery relationships remain retained: 22 package-license gaps and 282 unbuilt native output fields remain. Wrapper/font control hashes identify current source; build/converter outcomes require their separate receipts. The previous inventory checkpoint and the rejected concurrent-source generation are preserved in ignored local evidence. No production, provider, device/store or release acceptance is granted.

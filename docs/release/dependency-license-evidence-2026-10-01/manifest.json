@@ -1,0 +1,1009 @@
+{
+  "licenses": [
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/published.tgz",
+      "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+      "ecosystem": "deno-remote",
+      "files": [
+        {
+          "bytes": 1183,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/LICENSE",
+          "sha256": "2b29dcfe0d6471f7e8c92c5fb38c9f93edee10330937055440192f1832b1ecef"
+        },
+        {
+          "bytes": 34995,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/published.tgz",
+          "sha256": "bb0f7e58ba1f64746672734d36175fe185f226491e336abc0743e2a8f4472ec1"
+        },
+        {
+          "bytes": 909,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/retrieval.json",
+          "sha256": "34c30ccac333758227e33bfe642bb2c62ff4a4aeb529d7e841395fd44a3f8a3d"
+        },
+        {
+          "bytes": 2442,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/version.json",
+          "sha256": "653f51558b07509b2ad83682b42621f12eeaaca0024ebadb14772f22a8d0a473"
+        }
+      ],
+      "license": "MIT",
+      "licenseMember": "package/LICENSE",
+      "licenseText": "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/LICENSE",
+      "licenseTexts": [
+        "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/LICENSE"
+      ],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/version.json",
+      "method": "exact-npm-release",
+      "name": "https://esm.sh/ws@8.21.1?target=denonext",
+      "ref": "dependency:116b679d715d9c76e9443724",
+      "source": {
+        "kind": "http",
+        "url": "https://esm.sh/ws@8.21.1?target=denonext"
+      },
+      "upstreamName": "ws",
+      "version": "8.21.1"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/published.tgz",
+      "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+      "ecosystem": "deno-remote",
+      "files": [
+        {
+          "bytes": 1079,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/LICENSE.md",
+          "sha256": "84eaa985e1ef71b8c630e8aba73404c219ff425c6fdb45c62e998b58d4fbdc8e"
+        },
+        {
+          "bytes": 44407,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/published.tgz",
+          "sha256": "6fa94be6c412bcab9283f0e6854a7cd12c3d8d57e3b51f8075fb5d883304c950"
+        },
+        {
+          "bytes": 1010,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/retrieval.json",
+          "sha256": "c034f1c3b13ba744836fb67c5f189d65026b35885efbdb4239e7e0e57f26591f"
+        },
+        {
+          "bytes": 24716,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/version.json",
+          "sha256": "6a22272b442df079c9d6ba81132d14953214636b0c7bf3a23ffc21bdfbed9c5e"
+        }
+      ],
+      "license": "MIT",
+      "licenseMember": "package/LICENSE.md",
+      "licenseText": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/LICENSE.md",
+      "licenseTexts": [
+        "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/LICENSE.md"
+      ],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/version.json",
+      "method": "exact-npm-release",
+      "name": "https://esm.sh/@supabase/node-fetch@2.6.15/denonext/node-fetch.mjs",
+      "ref": "dependency:192d8a5dd4e8fd0bb27e85a4",
+      "source": {
+        "kind": "http",
+        "url": "https://esm.sh/@supabase/node-fetch@2.6.15/denonext/node-fetch.mjs"
+      },
+      "upstreamName": "@supabase/node-fetch",
+      "version": "2.6.15"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_storage-js-2.7.1/published.tgz",
+      "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+      "ecosystem": "deno-remote",
+      "files": [
+        {
+          "bytes": 11357,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_storage-js-2.7.1/LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+        },
+        {
+          "bytes": 36967,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_storage-js-2.7.1/published.tgz",
+          "sha256": "5fe6b6362ce29512888d3787c8be179ff40f5b37bda8d0b4e7a0afb73dec8819"
+        },
+        {
+          "bytes": 961,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_storage-js-2.7.1/retrieval.json",
+          "sha256": "e87716a7627ce0579e6c6a7cecadf121af4d09e2da62ae4f7b938815a0063ee0"
+        },
+        {
+          "bytes": 3449,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_storage-js-2.7.1/version.json",
+          "sha256": "a08ffa26257d08ff0056468d34c0e7ba0c99c9d13fabd330017a14e15ad6526b"
+        }
+      ],
+      "license": "MIT",
+      "licenseMember": "package/LICENSE",
+      "licenseText": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_storage-js-2.7.1/LICENSE",
+      "licenseTexts": [
+        "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_storage-js-2.7.1/LICENSE"
+      ],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_storage-js-2.7.1/version.json",
+      "method": "exact-npm-release",
+      "name": "https://esm.sh/@supabase/storage-js@2.7.1/denonext/storage-js.mjs",
+      "ref": "dependency:1bcfccad0c5416ef1a0cfe27",
+      "source": {
+        "kind": "http",
+        "url": "https://esm.sh/@supabase/storage-js@2.7.1/denonext/storage-js.mjs"
+      },
+      "upstreamName": "@supabase/storage-js",
+      "version": "2.7.1"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_postgrest-js-1.19.4/published.tgz",
+      "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+      "ecosystem": "deno-remote",
+      "files": [
+        {
+          "bytes": 1065,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_postgrest-js-1.19.4/LICENSE",
+          "sha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936"
+        },
+        {
+          "bytes": 60508,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_postgrest-js-1.19.4/published.tgz",
+          "sha256": "06ce095d79c557bcaf83eaea1474043076bf5466e7feb885219caec245ed9291"
+        },
+        {
+          "bytes": 978,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_postgrest-js-1.19.4/retrieval.json",
+          "sha256": "c0113f7aa9581bbaacb526cb019f0ab1be89a281783795acb4859e9999f357a3"
+        },
+        {
+          "bytes": 3506,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_postgrest-js-1.19.4/version.json",
+          "sha256": "e472879f75d4bf91693316fc0479827f96c3e00ad31b4d05a2d595a23c0583f9"
+        }
+      ],
+      "license": "MIT",
+      "licenseMember": "package/LICENSE",
+      "licenseText": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_postgrest-js-1.19.4/LICENSE",
+      "licenseTexts": [
+        "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_postgrest-js-1.19.4/LICENSE"
+      ],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_postgrest-js-1.19.4/version.json",
+      "method": "exact-npm-release",
+      "name": "https://esm.sh/@supabase/postgrest-js@1.19.4/denonext/postgrest-js.mjs",
+      "ref": "dependency:1e7a2c66f844a684e2c4b127",
+      "source": {
+        "kind": "http",
+        "url": "https://esm.sh/@supabase/postgrest-js@1.19.4/denonext/postgrest-js.mjs"
+      },
+      "upstreamName": "@supabase/postgrest-js",
+      "version": "1.19.4"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/tensorflow-lite-metadata-0.1.0-rc2.jar",
+      "basis": "Official Maven JAR bytes equal the selected 0.1.0-rc2 artifact. Immutable TensorFlow publisher package BUILD grants and root LICENSE declare Apache-2.0; all 301 compiled classes map to granted Java sources or schema types. This publisher source relationship is corroboration, not an assertion of the exact binary release commit or a reproducible build. Neighboring release JARs were rejected as byte-equivalence evidence.",
+      "classCount": 301,
+      "ecosystem": "maven",
+      "exactReleaseCommitClaimed": false,
+      "files": [
+        {
+          "bytes": 1456,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-BUILD",
+          "sha256": "33a0f190043f2b938d5adb2cf7ab9ba623733115df34db44e02d7949147e6b40"
+        },
+        {
+          "bytes": 3889,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-BoundedInputStream.java",
+          "sha256": "22c1553d3cf3c862d4085e45312fb11618dd5284534955a641ed6be3c4603db4"
+        },
+        {
+          "bytes": 4025,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ByteBufferChannel.java",
+          "sha256": "53991e96e3c0477e912ad56304dad52d9dad3d3621d4d863654848597d9d6b54"
+        },
+        {
+          "bytes": 14721,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-MetadataExtractor.java",
+          "sha256": "ef940f2d8bbc58b895f171a8e160126504d0a86824111dcf99b1237e01e8b6a3"
+        },
+        {
+          "bytes": 1130,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-MetadataParser.java",
+          "sha256": "16306d0d8735dfc5081c4e1640a7ff6cf7f57c5ae8276948e7673225cedcf60c"
+        },
+        {
+          "bytes": 9666,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ModelInfo.java",
+          "sha256": "671dad47ab7adf152ffd6dc86f427ee258c8938220ea300868ec1dd1563f0b59"
+        },
+        {
+          "bytes": 5960,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ModelMetadataInfo.java",
+          "sha256": "033022c563fdfc12a9993b60a455b1abc376ff56f9119cf5c754e52b91f6fc81"
+        },
+        {
+          "bytes": 7229,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-Preconditions.java",
+          "sha256": "bea1277c279ae6ecf6b700b7a404012e3096fdffb02c0b9b745126a2299f540c"
+        },
+        {
+          "bytes": 4703,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-SeekableByteChannelCompat.java",
+          "sha256": "4ff1b1921cb6981c323eeea75f82d87796df16b161955c2402a433197edd7080"
+        },
+        {
+          "bytes": 14645,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-WORKSPACE",
+          "sha256": "d2c7e2bf90c89eb8d900711fcdee1451cb870bf3f94d59c374be586242445b12"
+        },
+        {
+          "bytes": 15485,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ZipFile.java",
+          "sha256": "20c2c435eec392f4e652a487580a415e5bf43f62481bc6d303bf46f6c3e3902b"
+        },
+        {
+          "bytes": 11419,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-era-LICENSE",
+          "sha256": "6c3f6ee3067cb3d74ad4e8f2e39da8ffcd4560391a4a228a9a8c3bf872e89a32"
+        },
+        {
+          "bytes": 3541,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-era-commit.json",
+          "sha256": "4a3ec6db7aab1fa8966668b8e7190b03366ed0554b3e21d872bd3dae6f191f5f"
+        },
+        {
+          "bytes": 153144,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-era-tree.json",
+          "sha256": "78fcd6650d0950931c6d2598aefb9946730dc5c3d3cc0afd2b72966103c1a6ae"
+        },
+        {
+          "bytes": 26697,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-metadata_schema.fbs",
+          "sha256": "1a9c6354f4506bc00d3d6a4e50dea10146a12dbc24fbeaba2df1d380a36dd358"
+        },
+        {
+          "bytes": 26964,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-model-schema.fbs",
+          "sha256": "e01be033b3a3be8e3dffa46d65492d107b5c97f38a240999514df6a1e821d944"
+        },
+        {
+          "bytes": 1391,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-schema-BUILD",
+          "sha256": "1fd103fa5b11228fee684576ee59befc1669b8de87a8e4966b31e79f93cbf9eb"
+        },
+        {
+          "bytes": 8723,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-source-evidence.json",
+          "sha256": "ba822224479f04d651a95cc6335bcd3d14755670a1de50f8be3e031e7e8c47b0"
+        },
+        {
+          "bytes": 11419,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-tensorflow-LICENSE",
+          "sha256": "37dbed59a6aef0803f24a7dac146679491c460faa8bc3834974d786acf56a40f"
+        },
+        {
+          "bytes": 1690,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/retrieval.json",
+          "sha256": "ca4d667d5946274cd7ad4ab1f4f798a7d541b24faa008b06918022edbb82f3c8"
+        },
+        {
+          "bytes": 31784,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/source-license-coverage.json",
+          "sha256": "0af01e6513277d42911f579708a2c4839c26ddd10889080c8074a02832af2014"
+        },
+        {
+          "bytes": 348389,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/tensorflow-lite-metadata-0.1.0-rc2.jar",
+          "sha256": "2c2a264f842498c36d34d2a7b91342490d9a962862c85baac1acd54ec2fca6d9"
+        },
+        {
+          "bytes": 1375,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/tensorflow-lite-metadata-0.1.0-rc2.pom",
+          "sha256": "9a4f5e5674366c156c90391662f03ed7c5971d6aa63832df74a271da6ff82e96"
+        }
+      ],
+      "javaSources": [
+        "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-BoundedInputStream.java",
+        "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ByteBufferChannel.java",
+        "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-MetadataExtractor.java",
+        "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-MetadataParser.java",
+        "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ModelInfo.java",
+        "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ModelMetadataInfo.java",
+        "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-Preconditions.java",
+        "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-SeekableByteChannelCompat.java",
+        "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-ZipFile.java"
+      ],
+      "license": "Apache-2.0",
+      "licenseText": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-era-LICENSE",
+      "licenseTexts": [
+        "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-era-LICENSE"
+      ],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/tensorflow-lite-metadata-0.1.0-rc2.pom",
+      "method": "publisher-package-source-grant",
+      "name": "org.tensorflow:tensorflow-lite-metadata",
+      "packageBuild": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-BUILD",
+      "ref": "dependency:24f95a88e32d2f627f988c45",
+      "schemaBuild": "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-schema-BUILD",
+      "schemaSources": [
+        "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-metadata_schema.fbs",
+        "docs/release/dependency-license-evidence-2026-10-01/maven-org.tensorflow_tensorflow-lite-metadata-0.1.0-rc2/release-model-schema.fbs"
+      ],
+      "source": {
+        "kind": "gradle-module-cache"
+      },
+      "version": "0.1.0-rc2"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/published.tgz",
+      "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+      "ecosystem": "deno-remote",
+      "files": [
+        {
+          "bytes": 1079,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/LICENSE.md",
+          "sha256": "84eaa985e1ef71b8c630e8aba73404c219ff425c6fdb45c62e998b58d4fbdc8e"
+        },
+        {
+          "bytes": 44407,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/published.tgz",
+          "sha256": "6fa94be6c412bcab9283f0e6854a7cd12c3d8d57e3b51f8075fb5d883304c950"
+        },
+        {
+          "bytes": 1010,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/retrieval.json",
+          "sha256": "c034f1c3b13ba744836fb67c5f189d65026b35885efbdb4239e7e0e57f26591f"
+        },
+        {
+          "bytes": 24716,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/version.json",
+          "sha256": "6a22272b442df079c9d6ba81132d14953214636b0c7bf3a23ffc21bdfbed9c5e"
+        }
+      ],
+      "license": "MIT",
+      "licenseMember": "package/LICENSE.md",
+      "licenseText": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/LICENSE.md",
+      "licenseTexts": [
+        "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/LICENSE.md"
+      ],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_node-fetch-2.6.15/version.json",
+      "method": "exact-npm-release",
+      "name": "https://esm.sh/@supabase/node-fetch@2.6.15?target=denonext",
+      "ref": "dependency:2e19b98ce51742b34e474ebd",
+      "source": {
+        "kind": "http",
+        "url": "https://esm.sh/@supabase/node-fetch@2.6.15?target=denonext"
+      },
+      "upstreamName": "@supabase/node-fetch",
+      "version": "2.6.15"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_auth-js-2.69.1/published.tgz",
+      "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+      "ecosystem": "deno-remote",
+      "files": [
+        {
+          "bytes": 1065,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_auth-js-2.69.1/LICENSE",
+          "sha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936"
+        },
+        {
+          "bytes": 152519,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_auth-js-2.69.1/published.tgz",
+          "sha256": "f078d4254a74dff988d484654ae794c1b73842c0340f6d57926be34d442fc757"
+        },
+        {
+          "bytes": 949,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_auth-js-2.69.1/retrieval.json",
+          "sha256": "6921b5710e3c14ea6983f6195dc88af2b3f660c96f0225dd8a5dacca1f89e4a3"
+        },
+        {
+          "bytes": 3781,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_auth-js-2.69.1/version.json",
+          "sha256": "4f76dd934a21275089409719a904b12ac70473f9c3a4f261d8ca8ca2c1921b85"
+        }
+      ],
+      "license": "MIT",
+      "licenseMember": "package/LICENSE",
+      "licenseText": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_auth-js-2.69.1/LICENSE",
+      "licenseTexts": [
+        "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_auth-js-2.69.1/LICENSE"
+      ],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_auth-js-2.69.1/version.json",
+      "method": "exact-npm-release",
+      "name": "https://esm.sh/@supabase/auth-js@2.69.1/denonext/auth-js.mjs",
+      "ref": "dependency:3243aa2a5cde3a0357102cd4",
+      "source": {
+        "kind": "http",
+        "url": "https://esm.sh/@supabase/auth-js@2.69.1/denonext/auth-js.mjs"
+      },
+      "upstreamName": "@supabase/auth-js",
+      "version": "2.69.1"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.0/zipflinger-8.11.0.jar",
+      "basis": "Official Google Maven POM for the exact selected coordinate declares Apache-2.0; downloaded JAR SHA256 equals every selected cached artifact. No version was changed.",
+      "ecosystem": "maven",
+      "files": [
+        {
+          "bytes": 1458,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.0/retrieval.json",
+          "sha256": "3d7a36e26529c80735048a4c7fab58a0d94795776368f7aae090cc0101ecccf9"
+        },
+        {
+          "bytes": 66836,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.0/zipflinger-8.11.0.jar",
+          "sha256": "a6a68f03e8d9f8944688c36c6d16c253e81a625930af1d0eb5e592bd2b2da9e8"
+        },
+        {
+          "bytes": 1112,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.0/zipflinger-8.11.0.pom",
+          "sha256": "58d9b6fae91d3e35ece0363e6944a4e8de6f8ba9b9adc09147b03d8587165443"
+        }
+      ],
+      "license": "Apache-2.0",
+      "licenseTexts": [],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.0/zipflinger-8.11.0.pom",
+      "method": "exact-maven-pom",
+      "name": "com.android:zipflinger",
+      "ref": "dependency:3400b2fb8cd4027da5367510",
+      "source": {
+        "kind": "gradle-module-cache"
+      },
+      "version": "8.11.0"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.2/zipflinger-8.13.2.jar",
+      "basis": "Official Google Maven POM for the exact selected coordinate declares Apache-2.0; downloaded JAR SHA256 equals every selected cached artifact. No version was changed.",
+      "ecosystem": "maven",
+      "files": [
+        {
+          "bytes": 1458,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.2/retrieval.json",
+          "sha256": "9781da2f2ae6252ee9b26a4045e87d3c01dfd522df2c94cbd9affc1eb1eafe45"
+        },
+        {
+          "bytes": 66972,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.2/zipflinger-8.13.2.jar",
+          "sha256": "07060069c35e469d7c343abc15f1d6362bc1356b81bf462539db88a53ed653f1"
+        },
+        {
+          "bytes": 1112,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.2/zipflinger-8.13.2.pom",
+          "sha256": "e2eed37782da4d8c799d4c4b737c35ad88d3912f5136cfdfe2c014ccd40b350c"
+        }
+      ],
+      "license": "Apache-2.0",
+      "licenseTexts": [],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.2/zipflinger-8.13.2.pom",
+      "method": "exact-maven-pom",
+      "name": "com.android:zipflinger",
+      "ref": "dependency:349cd2d9e88c7cadcd9dec12",
+      "source": {
+        "kind": "gradle-module-cache"
+      },
+      "version": "8.13.2"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/published.tgz",
+      "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+      "ecosystem": "deno-remote",
+      "files": [
+        {
+          "bytes": 1079,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/LICENSE",
+          "sha256": "7b3638496004b2daed183a91c4ba45d3ef6331db6c9d0eb1dd882a505630c172"
+        },
+        {
+          "bytes": 5449,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/published.tgz",
+          "sha256": "940450fb4158bddc23ae156432a67338a4d7ab6a585b639c61b3b0a14d2bac24"
+        },
+        {
+          "bytes": 975,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/retrieval.json",
+          "sha256": "29aeecabb7e00bc97cde5a6e5552b12dc3fd7c9717083f43d1f28f99b3bc4699"
+        },
+        {
+          "bytes": 1759,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/version.json",
+          "sha256": "8d0857602014be960fffb17291e645b5d68ad290ace080ebb5513a47306b6247"
+        }
+      ],
+      "license": "MIT",
+      "licenseMember": "package/LICENSE",
+      "licenseText": "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/LICENSE",
+      "licenseTexts": [
+        "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/LICENSE"
+      ],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/version.json",
+      "method": "exact-npm-release",
+      "name": "https://esm.sh/node-gyp-build@4.8.4?target=denonext",
+      "ref": "dependency:37f7a899935c047f105184a3",
+      "source": {
+        "kind": "http",
+        "url": "https://esm.sh/node-gyp-build@4.8.4?target=denonext"
+      },
+      "upstreamName": "node-gyp-build",
+      "version": "4.8.4"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/netty-tcnative-classes-2.0.46.Final.jar",
+      "basis": "Exact published Maven sources release has Apache-2.0 grants on all 23 Java files; all 27 compiled classes map through SourceFile to those licensed sources. An embedded POM-only header is not used as a package grant.",
+      "classCount": 27,
+      "ecosystem": "maven",
+      "files": [
+        {
+          "bytes": 41883,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/netty-tcnative-classes-2.0.46.Final-sources.jar",
+          "sha256": "ca3be3cb23d170977e7c1199f83adff9217b50855a94e31c527a85fe8ea65bf8"
+        },
+        {
+          "bytes": 33919,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/netty-tcnative-classes-2.0.46.Final.jar",
+          "sha256": "d3ec888dcc4ac7915bf88b417c5e04fd354f4311032a748a6882df09347eed9a"
+        },
+        {
+          "bytes": 1949,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/netty-tcnative-classes-2.0.46.Final.pom",
+          "sha256": "40a7319c07946d47997f82b34cfea6db20d4583c8ac99dc1ff8c12a4db685726"
+        },
+        {
+          "bytes": 1662,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/retrieval.json",
+          "sha256": "fdd8af14dc8d688f08df3c0603441484e3751df7a8076a1b369abd20592eec3b"
+        },
+        {
+          "bytes": 4854,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/source-license-coverage.json",
+          "sha256": "51f3ef57c614279ae5890f0e9853af8c56e5185f4d33d8a32e8249d7f8d06ecd"
+        }
+      ],
+      "license": "Apache-2.0",
+      "licenseTexts": [],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/netty-tcnative-classes-2.0.46.Final.pom",
+      "method": "exact-maven-source-grants",
+      "name": "io.netty:netty-tcnative-classes",
+      "ref": "dependency:3f54d7028ef0e7064f34d5ff",
+      "source": {
+        "kind": "gradle-module-cache"
+      },
+      "sourcesArchive": "docs/release/dependency-license-evidence-2026-10-01/maven-io.netty_netty-tcnative-classes-2.0.46.Final/netty-tcnative-classes-2.0.46.Final-sources.jar",
+      "version": "2.0.46.Final"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/published.tgz",
+      "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+      "ecosystem": "deno-remote",
+      "files": [
+        {
+          "bytes": 1183,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/LICENSE",
+          "sha256": "2b29dcfe0d6471f7e8c92c5fb38c9f93edee10330937055440192f1832b1ecef"
+        },
+        {
+          "bytes": 34995,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/published.tgz",
+          "sha256": "bb0f7e58ba1f64746672734d36175fe185f226491e336abc0743e2a8f4472ec1"
+        },
+        {
+          "bytes": 909,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/retrieval.json",
+          "sha256": "34c30ccac333758227e33bfe642bb2c62ff4a4aeb529d7e841395fd44a3f8a3d"
+        },
+        {
+          "bytes": 2442,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/version.json",
+          "sha256": "653f51558b07509b2ad83682b42621f12eeaaca0024ebadb14772f22a8d0a473"
+        }
+      ],
+      "license": "MIT",
+      "licenseMember": "package/LICENSE",
+      "licenseText": "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/LICENSE",
+      "licenseTexts": [
+        "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/LICENSE"
+      ],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/npm-ws-8.21.1/version.json",
+      "method": "exact-npm-release",
+      "name": "https://esm.sh/ws@8.21.1/denonext/ws.mjs",
+      "ref": "dependency:491c7fa6a243dc7c87140484",
+      "source": {
+        "kind": "http",
+        "url": "https://esm.sh/ws@8.21.1/denonext/ws.mjs"
+      },
+      "upstreamName": "ws",
+      "version": "8.21.1"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.1/zipflinger-8.11.1.jar",
+      "basis": "Official Google Maven POM for the exact selected coordinate declares Apache-2.0; downloaded JAR SHA256 equals every selected cached artifact. No version was changed.",
+      "ecosystem": "maven",
+      "files": [
+        {
+          "bytes": 1458,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.1/retrieval.json",
+          "sha256": "ec3380a4e8eab36a3ac48953e339404ffb4f31cdab545f004676079117287832"
+        },
+        {
+          "bytes": 66836,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.1/zipflinger-8.11.1.jar",
+          "sha256": "a6a68f03e8d9f8944688c36c6d16c253e81a625930af1d0eb5e592bd2b2da9e8"
+        },
+        {
+          "bytes": 1112,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.1/zipflinger-8.11.1.pom",
+          "sha256": "4fcdea59c78057abb5ae065bb7dff1ad68f674f90401bdf09481ff161c46b8fd"
+        }
+      ],
+      "license": "Apache-2.0",
+      "licenseTexts": [],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.11.1/zipflinger-8.11.1.pom",
+      "method": "exact-maven-pom",
+      "name": "com.android:zipflinger",
+      "ref": "dependency:7adbcf0ab3093ccd1b6ccd8d",
+      "source": {
+        "kind": "gradle-module-cache"
+      },
+      "version": "8.11.1"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/published.tgz",
+      "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+      "ecosystem": "deno-remote",
+      "files": [
+        {
+          "bytes": 1079,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/LICENSE",
+          "sha256": "7b3638496004b2daed183a91c4ba45d3ef6331db6c9d0eb1dd882a505630c172"
+        },
+        {
+          "bytes": 5449,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/published.tgz",
+          "sha256": "940450fb4158bddc23ae156432a67338a4d7ab6a585b639c61b3b0a14d2bac24"
+        },
+        {
+          "bytes": 975,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/retrieval.json",
+          "sha256": "29aeecabb7e00bc97cde5a6e5552b12dc3fd7c9717083f43d1f28f99b3bc4699"
+        },
+        {
+          "bytes": 1759,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/version.json",
+          "sha256": "8d0857602014be960fffb17291e645b5d68ad290ace080ebb5513a47306b6247"
+        }
+      ],
+      "license": "MIT",
+      "licenseMember": "package/LICENSE",
+      "licenseText": "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/LICENSE",
+      "licenseTexts": [
+        "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/LICENSE"
+      ],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/npm-node-gyp-build-4.8.4/version.json",
+      "method": "exact-npm-release",
+      "name": "https://esm.sh/node-gyp-build@4.8.4/denonext/node-gyp-build.mjs",
+      "ref": "dependency:83ac19cdb62d03c380cbb093",
+      "source": {
+        "kind": "http",
+        "url": "https://esm.sh/node-gyp-build@4.8.4/denonext/node-gyp-build.mjs"
+      },
+      "upstreamName": "node-gyp-build",
+      "version": "4.8.4"
+    },
+    {
+      "basis": "Exact JSR release metadata hash equals the selected Deno lock; jsr.json is bound by the release manifest SHA256 and declares MIT for this package. No standalone license text is asserted.",
+      "declaration": "docs/release/dependency-license-evidence-2026-10-01/jsr-_supabase_functions-js-2.110.7/jsr.json",
+      "ecosystem": "deno-jsr",
+      "files": [
+        {
+          "bytes": 183,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/jsr-_supabase_functions-js-2.110.7/jsr.json",
+          "sha256": "c29aa8d3713f199712c932904587a4dad5bedede4b300053bda9831f3230e405"
+        },
+        {
+          "bytes": 922,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/jsr-_supabase_functions-js-2.110.7/retrieval.json",
+          "sha256": "9068c3a4092ffa0059c7a7db1879130c55ad652295c845cf80c2686eeb06807b"
+        },
+        {
+          "bytes": 4913,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/jsr-_supabase_functions-js-2.110.7/version-meta.json",
+          "sha256": "07e0d01291f07ff34bbfbffdd567c2c32a5b3c5fbeacddc62f12f0147d7b5c3d"
+        }
+      ],
+      "license": "MIT",
+      "licenseTexts": [],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/jsr-_supabase_functions-js-2.110.7/version-meta.json",
+      "method": "locked-jsr-declaration",
+      "name": "@supabase/functions-js",
+      "ref": "dependency:8a84156d6f756270ed77a573",
+      "source": {
+        "kind": "jsr",
+        "url": "https://jsr.io/@supabase/functions-js/2.110.7"
+      },
+      "version": "2.110.7"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_functions-js-2.4.4/published.tgz",
+      "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+      "ecosystem": "deno-remote",
+      "files": [
+        {
+          "bytes": 1065,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_functions-js-2.4.4/LICENSE",
+          "sha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936"
+        },
+        {
+          "bytes": 11053,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_functions-js-2.4.4/published.tgz",
+          "sha256": "8d722d6ca9078d7a48b50abec630bbb372487c6b3352667b586f58fda92af00e"
+        },
+        {
+          "bytes": 973,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_functions-js-2.4.4/retrieval.json",
+          "sha256": "d4dc5fdc9b424f395c3df8f656f31f5db1184a5acd337885b7a81f23dfdc8ce1"
+        },
+        {
+          "bytes": 3064,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_functions-js-2.4.4/version.json",
+          "sha256": "59039f9ec8aa8fe002d5847ec70f08ace9c62044477bb01fdb1f21a6f6729c3c"
+        }
+      ],
+      "license": "MIT",
+      "licenseMember": "package/LICENSE",
+      "licenseText": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_functions-js-2.4.4/LICENSE",
+      "licenseTexts": [
+        "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_functions-js-2.4.4/LICENSE"
+      ],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_functions-js-2.4.4/version.json",
+      "method": "exact-npm-release",
+      "name": "https://esm.sh/@supabase/functions-js@2.4.4/denonext/functions-js.mjs",
+      "ref": "dependency:9961b2726fd85678065ecffa",
+      "source": {
+        "kind": "http",
+        "url": "https://esm.sh/@supabase/functions-js@2.4.4/denonext/functions-js.mjs"
+      },
+      "upstreamName": "@supabase/functions-js",
+      "version": "2.4.4"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_realtime-js-2.11.2/published.tgz",
+      "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+      "ecosystem": "deno-remote",
+      "files": [
+        {
+          "bytes": 1067,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_realtime-js-2.11.2/LICENSE.md",
+          "sha256": "400341ae19d1175be5313b721687f2b1d6b974ecafcbea35c8cf872bc77aa514"
+        },
+        {
+          "bytes": 57015,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_realtime-js-2.11.2/published.tgz",
+          "sha256": "9b2eabb222f08b508f9e231f3c6222f8bca4f120ec2501d86c019addc82a130b"
+        },
+        {
+          "bytes": 972,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_realtime-js-2.11.2/retrieval.json",
+          "sha256": "b3dc63bcf8bfa6109cd8edf8783ae5fc265d4c9107529b6ded3ef24b0f35e8e7"
+        },
+        {
+          "bytes": 3095,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_realtime-js-2.11.2/version.json",
+          "sha256": "1d53e5b848deb6af3f0475f4ac78729f6f364d876e1b5b02b50925de1d814454"
+        }
+      ],
+      "license": "MIT",
+      "licenseMember": "package/LICENSE.md",
+      "licenseText": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_realtime-js-2.11.2/LICENSE.md",
+      "licenseTexts": [
+        "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_realtime-js-2.11.2/LICENSE.md"
+      ],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_realtime-js-2.11.2/version.json",
+      "method": "exact-npm-release",
+      "name": "https://esm.sh/@supabase/realtime-js@2.11.2/denonext/realtime-js.mjs",
+      "ref": "dependency:a0584e133516275e046f2aa4",
+      "source": {
+        "kind": "http",
+        "url": "https://esm.sh/@supabase/realtime-js@2.11.2/denonext/realtime-js.mjs"
+      },
+      "upstreamName": "@supabase/realtime-js",
+      "version": "2.11.2"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.1/zipflinger-8.13.1.jar",
+      "basis": "Official Google Maven POM for the exact selected coordinate declares Apache-2.0; downloaded JAR SHA256 equals every selected cached artifact. No version was changed.",
+      "ecosystem": "maven",
+      "files": [
+        {
+          "bytes": 1458,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.1/retrieval.json",
+          "sha256": "d4cc08ba226d200a8845287fba82d004a9671a833847f4855bc8f6c040561b1d"
+        },
+        {
+          "bytes": 66972,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.1/zipflinger-8.13.1.jar",
+          "sha256": "07060069c35e469d7c343abc15f1d6362bc1356b81bf462539db88a53ed653f1"
+        },
+        {
+          "bytes": 1112,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.1/zipflinger-8.13.1.pom",
+          "sha256": "ad177b4a4cf61a38cdbefa6131141648959ec883ae232085638416680f939d1d"
+        }
+      ],
+      "license": "Apache-2.0",
+      "licenseTexts": [],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.13.1/zipflinger-8.13.1.pom",
+      "method": "exact-maven-pom",
+      "name": "com.android:zipflinger",
+      "ref": "dependency:aa12cd4170c1c3dbc2d16a4e",
+      "source": {
+        "kind": "gradle-module-cache"
+      },
+      "version": "8.13.1"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/published.tgz",
+      "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+      "ecosystem": "deno-remote",
+      "files": [
+        {
+          "bytes": 1065,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/LICENSE",
+          "sha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936"
+        },
+        {
+          "bytes": 53441,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/published.tgz",
+          "sha256": "d1a41bab7cca3501565a943064dd4e410551a7e89a75ca1ac86ceb5c57ff410e"
+        },
+        {
+          "bytes": 1015,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/retrieval.json",
+          "sha256": "95e7d6bbe35e5118083bf2e3e3f0120c6250a5670bd1c54493a433612d064a35"
+        },
+        {
+          "bytes": 3790,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/version.json",
+          "sha256": "c5fc5c652edae46a106e1f999b277e5839fe1697526b66e0259aba7010c7dc0d"
+        }
+      ],
+      "license": "MIT",
+      "licenseMember": "package/LICENSE",
+      "licenseText": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/LICENSE",
+      "licenseTexts": [
+        "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/LICENSE"
+      ],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/version.json",
+      "method": "exact-npm-release",
+      "name": "https://esm.sh/@supabase/supabase-js@2.49.4/denonext/supabase-js.mjs",
+      "ref": "dependency:aa79094b130b11b57909a9c9",
+      "source": {
+        "kind": "http",
+        "url": "https://esm.sh/@supabase/supabase-js@2.49.4/denonext/supabase-js.mjs"
+      },
+      "upstreamName": "@supabase/supabase-js",
+      "version": "2.49.4"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/published.tgz",
+      "basis": "All six selected npm release files are byte-identical to Debian upstream buffers 0.1.1; Debian Files: * copyright assigns MIT to upstream James Halliday. The similarly named node-buffers npm fork was rejected because its bytes differ.",
+      "ecosystem": "npm",
+      "files": [
+        {
+          "bytes": 982,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/byte-equivalence.json",
+          "sha256": "9a93bc6283c9129dcb47a74157ee5c18f6fd3c3d71e0240f248fe74e2cb0ad72"
+        },
+        {
+          "bytes": 1649,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/debian-copyright",
+          "sha256": "97423a03bc4476a98de2bf3fa7efff55b3f338da76a7b3cbf747b4dc6f52a056"
+        },
+        {
+          "bytes": 4195,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/debian-upstream.orig.tar.gz",
+          "sha256": "f8de49c60e467005182d9687b5d87775bbcec6385ac63220b7741327441deb6d"
+        },
+        {
+          "bytes": 4195,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/published.tgz",
+          "sha256": "f8de49c60e467005182d9687b5d87775bbcec6385ac63220b7741327441deb6d"
+        },
+        {
+          "bytes": 890,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/retrieval.json",
+          "sha256": "6a3432a7b6f056d787dbf6f00f8959605ff808a95aec9de0c5e26847e5e4c82a"
+        },
+        {
+          "bytes": 1170,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/version.json",
+          "sha256": "e42a7c058587a50fa7d026e9a00c57d8d366167ae9a6e412aa9cc7cd9b517f91"
+        }
+      ],
+      "license": "MIT",
+      "licenseText": "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/debian-copyright",
+      "licenseTexts": [
+        "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/debian-copyright"
+      ],
+      "licensedArchive": "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/debian-upstream.orig.tar.gz",
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/npm-buffers-0.1.1/version.json",
+      "method": "identical-debian-upstream",
+      "name": "buffers",
+      "ref": "dependency:ac85ba85e0a56279d4fec26a",
+      "source": {
+        "kind": "npm-registry",
+        "url": "https://registry.npmjs.org/buffers/-/buffers-0.1.1.tgz"
+      },
+      "upstreamName": "buffers",
+      "version": "0.1.1"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/published.tgz",
+      "basis": "Exact upstream npm package name and version; registry release declares MIT and the SRI/SHA1 authenticated tarball supplies the license text. Locked transformed CDN module bytes remain distinct from the npm archive.",
+      "ecosystem": "deno-remote",
+      "files": [
+        {
+          "bytes": 1065,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/LICENSE",
+          "sha256": "334dd6820e2eaeab2064e7c59001b810566728a28a41a7c1dbf69bbee17d0936"
+        },
+        {
+          "bytes": 53441,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/published.tgz",
+          "sha256": "d1a41bab7cca3501565a943064dd4e410551a7e89a75ca1ac86ceb5c57ff410e"
+        },
+        {
+          "bytes": 1015,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/retrieval.json",
+          "sha256": "95e7d6bbe35e5118083bf2e3e3f0120c6250a5670bd1c54493a433612d064a35"
+        },
+        {
+          "bytes": 3790,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/version.json",
+          "sha256": "c5fc5c652edae46a106e1f999b277e5839fe1697526b66e0259aba7010c7dc0d"
+        }
+      ],
+      "license": "MIT",
+      "licenseMember": "package/LICENSE",
+      "licenseText": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/LICENSE",
+      "licenseTexts": [
+        "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/LICENSE"
+      ],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/npm-_supabase_supabase-js-2.49.4/version.json",
+      "method": "exact-npm-release",
+      "name": "https://esm.sh/@supabase/supabase-js@2.49.4",
+      "ref": "dependency:e4e36157a8ab214755e9d7fa",
+      "source": {
+        "kind": "http",
+        "url": "https://esm.sh/@supabase/supabase-js@2.49.4"
+      },
+      "upstreamName": "@supabase/supabase-js",
+      "version": "2.49.4"
+    },
+    {
+      "archive": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.1.4/zipflinger-8.1.4.jar",
+      "basis": "Official Google Maven POM for the exact selected coordinate declares Apache-2.0; downloaded JAR SHA256 equals every selected cached artifact. No version was changed.",
+      "ecosystem": "maven",
+      "files": [
+        {
+          "bytes": 1445,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.1.4/retrieval.json",
+          "sha256": "7f7a3d7e0bf46610eccb031ac3b03eafc2e290613ef2cdfa64cc7900681c484e"
+        },
+        {
+          "bytes": 66860,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.1.4/zipflinger-8.1.4.jar",
+          "sha256": "56589abf965af58ea1d31c15d676fe0d62b9db92983fbdfe8e72c983ea577dbb"
+        },
+        {
+          "bytes": 1109,
+          "path": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.1.4/zipflinger-8.1.4.pom",
+          "sha256": "5002c44c5ecb8703623118c95611e6f20955ef35bc8a21c5e7ab42efe9306cf7"
+        }
+      ],
+      "license": "Apache-2.0",
+      "licenseTexts": [],
+      "metadata": "docs/release/dependency-license-evidence-2026-10-01/maven-com.android_zipflinger-8.1.4/zipflinger-8.1.4.pom",
+      "method": "exact-maven-pom",
+      "name": "com.android:zipflinger",
+      "ref": "dependency:fb7e2849f69b7f11f4a29e1f",
+      "source": {
+        "kind": "gradle-module-cache"
+      },
+      "version": "8.1.4"
+    }
+  ],
+  "purpose": "Publisher evidence for all 22 outstanding component license records; no legal approval or dependency upgrades",
+  "schemaVersion": 1
+}
