@@ -194,6 +194,27 @@ class InventoryTests(unittest.TestCase):
                 else: os.mkfifo(vendor / 'special')
                 with self.assertRaises(inventory.InventoryError): self.read_local_dart()
 
+    def test_local_dart_standalone_test_resolution_does_not_change_runtime_source_identity(self):
+        self.local_dart_fixture()
+        _, original = self.read_local_dart()
+        for relative in inventory.LOCAL_DART_GENERATED_FILES:
+            self.write('vendor/dep/' + relative, 'Generated standalone test resolution')
+        _, current = self.read_local_dart()
+        self.assertEqual(original['source'], current['source'])
+        self.assertEqual(current['localSourceProvenance']['excludedGeneratedFiles'], list(inventory.LOCAL_DART_GENERATED_FILES))
+        self.assertFalse(any('/.dart_tool/' in key or key.endswith('/pubspec.lock') for key in current['evidence']))
+        self.write('vendor/dep/.dart_tool/unrecorded_source.dart', 'Unmanifested source is not a generated resolution file')
+        with self.assertRaises(inventory.InventoryError): self.read_local_dart()
+
+    def test_local_dart_generated_resolution_files_cannot_be_links_or_special_files(self):
+        for kind in ('link', 'special'):
+            with self.subTest(kind=kind):
+                vendor, _ = self.local_dart_fixture()
+                target = vendor / 'pubspec.lock'
+                if kind == 'link': target.symlink_to(vendor / 'lib/client.dart')
+                else: os.mkfifo(target)
+                with self.assertRaises(inventory.InventoryError): self.read_local_dart()
+
     def test_local_dart_manifest_duplicate_omitted_unsafe_and_false_original_rejected(self):
         for change in ('duplicate', 'omitted', 'unsafe', 'false-original', 'wrong-binding'):
             with self.subTest(change=change):
@@ -527,6 +548,382 @@ class InventoryTests(unittest.TestCase):
         path = self.root / 'android.json'
         inventory.write_bounded_report(value, path, [['targets', 'app', 'configurations']])
         self.assertEqual(inventory.load_report(path), value)
+
+    def android_build_observation_fixture(self):
+        app = 'rayon_sports'
+        android = self.root / 'apps' / app / 'android'
+        inputs = {}
+        for relative in ['pubspec.lock', 'apps/rayon_sports/android/settings.gradle.kts',
+                         'apps/rayon_sports/android/build.gradle.kts', 'apps/rayon_sports/android/app/build.gradle.kts',
+                         'apps/rayon_sports/android/gradle/wrapper/gradle-wrapper.properties']:
+            path = self.write(relative, 'Current original declaration: ' + relative)
+            inputs[str(path)] = inventory.digest_file(path)
+        artifact = self.root / 'cached/compiler.jar'; artifact.parent.mkdir()
+        with zipfile.ZipFile(artifact, 'w') as archive:
+            archive.writestr('META-INF/LICENSE', 'Recorded original compiler license')
+        build = self.write('proof/debug-build.json', {'terminal': 0, 'club': app, 'platform': 'android',
+            'frozenNativeInputsUnchanged': True, 'platformImmutableUnchanged': True,
+            'command': {'argv': ['flutter', 'build', 'apk', '--debug', '--no-pub']}})
+        network = self.write('proof/egress.json', {'external': [{'errno': 1}, {'errno': 1}, {'errno': 1}]})
+        component = {'id': 'org.jetbrains.kotlin:kotlin-compiler-embeddable:2.2.20',
+                     'group': 'org.jetbrains.kotlin', 'name': 'kotlin-compiler-embeddable', 'version': '2.2.20'}
+        node = {'id': 'project :app', 'localProject': True, 'projectDirectory': str(android / 'app')}
+        config = {'project': ':app', 'configuration': 'debugCompileClasspath', 'state': 'RESOLVED',
+                  'components': [node, component], 'edges': [{'from': node['id'], 'to': component['id'], 'requested': component['id'], 'constraint': False}],
+                  'artifacts': [{'component': component['id'], 'file': str(artifact), 'bytes': artifact.stat().st_size,
+                                 'sha256': inventory.digest_file(artifact)}], 'unresolved': []}
+        runtime = copy.deepcopy(config); runtime['configuration'] = 'debugRuntimeClasspath'
+        compiler = copy.deepcopy(config); compiler['configuration'] = 'kotlinCompilerClasspath'
+        snapshot = {'schemaVersion': 1, 'kind': 'actual-android-build-observation', 'app': app,
+                    'rootDirectory': str(android), 'offline': False, 'versionForcing': False,
+                    'buildReceipt': {'file': str(build), 'sha256': inventory.digest_file(build)},
+                    'networkReceipt': {'file': str(network), 'sha256': inventory.digest_file(network)},
+                    'sourceInputs': inputs, 'sourceInputsAfter': dict(inputs), 'configurations': [config, runtime, compiler]}
+        path = self.write('observations/rayon_sports.json', snapshot)
+        return snapshot, path, artifact
+
+    def read_android_build_observation(self):
+        observer = inventory.Inventory(self.root, android_build_observations=self.root / 'observations')
+        observer.coverage['android'] = {'oldOfflineScope': {'offline': True}}
+        observer.read_android_build_observations()
+        return observer
+
+    def test_current_android_debug_observation_retains_real_mode_edges_and_compiler_bytes(self):
+        _, _, artifact = self.android_build_observation_fixture()
+        observer = self.read_android_build_observation()
+        current = observer.coverage['androidBuildObservations']['rayon_sports']
+        self.assertFalse(current['offline'])
+        self.assertEqual(observer.coverage['android'], {'oldOfflineScope': {'offline': True}})
+        self.assertEqual(current['configurationsObserved'], 3)
+        self.assertFalse(any('release' in row[1].lower() for row in current['consumedConfigurations']))
+        self.assertEqual(len(observer.edges), 3)
+        compiler = next(c for c in observer.components.values() if c['ecosystem'] == 'maven')
+        self.assertIn('android-build:rayon_sports::app:kotlinCompilerClasspath', compiler['occurrences'])
+        self.assertIn(inventory.digest_file(artifact), [i['value'] for i in compiler['integrities']])
+        self.assertTrue(compiler['licenseEvidence'])
+        self.assertFalse(observer.gaps)
+
+    def test_current_android_observation_cannot_fill_missing_graph_with_defaults(self):
+        original, path, _ = self.android_build_observation_fixture()
+        for field in ['components', 'edges', 'artifacts', 'unresolved']:
+            with self.subTest(field=field):
+                snapshot = copy.deepcopy(original); del snapshot['configurations'][0][field]
+                path.write_text(json.dumps(snapshot))
+                with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+
+    def test_current_android_observation_rejects_missing_or_nonboolean_constraint_fact(self):
+        original, path, _ = self.android_build_observation_fixture()
+        for value in (None, 'false', 0):
+            with self.subTest(value=value):
+                snapshot = copy.deepcopy(original)
+                snapshot['configurations'][0]['edges'][0]['constraint'] = value
+                path.write_text(json.dumps(snapshot))
+                with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+        del snapshot['configurations'][0]['edges'][0]['constraint']
+        path.write_text(json.dumps(snapshot))
+        with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+
+    def test_current_android_observation_rejects_malformed_receipt_containers(self):
+        original, path, _ = self.android_build_observation_fixture()
+        originals = {field: Path(original[field]['file']).read_bytes() for field in ('buildReceipt', 'networkReceipt')}
+        path.write_text('[]')
+        with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+        for field, value in [('buildReceipt', []), ('buildReceipt', {'command': None}), ('networkReceipt', []),
+                             ('networkReceipt', {'external': [None]}), ('networkReceipt', {'external': [{'errno': True}]})]:
+            with self.subTest(field=field, value=value):
+                for record, content in originals.items(): Path(original[record]['file']).write_bytes(content)
+                bound = Path(original[field]['file']); bound.write_text(json.dumps(value))
+                snapshot = copy.deepcopy(original); snapshot[field]['sha256'] = inventory.digest_file(bound)
+                path.write_text(json.dumps(snapshot))
+                with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+
+    def test_current_android_missing_selected_bytes_cannot_borrow_prior_offline_integrity(self):
+        snapshot, path, _ = self.android_build_observation_fixture()
+        for config in snapshot['configurations']: config['artifacts'] = []
+        path.write_text(json.dumps(snapshot))
+        observer = inventory.Inventory(self.root, android_build_observations=self.root / 'observations')
+        component = snapshot['configurations'][0]['components'][1]
+        prior = observer.component('maven', component['group'] + ':' + component['name'], component['version'],
+                                   {'kind': 'gradle-module-cache'})
+        prior['integrities'].append({'algorithm': 'sha256', 'value': '0' * 64, 'basis': 'prior offline scope'})
+        observer.read_android_build_observations()
+        self.assertEqual([gap['kind'] for gap in observer.gaps.values()], ['android-build-artifact-integrity-unavailable'])
+        self.assertTrue(next(iter(observer.gaps.values()))['blocksExact'])
+
+    def android_metadata_component(self, snapshot, kind, body, attributes, display='selectedVariant'):
+        node = {'id': 'sample:metadata:1.0.0', 'group': 'sample', 'name': 'metadata', 'version': '1.0.0',
+                'selectedVariants': [{'displayName': display, 'attributes': attributes}]}
+        path = self.write('cached/metadata.' + kind, body)
+        node['metadata'] = [{'kind': kind, 'file': str(path), 'bytes': path.stat().st_size, 'sha256': inventory.digest_file(path)}]
+        for config in snapshot['configurations']:
+            config['components'].append(copy.deepcopy(node))
+            config['edges'].append({'from': config['components'][0]['id'], 'to': node['id'], 'requested': node['id'], 'constraint': True})
+        return path
+
+    def test_current_android_metadata_only_platform_binds_pom_and_observed_category(self):
+        snapshot, path, _ = self.android_build_observation_fixture()
+        pom = '<project><groupId>sample</groupId><artifactId>metadata</artifactId><version>1.0.0</version><packaging>pom</packaging><licenses><license><name>Observed license</name></license></licenses></project>'
+        metadata = self.android_metadata_component(snapshot, 'pom', pom, {'org.gradle.category': 'platform'})
+        path.write_text(json.dumps(snapshot)); observer = self.read_android_build_observation()
+        item = next(c for c in observer.components.values() if c['name'] == 'sample:metadata')
+        self.assertFalse(observer.gaps)
+        self.assertIn(inventory.digest_file(metadata), [i['value'] for i in item['integrities']])
+        self.assertTrue(item['licenseDeclarations'])
+        self.assertIn('not independently traced', observer.coverage['androidBuildObservations']['rayon_sports']['metadataProvenanceScope'])
+
+    def test_current_android_metadata_only_empty_and_redirect_variants_are_actual_bound_facts(self):
+        original, path, _ = self.android_build_observation_fixture()
+        for redirect in (False, True):
+            with self.subTest(redirect=redirect):
+                snapshot = copy.deepcopy(original)
+                variant = {'name': 'selectedVariant', 'attributes': {'org.gradle.category': 'library'}}
+                if redirect: variant['available-at'] = {'group': 'org.jetbrains.kotlin', 'module': 'kotlin-compiler-embeddable', 'version': '2.2.20'}
+                module = {'component': {'group': 'sample', 'module': 'metadata', 'version': '1.0.0'}, 'variants': [variant]}
+                self.android_metadata_component(snapshot, 'module', module, variant['attributes'])
+                path.write_text(json.dumps(snapshot)); observer = self.read_android_build_observation()
+                self.assertFalse(observer.gaps)
+
+    def test_current_android_metadata_cannot_replace_required_binary_or_invent_variant(self):
+        original, path, _ = self.android_build_observation_fixture()
+        for mutation in ('jar-packaging', 'wrong-platform-category', 'wrong-variant', 'variant-files', 'missing-observed-variant'):
+            with self.subTest(mutation=mutation):
+                snapshot = copy.deepcopy(original)
+                if mutation in ('jar-packaging', 'wrong-platform-category'):
+                    pom = '<project><groupId>sample</groupId><artifactId>metadata</artifactId><version>1.0.0</version><packaging>' + ('jar' if mutation == 'jar-packaging' else 'pom') + '</packaging></project>'
+                    self.android_metadata_component(snapshot, 'pom', pom, {'org.gradle.category': 'library' if mutation == 'wrong-platform-category' else 'platform'})
+                else:
+                    variant = {'name': 'selectedVariant', 'attributes': {'org.gradle.category': 'library'}}
+                    if mutation == 'variant-files': variant['files'] = [{'name': 'missing-runtime.jar'}]
+                    module = {'component': {'group': 'sample', 'module': 'metadata', 'version': '1.0.0'}, 'variants': [variant]}
+                    self.android_metadata_component(snapshot, 'module', module, variant['attributes'], 'wrongVariant' if mutation == 'wrong-variant' else variant['name'])
+                    if mutation == 'missing-observed-variant':
+                        for config in snapshot['configurations']: del config['components'][-1]['selectedVariants']
+                path.write_text(json.dumps(snapshot)); observer = self.read_android_build_observation()
+                self.assertEqual([gap['kind'] for gap in observer.gaps.values()], ['android-build-artifact-integrity-unavailable'])
+
+    def test_current_android_metadata_rejects_foreign_coordinate_and_hash_drift(self):
+        original, path, _ = self.android_build_observation_fixture()
+        for mutation in ('foreign-pom', 'foreign-module', 'hash', 'size'):
+            with self.subTest(mutation=mutation):
+                snapshot = copy.deepcopy(original)
+                if mutation == 'foreign-pom':
+                    metadata = self.android_metadata_component(snapshot, 'pom', '<project><groupId>foreign</groupId><artifactId>metadata</artifactId><version>1.0.0</version><packaging>pom</packaging></project>', {'org.gradle.category': 'platform'})
+                else:
+                    module = {'component': {'group': 'foreign' if mutation == 'foreign-module' else 'sample', 'module': 'metadata', 'version': '1.0.0'}, 'variants': [{'name': 'selectedVariant'}]}
+                    metadata = self.android_metadata_component(snapshot, 'module', module, {})
+                    if mutation == 'hash': metadata.write_text(metadata.read_text() + ' ')
+                    if mutation == 'size':
+                        for config in snapshot['configurations']: config['components'][-1]['metadata'][0]['bytes'] += 1
+                path.write_text(json.dumps(snapshot))
+                with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+
+    def test_current_android_metadata_ambiguity_and_unobserved_redirect_block_exactness(self):
+        original, path, _ = self.android_build_observation_fixture()
+        for mutation in ('ambiguous-body', 'missing-redirect'):
+            with self.subTest(mutation=mutation):
+                snapshot = copy.deepcopy(original)
+                variant = {'name': 'selectedVariant'}
+                if mutation == 'missing-redirect': variant['available-at'] = {'group': 'missing', 'module': 'target', 'version': '1.0.0'}
+                module = {'component': {'group': 'sample', 'module': 'metadata', 'version': '1.0.0'}, 'variants': [variant]}
+                self.android_metadata_component(snapshot, 'module', module, {})
+                if mutation == 'ambiguous-body':
+                    other = self.write('other/metadata.module', {**module, 'comment': 'Unequal candidate repository metadata'})
+                    for config in snapshot['configurations']:
+                        config['components'][-1]['metadata'].append({'kind': 'module', 'file': str(other), 'bytes': other.stat().st_size, 'sha256': inventory.digest_file(other)})
+                path.write_text(json.dumps(snapshot)); observer = self.read_android_build_observation()
+                kinds = {gap['kind'] for gap in observer.gaps.values()}
+                self.assertIn('android-build-metadata-selection-ambiguous' if mutation == 'ambiguous-body' else 'android-build-metadata-redirect-target-unobserved', kinds)
+                self.assertTrue(all(gap['blocksExact'] for gap in observer.gaps.values()))
+
+    def test_current_android_metadata_ambiguity_across_configurations_is_not_a_winner(self):
+        snapshot, path, _ = self.android_build_observation_fixture()
+        module = {'component': {'group': 'sample', 'module': 'metadata', 'version': '1.0.0'}, 'variants': [{'name': 'selectedVariant'}]}
+        self.android_metadata_component(snapshot, 'module', module, {})
+        other = self.write('other/metadata.module', {**module, 'comment': 'Different repository body in the second configuration'})
+        snapshot['configurations'][1]['components'][-1]['metadata'] = [{'kind': 'module', 'file': str(other), 'bytes': other.stat().st_size, 'sha256': inventory.digest_file(other)}]
+        path.write_text(json.dumps(snapshot)); observer = self.read_android_build_observation()
+        self.assertIn('android-build-metadata-selection-ambiguous', {g['kind'] for g in observer.gaps.values()})
+        self.assertTrue(all(g['blocksExact'] for g in observer.gaps.values()))
+
+    def test_current_android_pom_platform_cannot_hide_selected_module_binary(self):
+        snapshot, path, _ = self.android_build_observation_fixture()
+        attributes = {'org.gradle.category': 'platform'}
+        self.android_metadata_component(snapshot, 'pom', '<project><groupId>sample</groupId><artifactId>metadata</artifactId><version>1.0.0</version><packaging>pom</packaging></project>', attributes)
+        module = self.write('cached/metadata.module', {'component': {'group': 'sample', 'module': 'metadata', 'version': '1.0.0'},
+                                                    'variants': [{'name': 'selectedVariant', 'attributes': attributes, 'files': [{'name': 'actual-required.jar'}]}]})
+        for config in snapshot['configurations']:
+            config['components'][-1]['metadata'].append({'kind': 'module', 'file': str(module), 'bytes': module.stat().st_size, 'sha256': inventory.digest_file(module)})
+        path.write_text(json.dumps(snapshot)); observer = self.read_android_build_observation()
+        self.assertEqual([g['kind'] for g in observer.gaps.values()], ['android-build-artifact-integrity-unavailable'])
+
+    def android_publication_owner_fixture(self):
+        snapshot, path, artifact = self.android_build_observation_fixture()
+        attributes = {'org.gradle.category': 'library', 'org.gradle.usage': 'java-api'}
+        target_id, owner_id = 'sample:target-jvm:1.0.0', 'sample:target:1.0.0'
+        variant = {'name': 'jvmApiElements-published', 'attributes': attributes}
+        owner_body = {'component': {'group': 'sample', 'module': 'target', 'version': '1.0.0'},
+                      'variants': [{**variant, 'available-at': {'group': 'sample', 'module': 'target-jvm', 'version': '1.0.0',
+                                                               'url': '../../target-jvm/1.0.0/target-jvm-1.0.0.module'}}]}
+        target_body = {'component': {**owner_body['component'], 'url': '../../target/1.0.0/target-1.0.0.module'},
+                       'variants': [{**variant, 'files': [{'name': 'target-jvm-1.0.0.jar'}]}]}
+        owner_path = self.write('cached/sample/target/1.0.0/target-1.0.0.module', owner_body)
+        target_path = self.write('cached/sample/target-jvm/1.0.0/target-jvm-1.0.0.module', target_body)
+        def node(module, metadata):
+            return {'id': 'sample:' + module + ':1.0.0', 'group': 'sample', 'name': module, 'version': '1.0.0',
+                    'selectedVariants': [{'displayName': variant['name'], 'attributes': attributes}],
+                    'metadata': [{'kind': 'module', 'file': str(metadata), 'bytes': metadata.stat().st_size,
+                                  'sha256': inventory.digest_file(metadata)}]}
+        for config in snapshot['configurations']:
+            config['components'].extend([node('target', owner_path), node('target-jvm', target_path)])
+            config['edges'].append({'from': owner_id, 'to': target_id, 'requested': target_id, 'constraint': False})
+            config['artifacts'].append({'component': target_id, 'file': str(artifact), 'bytes': artifact.stat().st_size,
+                                        'sha256': inventory.digest_file(artifact)})
+        return snapshot, path, owner_path, target_path
+
+    def update_publication_metadata(self, snapshot, metadata, body):
+        metadata.write_text(json.dumps(body))
+        for config in snapshot['configurations']:
+            for node in config['components']:
+                for record in node.get('metadata', []):
+                    if record['file'] == str(metadata):
+                        record.update(bytes=metadata.stat().st_size, sha256=inventory.digest_file(metadata))
+
+    def test_current_android_publication_owner_binds_actual_bidirectional_metadata_and_variants(self):
+        snapshot, path, owner, target = self.android_publication_owner_fixture()
+        path.write_text(json.dumps(snapshot)); observer = self.read_android_build_observation()
+        self.assertFalse(observer.gaps)
+        item = next(c for c in observer.components.values() if c['name'] == 'sample:target-jvm')
+        self.assertTrue({observer.path_name(owner), observer.path_name(target)}.issubset(item['evidence']))
+
+    def test_current_android_publication_owner_rejects_foreign_group_or_version(self):
+        original, path, owner, target = self.android_publication_owner_fixture()
+        source = inventory.load_json(target)
+        for field, wrong in [('group', 'foreign'), ('version', '2.0.0')]:
+            with self.subTest(field=field):
+                snapshot = copy.deepcopy(original); body = copy.deepcopy(source); body['component'][field] = wrong
+                self.update_publication_metadata(snapshot, target, body); path.write_text(json.dumps(snapshot))
+                with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+
+    def test_current_android_publication_owner_requires_canonical_local_relative_url(self):
+        original, path, owner, target = self.android_publication_owner_fixture(); source = inventory.load_json(target)
+        for url in ['https://example.test/owner.module', str(owner), '../../target/1.0.0/./target-1.0.0.module',
+                    '../../target/1.0.0/target-1.0.0.module?override=1', '../../target/1.0.0/unknown.module']:
+            with self.subTest(url=url):
+                snapshot = copy.deepcopy(original); body = copy.deepcopy(source); body['component']['url'] = url
+                self.update_publication_metadata(snapshot, target, body); path.write_text(json.dumps(snapshot))
+                with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+
+    def test_current_android_publication_owner_rejects_wrong_backlink_coordinate_or_body(self):
+        original, path, owner, target = self.android_publication_owner_fixture(); source = inventory.load_json(owner)
+        for mutation in ['module', 'version', 'url', 'absent']:
+            with self.subTest(mutation=mutation):
+                snapshot = copy.deepcopy(original); body = copy.deepcopy(source)
+                if mutation == 'absent': del body['variants'][0]['available-at']
+                else: body['variants'][0]['available-at'][mutation] = {'module': 'other', 'version': '2.0.0', 'url': '../../target-jvm/1.0.0/other.module'}[mutation]
+                self.update_publication_metadata(snapshot, owner, body); path.write_text(json.dumps(snapshot))
+                with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+
+    def test_current_android_publication_owner_must_be_actually_observed(self):
+        snapshot, path, owner, target = self.android_publication_owner_fixture()
+        for config in snapshot['configurations']:
+            config['components'] = [n for n in config['components'] if n['id'] != 'sample:target:1.0.0']
+            config['edges'] = [e for e in config['edges'] if e['from'] != 'sample:target:1.0.0']
+        path.write_text(json.dumps(snapshot))
+        with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+
+    def test_current_android_publication_owner_requires_bound_original_body(self):
+        snapshot, path, owner, target = self.android_publication_owner_fixture()
+        path.write_text(json.dumps(snapshot)); owner.write_text(owner.read_text() + ' ')
+        with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+
+    def test_current_android_publication_owner_requires_observed_target_and_owner_variants(self):
+        original, path, owner, target = self.android_publication_owner_fixture()
+        for identity in ['sample:target:1.0.0', 'sample:target-jvm:1.0.0']:
+            with self.subTest(identity=identity):
+                snapshot = copy.deepcopy(original)
+                for config in snapshot['configurations']:
+                    next(n for n in config['components'] if n['id'] == identity)['selectedVariants'][0]['displayName'] = 'unselectedVariant'
+                path.write_text(json.dumps(snapshot))
+                with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+
+    def test_current_android_publication_owner_does_not_replace_missing_target_binary(self):
+        snapshot, path, owner, target = self.android_publication_owner_fixture()
+        for config in snapshot['configurations']: config['artifacts'] = [a for a in config['artifacts'] if a['component'] != 'sample:target-jvm:1.0.0']
+        path.write_text(json.dumps(snapshot)); observer = self.read_android_build_observation()
+        self.assertEqual([g['kind'] for g in observer.gaps.values()], ['android-build-artifact-integrity-unavailable'])
+
+    def test_current_android_observation_rejects_foreign_failed_forced_or_unbound_build(self):
+        original, path, _ = self.android_build_observation_fixture()
+        changes = [{'app': 'nkana'}, {'rootDirectory': str(self.root)}, {'versionForcing': True}, {'offline': None},
+                   {'sourceInputsAfter': {}}, {'sourceInputs': {}, 'sourceInputsAfter': {}},
+                   {'buildReceipt': {'file': original['buildReceipt']['file'], 'sha256': '0' * 64}}]
+        for change in changes:
+            with self.subTest(change=change):
+                path.write_text(json.dumps({**original, **change}))
+                with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+        path.write_text(json.dumps(original))
+        build = Path(original['buildReceipt']['file']); value = inventory.load_json(build); value['terminal'] = 1
+        build.write_text(json.dumps(value)); original['buildReceipt']['sha256'] = inventory.digest_file(build)
+        path.write_text(json.dumps(original))
+        with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+
+    def test_current_android_observation_rejects_source_artifact_and_network_drift(self):
+        original, path, artifact = self.android_build_observation_fixture()
+        source = Path(next(iter(original['sourceInputs']))); original_source = source.read_bytes()
+        source.write_text('Changed declared range')
+        with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+        source.write_bytes(original_source)
+        original_artifact = artifact.read_bytes(); artifact.write_bytes(original_artifact + b'changed')
+        with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+        artifact.write_bytes(original_artifact)
+        network = Path(original['networkReceipt']['file']); network.write_text(json.dumps({'external': [{'errno': 0}]}))
+        original['networkReceipt']['sha256'] = inventory.digest_file(network); path.write_text(json.dumps(original))
+        with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+
+    def test_current_android_observation_rejects_missing_edge_nodes_and_duplicate_configuration(self):
+        original, path, _ = self.android_build_observation_fixture()
+        snapshot = copy.deepcopy(original); snapshot['configurations'][0]['edges'][0]['to'] = 'fabricated:missing:1.0.0'
+        path.write_text(json.dumps(snapshot))
+        with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+        snapshot = copy.deepcopy(original); snapshot['configurations'].append(copy.deepcopy(snapshot['configurations'][0]))
+        path.write_text(json.dumps(snapshot))
+        with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+        snapshot = copy.deepcopy(original); snapshot['configurations'][0]['artifacts'][0]['component'] = 'fabricated:missing:1.0.0'
+        path.write_text(json.dumps(snapshot))
+        with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+
+    def test_current_android_observation_retains_unresolved_and_missing_debug_as_exact_gaps(self):
+        snapshot, path, _ = self.android_build_observation_fixture()
+        snapshot['configurations'][0]['unresolved'] = [{'failureType': 'ActualArtifactFailure'}]
+        snapshot['configurations'] = snapshot['configurations'][:1]
+        path.write_text(json.dumps(snapshot)); observer = self.read_android_build_observation()
+        self.assertEqual({g['kind'] for g in observer.gaps.values()}, {'android-build-unresolved', 'android-build-debug-configurations-incomplete'})
+        self.assertTrue(all(g['blocksExact'] for g in observer.gaps.values()))
+
+    def test_current_android_observation_is_optional_and_empty_supplied_scope_rejects(self):
+        observer = inventory.Inventory(self.root); observer.read_android_build_observations()
+        self.assertNotIn('androidBuildObservations', observer.coverage)
+        (self.root / 'observations').mkdir()
+        with self.assertRaises(inventory.InventoryError): self.read_android_build_observation()
+
+    def test_current_android_failed_configuration_cannot_omit_failure_details(self):
+        snapshot, path, _ = self.android_build_observation_fixture()
+        snapshot['configurations'][0]['state'] = 'RESOLVED_WITH_FAILURES'
+        path.write_text(json.dumps(snapshot)); observer = self.read_android_build_observation()
+        self.assertEqual([g['kind'] for g in observer.gaps.values()], ['android-build-failure-details-unavailable'])
+        self.assertTrue(next(iter(observer.gaps.values()))['blocksExact'])
+
+    def test_report_exports_current_android_observations_separately_without_offline_relabel(self):
+        snapshot, path, _ = self.android_build_observation_fixture()
+        value, _ = self.evidence_fixture()
+        value['summary'].update(byEcosystem={'npm': 1}, evidenceItems=1, dependencyEdges=0,
+                                componentsWithLicenseText=0, componentsWithLicenseDeclaration=0)
+        value['coverage'] = {'androidBuildObservations': {'rayon_sports': {'observation': str(path)}}}
+        inventory.write_reports(value, self.root / 'export')
+        exported = inventory.load_report(self.root / 'export.android-build.json')
+        self.assertEqual(exported['targets']['rayon_sports'], snapshot)
+        self.assertFalse(exported['targets']['rayon_sports']['offline'])
+        self.assertFalse((self.root / 'export.android.json').exists())
 
     def test_report_export_binds_android_snapshot_to_inventory_coverage(self):
         value, _ = self.evidence_fixture()

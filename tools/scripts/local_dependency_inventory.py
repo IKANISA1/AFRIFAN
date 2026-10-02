@@ -35,6 +35,10 @@ APPS = ('rayon_sports', 'as_vita', 'vitalo', 'nkana', 'costa_do_sol')
 SCHEMA_VERSION = 1
 LICENSE_NAME = re.compile(r'^(licen[sc]e|copying|copyright|notice)(?:$|[._-])', re.I)
 DEFAULT_PREFIX = 'docs/release/local-dependency-inventory-2026-09-30'
+# Standalone vendor test dependency resolution creates these exact local outputs.
+# Runtime selection and its lock are independently bound at the workspace root.
+# Any other unmanifested file, including source under .dart_tool, still fails.
+LOCAL_DART_GENERATED_FILES = ('.dart_tool/package_config.json', '.dart_tool/package_graph.json', 'pubspec.lock')
 
 
 class InventoryError(ValueError):
@@ -326,12 +330,13 @@ def sri_records(value):
 
 
 class Inventory:
-    def __init__(self, root, android_resolutions=None, pub_cache=None, npm_cache=None, swift_cache=None, action_sources=None, jsr_licenses=None):
+    def __init__(self, root, android_resolutions=None, pub_cache=None, npm_cache=None, swift_cache=None, action_sources=None, jsr_licenses=None, android_build_observations=None):
         self.root = Path(root).resolve()
         self.pub_cache = Path(pub_cache or Path.home() / '.pub-cache')
         self.npm_cache = Path(npm_cache or Path.home() / '.npm')
         self.swift_cache = Path(swift_cache or Path.home() / 'Library/Developer/Xcode/DerivedData')
         self.android_resolutions = Path(android_resolutions) if android_resolutions else None
+        self.android_build_observations = Path(android_build_observations) if android_build_observations else None
         self.action_sources = Path(action_sources) if action_sources else None
         self.jsr_licenses = Path(jsr_licenses) if jsr_licenses else None
         self.evidence = {}
@@ -408,7 +413,7 @@ class Inventory:
         if declared_selection != package or repository_directory(self.root, str(declared_selection), False) != package:
             raise InventoryError('Local Dart package_config selection uses a different source path')
 
-        final_files = regular_package_manifest(package, ('LOCAL_PATCH_MANIFEST.json',))
+        final_files = regular_package_manifest(package, ('LOCAL_PATCH_MANIFEST.json', *LOCAL_DART_GENERATED_FILES))
         actual_files = {f['path']: f for f in final_files}
         for required in ('pubspec.yaml', 'LICENSE', 'UPSTREAM_PUBSPEC.yaml', 'UPSTREAM_PROVENANCE.json'):
             if required not in actual_files:
@@ -499,6 +504,7 @@ class Inventory:
         provenance = {'upstreamPackage': name, 'upstreamVersion': version, 'upstreamRepository': upstream_repository,
                       'upstreamProvenanceEvidence': self.path_name(upstream_path), 'patchManifestEvidence': self.path_name(local_path),
                       'regularFileCount': len(final_files), 'changedUpstreamFiles': sorted(changed),
+                      'excludedGeneratedFiles': list(LOCAL_DART_GENERATED_FILES),
                       'contentManifestSha256': content_sha, 'licenseByteEqualityVerified': True,
                       'upstreamArchiveByteEqualityClaimed': False, 'upstreamLicenseApprovalAssessed': False}
         return source, provenance, keys
@@ -989,6 +995,277 @@ class Inventory:
                                                      'initialSnapshot': self.path_name(initial_path)}
         self.coverage['android'] = targets
 
+    def read_android_build_observations(self):
+        """Keep successful debug-build observations separate from offline resolution.
+
+        Recorded offline:false remains false. A collector must supply actual
+        edges, failures, selected bytes and source/compile/network receipts;
+        the older offline snapshots cannot supply missing current facts.
+        """
+        if self.android_build_observations is None:
+            return
+        directory = self.android_build_observations
+        paths = sorted(directory.glob('*.json'))
+        if not paths:
+            raise InventoryError('Current Android build observation directory is empty')
+        targets = {}
+
+        def bound_file(record, role):
+            if not isinstance(record, dict) or set(record) != {'file', 'sha256'} or not isinstance(record['file'], str) or not record['file'] or not re.fullmatch('[0-9a-f]{64}', str(record['sha256'])):
+                raise InventoryError('Current Android receipt binding is invalid')
+            path = self.root / record['file']
+            key = self.file_evidence(path, role)
+            if key is None or self.evidence[key]['sha256'] != record['sha256']:
+                raise InventoryError('Current Android bound receipt changed or is missing')
+            return path, key
+
+        def metadata_only(node, item, context):
+            records = node.get('metadata', [])
+            variants = node.get('selectedVariants', [])
+            if not isinstance(records, list) or not isinstance(variants, list) or any(
+                    not isinstance(v, dict) or not isinstance(v.get('displayName'), str) or not v['displayName']
+                    or not isinstance(v.get('attributes'), dict) or any(not isinstance(k, str) or not isinstance(value, str)
+                                                                        for k, value in v['attributes'].items()) for v in variants):
+                raise InventoryError('Current Android selected metadata/variant observations are invalid')
+            permitted = False
+            binary_required = False
+            redirects = set()
+            coordinates = (node['group'], node['name'], node['version'])
+            for record in records:
+                if not isinstance(record, dict) or record.get('kind') not in ('pom', 'module') or not isinstance(record.get('file'), str) or not record['file'] or type(record.get('bytes')) is not int or record['bytes'] < 0:
+                    raise InventoryError('Current Android selected metadata binding is invalid')
+                path, key = bound_file({field: record.get(field) for field in ('file', 'sha256')}, 'current-build-coordinate-metadata')
+                if self.evidence[key]['bytes'] != record['bytes'] or path.suffix != '.' + record['kind']:
+                    raise InventoryError('Current Android selected metadata size/type differs')
+                observed_metadata_hashes[(item['ref'], record['kind'])].add(record['sha256'])
+                item['evidence'].append(key)
+                item['integrities'].append({'algorithm': 'sha256', 'value': record['sha256'], 'basis': 'bound coordinate metadata; winning resolver path not independently traced'})
+                if record['kind'] == 'pom':
+                    tree = ET.parse(path).getroot()
+                    actual = (tree.findtext('{*}groupId') or tree.findtext('{*}parent/{*}groupId'),
+                              tree.findtext('{*}artifactId'), tree.findtext('{*}version') or tree.findtext('{*}parent/{*}version'))
+                    if actual != coordinates:
+                        raise InventoryError('Current Android POM belongs to another selected component')
+                    for license_node in tree.findall('.//{*}licenses/{*}license'):
+                        item['licenseDeclarations'].append(canonical({child.tag.rsplit('}', 1)[-1]: child.text for child in license_node}))
+                    if tree.findtext('{*}packaging') == 'pom' and any(v['attributes'].get('org.gradle.category') in ('platform', 'enforced-platform') for v in variants):
+                        permitted = True
+                else:
+                    module = load_json(path)
+                    component = module.get('component') if isinstance(module, dict) else None
+                    if not isinstance(component, dict) or not isinstance(module.get('variants'), list):
+                        raise InventoryError('Current Android module metadata belongs to another selected component')
+                    if tuple(component.get(k) for k in ('group', 'module', 'version')) != coordinates:
+                        # KMP target publications may name their root publication
+                        # owner in component. Bind both directions using actual
+                        # selected nodes/variants and existing metadata bodies.
+                        def relative_link(base, url):
+                            if not isinstance(url, str) or not url or '\\' in url:
+                                raise InventoryError('Current Android publication owner URL is invalid')
+                            parsed = urllib.parse.urlsplit(url)
+                            if parsed.scheme or parsed.netloc or parsed.query or parsed.fragment or Path(url).is_absolute() or urllib.parse.unquote(url) != url:
+                                raise InventoryError('Current Android publication owner URL is not a relative metadata path')
+                            target = (base.parent / url).resolve()
+                            if os.path.relpath(target, base.parent.resolve()) != url:
+                                raise InventoryError('Current Android publication owner URL is not canonical')
+                            return target
+
+                        def matches(candidate, selected):
+                            return isinstance(candidate, dict) and isinstance(candidate.get('name'), str) and isinstance(candidate.get('attributes', {}), dict) and any(
+                                isinstance(v, dict) and isinstance(v.get('displayName'), str) and isinstance(v.get('attributes'), dict)
+                                and (v['displayName'] == candidate['name'] or v['displayName'].endswith(' variant ' + candidate['name']))
+                                and all(v['attributes'].get(k) == str(value) for k, value in candidate.get('attributes', {}).items()) for v in selected)
+
+                        owner_coordinates = tuple(component.get(k) for k in ('group', 'module', 'version'))
+                        if any(not isinstance(v, str) or not v for v in owner_coordinates) or owner_coordinates[0] != coordinates[0] or owner_coordinates[2] != coordinates[2]:
+                            raise InventoryError('Current Android publication owner group/version differs')
+                        owner_id = ':'.join(owner_coordinates)
+                        owner_nodes = observed_module_nodes.get(owner_id, [])
+                        owner_path = relative_link(path, component.get('url'))
+                        owner_records = [r for owner in owner_nodes for r in owner.get('metadata', [])
+                                         if isinstance(r, dict) and r.get('kind') == 'module' and isinstance(r.get('file'), str)
+                                         and (self.root / r['file']).resolve() == owner_path]
+                        if not owner_records:
+                            raise InventoryError('Current Android publication owner is not an observed metadata binding')
+                        for owner_record in owner_records:
+                            _, owner_key = bound_file({field: owner_record.get(field) for field in ('file', 'sha256')}, 'current-build-publication-owner-metadata')
+                            if self.evidence[owner_key]['bytes'] != owner_record.get('bytes') or owner_path.suffix != '.module':
+                                raise InventoryError('Current Android publication owner metadata size/type differs')
+                            item['evidence'].append(owner_key)
+                        owner_module = load_json(owner_path)
+                        if not isinstance(owner_module, dict) or not isinstance(owner_module.get('component'), dict) or tuple(owner_module['component'].get(k) for k in ('group', 'module', 'version')) != owner_coordinates or not isinstance(owner_module.get('variants'), list):
+                            raise InventoryError('Current Android publication owner metadata belongs to another component')
+                        owner_variants = [v for owner in owner_nodes for v in owner.get('selectedVariants', [])]
+                        linked = False
+                        for owner_variant in owner_module['variants']:
+                            if not matches(owner_variant, owner_variants) or not matches(owner_variant, variants):
+                                continue
+                            redirect = owner_variant.get('available-at')
+                            if not isinstance(redirect, dict) or tuple(redirect.get(k) for k in ('group', 'module', 'version')) != coordinates:
+                                continue
+                            if relative_link(owner_path, redirect.get('url')) != path.resolve():
+                                raise InventoryError('Current Android publication owner backlink points to another metadata body')
+                            if any(candidate.get('name') == owner_variant['name'] and matches(candidate, variants) for candidate in module['variants'] if isinstance(candidate, dict)):
+                                linked = True
+                        if not linked:
+                            raise InventoryError('Current Android publication owner lacks the observed target variant backlink')
+                    for candidate in module['variants']:
+                        if not isinstance(candidate, dict) or not isinstance(candidate.get('name'), str) or not isinstance(candidate.get('attributes', {}), dict) or not isinstance(candidate.get('files', []), list):
+                            raise InventoryError('Current Android module variant metadata is invalid')
+                        matched = any((v['displayName'] == candidate['name'] or v['displayName'].endswith(' variant ' + candidate['name']))
+                                      and all(v['attributes'].get(k) == str(value) for k, value in candidate.get('attributes', {}).items()) for v in variants)
+                        if matched:
+                            if candidate.get('files'):
+                                binary_required = True
+                                continue
+                            permitted = True
+                            if 'available-at' in candidate:
+                                redirect = candidate['available-at']
+                                if not isinstance(redirect, dict) or any(not isinstance(redirect.get(k), str) or not redirect[k] for k in ('group', 'module', 'version')):
+                                    raise InventoryError('Current Android selected variant redirect is invalid')
+                                redirects.add(':'.join(redirect[k] for k in ('group', 'module', 'version')))
+            return permitted and not binary_required, redirects
+
+        for path in paths:
+            app = path.stem
+            if app not in APPS:
+                raise InventoryError('Current Android observation names an unsupported target')
+            snapshot = load_json(path)
+            android = self.root / 'apps' / app / 'android'
+            if not isinstance(snapshot, dict) or type(snapshot.get('schemaVersion')) is not int or snapshot['schemaVersion'] != 1 or snapshot.get('kind') != 'actual-android-build-observation' or snapshot.get('app') != app:
+                raise InventoryError('Current Android build observation schema is invalid')
+            if type(snapshot.get('offline')) is not bool or snapshot.get('versionForcing') is not False:
+                raise InventoryError('Current Android observation must retain real offline mode and unforced selections')
+            if not isinstance(snapshot.get('rootDirectory'), str) or (self.root / snapshot['rootDirectory']).resolve() != android.resolve():
+                raise InventoryError('Current Android build observation belongs to another target')
+            key = self.file_evidence(path, 'actual-debug-android-build-observation:' + app)
+            build_path, build_key = bound_file(snapshot.get('buildReceipt'), 'accepted-debug-android-build-receipt:' + app)
+            build = load_json(build_path)
+            if (not isinstance(build, dict) or type(build.get('terminal')) is not int or build['terminal'] != 0 or build.get('club') != app
+                    or build.get('platform') != 'android' or build.get('frozenNativeInputsUnchanged') is not True
+                    or build.get('platformImmutableUnchanged') is not True or not isinstance(build.get('command'), dict)
+                    or not isinstance(build['command'].get('argv'), list) or '--debug' not in build['command']['argv']):
+                raise InventoryError('Current Android observation requires a matching accepted debug compilation')
+            network_path, network_key = bound_file(snapshot.get('networkReceipt'), 'android-build-network-probe:' + app)
+            network = load_json(network_path)
+            external = network.get('external') if isinstance(network, dict) else None
+            if not isinstance(external, list) or not external or any(not isinstance(row, dict) or type(row.get('errno')) is not int or row['errno'] not in (1, 13) for row in external):
+                raise InventoryError('Current Android external-egress denial evidence is missing')
+            before = snapshot.get('sourceInputs')
+            if not isinstance(before, dict) or not before or before != snapshot.get('sourceInputsAfter') or any(not isinstance(p, str) or not re.fullmatch('[0-9a-f]{64}', str(h)) for p, h in before.items()):
+                raise InventoryError('Current Android source bindings are absent or changed')
+            required = {self.root / 'pubspec.lock', android / 'settings.gradle.kts', android / 'app/build.gradle.kts',
+                        android / 'build.gradle.kts', android / 'gradle/wrapper/gradle-wrapper.properties'}
+            if not required.issubset({(self.root / p).resolve() for p in before}):
+                raise InventoryError('Current Android declaration source bindings are incomplete')
+            for input_path, expected in before.items():
+                input_key = self.file_evidence(self.root / input_path, 'current-android-build-source-input')
+                if input_key is None or self.evidence[input_key]['sha256'] != expected:
+                    raise InventoryError('Current Android build source changed since collection')
+            configs = snapshot.get('configurations')
+            if not isinstance(configs, list) or not configs:
+                raise InventoryError('Current Android consumed configurations are absent')
+            observed = set()
+            selected_maven = {}
+            selected_artifacts = set()
+            selected_metadata_only = set()
+            observed_metadata_hashes = collections.defaultdict(set)
+            metadata_redirects = set()
+            selected_maven_ids = set()
+            observed_module_nodes = collections.defaultdict(list)
+            for config in configs:
+                if isinstance(config, dict) and isinstance(config.get('components'), list):
+                    for node in config['components']:
+                        if isinstance(node, dict) and isinstance(node.get('id'), str) and node.get('localProject') is not True:
+                            observed_module_nodes[node['id']].append(node)
+            for config in configs:
+                if not isinstance(config, dict) or not all(isinstance(config.get(field), list) for field in ('components', 'edges', 'artifacts', 'unresolved')):
+                    raise InventoryError('Current Android graph must retain actual nodes, edges, artifacts and failures')
+                identity = config.get('project'), config.get('configuration')
+                if not all(isinstance(value, str) and value for value in identity) or identity in observed or config.get('state') not in ('RESOLVED', 'RESOLVED_WITH_FAILURES'):
+                    raise InventoryError('Current Android consumed configuration identity is invalid or repeated')
+                observed.add(identity)
+                context = 'android-build:' + app + ':' + ':'.join(identity)
+                nodes = {}
+                for node in config['components']:
+                    if not isinstance(node, dict):
+                        raise InventoryError('Current Android component record is invalid')
+                    node_id = node.get('id')
+                    if not isinstance(node_id, str) or not node_id or node_id in nodes:
+                        raise InventoryError('Current Android component identity is absent or repeated')
+                    if node.get('localProject') is True:
+                        project_path = node.get('projectDirectory')
+                        if not isinstance(project_path, str) or not Path(project_path).is_dir():
+                            raise InventoryError('Current Android project component source is absent')
+                        item = self.component('native-build-project', node_id, None, {'kind': 'workspace', 'path': self.path_name(project_path)})
+                    else:
+                        if not all(isinstance(node.get(field), str) and node[field] for field in ('group', 'name', 'version')) or node_id != ':'.join(node[field] for field in ('group', 'name', 'version')):
+                            raise InventoryError('Current Android Maven identity does not match its observed selection')
+                        item = self.component('maven', node['group'] + ':' + node['name'], node['version'], {'kind': 'gradle-module-cache'})
+                        selected_maven[item['ref']] = item
+                        selected_maven_ids.add(node_id)
+                        permitted, redirects = metadata_only(node, item, context)
+                        if permitted:
+                            selected_metadata_only.add(item['ref'])
+                        metadata_redirects.update(redirects)
+                        if node['group'] == 'io.flutter':
+                            item['licenseEvidence'].extend(self.flutter_component['licenseEvidence'])
+                    item['occurrences'].append(context)
+                    item['evidence'].extend([key, build_key, network_key])
+                    nodes[node_id] = item
+                for edge in config['edges']:
+                    if not isinstance(edge, dict) or edge.get('from') not in nodes or edge.get('to') not in nodes or not isinstance(edge.get('requested'), str) or not edge['requested'] or type(edge.get('constraint')) is not bool:
+                        raise InventoryError('Current Android edge references a missing observed component')
+                    self.edges.add((nodes[edge['from']]['ref'], nodes[edge['to']]['ref'], context))
+                for artifact in config['artifacts']:
+                    if not isinstance(artifact, dict):
+                        raise InventoryError('Current Android artifact record is invalid')
+                    file = artifact.get('file')
+                    if not isinstance(file, str) or not file or type(artifact.get('bytes')) is not int or artifact['bytes'] < 0 or not re.fullmatch('[0-9a-f]{64}', str(artifact.get('sha256'))):
+                        raise InventoryError('Current Android selected artifact binding is invalid')
+                    artifact_key = self.file_evidence(self.root / file, 'current-build-selected-gradle-classpath-bytes')
+                    if artifact_key is None or self.evidence[artifact_key]['sha256'] != artifact['sha256'] or self.evidence[artifact_key]['bytes'] != artifact['bytes']:
+                        raise InventoryError('Current Android selected artifact changed or is missing')
+                    item = nodes.get(artifact.get('component'))
+                    if item is None:
+                        # Gradle file dependencies (for example android.jar) are
+                        # not ModuleComponentIdentifiers. Bind their exact bytes.
+                        if not isinstance(artifact.get('component'), str) or not artifact['component']:
+                            raise InventoryError('Current Android file dependency identity is absent')
+                        if artifact['component'].startswith('project ') or re.fullmatch('[A-Za-z0-9_.-]+:[A-Za-z0-9_.-]+:.+', artifact['component']):
+                            raise InventoryError('Current Android artifact references a missing observed component')
+                        item = self.component('native-build-file', artifact['component'], artifact['sha256'], {'kind': 'file', 'path': self.path_name(self.root / file)})
+                        item['occurrences'].append(context)
+                        self.licenses(item, (self.root / file).parent)
+                    item['evidence'].append(artifact_key)
+                    item['integrities'].append({'algorithm': 'sha256', 'value': artifact['sha256'], 'basis': 'actual debug build selected artifact'})
+                    selected_artifacts.add(item['ref'])
+                    if Path(file).suffix in ('.jar', '.aar'):
+                        with zipfile.ZipFile(self.root / file) as archive:
+                            for member in archive.namelist():
+                                if len(Path(member).parts) <= 3 and LICENSE_NAME.match(Path(member).name) and archive.getinfo(member).file_size <= 4 * 1024 * 1024:
+                                    item['licenseEvidence'].append(self.bytes_evidence('zip-member', {'archive': self.path_name(self.root / file), 'member': member}, archive.read(member), 'license-text'))
+                for failure in config['unresolved']:
+                    self.gap('android-build-unresolved', context, canonical(failure), True)
+                if config['state'] == 'RESOLVED_WITH_FAILURES' and not config['unresolved']:
+                    self.gap('android-build-failure-details-unavailable', context, 'Recorded failed configuration has no actual failure observations', True)
+            for (ref, kind), values in observed_metadata_hashes.items():
+                if len(values) > 1:
+                    self.gap('android-build-metadata-selection-ambiguous', ref, app + ':' + kind, True)
+                    selected_metadata_only.discard(ref)
+            for ref in selected_maven.keys() - selected_artifacts - selected_metadata_only:
+                self.gap('android-build-artifact-integrity-unavailable', ref, app, True)
+            for redirect in metadata_redirects - selected_maven_ids:
+                self.gap('android-build-metadata-redirect-target-unobserved', redirect, app, True)
+            if not {(':app', 'debugCompileClasspath'), (':app', 'debugRuntimeClasspath')}.issubset(observed):
+                self.gap('android-build-debug-configurations-incomplete', app, 'Actual debug compile/runtime observations absent', True)
+            targets[app] = {'observation': key, 'offline': snapshot['offline'], 'externalEgressDenialProbe': network_key,
+                            'acceptedBuildReceipt': build_key, 'versionForcing': False, 'configurationsObserved': len(configs),
+                            'consumedConfigurations': [list(value) for value in sorted(observed)],
+                            'metadataProvenanceScope': 'Coordinate metadata bodies and selected variants are bound; winning resolver metadata path is not independently traced; unequal candidate bodies block exactness',
+                            'scope': 'Observed successful debug compilation only; prior offline and unconsumed release configurations remain separate'}
+        self.coverage['androidBuildObservations'] = targets
+
     def read_backend_imports(self):
         pattern = re.compile(r'(?:\bfrom\s*|\bimport\s*\(\s*|\bimport\s*)[\'"]((?:https?://|npm:|jsr:)[^\'\"]+)[\'"]')
         imports = collections.defaultdict(list)
@@ -1239,7 +1516,7 @@ class Inventory:
                                                    'scope': 'Pinned local Python requirements and action declarations; action source/license caches not yet supplied'}
 
     def build(self):
-        self.read_dart(); self.read_npm(); self.read_ios(); self.read_android(); self.read_backend_imports(); self.read_python_and_ci()
+        self.read_dart(); self.read_npm(); self.read_ios(); self.read_android(); self.read_android_build_observations(); self.read_backend_imports(); self.read_python_and_ci()
         self.file_evidence(Path(__file__), 'inventory-generator')
         self.file_evidence(self.root / 'tools/scripts/collect_android_dependency_inventory.gradle', 'android-collector')
         self.file_evidence(self.root / 'tools/scripts/test_local_dependency_inventory.py', 'inventory-regression-tests')
@@ -1648,6 +1925,12 @@ def write_reports(inventory, prefix):
     if targets:
         write_bounded_report({'schemaVersion': 1, 'purpose': 'Portable lossless five-target offline Android resolution evidence', 'targets': targets},
                              Path(str(prefix) + '.android.json'), [['targets', app, 'configurations'] for app in sorted(targets)])
+    current = {}
+    for app, coverage in inventory.get('coverage', {}).get('androidBuildObservations', {}).items():
+        current[app] = load_json(Path(inventory['repositoryRoot']) / coverage['observation'])
+    if current:
+        write_bounded_report({'schemaVersion': 1, 'purpose': 'Portable lossless actually consumed debug Android build observations; independent of prior offline resolution', 'targets': current},
+                             Path(str(prefix) + '.android-build.json'), [['targets', app, 'configurations'] for app in sorted(current)])
 
 
 def collect_android(root, output, jdk, freeze_inputs=None, maven_mirror=None):
@@ -1845,6 +2128,7 @@ def main():
     generate = commands.add_parser('generate')
     generate.add_argument('--output-prefix', default=DEFAULT_PREFIX)
     generate.add_argument('--android-resolutions', type=Path)
+    generate.add_argument('--android-build-observations', type=Path, help='Separate source/receipt-bound actually consumed debug Android graphs; never relabel prior offline resolution')
     generate.add_argument('--pub-cache', type=Path)
     generate.add_argument('--npm-cache', type=Path)
     generate.add_argument('--swift-cache', type=Path)
@@ -1873,7 +2157,7 @@ def main():
     args = parser.parse_args()
     try:
         if args.command == 'generate':
-            inventory = Inventory(args.root, args.android_resolutions, args.pub_cache, args.npm_cache, args.swift_cache, args.action_sources, args.jsr_licenses).build()
+            inventory = Inventory(args.root, args.android_resolutions, args.pub_cache, args.npm_cache, args.swift_cache, args.action_sources, args.jsr_licenses, args.android_build_observations).build()
             inventory = recover_local_license_evidence(inventory)
             if args.publisher_license_manifest:
                 from dependency_gap_closure import apply_closure
