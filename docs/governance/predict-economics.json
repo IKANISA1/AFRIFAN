@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "status": "unresolved",
-  "mechanic": null,
-  "entryDebitFet": null,
-  "entryDebitMoney": null,
-  "transactionalMigrationEnabled": false,
+  "status": "free_implementation",
+  "mechanic": "free_selected_match",
+  "entryDebitFet": 0,
+  "entryDebitMoney": 0,
+  "transactionalMigrationEnabled": true,
   "releaseAuthorized": false,
   "approvals": [],
   "conflictingSources": [
@@ -20,5 +20,12 @@
     "store-release"
   ],
   "historicalLedgerDisposition": "preserve; no reset or silent rewrite",
-  "versionedDecisionRef": null
+  "versionedDecisionRef": "docs/governance/predict_economics_decision.md#technical-free-entry-v1",
+  "economicsVersion": "free_v1",
+  "historicalEconomicsVersion": "legacy_paid_v1",
+  "newRewardFet": 0,
+  "newRewardMoney": 0,
+  "implementationState": "in_progress",
+  "externalDecisionStatus": "unresolved",
+  "deploymentVerified": false
 }

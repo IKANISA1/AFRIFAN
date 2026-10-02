@@ -62,10 +62,11 @@ shells select identity, configuration, and allowed feature composition.
   used only by app tests belong in `dev_dependencies`.
 - `app_registry` composes feature modules and injects them into `core_app`.
   Core packages do not import features or club configurations.
-- `club_data` owns shared membership, shop, ticket, and contribution models,
-  the club repository, and its providers. It depends on core infrastructure.
-  `feat_club` owns official club content and screens; commerce and membership
-  features import the shared data package directly.
+- `club_data` owns shared membership, shop, ticket, contribution, official
+  football content, and public fan-club discovery contracts, repositories,
+  and providers. It depends on core infrastructure. `feat_club` owns official
+  club screens; Home, Predict, fan-club, commerce, and membership features use
+  shared data through its public entry point.
 - Features depend on core and data packages. Cross-feature runtime dependencies
   are not permitted. SMS collection belongs to a separate club-management
   gateway; supporter apps display server-confirmed payment outcomes and contain

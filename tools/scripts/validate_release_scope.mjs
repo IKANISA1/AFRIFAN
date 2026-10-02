@@ -64,6 +64,54 @@ function isMissingInput(value) {
     || /replace|placeholder|your[_-]|example\.(?:com|supabase)/i.test(value);
 }
 
+// Source identity guard, not a Dart compiler or installed-build proof. Follow
+// the public thin-shell API through its actual module-builder composition.
+function validateSharedBootstrap(read) {
+  const entry = stripComments(read("packages/app_registry/lib/app_registry.dart"));
+  requireContract(entry.includes("export 'src/native_bootstrap.dart';"),
+    "Registry public API must export the shared native bootstrap.");
+  const shared = stripComments(read("packages/app_registry/lib/src/native_bootstrap.dart"));
+  requireContract(shared.includes("import 'module_registry.dart';"),
+    "Shared bootstrap must import the module registry implementation.");
+  requireContract(/AfriClubBootstrapOptions\s+clubBootstrapOptions\s*\(\s*ClubConfig\s+config\b/.test(shared),
+    "Shared bootstrap must accept the selected club configuration.");
+  requireContract(/return\s+AfriClubBootstrapOptions\s*\(/.test(shared)
+    && /moduleBuilder\s*:\s*\(\s*snapshot\s*\)\s*=>\s*AppModuleRegistry\.build\s*\(\s*config\s*,\s*configSnapshot\s*:\s*snapshot\s*[,)]/.test(shared),
+    "Shared bootstrap must compose the selected config and runtime snapshot through the module registry.");
+  const registry = stripComments(read("packages/app_registry/lib/src/module_registry.dart"));
+  requireContract(/class\s+AppModuleRegistry\b/.test(registry)
+    && /static\s+List<FeatureModule>\s+build\s*\(\s*ClubConfig\s+config\s*,/.test(registry)
+    && /Map<String,\s*dynamic>\?\s+configSnapshot\b/.test(registry),
+    "Shared module registry must accept club configuration and runtime snapshot.");
+  const bootstrapEntry = stripComments(read("packages/core/core_app/lib/bootstrap.dart"));
+  requireContract(bootstrapEntry.includes("export 'src/bootstrap.dart';"),
+    "Core public bootstrap must export its implementation.");
+  const bootstrap = stripComments(read("packages/core/core_app/lib/src/bootstrap.dart"));
+  requireContract(/options\.moduleBuilder!\s*\(\s*platformConfigSnapshot\s*\)/.test(bootstrap),
+    "Core bootstrap must invoke the selected module builder with its fetched runtime snapshot.");
+}
+
+function validateAppBootstrap(main, club) {
+  const configPackage = `club_${club.slug}`;
+  const clubImports = [...main.matchAll(/import\s+'package:(club_[a-z0-9_]+)\//g)].map((match) => match[1]);
+  sameInventory(clubImports, [configPackage], "Entrypoint club import");
+  requireContract(main.includes("import 'package:app_registry/app_registry.dart';")
+    && main.includes("import 'package:core_app/bootstrap.dart';"),
+    "App entrypoint must import the public registry and core bootstrap APIs.");
+  requireContract((main.match(/\bconst\s+config\s*=/g) ?? []).length === 1
+    && new RegExp(`const\\s+config\\s*=\\s*${escaped(club.configClass)}\\s*\\(\\s*\\)\\s*;`).test(main),
+    "App entrypoint does not instantiate its declared club config.");
+  requireContract((main.match(/\bbootstrap\s*\(/g) ?? []).length === 1
+    && (main.match(/\bclubBootstrapOptions\s*\(/g) ?? []).length === 1
+    && /await\s+bootstrap\s*\(\s*config\s*,\s*options\s*:\s*(?:options\s*\?\?\s*)?clubBootstrapOptions\s*\(\s*config\s*[,)]/.test(main),
+    "App entrypoint must pass its selected config to the shared bootstrap and core bootstrap.");
+  const starters = [...main.matchAll(/Future<void>\s+([a-zA-Z][a-zA-Z0-9]*App)\s*\(/g)];
+  const mainBody = main.match(/\bvoid\s+main\s*\(\s*\)\s*async\s*\{([\s\S]*)\}\s*$/)?.[1];
+  requireContract(starters.length === 1 && mainBody != null
+    && new RegExp(`await\\s+${escaped(starters[0][1])}\\s*\\(`).test(mainBody),
+    "Production main must invoke its validated club startup function.");
+}
+
 export function validateReleaseScope(repoRoot = root) {
   const errors = [];
   const releaseInputBlockers = [];
@@ -74,6 +122,7 @@ export function validateReleaseScope(repoRoot = root) {
   };
   const expected = record("Release scope contract", () => parseReleaseScope(read(scopeFile)));
   if (expected) {
+    record("Shared native bootstrap", () => validateSharedBootstrap(read));
     const appPaths = expected.map((club) => `apps/${club.slug}`);
     const configPaths = expected.map((club) => `packages/clubs/club_${club.slug}`);
     record("Workspace", () => {
@@ -106,8 +155,7 @@ export function validateReleaseScope(repoRoot = root) {
         requireContract(new RegExp(`^name: ${escaped(configPackage)}$`, "m").test(read(`${configDirectory}/pubspec.yaml`)), "Club config package name differs from registration.");
         const main = stripComments(read(`${app}/lib/main.dart`));
         requireContract(main.includes(`import 'package:${configPackage}/${configPackage}.dart';`), "App entrypoint imports the wrong club config.");
-        requireContract(new RegExp(`const config = ${escaped(club.configClass)}\\(\\);`).test(main), "App entrypoint does not instantiate its declared club config.");
-        requireContract(main.includes("AppModuleRegistry.build(config, configSnapshot: snapshot)"), "App entrypoint must use the shared feature registry.");
+        validateAppBootstrap(main, club);
         const config = stripComments(read(`${configDirectory}/lib/src/${club.slug}_config.dart`));
         requireContract(new RegExp(`class ${escaped(club.configClass)} implements ClubConfig`).test(config), "Config class does not match release registration.");
         requireContract(new RegExp(`String get countryCode => '${escaped(club.country)}';`).test(config), "Config country does not match release registration.");

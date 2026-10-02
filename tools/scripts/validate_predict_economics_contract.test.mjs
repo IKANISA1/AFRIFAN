@@ -13,3 +13,12 @@ test('incomplete review rejected',()=>assert.ok(validateEconomics({...approved()
 test('duplicate review rejected',()=>{const r=approved();r.approvals.push(r.approvals[0]);assert.ok(validateEconomics(r).length);});
 test('synthetic complete record passes structure only',()=>assert.deepEqual(validateEconomics(approved(),{release:true}),[]));
 test('unapproved release rejected',()=>assert.ok(validateEconomics({...approved(),releaseAuthorized:false},{release:true}).length));
+const freeImplementation=()=>({schemaVersion:1,status:'free_implementation',mechanic:'free_selected_match',economicsVersion:'free_v1',
+ entryDebitFet:0,entryDebitMoney:0,newRewardFet:0,newRewardMoney:0,implementationState:'in_progress',externalDecisionStatus:'unresolved',
+ deploymentVerified:false,releaseAuthorized:false,transactionalMigrationEnabled:true,approvals:[],historicalEconomicsVersion:'legacy_paid_v1',
+ historicalLedgerDisposition:'preserve; no reset or silent rewrite',versionedDecisionRef:'technical:free_v1'});
+test('local free implementation is consistent without implying release',()=>{assert.deepEqual(validateEconomics(freeImplementation()),[]);assert.ok(validateEconomics(freeImplementation(),{release:true}).length);});
+test('local verification does not supply external economics approval',()=>assert.ok(validateEconomics({...freeImplementation(),implementationState:'verified_locally'},{release:true}).length));
+test('local free implementation rejects new financial credits and debits',()=>{for(const key of ['entryDebitFet','entryDebitMoney','newRewardFet','newRewardMoney']) assert.ok(validateEconomics({...freeImplementation(),[key]:1}).length,key);});
+test('local free implementation rejects invented deployment or approval claims',()=>{for(const patch of [{deploymentVerified:true},{releaseAuthorized:true},{approvals:[{}]},{externalDecisionStatus:'approved'}]) assert.ok(validateEconomics({...freeImplementation(),...patch}).length);});
+test('local free implementation cannot silently convert historical paid data',()=>assert.ok(validateEconomics({...freeImplementation(),historicalEconomicsVersion:'free_v1'}).length));

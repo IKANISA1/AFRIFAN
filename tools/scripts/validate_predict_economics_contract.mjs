@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 export function validateEconomics(record, { release = false } = {}) {
   const errors = [];
-  if (!record || record.schemaVersion !== 1 || !['unresolved', 'approved'].includes(record.status)) {
+  if (!record || record.schemaVersion !== 1 || !['unresolved', 'free_implementation', 'approved'].includes(record.status)) {
     return ['Invalid economics decision record'];
   }
   if (record.status === 'unresolved') {
@@ -14,6 +14,28 @@ export function validateEconomics(record, { release = false } = {}) {
       errors.push('An unresolved contract cannot carry approvals or enable transactional migration/release');
     }
     if (release) errors.push('Accountable economics decision is unresolved');
+  } else if (record.status === 'free_implementation') {
+    if (record.mechanic !== 'free_selected_match' || record.economicsVersion !== 'free_v1' ||
+        record.entryDebitFet !== 0 || record.entryDebitMoney !== 0 || record.newRewardFet !== 0 || record.newRewardMoney !== 0 ||
+        record.transactionalMigrationEnabled !== true) {
+      errors.push('Local free implementation must use free_v1 with zero entry debits and zero financial rewards');
+    }
+    if (!['in_progress', 'verified_locally'].includes(record.implementationState) ||
+        record.externalDecisionStatus !== 'unresolved' || record.deploymentVerified !== false ||
+        record.releaseAuthorized !== false || !Array.isArray(record.approvals) || record.approvals.length !== 0) {
+      errors.push('Local implementation cannot claim external approval, deployment verification or release authority');
+    }
+    if (record.historicalEconomicsVersion !== 'legacy_paid_v1' ||
+        record.historicalLedgerDisposition !== 'preserve; no reset or silent rewrite') {
+      errors.push('Historical paid liabilities must be versioned and preserved');
+    }
+    if (typeof record.versionedDecisionRef !== 'string' || !record.versionedDecisionRef.trim()) errors.push('Versioned implementation decision reference required');
+    if (record.implementationState === 'verified_locally' &&
+        (!Array.isArray(record.implementationEvidence) || record.implementationEvidence.length === 0 ||
+         record.implementationEvidence.some(ref => typeof ref !== 'string' || !ref.trim()))) {
+      errors.push('Local verification requires scoped implementation evidence references');
+    }
+    if (release) errors.push('External economics decision and release authorization remain unresolved');
   } else {
     if (!['free_reward_only', 'closed_loop_entry'].includes(record.mechanic)) errors.push('Explicit supported mechanic required');
     if (!Number.isSafeInteger(record.entryDebitFet) || record.entryDebitFet < 0 || record.entryDebitMoney !== 0) {

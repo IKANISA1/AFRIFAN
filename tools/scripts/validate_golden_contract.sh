@@ -93,11 +93,12 @@ if [ "$standard_settings_sha" = "$high_contrast_settings_sha" ]; then
   exit 1
 fi
 
+python3 "$ROOT/tools/scripts/golden_test_references.py" \
+  --root "$ROOT" --manifest "$MANIFEST"
+
 while IFS=$'\t' read -r relative_path expected_sha width height theme; do
   absolute_path="$ROOT/$relative_path"
   test -f "$absolute_path"
-  golden_name="$(basename "$relative_path")"
-  golden_stem="${golden_name%.png}"
   test_root="$(dirname "$absolute_path")"
   while [ "$(basename "$test_root")" != "test" ] &&
     [ "$test_root" != "$ROOT" ]; do
@@ -106,15 +107,6 @@ while IFS=$'\t' read -r relative_path expected_sha width height theme; do
   if [ "$(basename "$test_root")" != "test" ]; then
     printf 'Golden is not nested under a test directory: %s\n' "$relative_path" >&2
     exit 1
-  fi
-  if ! rg -q -F "$golden_name" "$test_root" -g '*_test.dart' &&
-    ! rg -q -F "$golden_stem" "$test_root" -g '*_test.dart'; then
-    if ! rg -q 'matchesGoldenFile' "$test_root" -g '*_test.dart' ||
-      ! rg -q -F "${width}x${height}" "$test_root" -g '*_test.dart' ||
-      ! rg -q -F "$theme" "$test_root" -g '*_test.dart'; then
-      printf 'Golden has no matching test reference: %s\n' "$relative_path" >&2
-      exit 1
-    fi
   fi
   actual_sha="$(shasum -a 256 "$absolute_path" | awk '{print $1}')"
   if [ "$actual_sha" != "$expected_sha" ]; then

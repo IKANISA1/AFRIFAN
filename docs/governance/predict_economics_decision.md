@@ -1,27 +1,39 @@
-# Predict economics decision gate
+# Predict economics implementation and external decision
 
-Status: **unresolved; transactional migration and release approval blocked**.
+Status: **free implementation in progress; external economics and release decisions unresolved**.
 
-This file records a conflict, not an accountable product/legal/payment decision.
-The blueprint and FET policy describe free selected-match predictions and prohibit
-unapproved paid-entry or stake-like mechanics. Historical Predict implementation
-and design material describe a 100 FET entry debit and pool distribution.
+## Technical free entry v1
 
-The executable decision record is `predict-economics.json`. Until a reviewed,
-versioned decision resolves the conflict:
+The current product blueprint selects free predictions for selected, approved
+football fixtures. The local implementation uses `free_v1`: entry debits are zero
+FET and zero money, and no welcome or prize FET or money credits are created.
+A correct prediction records one accuracy point. Incorrect and void predictions
+record zero points. Accuracy points are a separate result field, never a wallet
+balance, entitlement or monetary reward. Correctness follows the selected result,
+independently of a financial payout.
 
-- Do not enable or port FET-debit or money-debit prediction entry as a released Cloudflare capability.
-- Preserve historical balances, entries, receipts and ledger reversals unchanged.
-- Preserve existing server authorization and store-release gates; client feature flags are not permission to change economics.
-- Keep public-source pool previews read-only and entry disabled.
-- Do not present repository wording, source tests, this patch, or a tool result as legal or payment approval.
+The forward migration labels all existing pools and entries `legacy_paid_v1`.
+It preserves historical amounts, balances, ledger rows and reversals. It creates
+new pools explicitly as `free_v1`, blocks new paid entries and retains settlement
+and reconciliation of historical liabilities through the guarded service path.
+It does not convert a historical paid pool into a free pool or refund history as
+a side effect of deployment.
 
-The conservative migration restriction is **no newly enabled entry debit**. It
-does not claim that the existing Supabase implementation has been rewritten or
-that historical liabilities have been reconciled. A future decision must specify
-entry cost, earning/redemption rules, reward calculation, supported countries,
-required reviewers, policy versions, migrations and negative/concurrency tests.
+`predict-economics.json` distinguishes this technical implementation from external
+approval and verified deployment. Its migration flag permits the scoped local
+free implementation and replay; it supplies no deployment or release authority.
+Tenant, membership, registered-fixture, kickoff, account revocation and idempotency
+checks remain authoritative server checks for every entry.
 
-Run `node tools/scripts/validate_predict_economics_contract.mjs` to check the
-record. Add `--release` to require actual approvals; the unresolved record must
-fail that release gate. No odds or cash-payout product is introduced by this patch.
+## External decisions
+
+Historical design and architecture sources describe a 100 FET debit and pool
+distribution. Those historical mechanics remain relevant to historical liabilities,
+but do not authorize new paid entry. The broader earning, redemption, supported
+country, payment and store policy decisions remain unresolved. No reviewers,
+approval evidence or release authorization have been invented by implementation.
+
+Run `node tools/scripts/validate_predict_economics_contract.mjs` for consistency.
+`--release` remains fail closed while these external decisions are unresolved.
+Local source tests, concurrency tests and golden maintenance demonstrate their
+specified inputs only; they do not establish deployment, legal or store approval.

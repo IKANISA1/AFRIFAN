@@ -280,3 +280,41 @@ test("both Android release entrypoints pin the parsed build name and number", ()
     /"\$actual_signer_sha256" != "\$expected_signer_sha256"/,
   );
 });
+
+test("signed workflow bootstrap stays in the checkout and its app paths resolve", (t) => {
+  const workflow = fs.readFileSync(path.join(repoRoot,
+    ".github/workflows/gikundiro_signed_android_release.yml"), "utf8");
+  const step = workflow.match(/      - name: Install Melos and bootstrap workspace\n        working-directory: ([^\n]+)\n        run: \|\n((?:          [^\n]*\n)+)/);
+  assert.ok(step, "Signed bootstrap step must declare its execution directory.");
+  const command = step[2].split("\n").map((line) => line.slice(10)).join("\n");
+  const workspace = fs.mkdtempSync(path.join(os.tmpdir(), "africlub-workflow-root-"));
+  t.after(() => fs.rmSync(workspace, { recursive: true, force: true }));
+  const binaries = path.join(workspace, "isolated-bin");
+  fs.mkdirSync(binaries);
+  fs.writeFileSync(path.join(workspace, "pubspec.yaml"), "name: isolated_workspace\n");
+  for (const name of ["flutter", "dart"]) {
+    // Exercise the real authored commands with inert tools, never sign/build.
+    fs.writeFileSync(path.join(binaries, name),
+      '#!/bin/sh\n[ "$PWD" = "$GITHUB_WORKSPACE" ] && [ -f pubspec.yaml ] || exit 43\nprintf "%s %s\\n" "$(basename "$0")" "$*"\n',
+      { mode: 0o755 });
+  }
+  const run = (script) => spawnSync("bash", ["-e", "-c", script], {
+    cwd: path.resolve(workspace, step[1]), encoding: "utf8",
+    env: { ...process.env, GITHUB_WORKSPACE: workspace,
+      PATH: `${binaries}${path.delimiter}${process.env.PATH}` },
+  });
+  const accepted = run(command);
+  assert.equal(accepted.status, 0, accepted.stderr);
+  assert.match(accepted.stdout, /flutter pub get\ndart run melos bootstrap/);
+  const escapedCheckout = run(command.replace("dart run melos bootstrap", "cd ../..\ndart run melos bootstrap"));
+  assert.notEqual(escapedCheckout.status, 0, "Regression must detect leaving the checkout.");
+
+  const defaultDirectory = workflow.match(/defaults:\n      run:\n        working-directory: ([^\n]+)/)?.[1];
+  assert.equal(defaultDirectory, "apps/rayon_sports");
+  for (const relative of ["pubspec.yaml", "assets/flavors/production.json", "android/app/build.gradle.kts"]) {
+    assert.ok(fs.existsSync(path.join(repoRoot, defaultDirectory, relative)), relative);
+  }
+  assert.match(workflow, /name: Validate release contract\n        working-directory: \./);
+  assert.ok(fs.existsSync(path.join(repoRoot, "tools/scripts/validate_club_release.sh")));
+  assert.match(workflow, /name: Build signed release AAB\n        run: flutter build appbundle --release --dart-define-from-file=assets\/flavors\/production\.local\.json/);
+});

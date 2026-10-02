@@ -19,6 +19,13 @@ function fixture(t) {
   const copy = (relative) => write(relative, fs.readFileSync(path.join(sourceRoot, relative)));
   copy(scopePath);
   copy("pubspec.yaml");
+  for (const relative of [
+    "packages/app_registry/lib/app_registry.dart",
+    "packages/app_registry/lib/src/native_bootstrap.dart",
+    "packages/app_registry/lib/src/module_registry.dart",
+    "packages/core/core_app/lib/bootstrap.dart",
+    "packages/core/core_app/lib/src/bootstrap.dart",
+  ]) copy(relative);
   const clubs = parseReleaseScope(fs.readFileSync(path.join(root, scopePath), "utf8"));
   for (const { slug } of clubs) {
     const app = `apps/${slug}`;
@@ -99,6 +106,67 @@ test("wrong club config imports fail despite otherwise correct identity files", 
   assert.match(f.run().errors.join("\n"), /imports the wrong club config/);
 });
 
+test("instantiating another club cannot reuse correct native identity files", (t) => {
+  const f = fixture(t);
+  f.change("apps/nkana/lib/main.dart", (text) => text.replace("NkanaConfig()", "RayonSportsConfig()"));
+  assert.match(f.run().errors.join("\n"), /does not instantiate its declared club config/);
+});
+
+test("an unused shared helper cannot disguise a different core bootstrap config", (t) => {
+  const f = fixture(t);
+  f.change("apps/nkana/lib/main.dart", (text) => text.replace("    config,\n    options:", "    const RayonSportsConfig(),\n    options:"));
+  assert.match(f.run().errors.join("\n"), /pass its selected config/);
+});
+
+test("shared bootstrap receiving another config is rejected", (t) => {
+  const f = fixture(t);
+  f.change("apps/nkana/lib/main.dart", (text) => text.replace("options: clubBootstrapOptions(\n      config,", "options: clubBootstrapOptions(\n      otherConfig,"));
+  assert.match(f.run().errors.join("\n"), /pass its selected config/);
+});
+
+test("bypassing the validated startup from production main is rejected", (t) => {
+  const f = fixture(t);
+  f.change("apps/nkana/lib/main.dart", (text) => text.replace("await startNkanaApp();", "await startOtherApp();"));
+  assert.match(f.run().errors.join("\n"), /Production main must invoke/);
+});
+
+test("a local shadow of the public bootstrap cannot masquerade as registry composition", (t) => {
+  const f = fixture(t);
+  f.change("apps/nkana/lib/main.dart", (text) => text.replace("import 'package:app_registry/app_registry.dart';", "// import 'package:app_registry/app_registry.dart';"));
+  assert.match(f.run().errors.join("\n"), /import the public registry/);
+});
+
+test("a locally defined bootstrap helper cannot replace the public registry call", (t) => {
+  const f = fixture(t);
+  f.change("apps/nkana/lib/main.dart", (text) => text.replace("void main() async {",
+    "AfriClubBootstrapOptions clubBootstrapOptions(ClubConfig config) => const AfriClubBootstrapOptions();\n\nvoid main() async {"));
+  assert.match(f.run().errors.join("\n"), /pass its selected config/);
+});
+
+test("missing shared bootstrap export blocks admission", (t) => {
+  const f = fixture(t);
+  f.change("packages/app_registry/lib/app_registry.dart", (text) => text.replace("export 'src/native_bootstrap.dart';", ""));
+  assert.match(f.run().errors.join("\n"), /public API must export/);
+});
+
+test("a missing registry module builder cannot hide behind valid app calls", (t) => {
+  const f = fixture(t);
+  f.change("packages/app_registry/lib/src/native_bootstrap.dart", (text) => text.replace("AppModuleRegistry.build(", "OtherRegistry.build("));
+  assert.match(f.run().errors.join("\n"), /compose the selected config/);
+});
+
+test("wrong snapshot wiring in the shared bootstrap fails admission", (t) => {
+  const f = fixture(t);
+  f.change("packages/app_registry/lib/src/native_bootstrap.dart", (text) => text.replace("configSnapshot: snapshot", "configSnapshot: null"));
+  assert.match(f.run().errors.join("\n"), /compose the selected config/);
+});
+
+test("core bootstrap must actually consume the selected module builder", (t) => {
+  const f = fixture(t);
+  f.change("packages/core/core_app/lib/src/bootstrap.dart", (text) => text.replace("options.moduleBuilder!(platformConfigSnapshot)", "const <FeatureModule>[]"));
+  assert.match(f.run().errors.join("\n"), /invoke the selected module builder/);
+});
+
 test("release Android identity overrides fail rather than trusting the first declaration", (t) => {
   const f = fixture(t);
   f.change("apps/nkana/android/app/build.gradle.kts", (text) => text.replace("        release {", '        release {\n            applicationId = "zm.other.club"'));
@@ -142,4 +210,16 @@ test("placeholder release inputs cannot be treated as supplied credentials", (t)
     config.SUPABASE_ANON_KEY = "REPLACE_WITH_REAL_KEY"; return JSON.stringify(config);
   });
   assert.equal(f.run().status, "blocked");
+});
+
+test("production inputs cannot point at a different country or environment", (t) => {
+  const f = fixture(t);
+  f.change("apps/nkana/assets/flavors/production.json", (text) => {
+    const config = JSON.parse(text); config.COUNTRY_CODE = "RW"; return JSON.stringify(config);
+  });
+  assert.match(f.run().errors.join("\n"), /Production country differs/);
+  f.change("apps/nkana/assets/flavors/production.json", (text) => {
+    const config = JSON.parse(text); config.COUNTRY_CODE = "ZM"; config.ENVIRONMENT = "qa"; return JSON.stringify(config);
+  });
+  assert.match(f.run().errors.join("\n"), /Production flavor does not declare production environment/);
 });
