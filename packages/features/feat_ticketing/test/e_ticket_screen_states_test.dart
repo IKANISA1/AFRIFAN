@@ -11,6 +11,7 @@ import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
 
 import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+import 'fixtures/ticket_fixture_images.dart';
 
 const _goldens = <String, String>{
   'loading': 'goldens/e_ticket_state_loading_dark_390x844.png',
@@ -400,6 +401,7 @@ Future<void> _pumpRoute(
     await tester.pump();
   }
   await check?.call(tester);
+  await settleTicketFixtureImages(tester);
   if (capture) {
     await expectGoldenOrClubAssertions(
       tester,

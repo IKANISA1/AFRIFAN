@@ -1,3 +1,4 @@
+import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:feat_gamification/src/predict/predict_controller.dart';
@@ -249,7 +250,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       if (entry.key == 'history') await tester.tap(find.text('My picks'));
       if (entry.key == 'wallet') {
-        await tester.tap(find.text('FET activity').first);
+        await tester.tap(find.text('Historical FET activity').first);
       }
       // First rebuild starts RawChip's selection animation; advance the
       // following frame before inspecting the steady selected state.
@@ -333,10 +334,17 @@ void main() {
       if (large) {
         // Review the reflowed choices after a real scroll, so all three
         // enlarged targets are visible in the narrow-phone capture.
-        await tester.ensureVisible(
-          find.byKey(const ValueKey('predict-fixture-away')),
+        await Scrollable.ensureVisible(
+          tester.element(find.byKey(const ValueKey('predict-fixture-away'))),
+          alignment: .8,
         );
         await tester.pumpAndSettle();
+        expect(
+          tester
+              .getTopLeft(find.byKey(const ValueKey('predict-fixture-home')))
+              .dy,
+          greaterThanOrEqualTo(64),
+        );
         expect(
           tester
               .getBottomRight(
@@ -345,6 +353,30 @@ void main() {
               .dy,
           lessThanOrEqualTo(size.height),
         );
+      }
+      if (localRouteFixtureConfig != null &&
+          const ['conflict', 'security_timeout'].contains(entry.key)) {
+        // The floating navigation covers part of the footer at the initial
+        // offset. Exercise the actual scroll so its complete text is readable
+        // before applying the unchanged contrast and target guidelines.
+        final context = tester.element(find.byType(PredictScreen));
+        final container = ProviderScope.containerOf(context);
+        final beforeScroll = container.read(predictControllerProvider);
+        final rules = find.text(context.afriL10n.predictRules);
+        await tester.drag(
+          find.ancestor(of: rules, matching: find.byType(Scrollable)).first,
+          const Offset(0, -160),
+        );
+        await tester.pumpAndSettle();
+        expect(tester.getTopLeft(rules).dy, greaterThanOrEqualTo(64));
+        expect(
+          tester.getBottomRight(rules).dy,
+          lessThanOrEqualTo(
+            tester.getTopLeft(find.byType(AfriClubBottomNav)).dy,
+          ),
+        );
+        expect(container.read(predictControllerProvider), same(beforeScroll));
+        expect(c.attempts, 0);
       }
       await expectGoldenOrClubAssertions(
         tester,

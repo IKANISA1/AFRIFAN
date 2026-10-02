@@ -76,6 +76,11 @@ class StoreReleasePolicy {
   bool get allowsStakedCompetitions =>
       !isEnforced || stakedCompetitionsAuthorized;
 
+  /// Zero-cost, selected-match picks do not enable paid pools or FET rewards.
+  /// The route/feature service and authoritative free_v1 RPC still decide
+  /// availability, membership, tenancy and each fixture's entry boundary.
+  bool get allowsFreePredictions => true;
+
   bool get allowsRewardRedemption => !isEnforced || rewardRedemptionAuthorized;
 
   bool get allowsCrossUserText => !isEnforced || crossUserTextAuthorized;
@@ -194,7 +199,7 @@ class StoreReleasePolicy {
     if (!isEnforced) return true;
     final normalized = _normalizePath(path);
     if (normalized == '/predict' || normalized.startsWith('/predict/')) {
-      return allowsStakedCompetitions;
+      return allowsFreePredictions;
     }
     return true;
   }

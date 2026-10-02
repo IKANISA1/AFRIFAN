@@ -661,8 +661,38 @@ void main() {
           ),
         ),
       );
-      await tester.pump();
-
+      // Decode the published crest before capture; a single fake-clock frame
+      // can finish before AssetImage IO and produce a blank brand mark.
+      final brand = find.byType(AfriBrandMark);
+      final crest = tester.widget<Image>(
+        find.descendant(of: brand, matching: find.byType(Image)),
+      );
+      await tester.runAsync(
+        () => precacheImage(crest.image, tester.element(brand)),
+      );
+      await tester.pumpAndSettle();
+      expect(
+        tester
+            .widget<RawImage>(
+              find.descendant(of: brand, matching: find.byType(RawImage)),
+            )
+            .image,
+        isNotNull,
+      );
+      final whatsapp = find.byKey(
+        const ValueKey<String>('onboarding-whatsapp-action'),
+      );
+      expect(
+        find.descendant(
+          of: whatsapp,
+          matching: find.text('Continue with WhatsApp'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(of: whatsapp, matching: find.byType(Icon)),
+        findsOneWidget,
+      );
       expect(tester.takeException(), isNull);
       await expectLater(
         find.byKey(const ValueKey<String>('onboarding-route-golden')),

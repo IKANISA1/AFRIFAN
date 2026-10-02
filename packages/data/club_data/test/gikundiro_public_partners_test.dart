@@ -1,4 +1,4 @@
-import 'package:feat_club/src/repositories/gikundiro_public_partners.dart';
+import 'package:club_data/club_data.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:core_auth/core_auth.dart';
 import 'package:core_network/core_network.dart';
-import 'package:core_utils/core_utils.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'admin_notification_command.dart';
 import 'admin_providers.dart';
 import 'repositories/admin_repository.dart';
+
+export 'admin_notification_command.dart';
 
 enum AdminNotificationsPhase { ready, degraded }
 
@@ -150,6 +153,9 @@ class AdminNotificationRecord {
           'delivered',
           'failed',
           'cancelled',
+          'processing',
+          'partial',
+          'unknown',
         },
       ),
       scheduledAt: _optionalDate(
@@ -198,72 +204,8 @@ class AdminNotificationRecord {
 class AdminNotificationDraft {
   const AdminNotificationDraft(this.payload);
 
-  factory AdminNotificationDraft.fromRaw(Map<String, dynamic> raw) {
-    final audience = _requiredEnum(
-      raw['audience'],
-      field: 'notification.audience',
-      allowed: const <String>{'all_fans', 'by_tier', 'by_group'},
-    );
-    final deliveryMode = _requiredEnum(
-      raw['delivery_mode'],
-      field: 'notification.delivery_mode',
-      allowed: const <String>{'send_now', 'schedule'},
-    );
-    final tier = _optionalString(
-      raw['tier'],
-      field: 'notification.tier',
-      max: 80,
-    );
-    final groupId = _optionalString(
-      raw['group_id'],
-      field: 'notification.group_id',
-      max: 128,
-    );
-    final groupName = _optionalString(
-      raw['group_name'],
-      field: 'notification.group_name',
-      max: 160,
-    );
-    final scheduledAt = _optionalDate(
-      raw['scheduled_at'],
-      field: 'notification.scheduled_at',
-    );
-    if (audience == 'by_tier' && tier == null) {
-      throw const FormatException('Invalid notification tier.');
-    }
-    if (audience == 'by_group' && (groupId == null || groupName == null)) {
-      throw const FormatException('Invalid notification group.');
-    }
-    if (deliveryMode == 'schedule' && scheduledAt == null) {
-      throw const FormatException('Invalid notification schedule.');
-    }
-    final imageUrl = _optionalWebUrl(
-      raw['image_url'],
-      field: 'notification.image_url',
-    );
-    return AdminNotificationDraft(
-      Map<String, dynamic>.unmodifiable(<String, dynamic>{
-        'audience': audience,
-        if (tier != null) 'tier': tier,
-        if (groupId != null) 'group_id': groupId,
-        if (groupName != null) 'group_name': groupName,
-        'title': _requiredString(
-          raw['title'],
-          field: 'notification.title',
-          max: 120,
-        ),
-        'body': _requiredString(
-          raw['body'],
-          field: 'notification.body',
-          max: 500,
-        ),
-        if (imageUrl != null) 'image_url': imageUrl,
-        'delivery_mode': deliveryMode,
-        if (scheduledAt != null)
-          'scheduled_at': scheduledAt.toUtc().toIso8601String(),
-      }),
-    );
-  }
+  factory AdminNotificationDraft.fromRaw(Map<String, dynamic> raw) =>
+      AdminNotificationDraft(normalizeNotificationArguments(raw));
 
   final Map<String, dynamic> payload;
 }
@@ -275,6 +217,8 @@ class AdminNotificationDelivery {
     required this.sentCount,
     required this.failedCount,
     this.scheduledAt,
+    this.unknownCount = 0,
+    this.pendingCount = 0,
   });
 
   factory AdminNotificationDelivery.fromRaw(Object? raw) {
@@ -288,11 +232,23 @@ class AdminNotificationDelivery {
         field: 'delivery.status',
         allowed: const <String>{
           'queued',
+          'processing',
+          'unknown',
           'scheduled',
           'sent',
           'partial',
           'failed',
         },
+      ),
+      unknownCount: _boundedInt(
+        map['unknown_count'] ?? 0,
+        field: 'delivery.unknown_count',
+        maximum: 500,
+      ),
+      pendingCount: _boundedInt(
+        map['pending_count'] ?? 0,
+        field: 'delivery.pending_count',
+        maximum: 500,
       ),
       requestedCount: _boundedInt(
         map['requested_recipient_count'],
@@ -321,6 +277,7 @@ class AdminNotificationDelivery {
   final int sentCount;
   final int failedCount;
   final DateTime? scheduledAt;
+  final int unknownCount, pendingCount;
 }
 
 class AdminNotificationsSnapshot {
@@ -331,6 +288,8 @@ class AdminNotificationsSnapshot {
     this.failure,
     this.isMutating = false,
     this.mutationOutcomeUnconfirmed = false,
+    this.pendingAttempt,
+    this.commandReceipt,
   });
 
   const AdminNotificationsSnapshot.empty()
@@ -339,7 +298,9 @@ class AdminNotificationsSnapshot {
       phase = AdminNotificationsPhase.ready,
       failure = null,
       isMutating = false,
-      mutationOutcomeUnconfirmed = false;
+      mutationOutcomeUnconfirmed = false,
+      pendingAttempt = null,
+      commandReceipt = null;
 
   factory AdminNotificationsSnapshot.fromRaw(Object? raw) {
     if (raw is! Map) {
@@ -372,12 +333,15 @@ class AdminNotificationsSnapshot {
   final AdminNotificationsFailure? failure;
   final bool isMutating;
   final bool mutationOutcomeUnconfirmed;
+  final AdminNotificationAttempt? pendingAttempt;
+  final AdminNotificationCommandReceipt? commandReceipt;
 
   bool get actionsEnabled =>
       phase == AdminNotificationsPhase.ready &&
       failure == null &&
       !isMutating &&
-      !mutationOutcomeUnconfirmed;
+      !mutationOutcomeUnconfirmed &&
+      pendingAttempt == null;
 
   AdminNotificationsSnapshot copyWith({
     List<AdminNotificationGroup>? groups,
@@ -387,6 +351,9 @@ class AdminNotificationsSnapshot {
     bool clearFailure = false,
     bool? isMutating,
     bool? mutationOutcomeUnconfirmed,
+    AdminNotificationAttempt? pendingAttempt,
+    AdminNotificationCommandReceipt? commandReceipt,
+    bool clearPending = false,
   }) {
     return AdminNotificationsSnapshot(
       groups: groups ?? this.groups,
@@ -396,23 +363,31 @@ class AdminNotificationsSnapshot {
       isMutating: isMutating ?? this.isMutating,
       mutationOutcomeUnconfirmed:
           mutationOutcomeUnconfirmed ?? this.mutationOutcomeUnconfirmed,
+      pendingAttempt: clearPending
+          ? null
+          : pendingAttempt ?? this.pendingAttempt,
+      commandReceipt: commandReceipt ?? this.commandReceipt,
     );
   }
 }
 
 abstract interface class AdminNotificationsGateway {
+  AdminNotificationOwner captureOwner();
   Future<AdminNotificationsSnapshot> load();
-
-  Future<AdminNotificationDelivery> send(AdminNotificationDraft draft);
+  Future<Map<String, dynamic>> command(
+    AdminNotificationAttempt attempt,
+    bool submit,
+  );
 }
 
 class SupabaseAdminNotificationsGateway implements AdminNotificationsGateway {
   const SupabaseAdminNotificationsGateway(this._repository);
-
   final AdminRepository _repository;
-
+  @override
+  AdminNotificationOwner captureOwner() =>
+      _repository.captureNotificationOwner();
   Future<void> _requireAdmin() async {
-    if (!await _repository.isCurrentUserAppMetadataAdmin()) {
+    if (!await _repository.isCurrentUserNotificationAdmin()) {
       throw const AdminNotificationsFailure(
         AdminNotificationsFailureKind.permissionDenied,
       );
@@ -421,23 +396,36 @@ class SupabaseAdminNotificationsGateway implements AdminNotificationsGateway {
 
   @override
   Future<AdminNotificationsSnapshot> load() async {
-    await _requireAdmin();
-    return AdminNotificationsSnapshot.fromRaw(
-      await _repository.getAdminNotificationContext(),
-    );
+    final owner = captureOwner();
+    try {
+      await _requireAdmin();
+      owner.requireCurrent();
+      final raw = await _repository.getAdminNotificationContext();
+      owner.requireCurrent();
+      return AdminNotificationsSnapshot.fromRaw(raw);
+    } finally {
+      await owner.dispose();
+    }
   }
 
   @override
-  Future<AdminNotificationDelivery> send(AdminNotificationDraft draft) async {
+  Future<Map<String, dynamic>> command(
+    AdminNotificationAttempt attempt,
+    bool submit,
+  ) async {
     await _requireAdmin();
-    final result = await _repository.submitAdminNotification(draft.payload);
-    return AdminNotificationDelivery.fromRaw(result['delivery']);
+    return _repository.submitAdminNotification(attempt, submit: submit);
   }
 }
 
+final adminNotificationJournalProvider = Provider<AdminNotificationJournal>(
+  (ref) => HiveAdminNotificationJournal(),
+);
 final adminNotificationsGatewayProvider = Provider<AdminNotificationsGateway>((
   ref,
 ) {
+  // Recreate the owner on account/login/MFA changes; old operations remain fenced.
+  ref.watch(authStateProvider);
   return SupabaseAdminNotificationsGateway(ref.watch(adminRepositoryProvider));
 });
 final adminNotificationsLoadTimeoutProvider = Provider<Duration>(
@@ -451,32 +439,71 @@ final adminNotificationsEnabledProvider = Provider<bool>((ref) => true);
 class AdminNotificationsNotifier
     extends AsyncNotifier<AdminNotificationsSnapshot> {
   var _busy = false;
+  var _epoch = 0;
+  var _alive = true;
+  AdminNotificationCommandFlow? _flow;
+  AdminNotificationOwner? get currentOwner => _flow?.owner;
 
   @override
-  Future<AdminNotificationsSnapshot> build() => _load();
+  Future<AdminNotificationsSnapshot> build() async {
+    final epoch = ++_epoch;
+    _alive = true;
+    _busy = false;
+    final gateway = ref.watch(adminNotificationsGatewayProvider);
+    final owner = gateway.captureOwner();
+    final flow = AdminNotificationCommandFlow(
+      owner: owner,
+      journal: ref.read(adminNotificationJournalProvider),
+      transport: gateway.command,
+      timeout: ref.read(adminNotificationsMutationTimeoutProvider),
+    );
+    _flow = flow;
+    ref.onDispose(() {
+      _alive = false;
+      unawaited(owner.dispose());
+    });
+    await flow.restore();
+    _current(flow, epoch);
+    return _load(flow, epoch);
+  }
+
+  bool _owned(AdminNotificationCommandFlow flow, int epoch) =>
+      _alive &&
+      epoch == _epoch &&
+      identical(_flow, flow) &&
+      flow.owner.isCurrent();
+  void _current(AdminNotificationCommandFlow flow, int epoch) {
+    if (!_owned(flow, epoch)) throw const SupabaseSessionChangedException();
+  }
 
   Future<void> refresh() async {
-    if (_busy) return;
+    if (_busy || _flow == null) return;
+    final flow = _flow!, epoch = _epoch;
     _busy = true;
     final previous = state.valueOrNull;
     state = const AsyncLoading<AdminNotificationsSnapshot>().copyWithPrevious(
       state,
     );
     try {
-      state = AsyncData(await _load());
-    } catch (error, stackTrace) {
-      _applyFailure(
-        AdminNotificationsFailure.fromError(error),
-        stackTrace,
-        previous,
-      );
+      if (flow.attempt != null) await flow.recover();
+      _current(flow, epoch);
+      state = AsyncData(await _load(flow, epoch));
+    } catch (error, stack) {
+      if (_owned(flow, epoch)) {
+        _applyFailure(
+          AdminNotificationsFailure.fromError(error),
+          stack,
+          previous,
+          flow,
+        );
+      }
     } finally {
-      _busy = false;
+      if (_owned(flow, epoch)) _busy = false;
     }
   }
 
   Future<AdminNotificationDelivery?> send(Map<String, dynamic> raw) async {
-    if (_busy) return null;
+    if (_busy || _flow == null) return null;
     final previous = state.valueOrNull;
     if (previous == null || !previous.actionsEnabled) return null;
     final draft = AdminNotificationDraft.fromRaw(raw);
@@ -485,78 +512,102 @@ class AdminNotificationsNotifier
         !previous.groups.any((group) => group.id == groupId)) {
       throw const FormatException('Invalid notification group.');
     }
+    return _mutate(() => _flow!.submit(draft.payload));
+  }
+
+  Future<AdminNotificationDelivery?> resumeOriginal() async {
+    if (_busy || _flow?.attempt == null) return null;
+    return _mutate(() => _flow!.resumeOriginal());
+  }
+
+  Future<AdminNotificationDelivery?> _mutate(
+    Future<AdminNotificationCommandReceipt?> Function() work,
+  ) async {
+    final flow = _flow!, epoch = _epoch;
+    final previous = state.valueOrNull;
     _busy = true;
-    state = AsyncData(previous.copyWith(isMutating: true, clearFailure: true));
+    if (previous != null) {
+      state = AsyncData(
+        previous.copyWith(isMutating: true, clearFailure: true),
+      );
+    }
     try {
       _requireOnline();
-      final delivery = await ref
-          .read(adminNotificationsGatewayProvider)
-          .send(draft)
-          .timeout(ref.read(adminNotificationsMutationTimeoutProvider));
-      state = AsyncData(await _load());
-      return delivery;
-    } catch (error, stackTrace) {
-      final failure = AdminNotificationsFailure.fromError(error);
-      _applyFailure(
-        failure,
-        stackTrace,
-        previous,
-        mutationOutcomeUnconfirmed:
-            failure.kind == AdminNotificationsFailureKind.securityTimeout ||
-            failure.kind == AdminNotificationsFailureKind.conflict,
-      );
+      _current(flow, epoch);
+      final receipt = await work();
+      _current(flow, epoch);
+      state = AsyncData(await _load(flow, epoch));
+      return receipt?.delivery == null
+          ? null
+          : AdminNotificationDelivery.fromRaw(receipt!.delivery);
+    } catch (error, stack) {
+      if (_owned(flow, epoch)) {
+        _applyFailure(
+          AdminNotificationsFailure.fromError(error),
+          stack,
+          previous,
+          flow,
+        );
+      }
       return null;
     } finally {
-      _busy = false;
+      if (_owned(flow, epoch)) _busy = false;
     }
   }
 
-  Future<AdminNotificationsSnapshot> _load() async {
+  Future<AdminNotificationsSnapshot> _load(
+    AdminNotificationCommandFlow flow,
+    int epoch,
+  ) async {
     _requireOnline();
+    AdminNotificationsSnapshot result;
     try {
-      return await ref
+      result = await ref
           .read(adminNotificationsGatewayProvider)
           .load()
           .timeout(ref.read(adminNotificationsLoadTimeoutProvider));
-    } catch (error, stackTrace) {
-      final failure = AdminNotificationsFailure.fromError(error);
-      AfriLogger.warn(
-        'AdminNotificationsNotifier',
-        'Notification workspace load failed.',
-        failure,
-        stackTrace,
-      );
-      throw failure;
+    } catch (error) {
+      throw AdminNotificationsFailure.fromError(error);
     }
+    _current(flow, epoch);
+    return result.copyWith(
+      pendingAttempt: flow.attempt,
+      commandReceipt: flow.receipt,
+      clearPending: flow.attempt == null,
+      mutationOutcomeUnconfirmed: flow.attempt != null,
+    );
   }
 
   void _applyFailure(
     AdminNotificationsFailure failure,
-    StackTrace stackTrace,
-    AdminNotificationsSnapshot? previous, {
-    bool mutationOutcomeUnconfirmed = false,
-  }) {
+    StackTrace stack,
+    AdminNotificationsSnapshot? previous,
+    AdminNotificationCommandFlow flow,
+  ) {
     if (failure.kind == AdminNotificationsFailureKind.permissionDenied) {
+      // The encrypted original remains for the same subject after reauthentication.
       state = AsyncData(
         AdminNotificationsSnapshot(
-          groups: const <AdminNotificationGroup>[],
-          history: const <AdminNotificationRecord>[],
+          groups: const [],
+          history: const [],
           phase: AdminNotificationsPhase.degraded,
           failure: failure,
         ),
       );
       return;
     }
-    state = previous != null
-        ? AsyncData(
+    state = previous == null
+        ? AsyncError(failure, stack)
+        : AsyncData(
             previous.copyWith(
               phase: AdminNotificationsPhase.degraded,
               failure: failure,
               isMutating: false,
-              mutationOutcomeUnconfirmed: mutationOutcomeUnconfirmed,
+              pendingAttempt: flow.attempt,
+              commandReceipt: flow.receipt,
+              mutationOutcomeUnconfirmed: flow.attempt != null,
             ),
-          )
-        : AsyncError(failure, stackTrace);
+          );
   }
 }
 
@@ -648,16 +699,4 @@ DateTime _requiredDateTime(Object? value, {required String field}) {
 DateTime? _optionalDate(Object? value, {required String field}) {
   if (value == null || value == '') return null;
   return _requiredDateTime(value, field: field);
-}
-
-String? _optionalWebUrl(Object? value, {required String field}) {
-  final text = _optionalString(value, field: field, max: 2048);
-  if (text == null) return null;
-  final uri = Uri.tryParse(text);
-  if (uri == null ||
-      !uri.hasAuthority ||
-      (uri.scheme != 'https' && uri.scheme != 'http')) {
-    throw FormatException('Invalid $field.');
-  }
-  return uri.toString();
 }

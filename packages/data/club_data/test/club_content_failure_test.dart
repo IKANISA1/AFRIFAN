@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:feat_club/feat_club.dart';
+import 'package:club_data/club_data.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

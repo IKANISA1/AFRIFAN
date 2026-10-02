@@ -15,6 +15,7 @@ import 'package:test_support/app_font_loader.dart';
 import 'package:test_support/touch_target_audit.dart';
 
 import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+import 'fixtures/ticket_fixture_images.dart';
 
 void main({bool localStateCoverage = false}) {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -521,6 +522,7 @@ Future<void> _pumpTicketStateGolden(
   }
 
   await afterPump?.call(tester);
+  await settleTicketFixtureImages(tester);
 
   expect(tester.takeException(), isNull);
   final goldenPath = _ticketStateGoldenPaths[id];

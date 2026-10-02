@@ -303,6 +303,8 @@ class _AfriClubMaterialAppState extends ConsumerState<_AfriClubMaterialApp>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
+      // Cached staff grants expire on resume; refresh the current assignment.
+      unawaited(ref.read(authStateProvider.notifier).refreshAdminAccess());
       // Purge expired cache entries after returning from background.
       // Users may have been away for hours — stale data is worse than a
       // fresh network fetch.

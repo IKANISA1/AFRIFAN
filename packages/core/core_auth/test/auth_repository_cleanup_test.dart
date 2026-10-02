@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 String _sessionJson(String user, int generation, {String? sessionId}) {
@@ -56,6 +57,14 @@ class _DelayedPkceStorage extends GotrueAsyncStorage {
   }
 }
 
+http.Response respond(http.Request request, Object? body, {int status = 200}) =>
+    http.Response(
+      jsonEncode(body),
+      status,
+      request: request,
+      headers: {'content-type': 'application/json'},
+    );
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -93,8 +102,15 @@ void main() {
         }
         if (request.url.path.endsWith('/delete-account')) {
           return http.Response(
-            '{"success":true}',
-            200,
+            jsonEncode({
+              'success': true,
+              'data': {
+                'request_id': jsonDecode(request.body)['request_id'],
+                'status': 'deletion_pending',
+                'access_revoked': true,
+              },
+            }),
+            202,
             headers: {'content-type': 'application/json'},
             request: request,
           );
@@ -110,6 +126,7 @@ void main() {
   }
 
   setUp(() async {
+    SharedPreferences.setMockInitialValues({});
     clients = [];
     requests = [];
     cleanup = Completer<void>();
@@ -174,6 +191,7 @@ void main() {
     () async {
       final token = current.auth.currentSession!.accessToken;
       final future = repository.signOut();
+      await Future<void>.delayed(Duration.zero);
       expect(unregisteredUsers, ['supporter-a']);
       cleanup.complete();
       await future;
@@ -191,11 +209,84 @@ void main() {
       cleanup.complete();
       await future;
       expect(requests.single.url.path, '/functions/v1/delete-account');
-      expect(jsonDecode(requests.single.body), {'user_id': 'supporter-a'});
+      expect(jsonDecode(requests.single.body)['user_id'], 'supporter-a');
+      expect(
+        jsonDecode(requests.single.body)['request_id'],
+        repository.latestAccountClosureReceipt!.requestId,
+      );
       expect(requests.single.headers['authorization'], 'Bearer $token');
       expect(current.auth.currentUser!.id, 'supporter-a');
+      expect(
+        repository.latestAccountClosureReceipt?.status,
+        'deletion_pending',
+      );
+      expect(repository.latestAccountClosureReceipt?.isComplete, isFalse);
     },
   );
+
+  test(
+    'lost closure response retains original capability and recovers pending status after local logout',
+    () async {
+      String? original;
+      responseHook = (request) async {
+        if (request.url.path.endsWith('/logout')) return respond(request, {});
+        final sent = jsonDecode(request.body) as Map<String, dynamic>;
+        final stored = await AccountClosureStore().read();
+        expect(stored!.requestId, sent['request_id']);
+        original ??= sent['request_id'] as String;
+        if (request.url.queryParameters['action'] == 'status') {
+          return respond(request, {
+            'success': true,
+            'data': {
+              'request_id': original,
+              'status': 'deletion_pending',
+              'access_revoked': true,
+            },
+          });
+        }
+        return respond(request, {'error': 'Service unavailable'}, status: 503);
+      };
+      final first = repository.deleteAccount('supporter-a');
+      cleanup.complete();
+      await expectLater(first, throwsA(isA<StateError>()));
+      final beforeRestart = await AccountClosureStore().read();
+      expect(beforeRestart!.requestId, original);
+      expect(beforeRestart.status, 'requesting');
+      await repository.signOutClosedAccount('supporter-a');
+      expect(current.auth.currentSession, isNull);
+      final recovered = await repository.refreshAccountClosureStatus(
+        beforeRestart,
+      );
+      expect(recovered.requestId, original);
+      expect(recovered.status, 'deletion_pending');
+      expect((await AccountClosureStore().read())!.requestId, original);
+      expect(recovered.isComplete, isFalse);
+    },
+  );
+
+  for (final responseData in <Map<String, Object>>[
+    {'status': 'deletion_pending', 'access_revoked': false},
+    {'status': 'completed'},
+    {'status': 'unknown', 'access_revoked': true},
+  ]) {
+    test(
+      'status recovery rejects an unconfirmed or unknown receipt $responseData',
+      () async {
+        final receipt = await AccountClosureStore().prepare();
+        responseHook = (request) async => respond(request, {
+          'success': true,
+          'data': {'request_id': receipt.requestId, ...responseData},
+        });
+        await expectLater(
+          repository.refreshAccountClosureStatus(receipt),
+          throwsA(isA<StateError>()),
+        );
+        final retained = await AccountClosureStore().read();
+        expect(retained!.requestId, receipt.requestId);
+        expect(retained.status, 'requesting');
+      },
+    );
+  }
 
   test(
     'deletion rejects a different requested account before device cleanup',
@@ -207,16 +298,6 @@ void main() {
       expect(unregisteredUsers, isEmpty);
       expect(requests, isEmpty);
     },
-  );
-  http.Response respond(
-    http.Request request,
-    Object? body, {
-    int status = 200,
-  }) => http.Response(
-    jsonEncode(body),
-    status,
-    request: request,
-    headers: {'content-type': 'application/json'},
   );
 
   Map<String, dynamic> profileRow(String user, {int clubId = 1}) => {

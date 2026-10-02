@@ -15,6 +15,15 @@ new repository's pending login, including on the same SDK client. Successful
 current operations still publish the SDK event before returning their response;
 ordinary token refresh remains supported.
 
+MFA verification also retains the caller's SDK session identity. A late
+verification response after an account switch, logout or session renewal cannot
+publish an assurance response or install its session. Other MFA actions keep
+their upstream SDK behavior; the native caller separately owns and checks its
+setup and factor-operation results. The verification regression tests use the actual SDK and intercepted
+HTTP in `test/mfa_session_owner_test.dart`; they cover successful current
+verification as well as stale responses. These tests do not assert deployed
+provider or physical-device acceptance.
+
 Logout also checks the cleared session version after awaited PKCE storage
 cleanup. A newly installed session cannot receive the older operation's
 `signedOut` event; an ordinary logout still publishes its own event.

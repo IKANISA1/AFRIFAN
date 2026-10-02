@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'predict_models.dart';
 
 /// Reviews a draft selection. Dismissal never places an entry; the controller
-/// rechecks balance, kickoff, connectivity and reconciliation after confirmation.
+/// rechecks free-entry policy, kickoff and connectivity after confirmation.
 Future<bool?> showPredictReview(
   BuildContext context, {
   required PredictFixture fixture,
@@ -16,7 +16,6 @@ Future<bool?> showPredictReview(
   isScrollControlled: true,
   builder: (context) {
     final l = context.afriL10n;
-    final canAfford = balanceFet != null && balanceFet >= fixture.stakeFet;
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(SpacingTokens.screenPadding),
@@ -47,16 +46,9 @@ Future<bool?> showPredictReview(
                 AfriListRow(
                   icon: AfriIcons.predict,
                   title: l.predictEntryCost,
-                  subtitle: l.predictFetAmount(fixture.stakeFet),
-                ),
-                AfriListRow(
-                  icon: AfriIcons.wallet,
-                  title: l.predictBalanceAfter,
-                  subtitle: balanceFet == null
-                      ? l.predictUnavailable
-                      : !canAfford
-                      ? l.predictInsufficientReview
-                      : l.predictFetAmount(balanceFet - fixture.stakeFet),
+                  subtitle: fixture.isFreeEntry
+                      ? l.predictFreeEntry
+                      : l.predictLegacyEntryClosed,
                 ),
               ],
             ),
@@ -66,7 +58,7 @@ Future<bool?> showPredictReview(
             AfriButton(
               key: const ValueKey('predict-confirm-pick'),
               label: l.predictConfirmPick,
-              enabled: canAfford && fixture.isOpen(DateTime.now()),
+              enabled: fixture.isFreeEntry && fixture.isOpen(DateTime.now()),
               onTap: () => Navigator.of(context).pop(true),
             ),
             const SizedBox(height: SpacingTokens.spacing2),

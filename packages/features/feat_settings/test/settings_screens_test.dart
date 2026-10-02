@@ -96,6 +96,30 @@ void main() {
     expectTapTargetsMeetMinimum(tester);
   });
 
+  testWidgets(
+    'staff Settings entry requires an enabled route and reaches the protected staff path',
+    (tester) async {
+      _setMobileSurface(tester);
+      for (final staff in [false, true]) {
+        for (final route in [false, true]) {
+          await tester.pumpWidget(
+            _buildSettingsApp(staff: staff, staffRoute: route),
+          );
+          await tester.pumpAndSettle();
+          final entry = find.byKey(const ValueKey('settings-staff-action'));
+          expect(entry, staff && route ? findsOneWidget : findsNothing);
+          if (staff && route) {
+            await tester.ensureVisible(entry);
+            await tester.tap(entry);
+            await tester.pumpAndSettle();
+            expect(find.text('REACHABLE STAFF AUTHENTICATOR'), findsOneWidget);
+          }
+          await tester.pumpWidget(const SizedBox.shrink());
+        }
+      }
+    },
+  );
+
   testWidgets('settings does not show removed items', (tester) async {
     await tester.pumpWidget(_buildSettingsApp());
     await tester.pumpAndSettle();
@@ -223,11 +247,21 @@ void main() {
   });
 }
 
-Widget _buildSettingsApp({_FakeClubConfig? config}) {
+Widget _buildSettingsApp({
+  _FakeClubConfig? config,
+  bool staff = false,
+  bool staffRoute = false,
+}) {
   final effectiveConfig = config ?? const _FakeClubConfig();
   final router = GoRouter(
     initialLocation: '/settings',
     routes: <RouteBase>[
+      if (staffRoute)
+        GoRoute(
+          path: '/admin',
+          builder: (_, _) =>
+              const Scaffold(body: Text('REACHABLE STAFF AUTHENTICATOR')),
+        ),
       GoRoute(
         path: '/settings',
         builder: (context, state) => const SettingsScreen(),
@@ -237,7 +271,11 @@ Widget _buildSettingsApp({_FakeClubConfig? config}) {
 
   return ProviderScope(
     overrides: [
-      currentUserProvider.overrideWith((ref) => null),
+      currentUserProvider.overrideWith(
+        (ref) => staff
+            ? const UserProfile(id: 'staff', clubId: '24', isAdmin: true)
+            : null,
+      ),
       supportWhatsAppProvider.overrideWith((ref) async => '250000000000'),
     ],
     child: ClubConfigScope(

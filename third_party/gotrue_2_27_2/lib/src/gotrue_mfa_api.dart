@@ -100,21 +100,36 @@ class GoTrueMFAApi {
     required String challengeId,
     required String code,
   }) async {
+    // AFRICLUB: MFA changes the session just like OTP/password sign-in. Keep
+    // the response owned by the initiating authentication/account scope.
+    final mutationGeneration = ++_client._sessionMutationGeneration;
+    final sessionVersion = _client._sessionVersion;
+    final mutationScope = _client._sessionMutationScope;
     final session = _client.currentSession;
+    if (session == null) throw AuthSessionMissingException();
+    _client._requireSessionMutationOwner(
+      mutationGeneration,
+      sessionVersion,
+      session,
+      mutationScope,
+    );
 
     final data = await _fetch.request(
       '${_client._url}/factors/$factorId/verify',
       RequestMethodType.post,
       options: GotrueRequestOptions(
         headers: _client._headers,
-        body: {
-          'challenge_id': challengeId,
-          'code': code,
-        },
-        jwt: session?.accessToken,
+        body: {'challenge_id': challengeId, 'code': code},
+        jwt: session.accessToken,
       ),
     );
 
+    _client._requireSessionMutationOwner(
+      mutationGeneration,
+      sessionVersion,
+      session,
+      mutationScope,
+    );
     final response = AuthMFAVerifyResponse.fromJson(data);
     _client._saveSession(
       Session(

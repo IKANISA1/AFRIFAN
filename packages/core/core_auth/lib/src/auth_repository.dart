@@ -2,6 +2,8 @@ import 'package:core_network/core_network.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'account_closure_store.dart';
+import 'models/account_closure_receipt.dart';
 import 'models/admin_workspace_access.dart';
 import 'models/user_profile.dart';
 import 'rbac_resolver.dart';
@@ -30,11 +32,13 @@ class ProfileConflictException implements Exception {
 class AuthRepository {
   AuthRepository({
     required this.clubId,
+    AccountClosureStore? closureStore,
     Future<dynamic> Function(String userId)? adminAssignmentsLoader,
     Map<String, dynamic> Function()? appMetadataLoader,
     SupabaseClient Function()? clientProvider,
     Future<void> Function({String? userId})? unregisterDevice,
-  }) : _clientProvider = clientProvider ?? (() => SupabaseClientFactory.client),
+  }) : _closureStore = closureStore ?? AccountClosureStore(),
+       _clientProvider = clientProvider ?? (() => SupabaseClientFactory.client),
        _unregisterDevice =
            unregisterDevice ??
            (({String? userId}) =>
@@ -43,6 +47,7 @@ class AuthRepository {
          tag: _tag,
          adminAssignmentsLoader: adminAssignmentsLoader,
          appMetadataLoader: appMetadataLoader,
+         clientProvider: clientProvider,
        );
 
   static const _tag = 'AuthRepository';
@@ -286,11 +291,18 @@ class AuthRepository {
     }
   }
 
-  /// Delete the user account and cascade delete via edge function.
+  final AccountClosureStore _closureStore;
+  AccountClosureReceipt? _latestAccountClosureReceipt;
+  AccountClosureReceipt? get latestAccountClosureReceipt =>
+      _latestAccountClosureReceipt;
+
+  /// Request accountable closure while preserving the financial subject.
+  /// The pending receipt is distinct from completion of personal data removal.
   Future<void> deleteAccount(String userId) async {
     if (_client.auth.currentSession?.user.id != userId) {
       throw StateError('Account deletion requires the current account.');
     }
+    _latestAccountClosureReceipt = null;
     invalidatePendingAuthentication();
     final authority = _captureAuthority();
     try {
@@ -298,6 +310,9 @@ class AuthRepository {
         throw StateError('Account deletion requires the current account.');
       }
       authority.client.auth.invalidatePendingSessionMutations();
+      final prepared = await _closureStore.prepare();
+      authority.requireCurrent();
+      _latestAccountClosureReceipt = prepared;
       await _unregisterDevice(userId: userId);
       authority.requireCurrent();
 
@@ -310,13 +325,38 @@ class AuthRepository {
         return authority.client.functions.invoke(
           'delete-account',
           headers: <String, String>{'Authorization': 'Bearer $accessToken'},
-          body: <String, dynamic>{'user_id': userId},
+          body: <String, dynamic>{
+            'user_id': userId,
+            'request_id': prepared.requestId,
+          },
         );
       }, description: 'deleteAccount');
 
       final data = response.data;
-      if (data is Map<String, dynamic> && data['success'] == true) {
-        return;
+      if (response.status == 202 &&
+          data is Map<String, dynamic> &&
+          data['success'] == true) {
+        final receipt = data['data'];
+        if (receipt is Map<String, dynamic> &&
+            receipt['request_id'] is String &&
+            AccountClosureStore.capabilityPattern.hasMatch(
+              receipt['request_id'] as String,
+            ) &&
+            receipt['access_revoked'] == true &&
+            const {
+              'deletion_pending',
+              'failed',
+              'completed',
+            }.contains(receipt['status'])) {
+          authority.requireCurrent();
+          _latestAccountClosureReceipt = AccountClosureReceipt(
+            requestId: receipt['request_id'] as String,
+            status: receipt['status'] as String,
+          );
+          await _closureStore.save(_latestAccountClosureReceipt!);
+          authority.requireCurrent();
+          return;
+        }
       }
 
       final message = switch (data) {
@@ -327,6 +367,55 @@ class AuthRepository {
       throw StateError(message);
     } on SupabaseSessionChangedException catch (error) {
       throw StateError(error.toString());
+    } finally {
+      await authority.dispose();
+    }
+  }
+
+  Future<AccountClosureReceipt?> loadAccountClosureReceipt() =>
+      _closureStore.read();
+  Future<void> forgetAccountClosureReceipt() => _closureStore.forget();
+  Future<AccountClosureReceipt> refreshAccountClosureStatus(
+    AccountClosureReceipt receipt,
+  ) async {
+    final response = await _client.functions.invoke(
+      'delete-account?action=status',
+      body: <String, dynamic>{'request_id': receipt.requestId},
+    );
+    final body = response.data;
+    if (response.status != 200 ||
+        body is! Map<String, dynamic> ||
+        body['success'] != true ||
+        body['data'] is! Map<String, dynamic>) {
+      throw StateError('Account closure status unavailable.');
+    }
+    final data = body['data'] as Map<String, dynamic>;
+    if (data['request_id'] != receipt.requestId ||
+        data['access_revoked'] != true ||
+        !const {
+          'deletion_pending',
+          'failed',
+          'completed',
+        }.contains(data['status'])) {
+      throw StateError('Account closure status invalid.');
+    }
+    final updated = AccountClosureReceipt(
+      requestId: receipt.requestId,
+      status: data['status'] as String,
+    );
+    await _closureStore.save(updated);
+    return updated;
+  }
+
+  /// Clear only the captured closed account. A replacement session stays intact.
+  Future<void> signOutClosedAccount(String userId) async {
+    final authority = _captureAuthority();
+    try {
+      authority.requireCurrent();
+      if (authority.session?.user.id != userId) {
+        throw StateError('Account closure session changed.');
+      }
+      await authority.client.auth.signOut(scope: SignOutScope.local);
     } finally {
       await authority.dispose();
     }

@@ -4111,7 +4111,7 @@ abstract class AfriLocalizations {
   /// No description provided for @shopOrderChangedMessage.
   ///
   /// In en, this message translates to:
-  /// **'The order changed while it was being submitted. Your cart and address are still here. Review them before trying again.'**
+  /// **'The order request changed while it was being submitted. Check the original order status before retrying.'**
   String get shopOrderChangedMessage;
 
   /// No description provided for @shopCheckoutDeniedMessage.
@@ -4129,7 +4129,7 @@ abstract class AfriLocalizations {
   /// No description provided for @shopCheckoutFailureMessage.
   ///
   /// In en, this message translates to:
-  /// **'No order was confirmed. Your cart and address are still here. Review them and try again.'**
+  /// **'The order result could not be confirmed. Check the original order status before retrying.'**
   String get shopCheckoutFailureMessage;
 
   /// No description provided for @shopSampleProductDescription.
@@ -6838,7 +6838,7 @@ abstract class AfriLocalizations {
   /// No description provided for @settingsDeleteAccountMessage.
   ///
   /// In en, this message translates to:
-  /// **'Permanently deletes your profile, FET, badges, and history. Cannot be undone.'**
+  /// **'Request account closure and sign out? Personal data removal may take time; required transaction records are retained.'**
   String get settingsDeleteAccountMessage;
 
   /// No description provided for @settingsDeleteAccountConfirmPrompt.
@@ -10407,7 +10407,7 @@ abstract class AfriLocalizations {
   /// No description provided for @adminNotificationOutcomeUnconfirmed.
   ///
   /// In en, this message translates to:
-  /// **'The last request is unconfirmed. Controls stay paused until refresh succeeds.'**
+  /// **'The original request is retained. Check its status before taking another action.'**
   String get adminNotificationOutcomeUnconfirmed;
 
   /// No description provided for @adminNotificationLastConfirmed.
@@ -10455,13 +10455,13 @@ abstract class AfriLocalizations {
   /// No description provided for @adminNotificationSentSummary.
   ///
   /// In en, this message translates to:
-  /// **'Sent to {requested} supporters. {sent} delivered.'**
+  /// **'{requested} supporters targeted. {sent} device messages accepted by the delivery service.'**
   String adminNotificationSentSummary(int requested, int sent);
 
   /// No description provided for @adminNotificationPartialSummary.
   ///
   /// In en, this message translates to:
-  /// **'Partial: {sent} delivered, {failed} failed.'**
+  /// **'Partial: {sent} device messages accepted, {failed} attempts failed.'**
   String adminNotificationPartialSummary(int sent, int failed);
 
   /// No description provided for @adminNotificationDeliveryFailed.
@@ -15576,7 +15576,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameJoiningPartnerPool.
   ///
   /// In en, this message translates to:
-  /// **'Joining partner pool'**
+  /// **'Checking historical pool'**
   String get gameJoiningPartnerPool;
 
   /// No description provided for @gameRefreshingMatch.
@@ -15600,7 +15600,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameMatchActionsUnavailableDescription.
   ///
   /// In en, this message translates to:
-  /// **'You can review this match, but joining partner pools is disabled for this build.'**
+  /// **'Historical paid pools are closed to new entries.'**
   String get gameMatchActionsUnavailableDescription;
 
   /// No description provided for @gameShowingSavedMatch.
@@ -15612,7 +15612,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameReconnectBeforePartnerPool.
   ///
   /// In en, this message translates to:
-  /// **'Reconnect and refresh before joining a partner pool.'**
+  /// **'Reconnect and refresh to review historical pool records.'**
   String get gameReconnectBeforePartnerPool;
 
   /// No description provided for @gameVsUpper.
@@ -15714,13 +15714,13 @@ abstract class AfriLocalizations {
   /// No description provided for @gameRefreshBeforeJoiningPool.
   ///
   /// In en, this message translates to:
-  /// **'Refresh to confirm the current match before joining a pool.'**
+  /// **'Refresh to confirm the current match and historical pool records.'**
   String get gameRefreshBeforeJoiningPool;
 
   /// No description provided for @gameReconnectBeforeJoiningPool.
   ///
   /// In en, this message translates to:
-  /// **'Reconnect to confirm the current match before joining a pool.'**
+  /// **'Reconnect to confirm the current match and historical pool records.'**
   String get gameReconnectBeforeJoiningPool;
 
   /// No description provided for @gameMatchAccessUnavailable.
@@ -15744,7 +15744,7 @@ abstract class AfriLocalizations {
   /// No description provided for @gameMatchDataChangedDescription.
   ///
   /// In en, this message translates to:
-  /// **'Refresh before joining a pool or reviewing current status.'**
+  /// **'Refresh before reviewing current match and historical pool status.'**
   String get gameMatchDataChangedDescription;
 
   /// No description provided for @gameMatchSecurityTimeout.
@@ -15822,7 +15822,7 @@ abstract class AfriLocalizations {
   /// No description provided for @predictIntro.
   ///
   /// In en, this message translates to:
-  /// **'Pick the result. One entry per match.'**
+  /// **'Pick the result for free. One pick per selected match.'**
   String get predictIntro;
 
   /// No description provided for @predictFixtures.
@@ -15840,7 +15840,7 @@ abstract class AfriLocalizations {
   /// No description provided for @predictWallet.
   ///
   /// In en, this message translates to:
-  /// **'FET activity'**
+  /// **'Historical FET activity'**
   String get predictWallet;
 
   /// No description provided for @predictDraw.
@@ -15876,7 +15876,7 @@ abstract class AfriLocalizations {
   /// No description provided for @predictNoActivity.
   ///
   /// In en, this message translates to:
-  /// **'No FET activity yet'**
+  /// **'No historical FET activity'**
   String get predictNoActivity;
 
   /// No description provided for @predictUnavailable.
@@ -15954,13 +15954,13 @@ abstract class AfriLocalizations {
   /// No description provided for @predictWon.
   ///
   /// In en, this message translates to:
-  /// **'Won'**
+  /// **'Correct'**
   String get predictWon;
 
   /// No description provided for @predictLost.
   ///
   /// In en, this message translates to:
-  /// **'Settled'**
+  /// **'Incorrect'**
   String get predictLost;
 
   /// No description provided for @predictRefunded.
@@ -15978,7 +15978,7 @@ abstract class AfriLocalizations {
   /// No description provided for @predictRules.
   ///
   /// In en, this message translates to:
-  /// **'Entries close at kickoff. Correct picks share the pool. If no one is correct, or the match is voided, entries are refunded. FET is not cash.'**
+  /// **'Free entries close at kickoff. Correct picks earn one accuracy point. No FET or money is charged or awarded. A void match does not count.'**
   String get predictRules;
 
   /// No description provided for @predictWelcome.
@@ -16008,7 +16008,7 @@ abstract class AfriLocalizations {
   /// No description provided for @predictActivity.
   ///
   /// In en, this message translates to:
-  /// **'FET activity'**
+  /// **'Historical FET activity'**
   String get predictActivity;
 
   /// No description provided for @predictAdminTitle.
@@ -16020,7 +16020,7 @@ abstract class AfriLocalizations {
   /// No description provided for @predictAdminIntro.
   ///
   /// In en, this message translates to:
-  /// **'Prepare fixtures and manage entries. Match results come from the LiveScore integration.'**
+  /// **'Prepare confirmed fixtures and manage free picks. Record a verified final result before settlement.'**
   String get predictAdminIntro;
 
   /// No description provided for @predictAdminSettings.
@@ -16038,7 +16038,7 @@ abstract class AfriLocalizations {
   /// No description provided for @predictAdminEntryPrice.
   ///
   /// In en, this message translates to:
-  /// **'Entry price (FET)'**
+  /// **'Free selected-match entry'**
   String get predictAdminEntryPrice;
 
   /// No description provided for @predictAdminSave.
@@ -16110,7 +16110,7 @@ abstract class AfriLocalizations {
   /// No description provided for @predictAdminReason.
   ///
   /// In en, this message translates to:
-  /// **'Reason for refund'**
+  /// **'Reason for void'**
   String get predictAdminReason;
 
   /// No description provided for @predictAdminCancel.
@@ -16140,7 +16140,7 @@ abstract class AfriLocalizations {
   /// No description provided for @predictAdminPriceNote.
   ///
   /// In en, this message translates to:
-  /// **'New price applies to newly prepared fixtures. Entries close automatically at kickoff.'**
+  /// **'New fixtures use zero-FET free entry. Historical paid pools remain separate and retain their settlement obligations.'**
   String get predictAdminPriceNote;
 
   /// No description provided for @predictAdminTotals.
@@ -16152,7 +16152,7 @@ abstract class AfriLocalizations {
   /// No description provided for @predictAdminAutomaticResults.
   ///
   /// In en, this message translates to:
-  /// **'LiveScore validates and confirms results automatically. No manual confirmation is needed.'**
+  /// **'Review the verified final score and record its source before settling free entries.'**
   String get predictAdminAutomaticResults;
 
   /// No description provided for @predictAdminFinalScore.
@@ -16176,7 +16176,7 @@ abstract class AfriLocalizations {
   /// No description provided for @predictAdminSettleBody.
   ///
   /// In en, this message translates to:
-  /// **'Distribute the whole pool to correct entries. If none are correct, refund every entry.'**
+  /// **'Record correct and incorrect free picks without any wallet credit. Historical paid pools retain their original settlement rules.'**
   String get predictAdminSettleBody;
 
   /// No description provided for @clubAboutTitle.
@@ -16248,13 +16248,13 @@ abstract class AfriLocalizations {
   /// No description provided for @predictReviewRule.
   ///
   /// In en, this message translates to:
-  /// **'One pick per fixture. Your pick cannot be changed after confirmation. The fixture closes at kickoff.'**
+  /// **'One free pick per selected fixture. Your pick cannot be changed after confirmation. Entry closes at kickoff.'**
   String get predictReviewRule;
 
   /// No description provided for @predictEntryCost.
   ///
   /// In en, this message translates to:
-  /// **'Entry cost'**
+  /// **'Entry'**
   String get predictEntryCost;
 
   /// No description provided for @predictBalanceAfter.
@@ -16344,13 +16344,13 @@ abstract class AfriLocalizations {
   /// No description provided for @predictEarnUse.
   ///
   /// In en, this message translates to:
-  /// **'Earn and use FET'**
+  /// **'How Predict works'**
   String get predictEarnUse;
 
   /// No description provided for @predictEarnUseBody.
   ///
   /// In en, this message translates to:
-  /// **'FET is your supporter activity balance. Eligible members receive the published welcome grant once. You can use available FET to enter enabled fixtures; confirmed payouts and refunds appear in FET activity. FET cannot be bought or withdrawn as cash.'**
+  /// **'Selected-match entries are free. Accuracy points reflect correct results and have no monetary value. Historical FET balances and activity remain separate.'**
   String get predictEarnUseBody;
 
   /// No description provided for @predictNoRedemptions.
@@ -16861,6 +16861,504 @@ abstract class AfriLocalizations {
   /// In en, this message translates to:
   /// **'I understand that this starts a new sign-in and does not confirm payment or close earlier sessions.'**
   String get nativeMembershipRestartAcknowledgement;
+
+  /// No description provided for @shopRecoveryCheckFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Order recovery could not be checked. Your original request is retained. Check again before creating or paying for another order.'**
+  String get shopRecoveryCheckFailed;
+
+  /// No description provided for @shopOriginalResultUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The original order result is still unavailable. Do not pay again. Check status or contact support with the request reference.'**
+  String get shopOriginalResultUnavailable;
+
+  /// No description provided for @shopReviewPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Review payment'**
+  String get shopReviewPayment;
+
+  /// No description provided for @shopAcceptUpdatedAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to the updated order amount'**
+  String get shopAcceptUpdatedAmount;
+
+  /// No description provided for @shopDialerBoundary.
+  ///
+  /// In en, this message translates to:
+  /// **'Opening MoMo does not confirm payment. Check the original order result before paying again.'**
+  String get shopDialerBoundary;
+
+  /// No description provided for @shopConfirmOpenMomo.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm and open MoMo'**
+  String get shopConfirmOpenMomo;
+
+  /// No description provided for @shopPaymentOpenedPending.
+  ///
+  /// In en, this message translates to:
+  /// **'MoMo was opened. Payment is pending until the order is matched. Check status before paying again.'**
+  String get shopPaymentOpenedPending;
+
+  /// No description provided for @shopDialerResultUnknown.
+  ///
+  /// In en, this message translates to:
+  /// **'The dialer result could not be confirmed. Your original order is retained. Check status before paying again.'**
+  String get shopDialerResultUnknown;
+
+  /// No description provided for @shopInstructionsChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment instructions changed. Review the original order again. No dialer was opened.'**
+  String get shopInstructionsChanged;
+
+  /// No description provided for @shopPaymentLaunchUnsafe.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment could not be opened safely. Your original order is retained. Check its status before paying again.'**
+  String get shopPaymentLaunchUnsafe;
+
+  /// No description provided for @shopPaymentPending.
+  ///
+  /// In en, this message translates to:
+  /// **'Payment pending'**
+  String get shopPaymentPending;
+
+  /// No description provided for @shopOrderPrepared.
+  ///
+  /// In en, this message translates to:
+  /// **'Order prepared'**
+  String get shopOrderPrepared;
+
+  /// No description provided for @shopAuthoritativeStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'This status comes from the server.'**
+  String get shopAuthoritativeStatus;
+
+  /// No description provided for @shopPreparedIsNotPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'A prepared request or an opened dialer does not confirm payment. Check status before paying again.'**
+  String get shopPreparedIsNotPaid;
+
+  /// No description provided for @shopCheckOrderStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Check order status'**
+  String get shopCheckOrderStatus;
+
+  /// No description provided for @shopOriginalRequestMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'No order was found for this request. Retry keeps the same request reference and cart details.'**
+  String get shopOriginalRequestMissing;
+
+  /// No description provided for @shopRetryOriginalRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry original request'**
+  String get shopRetryOriginalRequest;
+
+  /// No description provided for @shopOriginalRouteUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'The payment route, eligibility or reservation is no longer available. No dialer will be opened.'**
+  String get shopOriginalRouteUnavailable;
+
+  /// No description provided for @shopReturnToCart.
+  ///
+  /// In en, this message translates to:
+  /// **'Return to cart'**
+  String get shopReturnToCart;
+
+  /// No description provided for @shopSupportInSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact support in Settings'**
+  String get shopSupportInSettings;
+
+  /// No description provided for @shopPreparedReviewNeeded.
+  ///
+  /// In en, this message translates to:
+  /// **'Order prepared. Review the server amount and recipient before opening payment. No payment is confirmed.'**
+  String get shopPreparedReviewNeeded;
+
+  /// No description provided for @shopPrepareOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Prepare order'**
+  String get shopPrepareOrder;
+
+  /// No description provided for @shopPrepareExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing an order reserves its current price and stock. You will review the server payment instructions before opening MoMo.'**
+  String get shopPrepareExplanation;
+
+  /// No description provided for @shopRecoveryUnavailableTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Order recovery unavailable'**
+  String get shopRecoveryUnavailableTitle;
+
+  /// No description provided for @shopCheckRecovery.
+  ///
+  /// In en, this message translates to:
+  /// **'Check recovery'**
+  String get shopCheckRecovery;
+
+  /// No description provided for @shopCheckingRecovery.
+  ///
+  /// In en, this message translates to:
+  /// **'Checking order recovery'**
+  String get shopCheckingRecovery;
+
+  /// No description provided for @shopReceiptCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Currency: {currency}'**
+  String shopReceiptCurrency(String currency);
+
+  /// No description provided for @shopReceiptRecipient.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipient code: {recipient}'**
+  String shopReceiptRecipient(String recipient);
+
+  /// No description provided for @shopReceiptCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Country: {country}'**
+  String shopReceiptCountry(String country);
+
+  /// No description provided for @shopReceiptInstruction.
+  ///
+  /// In en, this message translates to:
+  /// **'Dialer instruction: {instruction}'**
+  String shopReceiptInstruction(String instruction);
+
+  /// No description provided for @shopReceiptExpiry.
+  ///
+  /// In en, this message translates to:
+  /// **'Expires: {expiry}'**
+  String shopReceiptExpiry(String expiry);
+
+  /// No description provided for @shopOriginalOrderStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Order {status}'**
+  String shopOriginalOrderStatus(String status);
+
+  /// No description provided for @shopRequestReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Request: {reference}'**
+  String shopRequestReference(String reference);
+
+  /// No description provided for @shopOrderReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Order: {reference}'**
+  String shopOrderReference(String reference);
+
+  /// No description provided for @shopCatalogPriceChanged.
+  ///
+  /// In en, this message translates to:
+  /// **'The catalog total changed from {catalogAmount} to {orderAmount}. Review the updated amount before confirming.'**
+  String shopCatalogPriceChanged(String catalogAmount, String orderAmount);
+
+  /// No description provided for @shopCancelUnpaidOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel unpaid order'**
+  String get shopCancelUnpaidOrder;
+
+  /// No description provided for @shopCancellationUncertain.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancellation could not be confirmed. Check the original order status before taking further action.'**
+  String get shopCancellationUncertain;
+
+  /// No description provided for @shopOrderHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'My orders'**
+  String get shopOrderHistory;
+
+  /// No description provided for @shopOrderHistoryEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Your prepared orders will appear here.'**
+  String get shopOrderHistoryEmpty;
+
+  /// No description provided for @shopOrderHistoryUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Your orders could not be checked. Connect and try again.'**
+  String get shopOrderHistoryUnavailable;
+
+  /// No description provided for @shopOrderHistoryRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh orders'**
+  String get shopOrderHistoryRefresh;
+
+  /// No description provided for @editProfileDeletionPendingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account closure requested'**
+  String get editProfileDeletionPendingTitle;
+
+  /// No description provided for @editProfileDeletionPendingMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your access has been revoked. Personal data removal is in progress. Required transaction records will be retained, and processor or backup work may remain pending.'**
+  String get editProfileDeletionPendingMessage;
+
+  /// No description provided for @editProfileDeletionReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Request reference: {reference}'**
+  String editProfileDeletionReference(String reference);
+
+  /// No description provided for @predictFreeEntry.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get predictFreeEntry;
+
+  /// No description provided for @predictLegacyEntryClosed.
+  ///
+  /// In en, this message translates to:
+  /// **'Historical paid entries are closed to new picks.'**
+  String get predictLegacyEntryClosed;
+
+  /// No description provided for @editProfileDeletionFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account closure needs attention'**
+  String get editProfileDeletionFailedTitle;
+
+  /// No description provided for @editProfileDeletionFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your access remains revoked. Some personal data removal work failed and will be retried. Keep the request reference for support.'**
+  String get editProfileDeletionFailedMessage;
+
+  /// No description provided for @predictAccuracyPoints.
+  ///
+  /// In en, this message translates to:
+  /// **'accuracy points'**
+  String get predictAccuracyPoints;
+
+  /// No description provided for @predictVoid.
+  ///
+  /// In en, this message translates to:
+  /// **'Void'**
+  String get predictVoid;
+
+  /// No description provided for @accountClosureStatusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account closure request'**
+  String get accountClosureStatusTitle;
+
+  /// No description provided for @accountClosureStatusUnconfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'This request has not been confirmed. Sign in to finish requesting closure, or contact support with the reference.'**
+  String get accountClosureStatusUnconfirmed;
+
+  /// No description provided for @accountClosureStatusCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal data removal steps are complete. Required transaction records remain retained.'**
+  String get accountClosureStatusCompleted;
+
+  /// No description provided for @accountClosureStatusRefresh.
+  ///
+  /// In en, this message translates to:
+  /// **'Check request status'**
+  String get accountClosureStatusRefresh;
+
+  /// No description provided for @accountClosureStatusUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Request status is unavailable. Keep the reference and try again.'**
+  String get accountClosureStatusUnavailable;
+
+  /// No description provided for @accountClosureStatusForget.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide this request'**
+  String get accountClosureStatusForget;
+
+  /// No description provided for @accountClosureStatusSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Your access has been revoked. Personal data removal is pending, including processor or backup work.'**
+  String get accountClosureStatusSubmitted;
+
+  /// No description provided for @predictAdminVoid.
+  ///
+  /// In en, this message translates to:
+  /// **'Void free entries'**
+  String get predictAdminVoid;
+
+  /// No description provided for @predictAdminVoidBody.
+  ///
+  /// In en, this message translates to:
+  /// **'A void records no accuracy points. No FET or money is charged or returned.'**
+  String get predictAdminVoidBody;
+
+  /// No description provided for @predictAdminLegacyService.
+  ///
+  /// In en, this message translates to:
+  /// **'Historical paid pool. Settlement requires an authorized global operator service command.'**
+  String get predictAdminLegacyService;
+
+  /// No description provided for @predictAdminConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm final result'**
+  String get predictAdminConfirm;
+
+  /// No description provided for @predictAdminFreeTotals.
+  ///
+  /// In en, this message translates to:
+  /// **'Free entries'**
+  String get predictAdminFreeTotals;
+
+  /// No description provided for @predictLegacyPoolsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Historical paid pools'**
+  String get predictLegacyPoolsTitle;
+
+  /// No description provided for @predictLegacyBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Historical FET balance'**
+  String get predictLegacyBalance;
+
+  /// No description provided for @staffWorkspace.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff workspace'**
+  String get staffWorkspace;
+
+  /// No description provided for @staffStepUpTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify staff access'**
+  String get staffStepUpTitle;
+
+  /// No description provided for @staffStepUpMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a code from your authenticator to open the staff workspace. Verification lasts five minutes. Review your action again after verification.'**
+  String get staffStepUpMessage;
+
+  /// No description provided for @staffStepUpFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Staff access could not be verified. Check your authenticator code and connection, then try again.'**
+  String get staffStepUpFailure;
+
+  /// No description provided for @staffStepUpRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Check again'**
+  String get staffStepUpRetry;
+
+  /// No description provided for @staffStepUpSetup.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up authenticator'**
+  String get staffStepUpSetup;
+
+  /// No description provided for @staffStepUpSetupMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'In your authenticator app, add an account using this setup key. Then enter its six-digit code. Keep the key private.'**
+  String get staffStepUpSetupMessage;
+
+  /// No description provided for @staffStepUpSecretLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Authenticator setup key'**
+  String get staffStepUpSecretLabel;
+
+  /// No description provided for @staffStepUpCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Six-digit authenticator code'**
+  String get staffStepUpCode;
+
+  /// No description provided for @staffStepUpVerify.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify access'**
+  String get staffStepUpVerify;
+
+  /// No description provided for @staffStepUpRecovery.
+  ///
+  /// In en, this message translates to:
+  /// **'If you cannot use your authenticator, contact your staff administrator for account recovery.'**
+  String get staffStepUpRecovery;
+
+  /// No description provided for @adminNotificationCopyReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy request reference'**
+  String get adminNotificationCopyReference;
+
+  /// No description provided for @adminNotificationOriginalRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Original notification request'**
+  String get adminNotificationOriginalRequest;
+
+  /// No description provided for @adminNotificationOriginalPending.
+  ///
+  /// In en, this message translates to:
+  /// **'This request is retained. Check its status before creating another notification.'**
+  String get adminNotificationOriginalPending;
+
+  /// No description provided for @adminNotificationUnknownDelivery.
+  ///
+  /// In en, this message translates to:
+  /// **'Some delivery outcomes are unknown. Those delivery attempts will not be sent again. Keep this request reference for support.'**
+  String get adminNotificationUnknownDelivery;
+
+  /// No description provided for @adminNotificationRequestReference.
+  ///
+  /// In en, this message translates to:
+  /// **'Request: {reference}'**
+  String adminNotificationRequestReference(String reference);
+
+  /// No description provided for @adminNotificationCheckRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Check request status'**
+  String get adminNotificationCheckRequest;
+
+  /// No description provided for @adminNotificationRetryOriginal.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry original request'**
+  String get adminNotificationRetryOriginal;
+
+  /// No description provided for @adminNotificationOriginalNotAdmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'No request has been recorded yet. Retry uses the same audience, message, schedule and request reference.'**
+  String get adminNotificationOriginalNotAdmitted;
 }
 
 class _AfriLocalizationsDelegate

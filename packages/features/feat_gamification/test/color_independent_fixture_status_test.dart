@@ -23,7 +23,8 @@ void main() {
               awayCrest: '',
               kickoffAt: DateTime(2030),
               locksAt: DateTime(2030),
-              stakeFet: 100,
+              stakeFet: 0,
+              economicsVersion: 'free_v1',
               selection: PredictSelection.home,
             ),
             enabled: true,
@@ -33,12 +34,12 @@ void main() {
         ),
       ),
     );
-    final home = find.bySemanticsLabel('Rayon Sports, 100 FET');
+    final home = find.bySemanticsLabel('Rayon Sports, Free');
     expect(home, findsOneWidget);
     expect(
       tester.getSemantics(home),
       matchesSemantics(
-        label: 'Rayon Sports, 100 FET',
+        label: 'Rayon Sports, Free',
         isButton: true,
         hasEnabledState: true,
         isEnabled: true,

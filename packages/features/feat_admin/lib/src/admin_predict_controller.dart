@@ -4,7 +4,7 @@ import 'package:core_network/core_network.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-enum PredictAdminAction { settings, prepare, settle, refund }
+enum PredictAdminAction { settings, prepare, confirmResult, settle, refund }
 
 class AdminPredictFixture {
   AdminPredictFixture(Map<String, dynamic> row)
@@ -24,7 +24,10 @@ class AdminPredictFixture {
       stake = (row['stake_fet'] as num?)?.toInt(),
       homeScore = (row['home_score'] as num?)?.toInt(),
       awayScore = (row['away_score'] as num?)?.toInt(),
-      confirmed = row['result_confirmed'] as bool;
+      confirmed = row['result_confirmed'] as bool,
+      economicsVersion =
+          row['economics_version'] as String? ?? 'legacy_paid_v1';
+  final String economicsVersion;
   final String id, home, away, competition, status, fixtureStatus;
   final String? poolId;
   final DateTime? kickoff;
@@ -43,7 +46,7 @@ class AdminPredictData {
   const AdminPredictData({
     this.fixtures = const [],
     this.enabled = false,
-    this.entryFet = 100,
+    this.entryFet = 0,
   });
   factory AdminPredictData.fromJson(Map<String, dynamic> data) =>
       AdminPredictData(
@@ -91,6 +94,7 @@ class AdminPredictRepository implements AdminPredictGateway {
     final rpc = switch (action) {
       PredictAdminAction.settings => 'predict_admin_settings',
       PredictAdminAction.prepare => 'predict_admin_prepare',
+      PredictAdminAction.confirmResult => 'predict_admin_confirm_result',
       PredictAdminAction.settle ||
       PredictAdminAction.refund => 'predict_admin_settle',
     };

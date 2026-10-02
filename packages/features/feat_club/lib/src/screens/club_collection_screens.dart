@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:club_data/club_data.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
@@ -8,8 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../models/club_content_models.dart';
-import '../providers/club_content_providers.dart';
 import 'club_content_state_widgets.dart';
 
 class ClubTeamScreen extends ConsumerStatefulWidget {

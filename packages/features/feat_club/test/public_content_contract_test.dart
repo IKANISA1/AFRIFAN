@@ -1,5 +1,4 @@
 import 'package:feat_club/feat_club.dart';
-import 'package:feat_club/src/providers/club_public_link_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';

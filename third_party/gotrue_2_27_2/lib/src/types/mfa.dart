@@ -71,14 +71,10 @@ class PhoneEnrollment {
   /// The phone number that will receive the SMS OTP.
   final String phone;
 
-  const PhoneEnrollment({
-    required this.phone,
-  });
+  const PhoneEnrollment({required this.phone});
 
   factory PhoneEnrollment.fromJson(Map<String, dynamic> json) {
-    return PhoneEnrollment(
-      phone: json['phone'] as String,
-    );
+    return PhoneEnrollment(phone: json['phone'] as String);
   }
 
   factory PhoneEnrollment._fromJsonValue(dynamic value) => switch (value) {
@@ -385,6 +381,7 @@ enum AMRMethod {
   otp('otp'),
   oauth('oauth'),
   totp('totp'),
+  mfaTotp('mfa/totp'),
   magiclink('magiclink'),
   recovery('recovery'),
   invite('invite'),

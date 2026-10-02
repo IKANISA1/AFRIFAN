@@ -1221,6 +1221,114 @@ void main() {
       );
     });
 
+    test('Current inventory records retain active source and claim checks', () {
+      final fixture = Directory.systemTemp.createTempSync(
+        'africlub-current-inventory-',
+      );
+      addTearDown(() => fixture.deleteSync(recursive: true));
+      final manifest = File('${fixture.path}/docs/release/current-inputs.json');
+      manifest.parent.createSync(recursive: true);
+      final record = <String, Object>{
+        'path': 'packages/club/assets/images/retired.png',
+        'bytes': 12,
+        'sha256': 'a' * 64,
+      };
+      manifest.writeAsStringSync(
+        jsonEncode({
+          'files': [record],
+        }),
+      );
+      expect(_findForbiddenStaticDesignReferences(fixture), isEmpty);
+      record['sha256'] = 'invalid';
+      manifest.writeAsStringSync(
+        jsonEncode({
+          'files': [record],
+        }),
+      );
+      expect(_findForbiddenStaticDesignReferences(fixture), [manifest.path]);
+      record['sha256'] = 'a' * 64;
+      manifest.writeAsStringSync(
+        jsonEncode({
+          'files': [record],
+          'runtimeSource': "Image.asset('assets/images/retired.png')",
+        }),
+      );
+      expect(_findForbiddenStaticDesignReferences(fixture), [manifest.path]);
+      manifest.writeAsStringSync(
+        jsonEncode({
+          'files': [record],
+        }),
+      );
+      final runtime = File('${fixture.path}/apps/club/lib/screen.dart');
+      runtime.parent.createSync(recursive: true);
+      runtime.writeAsStringSync("Image.asset('assets/images/retired.png')");
+      expect(_findForbiddenStaticDesignReferences(fixture), [runtime.path]);
+      runtime.deleteSync();
+      manifest.writeAsStringSync(
+        jsonEncode({
+          'files': [
+            {
+              'path': record['path'],
+              'currentSha256': 'b' * 64,
+              'recordedSha256': 'c' * 64,
+              'matches': false,
+            },
+          ],
+        }),
+      );
+      expect(_findForbiddenStaticDesignReferences(fixture), isEmpty);
+    });
+
+    test('Historical recovery inventories do not declare live artwork', () {
+      final fixture = Directory.systemTemp.createTempSync(
+        'africlub-recovery-inventory-',
+      );
+      addTearDown(() => fixture.deleteSync(recursive: true));
+      final manifest = File(
+        '${fixture.path}/.recovery/ssd-consolidation-2026-09-30/core-initial-inventory.json',
+      );
+      manifest.parent.createSync(recursive: true);
+      final metadata = <String, Object>{
+        'root': '/old/checkout',
+        'label': 'core',
+        'files': 1,
+        'logical_bytes': 12,
+        'entries': [
+          {
+            'path': 'assets/images/retired.png',
+            'kind': 'file',
+            'bytes': 12,
+            'mode': 448,
+            'mtime_ns': 1,
+          },
+        ],
+      };
+      manifest.writeAsStringSync(jsonEncode(metadata));
+      expect(_findForbiddenStaticDesignReferences(fixture), isEmpty);
+      metadata['runtimeSource'] = "Image.asset('assets/images/retired.png')";
+      manifest.writeAsStringSync(jsonEncode(metadata));
+      expect(_findForbiddenStaticDesignReferences(fixture), [manifest.path]);
+    });
+
+    test('Pinned SDK documentation cannot shelter other asset references', () {
+      final fixture = Directory.systemTemp.createTempSync(
+        'africlub-sdk-provenance-',
+      );
+      addTearDown(() => fixture.deleteSync(recursive: true));
+      final readme = File(
+        '${fixture.path}/third_party/gotrue_2_27_2/README.md',
+      );
+      readme.parent.createSync(recursive: true);
+      const logo =
+          'https://raw.githubusercontent.com/supabase/supabase/master/packages/common/assets/images/logo-preview.jpg';
+      readme.writeAsStringSync(logo);
+      expect(_findForbiddenStaticDesignReferences(fixture), isEmpty);
+      readme.writeAsStringSync(
+        '$logo\nImage.asset("assets/images/retired.png")',
+      );
+      expect(_findForbiddenStaticDesignReferences(fixture), [readme.path]);
+    });
+
     test('Drive archives cannot retain competing design authorities', () {
       final fixture = Directory.systemTemp.createTempSync(
         'africlub-visual-source-boundary-',
@@ -1775,7 +1883,10 @@ List<String> _findForbiddenStaticDesignReferences(Directory repoRoot) {
     sourceForInspection: (path, source) =>
         _isGoalSourceEvidenceManifest(repoRoot, path, source)
         ? ''
-        : _staticAssetScanSource(path, source),
+        : _staticAssetScanSource(
+            path,
+            _sourceInventoryScanSource(repoRoot, path, source),
+          ),
     allow: (path) =>
         ((path.endsWith('/docs/architecture/club-identity.md') ||
                 path.endsWith(
@@ -1997,8 +2108,87 @@ bool _isGoalSourceEvidenceManifest(
   }
 }
 
+// A path/hash record is inventory metadata, never a runtime asset declaration.
+// Keep every other field and independently scan the referenced source itself.
+String _sourceInventoryScanSource(
+  Directory repoRoot,
+  String normalizedPath,
+  String source,
+) {
+  final root = repoRoot.path.replaceAll('\\', '/');
+  final relative = normalizedPath.startsWith('$root/')
+      ? normalizedPath.substring(root.length + 1)
+      : '';
+  // The separately validated legacy inventory keeps its exact schema/name
+  // contract. Malformed or lookalike legacy manifests remain fully scanned.
+  if (relative.startsWith('docs/release/production-goal-evidence-')) {
+    return source;
+  }
+  final releaseInventory =
+      relative.startsWith('docs/release/') && relative.endsWith('.json');
+  final recoveryInventory = RegExp(
+    r'^\.recovery/ssd-consolidation-2026-09-30/(?:core|emergency|pro_emergency|t7_second_emergency)-initial-inventory\.json$',
+  ).hasMatch(relative);
+  if (!releaseInventory && !recoveryInventory) return source;
+  final hash = RegExp(r'^[a-f0-9]{64}$');
+  bool validHash(Object? value) => value is String && hash.hasMatch(value);
+  try {
+    final decoded = jsonDecode(source);
+    if (decoded is! Map<String, dynamic>) return source;
+    if (recoveryInventory &&
+        (decoded['root'] is! String ||
+            decoded['label'] is! String ||
+            decoded['files'] is! int ||
+            decoded['logical_bytes'] is! int)) {
+      return source;
+    }
+    Object? inspect(Object? value) {
+      if (value is List) return value.map(inspect).toList();
+      if (value is! Map<String, dynamic>) return value;
+      final fileHash =
+          validHash(value['sha256']) &&
+          value['bytes'] is int &&
+          (value['bytes'] as int) >= 0;
+      final comparedHashes =
+          validHash(value['currentSha256']) &&
+          validHash(value['recordedSha256']) &&
+          value['matches'] is bool;
+      final historicalFile =
+          recoveryInventory &&
+          value['kind'] == 'file' &&
+          value['bytes'] is int &&
+          (value['bytes'] as int) >= 0 &&
+          value['mode'] is int &&
+          value['mtime_ns'] is int;
+      return value.map(
+        (key, field) => MapEntry(
+          key,
+          key == 'path' &&
+                  field is String &&
+                  (fileHash || comparedHashes || historicalFile)
+              ? ''
+              : inspect(field),
+        ),
+      );
+    }
+
+    return jsonEncode(inspect(decoded));
+  } on FormatException {
+    return source;
+  }
+}
+
 String _staticAssetScanSource(String normalizedPath, String source) {
   var inspected = source;
+  // The pinned SDK README preserves upstream provenance, not product artwork.
+  // Only this literal upstream logo reference is documentary; adjacent runtime
+  // asset declarations and all SDK implementation files remain scanned.
+  if (normalizedPath.endsWith('/third_party/gotrue_2_27_2/README.md')) {
+    inspected = inspected.replaceAll(
+      'https://raw.githubusercontent.com/supabase/supabase/master/packages/common/assets/images/logo-preview.jpg',
+      '',
+    );
+  }
   // These exact loopback QA routes return an empty 204; they do not load or
   // preserve a retired favicon. Other references in each harness still fail.
   const emptyIconResponses = <String, String>{
@@ -2058,6 +2248,8 @@ bool _isGeneratedPath(String normalizedPath) {
       normalizedPath.endsWith('/.lighthouseci') ||
       normalizedPath.contains('/.next/') ||
       normalizedPath.endsWith('/.next') ||
+      normalizedPath.contains('/.next-computer-review/') ||
+      normalizedPath.endsWith('/.next-computer-review') ||
       normalizedPath.contains('/.open-next/') ||
       normalizedPath.endsWith('/.open-next') ||
       normalizedPath.contains('/apps/rayon_sports/web/tmp/') ||

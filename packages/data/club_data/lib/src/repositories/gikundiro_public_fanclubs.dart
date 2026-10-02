@@ -1,7 +1,7 @@
 import 'package:core_network/core_network.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'official_fanclub_register.dart';
+import '../models/fan_club_publication.dart';
 
 Future<List<Map<String, dynamic>>> loadGikundiroPublicFanclubs(
   SupabaseClient source,

@@ -326,6 +326,7 @@ void main() {
           '/membership',
           '/membership/native',
           '/shop',
+          '/shop/orders',
         }),
       );
     });

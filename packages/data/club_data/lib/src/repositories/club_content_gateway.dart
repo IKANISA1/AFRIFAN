@@ -1,8 +1,8 @@
-import 'package:club_data/club_data.dart';
 import 'package:core_network/core_network.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/club_content_models.dart';
+import 'public_match_window.dart';
 
 abstract interface class ClubContentGateway {
   Future<ClubOverview?> loadOverview();

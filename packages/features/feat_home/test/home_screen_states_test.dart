@@ -925,6 +925,35 @@ void main() {
                   await tester.pumpAndSettle();
                 },
               );
+              if (large && section == 'Active predictions') {
+                // The static capture ends partway through the next section.
+                // Verify its actual large-text scroll reachability separately.
+                final news = find.text('News');
+                final scrollable = find
+                    .descendant(
+                      of: find.byType(CustomScrollView),
+                      matching: find.byType(Scrollable),
+                    )
+                    .first;
+                await tester.scrollUntilVisible(
+                  news,
+                  160,
+                  scrollable: scrollable,
+                );
+                await Scrollable.ensureVisible(
+                  tester.element(news),
+                  alignment: .15,
+                );
+                await tester.pumpAndSettle();
+                expect(tester.getTopLeft(news).dy, greaterThanOrEqualTo(64));
+                expect(
+                  tester.getBottomRight(news).dy,
+                  lessThanOrEqualTo(
+                    tester.getTopLeft(find.byType(AfriClubBottomNav)).dy,
+                  ),
+                );
+                expect(tester.takeException(), isNull);
+              }
             } finally {
               await tester.pumpWidget(const SizedBox.shrink());
               await tester.pump();

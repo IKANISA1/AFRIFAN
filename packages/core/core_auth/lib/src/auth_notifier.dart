@@ -9,6 +9,7 @@ import 'auth_action_failure.dart';
 import 'auth_providers.dart';
 import 'auth_repository.dart';
 import 'auth_state.dart';
+import 'models/account_closure_receipt.dart';
 import 'models/admin_workspace_access.dart';
 import 'models/user_profile.dart';
 
@@ -243,6 +244,7 @@ class AuthNotifier extends Notifier<AuthState> {
     if (change.event == supabase.AuthChangeEvent.tokenRefreshed &&
         previous is AuthAuthenticated &&
         previous.profile.id == sessionUserId) {
+      await refreshAdminAccess();
       return;
     }
     if (_hydratingSessionUserId == sessionUserId) return;
@@ -532,6 +534,11 @@ class AuthNotifier extends Notifier<AuthState> {
     final work = _capture();
     if (!_profileMatchesRepository(work, previous.profile)) return;
     final revision = ++_adminRevision;
+    // Revoke the cached staff grant while authoritative refresh is pending.
+    state = AuthAuthenticated(
+      profile: previous.profile,
+      workspace: AdminWorkspaceAccess.none,
+    );
     try {
       final access = await work.repository.resolveAdminAccess(
         previous.profile.id,
@@ -542,10 +549,11 @@ class AuthNotifier extends Notifier<AuthState> {
     } catch (_) {
       if (_authenticatedFor(work, previous.profile) != null &&
           revision == _adminRevision) {
-        AfriLogger.warn(
-          'AuthNotifier',
-          'Admin access refresh failed (keeping current level).',
+        state = AuthAuthenticated(
+          profile: previous.profile,
+          workspace: AdminWorkspaceAccess.none,
         );
+        AfriLogger.warn('AuthNotifier', 'Admin access refresh failed closed.');
       }
     }
   }
@@ -583,7 +591,9 @@ class AuthNotifier extends Notifier<AuthState> {
     }
   }
 
-  Future<String?> deleteAccount() async {
+  Future<String?> deleteAccount({
+    Future<void> Function(AccountClosureReceipt)? onAccepted,
+  }) async {
     if (!_active) return _changedSessionMessage;
     final previous = state;
     if (previous is! AuthAuthenticated) {
@@ -594,6 +604,19 @@ class AuthNotifier extends Notifier<AuthState> {
     state = const AuthLoading();
     try {
       await work.repository.deleteAccount(previous.profile.id);
+      if (_current(work)) {
+        final receipt = work.repository.latestAccountClosureReceipt;
+        if (receipt == null) {
+          throw StateError('Account closure receipt is missing.');
+        }
+        try {
+          if (onAccepted != null) await onAccepted(receipt);
+        } finally {
+          if (_current(work)) {
+            await work.repository.signOutClosedAccount(previous.profile.id);
+          }
+        }
+      }
       if (!_current(work)) {
         // The SDK may announce this deletion's intentional logout before the
         // successful deletion response. No state or telemetry is written here.
@@ -610,6 +633,17 @@ class AuthNotifier extends Notifier<AuthState> {
       return null;
     } catch (error) {
       if (!_current(work)) return _changedSessionMessage;
+      if (work.repository.latestAccountClosureReceipt != null) {
+        try {
+          await work.repository.signOutClosedAccount(previous.profile.id);
+        } catch (_) {}
+        if (!_current(work)) {
+          return state is AuthUnauthenticated ? null : _changedSessionMessage;
+        }
+        _observeIdentity(null, work: work);
+        state = const AuthUnauthenticated();
+        return null;
+      }
       _intentionalSignOut = false;
       state = previous;
       return _describeError(error, 'Account deletion failed.');

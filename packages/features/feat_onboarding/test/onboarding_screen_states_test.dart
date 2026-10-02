@@ -342,6 +342,12 @@ Future<void> _pumpOnboardingStateGolden(
 
   if (settle) {
     await tester.pump();
+    final brand = find.byType(AfriBrandMark);
+    final crests = find.descendant(of: brand, matching: find.byType(Image));
+    for (final element in crests.evaluate()) {
+      final crest = element.widget as Image;
+      await tester.runAsync(() => precacheImage(crest.image, element));
+    }
     await tester.pumpAndSettle();
   } else {
     await tester.pump();

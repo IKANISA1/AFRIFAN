@@ -525,9 +525,7 @@ class _PredictMatchScreenState extends ConsumerState<PredictMatchScreen>
                   _MatchPartnerPoolsTabBody(
                     fixture: fixture,
                     pools: routeState.partnerPools,
-                    onJoin: actionsEnabled
-                        ? (pool) => _showPartnerPoolJoinSheet(pool)
-                        : null,
+                    onJoin: null,
                   ),
                 MatchStatsTabBody(fixture: fixture, stats: stats),
                 H2hTabBody(
@@ -551,114 +549,6 @@ class _PredictMatchScreenState extends ConsumerState<PredictMatchScreen>
         ],
       ),
     );
-  }
-
-  Future<void> _showPartnerPoolJoinSheet(PartnerPredictionPool pool) {
-    final l10n = context.afriL10n;
-    const outcomes = <PartnerPoolOutcome>[
-      PartnerPoolOutcome.homeWin,
-      PartnerPoolOutcome.draw,
-      PartnerPoolOutcome.awayWin,
-    ];
-
-    var selectedOutcome = PartnerPoolOutcome.homeWin;
-    var isSubmitting = false;
-
-    return showAfriBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      builder: (sheetContext) {
-        return StatefulBuilder(
-          builder: (modalContext, setSheetState) {
-            Future<void> submit() async {
-              if (isSubmitting) return;
-              setSheetState(() => isSubmitting = true);
-
-              final outcome = await ref
-                  .read(matchDetailProvider(widget.fixtureId).notifier)
-                  .joinPool(pool: pool, selectedOutcome: selectedOutcome);
-
-              if (!sheetContext.mounted) return;
-
-              if (!outcome.isSuccess) {
-                setSheetState(() => isSubmitting = false);
-                AfriToast.error(
-                  sheetContext,
-                  _poolJoinFailureMessage(outcome.failure),
-                );
-                return;
-              }
-
-              closeAfriBottomSheet(sheetContext);
-              if (!mounted) return;
-              AfriToast.success(
-                context,
-                l10n.gameOutcomeJoined(
-                  partnerPoolOutcomeLabel(l10n, selectedOutcome),
-                ),
-              );
-            }
-
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(pool.title, style: TypographyTokens.sectionTitle()),
-                const SizedBox(height: SpacingTokens.spacing2),
-                Text(
-                  l10n.gamePartnerSponsorsRound(pool.partnerName),
-                  style: TypographyTokens.bodyMedium(),
-                ),
-                const SizedBox(height: SpacingTokens.spacing2),
-                Text(
-                  partnerPoolEligibilityLabel(l10n, pool.eligibilityMode),
-                  style: TypographyTokens.labelMedium(
-                    ColorTokens.contrastForeground(
-                      Theme.of(context).colorScheme.surfaceContainerHigh,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: SpacingTokens.spacing5),
-                ...outcomes.map(
-                  (outcome) => Padding(
-                    padding: const EdgeInsets.only(
-                      bottom: SpacingTokens.spacing3,
-                    ),
-                    child: PartnerPoolOutcomeOption(
-                      outcome: outcome,
-                      isSelected: selectedOutcome == outcome,
-                      onTap: () =>
-                          setSheetState(() => selectedOutcome = outcome),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: SpacingTokens.spacing2),
-                AfriButton(
-                  key: const ValueKey<String>('match-detail-join-submit'),
-                  label: l10n.gameJoinRound,
-                  icon: AfriIcons.predict,
-                  focusNode: widget.joinFocusNode,
-                  isLoading: isSubmitting,
-                  onTap: submit,
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  String _poolJoinFailureMessage(MatchDetailFailure? failure) {
-    final l10n = context.afriL10n;
-    return switch (failure?.kind) {
-      MatchDetailFailureKind.offline => l10n.gamePoolJoinOffline,
-      MatchDetailFailureKind.permissionDenied =>
-        l10n.gamePoolJoinPermissionDenied,
-      MatchDetailFailureKind.conflict => l10n.gamePoolJoinConflict,
-      MatchDetailFailureKind.securityTimeout => l10n.gamePoolJoinTimeout,
-      _ => l10n.gamePoolJoinUnavailable,
-    };
   }
 }
 
@@ -775,7 +665,7 @@ class _MatchPartnerPoolsTabBody extends StatelessWidget {
         Semantics(
           header: true,
           child: Text(
-            l10n.gamePartnerWdwPools,
+            l10n.predictLegacyPoolsTitle,
             style: TypographyTokens.sectionTitle(),
           ),
         ),
@@ -810,10 +700,7 @@ class _MatchPartnerPoolsTabBody extends StatelessWidget {
               const SizedBox(width: SpacingTokens.spacing2),
               Expanded(
                 child: Text(
-                  l10n.gamePartnerPoolsOnly(
-                    fixture.homeTeamShort,
-                    fixture.awayTeamShort,
-                  ),
+                  l10n.predictLegacyEntryClosed,
                   style: TypographyTokens.bodySmall(),
                 ),
               ),

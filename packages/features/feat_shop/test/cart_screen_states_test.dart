@@ -8,6 +8,7 @@ import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:feat_shop/src/screens/cart_screen.dart';
 import 'package:feat_shop/src/shop_cart_provider.dart';
+import 'package:feat_shop/src/shop_checkout_recovery.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,6 +16,7 @@ import 'package:test_support/app_font_loader.dart';
 import 'package:test_support/shop_fixture_images.dart';
 
 import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
+import 'shop_checkout_test_support.dart';
 
 void main({bool localStateCoverage = false}) {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -90,7 +92,7 @@ void main({bool localStateCoverage = false}) {
 
     expect(find.text('Checkout could not start'), findsOneWidget);
     expect(find.textContaining('private database diagnostic'), findsNothing);
-    expect(find.text('Review cart'), findsOneWidget);
+    expect(find.text('Check order status'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -254,17 +256,19 @@ void main({bool localStateCoverage = false}) {
     expect(
       tester
           .widget<AfriButton>(
-            find.widgetWithText(AfriButton, 'Checkout not permitted'),
+            find.widgetWithText(AfriButton, 'Check order status'),
           )
           .enabled,
-      isFalse,
+      isTrue,
     );
   });
 
   testWidgets('golden cart syncing checkout state', (tester) async {
-    final pendingOrder = Completer<String>();
+    final pendingOrder = Completer<ShopCheckoutReceipt>();
     addTearDown(() {
-      if (!pendingOrder.isCompleted) pendingOrder.complete('order-1');
+      if (!pendingOrder.isCompleted) {
+        pendingOrder.completeError(TimeoutException('response unavailable'));
+      }
     });
 
     await _pumpCartGolden(
@@ -323,13 +327,15 @@ void main({bool localStateCoverage = false}) {
     );
 
     expect(find.text('Order details changed'), findsOneWidget);
-    expect(find.text('Review cart'), findsOneWidget);
+    expect(find.text('Check order status'), findsOneWidget);
   });
 
   testWidgets('golden cart security-timeout checkout state', (tester) async {
-    final pendingOrder = Completer<String>();
+    final pendingOrder = Completer<ShopCheckoutReceipt>();
     addTearDown(() {
-      if (!pendingOrder.isCompleted) pendingOrder.complete('order-1');
+      if (!pendingOrder.isCompleted) {
+        pendingOrder.completeError(TimeoutException('response unavailable'));
+      }
     });
 
     await _pumpCartGolden(
@@ -348,20 +354,22 @@ void main({bool localStateCoverage = false}) {
       afterPump: (tester) async {
         await _submitOrderFromCart(tester);
         await tester.pump(const Duration(milliseconds: 40));
-        await tester.ensureVisible(find.text('Order status is uncertain'));
+        await tester.ensureVisible(
+          find.text('Order status is uncertain').first,
+        );
         await tester.pump();
       },
     );
 
-    expect(find.text('Order status is uncertain'), findsOneWidget);
+    expect(find.text('Order status is uncertain'), findsWidgets);
     expect(find.textContaining('Do not submit again'), findsOneWidget);
     expect(
       tester
           .widget<AfriButton>(
-            find.widgetWithText(AfriButton, 'Status uncertain'),
+            find.widgetWithText(AfriButton, 'Check order status'),
           )
           .enabled,
-      isFalse,
+      isTrue,
     );
   });
 
@@ -468,6 +476,9 @@ Widget _buildCartApp({
 }) {
   return ProviderScope(
     overrides: [
+      shopCheckoutJournalProvider.overrideWithValue(
+        MemoryShopCheckoutJournal(),
+      ),
       storeReleasePolicyProvider.overrideWithValue(
         const StoreReleasePolicy.unenforced(),
       ),
@@ -487,6 +498,7 @@ Widget _buildCartApp({
             paymentRouteLoader: paymentRouteLoader,
             orderPlacer: orderPlacer,
             checkoutTimeout: checkoutTimeout,
+            paymentReferenceFactory: () => checkoutReference,
           ),
         ),
       ),
@@ -502,7 +514,7 @@ Future<void> _submitOrderFromCart(WidgetTester tester) async {
   await tester.tap(checkout);
   await tester.pump();
   await tester.pump(const Duration(milliseconds: 300));
-  final confirm = find.widgetWithText(AfriButton, 'I submitted the payment');
+  final confirm = find.widgetWithText(AfriButton, 'Prepare order');
   await tester.ensureVisible(confirm);
   await tester.tap(confirm);
   await tester.pump();

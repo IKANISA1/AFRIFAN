@@ -7,6 +7,7 @@ import 'package:feat_shop/src/screens/cart_screen.dart';
 import 'package:feat_shop/src/screens/product_detail_screen.dart';
 import 'package:feat_shop/src/screens/shop_screen.dart';
 import 'package:feat_shop/src/shop_cart_provider.dart';
+import 'package:feat_shop/src/shop_checkout_recovery.dart';
 import 'package:feat_shop/src/widgets/shop_product_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,6 +15,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:test_support/app_font_loader.dart';
 import 'package:test_support/shop_fixture_images.dart';
+
+import 'shop_checkout_test_support.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -206,6 +209,9 @@ Future<ProviderContainer> _pumpShop(
   });
   final container = ProviderContainer(
     overrides: [
+      shopCheckoutJournalProvider.overrideWithValue(
+        MemoryShopCheckoutJournal(),
+      ),
       currentUserProvider.overrideWithValue(
         const UserProfile(
           id: 'review-user',

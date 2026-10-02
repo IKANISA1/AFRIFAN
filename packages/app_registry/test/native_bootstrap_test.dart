@@ -13,10 +13,14 @@ import '../../core/core_app/test/app_deep_link_test.dart'
     show FakeAuthRepository;
 import '../../features/feat_membership/test/native_supporter_journey_fixture.dart';
 import '../../testing/test_support/test/fixtures/five_club_configs.dart';
+import '../tool/generate_route_inventory.dart'
+    show resolveRouteInventoryWorkspace;
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  final configs = fiveClubFixtures(Directory('../..').absolute);
+  final configs = fiveClubFixtures(
+    resolveRouteInventoryWorkspace(Directory.current),
+  );
   const applications = {
     '6': 'cd.ikanisa.as_vita',
     '24': 'rw.gikundiro.app',

@@ -19,9 +19,10 @@ void main() {
     awayCrest: '',
     kickoffAt: DateTime(2030),
     locksAt: DateTime(2030),
-    stakeFet: 100,
+    stakeFet: 0,
+    economicsVersion: 'free_v1',
   );
-  for (final mode in ['cancel', 'confirm', 'insufficient', 'large_text']) {
+  for (final mode in ['cancel', 'confirm', 'zero_balance', 'large_text']) {
     testWidgets('review $mode preserves a deliberate commitment boundary', (
       tester,
     ) async {
@@ -50,7 +51,7 @@ void main() {
                     context,
                     fixture: fixture,
                     selection: PredictSelection.draw,
-                    balanceFet: mode == 'insufficient' ? 20 : 500,
+                    balanceFet: mode == 'zero_balance' ? 0 : null,
                   );
                 },
                 child: const Text('Open review'),
@@ -62,14 +63,13 @@ void main() {
       await tester.tap(find.text('Open review'));
       await tester.pumpAndSettle();
       expect(result, isNull);
-      expect(find.text('100 FET'), findsOneWidget);
+      expect(find.text('Free'), findsOneWidget);
+      expect(find.textContaining('FET'), findsNothing);
       final confirm = find.byKey(const ValueKey('predict-confirm-pick'));
       await tester.ensureVisible(confirm);
       await tester.pumpAndSettle();
-      if (mode == 'insufficient') {
-        expect(tester.widget<AfriButton>(confirm).enabled, isFalse);
-        expect(find.textContaining('-80'), findsNothing);
-      } else if (mode == 'confirm') {
+      if (mode == 'confirm' || mode == 'zero_balance') {
+        expect(tester.widget<AfriButton>(confirm).enabled, isTrue);
         await tester.tap(confirm);
         await tester.pumpAndSettle();
         expect(result, isTrue);

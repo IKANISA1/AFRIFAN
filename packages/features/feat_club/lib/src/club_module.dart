@@ -1,9 +1,9 @@
+import 'package:club_data/club_data.dart';
 import 'package:core_router/core_router.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'providers/club_public_link_provider.dart';
 import 'screens/club_collection_screens.dart';
 import 'screens/club_hub_screen.dart';
 import 'screens/club_partners_screen.dart';

@@ -43,7 +43,7 @@ class PredictRepository implements PredictGateway {
 
   @override
   Future<PredictDashboard> load() async {
-    if (!storeReleasePolicy.allowsStakedCompetitions) {
+    if (!storeReleasePolicy.allowsFreePredictions) {
       throw PredictFailure.unavailable;
     }
     try {
@@ -64,7 +64,7 @@ class PredictRepository implements PredictGateway {
     String fixtureId,
     PredictSelection selection,
   ) async {
-    if (!storeReleasePolicy.allowsStakedCompetitions) {
+    if (!storeReleasePolicy.allowsFreePredictions) {
       throw PredictFailure.unavailable;
     }
     try {
@@ -79,14 +79,18 @@ class PredictRepository implements PredictGateway {
             )
             as Map,
       );
+      final fixture = PredictFixture.fromJson(data);
+      if (!fixture.isFreeEntry) throw PredictFailure.closed;
       return PredictConfirmation(
-        PredictFixture.fromJson(data),
+        fixture,
         (data['balance_fet'] as num?)?.toInt(),
       );
     } on PostgrestException catch (error) {
+      if (error.code == '42501') throw PredictFailure.signIn;
       throw switch (error.message) {
         'PREDICT_SIGN_IN_REQUIRED' => PredictFailure.signIn,
         'PREDICT_POOL_CLOSED' ||
+        'PREDICT_LEGACY_ENTRY_CLOSED' ||
         'PREDICT_POOL_UNAVAILABLE' ||
         'PREDICT_FIXTURE_UNAVAILABLE' => PredictFailure.closed,
         'PREDICT_ALREADY_ENTERED' => PredictFailure.alreadyEntered,

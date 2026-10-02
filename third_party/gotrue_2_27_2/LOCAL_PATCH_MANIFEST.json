@@ -6,7 +6,7 @@
   "vendorPath": "third_party/gotrue_2_27_2",
   "upstreamProvenance": {
     "path": "UPSTREAM_PROVENANCE.json",
-    "sha256": "0b12d78f1134ee29932ffbd40de33cae93120134a87df044577ade90097d90c8"
+    "sha256": "8171ed5dffd784f2c39dfe749b49724f93c0cb66bdd02d92e6dec6cc46a5bdca"
   },
   "upstreamPubspec": {
     "path": "UPSTREAM_PUBSPEC.yaml",
@@ -18,7 +18,7 @@
   },
   "rootOverride": {
     "path": "pubspec.yaml",
-    "sha256": "ed12b835abf4388e5da87e98272eb0c9cb4c7a4f5a38a374ed1c81196516252d",
+    "sha256": "b8b1d47475f57461bc06518a42c8f7e751dcf9ed02c8f182d5f14fcf8a635b80",
     "package": "gotrue",
     "declaredPath": "third_party/gotrue_2_27_2"
   },
@@ -28,12 +28,12 @@
     "name": "gotrue",
     "canonicalSelection": "third_party/gotrue_2_27_2"
   },
-  "fileCount": 82,
+  "fileCount": 83,
   "files": [
     {
       "path": "AFRICLUB_PATCH.md",
-      "size": 2111,
-      "sha256": "aeda6a1df136f3fb0241b853c8a7627bc5eefa7258cfa67ac980623d07fa55b8",
+      "size": 2714,
+      "sha256": "ddb4d26a3805c0c0f33ef2648bf1bcb886e71e4efe709b38df4ad789a1cdadb5",
       "upstreamSha256": null,
       "matchesUpstream": null
     },
@@ -60,8 +60,8 @@
     },
     {
       "path": "UPSTREAM_PROVENANCE.json",
-      "size": 13707,
-      "sha256": "0b12d78f1134ee29932ffbd40de33cae93120134a87df044577ade90097d90c8",
+      "size": 13972,
+      "sha256": "8171ed5dffd784f2c39dfe749b49724f93c0cb66bdd02d92e6dec6cc46a5bdca",
       "upstreamSha256": null,
       "matchesUpstream": null
     },
@@ -172,10 +172,10 @@
     },
     {
       "path": "lib/src/gotrue_mfa_api.dart",
-      "size": 7739,
-      "sha256": "a6014a6eaf8878f1d2c73b630b57e1eb408f0ef07f8f7116c32d3eac19bf6b5e",
+      "size": 8365,
+      "sha256": "35678c62ef156edd5c85c82de6377a5bf63c878560041fad147bc11021e33c5a",
       "upstreamSha256": "a6014a6eaf8878f1d2c73b630b57e1eb408f0ef07f8f7116c32d3eac19bf6b5e",
-      "matchesUpstream": true
+      "matchesUpstream": false
     },
     {
       "path": "lib/src/gotrue_oauth_api.dart",
@@ -263,10 +263,10 @@
     },
     {
       "path": "lib/src/types/mfa.dart",
-      "size": 12369,
-      "sha256": "a9e41a4f3d25c290b53cb2bd22a6fb760790a0b65c12c9fe9bca79858e26b2dd",
+      "size": 12370,
+      "sha256": "048e2113309787d5de6d8b9a8a030f326909bbef47bbbb24db0877e25d945a13",
       "upstreamSha256": "a9e41a4f3d25c290b53cb2bd22a6fb760790a0b65c12c9fe9bca79858e26b2dd",
-      "matchesUpstream": true
+      "matchesUpstream": false
     },
     {
       "path": "lib/src/types/passkey.dart",
@@ -421,6 +421,13 @@
       "sha256": "57fe9ef24d60b49c935727e9d3257c6fd8ae5c7352de68b48895cd3e6a37f418",
       "upstreamSha256": "57fe9ef24d60b49c935727e9d3257c6fd8ae5c7352de68b48895cd3e6a37f418",
       "matchesUpstream": true
+    },
+    {
+      "path": "test/mfa_session_owner_test.dart",
+      "size": 5845,
+      "sha256": "0c16722be58c509e0b22a9ef646d83f58b2913b398cb45294a1ab4dc800c4fef",
+      "upstreamSha256": null,
+      "matchesUpstream": null
     },
     {
       "path": "test/mocks/otp_mock_client.dart",

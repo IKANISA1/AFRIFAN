@@ -1,4 +1,4 @@
-import 'package:feat_club/feat_club.dart';
+import 'package:club_data/club_data.dart';
 import 'package:feat_home/src/repositories/home_content_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 

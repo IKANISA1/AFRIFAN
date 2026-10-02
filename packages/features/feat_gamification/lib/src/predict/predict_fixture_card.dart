@@ -92,14 +92,16 @@ class PredictFixtureCard extends StatelessWidget {
                             enabled: enabled,
                             selected: fixture.selection == selection,
                             label:
-                                '${fixture.selectionName(selection, l.predictDraw)}, ${fixture.stakeFet} FET',
+                                '${fixture.selectionName(selection, l.predictDraw)}, ${fixture.isFreeEntry ? l.predictFreeEntry : l.predictLegacyEntryClosed}',
                             excludeSemantics: true,
-                            onTap: enabled ? () => onPick(selection) : null,
+                            onTap: enabled && fixture.isFreeEntry
+                                ? () => onPick(selection)
+                                : null,
                             child: AfriOutlinedButton(
                               key: ValueKey(
                                 'predict-${fixture.id}-${selection.name}',
                               ),
-                              onPressed: enabled
+                              onPressed: enabled && fixture.isFreeEntry
                                   ? () => onPick(selection)
                                   : null,
                               style:
@@ -197,13 +199,16 @@ class PredictFixtureCard extends StatelessWidget {
                     ? l.predictPending
                     : fixture.selection != null
                     ? '${fixture.selection == PredictSelection.draw ? l.predictDraw : teamInitials(fixture.selectionName(fixture.selection!, l.predictDraw))} · ${switch (fixture.outcome) {
-                        'won' => '${l.predictWon} +${fixture.payoutFet} FET',
+                        'won' => fixture.isFreeEntry ? '${l.predictWon} · ${fixture.scorePoints} ${l.predictAccuracyPoints}' : '${l.predictWon} +${fixture.payoutFet} FET',
                         'lost' => l.predictLost,
                         'refunded' => '${l.predictRefunded} +${fixture.payoutFet} FET',
+                        'void' => l.predictVoid,
                         _ => l.predictPicked,
                       }}'
                     : fixture.isOpen(DateTime.now())
-                    ? '${fixture.stakeFet} FET'
+                    ? fixture.isFreeEntry
+                          ? l.predictFreeEntry
+                          : l.predictLegacyEntryClosed
                     : l.predictLocked,
                 style: TypographyTokens.bodySmall(
                   ColorTokens.overviewSecondaryText,

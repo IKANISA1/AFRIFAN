@@ -77,7 +77,9 @@ melos:
         # Flutter regenerates its ignored SwiftPM bridge at iOS 13.0. Rayon
         # targets iOS 15.5, so the governed bootstrap raises the generated
         # manifest before Xcode resolves packages. Non-macOS hosts skip safely.
-        post: bash tools/scripts/prepare_rayon_ios_swiftpm.sh rayon_sports
+        post: |
+          dart pub get --directory third_party/gotrue_2_27_2
+          bash tools/scripts/prepare_rayon_ios_swiftpm.sh rayon_sports
 
   scripts:
     verify_refactor:
@@ -85,7 +87,9 @@ melos:
       description: Verify governed source, migration, identity and publication contracts
 
     analyze:
-      run: flutter analyze --no-pub --fatal-infos --fatal-warnings
+      run: |
+        dart pub get --directory third_party/gotrue_2_27_2
+        flutter analyze --no-pub --fatal-infos --fatal-warnings
       description: Analyze the complete workspace in one analyzer session
 
     format:

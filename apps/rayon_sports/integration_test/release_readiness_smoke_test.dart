@@ -128,13 +128,13 @@ void main() {
       for (final destination in ['Club', 'Predict', 'Membership', 'Home']) {
         await tester.tap(
           find.descendant(
-            of: find.byType(AfriClubBottomNav),
+            of: _supporterNavigation(),
             matching: find.text(destination),
           ),
         );
         await tester.pump();
         await tester.pump(const Duration(seconds: 1));
-        expect(find.byType(AfriClubBottomNav), findsOneWidget);
+        expect(_supporterNavigation(), findsOneWidget);
         expect(tester.takeException(), isNull);
         await binding.takeScreenshot(
           '${destination.toLowerCase().replaceAll(' ', '-')}-native',
@@ -251,11 +251,11 @@ void main() {
       );
 
       await _pumpAppStartup(tester);
-      await _pumpUntilVisible(tester, find.byType(AfriClubBottomNav));
+      await _pumpUntilVisible(tester, _supporterNavigation());
       expect(find.byType(SupporterPhoneAuthScreen), findsNothing);
       await tester.tap(
         find.descendant(
-          of: find.byType(AfriClubBottomNav),
+          of: _supporterNavigation(),
           matching: find.text('Membership'),
         ),
       );
@@ -303,9 +303,9 @@ void main() {
       );
       await tester.ensureVisible(verify);
       await tester.tap(verify);
-      await _pumpUntilVisible(tester, find.byType(AfriClubBottomNav));
+      await _pumpUntilVisible(tester, _supporterNavigation());
       expect(find.byType(SupporterOtpVerificationScreen), findsNothing);
-      final nav = find.byType(AfriClubBottomNav);
+      final nav = _supporterNavigation();
       expect(
         find.descendant(of: nav, matching: find.text('Membership')),
         findsOneWidget,
@@ -470,11 +470,23 @@ void main() {
       await tester.tap(find.text('Stay'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Settings'), findsOneWidget);
       expect(find.text('Sign out'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.text('Settings'),
+        -240,
+        scrollable: settingsScrollable,
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('Settings'), findsOneWidget);
     },
   );
 }
+
+// Actual shell navigation adapts to the host/device viewport. Both surfaces
+// expose the same destinations; native padding/capture assertions stay separate.
+Finder _supporterNavigation() => find.byWidgetPredicate(
+  (widget) => widget is AfriClubBottomNav || widget is AfriSideRail,
+);
 
 Future<void> _startSmokeApp(AfriClubBootstrapOptions options) {
   return bootstrap(const _SmokeRayonSportsConfig(), options: options);

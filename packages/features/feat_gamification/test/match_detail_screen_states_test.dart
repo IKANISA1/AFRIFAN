@@ -251,8 +251,6 @@ void main() {
   });
 
   testWidgets('golden Match detail focused state', (tester) async {
-    final focusNode = FocusNode(debugLabel: 'match-detail-join-focus');
-    addTearDown(focusNode.dispose);
     final previousHighlightStrategy = FocusManager.instance.highlightStrategy;
     addTearDown(
       () => FocusManager.instance.highlightStrategy = previousHighlightStrategy,
@@ -264,12 +262,8 @@ void main() {
       tester,
       id: 'focused',
       value: AsyncData<MatchDetailState>(_readyState()),
-      joinFocusNode: focusNode,
       beforeCapture: (tester) async {
-        await tester.ensureVisible(find.text('Join round'));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Join round'));
-        await tester.pumpAndSettle();
+        final focusNode = Focus.of(tester.element(find.text('Pools')));
         focusNode.requestFocus();
         await tester.pump();
         expect(focusNode.hasFocus, isTrue);
@@ -286,13 +280,8 @@ void main() {
       id: 'pressed',
       value: AsyncData<MatchDetailState>(_readyState()),
       beforeCapture: (tester) async {
-        await tester.ensureVisible(find.text('Join round'));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Join round'));
-        await tester.pumpAndSettle();
-        final action = find.byKey(
-          const ValueKey<String>('match-detail-join-submit'),
-        );
+        final action = find.text('Pools');
+        expect(find.text('Join round'), findsNothing);
         heldGesture = await tester.startGesture(tester.getCenter(action));
         await tester.pump(const Duration(milliseconds: 120));
         await tester.pump(const Duration(milliseconds: 120));
@@ -306,21 +295,9 @@ void main() {
       id: 'selected',
       value: AsyncData<MatchDetailState>(_readyState()),
       beforeCapture: (tester) async {
-        await tester.ensureVisible(find.text('Join round'));
+        await tester.tap(find.text('Stats'));
         await tester.pumpAndSettle();
-        await tester.tap(find.text('Join round'));
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Draw'));
-        await tester.pumpAndSettle();
-        expect(
-          find.byWidgetPredicate(
-            (widget) =>
-                widget is Semantics &&
-                widget.properties.selected == true &&
-                widget.properties.label == 'Selected Draw',
-          ),
-          findsOneWidget,
-        );
+        expect(find.text('Join round'), findsNothing);
       },
     );
   });
@@ -411,7 +388,7 @@ void main() {
       ),
       settle: false,
       beforeCapture: (tester) async {
-        expect(find.text('Joining partner pool'), findsOneWidget);
+        expect(find.text('Checking historical pool'), findsOneWidget);
       },
     );
   });
@@ -573,6 +550,25 @@ Future<void> _pumpRoute(
   }
   await beforeCapture?.call(tester);
   if (capture) {
+    // Asset decoding runs outside the fake frame clock. Finish decoding the
+    // actual crests before comparing pixels, regardless of prior test order.
+    await tester.runAsync(() async {
+      for (final element in find.byType(Image).evaluate()) {
+        final image = element.widget as Image;
+        Object? decodeError;
+        await precacheImage(
+          image.image,
+          element,
+          onError: (error, stackTrace) => decodeError = error,
+        );
+        if (decodeError != null) {
+          throw StateError(
+            'Golden fixture image failed to decode: $decodeError',
+          );
+        }
+      }
+    });
+    await tester.pump();
     await expectGoldenOrClubAssertions(
       tester,
       find.byType(MaterialApp),

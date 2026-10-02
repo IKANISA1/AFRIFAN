@@ -129,9 +129,11 @@ class _PredictOpsScreenState extends ConsumerState<PredictOpsScreen> {
                             ).formatFullDate(kickoff.toLocal()),
                           ),
                         const SizedBox(height: 12),
-                        Text(l.predictAdminTotals),
+                        Text(row.economicsVersion == 'free_v1' ? l.predictAdminFreeTotals : l.predictAdminTotals),
                         Text(
-                          '${row.entries} / ${row.staked} FET / ${row.paid} FET',
+                          row.economicsVersion == 'free_v1'
+                              ? '${row.entries} · ${l.predictFreeEntry}'
+                              : '${row.entries} / ${row.staked} FET / ${row.paid} FET',
                         ),
                         const SizedBox(height: 16),
                         if (row.poolId == null)
@@ -143,6 +145,8 @@ class _PredictOpsScreenState extends ConsumerState<PredictOpsScreen> {
                                 row.kickoff?.isAfter(DateTime.now()) == true,
                             onTap: () => _act(PredictAdminAction.prepare, row),
                           )
+                        else if (row.economicsVersion != 'free_v1')
+                          Text(l.predictAdminLegacyService)
                         else if (!row.completed) ...[
                           Text(
                             row.hasFinalScore
@@ -157,6 +161,15 @@ class _PredictOpsScreenState extends ConsumerState<PredictOpsScreen> {
                               ColorTokens.onSurfaceVariant,
                             ),
                           ),
+                          if (row.hasFinalScore && !row.confirmed) ...[
+                            const SizedBox(height: 8),
+                            AfriButton(
+                              label: l.predictAdminConfirm,
+                              enabled: state.canAct && online,
+                              onTap: () =>
+                                  _act(PredictAdminAction.confirmResult, row),
+                            ),
+                          ],
                           if (row.confirmed && row.hasFinalScore) ...[
                             const SizedBox(height: 8),
                             AfriButton(
@@ -167,7 +180,7 @@ class _PredictOpsScreenState extends ConsumerState<PredictOpsScreen> {
                           ],
                           const SizedBox(height: 8),
                           AfriButton(
-                            label: l.predictAdminRefund,
+                            label: l.predictAdminVoid,
                             enabled: state.canAct && online,
                             variant: AfriButtonVariant.secondary,
                             onTap: () => _act(PredictAdminAction.refund, row),
@@ -199,11 +212,7 @@ class _PredictAdminForm extends StatefulWidget {
 }
 
 class _PredictAdminFormState extends State<_PredictAdminForm> {
-  late final TextEditingController input = TextEditingController(
-    text: widget.action == PredictAdminAction.settings
-        ? widget.data.entryFet.toString()
-        : '',
-  );
+  late final TextEditingController input = TextEditingController(text: '');
   late bool enabled = widget.data.enabled;
   @override
   void dispose() {
@@ -214,10 +223,8 @@ class _PredictAdminFormState extends State<_PredictAdminForm> {
   bool get valid {
     final value = input.text.trim();
     return switch (widget.action) {
-      PredictAdminAction.settings =>
-        (int.tryParse(value) ?? 0) >= 1 &&
-            (int.tryParse(value) ?? 100001) <= 100000,
-      PredictAdminAction.prepare =>
+      PredictAdminAction.settings => true,
+      PredictAdminAction.prepare || PredictAdminAction.confirmResult =>
         value.length <= 2000 &&
             Uri.tryParse(value)?.scheme == 'https' &&
             (Uri.tryParse(value)?.host.isNotEmpty ?? false),
@@ -232,8 +239,9 @@ class _PredictAdminFormState extends State<_PredictAdminForm> {
     final label = switch (widget.action) {
       PredictAdminAction.settings => l.predictAdminSave,
       PredictAdminAction.prepare => l.predictAdminPrepare,
+      PredictAdminAction.confirmResult => l.predictAdminConfirm,
       PredictAdminAction.settle => l.predictAdminSettle,
-      PredictAdminAction.refund => l.predictAdminRefund,
+      PredictAdminAction.refund => l.predictAdminVoid,
     };
     return AfriAlertDialog(
       title: Text(label),
@@ -254,10 +262,12 @@ class _PredictAdminFormState extends State<_PredictAdminForm> {
             Text(l.predictAdminPriceNote),
           ],
           if (widget.action == PredictAdminAction.prepare)
-            Text('${widget.data.entryFet} FET'),
+            Text(l.predictFreeEntry),
+          if (widget.action == PredictAdminAction.refund)
+            Text(l.predictAdminVoidBody),
           if (widget.action == PredictAdminAction.settle)
             Text(l.predictAdminSettleBody)
-          else
+          else if (widget.action != PredictAdminAction.settings)
             AfriTextFormField(
               controller: input,
               onChanged: (_) => setState(() {}),
@@ -284,7 +294,7 @@ class _PredictAdminFormState extends State<_PredictAdminForm> {
               ? () => Navigator.pop(context, <String, Object?>{
                   if (widget.action == PredictAdminAction.settings) ...{
                     'p_enabled': enabled,
-                    'p_entry_fet': int.parse(input.text.trim()),
+                    'p_entry_fet': 0,
                   },
                   if (widget.action == PredictAdminAction.prepare)
                     'p_fixture_id': widget.fixture!.id,
@@ -293,6 +303,11 @@ class _PredictAdminFormState extends State<_PredictAdminForm> {
                     'p_pool_id': widget.fixture!.poolId,
                   if (widget.action == PredictAdminAction.prepare)
                     'p_source_url': input.text.trim(),
+                  if (widget.action == PredictAdminAction.confirmResult) ...{
+                    'p_home_score': widget.fixture!.homeScore,
+                    'p_away_score': widget.fixture!.awayScore,
+                    'p_source_url': input.text.trim(),
+                  },
                   if (widget.action == PredictAdminAction.refund)
                     'p_void_reason': input.text.trim(),
                 })

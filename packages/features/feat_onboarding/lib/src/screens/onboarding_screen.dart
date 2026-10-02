@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../account_closure_status_view.dart';
 import '../onboarding_content_provider.dart';
 
 class OnboardingScreen extends ConsumerStatefulWidget {
@@ -34,6 +35,23 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final bool _isSubmitting = false;
   final PageController _pageController = PageController();
   int _currentSlide = 0;
+  AccountClosureReceipt? _closureReceipt;
+  @override
+  void initState() {
+    super.initState();
+    unawaited(_loadClosureReceipt());
+  }
+
+  Future<void> _loadClosureReceipt() async {
+    try {
+      final receipt = await ref
+          .read(authRepositoryProvider)
+          .loadAccountClosureReceipt();
+      if (mounted && receipt != null) setState(() => _closureReceipt = receipt);
+    } catch (_) {
+      /* A missing local receipt does not block ordinary onboarding. */
+    }
+  }
 
   List<_WelcomeSlide> _slidesFor({
     required String appName,
@@ -148,6 +166,17 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.afriL10n;
+    if (_closureReceipt case final AccountClosureReceipt receipt) {
+      return AccountClosureStatusView(
+        receipt: receipt,
+        onRefresh: ref.read(authRepositoryProvider).refreshAccountClosureStatus,
+        onForget: () async {
+          await ref.read(authRepositoryProvider).forgetAccountClosureReceipt();
+          if (mounted) setState(() => _closureReceipt = null);
+        },
+        onSignIn: () => context.push('/auth/phone'),
+      );
+    }
     final clubConfig = ClubConfigScope.maybeOf(context);
     final appName = clubConfig?.appName ?? RuntimeBranding.displayAppName;
     final clubName = clubConfig?.clubName ?? RuntimeBranding.displayClubName;

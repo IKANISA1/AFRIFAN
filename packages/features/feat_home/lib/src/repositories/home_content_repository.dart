@@ -3,7 +3,6 @@ import 'package:core_feature_config/core_feature_config.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
-import 'package:feat_club/feat_club.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -344,12 +343,12 @@ class GikundiroHomeFeedRepository implements HomeFeedRepository {
       final slides = fixtures
           .take(3)
           .map((fixture) {
-        final local = fixture.matchDate?.toLocal();
-        final dateInfo = local == null
-            ? fixture.kickoffTime
-            : '${local.day.toString().padLeft(2, '0')}/'
-                  '${local.month.toString().padLeft(2, '0')} · '
-                  '${fixture.kickoffTime}';
+            final local = fixture.matchDate?.toLocal();
+            final dateInfo = local == null
+                ? fixture.kickoffTime
+                : '${local.day.toString().padLeft(2, '0')}/'
+                      '${local.month.toString().padLeft(2, '0')} · '
+                      '${fixture.kickoffTime}';
             return MatchSlide(
               homeTeam: fixture.homeTeam,
               awayTeam: fixture.awayTeam,

@@ -69,7 +69,7 @@ void main() {
       expect(
         RbacResolver.adminAssignmentsProjection,
         'id, user_id, role, club_id, partner_scope_id, granted_by, '
-        'granted_at, is_active',
+        'granted_at, is_active, revoked_at',
       );
       expect(
         RbacResolver.adminAssignmentsProjection,
@@ -136,7 +136,7 @@ void main() {
     );
 
     test(
-      'falls back to JWT metadata when the database returns no assignments',
+      'empty authoritative assignments never regain access from JWT metadata',
       () async {
         final repository = AuthRepository(
           clubId: '24',
@@ -149,8 +149,8 @@ void main() {
 
         final access = await repository.resolveAdminAccess('user-1');
 
-        expect(access.hasPartnerAdminAccess, isTrue);
-        expect(access.canAccessPartnerId('club-7'), isTrue);
+        expect(access.hasAnyAdminAccess, isFalse);
+        expect(access.canAccessPartnerId('club-7'), isFalse);
       },
     );
 

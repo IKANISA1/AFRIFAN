@@ -131,6 +131,14 @@ void main() {
     expect(find.text('Live minute'), findsNothing);
     expect(find.byType(AfriDropdownField<String>), findsNothing);
     expect(tester.takeException(), isNull);
+    final decodedCrests = tester.widgetList<RawImage>(
+      find.descendant(
+        of: find.byType(AfriTeamField),
+        matching: find.byType(RawImage),
+      ),
+    );
+    expect(decodedCrests, hasLength(2));
+    expect(decodedCrests.every((image) => image.image != null), isTrue);
     await _expectStateGolden(tester, 'automatic_results_editor');
     final save = find.widgetWithText(AfriButton, 'Update match');
     await tester.ensureVisible(save);
@@ -367,6 +375,20 @@ Future<ProviderContainer> _pumpMatches(
   } else {
     await tester.pump();
   }
+  final context = tester.element(find.byType(MaterialApp));
+  await tester.runAsync(() async {
+    for (final team in ['Rayon Sports FC', 'APR FC', 'Police FC']) {
+      await precacheImage(
+        AssetImage(teamAssetFor(team)!.asset!),
+        context,
+        onError: (error, stackTrace) => Error.throwWithStackTrace(
+          StateError('Fixture crest failed to decode: $team: $error'),
+          stackTrace ?? StackTrace.current,
+        ),
+      );
+    }
+  });
+  await tester.pump();
   return container;
 }
 

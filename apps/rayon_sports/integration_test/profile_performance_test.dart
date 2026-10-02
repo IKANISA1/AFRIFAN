@@ -34,6 +34,7 @@ void main() {
   testWidgets('profiles authenticated home to settings transition and scroll', (
     tester,
   ) async {
+    var orderSubmissionAttempted = false;
     final startupStopwatch = Stopwatch()..start();
     await bootstrap(
       const _ProfileRayonSportsConfig(),
@@ -96,7 +97,9 @@ void main() {
       AfriCountryCatalog.withCountries(const <AfriCountry>[]);
       AfriCountryCatalog.setPreferredCountryCode(null);
     });
-    final shopRouter = _profileShopRouter();
+    final shopRouter = _profileShopRouter(
+      onOrderSubmission: () => orderSubmissionAttempted = true,
+    );
     addTearDown(shopRouter.dispose);
     await tester.pumpWidget(_profileShopApp(shopRouter));
     await _pumpUntilVisible(tester, find.text('Profile product 0'));
@@ -126,6 +129,12 @@ void main() {
       await tester.fling(checkoutScroll, const Offset(0, 700), 1400);
       await tester.pumpAndSettle();
     }, reportKey: 'checkout_form_interaction_frames');
+
+    expect(
+      orderSubmissionAttempted,
+      isFalse,
+      reason: 'Checkout submission is outside this performance scenario.',
+    );
 
     binding.reportData!['profile_scope'] = <String, dynamic>{
       ...binding.reportData!['profile_scope'] as Map<String, dynamic>,
@@ -159,7 +168,9 @@ Widget _profileShopApp(GoRouter router) {
   );
 }
 
-GoRouter _profileShopRouter() => GoRouter(
+GoRouter _profileShopRouter({
+  required void Function() onOrderSubmission,
+}) => GoRouter(
   initialLocation: '/shop',
   routes: [
     GoRoute(
@@ -178,7 +189,12 @@ GoRouter _profileShopRouter() => GoRouter(
                   required items,
                   required deliveryAddress,
                   required paymentReference,
-                }) async => 'profile-order',
+                }) async {
+                  onOrderSubmission();
+                  throw UnsupportedError(
+                    'Checkout submission is outside this performance scenario',
+                  );
+                },
           ),
         ),
       ],

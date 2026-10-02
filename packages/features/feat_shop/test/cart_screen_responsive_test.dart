@@ -6,6 +6,7 @@ import 'package:core_theme/core_theme.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:feat_shop/src/screens/cart_screen.dart';
 import 'package:feat_shop/src/shop_cart_provider.dart';
+import 'package:feat_shop/src/shop_checkout_recovery.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +14,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test_support/app_font_loader.dart';
 import 'package:test_support/shop_fixture_images.dart';
+
+import 'shop_checkout_test_support.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -32,6 +35,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          shopCheckoutJournalProvider.overrideWithValue(
+            MemoryShopCheckoutJournal(),
+          ),
           storeReleasePolicyProvider.overrideWithValue(
             const StoreReleasePolicy.unenforced(),
           ),
@@ -64,6 +70,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          shopCheckoutJournalProvider.overrideWithValue(
+            MemoryShopCheckoutJournal(),
+          ),
           storeReleasePolicyProvider.overrideWithValue(
             const StoreReleasePolicy(isEnforced: true),
           ),
@@ -102,6 +111,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            shopCheckoutJournalProvider.overrideWithValue(
+              MemoryShopCheckoutJournal(),
+            ),
             storeReleasePolicyProvider.overrideWithValue(
               const StoreReleasePolicy.unenforced(),
             ),
@@ -174,6 +186,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            shopCheckoutJournalProvider.overrideWithValue(
+              MemoryShopCheckoutJournal(),
+            ),
             storeReleasePolicyProvider.overrideWithValue(
               const StoreReleasePolicy.unenforced(),
             ),
@@ -227,6 +242,9 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          shopCheckoutJournalProvider.overrideWithValue(
+            MemoryShopCheckoutJournal(),
+          ),
           storeReleasePolicyProvider.overrideWithValue(
             const StoreReleasePolicy.unenforced(),
           ),
@@ -308,6 +326,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            shopCheckoutJournalProvider.overrideWithValue(
+              MemoryShopCheckoutJournal(),
+            ),
             storeReleasePolicyProvider.overrideWithValue(
               const StoreReleasePolicy.unenforced(),
             ),
@@ -373,6 +394,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            shopCheckoutJournalProvider.overrideWithValue(
+              MemoryShopCheckoutJournal(),
+            ),
             storeReleasePolicyProvider.overrideWithValue(
               const StoreReleasePolicy.unenforced(),
             ),
@@ -419,10 +443,7 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
       expect(find.text('Review order'), findsOneWidget);
-      final confirm = find.widgetWithText(
-        AfriButton,
-        'I submitted the payment',
-      );
+      final confirm = find.widgetWithText(AfriButton, 'Prepare order');
       final back = find.widgetWithText(AfriButton, 'Back');
       await tester.ensureVisible(confirm);
       await tester.ensureVisible(back);
@@ -452,6 +473,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            shopCheckoutJournalProvider.overrideWithValue(
+              MemoryShopCheckoutJournal(),
+            ),
             storeReleasePolicyProvider.overrideWithValue(
               const StoreReleasePolicy.unenforced(),
             ),
@@ -500,6 +524,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
+            shopCheckoutJournalProvider.overrideWithValue(
+              MemoryShopCheckoutJournal(),
+            ),
             storeReleasePolicyProvider.overrideWithValue(
               const StoreReleasePolicy.unenforced(),
             ),

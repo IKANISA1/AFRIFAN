@@ -1,4 +1,4 @@
-import 'package:feat_fan_clubs/src/gikundiro_public_fanclubs.dart';
+import 'package:club_data/club_data.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

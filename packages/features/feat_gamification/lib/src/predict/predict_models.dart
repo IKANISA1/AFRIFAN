@@ -19,6 +19,8 @@ class PredictFixture {
     this.selection,
     this.outcome,
     this.payoutFet = 0,
+    this.economicsVersion = 'legacy_paid_v1',
+    this.scorePoints = 0,
   });
 
   final String id;
@@ -38,6 +40,10 @@ class PredictFixture {
   final PredictSelection? selection;
   final String? outcome;
   final int payoutFet;
+  final String economicsVersion;
+  final int scorePoints;
+
+  bool get isFreeEntry => economicsVersion == 'free_v1' && stakeFet == 0;
 
   bool isOpen(DateTime now) =>
       status == 'open' && kickoffAt.isAfter(now) && locksAt.isAfter(now);
@@ -62,14 +68,51 @@ class PredictFixture {
     round: row['round'] as String?,
     kickoffAt: DateTime.parse(_text(row, 'kickoff_at')),
     locksAt: DateTime.parse(_text(row, 'locks_at')),
-    stakeFet: _integer(row, 'stake_fet', minimum: 1),
+    stakeFet: _entryFet(row),
     status: _text(row, 'status'),
     selection: row['selection'] == null
         ? null
         : PredictSelection.values.byName(row['selection'] as String),
     outcome: row['outcome'] as String?,
-    payoutFet: row['payout_fet'] == null ? 0 : _integer(row, 'payout_fet'),
+    payoutFet: _payoutFet(row),
+    economicsVersion: _economicsVersion(row),
+    scorePoints: _scorePoints(row),
   );
+}
+
+String _economicsVersion(Map<String, dynamic> row) {
+  // Missing versions remain historical read-only data, never free entries.
+  final version = row['economics_version'] ?? 'legacy_paid_v1';
+  if (version != 'free_v1' && version != 'legacy_paid_v1') {
+    throw const FormatException('Invalid Predict economics version');
+  }
+  return version as String;
+}
+
+int _entryFet(Map<String, dynamic> row) {
+  final amount = _integer(row, 'stake_fet');
+  if ((_economicsVersion(row) == 'free_v1' && amount != 0) ||
+      (_economicsVersion(row) == 'legacy_paid_v1' && amount <= 0)) {
+    throw const FormatException('Invalid Predict entry policy');
+  }
+  return amount;
+}
+
+int _payoutFet(Map<String, dynamic> row) {
+  final value = row['payout_fet'] == null ? 0 : _integer(row, 'payout_fet');
+  if (_economicsVersion(row) == 'free_v1' && value != 0) {
+    throw const FormatException('Free Predict cannot credit FET');
+  }
+  return value;
+}
+
+int _scorePoints(Map<String, dynamic> row) {
+  final value = row['score_points'] == null ? 0 : _integer(row, 'score_points');
+  if (_economicsVersion(row) == 'free_v1' &&
+      value != (row['outcome'] == 'won' ? 1 : 0)) {
+    throw const FormatException('Invalid Predict accuracy points');
+  }
+  return value;
 }
 
 class PredictLedgerEntry {

@@ -376,6 +376,136 @@ class ClubRepository {
     return rows.map((r) => ClubShopOrder.fromJson(r)).toList();
   }
 
+  Future<ShopCheckoutReceipt> placeShopOrder({
+    required String userId,
+    required String partnerId,
+    required List<CartItem> items,
+    required String deliveryAddress,
+    required String paymentReference,
+  }) async {
+    if (!_storeReleasePolicy.allowsUnreconciledExternalPaymentLaunch) {
+      throw UnsupportedError('Shop checkout is not enabled for this release.');
+    }
+    final scope = await _scopeResolver.requireResolved(partnerId);
+    await _requireShopUser(userId);
+    final result = await _client.rpc(
+      'prepare_shop_checkout_for_club',
+      params: {
+        'p_items': items
+            .map(
+              (item) => {
+                'product_id': item.product.id,
+                'quantity': item.quantity,
+                'selected_variant': item.selectedVariant,
+              },
+            )
+            .toList(growable: false),
+        'p_delivery_address': deliveryAddress,
+        'p_payment_reference': paymentReference,
+        'p_expected_club_id': scope.requiredClubId,
+      },
+    );
+    await _requireShopUser(userId);
+    return _shopReceipt(result, userId, scope.requiredClubId, paymentReference);
+  }
+
+  Future<ShopCheckoutReceipt?> recoverShopOrder({
+    required String userId,
+    required String clubId,
+    required String paymentReference,
+  }) async {
+    final scope = await _scopeResolver.requireResolved(clubId);
+    await _requireShopUser(userId);
+    final result = await _client.rpc(
+      'recover_shop_checkout_for_club',
+      params: {
+        'p_payment_reference': paymentReference,
+        'p_expected_club_id': scope.requiredClubId,
+      },
+    );
+    await _requireShopUser(userId);
+    return result == null
+        ? null
+        : _shopReceipt(result, userId, scope.requiredClubId, paymentReference);
+  }
+
+  Future<ShopCheckoutReceipt> validateShopPayment(
+    ShopCheckoutReceipt review,
+  ) async {
+    final scope = await _scopeResolver.requireResolved(
+      review.clubId.toString(),
+    );
+    await _requireShopUser(review.userId);
+    final result = await _client.rpc(
+      'validate_shop_checkout_for_club',
+      params: {
+        'p_order_id': review.id,
+        'p_expected_club_id': scope.requiredClubId,
+        'p_receipt': review.frozen,
+      },
+    );
+    await _requireShopUser(review.userId);
+    return _shopReceipt(
+      result,
+      review.userId,
+      scope.requiredClubId,
+      review.paymentReference,
+    );
+  }
+
+  Future<List<ShopCheckoutReceipt>> getMyShopCheckouts(String userId) async {
+    final scope = await _scopeResolver.requireResolved();
+    await _requireShopUser(userId);
+    final rows = await _client
+        .from('shop_orders')
+        .select()
+        .eq('user_id', userId)
+        .eq('club_id', scope.requiredClubId)
+        .not('payment_receipt', 'is', null)
+        .order('created_at', ascending: false)
+        .limit(50);
+    await _requireShopUser(userId);
+    return rows
+        .map(
+          (row) => _shopReceipt(
+            {'order': row, 'receipt': row['payment_receipt'], 'can_pay': false},
+            userId,
+            scope.requiredClubId,
+            row['momo_reference'] as String,
+          ),
+        )
+        .toList(growable: false);
+  }
+
+  Future<void> _requireShopUser(String userId) async {
+    final user = (await _client.auth.getUser()).user;
+    if (user == null ||
+        user.id != userId ||
+        user.isAnonymous ||
+        _client.auth.currentUser?.id != userId) {
+      throw StateError('SHOP_AUTH_REQUIRED');
+    }
+  }
+
+  ShopCheckoutReceipt _shopReceipt(
+    Object? result,
+    String userId,
+    int clubId,
+    String reference,
+  ) {
+    if (result is! Map<String, dynamic>) {
+      throw const FormatException('SHOP_RECEIPT_INVALID');
+    }
+    final receipt = ShopCheckoutReceipt.fromJson(result);
+    if (receipt.userId != userId ||
+        receipt.clubId != clubId ||
+        receipt.paymentReference != reference ||
+        _scopeResolver.currentClubId != clubId) {
+      throw StateError('SHOP_SCOPE_CHANGED');
+    }
+    return receipt;
+  }
+
   Future<ClubShopOrder> cancelOrder(ClubShopOrder order) async {
     final expectedUpdatedAt = order.updatedAt;
     if (expectedUpdatedAt == null) {

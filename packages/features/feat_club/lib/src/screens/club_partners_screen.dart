@@ -1,3 +1,4 @@
+import 'package:club_data/club_data.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
@@ -5,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../repositories/gikundiro_public_partners.dart';
 import 'club_collection_screens.dart';
 
 /// An explicit club publication, independent from reward/redemption eligibility.

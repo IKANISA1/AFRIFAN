@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:club_data/club_data.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
-import 'package:feat_club/feat_club.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -172,8 +172,17 @@ class _PredictScreenState extends ConsumerState<PredictScreen>
               if (data?.balanceFet case final balance?) ...[
                 const SizedBox(height: SpacingTokens.spacing4),
                 Center(
+                  child: Text(
+                    l.predictLegacyBalance,
+                    style: TypographyTokens.bodyMedium(
+                      ColorTokens.overviewSecondaryText,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: SpacingTokens.spacing2),
+                Center(
                   child: Semantics(
-                    label: '$balance FET',
+                    label: '${l.predictLegacyBalance}: $balance FET',
                     child: Text(
                       '$balance FET',
                       style: TypographyTokens.headlineLarge(
@@ -314,6 +323,7 @@ class _PredictScreenState extends ConsumerState<PredictScreen>
                           pending: state.pendingFixture == fixture.id,
                           enabled:
                               enabled &&
+                              fixture.isFreeEntry &&
                               fixture.isOpen(DateTime.now()) &&
                               fixture.selection == null &&
                               _section == 0,

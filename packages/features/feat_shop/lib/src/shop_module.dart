@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'screens/cart_screen.dart';
 import 'screens/product_detail_screen.dart';
+import 'screens/shop_orders_screen.dart';
 import 'screens/shop_screen.dart';
 
 /// Shop feature module — merchandise catalog.
@@ -20,6 +21,11 @@ class ShopModule extends FeatureModule {
       name: 'shop',
       builder: (context, state) => const ShopScreen(),
       routes: [
+        GoRoute(
+          path: 'orders',
+          name: 'shop-orders',
+          builder: (context, state) => const ShopOrdersScreen(),
+        ),
         GoRoute(
           path: 'cart',
           name: 'shop-cart',
@@ -53,6 +59,13 @@ class ShopModule extends FeatureModule {
       recommendation: 'convert to sheet',
       targetPath: '/shop',
       rationale: 'Product details should feel like quick commerce.',
+    ),
+    RoutePresentationDecision(
+      path: '/shop/orders',
+      presentation: RoutePresentation.fullScreen,
+      recommendation: 'keep',
+      rationale:
+          'Authoritative order history and payment status need a durable destination.',
     ),
     RoutePresentationDecision(
       path: '/shop/cart',

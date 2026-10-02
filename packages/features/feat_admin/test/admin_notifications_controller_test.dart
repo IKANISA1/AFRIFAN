@@ -5,6 +5,8 @@ import 'package:feat_admin/feat_admin.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'notification_command_test_support.dart';
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUp(() => ConnectivityService.setOnlineForTest(true));
@@ -215,6 +217,9 @@ ProviderContainer _container(
   return ProviderContainer(
     overrides: <Override>[
       adminNotificationsGatewayProvider.overrideWithValue(gateway),
+      adminNotificationJournalProvider.overrideWithValue(
+        MemoryNotificationJournal(),
+      ),
       adminNotificationsLoadTimeoutProvider.overrideWithValue(loadTimeout),
       adminNotificationsMutationTimeoutProvider.overrideWithValue(
         mutationTimeout,
@@ -247,9 +252,9 @@ final _workspace = AdminNotificationsSnapshot.fromRaw(<String, dynamic>{
 });
 const _delivery = AdminNotificationDelivery(
   status: 'sent',
-  requestedCount: 1200,
-  sentCount: 1180,
-  failedCount: 20,
+  requestedCount: 12,
+  sentCount: 10,
+  failedCount: 2,
 );
 
 Map<String, dynamic> _draft() => <String, dynamic>{
@@ -279,11 +284,23 @@ class _Gateway implements AdminNotificationsGateway {
   }
 
   @override
-  Future<AdminNotificationDelivery> send(AdminNotificationDraft draft) async {
+  AdminNotificationOwner captureOwner() => notificationTestOwner();
+  @override
+  Future<Map<String, dynamic>> command(
+    AdminNotificationAttempt attempt,
+    bool submit,
+  ) async {
     final index = sendCount++;
     final outcome = sendOutcomes[index.clamp(0, sendOutcomes.length - 1)];
-    if (outcome is Future<AdminNotificationDelivery>) return outcome;
-    if (outcome is AdminNotificationDelivery) return outcome;
-    throw outcome;
+    final delivery = outcome is Future<AdminNotificationDelivery>
+        ? await outcome
+        : outcome;
+    if (delivery is! AdminNotificationDelivery) throw delivery;
+    return notificationTestReceipt(
+      attempt,
+      requested: delivery.requestedCount,
+      sent: delivery.sentCount,
+      failed: delivery.failedCount,
+    );
   }
 }

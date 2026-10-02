@@ -1,6 +1,6 @@
+import 'package:club_data/club_data.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
-import 'package:feat_club/feat_club.dart';
 import 'package:feat_gamification/src/predict/predict_controller.dart';
 import 'package:feat_gamification/src/predict/predict_models.dart';
 import 'package:feat_gamification/src/predict/predict_repository.dart';

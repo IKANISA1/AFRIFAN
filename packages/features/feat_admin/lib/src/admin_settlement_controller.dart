@@ -192,6 +192,7 @@ class AdminSettlementFixture {
 
 class AdminSettlementDraft {
   const AdminSettlementDraft({
+    required this.operationId,
     required this.fixtureId,
     required this.homeScore,
     required this.awayScore,
@@ -200,6 +201,7 @@ class AdminSettlementDraft {
   });
 
   factory AdminSettlementDraft.fromRaw(Map<String, dynamic> raw) {
+    final operationId = _requiredOperationUuid(raw['operation_id']);
     final fixtureId = _requiredUuid(
       raw['fixture_id'],
       field: 'settlement.fixture_id',
@@ -228,6 +230,7 @@ class AdminSettlementDraft {
       throw const FormatException('Invalid half-time score.');
     }
     return AdminSettlementDraft(
+      operationId: operationId,
       fixtureId: fixtureId,
       homeScore: homeScore,
       awayScore: awayScore,
@@ -237,12 +240,14 @@ class AdminSettlementDraft {
   }
 
   final String fixtureId;
+  final String operationId;
   final int homeScore;
   final int awayScore;
   final int? halfTimeHomeScore;
   final int? halfTimeAwayScore;
 
   Map<String, dynamic> toPayload() => <String, dynamic>{
+    'operation_id': operationId,
     'fixture_id': fixtureId,
     'home_score': homeScore,
     'away_score': awayScore,
@@ -253,6 +258,7 @@ class AdminSettlementDraft {
 
 class AdminSettlementReceipt {
   const AdminSettlementReceipt({
+    required this.operationId,
     required this.fixtureId,
     required this.score,
     required this.marketsSettled,
@@ -266,6 +272,7 @@ class AdminSettlementReceipt {
       throw const FormatException('Invalid settlement receipt.');
     }
     return AdminSettlementReceipt(
+      operationId: _requiredOperationUuid(map['operation_id']),
       fixtureId: _requiredUuid(map['fixture_id'], field: 'receipt.fixture_id'),
       score: _requiredString(map['score'], field: 'receipt.score', max: 12),
       marketsSettled: _boundedInt(
@@ -287,6 +294,7 @@ class AdminSettlementReceipt {
   }
 
   final String fixtureId;
+  final String operationId;
   final String score;
   final int marketsSettled;
   final int totalWon;
@@ -378,7 +386,7 @@ class SupabaseAdminSettlementGateway implements AdminSettlementGateway {
   final AdminRepository _repository;
 
   Future<void> _requireAdmin() async {
-    if (!await _repository.isCurrentUserAppMetadataAdmin()) {
+    if (!await _repository.isCurrentUserAppMetadataPlatformAdmin()) {
       throw const AdminSettlementFailure(
         AdminSettlementFailureKind.permissionDenied,
       );
@@ -458,7 +466,8 @@ class AdminSettlementNotifier extends AsyncNotifier<AdminSettlementSnapshot> {
           .read(adminSettlementGatewayProvider)
           .settle(draft)
           .timeout(ref.read(adminSettlementMutationTimeoutProvider));
-      if (receipt.fixtureId != draft.fixtureId) {
+      if (receipt.fixtureId != draft.fixtureId ||
+          receipt.operationId != draft.operationId) {
         throw const FormatException('Invalid settlement receipt.');
       }
       state = AsyncData(await _load());
@@ -542,6 +551,16 @@ Map<String, dynamic> _strictMap(Object? value, String label) {
   if (value is Map<String, dynamic>) return value;
   if (value is Map) return Map<String, dynamic>.from(value);
   throw FormatException('Invalid $label.');
+}
+
+String _requiredOperationUuid(Object? value) {
+  final id = _requiredUuid(value, field: 'settlement.operation_id');
+  if (id[14] != '4') {
+    throw const FormatException(
+      'Original settlement operation must be UUIDv4.',
+    );
+  }
+  return id;
 }
 
 String _requiredUuid(Object? value, {required String field}) {

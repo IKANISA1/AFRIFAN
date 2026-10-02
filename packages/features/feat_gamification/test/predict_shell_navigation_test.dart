@@ -134,7 +134,7 @@ void main() {
       expect(find.text('500 FET'), findsOneWidget);
       expect(find.text('Fixtures'), findsOneWidget);
       expect(find.text('My picks'), findsOneWidget);
-      expect(find.text('FET activity'), findsOneWidget);
+      expect(find.text('Historical FET activity'), findsOneWidget);
       expect(find.text('Fans'), findsNothing);
       expect(find.text('League'), findsNothing);
       expect(find.text('Create challenge'), findsNothing);

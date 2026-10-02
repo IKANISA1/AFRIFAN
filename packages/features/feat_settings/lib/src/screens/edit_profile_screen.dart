@@ -496,7 +496,34 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         setState(() => _isBusy = true);
                         final error = await ref
                             .read(authStateProvider.notifier)
-                            .deleteAccount();
+                            .deleteAccount(
+                              onAccepted: (receipt) async {
+                                if (!context.mounted) return;
+                                await showDialog<void>(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (dialogContext) => AfriAlertDialog(
+                                    title: Text(
+                                      receipt.status == 'failed'
+                                          ? l10n.editProfileDeletionFailedTitle
+                                          : l10n.editProfileDeletionPendingTitle,
+                                    ),
+                                    content: Text(
+                                      '${receipt.status == 'failed' ? l10n.editProfileDeletionFailedMessage : l10n.editProfileDeletionPendingMessage}\n\n${l10n.editProfileDeletionReference(receipt.requestId)}',
+                                    ),
+                                    actions: <Widget>[
+                                      AfriButton(
+                                        onTap: () =>
+                                            Navigator.of(dialogContext).pop(),
+                                        label: MaterialLocalizations.of(
+                                          dialogContext,
+                                        ).okButtonLabel,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            );
                         if (!context.mounted) return;
                         setState(() => _isBusy = false);
                         if (error != null) {

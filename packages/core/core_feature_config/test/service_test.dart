@@ -521,7 +521,7 @@ void main() {
       expect(service.isRouteAvailable('/predict'), isFalse);
     });
 
-    test('Predict routes require both feature and store-policy approval', () {
+    test('free Predict routes retain registered server feature gates', () {
       final unapprovedService = FeatureConfigService(
         buildSnapshot(features: [predictFeature]),
       );
@@ -540,7 +540,7 @@ void main() {
         ),
       );
 
-      expect(unapprovedService.isRouteAvailable('/predict'), isFalse);
+      expect(unapprovedService.isRouteAvailable('/predict'), isTrue);
       expect(enabledService.isRouteAvailable('/predict'), isTrue);
       expect(disabledService.isRouteAvailable('/predict'), isFalse);
     });

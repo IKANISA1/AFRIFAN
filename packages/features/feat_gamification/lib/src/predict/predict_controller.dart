@@ -136,6 +136,8 @@ class PredictController extends StateNotifier<PredictState> {
         .where((row) => row.id == fixture.id)
         .firstOrNull;
     if (current == null ||
+        !current.isFreeEntry ||
+        !fixture.isFreeEntry ||
         current.selection != null ||
         fixture.selection != null) {
       return;

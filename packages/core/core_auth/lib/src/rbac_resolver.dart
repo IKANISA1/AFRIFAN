@@ -1,5 +1,6 @@
 import 'package:core_network/core_network.dart';
 import 'package:core_utils/core_utils.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'models/admin_workspace_access.dart';
 
@@ -13,12 +14,13 @@ class RbacResolver {
     required this.tag,
     Future<dynamic> Function(String userId)? adminAssignmentsLoader,
     Map<String, dynamic> Function()? appMetadataLoader,
+    SupabaseClient Function()? clientProvider,
   }) : _adminAssignmentsLoader = adminAssignmentsLoader,
-       _appMetadataLoader = appMetadataLoader;
+       _clientProvider = clientProvider ?? (() => SupabaseClientFactory.client);
 
   final String tag;
   final Future<dynamic> Function(String userId)? _adminAssignmentsLoader;
-  final Map<String, dynamic> Function()? _appMetadataLoader;
+  final SupabaseClient Function() _clientProvider;
 
   /// Columns defined by the governed `admin_role_assignments` schema.
   ///
@@ -26,7 +28,7 @@ class RbacResolver {
   /// retired `assigned_by` / `created_at` names.
   static const String adminAssignmentsProjection =
       'id, user_id, role, club_id, partner_scope_id, granted_by, '
-      'granted_at, is_active';
+      'granted_at, is_active, revoked_at';
 
   /// Resolve admin workspace access for a user.
   ///
@@ -47,7 +49,7 @@ class RbacResolver {
         );
         return AdminWorkspaceAccess.none;
       }
-      return _resolveFromRows(rowsResult.requireData);
+      return _resolveFromRows(rowsResult.requireData, userId);
     } catch (error, stackTrace) {
       // Non-network error: log and return no access (fail-closed).
       AfriLogger.error(
@@ -66,14 +68,15 @@ class RbacResolver {
       return injectedLoader(userId);
     }
 
-    return SupabaseClientFactory.client
+    return _clientProvider()
         .from('admin_role_assignments')
         .select(adminAssignmentsProjection)
         .eq('user_id', userId)
-        .eq('is_active', true);
+        .eq('is_active', true)
+        .isFilter('revoked_at', null);
   }
 
-  AdminWorkspaceAccess _resolveFromRows(dynamic rows) {
+  AdminWorkspaceAccess _resolveFromRows(dynamic rows, String userId) {
     final assignments = <Map<String, dynamic>>[];
     if (rows is List) {
       for (final raw in rows) {
@@ -83,6 +86,11 @@ class RbacResolver {
             ? Map<String, dynamic>.from(raw)
             : null;
         if (row == null) {
+          continue;
+        }
+        if (row['user_id'] != userId ||
+            row['is_active'] != true ||
+            row['revoked_at'] != null) {
           continue;
         }
 
@@ -105,16 +113,13 @@ class RbacResolver {
           'granted_by': row['granted_by'],
           'granted_at': row['granted_at'],
           'is_active': row['is_active'],
+          'revoked_at': row['revoked_at'],
         });
       }
     }
 
     if (assignments.isEmpty) {
-      final metadata =
-          _appMetadataLoader?.call() ??
-          SupabaseClientFactory.client.auth.currentUser?.appMetadata ??
-          const <String, dynamic>{};
-      return AdminWorkspaceAccess.fromAppMetadata(metadata);
+      return AdminWorkspaceAccess.none;
     }
 
     final partnerIds = assignments

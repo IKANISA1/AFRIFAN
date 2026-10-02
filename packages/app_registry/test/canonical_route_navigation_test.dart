@@ -20,8 +20,9 @@ void main() {
   });
 
   test('every canonical Flutter route resolves through the router graph', () {
-    expect(canonicalRoutes.length, 61);
+    expect(canonicalRoutes.length, 62);
     expect(canonicalRoutes, contains('/membership/native'));
+    expect(canonicalRoutes, contains('/shop/orders'));
     expect(
       canonicalRoutes.keys.any((path) => path.startsWith('/fanzone')),
       isFalse,

@@ -44,6 +44,14 @@ void main() {
         expect(subPaths, contains('cart'));
       });
 
+      test('has authoritative order history destination', () {
+        final orders = rootRoute.routes.whereType<GoRoute>().singleWhere(
+          (route) => route.path == 'orders',
+        );
+        expect(orders.name, 'shop-orders');
+        expect(orders.builder, isNotNull);
+      });
+
       test('has product/:productId sub-route', () {
         final subPaths = rootRoute.routes
             .whereType<GoRoute>()
@@ -87,6 +95,7 @@ void main() {
           RoutePresentation.fullHeightSheet,
         );
         expect(decisions['/shop/cart'], RoutePresentation.fullHeightSheet);
+        expect(decisions['/shop/orders'], RoutePresentation.fullScreen);
       },
     );
 

@@ -103,6 +103,14 @@ class SettingsScreen extends ConsumerWidget {
               title: l10n.settingsEditProfile,
               onTap: () => context.push('/settings/edit-profile'),
             ),
+            if (profile?.isAdmin == true && _nativeStaffEntryAvailable(context))
+              AfriListRow(
+                key: const ValueKey('settings-staff-action'),
+                icon: AfriIcons.lock,
+                title: l10n.staffWorkspace,
+                subtitle: l10n.staffStepUpTitle,
+                onTap: () => context.push('/admin'),
+              ),
           ]),
 
           const SizedBox(height: SpacingTokens.spacing6),
@@ -165,6 +173,16 @@ class SettingsScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  bool _nativeStaffEntryAvailable(BuildContext context) {
+    try {
+      return !GoRouter.of(
+        context,
+      ).configuration.findMatch(Uri.parse('/admin')).isError;
+    } catch (_) {
+      return false;
+    }
   }
 
   Widget? _buildRouteStateBanner(

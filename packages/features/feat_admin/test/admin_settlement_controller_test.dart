@@ -202,9 +202,60 @@ void main() {
     );
   });
 
+  test('draft requires caller original UUIDv4 without generating fallback', () {
+    for (final operation in [
+      null,
+      'bad',
+      '11111111-2222-1333-8444-555555555555',
+    ]) {
+      expect(
+        () => AdminSettlementDraft.fromRaw({
+          ..._draft(),
+          'operation_id': operation,
+        }),
+        throwsFormatException,
+      );
+    }
+    final draft = AdminSettlementDraft.fromRaw(_draft());
+    expect(draft.operationId, _draft()['operation_id']);
+    expect(draft.toPayload()['operation_id'], draft.operationId);
+    expect(
+      () => AdminSettlementReceipt.fromRaw({
+        ..._receiptRaw,
+        'operation_id': null,
+      }),
+      throwsFormatException,
+    );
+  });
+  test(
+    'changed operation receipt never confirms another original command',
+    () async {
+      final gateway = _Gateway(
+        loadOutcomes: [_workspace],
+        settleOutcomes: [
+          AdminSettlementReceipt.fromRaw({
+            ..._receiptRaw,
+            'operation_id': '11111111-2222-4333-8444-666666666666',
+          }),
+        ],
+      );
+      final container = _container(gateway);
+      addTearDown(container.dispose);
+      await container.read(adminSettlementProvider.future);
+      expect(
+        await container.read(adminSettlementProvider.notifier).settle(_draft()),
+        isNull,
+      );
+      expect(
+        container.read(adminSettlementProvider).requireValue.actionsEnabled,
+        false,
+      );
+    },
+  );
   test('draft enforces score pairing and half-time limits', () {
     expect(
       () => AdminSettlementDraft.fromRaw(<String, dynamic>{
+        'operation_id': '11111111-2222-4333-8444-555555555555',
         'fixture_id': _scheduledFixtureId,
         'home_score': 3,
         'away_score': 1,
@@ -236,6 +287,7 @@ void main() {
         loadOutcomes: <Object>[_workspace],
         settleOutcomes: <Object>[
           const AdminSettlementReceipt(
+            operationId: '11111111-2222-4333-8444-555555555555',
             fixtureId: _finishedFixtureId,
             score: '3-1',
             marketsSettled: 12,
@@ -349,6 +401,7 @@ Map<String, dynamic> _fixture({
 
 Map<String, dynamic> _draft({String fixtureId = _scheduledFixtureId}) {
   return <String, dynamic>{
+    'operation_id': '11111111-2222-4333-8444-555555555555',
     'fixture_id': fixtureId,
     'home_score': 3,
     'away_score': 1,
@@ -359,6 +412,7 @@ Map<String, dynamic> _draft({String fixtureId = _scheduledFixtureId}) {
 
 const _receiptRaw = <String, dynamic>{
   'status': 'success',
+  'operation_id': '11111111-2222-4333-8444-555555555555',
   'fixture_id': _scheduledFixtureId,
   'score': '3-1',
   'markets_settled': 12,

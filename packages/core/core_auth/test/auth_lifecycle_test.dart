@@ -371,6 +371,17 @@ class _FakeAuthRepository extends AuthRepository {
   }
 
   @override
+  AccountClosureReceipt? get latestAccountClosureReceipt => deleteError != null
+      ? null
+      : const AccountClosureReceipt(
+          requestId: 'closure-qa',
+          status: 'deletion_pending',
+        );
+
+  @override
+  Future<void> signOutClosedAccount(String userId) async {}
+
+  @override
   Future<void> deleteAccount(String userId) async {
     if (deleteError != null) throw deleteError!;
   }

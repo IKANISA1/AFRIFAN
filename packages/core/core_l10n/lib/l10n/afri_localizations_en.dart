@@ -2405,7 +2405,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get shopOrderChangedMessage =>
-      'The order changed while it was being submitted. Your cart and address are still here. Review them before trying again.';
+      'The order request changed while it was being submitted. Check the original order status before retrying.';
 
   @override
   String get shopCheckoutDeniedMessage =>
@@ -2416,7 +2416,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get shopCheckoutFailureMessage =>
-      'No order was confirmed. Your cart and address are still here. Review them and try again.';
+      'The order result could not be confirmed. Check the original order status before retrying.';
 
   @override
   String get shopSampleProductDescription =>
@@ -4018,7 +4018,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get settingsDeleteAccountMessage =>
-      'Permanently deletes your profile, FET, badges, and history. Cannot be undone.';
+      'Request account closure and sign out? Personal data removal may take time; required transaction records are retained.';
 
   @override
   String get settingsDeleteAccountConfirmPrompt => 'Type DELETE to confirm';
@@ -6104,7 +6104,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get adminNotificationOutcomeUnconfirmed =>
-      'The last request is unconfirmed. Controls stay paused until refresh succeeds.';
+      'The original request is retained. Check its status before taking another action.';
 
   @override
   String get adminNotificationLastConfirmed =>
@@ -6136,12 +6136,12 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String adminNotificationSentSummary(int requested, int sent) {
-    return 'Sent to $requested supporters. $sent delivered.';
+    return '$requested supporters targeted. $sent device messages accepted by the delivery service.';
   }
 
   @override
   String adminNotificationPartialSummary(int sent, int failed) {
-    return 'Partial: $sent delivered, $failed failed.';
+    return 'Partial: $sent device messages accepted, $failed attempts failed.';
   }
 
   @override
@@ -9182,7 +9182,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get gamePartnerPoolsTooltip => 'Partner pools';
 
   @override
-  String get gameJoiningPartnerPool => 'Joining partner pool';
+  String get gameJoiningPartnerPool => 'Checking historical pool';
 
   @override
   String get gameRefreshingMatch => 'Refreshing match';
@@ -9196,14 +9196,14 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get gameMatchActionsUnavailableDescription =>
-      'You can review this match, but joining partner pools is disabled for this build.';
+      'Historical paid pools are closed to new entries.';
 
   @override
   String get gameShowingSavedMatch => 'Showing saved match';
 
   @override
   String get gameReconnectBeforePartnerPool =>
-      'Reconnect and refresh before joining a partner pool.';
+      'Reconnect and refresh to review historical pool records.';
 
   @override
   String get gameVsUpper => 'VS';
@@ -9259,11 +9259,11 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get gameRefreshBeforeJoiningPool =>
-      'Refresh to confirm the current match before joining a pool.';
+      'Refresh to confirm the current match and historical pool records.';
 
   @override
   String get gameReconnectBeforeJoiningPool =>
-      'Reconnect to confirm the current match before joining a pool.';
+      'Reconnect to confirm the current match and historical pool records.';
 
   @override
   String get gameMatchAccessUnavailable => 'Match access unavailable';
@@ -9277,7 +9277,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get gameMatchDataChangedDescription =>
-      'Refresh before joining a pool or reviewing current status.';
+      'Refresh before reviewing current match and historical pool status.';
 
   @override
   String get gameMatchSecurityTimeout => 'Match security check timed out';
@@ -9321,7 +9321,8 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get predictTitle => 'Predict';
 
   @override
-  String get predictIntro => 'Pick the result. One entry per match.';
+  String get predictIntro =>
+      'Pick the result for free. One pick per selected match.';
 
   @override
   String get predictFixtures => 'Fixtures';
@@ -9330,7 +9331,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get predictHistory => 'My picks';
 
   @override
-  String get predictWallet => 'FET activity';
+  String get predictWallet => 'Historical FET activity';
 
   @override
   String get predictDraw => 'Draw';
@@ -9348,7 +9349,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get predictNoHistory => 'Your picks will appear here';
 
   @override
-  String get predictNoActivity => 'No FET activity yet';
+  String get predictNoActivity => 'No historical FET activity';
 
   @override
   String get predictUnavailable => 'Couldn’t refresh Predict';
@@ -9390,10 +9391,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get predictPicked => 'Picked';
 
   @override
-  String get predictWon => 'Won';
+  String get predictWon => 'Correct';
 
   @override
-  String get predictLost => 'Settled';
+  String get predictLost => 'Incorrect';
 
   @override
   String get predictRefunded => 'Refunded';
@@ -9403,7 +9404,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get predictRules =>
-      'Entries close at kickoff. Correct picks share the pool. If no one is correct, or the match is voided, entries are refunded. FET is not cash.';
+      'Free entries close at kickoff. Correct picks earn one accuracy point. No FET or money is charged or awarded. A void match does not count.';
 
   @override
   String get predictWelcome => 'Welcome FET';
@@ -9418,14 +9419,14 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get predictRefund => 'Predict refund';
 
   @override
-  String get predictActivity => 'FET activity';
+  String get predictActivity => 'Historical FET activity';
 
   @override
   String get predictAdminTitle => 'Predict operations';
 
   @override
   String get predictAdminIntro =>
-      'Prepare fixtures and manage entries. Match results come from the LiveScore integration.';
+      'Prepare confirmed fixtures and manage free picks. Record a verified final result before settlement.';
 
   @override
   String get predictAdminSettings => 'Settings';
@@ -9434,7 +9435,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get predictAdminEnabled => 'Open Predict';
 
   @override
-  String get predictAdminEntryPrice => 'Entry price (FET)';
+  String get predictAdminEntryPrice => 'Free selected-match entry';
 
   @override
   String get predictAdminSave => 'Save settings';
@@ -9470,7 +9471,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get predictAdminSource => 'Official source URL';
 
   @override
-  String get predictAdminReason => 'Reason for refund';
+  String get predictAdminReason => 'Reason for void';
 
   @override
   String get predictAdminCancel => 'Cancel';
@@ -9487,14 +9488,14 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get predictAdminPriceNote =>
-      'New price applies to newly prepared fixtures. Entries close automatically at kickoff.';
+      'New fixtures use zero-FET free entry. Historical paid pools remain separate and retain their settlement obligations.';
 
   @override
   String get predictAdminTotals => 'Entries / Staked / Paid';
 
   @override
   String get predictAdminAutomaticResults =>
-      'LiveScore validates and confirms results automatically. No manual confirmation is needed.';
+      'Review the verified final score and record its source before settling free entries.';
 
   @override
   String get predictAdminFinalScore => 'Final score';
@@ -9508,7 +9509,7 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get predictAdminSettleBody =>
-      'Distribute the whole pool to correct entries. If none are correct, refund every entry.';
+      'Record correct and incorrect free picks without any wallet credit. Historical paid pools retain their original settlement rules.';
 
   @override
   String get clubAboutTitle => 'About the club';
@@ -9545,10 +9546,10 @@ class AfriLocalizationsEn extends AfriLocalizations {
 
   @override
   String get predictReviewRule =>
-      'One pick per fixture. Your pick cannot be changed after confirmation. The fixture closes at kickoff.';
+      'One free pick per selected fixture. Your pick cannot be changed after confirmation. Entry closes at kickoff.';
 
   @override
-  String get predictEntryCost => 'Entry cost';
+  String get predictEntryCost => 'Entry';
 
   @override
   String get predictBalanceAfter => 'Balance after entry';
@@ -9595,11 +9596,11 @@ class AfriLocalizationsEn extends AfriLocalizations {
   String get clubSourceLabel => 'Source';
 
   @override
-  String get predictEarnUse => 'Earn and use FET';
+  String get predictEarnUse => 'How Predict works';
 
   @override
   String get predictEarnUseBody =>
-      'FET is your supporter activity balance. Eligible members receive the published welcome grant once. You can use available FET to enter enabled fixtures; confirmed payouts and refunds appear in FET activity. FET cannot be bought or withdrawn as cash.';
+      'Selected-match entries are free. Accuracy points reflect correct results and have no monetary value. Historical FET balances and activity remain separate.';
 
   @override
   String get predictNoRedemptions =>
@@ -9889,4 +9890,307 @@ class AfriLocalizationsEn extends AfriLocalizations {
   @override
   String get nativeMembershipRestartAcknowledgement =>
       'I understand that this starts a new sign-in and does not confirm payment or close earlier sessions.';
+
+  @override
+  String get shopRecoveryCheckFailed =>
+      'Order recovery could not be checked. Your original request is retained. Check again before creating or paying for another order.';
+
+  @override
+  String get shopOriginalResultUnavailable =>
+      'The original order result is still unavailable. Do not pay again. Check status or contact support with the request reference.';
+
+  @override
+  String get shopReviewPayment => 'Review payment';
+
+  @override
+  String get shopAcceptUpdatedAmount => 'I agree to the updated order amount';
+
+  @override
+  String get shopDialerBoundary =>
+      'Opening MoMo does not confirm payment. Check the original order result before paying again.';
+
+  @override
+  String get shopConfirmOpenMomo => 'Confirm and open MoMo';
+
+  @override
+  String get shopPaymentOpenedPending =>
+      'MoMo was opened. Payment is pending until the order is matched. Check status before paying again.';
+
+  @override
+  String get shopDialerResultUnknown =>
+      'The dialer result could not be confirmed. Your original order is retained. Check status before paying again.';
+
+  @override
+  String get shopInstructionsChanged =>
+      'Payment instructions changed. Review the original order again. No dialer was opened.';
+
+  @override
+  String get shopPaymentLaunchUnsafe =>
+      'Payment could not be opened safely. Your original order is retained. Check its status before paying again.';
+
+  @override
+  String get shopPaymentPending => 'Payment pending';
+
+  @override
+  String get shopOrderPrepared => 'Order prepared';
+
+  @override
+  String get shopAuthoritativeStatus => 'This status comes from the server.';
+
+  @override
+  String get shopPreparedIsNotPaid =>
+      'A prepared request or an opened dialer does not confirm payment. Check status before paying again.';
+
+  @override
+  String get shopCheckOrderStatus => 'Check order status';
+
+  @override
+  String get shopOriginalRequestMissing =>
+      'No order was found for this request. Retry keeps the same request reference and cart details.';
+
+  @override
+  String get shopRetryOriginalRequest => 'Retry original request';
+
+  @override
+  String get shopOriginalRouteUnavailable =>
+      'The payment route, eligibility or reservation is no longer available. No dialer will be opened.';
+
+  @override
+  String get shopReturnToCart => 'Return to cart';
+
+  @override
+  String get shopSupportInSettings => 'Contact support in Settings';
+
+  @override
+  String get shopPreparedReviewNeeded =>
+      'Order prepared. Review the server amount and recipient before opening payment. No payment is confirmed.';
+
+  @override
+  String get shopPrepareOrder => 'Prepare order';
+
+  @override
+  String get shopPrepareExplanation =>
+      'Preparing an order reserves its current price and stock. You will review the server payment instructions before opening MoMo.';
+
+  @override
+  String get shopRecoveryUnavailableTitle => 'Order recovery unavailable';
+
+  @override
+  String get shopCheckRecovery => 'Check recovery';
+
+  @override
+  String get shopCheckingRecovery => 'Checking order recovery';
+
+  @override
+  String shopReceiptCurrency(String currency) {
+    return 'Currency: $currency';
+  }
+
+  @override
+  String shopReceiptRecipient(String recipient) {
+    return 'Recipient code: $recipient';
+  }
+
+  @override
+  String shopReceiptCountry(String country) {
+    return 'Country: $country';
+  }
+
+  @override
+  String shopReceiptInstruction(String instruction) {
+    return 'Dialer instruction: $instruction';
+  }
+
+  @override
+  String shopReceiptExpiry(String expiry) {
+    return 'Expires: $expiry';
+  }
+
+  @override
+  String shopOriginalOrderStatus(String status) {
+    return 'Order $status';
+  }
+
+  @override
+  String shopRequestReference(String reference) {
+    return 'Request: $reference';
+  }
+
+  @override
+  String shopOrderReference(String reference) {
+    return 'Order: $reference';
+  }
+
+  @override
+  String shopCatalogPriceChanged(String catalogAmount, String orderAmount) {
+    return 'The catalog total changed from $catalogAmount to $orderAmount. Review the updated amount before confirming.';
+  }
+
+  @override
+  String get shopCancelUnpaidOrder => 'Cancel unpaid order';
+
+  @override
+  String get shopCancellationUncertain =>
+      'Cancellation could not be confirmed. Check the original order status before taking further action.';
+
+  @override
+  String get shopOrderHistory => 'My orders';
+
+  @override
+  String get shopOrderHistoryEmpty => 'Your prepared orders will appear here.';
+
+  @override
+  String get shopOrderHistoryUnavailable =>
+      'Your orders could not be checked. Connect and try again.';
+
+  @override
+  String get shopOrderHistoryRefresh => 'Refresh orders';
+
+  @override
+  String get editProfileDeletionPendingTitle => 'Account closure requested';
+
+  @override
+  String get editProfileDeletionPendingMessage =>
+      'Your access has been revoked. Personal data removal is in progress. Required transaction records will be retained, and processor or backup work may remain pending.';
+
+  @override
+  String editProfileDeletionReference(String reference) {
+    return 'Request reference: $reference';
+  }
+
+  @override
+  String get predictFreeEntry => 'Free';
+
+  @override
+  String get predictLegacyEntryClosed =>
+      'Historical paid entries are closed to new picks.';
+
+  @override
+  String get editProfileDeletionFailedTitle =>
+      'Account closure needs attention';
+
+  @override
+  String get editProfileDeletionFailedMessage =>
+      'Your access remains revoked. Some personal data removal work failed and will be retried. Keep the request reference for support.';
+
+  @override
+  String get predictAccuracyPoints => 'accuracy points';
+
+  @override
+  String get predictVoid => 'Void';
+
+  @override
+  String get accountClosureStatusTitle => 'Account closure request';
+
+  @override
+  String get accountClosureStatusUnconfirmed =>
+      'This request has not been confirmed. Sign in to finish requesting closure, or contact support with the reference.';
+
+  @override
+  String get accountClosureStatusCompleted =>
+      'Personal data removal steps are complete. Required transaction records remain retained.';
+
+  @override
+  String get accountClosureStatusRefresh => 'Check request status';
+
+  @override
+  String get accountClosureStatusUnavailable =>
+      'Request status is unavailable. Keep the reference and try again.';
+
+  @override
+  String get accountClosureStatusForget => 'Hide this request';
+
+  @override
+  String get accountClosureStatusSubmitted =>
+      'Your access has been revoked. Personal data removal is pending, including processor or backup work.';
+
+  @override
+  String get predictAdminVoid => 'Void free entries';
+
+  @override
+  String get predictAdminVoidBody =>
+      'A void records no accuracy points. No FET or money is charged or returned.';
+
+  @override
+  String get predictAdminLegacyService =>
+      'Historical paid pool. Settlement requires an authorized global operator service command.';
+
+  @override
+  String get predictAdminConfirm => 'Confirm final result';
+
+  @override
+  String get predictAdminFreeTotals => 'Free entries';
+
+  @override
+  String get predictLegacyPoolsTitle => 'Historical paid pools';
+
+  @override
+  String get predictLegacyBalance => 'Historical FET balance';
+
+  @override
+  String get staffWorkspace => 'Staff workspace';
+
+  @override
+  String get staffStepUpTitle => 'Verify staff access';
+
+  @override
+  String get staffStepUpMessage =>
+      'Enter a code from your authenticator to open the staff workspace. Verification lasts five minutes. Review your action again after verification.';
+
+  @override
+  String get staffStepUpFailure =>
+      'Staff access could not be verified. Check your authenticator code and connection, then try again.';
+
+  @override
+  String get staffStepUpRetry => 'Check again';
+
+  @override
+  String get staffStepUpSetup => 'Set up authenticator';
+
+  @override
+  String get staffStepUpSetupMessage =>
+      'In your authenticator app, add an account using this setup key. Then enter its six-digit code. Keep the key private.';
+
+  @override
+  String get staffStepUpSecretLabel => 'Authenticator setup key';
+
+  @override
+  String get staffStepUpCode => 'Six-digit authenticator code';
+
+  @override
+  String get staffStepUpVerify => 'Verify access';
+
+  @override
+  String get staffStepUpRecovery =>
+      'If you cannot use your authenticator, contact your staff administrator for account recovery.';
+
+  @override
+  String get adminNotificationCopyReference => 'Copy request reference';
+
+  @override
+  String get adminNotificationOriginalRequest =>
+      'Original notification request';
+
+  @override
+  String get adminNotificationOriginalPending =>
+      'This request is retained. Check its status before creating another notification.';
+
+  @override
+  String get adminNotificationUnknownDelivery =>
+      'Some delivery outcomes are unknown. Those delivery attempts will not be sent again. Keep this request reference for support.';
+
+  @override
+  String adminNotificationRequestReference(String reference) {
+    return 'Request: $reference';
+  }
+
+  @override
+  String get adminNotificationCheckRequest => 'Check request status';
+
+  @override
+  String get adminNotificationRetryOriginal => 'Retry original request';
+
+  @override
+  String get adminNotificationOriginalNotAdmitted =>
+      'No request has been recorded yet. Retry uses the same audience, message, schedule and request reference.';
 }

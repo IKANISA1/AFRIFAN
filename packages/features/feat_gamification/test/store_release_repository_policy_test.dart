@@ -42,15 +42,9 @@ void main() {
     });
 
     test(
-      'Predict reads and mutations fail closed before network access',
+      'paid partner entries stay blocked under every release policy',
       () async {
         final client = _MockSupabaseClient();
-        final predict = PredictRepository(client, storeReleasePolicy: policy);
-        await expectLater(predict.load(), throwsA(PredictFailure.unavailable));
-        await expectLater(
-          predict.place('fixture-1', PredictSelection.home),
-          throwsA(PredictFailure.unavailable),
-        );
         final pools = PartnerPoolRepository(
           client: client,
           storeReleasePolicy: policy,
@@ -58,6 +52,14 @@ void main() {
         expect(await pools.loadPools(), isEmpty);
         await expectLater(
           pools.joinPool(poolId: 'pool-1', selectedOutcome: 'home'),
+          throwsA(isA<UnsupportedError>()),
+        );
+        final unrestricted = PartnerPoolRepository(
+          client: client,
+          storeReleasePolicy: const StoreReleasePolicy.unenforced(),
+        );
+        await expectLater(
+          unrestricted.joinPool(poolId: 'pool-1', selectedOutcome: 'home'),
           throwsA(isA<UnsupportedError>()),
         );
         verifyNever(() => client.auth);

@@ -356,6 +356,14 @@ class _DelayedAuthRepository extends AuthRepository {
   Future<void> signOutOtherSessions() =>
       otherSessions?.call() ?? Future.value();
   @override
+  AccountClosureReceipt? get latestAccountClosureReceipt =>
+      const AccountClosureReceipt(
+        requestId: 'closure-qa',
+        status: 'deletion_pending',
+      );
+  @override
+  Future<void> signOutClosedAccount(String userId) async {}
+  @override
   Future<void> deleteAccount(String userId) {
     deletedUsers.add(userId);
     return deletion?.call() ?? Future.value();
@@ -890,7 +898,7 @@ void _completeAuthorityGuardTests() {
     );
 
     test(
-      'token refresh for the current user does not start duplicate hydration',
+      'token refresh rechecks staff authority without duplicate profile hydration',
       () async {
         final repository = _DelayedAuthRepository(profile: _profile('old'));
         final container = _authContainer(repository);
@@ -904,7 +912,7 @@ void _completeAuthorityGuardTests() {
           ),
         );
         expect(repository.restores, 1);
-        expect(repository.adminUsers, <String>['old']);
+        expect(repository.adminUsers, <String>['old', 'old']);
       },
     );
   });

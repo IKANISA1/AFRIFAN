@@ -157,10 +157,13 @@ void main() {
       );
     });
 
-    test('sensitive routes are blocked while physical routes remain open', () {
+    test('free Predict routes retain separate paid-pool restrictions', () {
       const policy = StoreReleasePolicy(isEnforced: true);
 
-      expect(policy.isRouteAllowed('/predict'), isFalse);
+      expect(policy.isRouteAllowed('/predict'), isTrue);
+      expect(policy.isRouteAllowed('/predict/match/fixture'), isTrue);
+      expect(policy.allowsFreePredictions, isTrue);
+      expect(policy.allowsStakedCompetitions, isFalse);
       expect(policy.isRouteAllowed('/tickets'), isTrue);
       expect(policy.isRouteAllowed('/shop'), isTrue);
     });

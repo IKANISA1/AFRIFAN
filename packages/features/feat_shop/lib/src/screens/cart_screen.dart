@@ -12,31 +12,34 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../shop_cart_provider.dart';
+import '../shop_checkout_recovery.dart';
 import '../widgets/cart_item_card.dart';
 import '../widgets/shop_product_image.dart';
 
 typedef CartPaymentRouteLoader =
     Future<PartnerPaymentRoute?> Function(String clubId);
 
-typedef CartOrderPlacer =
-    Future<String> Function({
-      required String userId,
-      required String partnerId,
-      required List<CartItem> items,
-      required String deliveryAddress,
-      required String paymentReference,
-    });
+typedef CartOrderPlacer = ShopOrderPlacer;
 
 class CartScreen extends ConsumerStatefulWidget {
   const CartScreen({
     super.key,
     this.paymentRouteLoader,
     this.orderPlacer,
+    this.orderRecoverer,
+    this.paymentValidator,
+    this.dialerLauncher,
+    this.paymentReferenceFactory,
     this.checkoutTimeout = const Duration(seconds: 30),
   });
 
   final CartPaymentRouteLoader? paymentRouteLoader;
   final CartOrderPlacer? orderPlacer;
+  final ShopOrderRecoverer? orderRecoverer;
+  final Future<ShopCheckoutReceipt> Function(ShopCheckoutReceipt)?
+  paymentValidator;
+  final Future<bool> Function(String)? dialerLauncher;
+  final String Function()? paymentReferenceFactory;
   final Duration checkoutTimeout;
 
   @override
@@ -55,6 +58,12 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   String? _paymentRouteLookupKey;
   _CartCheckoutFailure? _checkoutFailure;
   late bool _wasOnline;
+  ShopCheckoutFlow? _flow;
+  bool _restoringCheckout = false;
+  bool _missingOrder = false;
+  String? _recoveryError;
+  String? _paymentOutcome;
+  BuildContext? _checkoutSheetContext;
 
   CurrencyFormatter get _currencyFormatter => CurrencyFormatter(
     currencyCode: context.afriCurrencyCode,
@@ -104,9 +113,547 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     }
 
     _paymentRouteLookupKey = lookupKey;
+    final sheet = _checkoutSheetContext;
+    if (sheet != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (sheet.mounted) Navigator.of(sheet).pop(false);
+      });
+    }
+    _addressController.clear();
+    _paymentRoute = null;
+    _paymentRouteError = null;
+    _paymentRouteMessage = null;
+    _flow = null;
+    _recoveryError = null;
+    _paymentOutcome = null;
+    _missingOrder = false;
+    _restoringCheckout = user != null;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      unawaited(_refreshPaymentRouteState(user));
+      if (!mounted || _paymentRouteLookupKey != lookupKey) return;
+      if (ref
+          .read(storeReleasePolicyProvider)
+          .allowsUnreconciledExternalPaymentLaunch) {
+        unawaited(_refreshPaymentRouteState(user));
+      }
+      unawaited(_restoreCheckout(user, lookupKey));
     });
+  }
+
+  Future<void> _restoreCheckout(UserProfile? user, String key) async {
+    if (user == null || !mounted || _paymentRouteLookupKey != key) return;
+    bool current() {
+      if (!mounted) return false;
+      final actor = ref.read(currentUserProvider);
+      return mounted &&
+          _paymentRouteLookupKey == key &&
+          actor?.id == user.id &&
+          actor?.clubId == user.clubId;
+    }
+
+    final flow = ShopCheckoutFlow(
+      userId: user.id,
+      clubId: user.clubId,
+      journal: ref.read(shopCheckoutJournalProvider),
+      timeout: widget.checkoutTimeout,
+      referenceFactory:
+          widget.paymentReferenceFactory ?? newShopPaymentReference,
+      place:
+          widget.orderPlacer ??
+          ({
+            required userId,
+            required partnerId,
+            required items,
+            required deliveryAddress,
+            required paymentReference,
+          }) => ref
+              .read(clubRepositoryProvider)
+              .placeShopOrder(
+                userId: userId,
+                partnerId: partnerId,
+                items: items,
+                deliveryAddress: deliveryAddress,
+                paymentReference: paymentReference,
+              ),
+      recover:
+          widget.orderRecoverer ??
+          ({required userId, required clubId, required paymentReference}) => ref
+              .read(clubRepositoryProvider)
+              .recoverShopOrder(
+                userId: userId,
+                clubId: clubId,
+                paymentReference: paymentReference,
+              ),
+      validate:
+          widget.paymentValidator ??
+          (receipt) =>
+              ref.read(clubRepositoryProvider).validateShopPayment(receipt),
+      launch: (ussd) async {
+        if (!current() ||
+            !ConnectivityService.isOnline ||
+            !ref
+                .read(storeReleasePolicyProvider)
+                .allowsUnreconciledExternalPaymentLaunch) {
+          throw StateError('SHOP_PAYMENT_UNAVAILABLE');
+        }
+        return (widget.dialerLauncher ?? MomoDialerService.launchPreparedUssd)(
+          ussd,
+        );
+      },
+      isCurrent: current,
+    );
+    try {
+      await flow.restore();
+      if (!current()) return;
+      _flow = flow;
+      if (flow.attempt != null) {
+        _addressController.text = flow.attempt!.address;
+        if (ConnectivityService.isOnline) {
+          _missingOrder = await flow.check() == null;
+        }
+      }
+      if (!current()) return;
+      setState(() {
+        _restoringCheckout = false;
+        _recoveryError = null;
+      });
+    } catch (_) {
+      if (!current()) return;
+      setState(() {
+        _flow = flow;
+        _restoringCheckout = false;
+        _recoveryError = context.afriL10n.shopRecoveryCheckFailed;
+      });
+    }
+  }
+
+  Future<void> _checkOriginal({bool retry = false}) async {
+    final flow = _flow;
+    if (flow == null || _submitting || !ConnectivityService.isOnline) return;
+    setState(() {
+      _submitting = true;
+      _recoveryError = null;
+    });
+    try {
+      if (retry) {
+        await flow.retryOriginal();
+        _missingOrder = false;
+      } else {
+        _missingOrder = await flow.check() == null;
+      }
+      if (!mounted || !identical(_flow, flow)) return;
+      setState(() => _checkoutFailure = null);
+    } catch (_) {
+      if (!mounted || !identical(_flow, flow)) return;
+      setState(
+        () => _recoveryError = context.afriL10n.shopOriginalResultUnavailable,
+      );
+    } finally {
+      if (mounted && identical(_flow, flow)) {
+        setState(() => _submitting = false);
+      }
+    }
+  }
+
+  Future<void> _reviewPreparedPayment() async {
+    final flow = _flow;
+    final review = flow?.receipt;
+    if (flow == null ||
+        review == null ||
+        _submitting ||
+        flow.attempt?.handoffStarted == true ||
+        !ref
+            .read(storeReleasePolicyProvider)
+            .allowsUnreconciledExternalPaymentLaunch) {
+      return;
+    }
+    setState(() => _submitting = true);
+    try {
+      final catalogTotal = flow.attempt!.items.fold<int>(
+        0,
+        (sum, item) => sum + item.lineTotal,
+      );
+      final changed =
+          catalogTotal != review.total ||
+          review.currency != context.afriCurrencyCode;
+      var acknowledged = !changed;
+      final currency = CurrencyFormatter(
+        currencyCode: review.currency,
+        currencySymbol: review.currency,
+      );
+      final confirmed = await showAfriBottomSheet<bool>(
+        context: context,
+        isScrollControlled: true,
+        builder: (sheetContext) {
+          _checkoutSheetContext = sheetContext;
+          return StatefulBuilder(
+            builder: (context, update) => SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    context.afriL10n.shopReviewPayment,
+                    style: TypographyTokens.headlineMedium(),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing4),
+                  AfriSurfaceCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        for (final item in review.order.items) ...[
+                          Text(
+                            context.afriL10n.shopItemQuantitySummary(
+                              item.product.name,
+                              item.quantity,
+                            ),
+                            style: TypographyTokens.titleMedium(),
+                          ),
+                          Text(
+                            currency.format(item.lineTotal),
+                            style: TypographyTokens.bodyLarge(),
+                          ),
+                          if (item.selectedVariant != null)
+                            Text(
+                              item.selectedVariant!,
+                              style: TypographyTokens.bodyMedium(),
+                            ),
+                          const SizedBox(height: SpacingTokens.spacing3),
+                        ],
+                        Text(
+                          currency.format(review.total),
+                          style: TypographyTokens.headlineSmall(),
+                        ),
+                        Text(
+                          context.afriL10n.shopReceiptCurrency(review.currency),
+                          style: TypographyTokens.bodyMedium(),
+                        ),
+                        Text(
+                          context.afriL10n.shopReceiptRecipient(
+                            review.recipientCode,
+                          ),
+                          style: TypographyTokens.bodyMedium(),
+                        ),
+                        Text(
+                          context.afriL10n.shopReceiptCountry(review.country),
+                          style: TypographyTokens.bodyMedium(),
+                        ),
+                        Text(
+                          context.afriL10n.shopReceiptInstruction(
+                            review.ussdCode,
+                          ),
+                          style: TypographyTokens.bodyMedium(),
+                        ),
+                        Text(
+                          context.afriL10n.shopReceiptExpiry(
+                            review.expiresAt.toLocal().toString(),
+                          ),
+                          style: TypographyTokens.bodySmall(),
+                        ),
+                        Text(
+                          review.order.deliveryAddress,
+                          style: TypographyTokens.bodyMedium(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing4),
+                  if (changed) ...[
+                    Text(
+                      context.afriL10n.shopCatalogPriceChanged(
+                        _currencyFormatter.format(catalogTotal),
+                        currency.format(review.total),
+                      ),
+                      style: TypographyTokens.bodyMedium(),
+                    ),
+                    AfriCheckbox(
+                      value: acknowledged,
+                      onChanged: (value) =>
+                          update(() => acknowledged = value ?? false),
+                      label: context.afriL10n.shopAcceptUpdatedAmount,
+                    ),
+                  ],
+                  Text(
+                    context.afriL10n.shopDialerBoundary,
+                    style: TypographyTokens.bodySmall(),
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing5),
+                  AfriButton(
+                    label: context.afriL10n.shopConfirmOpenMomo,
+                    enabled: acknowledged && review.canPay,
+                    onTap: () => Navigator.of(sheetContext).pop(true),
+                    fullWidth: true,
+                  ),
+                  const SizedBox(height: SpacingTokens.spacing3),
+                  AfriButton(
+                    label: context.afriL10n.shopBack,
+                    variant: AfriButtonVariant.outline,
+                    onTap: () => Navigator.of(sheetContext).pop(false),
+                    fullWidth: true,
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+      _checkoutSheetContext = null;
+      if (confirmed != true || !mounted || !identical(_flow, flow)) return;
+      if (!ref
+              .read(storeReleasePolicyProvider)
+              .allowsUnreconciledExternalPaymentLaunch ||
+          !ConnectivityService.isOnline) {
+        throw StateError('SHOP_PAYMENT_UNAVAILABLE');
+      }
+      final launched = await flow.confirm(review);
+      if (!mounted || !identical(_flow, flow)) return;
+      ref.read(shopCartProvider.notifier).clear();
+      setState(
+        () => _paymentOutcome = launched
+            ? context.afriL10n.shopPaymentOpenedPending
+            : context.afriL10n.shopDialerResultUnknown,
+      );
+    } on ShopCheckoutReviewChanged {
+      if (mounted && identical(_flow, flow)) {
+        setState(
+          () => _paymentOutcome = context.afriL10n.shopInstructionsChanged,
+        );
+      }
+    } catch (_) {
+      if (mounted && identical(_flow, flow)) {
+        setState(
+          () => _paymentOutcome = context.afriL10n.shopPaymentLaunchUnsafe,
+        );
+      }
+    } finally {
+      _checkoutSheetContext = null;
+      if (mounted && identical(_flow, flow)) {
+        setState(() => _submitting = false);
+      }
+    }
+  }
+
+  Future<void> _closeOriginal() async {
+    final flow = _flow;
+    if (flow == null || _submitting) return;
+    setState(() => _submitting = true);
+    try {
+      await flow.closeTerminal();
+      if (mounted && identical(_flow, flow)) {
+        setState(() {
+          _missingOrder = false;
+          _paymentOutcome = null;
+          _checkoutFailure = null;
+        });
+      }
+    } catch (_) {
+      if (mounted && identical(_flow, flow)) {
+        setState(
+          () => _recoveryError = context.afriL10n.shopRecoveryCheckFailed,
+        );
+      }
+    } finally {
+      if (mounted && identical(_flow, flow)) {
+        setState(() => _submitting = false);
+      }
+    }
+  }
+
+  Future<void> _cancelPrepared() async {
+    final flow = _flow;
+    if (flow == null || _submitting) return;
+    setState(() => _submitting = true);
+    try {
+      await flow.cancelUnpaid((receipt) async {
+        await ref.read(clubRepositoryProvider).cancelOrder(receipt.order);
+      });
+      if (mounted && identical(_flow, flow)) {
+        setState(() => _checkoutFailure = null);
+      }
+    } catch (_) {
+      if (mounted && identical(_flow, flow)) {
+        setState(
+          () => _recoveryError = context.afriL10n.shopCancellationUncertain,
+        );
+      }
+    } finally {
+      if (mounted && identical(_flow, flow)) {
+        setState(() => _submitting = false);
+      }
+    }
+  }
+
+  Widget _originalOrderView() {
+    final flow = _flow!;
+    final attempt = flow.attempt!;
+    final receipt = flow.receipt;
+    final online = ConnectivityService.isOnline;
+    final currency = receipt == null
+        ? null
+        : CurrencyFormatter(
+            currencyCode: receipt.currency,
+            currencySymbol: receipt.currency,
+          );
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(SpacingTokens.spacing6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AfriSurfaceCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  receipt == null
+                      ? context.afriL10n.shopOrderUncertainTitle
+                      : receipt.pending
+                      ? (attempt.handoffStarted
+                            ? context.afriL10n.shopPaymentPending
+                            : context.afriL10n.shopOrderPrepared)
+                      : context.afriL10n.shopOriginalOrderStatus(
+                          receipt.serverStatus,
+                        ),
+                  style: TypographyTokens.headlineSmall(),
+                ),
+                const SizedBox(height: SpacingTokens.spacing3),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    minHeight: SizeTokens.touchTargetMin,
+                  ),
+                  child: SelectableText(
+                    context.afriL10n.shopRequestReference(attempt.reference),
+                    style: TypographyTokens.bodySmall(),
+                  ),
+                ),
+                if (attempt.orderId != null)
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      minHeight: SizeTokens.touchTargetMin,
+                    ),
+                    child: SelectableText(
+                      context.afriL10n.shopOrderReference(attempt.orderId!),
+                      style: TypographyTokens.bodySmall(),
+                    ),
+                  ),
+                if (receipt != null) ...[
+                  Text(
+                    currency!.format(receipt.total),
+                    style: TypographyTokens.titleLarge(),
+                  ),
+                  Text(
+                    context.afriL10n.shopReceiptRecipient(
+                      receipt.recipientCode,
+                    ),
+                    style: TypographyTokens.bodyMedium(),
+                  ),
+                  Text(
+                    context.afriL10n.shopReceiptCurrency(receipt.currency),
+                    style: TypographyTokens.bodyMedium(),
+                  ),
+                ],
+                Text(
+                  receipt?.pending == false
+                      ? context.afriL10n.shopAuthoritativeStatus
+                      : context.afriL10n.shopPreparedIsNotPaid,
+                  style: TypographyTokens.bodyMedium(),
+                ),
+                if (_paymentOutcome != null)
+                  Text(_paymentOutcome!, style: TypographyTokens.bodyMedium()),
+                if (_recoveryError != null)
+                  Text(
+                    _recoveryError!,
+                    style: TypographyTokens.bodyMedium(ColorTokens.error),
+                  ),
+                if (_checkoutFailure != null) ...[
+                  Text(
+                    _checkoutFailure!.title,
+                    style: TypographyTokens.titleMedium(),
+                  ),
+                  Text(
+                    _checkoutFailure!.message,
+                    style: TypographyTokens.bodyMedium(),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(height: SpacingTokens.spacing5),
+          AfriButton(
+            label: context.afriL10n.shopCheckOrderStatus,
+            enabled: online && !_submitting,
+            isLoading: _submitting,
+            fullWidth: true,
+            onTap: () => _checkOriginal(),
+          ),
+          if (_missingOrder && receipt == null && !attempt.handoffStarted) ...[
+            const SizedBox(height: SpacingTokens.spacing3),
+            Text(
+              context.afriL10n.shopOriginalRequestMissing,
+              style: TypographyTokens.bodySmall(),
+            ),
+            AfriButton(
+              label: context.afriL10n.shopRetryOriginalRequest,
+              enabled:
+                  online &&
+                  !_submitting &&
+                  ref
+                      .read(storeReleasePolicyProvider)
+                      .allowsUnreconciledExternalPaymentLaunch,
+              fullWidth: true,
+              onTap: () => _checkOriginal(retry: true),
+            ),
+          ],
+          if (receipt != null &&
+              receipt.pending &&
+              !attempt.handoffStarted) ...[
+            const SizedBox(height: SpacingTokens.spacing3),
+            if (!receipt.canPay)
+              Text(
+                context.afriL10n.shopOriginalRouteUnavailable,
+                style: TypographyTokens.bodySmall(),
+              ),
+            AfriButton(
+              label: context.afriL10n.shopReviewPayment,
+              enabled:
+                  online &&
+                  !_submitting &&
+                  receipt.canPay &&
+                  attempt.orderId == receipt.id &&
+                  ref
+                      .read(storeReleasePolicyProvider)
+                      .allowsUnreconciledExternalPaymentLaunch,
+              fullWidth: true,
+              onTap: _reviewPreparedPayment,
+            ),
+          ],
+          if (receipt?.pending == true && !attempt.handoffStarted) ...[
+            const SizedBox(height: SpacingTokens.spacing3),
+            AfriButton(
+              label: context.afriL10n.shopCancelUnpaidOrder,
+              variant: AfriButtonVariant.outline,
+              enabled: online && !_submitting,
+              fullWidth: true,
+              onTap: _cancelPrepared,
+            ),
+          ],
+          if (receipt?.terminal == true) ...[
+            const SizedBox(height: SpacingTokens.spacing3),
+            AfriButton(
+              label: context.afriL10n.shopReturnToCart,
+              fullWidth: true,
+              enabled: !_submitting,
+              onTap: _closeOriginal,
+            ),
+          ],
+          const SizedBox(height: SpacingTokens.spacing3),
+          AfriButton(
+            label: context.afriL10n.shopSupportInSettings,
+            variant: AfriButtonVariant.outline,
+            fullWidth: true,
+            onTap: () => context.push('/settings'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _refreshPaymentRouteState(UserProfile? user) async {
@@ -171,6 +718,18 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
   Future<void> _checkout(List<CartItem> items, int total) async {
     if (_submitting) return;
+    final user = ref.read(currentUserProvider);
+    if (user == null) {
+      context.go('/onboarding');
+      return;
+    }
+    final flow = _flow;
+    if (flow == null ||
+        _restoringCheckout ||
+        _recoveryError != null ||
+        flow.attempt != null) {
+      return;
+    }
     if (!ref
         .read(storeReleasePolicyProvider)
         .allowsUnreconciledExternalPaymentLaunch) {
@@ -179,12 +738,6 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     }
     if (!ConnectivityService.isOnline) {
       AfriToast.error(context, context.afriL10n.shopConnectBeforeCheckout);
-      return;
-    }
-
-    final user = ref.read(currentUserProvider);
-    if (user == null) {
-      context.go('/onboarding');
       return;
     }
 
@@ -225,52 +778,23 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 
       if (!confirmed || !mounted) return;
 
-      final paymentReference = 'order-${DateTime.now().millisecondsSinceEpoch}';
-      final orderPlacer = widget.orderPlacer ?? repository!.placeOrder;
-      final orderId = await orderPlacer(
-        userId: user.id,
-        partnerId: user.clubId,
-        items: items,
-        deliveryAddress: _addressController.text.trim(),
-        paymentReference: paymentReference,
-      ).timeout(widget.checkoutTimeout);
-
-      ref.read(shopCartProvider.notifier).clear();
-
-      if (!mounted) return;
-
-      final launched = await MomoDialerService.launchMomoUssd(
-        recipient: route.recipientCode,
-        amount: total,
-        country: route.country,
-        recipientType: PaymentRecipientType.code,
+      await flow.begin(items, _addressController.text.trim());
+      if (!mounted || !identical(_flow, flow)) return;
+      setState(
+        () => _paymentOutcome = context.afriL10n.shopPreparedReviewNeeded,
       );
-
-      if (!mounted) return;
-
-      if (!launched) {
-        AfriToast.error(
-          context,
-          context.afriL10n.shopOrderDialerFailure(orderId),
-        );
-        context.go('/shop');
-        return;
-      }
-
-      AfriToast.success(context, context.afriL10n.shopOrderCreated(orderId));
-      context.go('/shop');
     } catch (error) {
       final failure = _CartCheckoutFailure.fromError(error, context.afriL10n);
       AfriLogger.warn(
         'CartScreen',
         'Checkout could not be completed (${failure.kind.name}).',
       );
-      if (!mounted) return;
+      if (!mounted || !identical(_flow, flow)) return;
       setState(() {
         _checkoutFailure = failure;
       });
     } finally {
-      if (mounted) {
+      if (mounted && identical(_flow, flow)) {
         setState(() => _submitting = false);
       }
     }
@@ -285,6 +809,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       context: context,
       isScrollControlled: true,
       builder: (context) {
+        _checkoutSheetContext = context;
         return SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -397,12 +922,12 @@ class _CartScreenState extends ConsumerState<CartScreen> {
               ),
               const SizedBox(height: SpacingTokens.spacing5),
               Text(
-                context.afriL10n.shopPaymentInstructions,
+                context.afriL10n.shopPrepareExplanation,
                 style: TypographyTokens.bodySmall(ColorTokens.onSurfaceVariant),
               ),
               const SizedBox(height: SpacingTokens.spacing6),
               AfriButton(
-                label: context.afriL10n.shopPaymentSubmitted,
+                label: context.afriL10n.shopPrepareOrder,
                 fullWidth: true,
                 onTap: () => Navigator.of(context).pop(true),
               ),
@@ -418,7 +943,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         );
       },
     );
-
+    _checkoutSheetContext = null;
     return result ?? false;
   }
 
@@ -436,9 +961,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         ? context.afriL10n.shopEnterDeliveryAddress
         : context.afriL10n.shopStreetCityCountry(config.country);
     final usesLargeText = MediaQuery.textScalerOf(context).scale(1) >= 1.5;
-    if (checkoutAllowed) {
-      _ensurePaymentRouteState(user);
-    }
+    _ensurePaymentRouteState(user);
 
     final items = ref.watch(shopCartProvider);
     final total = ref.watch(shopCartTotalProvider);
@@ -449,6 +972,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                 _paymentRouteError != null ||
                 _paymentRouteMessage != null));
     final checkoutHardBlocked =
+        _restoringCheckout ||
+        _recoveryError != null ||
+        _flow?.attempt != null ||
         _checkoutFailure?.kind == _CartCheckoutFailureKind.permissionDenied ||
         _checkoutFailure?.kind == _CartCheckoutFailureKind.securityTimeout;
     final cartChromeState =
@@ -475,6 +1001,13 @@ class _CartScreenState extends ConsumerState<CartScreen> {
               ? TypographyTokens.titleLarge()
               : TypographyTokens.headlineSmall(),
         ),
+        actions: [
+          AfriIconButton(
+            icon: AfriIcons.history,
+            tooltip: context.afriL10n.shopOrderHistory,
+            onTap: () => context.push('/shop/orders'),
+          ),
+        ],
         leading: AfriIconButton(
           icon: AfriIcons.back,
           onTap: () => context.pop(),
@@ -482,7 +1015,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         ),
       ),
       scrollable: false,
-      child: items.isEmpty
+      child: _flow?.attempt != null
+          ? _originalOrderView()
+          : items.isEmpty
           ? Center(
               key: const ValueKey('cart-empty-state'),
               child: Padding(
@@ -665,10 +1200,21 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                     ),
                   ],
                   const SizedBox(height: SpacingTokens.spacing8),
+                  if (_recoveryError != null)
+                    AfriStateView.error(
+                      title: context.afriL10n.shopRecoveryUnavailableTitle,
+                      message: _recoveryError!,
+                      actionLabel: context.afriL10n.shopCheckRecovery,
+                      onAction: () =>
+                          _restoreCheckout(user, _paymentRouteLookupKey!),
+                      compact: true,
+                    ),
                   ConnectivityBuilder(
                     builder: (context, isOnline) => AfriButton(
                       label: !isOnline
                           ? context.afriL10n.shopConnectionRequired
+                          : _restoringCheckout
+                          ? context.afriL10n.shopCheckingRecovery
                           : !checkoutAllowed
                           ? context.afriL10n.shopCheckoutNotPermitted
                           : _paymentRouteLoading

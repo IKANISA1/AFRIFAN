@@ -15,10 +15,14 @@ import '../../core/core_app/test/app_routing_guard_test.dart'
     show FakeAuthRepository;
 import '../../features/feat_membership/test/native_supporter_journey_fixture.dart';
 import '../../testing/test_support/test/fixtures/five_club_configs.dart';
+import '../tool/generate_route_inventory.dart'
+    show resolveRouteInventoryWorkspace;
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  final config = fiveClubFixtures(Directory('../..').absolute)['rayon_sports']!;
+  final config = fiveClubFixtures(
+    resolveRouteInventoryWorkspace(Directory.current),
+  )['rayon_sports']!;
 
   for (final replaceRepository in [false, true]) {
     testWidgets(

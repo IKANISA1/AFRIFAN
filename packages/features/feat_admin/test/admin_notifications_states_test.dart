@@ -12,6 +12,8 @@ import 'package:test_support/app_font_loader.dart';
 
 import '../../../testing/test_support/test/fixtures/local_route_state_assertions.dart';
 
+import 'notification_command_test_support.dart';
+
 const _size = Size(390, 844);
 
 void main() {
@@ -230,6 +232,9 @@ Future<ProviderContainer> _pump(
     ProviderScope(
       overrides: <Override>[
         adminNotificationsGatewayProvider.overrideWithValue(gateway),
+        adminNotificationJournalProvider.overrideWithValue(
+          MemoryNotificationJournal(),
+        ),
         adminNotificationsEnabledProvider.overrideWithValue(enabled),
       ],
       child: Consumer(
@@ -322,12 +327,10 @@ class _Gateway implements AdminNotificationsGateway {
   }
 
   @override
-  Future<AdminNotificationDelivery> send(AdminNotificationDraft draft) async {
-    return const AdminNotificationDelivery(
-      status: 'sent',
-      requestedCount: 1,
-      sentCount: 1,
-      failedCount: 0,
-    );
-  }
+  AdminNotificationOwner captureOwner() => notificationTestOwner();
+  @override
+  Future<Map<String, dynamic>> command(
+    AdminNotificationAttempt attempt,
+    bool submit,
+  ) async => notificationTestReceipt(attempt);
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:club_data/club_data.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_network/core_network.dart';
 import 'package:core_theme/core_theme.dart';
@@ -7,8 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../gikundiro_public_fanclubs.dart';
-import '../official_fanclub_register.dart';
 import '../widgets/fan_club_cards.dart';
 
 final fanClubsLoaderProvider =

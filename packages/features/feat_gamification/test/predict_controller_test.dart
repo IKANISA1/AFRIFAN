@@ -5,21 +5,25 @@ import 'package:feat_gamification/src/predict/predict_models.dart';
 import 'package:feat_gamification/src/predict/predict_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-PredictFixture fixture({PredictSelection? selection, DateTime? kickoff}) =>
-    PredictFixture(
-      id: 'fixture',
-      poolId: 'pool',
-      competitionId: 'league',
-      competition: 'Rwanda Premier League',
-      homeTeam: 'Rayon Sports FC',
-      awayTeam: 'APR FC',
-      homeCrest: 'https://example.com/home.png',
-      awayCrest: 'https://example.com/away.png',
-      kickoffAt: kickoff ?? DateTime.utc(2030, 9, 17, 16, 30),
-      locksAt: kickoff ?? DateTime.utc(2030, 9, 17, 16, 30),
-      stakeFet: 100,
-      selection: selection,
-    );
+PredictFixture fixture({
+  PredictSelection? selection,
+  DateTime? kickoff,
+  bool legacy = false,
+}) => PredictFixture(
+  id: 'fixture',
+  poolId: 'pool',
+  competitionId: 'league',
+  competition: 'Rwanda Premier League',
+  homeTeam: 'Rayon Sports FC',
+  awayTeam: 'APR FC',
+  homeCrest: 'https://example.com/home.png',
+  awayCrest: 'https://example.com/away.png',
+  kickoffAt: kickoff ?? DateTime.utc(2030, 9, 17, 16, 30),
+  locksAt: kickoff ?? DateTime.utc(2030, 9, 17, 16, 30),
+  stakeFet: legacy ? 100 : 0,
+  economicsVersion: legacy ? 'legacy_paid_v1' : 'free_v1',
+  selection: selection,
+);
 
 class Gateway implements PredictGateway {
   PredictDashboard data = PredictDashboard(
@@ -44,7 +48,7 @@ class Gateway implements PredictGateway {
   ) async {
     mutations++;
     if (pending case final p?) return p.future;
-    return PredictConfirmation(fixture(selection: selection), 400);
+    return PredictConfirmation(fixture(selection: selection), 500);
   }
 }
 
@@ -152,7 +156,33 @@ void main() {
     g.failure = PredictFailure.unavailable;
     await c.place(fixture(), PredictSelection.away);
     expect(c.state.dashboard!.fixtures.single.selection, PredictSelection.away);
-    expect(c.state.dashboard!.balanceFet, 400);
+    expect(c.state.dashboard!.balanceFet, 500);
     expect(c.state.needsReconciliation, isTrue);
   });
+  test(
+    'free picks need no balance and legacy paid fixtures cannot mutate',
+    () async {
+      final g = Gateway()
+        ..data = PredictDashboard(
+          enabled: true,
+          memberSession: true,
+          fixtures: [fixture()],
+        );
+      final c = PredictController(g, autoLoad: false);
+      addTearDown(c.dispose);
+      await c.refresh();
+      await c.place(fixture(), PredictSelection.draw);
+      expect(g.mutations, 1);
+      g.data = PredictDashboard(
+        enabled: true,
+        memberSession: true,
+        balanceFet: 500,
+        fixtures: [fixture(legacy: true)],
+      );
+      await c.refresh();
+      await c.place(fixture(legacy: true), PredictSelection.home);
+      expect(g.mutations, 1);
+      expect(c.state.dashboard!.balanceFet, 500);
+    },
+  );
 }

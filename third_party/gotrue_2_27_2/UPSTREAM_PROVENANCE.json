@@ -407,9 +407,11 @@
   "copyHashCoverage": 79,
   "copiedAtUtc": "2026-09-30T21:41:17.604517+00:00",
   "localPatchFiles": [
+    "analysis_options.yaml",
     "lib/src/gotrue_client.dart",
-    "pubspec.yaml",
-    "analysis_options.yaml"
+    "lib/src/gotrue_mfa_api.dart",
+    "lib/src/types/mfa.dart",
+    "pubspec.yaml"
   ],
-  "localPatchPurpose": "Guard session mutations against stale asynchronous authentication and account-edit replies; remove publisher workspace resolution from standalone path override metadata. Replace publisher-only lint include with consumer static diagnostics without changing upstream source style."
+  "localPatchPurpose": "Guard session mutations against stale asynchronous authentication and account-edit replies; remove publisher workspace resolution from standalone path override metadata. Replace publisher-only lint include with consumer static diagnostics without changing upstream source style. Bind actual SDK MFA verification to the owning session and reject late account-switch, logout or renewal responses before installing session/assurance; retain upstream behavior for other MFA methods."
 }

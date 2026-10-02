@@ -1335,10 +1335,10 @@
   "shopOrderUncertainTitle": "Order status is uncertain",
   "shopOrderUncertainMessage": "The secure checkout timed out. Your cart and address are still here. Do not submit again until club support confirms whether the order was saved.",
   "shopOrderChangedTitle": "Order details changed",
-  "shopOrderChangedMessage": "The order changed while it was being submitted. Your cart and address are still here. Review them before trying again.",
+  "shopOrderChangedMessage": "The order request changed while it was being submitted. Check the original order status before retrying.",
   "shopCheckoutDeniedMessage": "Your account cannot place this order. Your cart and address are still here. Contact club support before trying again.",
   "shopCheckoutFailureTitle": "Checkout could not start",
-  "shopCheckoutFailureMessage": "No order was confirmed. Your cart and address are still here. Review them and try again.",
+  "shopCheckoutFailureMessage": "The order result could not be confirmed. Check the original order status before retrying.",
   "shopSampleProductDescription": "Official matchday jersey with a premium woven club mark, breathable stadium fabric, and club-blue trim for everyday supporters.",
   "shopOfficialBadge": "Official",
   "shopSampleProductSummary": "Official kit · S M L XL · 47 available",
@@ -2115,7 +2115,7 @@
   },
   "settingsWhatsAppFailed": "Could not open WhatsApp.",
   "settingsDeleteAccountTitle": "DELETE your account?",
-  "settingsDeleteAccountMessage": "Permanently deletes your profile, FET, badges, and history. Cannot be undone.",
+  "settingsDeleteAccountMessage": "Request account closure and sign out? Personal data removal may take time; required transaction records are retained.",
   "settingsDeleteAccountConfirmPrompt": "Type DELETE to confirm",
   "settingsDeleteAccountConfirmValue": "DELETE",
   "settingsCancelUpper": "Cancel",
@@ -2999,7 +2999,7 @@
   "adminNotificationHiddenMessage": "Private delivery information remains hidden. Try again.",
   "adminNotificationChecking": "Checking delivery information",
   "adminNotificationCheckingMessage": "Showing the last confirmed state while current data is checked.",
-  "adminNotificationOutcomeUnconfirmed": "The last request is unconfirmed. Controls stay paused until refresh succeeds.",
+  "adminNotificationOutcomeUnconfirmed": "The original request is retained. Check its status before taking another action.",
   "adminNotificationLastConfirmed": "Last confirmed delivery information remains visible. Controls are paused.",
   "adminNotificationValidationTitleBody": "Add a title and message body first.",
   "adminNotificationValidationTier": "Choose the target tier first.",
@@ -3014,7 +3014,7 @@
       }
     }
   },
-  "adminNotificationSentSummary": "Sent to {requested} supporters. {sent} delivered.",
+  "adminNotificationSentSummary": "{requested} supporters targeted. {sent} device messages accepted by the delivery service.",
   "@adminNotificationSentSummary": {
     "placeholders": {
       "requested": {
@@ -3025,7 +3025,7 @@
       }
     }
   },
-  "adminNotificationPartialSummary": "Partial: {sent} delivered, {failed} failed.",
+  "adminNotificationPartialSummary": "Partial: {sent} device messages accepted, {failed} attempts failed.",
   "@adminNotificationPartialSummary": {
     "placeholders": {
       "sent": {
@@ -4952,13 +4952,13 @@
     }
   },
   "gamePartnerPoolsTooltip": "Partner pools",
-  "gameJoiningPartnerPool": "Joining partner pool",
+  "gameJoiningPartnerPool": "Checking historical pool",
   "gameRefreshingMatch": "Refreshing match",
   "gameConfirmedMatchVisible": "Keeping the confirmed match visible while the latest state is checked.",
   "gameMatchActionsUnavailable": "Match actions unavailable",
-  "gameMatchActionsUnavailableDescription": "You can review this match, but joining partner pools is disabled for this build.",
+  "gameMatchActionsUnavailableDescription": "Historical paid pools are closed to new entries.",
   "gameShowingSavedMatch": "Showing saved match",
-  "gameReconnectBeforePartnerPool": "Reconnect and refresh before joining a partner pool.",
+  "gameReconnectBeforePartnerPool": "Reconnect and refresh to review historical pool records.",
   "gameVsUpper": "VS",
   "gamePartnerOutcomeHomeWin": "Home win",
   "gamePartnerOutcomeDraw": "Draw",
@@ -4975,12 +4975,12 @@
   "gameRefreshMatch": "Refresh match",
   "gameMatchConnectionRestored": "Connection restored",
   "gameMatchDetailsOffline": "Match details offline",
-  "gameRefreshBeforeJoiningPool": "Refresh to confirm the current match before joining a pool.",
-  "gameReconnectBeforeJoiningPool": "Reconnect to confirm the current match before joining a pool.",
+  "gameRefreshBeforeJoiningPool": "Refresh to confirm the current match and historical pool records.",
+  "gameReconnectBeforeJoiningPool": "Reconnect to confirm the current match and historical pool records.",
   "gameMatchAccessUnavailable": "Match access unavailable",
   "gameMatchAccessUnavailableDescription": "Your current account cannot review this match.",
   "gameMatchDataChanged": "Match data changed",
-  "gameMatchDataChangedDescription": "Refresh before joining a pool or reviewing current status.",
+  "gameMatchDataChangedDescription": "Refresh before reviewing current match and historical pool status.",
   "gameMatchSecurityTimeout": "Match security check timed out",
   "gameMatchSecurityTimeoutDescription": "No pool entry was confirmed. Refresh before trying again.",
   "gameMatchUnavailable": "Match unavailable",
@@ -5003,16 +5003,16 @@
   "settingsThemePreview": "Theme preview",
   "settingsApplyTheme": "Apply",
   "predictTitle": "Predict",
-  "predictIntro": "Pick the result. One entry per match.",
+  "predictIntro": "Pick the result for free. One pick per selected match.",
   "predictFixtures": "Fixtures",
   "predictHistory": "My picks",
-  "predictWallet": "FET activity",
+  "predictWallet": "Historical FET activity",
   "predictDraw": "Draw",
   "predictAll": "All competitions",
   "predictEmpty": "No open fixtures",
   "predictEmptyBody": "Prepared matches appear here before kickoff.",
   "predictNoHistory": "Your picks will appear here",
-  "predictNoActivity": "No FET activity yet",
+  "predictNoActivity": "No historical FET activity",
   "predictUnavailable": "Couldn’t refresh Predict",
   "predictRefresh": "Refresh",
   "predictLoading": "Loading fixtures",
@@ -5025,21 +5025,21 @@
   "predictUncertain": "Your entry hasn’t been confirmed. Refresh before trying again.",
   "predictPending": "Confirming your pick…",
   "predictPicked": "Picked",
-  "predictWon": "Won",
-  "predictLost": "Settled",
+  "predictWon": "Correct",
+  "predictLost": "Incorrect",
   "predictRefunded": "Refunded",
   "predictLocked": "Closed",
-  "predictRules": "Entries close at kickoff. Correct picks share the pool. If no one is correct, or the match is voided, entries are refunded. FET is not cash.",
+  "predictRules": "Free entries close at kickoff. Correct picks earn one accuracy point. No FET or money is charged or awarded. A void match does not count.",
   "predictWelcome": "Welcome FET",
   "predictEntry": "Predict entry",
   "predictPayout": "Predict payout",
   "predictRefund": "Predict refund",
-  "predictActivity": "FET activity",
+  "predictActivity": "Historical FET activity",
   "predictAdminTitle": "Predict operations",
-  "predictAdminIntro": "Prepare fixtures and manage entries. Match results come from the LiveScore integration.",
+  "predictAdminIntro": "Prepare confirmed fixtures and manage free picks. Record a verified final result before settlement.",
   "predictAdminSettings": "Settings",
   "predictAdminEnabled": "Open Predict",
-  "predictAdminEntryPrice": "Entry price (FET)",
+  "predictAdminEntryPrice": "Free selected-match entry",
   "predictAdminSave": "Save settings",
   "predictAdminAll": "All fixtures",
   "predictAdminNoPool": "No pool",
@@ -5051,18 +5051,18 @@
   "predictAdminSettle": "Settle pool",
   "predictAdminRefund": "Void and refund",
   "predictAdminSource": "Official source URL",
-  "predictAdminReason": "Reason for refund",
+  "predictAdminReason": "Reason for void",
   "predictAdminCancel": "Cancel",
   "predictAdminFailed": "Changes could not be confirmed. Refresh the ledger before trying again.",
   "predictAdminDenied": "Admin access required",
   "predictAdminEmpty": "No fixtures to manage",
-  "predictAdminPriceNote": "New price applies to newly prepared fixtures. Entries close automatically at kickoff.",
+  "predictAdminPriceNote": "New fixtures use zero-FET free entry. Historical paid pools remain separate and retain their settlement obligations.",
   "predictAdminTotals": "Entries / Staked / Paid",
-  "predictAdminAutomaticResults": "LiveScore validates and confirms results automatically. No manual confirmation is needed.",
+  "predictAdminAutomaticResults": "Review the verified final score and record its source before settling free entries.",
   "predictAdminFinalScore": "Final score",
   "predictAdminAwaitingResult": "Waiting for the final result",
   "adminMatchAutomaticResults": "Scores, match status and live minutes are managed by the LiveScore integration.",
-  "predictAdminSettleBody": "Distribute the whole pool to correct entries. If none are correct, refund every entry.",
+  "predictAdminSettleBody": "Record correct and incorrect free picks without any wallet credit. Historical paid pools retain their original settlement rules.",
   "clubAboutTitle": "About the club",
   "clubOriginLabel": "Roots",
   "clubBaseLabel": "Based in",
@@ -5074,8 +5074,8 @@
   "membershipDateUnconfirmed": "Not provided",
   "predictReviewTitle": "Review your pick",
   "predictConfirmPick": "Confirm pick",
-  "predictReviewRule": "One pick per fixture. Your pick cannot be changed after confirmation. The fixture closes at kickoff.",
-  "predictEntryCost": "Entry cost",
+  "predictReviewRule": "One free pick per selected fixture. Your pick cannot be changed after confirmation. Entry closes at kickoff.",
+  "predictEntryCost": "Entry",
   "predictBalanceAfter": "Balance after entry",
   "predictCancelPick": "Cancel",
   "fanClubViewJoiningOptions": "View joining options",
@@ -5090,8 +5090,8 @@
   "clubPartnerWebsite": "Visit partner website",
   "clubArticleOriginal": "Read original article",
   "clubSourceLabel": "Source",
-  "predictEarnUse": "Earn and use FET",
-  "predictEarnUseBody": "FET is your supporter activity balance. Eligible members receive the published welcome grant once. You can use available FET to enter enabled fixtures; confirmed payouts and refunds appear in FET activity. FET cannot be bought or withdrawn as cash.",
+  "predictEarnUse": "How Predict works",
+  "predictEarnUseBody": "Selected-match entries are free. Accuracy points reflect correct results and have no monetary value. Historical FET balances and activity remain separate.",
   "predictNoRedemptions": "Partner recognition does not create a FET offer. Only published, eligible offers can be redeemed.",
   "searchPartialTitle": "Some results are unavailable",
   "searchPartialMessage": "Available results are shown. Refresh to try the remaining sources.",
@@ -5209,5 +5209,163 @@
   "nativeMembershipReference": "Receipt reference",
   "nativeMembershipRestart": "Start sign-in again",
   "nativeMembershipRestartBody": "If the earlier sign-in cannot be recovered, you can request a new code. Any previous session may still be active. Your unresolved payment status will be kept.",
-  "nativeMembershipRestartAcknowledgement": "I understand that this starts a new sign-in and does not confirm payment or close earlier sessions."
+  "nativeMembershipRestartAcknowledgement": "I understand that this starts a new sign-in and does not confirm payment or close earlier sessions.",
+  "shopRecoveryCheckFailed": "Order recovery could not be checked. Your original request is retained. Check again before creating or paying for another order.",
+  "shopOriginalResultUnavailable": "The original order result is still unavailable. Do not pay again. Check status or contact support with the request reference.",
+  "shopReviewPayment": "Review payment",
+  "shopAcceptUpdatedAmount": "I agree to the updated order amount",
+  "shopDialerBoundary": "Opening MoMo does not confirm payment. Check the original order result before paying again.",
+  "shopConfirmOpenMomo": "Confirm and open MoMo",
+  "shopPaymentOpenedPending": "MoMo was opened. Payment is pending until the order is matched. Check status before paying again.",
+  "shopDialerResultUnknown": "The dialer result could not be confirmed. Your original order is retained. Check status before paying again.",
+  "shopInstructionsChanged": "Payment instructions changed. Review the original order again. No dialer was opened.",
+  "shopPaymentLaunchUnsafe": "Payment could not be opened safely. Your original order is retained. Check its status before paying again.",
+  "shopPaymentPending": "Payment pending",
+  "shopOrderPrepared": "Order prepared",
+  "shopAuthoritativeStatus": "This status comes from the server.",
+  "shopPreparedIsNotPaid": "A prepared request or an opened dialer does not confirm payment. Check status before paying again.",
+  "shopCheckOrderStatus": "Check order status",
+  "shopOriginalRequestMissing": "No order was found for this request. Retry keeps the same request reference and cart details.",
+  "shopRetryOriginalRequest": "Retry original request",
+  "shopOriginalRouteUnavailable": "The payment route, eligibility or reservation is no longer available. No dialer will be opened.",
+  "shopReturnToCart": "Return to cart",
+  "shopSupportInSettings": "Contact support in Settings",
+  "shopPreparedReviewNeeded": "Order prepared. Review the server amount and recipient before opening payment. No payment is confirmed.",
+  "shopPrepareOrder": "Prepare order",
+  "shopPrepareExplanation": "Preparing an order reserves its current price and stock. You will review the server payment instructions before opening MoMo.",
+  "shopRecoveryUnavailableTitle": "Order recovery unavailable",
+  "shopCheckRecovery": "Check recovery",
+  "shopCheckingRecovery": "Checking order recovery",
+  "shopReceiptCurrency": "Currency: {currency}",
+  "@shopReceiptCurrency": {
+    "placeholders": {
+      "currency": {
+        "type": "String"
+      }
+    }
+  },
+  "shopReceiptRecipient": "Recipient code: {recipient}",
+  "@shopReceiptRecipient": {
+    "placeholders": {
+      "recipient": {
+        "type": "String"
+      }
+    }
+  },
+  "shopReceiptCountry": "Country: {country}",
+  "@shopReceiptCountry": {
+    "placeholders": {
+      "country": {
+        "type": "String"
+      }
+    }
+  },
+  "shopReceiptInstruction": "Dialer instruction: {instruction}",
+  "@shopReceiptInstruction": {
+    "placeholders": {
+      "instruction": {
+        "type": "String"
+      }
+    }
+  },
+  "shopReceiptExpiry": "Expires: {expiry}",
+  "@shopReceiptExpiry": {
+    "placeholders": {
+      "expiry": {
+        "type": "String"
+      }
+    }
+  },
+  "shopOriginalOrderStatus": "Order {status}",
+  "@shopOriginalOrderStatus": {
+    "placeholders": {
+      "status": {
+        "type": "String"
+      }
+    }
+  },
+  "shopRequestReference": "Request: {reference}",
+  "@shopRequestReference": {
+    "placeholders": {
+      "reference": {
+        "type": "String"
+      }
+    }
+  },
+  "shopOrderReference": "Order: {reference}",
+  "@shopOrderReference": {
+    "placeholders": {
+      "reference": {
+        "type": "String"
+      }
+    }
+  },
+  "shopCatalogPriceChanged": "The catalog total changed from {catalogAmount} to {orderAmount}. Review the updated amount before confirming.",
+  "@shopCatalogPriceChanged": {
+    "placeholders": {
+      "catalogAmount": {
+        "type": "String"
+      },
+      "orderAmount": {
+        "type": "String"
+      }
+    }
+  },
+  "shopCancelUnpaidOrder": "Cancel unpaid order",
+  "shopCancellationUncertain": "Cancellation could not be confirmed. Check the original order status before taking further action.",
+  "shopOrderHistory": "My orders",
+  "shopOrderHistoryEmpty": "Your prepared orders will appear here.",
+  "shopOrderHistoryUnavailable": "Your orders could not be checked. Connect and try again.",
+  "shopOrderHistoryRefresh": "Refresh orders",
+  "editProfileDeletionPendingTitle": "Account closure requested",
+  "editProfileDeletionPendingMessage": "Your access has been revoked. Personal data removal is in progress. Required transaction records will be retained, and processor or backup work may remain pending.",
+  "editProfileDeletionReference": "Request reference: {reference}",
+  "@editProfileDeletionReference": {
+    "placeholders": {
+      "reference": {
+        "type": "String"
+      }
+    }
+  },
+  "predictFreeEntry": "Free",
+  "predictLegacyEntryClosed": "Historical paid entries are closed to new picks.",
+  "editProfileDeletionFailedTitle": "Account closure needs attention",
+  "editProfileDeletionFailedMessage": "Your access remains revoked. Some personal data removal work failed and will be retried. Keep the request reference for support.",
+  "predictAccuracyPoints": "accuracy points",
+  "predictVoid": "Void",
+  "accountClosureStatusTitle": "Account closure request",
+  "accountClosureStatusUnconfirmed": "This request has not been confirmed. Sign in to finish requesting closure, or contact support with the reference.",
+  "accountClosureStatusCompleted": "Personal data removal steps are complete. Required transaction records remain retained.",
+  "accountClosureStatusRefresh": "Check request status",
+  "accountClosureStatusUnavailable": "Request status is unavailable. Keep the reference and try again.",
+  "accountClosureStatusForget": "Hide this request",
+  "accountClosureStatusSubmitted": "Your access has been revoked. Personal data removal is pending, including processor or backup work.",
+  "predictAdminVoid": "Void free entries",
+  "predictAdminVoidBody": "A void records no accuracy points. No FET or money is charged or returned.",
+  "predictAdminLegacyService": "Historical paid pool. Settlement requires an authorized global operator service command.",
+  "predictAdminConfirm": "Confirm final result",
+  "predictAdminFreeTotals": "Free entries",
+  "predictLegacyPoolsTitle": "Historical paid pools",
+  "predictLegacyBalance": "Historical FET balance",
+  "staffWorkspace": "Staff workspace",
+  "staffStepUpTitle": "Verify staff access",
+  "staffStepUpMessage": "Enter a code from your authenticator to open the staff workspace. Verification lasts five minutes. Review your action again after verification.",
+  "staffStepUpFailure": "Staff access could not be verified. Check your authenticator code and connection, then try again.",
+  "staffStepUpRetry": "Check again",
+  "staffStepUpSetup": "Set up authenticator",
+  "staffStepUpSetupMessage": "In your authenticator app, add an account using this setup key. Then enter its six-digit code. Keep the key private.",
+  "staffStepUpSecretLabel": "Authenticator setup key",
+  "staffStepUpCode": "Six-digit authenticator code",
+  "staffStepUpVerify": "Verify access",
+  "staffStepUpRecovery": "If you cannot use your authenticator, contact your staff administrator for account recovery.",
+  "adminNotificationCopyReference": "Copy request reference",
+  "adminNotificationOriginalRequest": "Original notification request",
+  "adminNotificationOriginalPending": "This request is retained. Check its status before creating another notification.",
+  "adminNotificationUnknownDelivery": "Some delivery outcomes are unknown. Those delivery attempts will not be sent again. Keep this request reference for support.",
+  "adminNotificationRequestReference": "Request: {reference}",
+  "@adminNotificationRequestReference": {"placeholders": {"reference": {"type": "String"}}},
+  "adminNotificationCheckRequest": "Check request status",
+  "adminNotificationRetryOriginal": "Retry original request",
+  "adminNotificationOriginalNotAdmitted": "No request has been recorded yet. Retry uses the same audience, message, schedule and request reference."
+
 }

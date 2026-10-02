@@ -1,8 +1,7 @@
+import 'package:club_data/club_data.dart';
 import 'package:core_l10n/core_l10n.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
-
-import '../providers/club_content_providers.dart';
 
 class ClubContentStatusBanner extends StatelessWidget {
   const ClubContentStatusBanner({

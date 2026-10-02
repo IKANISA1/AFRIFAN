@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:core_network/core_network.dart';
 import 'package:core_utils/core_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../admin_notification_command.dart';
 import 'feature_management_repository.dart';
 
 /// Admin repository for club-scoped management queries.
@@ -59,13 +62,7 @@ class AdminRepository {
 
     try {
       final currentClubId = _scopeResolver.currentClubId;
-      final assignments = List<Map<String, dynamic>>.from(
-        await _client
-            .from('admin_role_assignments')
-            .select('role, club_id, is_active')
-            .eq('user_id', userId)
-            .eq('is_active', true),
-      );
+      final assignments = await _currentStaffAssignments();
 
       if (assignments.any(
         (row) => _assignmentMatchesClub(row, currentClubId),
@@ -76,10 +73,7 @@ class AdminRepository {
       AfriLogger.warn('AdminRepository', 'Admin role check failed: $e');
     }
 
-    // app_metadata is server-controlled. Never authorize from user_metadata:
-    // authenticated users can update that client-owned field themselves.
-    final role = user?.appMetadata['role']?.toString().toLowerCase();
-    return _isAdminRole(role);
+    return false;
   }
 
   /// Returns true if the current user is a platform super admin.
@@ -90,21 +84,14 @@ class AdminRepository {
         return false;
       }
 
-      final assignments = List<Map<String, dynamic>>.from(
-        await _client
-            .from('admin_role_assignments')
-            .select('role, is_active')
-            .eq('user_id', userId)
-            .eq('is_active', true),
-      );
+      final assignments = await _currentStaffAssignments();
       if (assignments.any(
         (row) => _normalizeRole(row['role']) == 'super_admin',
       )) {
         return true;
       }
 
-      final result = await _client.rpc('is_super_admin');
-      return result == true;
+      return false;
     } catch (e) {
       AfriLogger.warn('AdminRepository', 'Super admin check failed: $e');
       return false;
@@ -230,7 +217,7 @@ class AdminRepository {
   getAdminNotificationContext() async {
     final scope = await _scopeResolver.requireResolved();
     var groupsQuery = _client
-        .from('contribution_groups')
+        .from('groups')
         .select('id, name')
         .eq('is_closed', false);
     groupsQuery = _scopeResolver.apply(groupsQuery, scope);
@@ -283,6 +270,7 @@ class AdminRepository {
   }
 
   bool _assignmentMatchesClub(Map<String, dynamic> row, int? currentClubId) {
+    if (row['is_active'] != true || row['revoked_at'] != null) return false;
     final role = _normalizeRole(row['role']);
     final assignmentClubId = _asInt(row['club_id']);
     if (role == 'super_admin' || role == 'admin') {
@@ -291,34 +279,65 @@ class AdminRepository {
     if (role != 'club_admin' && role != 'club_moderator') {
       return false;
     }
-    return currentClubId == null || assignmentClubId == currentClubId;
+    return currentClubId != null && assignmentClubId == currentClubId;
   }
 
-  bool _isAdminRole(String? role) {
-    return switch (_normalizeRole(role)) {
-      'admin' || 'super_admin' || 'club_admin' || 'club_moderator' => true,
-      _ => false,
-    };
+  /// Compatibility name for callers; current server assignments and fresh
+  /// assurance are mandatory. Cached metadata never grants staff authority.
+  Future<List<Map<String, dynamic>>> _currentStaffAssignments() async {
+    final owner = SupabaseSessionAuthority.capture(
+      clientProvider: () => _client,
+    );
+    try {
+      final userId = owner.session?.user.id;
+      if (userId == null) return const [];
+      final rows = await _client
+          .from('admin_role_assignments')
+          .select('role,club_id,is_active,revoked_at')
+          .eq('user_id', userId)
+          .eq('is_active', true)
+          .isFilter('revoked_at', null);
+      owner.requireCurrent();
+      return rows
+          .where((row) => row['is_active'] == true && row['revoked_at'] == null)
+          .toList();
+    } finally {
+      await owner.dispose();
+    }
   }
 
-  /// Uses only server-controlled JWT app metadata for high-risk admin
-  /// workspaces. Client-writable user metadata is intentionally ignored.
   Future<bool> isCurrentUserAppMetadataAdmin() async {
-    final role = _client.auth.currentUser?.appMetadata['role']
-        ?.toString()
-        .trim()
-        .toLowerCase();
-    return _isAdminRole(role);
+    final owner = SupabaseSessionAuthority.capture(
+      clientProvider: () => _client,
+    );
+    try {
+      if (!await isCurrentUserAdmin()) return false;
+      final allowed = await _client.rpc('staff_step_up_allowed');
+      owner.requireCurrent();
+      return allowed == true;
+    } finally {
+      await owner.dispose();
+    }
   }
 
-  /// Platform-wide operational monitoring must not be exposed to a
-  /// club-scoped moderator or administrator.
+  /// Platform monitoring requires a current global assignment and assurance.
   Future<bool> isCurrentUserAppMetadataPlatformAdmin() async {
-    final role = _client.auth.currentUser?.appMetadata['role']
-        ?.toString()
-        .trim()
-        .toLowerCase();
-    return role == 'admin' || role == 'super_admin';
+    final owner = SupabaseSessionAuthority.capture(
+      clientProvider: () => _client,
+    );
+    try {
+      final rows = await _currentStaffAssignments();
+      if (!rows.any(
+        (row) => {'admin', 'super_admin'}.contains(_normalizeRole(row['role'])),
+      )) {
+        return false;
+      }
+      final allowed = await _client.rpc('staff_step_up_allowed');
+      owner.requireCurrent();
+      return allowed == true;
+    } finally {
+      await owner.dispose();
+    }
   }
 
   String? _normalizeRole(dynamic value) {
@@ -1077,51 +1096,123 @@ class AdminRepository {
   }
 
   Future<Map<String, dynamic>> submitAdminNotification(
-    Map<String, dynamic> payload,
-  ) async {
-    final response = await _client.functions.invoke(
-      'admin-send-notification',
-      body: payload,
-    );
-
-    final raw = response.data;
-    if (raw is Map) {
-      final map = Map<String, dynamic>.from(raw);
-      if (map['success'] == true) {
-        return Map<String, dynamic>.from(
-          map['data'] as Map? ?? const <String, dynamic>{},
-        );
+    AdminNotificationAttempt attempt, {
+    required bool submit,
+  }) async {
+    final owner = captureNotificationOwner();
+    try {
+      if (owner.userId != attempt.userId || owner.clubId != attempt.clubId) {
+        throw const SupabaseSessionChangedException();
       }
-
-      final message = map['message']?.toString();
-      throw StateError(message ?? 'Admin notification delivery failed.');
+      owner.requireCurrent();
+      final response = await _client.functions.invoke(
+        'admin-send-notification',
+        body: {
+          'action': submit ? 'submit' : 'status',
+          'operation_id': attempt.operationId,
+          'club_id': attempt.clubId,
+          if (submit) ...attempt.arguments,
+        },
+      );
+      owner.requireCurrent();
+      final raw = response.data;
+      if (raw is! Map || raw['success'] != true || raw['data'] is! Map) {
+        throw const FormatException('Notification request was not confirmed.');
+      }
+      final data = Map<String, dynamic>.from(raw['data'] as Map);
+      AdminNotificationCommandReceipt.fromRaw(data, attempt);
+      return data;
+    } finally {
+      await owner.dispose();
     }
+  }
 
-    throw const FormatException('Unexpected admin notification response.');
+  AdminNotificationOwner captureNotificationOwner() {
+    final clubId = _notificationClubId;
+    final owner = SupabaseSessionAuthority.capture(
+      clientProvider: () => _client,
+      isOwnerCurrent: () => _scopeResolver.currentClubId == clubId,
+    );
+    final userId = owner.session?.user.id;
+    if (userId == null || clubId == null) {
+      unawaited(owner.dispose());
+      throw StateError('Admin notification permission required.');
+    }
+    return AdminNotificationOwner(
+      userId: userId,
+      clubId: clubId,
+      isCurrent: () =>
+          owner.isCurrent && _scopeResolver.currentClubId == clubId,
+      dispose: owner.dispose,
+    );
+  }
+
+  int? get _notificationClubId => _scopeResolver.currentClubId;
+
+  Future<bool> isCurrentUserNotificationAdmin() async {
+    final owner = captureNotificationOwner();
+    try {
+      final rows = await _currentStaffAssignments();
+      owner.requireCurrent();
+      if (!rows.any(
+        (row) =>
+            row['club_id'] == null &&
+            {'admin', 'super_admin'}.contains(_normalizeRole(row['role'])),
+      )) {
+        return false;
+      }
+      final allowed = await _client.rpc('staff_step_up_allowed');
+      owner.requireCurrent();
+      return allowed == true;
+    } finally {
+      await owner.dispose();
+    }
   }
 
   Future<Map<String, dynamic>> settlePredictionFixture(
     Map<String, dynamic> payload,
   ) async {
-    final response = await _client.functions.invoke(
-      'admin-settle-fixture',
-      body: payload,
+    final request = Map<String, dynamic>.unmodifiable(payload);
+    final operationId = request['operation_id'];
+    if (operationId is! String ||
+        !RegExp(
+          r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$',
+        ).hasMatch(operationId)) {
+      throw const FormatException('Original settlement operation is required.');
+    }
+    final owner = SupabaseSessionAuthority.capture(
+      clientProvider: () => _client,
     );
-    final raw = response.data;
-    if (raw is! Map) {
-      throw const FormatException('Unexpected fixture settlement response.');
-    }
-    final map = Map<String, dynamic>.from(raw);
-    if (map['success'] != true || map['data'] is! Map) {
-      throw StateError(
-        map['error']?.toString() ?? 'Fixture settlement was not confirmed.',
+    try {
+      owner.requireCurrent();
+      final response = await _client.functions.invoke(
+        'admin-settle-fixture',
+        body: request,
       );
+      owner.requireCurrent();
+      final raw = response.data;
+      if (raw is! Map) {
+        throw const FormatException('Unexpected fixture settlement response.');
+      }
+      final map = Map<String, dynamic>.from(raw);
+      if (map['success'] != true || map['data'] is! Map) {
+        throw StateError(
+          map['error']?.toString() ?? 'Fixture settlement was not confirmed.',
+        );
+      }
+      final data = Map<String, dynamic>.from(map['data'] as Map);
+      if (data['receipt'] is! Map) {
+        throw const FormatException('Unexpected fixture settlement receipt.');
+      }
+      final receipt = Map<String, dynamic>.from(data['receipt'] as Map);
+      if (receipt['operation_id'] != operationId ||
+          receipt['fixture_id'] != request['fixture_id']) {
+        throw const FormatException('Unexpected fixture settlement operation.');
+      }
+      return receipt;
+    } finally {
+      await owner.dispose();
     }
-    final data = Map<String, dynamic>.from(map['data'] as Map);
-    if (data['receipt'] is! Map) {
-      throw const FormatException('Unexpected fixture settlement receipt.');
-    }
-    return Map<String, dynamic>.from(data['receipt'] as Map);
   }
 }
 

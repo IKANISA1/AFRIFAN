@@ -39,13 +39,17 @@ void main() {
             body: shell,
             bottomNavigationBar: Row(
               children: [
-                TextButton(
-                  onPressed: () => shell.goBranch(0),
-                  child: const Text('Home tab'),
+                Expanded(
+                  child: AfriButton(
+                    label: 'Home tab',
+                    onTap: () => shell.goBranch(0),
+                  ),
                 ),
-                TextButton(
-                  onPressed: () => shell.goBranch(1),
-                  child: const Text('Membership tab'),
+                Expanded(
+                  child: AfriButton(
+                    label: 'Membership tab',
+                    onTap: () => shell.goBranch(1),
+                  ),
                 ),
               ],
             ),

@@ -63,28 +63,6 @@ class PartnerPoolRepository {
     required String selectedOutcome,
     String? idempotencyKey,
   }) async {
-    if (!_storeReleasePolicy.allowsStakedCompetitions) {
-      throw UnsupportedError(
-        'Stake-based partner pools are unavailable in this store release.',
-      );
-    }
-    final result = await SafeRpc.call(
-      'partner_prediction_pool_join',
-      params: <String, dynamic>{
-        'p_pool_id': poolId,
-        'p_selected_outcome': selectedOutcome,
-        'p_idempotency_key': idempotencyKey,
-      },
-      tag: _tag,
-      maxAttempts: 1,
-    );
-
-    if (!result.isSuccess || result.data is! Map) {
-      return const PartnerPoolMutationResult(status: 'error');
-    }
-
-    return PartnerPoolMutationResult.fromJson(
-      Map<String, dynamic>.from(result.data as Map),
-    );
+    throw UnsupportedError('Historical paid pools are closed to new entries.');
   }
 }

@@ -1,4 +1,4 @@
-import 'package:feat_club/src/repositories/gikundiro_public_club_gateway.dart';
+import 'package:club_data/club_data.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -77,8 +77,10 @@ void main() {
     final fixture = mapGikundiroFixture(row, teams, competitions, now);
     expect(fixture?.id, 'gikundiro-fixture-1');
     final local = DateTime.parse('2026-09-23T22:30:00Z').toLocal();
-    expect(fixture?.kickoffTime,
-        '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}');
+    expect(
+      fixture?.kickoffTime,
+      '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}',
+    );
     expect(fixture?.isOnSale, false);
     expect(
       mapGikundiroFixture(

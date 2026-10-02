@@ -33,6 +33,7 @@ class _PushNotificationsScreenState
   String? _selectedTier;
   String? _selectedGroupId;
   DateTime? _scheduledAt;
+  AdminNotificationOwner? _composerOwner;
 
   @override
   void dispose() {
@@ -43,6 +44,7 @@ class _PushNotificationsScreenState
   }
 
   Future<void> _pickSchedule() async {
+    final owner = ref.read(adminNotificationsProvider.notifier).currentOwner;
     final initialDate =
         _scheduledAt ?? DateTime.now().add(const Duration(hours: 1));
     final date = await showDatePicker(
@@ -51,13 +53,13 @@ class _PushNotificationsScreenState
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
     );
-    if (date == null || !mounted) return;
+    if (date == null || !mounted || owner?.isCurrent() != true) return;
 
     final time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(initialDate),
     );
-    if (time == null || !mounted) return;
+    if (time == null || !mounted || owner?.isCurrent() != true) return;
 
     setState(() {
       _scheduledAt = DateTime(
@@ -187,6 +189,8 @@ class _PushNotificationsScreenState
   }
 
   Future<void> _submitNotification() async {
+    final notifier = ref.read(adminNotificationsProvider.notifier);
+    final owner = notifier.currentOwner;
     final validationError = _validateComposer();
     if (validationError != null) {
       AfriToast.error(context, validationError);
@@ -196,18 +200,27 @@ class _PushNotificationsScreenState
     try {
       final snapshot = ref.read(adminNotificationsProvider).valueOrNull;
       if (snapshot == null || !snapshot.actionsEnabled) return;
-      final delivery = await ref
-          .read(adminNotificationsProvider.notifier)
-          .send(_buildPayload(snapshot));
-      if (!mounted) return;
+      final delivery = await notifier.send(_buildPayload(snapshot));
+      if (!mounted ||
+          owner?.isCurrent() != true ||
+          !identical(owner, notifier.currentOwner)) {
+        return;
+      }
       if (delivery != null) {
-        AfriToast.success(context, _formatDeliveryMessage(delivery));
+        if (delivery.status == 'unknown' || delivery.status == 'processing') {
+          AfriToast.error(
+            context,
+            context.afriL10n.adminNotificationRequestUnconfirmed,
+          );
+        } else {
+          AfriToast.success(context, _formatDeliveryMessage(delivery));
+        }
       }
     } on FormatException {
-      if (!mounted) return;
+      if (!mounted || owner?.isCurrent() != true) return;
       AfriToast.error(context, context.afriL10n.adminNotificationFieldsInvalid);
     } catch (_) {
-      if (!mounted) return;
+      if (!mounted || owner?.isCurrent() != true) return;
       AfriToast.error(
         context,
         context.afriL10n.adminNotificationRequestUnconfirmed,
@@ -243,6 +256,18 @@ class _PushNotificationsScreenState
     final enabled = ref.watch(adminNotificationsEnabledProvider);
     final notifications = ref.watch(adminNotificationsProvider);
     final snapshot = notifications.valueOrNull;
+    final owner = ref.read(adminNotificationsProvider.notifier).currentOwner;
+    if (_composerOwner != null && !identical(_composerOwner, owner)) {
+      _titleController.clear();
+      _bodyController.clear();
+      _imageUrlController.clear();
+      _audience = 'ALL FANS';
+      _scheduleMode = 'SEND NOW';
+      _selectedTier = null;
+      _selectedGroupId = null;
+      _scheduledAt = null;
+    }
+    _composerOwner = owner;
     final denied =
         snapshot?.failure?.kind ==
         AdminNotificationsFailureKind.permissionDenied;
@@ -317,6 +342,10 @@ class _PushNotificationsScreenState
         children: [
           if (_statusBanner(notifications) case final banner?) ...[
             banner,
+            const SizedBox(height: SpacingTokens.spacing4),
+          ],
+          if (snapshot.pendingAttempt case final original?) ...[
+            _recoveryCard(snapshot, original),
             const SizedBox(height: SpacingTokens.spacing4),
           ],
           GlassCard(
@@ -411,12 +440,14 @@ class _PushNotificationsScreenState
                 const SizedBox(height: SpacingTokens.spacing5),
                 AfriInputField(
                   controller: _titleController,
+                  readOnly: snapshot.pendingAttempt != null,
                   label: context.afriL10n.adminNotificationTitleLabel,
                   onChanged: (_) => setState(() {}),
                 ),
                 const SizedBox(height: SpacingTokens.spacing3),
                 AfriInputField(
                   controller: _bodyController,
+                  readOnly: snapshot.pendingAttempt != null,
                   maxLines: 2,
                   label: context.afriL10n.adminNotificationBodyLabel,
                   helperText: context.afriL10n.adminNotificationCharacterCount(
@@ -427,6 +458,7 @@ class _PushNotificationsScreenState
                 const SizedBox(height: SpacingTokens.spacing3),
                 AfriInputField(
                   controller: _imageUrlController,
+                  readOnly: snapshot.pendingAttempt != null,
                   label: context.afriL10n.adminNotificationImageUrl,
                 ),
               ],
@@ -536,6 +568,112 @@ class _PushNotificationsScreenState
                 metrics: _historyMetrics(item),
               ),
             ),
+        ],
+      ),
+    );
+  }
+
+  Widget _recoveryCard(
+    AdminNotificationsSnapshot snapshot,
+    AdminNotificationAttempt original,
+  ) {
+    final l10n = context.afriL10n;
+    final receipt = snapshot.commandReceipt;
+    final unknown =
+        receipt?.state == 'unknown' ||
+        (receipt?.delivery?['unknown_count'] ?? 0) > 0;
+    return GlassCard(
+      key: const ValueKey('admin-notification-original-request'),
+      animate: false,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l10n.adminNotificationOriginalRequest,
+            style: TypographyTokens.titleMedium(),
+          ),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Text(
+            unknown
+                ? l10n.adminNotificationUnknownDelivery
+                : l10n.adminNotificationOriginalPending,
+            style: TypographyTokens.bodyMedium(),
+          ),
+          const SizedBox(height: SpacingTokens.spacing3),
+          Text(
+            original.arguments['title'] as String,
+            style: TypographyTokens.titleSmall(),
+          ),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Text(
+            original.arguments['body'] as String,
+            style: TypographyTokens.bodyMedium(),
+          ),
+          const SizedBox(height: SpacingTokens.spacing2),
+          Text(switch (original.arguments['audience']) {
+            'by_group' => l10n.adminNotificationGroupPreview(
+              original.arguments['group_name'] as String? ?? '',
+            ),
+            'by_tier' => l10n.adminNotificationTierPreview(
+              _tierLabel((original.arguments['tier'] as String).toUpperCase()),
+            ),
+            _ => l10n.adminNotificationAllSupporters,
+          }, style: TypographyTokens.bodyMedium()),
+          if (original.arguments['scheduled_at'] case final String scheduled)
+            Text(
+              l10n.adminNotificationScheduledFor(
+                DateFormat(
+                  'dd MMM yyyy • HH:mm',
+                  Localizations.localeOf(context).toLanguageTag(),
+                ).format(DateTime.parse(scheduled).toLocal()),
+              ),
+              style: TypographyTokens.bodyMedium(),
+            ),
+          const SizedBox(height: SpacingTokens.spacing3),
+          Text(
+            l10n.adminNotificationRequestReference(original.operationId),
+            style: TypographyTokens.bodySmall(),
+          ),
+          AfriTextIconButton(
+            onPressed: snapshot.isMutating
+                ? null
+                : () async {
+                    await Clipboard.setData(
+                      ClipboardData(text: original.operationId),
+                    );
+                  },
+            icon: const Icon(AfriIcons.copy),
+            label: Text(l10n.adminNotificationCopyReference),
+          ),
+          const SizedBox(height: SpacingTokens.spacing2),
+          AfriButton(
+            key: const ValueKey('admin-notification-recover'),
+            label: l10n.adminNotificationCheckRequest,
+            labelMaxLines: 3,
+            fullWidth: true,
+            enabled: !snapshot.isMutating,
+            isLoading: snapshot.isMutating,
+            onTap: () => unawaited(
+              ref.read(adminNotificationsProvider.notifier).refresh(),
+            ),
+          ),
+          if (receipt?.canResume == true) ...[
+            const SizedBox(height: SpacingTokens.spacing3),
+            Text(
+              l10n.adminNotificationOriginalNotAdmitted,
+              style: TypographyTokens.bodyMedium(),
+            ),
+            AfriButton(
+              key: const ValueKey('admin-notification-resume'),
+              label: l10n.adminNotificationRetryOriginal,
+              labelMaxLines: 3,
+              fullWidth: true,
+              enabled: !snapshot.isMutating,
+              onTap: () => unawaited(
+                ref.read(adminNotificationsProvider.notifier).resumeOriginal(),
+              ),
+            ),
+          ],
         ],
       ),
     );
