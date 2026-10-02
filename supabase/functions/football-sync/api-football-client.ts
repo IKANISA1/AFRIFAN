@@ -1,3 +1,8 @@
+import {
+  currentFootballSyncContext,
+  footballProviderFetch,
+} from "../_shared/football_sync_command.ts";
+import { readBoundedJson } from "../_shared/http.ts";
 import { logDiagnostic } from "../_shared/diagnostics.ts";
 /**
  * API-Football v3 — Type-safe HTTP client
@@ -85,7 +90,12 @@ async function apiFetch<T>(
   }
   if (lastKnownRateLimit.minuteRemaining <= 0) {
     // Wait 60s if minute limit exhausted
-    logDiagnostic("warn", "football_sync_api_football_client__api_football_minute_limit_exhausted_waiting_60s_before", undefined, { retry_after_seconds: 60 });
+    logDiagnostic(
+      "warn",
+      "football_sync_api_football_client__api_football_minute_limit_exhausted_waiting_60s_before",
+      undefined,
+      { retry_after_seconds: 60 },
+    );
     await sleep(60_000);
   }
 
@@ -98,12 +108,18 @@ async function apiFetch<T>(
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     if (attempt > 0) {
       const delay = retryDelayMs * Math.pow(2, attempt - 1);
-      logDiagnostic("warn", "football_sync_api_football_client__api_football_retry", undefined, { attempt, duration_ms: delay });
+      logDiagnostic(
+        "warn",
+        "football_sync_api_football_client__api_football_retry",
+        undefined,
+        { attempt, duration_ms: delay },
+      );
       await sleep(delay);
     }
 
     try {
-      const res = await fetch(url.toString(), {
+      const res = await footballProviderFetch(url.toString(), {
+        signal: AbortSignal.timeout(15000),
         method: "GET",
         headers: {
           "x-apisports-key": getApiKey(),
@@ -117,11 +133,17 @@ async function apiFetch<T>(
       }
 
       if (!res.ok) {
-        const text = await res.text();
-        throw new ApiFootballError(endpoint, res.status, text);
+        void res.body?.cancel().catch(() => {});
+        throw new ApiFootballError(
+          endpoint,
+          res.status,
+          "Provider request failed.",
+        );
       }
 
-      const json = await res.json();
+      const json = await readBoundedJson<
+        { errors?: Record<string, unknown>; response?: T[]; paging?: any }
+      >(res, { maxBytes: 4 * 1024 * 1024, timeoutMs: 5000 });
 
       // API-Football returns { get, parameters, errors, results, paging, response }
       if (json.errors && Object.keys(json.errors).length > 0) {
@@ -139,6 +161,9 @@ async function apiFetch<T>(
       };
     } catch (err) {
       lastError = err instanceof Error ? err : new Error(String(err));
+      if (currentFootballSyncContext() && !(err instanceof ApiFootballError)) {
+        throw err;
+      }
       if (err instanceof RateLimitExceededError) {
         throw err; // Don't retry rate limits
       }

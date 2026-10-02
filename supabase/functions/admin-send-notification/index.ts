@@ -1,13 +1,17 @@
+import { enforceRateLimit } from "../_shared/rate_limit.ts";
+import { errorResponse } from "../_shared/response.ts";
+import { withEdgeBoundary } from "../_shared/response.ts";
+import { readBoundedJson } from "../_shared/http.ts";
 import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import {
-  audienceColumns,
-  buildDeliveryUpdate,
-  dispatchNotification,
-  parseNotificationRequest,
-  selectRecipientUserIds,
-} from "../_shared/notifications.ts";
+  parseNotificationCommand,
+  resolveNotificationCommand,
+} from "../_shared/notification_command.ts";
+import { dispatchNotificationCommand } from "../_shared/notification_dispatch.ts";
+import { prepareNotificationDeviceSender } from "../_shared/notification_fcm.ts";
+import { createLifecycleAdminClient } from "../_shared/account_lifecycle_client.ts";
 import {
   corsHeaders,
   corsPreflightResponse,
@@ -16,190 +20,102 @@ import {
 } from "../_shared/response.ts";
 import { enforceFeature } from "../_shared/feature_guard.ts";
 import { isErrorResponse, validateRequest } from "../_shared/validation.ts";
-import { createAdminClient } from "../_shared/supabase.ts";
-
-type AdminClientLike = ReturnType<typeof createAdminClient>;
 
 type Dependencies = {
-  createAdminClient: () => AdminClientLike;
+  createAdminClient: typeof createLifecycleAdminClient;
   validateRequest: typeof validateRequest;
   enforceFeature: typeof enforceFeature;
+  enforceRateLimit: typeof enforceRateLimit;
+  resolveCommand: typeof resolveNotificationCommand;
+  dispatchCommand: typeof dispatchNotificationCommand;
+  prepareSender: typeof prepareNotificationDeviceSender;
 };
-
 const defaultDependencies: Dependencies = {
-  createAdminClient,
+  enforceRateLimit,
+  createAdminClient: createLifecycleAdminClient,
   validateRequest,
   enforceFeature,
+  resolveCommand: resolveNotificationCommand,
+  dispatchCommand: dispatchNotificationCommand,
+  prepareSender: prepareNotificationDeviceSender,
 };
 
 export function createAdminSendNotificationHandler(
   dependencies: Partial<Dependencies> = {},
 ) {
-  const deps: Dependencies = {
-    ...defaultDependencies,
-    ...dependencies,
-  };
-
+  const deps = { ...defaultDependencies, ...dependencies };
   return async (request: Request) => {
-    if (request.method === "OPTIONS") {
-      return corsPreflightResponse();
-    }
-
-    if (request.method !== "POST") {
-      return jsonError("Method not allowed", 405);
-    }
-
+    if (request.method === "OPTIONS") return corsPreflightResponse(request);
+    if (request.method !== "POST") return jsonError("Method not allowed", 405);
     try {
-      // Extract userId and clubId from JWT based on new shared architecture
+      // The actual current GLOBAL assignment and provider-verified same JWT remain
+      // required. Selected club is explicitly admitted by SQL, never metadata authority.
       const validated = await deps.validateRequest(request, {
-        requireClubId: true,
         requireAdmin: true,
       });
       if (isErrorResponse(validated)) return validated;
-      const { userId, clubId, roles } = validated;
-      const numericClubId = Number(clubId);
-
-      const guardResponse = await deps.enforceFeature(validated.supabase, {
-        featureKey: "notifications",
-        channel: "mobile",
-        clubId: Number.isFinite(numericClubId) ? numericClubId : null,
-        isAuthenticated: true,
-        roles,
-      });
-      if (guardResponse) return guardResponse;
-
-      const adminClient = deps.createAdminClient();
-
-      const body = await request.json() as Record<string, unknown>;
-      const payload = parseNotificationRequest(body);
-
-      const seedRow = {
-        club_id: numericClubId,
-        created_by: userId,
-        title: payload.title,
-        body: payload.body,
-        image_url: payload.imageUrl,
-        ...audienceColumns(payload.audience),
-        delivery_mode: payload.deliveryMode,
-        scheduled_at: payload.scheduledAt,
-        status: payload.deliveryMode === "schedule"
-          ? "scheduled"
-          : "processing",
-      };
-
-      const { data: created, error: insertError } = await adminClient
-        .from("notifications")
-        .insert(seedRow)
-        .select("*")
-        .single();
-
-      if (insertError || !created) {
-        throw new Error("Failed to create notification job.");
-      }
-
-      if (payload.deliveryMode === "schedule") {
-        const recipients = await selectRecipientUserIds(
-          adminClient,
-          numericClubId,
-          payload.audience,
-        );
-
-        const update = {
-          requested_recipient_count: recipients.length,
-          delivery_summary: {
-            requested_recipient_count: recipients.length,
-            scheduled_at: payload.scheduledAt,
-          },
-        };
-
-        const { data: scheduled, error: updateError } = await adminClient
-          .from("notifications")
-          .update(update)
-          .eq("id", created["id"])
-          .select("*")
-          .single();
-
-        if (updateError || !scheduled) {
-          throw new Error("Failed to finalize scheduled notification.");
-        }
-
-        return jsonOk({
-          success: true,
-          data: {
-            notification: scheduled,
-            delivery: {
-              status: scheduled["status"],
-              requested_recipient_count: scheduled["requested_recipient_count"],
-              sent_count: scheduled["sent_count"],
-              failed_count: scheduled["failed_count"],
-              cleaned_tokens: scheduled["cleaned_tokens"],
-              scheduled_at: scheduled["scheduled_at"],
-            },
-          },
-        });
-      }
-
-      try {
-        const delivery = await dispatchNotification(adminClient, created);
-        const { data: delivered, error: updateError } = await adminClient
-          .from("notifications")
-          .update(buildDeliveryUpdate(delivery))
-          .eq("id", created["id"])
-          .select("*")
-          .single();
-
-        if (updateError || !delivered) {
-          throw new Error("Failed to persist notification delivery result.");
-        }
-
-        return jsonOk({
-          success: true,
-          data: {
-            notification: delivered,
-            delivery: {
-              status: delivery.status,
-              requested_recipient_count: delivery.requestedRecipientCount,
-              successful_user_count: delivery.successfulUserCount,
-              failed_user_count: delivery.failedUserCount,
-              sent_count: delivery.sentCount,
-              failed_count: delivery.failedCount,
-              cleaned_tokens: delivery.cleanedTokens,
-              errors: delivery.errors,
-            },
-          },
-        });
-      } catch (error) {
-        const failureMessage = error instanceof Error
-          ? error.message
-          : "Notification delivery failed.";
-
-        await adminClient
-          .from("notifications")
-          .update({
-            status: "failed",
-            last_error: failureMessage,
-            sent_at: new Date().toISOString(),
-            delivery_summary: { errors: [failureMessage] },
-          })
-          .eq("id", created["id"]);
-
-        throw error;
-      }
-    } catch (error) {
-      logDiagnostic("error", "admin_send_notification_admin_send_notification_failed", error);
-      return jsonError(
-        error instanceof Error
-          ? error.message
-          : "Notification delivery failed.",
-        500,
+      const command = parseNotificationCommand(
+        await readBoundedJson(request, { maxBytes: 8192 }),
       );
+      if (command.action === "submit") {
+        const guard = await deps.enforceFeature(validated.supabase, {
+          featureKey: "notifications",
+          channel: "mobile",
+          clubId: command.clubId,
+          isAuthenticated: true,
+          roles: validated.roles,
+        });
+        if (guard) return guard;
+      }
+      const admin = deps.createAdminClient();
+      await deps.enforceRateLimit(
+        admin,
+        validated.userId,
+        command.action === "status"
+          ? "admin-notification-status"
+          : "admin-send-notification",
+        {
+          maxRequests: command.action === "status" ? 40 : 10,
+          windowSeconds: 60,
+          clubId: command.clubId,
+        },
+      );
+      const authorization = request.headers.get("authorization")!;
+      let receipt = await deps.resolveCommand(
+        authorization,
+        validated.userId,
+        command,
+      );
+      // Status can only recover an existing outcome. It never starts or renews work.
+      if (
+        command.action === "submit" &&
+        receipt.command.delivery_mode === "send_now" &&
+        ["admitted", "processing"].includes(receipt.command.state)
+      ) {
+        await deps.dispatchCommand(admin, command.operationId, {
+          prepareSender: deps.prepareSender,
+        }, {
+          deadlineAt: Date.now() + 30000,
+          proofId: receipt.dispatch_proof_id,
+        });
+        receipt = await deps.resolveCommand(authorization, validated.userId, {
+          ...command,
+          action: "status",
+          arguments: null,
+        });
+      }
+      return jsonOk({ success: true, data: receipt });
+    } catch (error) {
+      // Never mark an uncertain provider call failed or mint a replacement operation.
+      logDiagnostic("error", "admin_send_notification_command_failed", error);
+      return errorResponse(error);
     }
   };
 }
 
 if (import.meta.main) {
   const handler = createAdminSendNotificationHandler();
-  Deno.serve((req: Request) =>
+  Deno.serve(withEdgeBoundary((req: Request) =>
     handler(req).then(
       (res) =>
         new Response(res.body, {
@@ -211,5 +127,5 @@ if (import.meta.main) {
           },
         }),
     )
-  );
+  ));
 }

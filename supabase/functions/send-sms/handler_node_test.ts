@@ -40,6 +40,7 @@ async function signedRequest(
   return new Request("https://example.test/functions/v1/send-sms", {
     method: "POST",
     headers: {
+      "content-type": "application/json",
       "webhook-id": webhookId,
       "webhook-timestamp": String(timestamp),
       "webhook-signature": await signatureFor(payload),
@@ -139,6 +140,7 @@ test("rejects unsigned and invalid payloads before delivery", async () => {
   const unsignedResponse = await handler(
     new Request("https://example.test/functions/v1/send-sms", {
       method: "POST",
+      headers: { "content-type": "application/json" },
       body: validPayload,
     }),
   );

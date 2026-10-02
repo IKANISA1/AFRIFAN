@@ -1,3 +1,13 @@
+import {
+  executeImageGeneration,
+  generationUuid,
+  getImageGenerationStatus,
+} from "../_shared/admin_image_generation.ts";
+import { getAuthorizationHeader } from "../_shared/auth.ts";
+import { getSupabaseUrl } from "../_shared/supabase.ts";
+import { errorResponse } from "../_shared/response.ts";
+import { withEdgeBoundary } from "../_shared/response.ts";
+import { readBoundedJson } from "../_shared/http.ts";
 import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
@@ -8,7 +18,6 @@ import {
   jsonOk,
 } from "../_shared/response.ts";
 import { isErrorResponse, validateRequest } from "../_shared/validation.ts";
-import { createAdminClient } from "../_shared/supabase.ts";
 
 type AllowedProductType =
   | "kit"
@@ -22,6 +31,8 @@ type AllowedProductType =
 type AllowedTargetTable = "shop_products" | "news_articles";
 
 type GenerateRequest = {
+  operation_id?: unknown;
+  mode?: unknown;
   clubId?: unknown;
   productType?: unknown;
   productName?: unknown;
@@ -38,26 +49,15 @@ type ClubBrand = {
   league: string;
 };
 
-type GeminiImageResponse = {
-  candidates?: Array<{
-    content?: {
-      parts?: Array<Record<string, unknown>>;
-    };
-  }>;
-};
-
 type GenerateProductImageDependencies = {
-  createAdminClient: typeof createAdminClient;
   validateRequest: typeof validateRequest;
-  fetchFn: typeof fetch;
-  randomId: () => string;
+  executeImageGeneration: typeof executeImageGeneration;
+  getImageGenerationStatus: typeof getImageGenerationStatus;
 };
-
 const defaultDependencies: GenerateProductImageDependencies = {
-  createAdminClient,
   validateRequest,
-  fetchFn: fetch,
-  randomId: () => crypto.randomUUID().substring(0, 8),
+  executeImageGeneration,
+  getImageGenerationStatus,
 };
 
 const PRODUCT_TYPES = new Set<AllowedProductType>([
@@ -158,12 +158,14 @@ function asTrimmedString(value: unknown): string | null {
 }
 
 function normalizeClubId(value: unknown): number | null {
-  if (typeof value === "number" && Number.isInteger(value) && value > 0) {
+  if (typeof value === "number" && Number.isSafeInteger(value) && value > 0) {
     return value;
   }
   if (typeof value === "string") {
-    const parsed = Number.parseInt(value.trim(), 10);
-    return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
+    const parsed = /^[1-9][0-9]*$/.test(value.trim())
+      ? Number(value.trim())
+      : NaN;
+    return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : null;
   }
   return null;
 }
@@ -197,187 +199,95 @@ function buildPrompt(
 export function createGenerateProductImageHandler(
   dependencies: Partial<GenerateProductImageDependencies> = {},
 ) {
-  const deps: GenerateProductImageDependencies = {
-    ...defaultDependencies,
-    ...dependencies,
-  };
-
+  const deps = { ...defaultDependencies, ...dependencies };
   return async (request: Request) => {
-    if (request.method === "OPTIONS") {
-      return corsPreflightResponse();
-    }
-
-    if (request.method !== "POST") {
-      return jsonError("Method not allowed", 405);
-    }
-
+    if (request.method === "OPTIONS") return corsPreflightResponse(request);
+    if (request.method !== "POST") return jsonError("Method not allowed", 405);
     try {
-      const body = await request.json() as GenerateRequest;
+      const identity = await deps.validateRequest(request);
+      if (isErrorResponse(identity)) return identity;
+      const body = await readBoundedJson(request) as GenerateRequest;
       const clubId = normalizeClubId(body.clubId);
-      const productType = normalizeProductType(body.productType);
-      const productName = asTrimmedString(body.productName);
-      const targetTable = normalizeTargetTable(body.targetTable);
-      const targetId = asTrimmedString(body.targetId);
-
-      if (clubId == null || productType == null) {
-        return jsonError("clubId and productType are required.", 400);
+      const operationId = asTrimmedString(body.operation_id);
+      if (clubId == null || !operationId || !generationUuid.test(operationId)) {
+        return jsonError("clubId and original operation_id are required.", 400);
       }
-
-      if (body.targetTable != null && targetTable == null) {
-        return jsonError(
-          "targetTable must be one of shop_products or news_articles.",
-          400,
-        );
+      if (body.mode !== undefined && body.mode !== "status") {
+        return jsonError("Image mode is invalid.", 400);
       }
-
-      if ((targetTable == null) !== (targetId == null)) {
-        return jsonError(
-          "targetTable and targetId must be provided together.",
-          400,
-        );
-      }
-
       const validated = await deps.validateRequest(request, {
         requireClubAdmin: clubId,
       });
       if (isErrorResponse(validated)) return validated;
-
-      const geminiKey = Deno.env.get("GEMINI_API_KEY")?.trim();
-      if (!geminiKey) {
+      const authorization = getAuthorizationHeader(request) ?? "";
+      if (body.mode === "status") {
+        const receipt = await deps.getImageGenerationStatus(
+          authorization,
+          operationId,
+          validated.userId,
+          clubId,
+          "product_image",
+        );
+        return receipt
+          ? jsonOk(receipt)
+          : jsonError("Original image operation was not found.", 404);
+      }
+      const productType = normalizeProductType(body.productType);
+      const productName = asTrimmedString(body.productName);
+      const targetTable = normalizeTargetTable(body.targetTable);
+      const targetId = asTrimmedString(body.targetId);
+      if (
+        !productType || (productName?.length ?? 0) > 120 ||
+        (body.targetTable != null && !targetTable) ||
+        ((targetTable == null) !== (targetId == null)) ||
+        (targetId &&
+          !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
+            .test(targetId))
+      ) return jsonError("Product image input is invalid.", 400);
+      const apiKey = Deno.env.get("GEMINI_API_KEY")?.trim();
+      if (!apiKey) {
         return jsonError(
           "Image generation is not configured on the server.",
           503,
         );
       }
-
-      const adminClient = deps.createAdminClient();
-      const { data: club, error: clubError } = await adminClient
-        .from("african_football_clubs")
-        .select(
-          "club_name, primary_brand_colors, nickname_brand_identity, country_name, region, league",
-        )
-        .eq("id", clubId)
-        .single();
-
-      if (clubError || !club) {
-        return jsonError("Club not found.", 404);
-      }
-
-      const prompt = buildPrompt(club as ClubBrand, productType, productName);
-      const geminiResponse = await deps.fetchFn(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${geminiKey}`,
+      const receipt = await deps.executeImageGeneration(
+        authorization,
         {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: {
-              responseModalities: ["IMAGE", "TEXT"],
-              temperature: 1.0,
-            },
-          }),
+          operationId,
+          actorId: validated.userId,
+          clubId,
+          domain: "product_image",
+          kind: productType === "news" ? "news_article" : "shop_product",
+          request: { productType, productName, targetTable, targetId },
         },
+        (brand) => ({
+          model: "gemini-2.5-flash-image",
+          public_origin: getSupabaseUrl().replace(/\/$/, ""),
+          prompt_used: buildPrompt(
+            brand as ClubBrand,
+            productType,
+            productName,
+          ),
+          aspect_ratio: productType === "news" ? "16:9" : "1:1",
+        }),
+        apiKey,
       );
-
-      if (!geminiResponse.ok) {
-        const detail = await geminiResponse.text();
-        return jsonError(
-          `Gemini image generation failed: ${geminiResponse.status}`,
-          502,
-        );
-      }
-
-      const geminiBody = await geminiResponse.json() as GeminiImageResponse;
-      const parts = geminiBody.candidates?.[0]?.content?.parts ?? [];
-      const imagePart = parts.find((part) =>
-        Object.hasOwn(part, "inlineData") || Object.hasOwn(part, "inline_data")
-      );
-
-      if (!imagePart) {
-        return jsonError("Gemini did not return an image.", 502);
-      }
-
-      const inlineData = (imagePart.inlineData ?? imagePart.inline_data) as
-        | Record<string, unknown>
-        | undefined;
-      const base64Data = asTrimmedString(inlineData?.["data"]);
-      const mimeType = asTrimmedString(
-        inlineData?.["mimeType"] ?? inlineData?.["mime_type"],
-      ) ?? "image/png";
-
-      if (!base64Data) {
-        return jsonError("Gemini returned an invalid image payload.", 502);
-      }
-
-      const ext = mimeType.includes("jpeg") || mimeType.includes("jpg")
-        ? "jpg"
-        : "png";
-      const storagePath =
-        `club-${clubId}/generated/${productType}-${deps.randomId()}.${ext}`;
-      const imageBytes = Uint8Array.from(
-        atob(base64Data),
-        (char) => char.charCodeAt(0),
-      );
-
-      const { error: uploadError } = await adminClient.storage
-        .from("africlub-product-images")
-        .upload(storagePath, imageBytes, {
-          contentType: mimeType,
-          upsert: true,
-        });
-
-      if (uploadError) {
-        return jsonError(
-          `Storage upload failed: ${uploadError.message}`,
-          500,
-        );
-      }
-
-      const { data: urlData } = adminClient.storage
-        .from("africlub-product-images")
-        .getPublicUrl(storagePath);
-      const publicUrl = urlData.publicUrl;
-
-      if (targetTable && targetId) {
-        const { error: updateError } = await adminClient
-          .from(targetTable)
-          .update({
-            image_url: publicUrl,
-            image_prompt: prompt,
-            updated_at: new Date().toISOString(),
-          })
-          .eq("id", targetId)
-          .eq("club_id", clubId);
-
-        if (updateError) {
-          return jsonError(
-            `Failed to update ${targetTable}: ${updateError.message}`,
-            500,
-          );
-        }
-      }
-
-      return jsonOk({
-        success: true,
-        image_url: publicUrl,
-        storage_path: storagePath,
-        prompt_used: prompt,
-        club: (club as ClubBrand).club_name,
-        product_type: productType,
-      });
+      return jsonOk(receipt, receipt.status === "completed" ? 200 : 202);
     } catch (error) {
-      logDiagnostic("error", "generate_product_image_generate_product_image_failed", error);
-      return jsonError(
-        error instanceof Error ? error.message : "Image generation failed.",
-        500,
+      logDiagnostic(
+        "error",
+        "generate_product_image_generate_product_image_failed",
+        error,
       );
+      return errorResponse(error);
     }
   };
 }
 
 if (import.meta.main) {
   const handler = createGenerateProductImageHandler();
-  Deno.serve((req: Request) =>
+  Deno.serve(withEdgeBoundary((req: Request) =>
     handler(req).then(
       (res) =>
         new Response(res.body, {
@@ -389,5 +299,5 @@ if (import.meta.main) {
           },
         }),
     )
-  );
+  ));
 }

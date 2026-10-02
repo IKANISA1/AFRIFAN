@@ -1,3 +1,4 @@
+import { readBoundedJson } from "./http.ts";
 export const WALLET_TOTP_PERIOD_MILLIS = 30_000;
 export const WALLET_TOTP_DIGITS = 8;
 
@@ -53,7 +54,6 @@ export type PreparedWalletTicket = {
   kickoffTime: string;
 };
 
-
 function bytesToBase64Url(bytes: Uint8Array): string {
   let binary = "";
   for (const byte of bytes) binary += String.fromCharCode(byte);
@@ -76,7 +76,6 @@ function pemToBytes(pem: string): Uint8Array {
   const binary = atob(base64);
   return Uint8Array.from(binary, (character) => character.charCodeAt(0));
 }
-
 
 function bytesToHex(bytes: Uint8Array): string {
   return Array.from(bytes, (byte) => byte.toString(16).padStart(2, "0")).join(
@@ -394,6 +393,7 @@ async function googleAccessToken(
     exp: nowSeconds + 3600,
   });
   const response = await fetcher("https://oauth2.googleapis.com/token", {
+    signal: AbortSignal.timeout(10000),
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
@@ -404,7 +404,10 @@ async function googleAccessToken(
   if (!response.ok) {
     throw new GoogleWalletApiError("authorization", response.status);
   }
-  const payload = await response.json() as Record<string, unknown>;
+  const payload = await readBoundedJson(response, {
+    maxBytes: 16384,
+    timeoutMs: 5000,
+  });
   const token = requiredString(payload["access_token"], "access_token", 4096);
   const expiresIn = Number.isFinite(payload["expires_in"])
     ? Number(payload["expires_in"])
@@ -467,6 +470,7 @@ async function walletApiRequest(
     `https://walletobjects.googleapis.com/walletobjects/v1/${path}`,
     {
       ...options,
+      signal: AbortSignal.timeout(10000),
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",

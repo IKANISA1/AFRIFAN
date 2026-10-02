@@ -19,8 +19,11 @@ for (
               start(controller) {
                 bodyRelease = () => controller.close();
               },
+              cancel() {
+                bodyRelease = undefined;
+              },
             }),
-            { status: 200 },
+            { status: 200, headers: { "content-type": "application/json" } },
           ),
         );
       };

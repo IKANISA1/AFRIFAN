@@ -1,114 +1,102 @@
-import { logDiagnostic } from "./diagnostics.ts";
-import { createAdminClient } from "./supabase.ts";
 import { HttpError } from "./auth.ts";
 
-type AdminClientLike = ReturnType<typeof createAdminClient>;
+type AdminClientLike = {
+  rpc(name: string, params: Record<string, unknown>): PromiseLike<{
+    data: unknown;
+    error: unknown;
+  }>;
+};
 
 export type RateLimitConfig = {
-  /** Maximum number of requests allowed within the window. */
+  /** Maximum admitted requests in any rolling window (1–1000). */
   maxRequests: number;
-  /** Time window in seconds. */
+  /** Rolling window in seconds (1–86400). */
   windowSeconds: number;
+  /** Server-resolved tenant scope; omit for a global per-subject budget. */
+  clubId?: number;
 };
 
 export type RateLimitResult = {
   allowed: boolean;
-  retryAfterSeconds?: number;
-};
-
-type RateLimitDependencies = {
-  now: () => Date;
-  countRecent: (
-    adminClient: AdminClientLike,
-    userId: string,
-    functionName: string,
-    windowStartIso: string,
-  ) => Promise<number>;
-  recordInvocation: (
-    adminClient: AdminClientLike,
-    userId: string,
-    functionName: string,
-  ) => Promise<void>;
-};
-
-async function countRecentInvocations(
-  adminClient: AdminClientLike,
-  userId: string,
-  functionName: string,
-  windowStartIso: string,
-): Promise<number> {
-  const { count, error } = await adminClient
-    .from("edge_function_rate_events")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", userId)
-    .eq("function_name", functionName)
-    .gte("created_at", windowStartIso);
-
-  if (error) {
-    // Fail open with a warning rather than blocking the user on a telemetry error.
-    logDiagnostic("warn", "rate_limit_rate_limit_count_query_failed", error);
-    return 0;
-  }
-
-  return count ?? 0;
-}
-
-async function recordInvocation(
-  adminClient: AdminClientLike,
-  userId: string,
-  functionName: string,
-): Promise<void> {
-  const { error } = await adminClient
-    .from("edge_function_rate_events")
-    .insert({ user_id: userId, function_name: functionName });
-
-  if (error) {
-    logDiagnostic("warn", "rate_limit_rate_limit_event_insert_failed", error);
-  }
-}
-
-const defaultDependencies: RateLimitDependencies = {
-  now: () => new Date(),
-  countRecent: countRecentInvocations,
-  recordInvocation,
+  retryAfterSeconds: number;
 };
 
 /**
- * Check whether a user is within their rate limit for a given function.
- *
- * Records the invocation when allowed.
- * Throws HttpError(429) when the limit is exceeded.
+ * Atomic, exact sliding-window admission. The service-only RPC locks one bounded
+ * bucket and records an accepted request in the same transaction. Telemetry is
+ * deliberately not an authorization dependency. Store errors/timeouts fail closed.
  */
 export async function enforceRateLimit(
   adminClient: AdminClientLike,
   userId: string,
   functionName: string,
   config: RateLimitConfig,
-  dependencies: Partial<RateLimitDependencies> = {},
 ): Promise<void> {
-  const deps: RateLimitDependencies = {
-    ...defaultDependencies,
-    ...dependencies,
-  };
-
-  const now = deps.now();
-  const windowStartIso = new Date(
-    now.getTime() - config.windowSeconds * 1000,
-  ).toISOString();
-
-  const recentCount = await deps.countRecent(
-    adminClient,
-    userId,
-    functionName,
-    windowStartIso,
-  );
-
-  if (recentCount >= config.maxRequests) {
-    throw new HttpError(
-      429,
-      `Rate limit exceeded. Please wait before trying again.`,
-    );
+  if (
+    !userId || userId.length > 128 ||
+    !/^[a-z][a-z0-9_-]{0,79}$/.test(functionName) ||
+    !Number.isInteger(config.maxRequests) || config.maxRequests < 1 ||
+    config.maxRequests > 1000 || !Number.isInteger(config.windowSeconds) ||
+    config.windowSeconds < 1 || config.windowSeconds > 86400 ||
+    (config.clubId !== undefined &&
+      (!Number.isSafeInteger(config.clubId) || config.clubId < 1))
+  ) {
+    throw new HttpError(503, "Rate admission is unavailable.");
   }
 
-  await deps.recordInvocation(adminClient, userId, functionName);
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  try {
+    const result = await Promise.race([
+      Promise.resolve(adminClient.rpc("consume_edge_rate_limit", {
+        // JSON tuple encoding prevents delimiter collisions between subjects,
+        // functions and trusted tenant contexts.
+        p_bucket_key: JSON.stringify([
+          userId,
+          functionName,
+          config.clubId ?? null,
+        ]),
+        p_limit: config.maxRequests,
+        p_window_seconds: config.windowSeconds,
+      })),
+      new Promise<never>((_, reject) => {
+        timeout = setTimeout(
+          () => reject(new Error("Admission deadline")),
+          5000,
+        );
+      }),
+    ]);
+    if (
+      result.error || !Array.isArray(result.data) || result.data.length !== 1
+    ) {
+      throw new Error("Admission store failed");
+    }
+    const decision = result.data[0];
+    if (
+      !decision || typeof decision !== "object" ||
+      typeof decision.allowed !== "boolean" ||
+      !Number.isInteger(decision.retry_after_seconds) ||
+      decision.retry_after_seconds < 0 ||
+      decision.retry_after_seconds > config.windowSeconds ||
+      (decision.allowed && decision.retry_after_seconds !== 0) ||
+      (!decision.allowed && decision.retry_after_seconds < 1)
+    ) {
+      throw new Error("Invalid admission result");
+    }
+    if (!decision.allowed) {
+      throw new HttpError(
+        429,
+        "Rate limit exceeded. Please wait before trying again.",
+        {
+          "Retry-After": String(decision.retry_after_seconds),
+        },
+      );
+    }
+  } catch (error) {
+    if (error instanceof HttpError && error.status === 429) throw error;
+    throw new HttpError(503, "Rate admission is unavailable.", {
+      "Retry-After": "5",
+    });
+  } finally {
+    if (timeout !== undefined) clearTimeout(timeout);
+  }
 }

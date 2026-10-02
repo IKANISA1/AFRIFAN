@@ -1,183 +1,95 @@
 import { handleRequest } from "./index.ts";
-import { assertEquals } from "./reconciliation_test_support.ts";
-
+import { assertEquals as compare } from "./reconciliation_test_support.ts";
+const assertEquals = (
+  actual: unknown,
+  expected: unknown,
+  message = "Expected contract value",
+) => compare(actual, expected, message);
+const eventId = "99964000-0000-4000-8000-000000000001",
+  secret = btoa("a".repeat(32));
 for (
-  const scenario of [
-    { name: "expired pre-parse worker", claim: "claimed", expected: 200 },
-    { name: "live worker", claim: "busy", expected: 409 },
-    {
-      name: "interrupted persisted interpretation",
-      claim: "review_required",
-      expected: 409,
-    },
-    {
-      name: "late worker result",
-      claim: "claimed",
-      lostPersist: true,
-      expected: 500,
-    },
-    {
-      name: "late worker completion",
-      claim: "claimed",
-      lostFinish: true,
-      expected: 500,
-    },
-  ]
+  const failure of [
+    "lost committed response",
+    "uncommitted SQL transaction",
+  ] as const
 ) {
-  Deno.test(`SMS lease recovery fences ${scenario.name}`, async () => {
-    const savedFetch = globalThis.fetch;
+  Deno.test(`actual Supabase worker retries ${failure} with the same durable event`, async () => {
     const values = {
       SUPABASE_URL: "https://qa.invalid",
-      SUPABASE_ANON_KEY: "qa-public-key",
       SUPABASE_SERVICE_ROLE_KEY: "qa-service-key",
-      SUPABASE_PUBLISHABLE_KEYS: "",
       SUPABASE_SECRET_KEYS: "",
-      OPENAI_API_KEY: "qa-provider-substitute",
+      TRUSTED_SMS_INGRESS_ENABLED: "true",
+      SMS_PROCESSOR_SECRET: secret,
     };
     const saved = Object.fromEntries(
       Object.keys(values).map((k) => [k, Deno.env.get(k)]),
     );
     for (const [k, v] of Object.entries(values)) Deno.env.set(k, v);
-    const requests: string[] = [];
-    let aiCalls = 0, persisted = 0, completed = 0;
+    const originalFetch = globalThis.fetch;
+    let attempts = 0, posted = 0;
     const json = (data: unknown, status = 200) =>
       new Response(JSON.stringify(data), {
         status,
-        headers: { "Content-Type": "application/json" },
+        headers: { "content-type": "application/json" },
       });
     globalThis.fetch = async (input, init) => {
-      const url = new URL(String(input)), method = init?.method ?? "GET";
-      const body = init?.body ? JSON.parse(String(init.body)) : {};
-      const table = url.pathname.split("/").at(-1)!;
-      requests.push(`${method} ${table}`);
-      if (url.origin === "https://api.openai.com") {
-        aiCalls++;
+      const url = new URL(String(input));
+      assertEquals(url.origin, "https://qa.invalid");
+      const body = JSON.parse(String(init?.body));
+      const rpc = url.pathname.split("/").at(-1);
+      if (rpc === "get_trusted_sms_gateway_event") {
+        assertEquals(body.p_event_id, eventId);
         return json({
-          output: [{
-            content: [{
-              type: "output_text",
-              text: JSON.stringify({
-                parse_status: "needs_review",
-                amount: 1000,
-                currency: "RWF",
-              }),
-            }],
-          }],
+          gateway_id: "99964000-0000-4000-8000-000000000020",
+          club_id: 9996401,
         });
       }
-      if (url.origin !== "https://qa.invalid") {
-        throw new Error("External requests disabled");
+      if (rpc === "consume_edge_rate_limit") {
+        return json([{ allowed: true, retry_after_seconds: 0 }]);
       }
-      if (url.pathname === "/auth/v1/user") return json({ id: "user-1" });
-      if (table === "edge_function_rate_events") {
-        return method === "HEAD"
-          ? new Response(null, { headers: { "content-range": "*/0" } })
-          : json(null, 201);
+      if (rpc === "process_trusted_sms_gateway_evidence") {
+        assertEquals(body.p_event_id, eventId);
+        assertEquals(Object.keys(body).join(), "p_event_id");
+        attempts++;
+        if (attempts === 1) {
+          if (failure === "lost committed response") posted++;
+          return json({ message: "private transaction failure" }, 500);
+        }
+        const replay = posted > 0;
+        if (!replay) posted++;
+        return json({ event_id: eventId, status: "confirmed", replay });
       }
-      if (table === "momo_sms_raw" && method === "GET") {
-        return json([{
-          id: "raw-1",
-          user_id: "user-1",
-          sender: "M-Money",
-          sms_body: "Synthetic SMS",
-          parse_status: "processing",
-          updated_at: "2026-09-19T17:00:00Z",
-        }]);
-      }
-      if (table === "momo_sms_parsed" && method === "GET") return json([]);
-      if (table === "claim_momo_sms_parse") {
-        assertEquals(
-          body.p_user_id,
-          "user-1",
-          "claim binds authenticated owner",
-        );
-        assertEquals(body.p_raw_sms_id, "raw-1", "claim binds source SMS");
-        assertEquals(
-          body.p_expected_updated_at,
-          "2026-09-19T17:00:00Z",
-          "claim retains observed source version",
-        );
-        return json({ status: scenario.claim, token: "lease-1" });
-      }
-      if (table === "persist_momo_sms_parse") {
-        persisted++;
-        assertEquals(
-          body.p_token,
-          "lease-1",
-          "AI result requires the original lease",
-        );
-        assertEquals(
-          body.p_payload.parse_status,
-          "needs_review",
-          "actual normalized interpretation is persisted",
-        );
-        return scenario.lostPersist
-          ? json({ message: "MOMO_PARSE_LEASE_LOST" }, 409)
-          : json({ id: "parsed-1" });
-      }
-      if (table === "finish_momo_sms_parse") {
-        assertEquals(
-          body.p_token,
-          "lease-1",
-          "completion and failure cleanup are fenced",
-        );
-        if (body.p_success) completed++;
-        return json(!scenario.lostFinish && !scenario.lostPersist);
-      }
-      if (table === "momo_parse_attempts") {
-        return method === "GET" ? json([]) : json({ id: "attempt-1" });
-      }
-      if (
-        ["momo_reconciliations", "operational_health_events"].includes(table)
-      ) return json(null, 201);
-      throw new Error(`Unexpected request ${method} ${table}`);
+      throw new Error(`Unexpected Auth/provider/table call: ${url.pathname}`);
     };
+    const request = () =>
+      new Request("https://qa.invalid/functions/v1/parse-momo-sms", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-sms-processor-secret": secret,
+        },
+        body: JSON.stringify({ eventId }),
+      });
     try {
-      const result = await handleRequest(
-        new Request("https://qa.invalid/functions/v1/parse-momo-sms", {
-          method: "POST",
-          headers: {
-            Authorization: "Bearer qa-token",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ rawSmsId: "raw-1", provider: "openai" }),
-        }),
-      );
+      const first = await handleRequest(request());
+      assertEquals(first.status, 500);
       assertEquals(
-        result.status,
-        scenario.expected,
-        "busy/stale work cannot report success",
-      );
-      assertEquals(
-        aiCalls,
-        scenario.claim === "claimed" ? 1 : 0,
-        "AI is reached only by the claim owner",
-      );
-      assertEquals(
-        persisted,
-        aiCalls,
-        "parsed evidence is saved only through the lease RPC",
-      );
-      assertEquals(
-        completed,
-        aiCalls && !scenario.lostPersist ? 1 : 0,
-        "no completion after a rejected interpretation",
-      );
-      assertEquals(
-        requests.includes("PATCH momo_sms_raw"),
+        JSON.stringify(await first.json()).includes(
+          "private transaction failure",
+        ),
         false,
-        "late worker cannot overwrite another attempt's state",
       );
-      assertEquals(
-        requests.includes("POST momo_sms_parsed"),
-        false,
-        "interpretation writes cannot bypass fencing",
-      );
+      const second = await handleRequest(request());
+      assertEquals(second.status, 200);
+      const receipt = await second.json();
+      assertEquals(receipt.eventId, eventId);
+      assertEquals(receipt.replay, failure === "lost committed response");
+      assertEquals(posted, 1);
+      assertEquals(attempts, 2);
     } finally {
-      globalThis.fetch = savedFetch;
+      globalThis.fetch = originalFetch;
       for (const [k, v] of Object.entries(saved)) {
-        if (v === undefined) Deno.env.delete(k);
-        else Deno.env.set(k, v);
+        v === undefined ? Deno.env.delete(k) : Deno.env.set(k, v);
       }
     }
   });

@@ -1,3 +1,4 @@
+import { currentFootballSyncContext } from "../_shared/football_sync_command.ts";
 import { logDiagnostic } from "../_shared/diagnostics.ts";
 /**
  * sync-live — Fetch live match details (stats, events, lineups).
@@ -43,7 +44,7 @@ export async function syncLive(
   // 1. Find fixtures that need live data:
   //    - Currently live
   //    - Recently finished (last 3 hours) without stats
-  const { data: liveFixtures, error } = await adminClient
+  let query = adminClient
     .schema("football")
     .from("fixtures")
     .select("id, external_fixture_id, status, home_team_id, away_team_id")
@@ -51,7 +52,15 @@ export async function syncLive(
     .or(
       `status.eq.live,and(status.eq.finished,updated_at.gte.${hoursAgo(3)})`,
     )
-    .limit(15); // Budget: 15 × 3 = 45 API calls max
+    .order("id").limit(15); // Budget: 15 × 3 = 45 API calls max
+  const context = currentFootballSyncContext();
+  if (context) {
+    query = query.in(
+      "id",
+      (context.snapshot.live as { id: string }[]).map((f) => f.id),
+    );
+  }
+  const { data: liveFixtures, error } = await query;
 
   if (error || !liveFixtures || liveFixtures.length === 0) {
     if (error) result.errors.push(`Query error: ${error.message}`);
@@ -65,7 +74,10 @@ export async function syncLive(
     // Budget check
     const rateLimit = getRateLimit();
     if (rateLimit.dailyRemaining <= 10) {
-      logDiagnostic("warn", "football_sync_sync_live__sync_live_near_daily_limit_stopping");
+      logDiagnostic(
+        "warn",
+        "football_sync_sync_live__sync_live_near_daily_limit_stopping",
+      );
       break;
     }
 
@@ -211,7 +223,11 @@ export async function syncLive(
       result.fixtures_processed++;
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      logDiagnostic("error", "football_sync_sync_live__sync_live_error_for_fixture", msg);
+      logDiagnostic(
+        "error",
+        "football_sync_sync_live__sync_live_error_for_fixture",
+        msg,
+      );
       result.errors.push(`Fixture ${apiFixtureId}: ${msg}`);
     }
   }

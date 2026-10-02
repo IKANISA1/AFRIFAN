@@ -51,24 +51,37 @@ function jsonResponse(body: unknown): Response {
   });
 }
 
-Deno.test("buildPrompt includes raw SMS context and extraction hints", () => {
-  const prompt = buildPrompt(sampleRawSms);
-
-  assertStringIncludes(prompt, "User ID: user-1", "prompt should include user");
-  assertStringIncludes(
-    prompt,
-    "Sender: M-Money",
-    "prompt should include sender",
-  );
-  assertStringIncludes(
-    prompt,
-    sampleRawSms.sms_body,
-    "prompt should include the raw SMS body",
-  );
+Deno.test("buildPrompt minimizes financial facts before provider submission", () => {
+  const privateRecord = {
+    ...sampleRawSms,
+    user_id: "99990000-0000-4000-8000-000000000001",
+    sms_body:
+      "Payment of 10,000 RWF to Jane Private +250788123456 confirmed. TxId: ABC12345. Balance: 876543 RWF. Confidential unrelated reminder.",
+  };
+  const prompt = buildPrompt(privateRecord, [
+    "Jane Private +250788123456 learned rule",
+  ]);
+  for (
+    const privateValue of [
+      privateRecord.user_id,
+      "Jane Private",
+      "+250788123456",
+      "876543",
+      "Confidential unrelated reminder",
+      privateRecord.sms_body,
+    ]
+  ) {
+    assert(
+      !prompt.includes(privateValue),
+      "provider prompt must omit private value: " + privateValue,
+    );
+  }
+  assertStringIncludes(prompt, "ABC12345", "financial reference preserved");
+  assertStringIncludes(prompt, "10000", "transaction amount preserved");
   assertStringIncludes(
     prompt,
     "Return JSON only matching the schema.",
-    "prompt should enforce structured output",
+    "structured output required",
   );
 });
 

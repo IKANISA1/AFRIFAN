@@ -1,3 +1,8 @@
+import {
+  currentFootballSyncContext,
+  footballProviderFetch,
+} from "../_shared/football_sync_command.ts";
+import { readBoundedBytes } from "../_shared/http.ts";
 /**
  * download-logos — Downloads team/league logos from API-Football CDN
  * and uploads them to Supabase Storage for reliable hosting.
@@ -235,6 +240,11 @@ async function ensureBucket(client: SupabaseClient): Promise<void> {
   const { data } = await client.storage.getBucket(BUCKET);
   if (data) return;
 
+  if (currentFootballSyncContext()) {
+    throw new Error(
+      "The configured football-assets bucket is unavailable for manual dispatch.",
+    );
+  }
   // Create bucket
   await client.storage.createBucket(BUCKET, {
     public: true,
@@ -255,18 +265,26 @@ async function downloadAndUpload(
   contentType = "image/png",
 ): Promise<boolean> {
   // Download from source
-  const response = await fetch(sourceUrl);
+  const response = await footballProviderFetch(sourceUrl, {
+    signal: AbortSignal.timeout(10000),
+  });
   if (!response.ok) {
     throw new Error(
       `Download failed: ${response.status} ${response.statusText}`,
     );
   }
 
-  const blob = await response.blob();
+  const bytes = await readBoundedBytes(response, {
+    maxBytes: 2 * 1024 * 1024,
+    timeoutMs: 5000,
+  });
+  const blob = new Blob([new Uint8Array(bytes).buffer], { type: contentType });
   if (blob.size === 0) {
     return false;
   }
 
+  const context = currentFootballSyncContext();
+  if (context) return context.uploadLogo(client, storagePath, blob);
   // Upload to Supabase Storage
   const { error } = await client.storage
     .from(BUCKET)

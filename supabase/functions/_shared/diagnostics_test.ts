@@ -188,5 +188,5 @@ Deno.test("every deployed function diagnostic call uses a fixed catalog event an
       }
     }
   }
-  assertEquals(calls, 66);
+  assertEquals(calls, 61);
 });

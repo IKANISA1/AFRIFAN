@@ -55,6 +55,13 @@ export class FakeAdminClient {
       });
     }
 
+    if (name === "consume_edge_rate_limit") {
+      return Promise.resolve({
+        data: [{ allowed: true, retry_after_seconds: 0 }],
+        error: null,
+      });
+    }
+
     // Result stub only. The maintained SQL contract and lock-observed race
     // suite establish transaction semantics against actual Postgres.
     if (name === "confirm_club_commerce_payment") {

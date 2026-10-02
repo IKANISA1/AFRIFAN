@@ -1,15 +1,27 @@
+import { errorResponse } from "../_shared/response.ts";
+import { withEdgeBoundary } from "../_shared/response.ts";
+import { readBoundedJson } from "../_shared/http.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
-import { HttpError, requireClubAdminCaller } from "../_shared/auth.ts";
+import {
+  HttpError,
+  requireAuthenticatedCaller,
+  requireClubAdminCaller,
+} from "../_shared/auth.ts";
 import {
   corsHeaders,
   corsPreflightResponse,
   jsonError,
   jsonOk,
 } from "../_shared/response.ts";
-import { createAdminClient } from "../_shared/supabase.ts";
+import {
+  executeMediaUpload,
+  getMediaUploadStatus,
+  mediaSha256,
+  mediaUploadResponse,
+  releaseUnadmittedMediaUpload,
+} from "../_shared/admin_media_upload.ts";
 
-const bucket = "africlub-product-images";
 const maximumBytes = 5 * 1024 * 1024;
 const maximumBase64Characters = Math.ceil(maximumBytes / 3) * 4 + 8;
 const allowedKinds = new Set([
@@ -27,19 +39,22 @@ const mimeExtensions = new Map([
   ["image/webp", "webp"],
 ]);
 
-type AdminClient = ReturnType<typeof createAdminClient>;
 type Dependencies = {
+  requireAuthenticatedCaller: typeof requireAuthenticatedCaller;
   requireClubAdminCaller: typeof requireClubAdminCaller;
-  createAdminClient: () => AdminClient;
-  now: () => number;
-  randomId: () => string;
+  executeMediaUpload: typeof executeMediaUpload;
+  getMediaUploadStatus: typeof getMediaUploadStatus;
+  mediaUploadResponse: typeof mediaUploadResponse;
+  releaseUnadmittedMediaUpload: typeof releaseUnadmittedMediaUpload;
 };
 
 const defaultDependencies: Dependencies = {
+  requireAuthenticatedCaller,
   requireClubAdminCaller,
-  createAdminClient,
-  now: () => Date.now(),
-  randomId: () => crypto.randomUUID().slice(0, 8),
+  executeMediaUpload,
+  getMediaUploadStatus,
+  mediaUploadResponse,
+  releaseUnadmittedMediaUpload,
 };
 
 function requireClubId(value: unknown) {
@@ -101,20 +116,55 @@ export function createAdminUploadImageHandler(
 ) {
   const deps = { ...defaultDependencies, ...dependencies };
   return async (request: Request) => {
-    if (request.method === "OPTIONS") return corsPreflightResponse();
+    if (request.method === "OPTIONS") return corsPreflightResponse(request);
     if (request.method !== "POST") return jsonError("Method not allowed", 405);
 
     try {
-      let input: unknown;
-      try {
-        input = await request.json();
-      } catch {
-        throw new HttpError(400, "Request must contain a JSON object.");
-      }
+      const authorization = request.headers.get("authorization") ?? "";
+      const caller = await deps.requireAuthenticatedCaller(request);
+      const input = await readBoundedJson(request, {
+        maxBytes: maximumBase64Characters + 4096,
+      });
       if (input === null || typeof input !== "object" || Array.isArray(input)) {
         throw new HttpError(400, "Request must contain a JSON object.");
       }
       const body = input as Record<string, unknown>;
+      const operationId = body.operation_id;
+      if (
+        typeof operationId !== "string" ||
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/
+          .test(operationId)
+      ) {
+        throw new HttpError(400, "Original operation_id is required.");
+      }
+      if (body.mode === "status") {
+        const receipt = await deps.getMediaUploadStatus(
+          authorization,
+          operationId,
+          caller.userId,
+        );
+        if (!receipt) return jsonError("Image operation was not found.", 404);
+        await deps.requireClubAdminCaller(request, receipt.club_id);
+        return jsonOk(
+          deps.mediaUploadResponse(receipt),
+          receipt.status === "completed" ? 200 : 202,
+        );
+      }
+      if (body.mode === "release") {
+        const clubId = requireClubId(body.club_id);
+        await deps.requireClubAdminCaller(request, clubId);
+        return jsonOk(
+          await deps.releaseUnadmittedMediaUpload(
+            authorization,
+            operationId,
+            caller.userId,
+            clubId,
+          ),
+        );
+      }
+      if (body.mode !== undefined && body.mode !== "upload") {
+        throw new HttpError(400, "mode is invalid.");
+      }
       const clubId = requireClubId(body.club_id);
       await deps.requireClubAdminCaller(request, clubId);
       const kind = typeof body.kind === "string" ? body.kind.trim() : "";
@@ -124,29 +174,30 @@ export function createAdminUploadImageHandler(
       const mimeType = typeof body.mime_type === "string"
         ? body.mime_type.trim().toLowerCase()
         : "";
-      const extension = mimeExtensions.get(mimeType);
-      if (!extension) throw new HttpError(400, "mime_type is invalid.");
+      if (!mimeExtensions.has(mimeType)) {
+        throw new HttpError(400, "mime_type is invalid.");
+      }
       const bytes = decodeImage(body.image_data_base64, mimeType);
-      const storagePath =
-        `club-${clubId}/admin/${kind}/${deps.now()}-${deps.randomId()}.${extension}`;
-      const adminClient = deps.createAdminClient();
-      const { error } = await adminClient.storage.from(bucket).upload(
-        storagePath,
-        bytes,
-        { cacheControl: "31536000", contentType: mimeType, upsert: false },
+      const receipt = await deps.executeMediaUpload(authorization, {
+        operationId,
+        actorId: caller.userId,
+        clubId,
+        kind,
+        mimeType,
+        byteLength: bytes.length,
+        contentSha256: await mediaSha256(bytes),
+      }, bytes);
+      return jsonOk(
+        deps.mediaUploadResponse(receipt),
+        receipt.status === "completed"
+          ? 200
+          : receipt.status === "failed"
+          ? 409
+          : 202,
       );
-      if (error) throw new HttpError(500, "Storage upload failed.");
-      const { data } = adminClient.storage.from(bucket).getPublicUrl(
-        storagePath,
-      );
-      return jsonOk({
-        image_url: data.publicUrl,
-        storage_path: storagePath,
-        bucket,
-      });
     } catch (error) {
       if (error instanceof HttpError) {
-        return jsonError(error.message, error.status);
+        return errorResponse(error);
       }
       return jsonError("Image upload failed.", 500);
     }
@@ -155,16 +206,18 @@ export function createAdminUploadImageHandler(
 
 if (import.meta.main) {
   const handler = createAdminUploadImageHandler();
-  Deno.serve((request) =>
-    handler(request).then((response) =>
-      new Response(response.body, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: {
-          ...Object.fromEntries(response.headers.entries()),
-          ...corsHeaders(),
-        },
-      })
-    )
+  Deno.serve(
+    withEdgeBoundary((request) =>
+      handler(request).then((response) =>
+        new Response(response.body, {
+          status: response.status,
+          statusText: response.statusText,
+          headers: {
+            ...Object.fromEntries(response.headers.entries()),
+            ...corsHeaders(),
+          },
+        })
+      )
+    ),
   );
 }

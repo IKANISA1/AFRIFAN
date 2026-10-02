@@ -1,290 +1,171 @@
-import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-
 import {
-  corsPreflightResponse,
-  corsHeaders,
-  jsonOk,
+  errorResponse,
   jsonError,
+  jsonOk,
+  withEdgeBoundary,
 } from "../_shared/response.ts";
-import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
+import { createLifecycleAdminClient } from "../_shared/account_lifecycle_client.ts";
+import { enforceRateLimit } from "../_shared/rate_limit.ts";
+import { HttpError } from "../_shared/http_error.ts";
 import {
-  recordEdgeFunctionFailure,
-  recordOperationalHealthEvent,
-} from "../_shared/observability.ts";
-import { normalizePhone, PhoneValidationError } from "../_shared/phone.ts";
-import { createAdminClient } from "../_shared/supabase.ts";
+  readGatewaySignature,
+  refundGatewayProtocol,
+  uuid,
+  validateProjection,
+  verifySignedGatewayJson,
+} from "../_shared/trusted_sms.ts";
 import {
-  asString,
-  buildDeviceMessageKey,
-  isApprovedSender,
-  normalizeIngestionSource,
-  normalizeWhitespace,
-  parseReceivedAt,
-} from "./rules.ts";
+  validateRefundProjection,
+  validateRefundReceipt,
+} from "../_shared/refund_gateway.ts";
+import { handleRequest as processEvidence } from "../parse-momo-sms/index.ts";
 
-type SmsIngestRequest = {
-  sender?: string;
-  smsBody?: string;
-  smsReceivedAt?: string;
-  deviceMessageKey?: string;
-  ingestionSource?: string;
-  countryCode?: string;
+type Dependencies = {
+  createAdminClient: () => any;
+  enforceRateLimit: typeof enforceRateLimit;
+  processEvidence: typeof processEvidence;
 };
-
-const parseSkippedStatuses = new Set(["processing", "parsed", "ignored"]);
-
-function normalizeOptionalPhone(value: unknown): string | null {
-  const raw = asString(value);
-  if (!raw) {
-    return null;
-  }
-
+export async function handleRequest(
+  request: Request,
+  dependencies: Partial<Dependencies> = {},
+) {
+  const deps = {
+    createAdminClient: createLifecycleAdminClient,
+    enforceRateLimit,
+    processEvidence,
+    ...dependencies,
+  };
   try {
-    return normalizePhone(raw);
-  } catch (error) {
-    if (error instanceof PhoneValidationError) {
-      return null;
+    if (request.method !== "POST") return jsonError("Method not allowed", 405);
+    // Bearer authentication never grants this separate management capability.
+    const signature = readGatewaySignature(request);
+    if (Deno.env.get("TRUSTED_SMS_INGRESS_ENABLED") !== "true") {
+      throw new HttpError(503, "Trusted payment ingress is disabled.");
     }
-    throw error;
-  }
-}
-
-async function queueParseIfNeeded(options: {
-  rawSmsId: string;
-  parseStatus?: string | null;
-  userClient: any;
-}) {
-  const normalizedParseStatus = (options.parseStatus ?? "pending").trim()
-    .toLowerCase();
-  if (parseSkippedStatuses.has(normalizedParseStatus)) {
-    return false;
-  }
-
-  const result = await options.userClient.functions.invoke("parse-momo-sms", {
-    body: { rawSmsId: options.rawSmsId },
-  });
-
-  const payload = result.data;
-  if (result.error) {
-    throw result.error;
-  }
-  if (payload && typeof payload === "object" && "success" in payload) {
-    if ((payload as { success?: boolean }).success === false) {
-      throw new Error(
-        ((payload as { message?: string }).message ?? "Failed to parse SMS")
-          .toString(),
-      );
-    }
-  }
-
-  return true;
-}
-
-export async function handleRequest(request: Request) {
-  if (request.method === "OPTIONS") {
-    return corsPreflightResponse();
-  }
-
-  if (request.method !== "POST") {
-    return jsonError("Method not allowed", 405);
-  }
-
-  const validated = await validateRequest(request);
-  if (isErrorResponse(validated)) return validated;
-  const { userId, supabase: userClient } = validated;
-
-  const adminClient = createAdminClient();
-  const RATE_LIMIT_PER_HOUR = 100;
-
-  try {
-    const { data: { user }, error: userError } = await userClient.auth.getUser();
-    if (userError || !user) return jsonError("Authentication required", 401);
-
-    // --- Per-user rate limiting (G3) ---
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-    const { count: recentCount, error: countError } = await adminClient
-      .from("momo_sms_raw")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", userId)
-      .gte("created_at", oneHourAgo);
-    if (countError) {
-      throw countError;
-    }
-    if ((recentCount ?? 0) >= RATE_LIMIT_PER_HOUR) {
-      return jsonError(
-        "Rate limit exceeded. Max " + RATE_LIMIT_PER_HOUR + " SMS per hour.",
-        429,
-      );
-    }
-
-    const body = await request.json() as SmsIngestRequest;
-    const sender = asString(body.sender);
-    const smsBody = normalizeWhitespace(body.smsBody?.trim() ?? "");
-    if (!sender || smsBody.length === 0) {
-      return jsonError("sender and smsBody are required", 400);
-    }
-    if (!isApprovedSender(sender)) {
-      return jsonError("Unsupported SMS sender", 400);
-    }
-
-    const smsReceivedAt = parseReceivedAt(asString(body.smsReceivedAt));
-    const deviceMessageKey = await buildDeviceMessageKey({
-      sender,
-      smsBody,
-      smsReceivedAt,
-    });
-    const ingestionSource = normalizeIngestionSource(body.ingestionSource);
-    const countryCode = asString(body.countryCode)?.toUpperCase() || null;
-
-    const appUserResult = await adminClient
-      .from("user_private_contacts")
-      .select("momo_number, whatsapp_number")
-      .eq("user_id", userId)
-      .maybeSingle();
-    if (appUserResult.error) {
-      throw appUserResult.error;
-    }
-
-    const otpWhatsAppNumber = normalizeOptionalPhone(
-      appUserResult.data?.whatsapp_number ??
-        appUserResult.data?.momo_number ??
-        user.user_metadata?.phone ??
-        user.phone,
+    const admin = deps.createAdminClient();
+    const isRefund = signature.protocol === refundGatewayProtocol;
+    const key = await admin.rpc(
+      isRefund
+        ? "get_trusted_payment_refund_gateway_key"
+        : "get_trusted_sms_gateway_key",
+      {
+        p_key_id: signature.keyId,
+      },
     );
-
-    const existingResult = await adminClient
-      .from("momo_sms_raw")
-      .select("id, parse_status, otp_whatsapp_number")
-      .eq("user_id", userId)
-      .eq("device_message_key", deviceMessageKey)
-      .maybeSingle();
-    if (existingResult.error) {
-      throw existingResult.error;
+    if (key.error) throw key.error;
+    if (
+      !key.data || !uuid.test(key.data.gateway_id) ||
+      !Number.isSafeInteger(key.data.club_id) ||
+      !/^SMS_GATEWAY_KEY_[A-Z0-9_]{1,80}$/.test(key.data.secret_env_name)
+    ) throw new HttpError(401, "Gateway authentication required.");
+    const secret = Deno.env.get(key.data.secret_env_name);
+    const target = `${
+      (Deno.env.get("SUPABASE_URL") ?? "").replace(/\/$/, "")
+    }/functions/v1/sms-ingest`;
+    if (!secret) {
+      throw new HttpError(503, "Gateway authentication is unavailable.");
     }
-
-    if (existingResult.data) {
+    const verified = await verifySignedGatewayJson(
+      request,
+      signature,
+      secret,
+      target,
+    );
+    const projection = isRefund
+      ? validateRefundProjection(verified.data)
+      : validateProjection(verified.data);
+    await deps.enforceRateLimit(admin, key.data.gateway_id, "sms-ingest", {
+      maxRequests: 100,
+      windowSeconds: 3600,
+      clubId: key.data.club_id,
+    });
+    const admitted = await admin.rpc(
+      isRefund
+        ? "admit_trusted_payment_refund_evidence"
+        : "admit_trusted_sms_gateway_evidence",
+      {
+        p_key_id: signature.keyId,
+        p_nonce: signature.nonce,
+        p_created_at: new Date(signature.created * 1000).toISOString(),
+        p_expires_at: new Date(signature.expires * 1000).toISOString(),
+        p_body_digest: verified.digest,
+        p_projection: projection,
+      },
+    );
+    if (admitted.error) throw admitted.error;
+    if (
+      admitted.data?.event_id !== projection.eventId ||
+      (!isRefund && !uuid.test(admitted.data?.raw_sms_id ?? ""))
+    ) throw new Error("Invalid ingress receipt");
+    if (isRefund) {
+      const refund = validateRefundProjection(projection);
       if (
-        otpWhatsAppNumber &&
-        !asString(existingResult.data.otp_whatsapp_number)
-      ) {
-        await adminClient
-          .from("momo_sms_raw")
-          .update({ otp_whatsapp_number: otpWhatsAppNumber })
-          .eq("id", existingResult.data.id as string);
-      }
-
-      let parseQueued = false;
+        admitted.data.refund_id !== refund.refundId ||
+        !["pending", "settled", "failed", "unknown"].includes(
+          admitted.data.status,
+        ) || typeof admitted.data.completed !== "boolean" ||
+        typeof admitted.data.replay !== "boolean"
+      ) throw new Error("Invalid refund admission receipt");
+      let receipt: ReturnType<typeof validateRefundReceipt> | undefined;
       try {
-        parseQueued = await queueParseIfNeeded({
-          rawSmsId: existingResult.data.id as string,
-          parseStatus: asString(existingResult.data.parse_status),
-          userClient,
-        });
-      } catch (error) {
-        await recordOperationalHealthEvent(adminClient, {
-          service: "sms_ingest",
-          component: "sms-ingest",
-          status: "warn",
-          severity: "warning",
-          issueCode: "parse_queue_failed",
-          message: "SMS was already stored, but parse queueing failed.",
-          functionName: "sms-ingest",
-          userId,
-          subjectType: "momo_sms_raw",
-          subjectId: existingResult.data.id as string,
-          metadata: {
-            sender,
-            ingestion_source: ingestionSource,
-            error: error instanceof Error ? error.message : String(error),
-          },
-        });
+        const result = await admin.rpc(
+          "process_trusted_payment_refund_evidence",
+          { p_event_id: refund.eventId },
+        );
+        if (result.error) throw result.error;
+        receipt = validateRefundReceipt(result.data, refund);
+      } catch {
+        // Admission is durable. Unknown worker effects must recover through the same event.
       }
-
       return jsonOk({
         success: true,
-        rawSmsId: existingResult.data.id,
-        inserted: false,
-        parseQueued,
-        otpWhatsAppNumber: asString(existingResult.data.otp_whatsapp_number) ??
-          otpWhatsAppNumber,
-      });
+        eventId: refund.eventId,
+        refundId: refund.refundId,
+        instructionId: refund.instructionId,
+        currency: refund.currency,
+        accepted: true,
+        processing: receipt ? "processed" : "pending",
+        evidenceStatus: refund.settlementStatus,
+        ...(receipt
+          ? {
+            refundStatus: receipt.status,
+            confirmedAmount: receipt.confirmedAmount,
+            compensationId: receipt.compensationId,
+            replay: receipt.replay,
+          }
+          : {}),
+      }, 202);
     }
-
-    const insertResult = await adminClient
-      .from("momo_sms_raw")
-      .insert({
-        user_id: userId,
-        device_message_key: deviceMessageKey,
-        sender,
-        sms_body: smsBody,
-        sms_received_at: smsReceivedAt,
-        ingestion_source: ingestionSource,
-        otp_whatsapp_number: otpWhatsAppNumber,
-        country_code: countryCode,
-        parse_status: "pending",
-      })
-      .select("id")
-      .single();
-    if (insertResult.error) {
-      throw insertResult.error;
+    // The durable admission commits first. A lost/failed processing response is a
+    // pending receipt; redelivery of the same signed event resumes it.
+    let processing = "pending";
+    const processorSecret = Deno.env.get("SMS_PROCESSOR_SECRET") ?? "";
+    if (processorSecret) {
+      try {
+        const response = await deps.processEvidence(
+          new Request(`${target.replace(/sms-ingest$/, "parse-momo-sms")}`, {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+              "x-sms-processor-secret": processorSecret,
+            },
+            body: JSON.stringify({ eventId: projection.eventId }),
+          }),
+        );
+        if (response.ok) processing = "processed";
+      } catch {
+        // A durable admission remains pending when the worker cannot acknowledge.
+      }
     }
-
-    const rawSmsId = insertResult.data.id as string;
-    let parseQueued = false;
-    try {
-      parseQueued = await queueParseIfNeeded({
-        rawSmsId,
-        parseStatus: "pending",
-        userClient,
-      });
-    } catch (error) {
-      await recordOperationalHealthEvent(adminClient, {
-        service: "sms_ingest",
-        component: "sms-ingest",
-        status: "warn",
-        severity: "warning",
-        issueCode: "parse_queue_failed",
-        message: "SMS was stored, but parse queueing failed.",
-        functionName: "sms-ingest",
-        userId,
-        subjectType: "momo_sms_raw",
-        subjectId: rawSmsId,
-        metadata: {
-          sender,
-          ingestion_source: ingestionSource,
-          error: error instanceof Error ? error.message : String(error),
-        },
-      });
-    }
-
     return jsonOk({
       success: true,
-      rawSmsId,
-      inserted: true,
-      parseQueued,
-      otpWhatsAppNumber,
-    });
+      eventId: projection.eventId,
+      accepted: true,
+      processing,
+    }, 202);
   } catch (error) {
-    logDiagnostic("error", "sms_ingest_sms_ingest_failed", error);
-    await recordEdgeFunctionFailure(adminClient, {
-      functionName: "sms-ingest",
-      error,
-      issueCode: "sms_ingest_failed",
-    });
-    return jsonError(
-      error instanceof Error ? error.message : "Failed to ingest SMS",
-      500,
-    );
+    return errorResponse(error);
   }
 }
-
-if (import.meta.main) {
-  Deno.serve((req: Request) => handleRequest(req).then(
-    (res) => new Response(res.body, {
-      status: res.status,
-      statusText: res.statusText,
-      headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() },
-    })
-  ));
-}
+if (import.meta.main) Deno.serve(withEdgeBoundary(handleRequest));

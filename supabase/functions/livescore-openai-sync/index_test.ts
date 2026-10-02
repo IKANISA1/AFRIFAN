@@ -2,6 +2,7 @@ import { assertEquals } from "jsr:@std/assert";
 import { assertFalse } from "jsr:@std/assert";
 
 import { createLiveScoreOpenAiSyncHandler } from "./index.ts";
+import { requireGlobalAdminCaller } from "../_shared/auth.ts";
 
 const sourceRow = {
   id: "source-1",
@@ -11,7 +12,9 @@ const sourceRow = {
   match_aliases: ["Premier League", "EPL"],
   country_aliases: ["England"],
   external_competition_ids: ["premier-league"],
-  source_urls: ["https://www.livescore.com/en/football/england/premier-league/"],
+  source_urls: [
+    "https://www.livescore.com/en/football/england/premier-league/",
+  ],
   priority: 10,
 };
 
@@ -64,38 +67,71 @@ function fakeSourceAdminClient(rows = [sourceRow]) {
 
 for (const providerError of [false, true]) {
   Deno.test(
-    `LiveScore stored diagnostics exclude raw provider ${providerError ? "errors" : "notes and access issues"} while preserving safe counters`,
-    withEnv({ LIVESCORE_SYNC_SECRET: "cron-secret", OPENAI_API_KEY: "test-openai-key" }, async () => {
-      const privateValue = "person@example.test +250788123456 https://private.invalid/?token=secret";
+    `LiveScore stored diagnostics exclude raw provider ${
+      providerError ? "errors" : "notes and access issues"
+    } while preserving safe counters`,
+    withEnv({
+      LIVESCORE_SYNC_SECRET: "cron-secret",
+      OPENAI_API_KEY: "test-openai-key",
+    }, async () => {
+      const privateValue =
+        "person@example.test +250788123456 https://private.invalid/?token=secret";
       const rows: Record<string, unknown>[] = [];
       const sources = fakeSourceAdminClient();
       const admin = {
         from(table: string) {
-          if (table === "football_sync_log") return { insert(value: Record<string, unknown>) { rows.push(value); return Promise.resolve({ error: null }); } };
+          if (table === "football_sync_log") {
+            return {
+              insert(value: Record<string, unknown>) {
+                rows.push(value);
+                return Promise.resolve({ error: null });
+              },
+            };
+          }
           return sources.from(table);
         },
       };
       const handler = createLiveScoreOpenAiSyncHandler({
         createAdminClient: () => admin as never,
         createFootballAdminClient: () => ({}) as never,
-        requireAdminCaller: async () => ({} as never),
-        fetch: async () => providerError
-          ? Response.json({ message: privateValue }, { status: 503 })
-          : Response.json({ output_text: JSON.stringify({ fixtures: [], source_notes: [privateValue], access_issues: [privateValue] }) }),
+        requireGlobalAdminCaller: async () => ({} as never),
+        fetch: async () =>
+          providerError
+            ? Response.json({ message: privateValue }, { status: 503 })
+            : Response.json({
+              output_text: JSON.stringify({
+                fixtures: [],
+                source_notes: [privateValue],
+                access_issues: [privateValue],
+              }),
+            }),
       });
-      const response = await handler(new Request("https://example.test/livescore-openai-sync", {
-        method: "POST", headers: { "content-type": "application/json", "x-cron-secret": "cron-secret" }, body: JSON.stringify({ mode: "sync", dry_run: false }),
-      }));
-      assertEquals(response.status, providerError ? 500 : 200);
+      const response = await handler(
+        new Request("https://example.test/livescore-openai-sync", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            "x-cron-secret": "cron-secret",
+          },
+          body: JSON.stringify({ mode: "sync", dry_run: false }),
+        }),
+      );
+      assertEquals(response.status, providerError ? 502 : 200);
       assertEquals(rows.length, 1);
       assertFalse(JSON.stringify(rows).includes(privateValue));
       const metadata = rows[0].metadata as Record<string, unknown>;
-      assertEquals(metadata.source_provider, "livescore"); assertEquals(metadata.mode, "sync");
+      assertEquals(metadata.source_provider, "livescore");
+      assertEquals(metadata.mode, "sync");
       assertEquals(metadata.allowed_competitions_loaded, 1);
       assertEquals(metadata.error_count, providerError ? 1 : 0);
       assertEquals(metadata.source_note_count, providerError ? 0 : 1);
       assertEquals(metadata.access_issue_count, providerError ? 0 : 1);
-      assertEquals(rows[0].error_message, providerError ? "Football synchronization completed with errors." : null);
+      assertEquals(
+        rows[0].error_message,
+        providerError
+          ? "Football synchronization completed with errors."
+          : null,
+      );
     }),
   );
 }
@@ -113,7 +149,7 @@ Deno.test(
       const handler = createLiveScoreOpenAiSyncHandler({
         createAdminClient: () => fakeSourceAdminClient() as never,
         createFootballAdminClient: () => ({}) as never,
-        requireAdminCaller: async () => {
+        requireGlobalAdminCaller: async () => {
           throw new Error("admin auth fallback should not be called");
         },
         fetch: async (_url, init) => {
@@ -205,7 +241,7 @@ Deno.test(
       const handler = createLiveScoreOpenAiSyncHandler({
         createAdminClient: () => fakeSourceAdminClient() as never,
         createFootballAdminClient: () => ({}) as never,
-        requireAdminCaller: async () => {
+        requireGlobalAdminCaller: async () => {
           throw new Error("admin auth fallback should not be called");
         },
         fetch: async () =>
@@ -270,7 +306,7 @@ Deno.test(
       const handler = createLiveScoreOpenAiSyncHandler({
         createAdminClient: () => fakeSourceAdminClient([]) as never,
         createFootballAdminClient: () => ({}) as never,
-        requireAdminCaller: async () => {
+        requireGlobalAdminCaller: async () => {
           adminAuthCalled = true;
           return {} as never;
         },
@@ -280,6 +316,7 @@ Deno.test(
       const response = await handler(
         new Request("https://example.test/livescore-openai-sync", {
           method: "POST",
+          headers: { "content-type": "application/json" },
           body: JSON.stringify({ mode: "preview" }),
         }),
       );
@@ -292,3 +329,55 @@ Deno.test(
     },
   ),
 );
+
+for (const role of ["club_admin", "club_moderator", "supporter"]) {
+  Deno.test(`actual AI feed synchronization denies ${role} without service/provider work`, async () => {
+    const handler = createLiveScoreOpenAiSyncHandler({
+      requireGlobalAdminCaller: (request) =>
+        requireGlobalAdminCaller(request, {
+          createUserClient: () => ({
+            auth: {
+              getUser: async () => ({
+                data: {
+                  user: { id: "actor-1", app_metadata: { role, club_id: 7 } },
+                },
+                error: null,
+              }),
+            },
+          }),
+          createAdminClient: () => ({
+            from: () => ({
+              select: () => ({
+                eq: () => ({
+                  eq: async () => ({
+                    data: [{ role, club_id: 7, is_active: true }],
+                    error: null,
+                  }),
+                }),
+              }),
+            }),
+          }),
+        }),
+      createAdminClient: () => {
+        throw new Error("service work must not begin");
+      },
+      createFootballAdminClient: () => {
+        throw new Error("fixture work must not begin");
+      },
+      fetch: () => {
+        throw new Error("paid provider work must not begin");
+      },
+    });
+    const response = await handler(
+      new Request("https://example.test/livescore-openai-sync", {
+        method: "POST",
+        headers: {
+          authorization: "Bearer staff-token",
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ mode: "sync", club_id: 7 }),
+      }),
+    );
+    assertEquals(response.status, 403);
+  });
+}

@@ -1,3 +1,5 @@
+import { readBoundedText } from "../_shared/http.ts";
+import { HttpError } from "../_shared/http_error.ts";
 import { verifyStandardWebhook } from "../_shared/standard_webhook.ts";
 
 type SendOtpTemplate = (options: {
@@ -60,9 +62,7 @@ function hookError(
         http_code: status,
         message,
       },
-      ...(options.retryable == null
-        ? {}
-        : { retryable: options.retryable }),
+      ...(options.retryable == null ? {} : { retryable: options.retryable }),
       ...(options.changeConfirmed == null
         ? {}
         : { change_confirmed: options.changeConfirmed }),
@@ -106,17 +106,16 @@ async function deliverWithTimeout({
 }
 
 export function createSendSmsHandler(dependencies: SendSmsDependencies) {
-  const deliveryTimeoutMs =
-    dependencies.deliveryTimeoutMs ?? defaultDeliveryTimeoutMs;
-  const nowSeconds =
-    dependencies.nowSeconds ?? (() => Math.floor(Date.now() / 1000));
+  const deliveryTimeoutMs = dependencies.deliveryTimeoutMs ??
+    defaultDeliveryTimeoutMs;
+  const nowSeconds = dependencies.nowSeconds ??
+    (() => Math.floor(Date.now() / 1000));
 
   return async function handleSendSms(request: Request) {
     if (request.method !== "POST") {
       return hookError("Method not allowed.", 405, "METHOD_NOT_ALLOWED");
     }
 
-    const rawPayload = await request.text();
     const hookSecret = dependencies.getHookSecret()?.trim();
     if (!hookSecret) {
       return hookError(
@@ -127,6 +126,20 @@ export function createSendSmsHandler(dependencies: SendSmsDependencies) {
       );
     }
 
+    let rawPayload: string;
+    try {
+      rawPayload = await readBoundedText(request, {
+        maxBytes: 8192,
+        timeoutMs: 3000,
+      });
+    } catch (error) {
+      return hookError(
+        "Invalid Send SMS Hook payload.",
+        error instanceof HttpError ? error.status : 400,
+        "INVALID_SEND_SMS_PAYLOAD",
+        { retryable: false, changeConfirmed: false },
+      );
+    }
     const verified = await verifyStandardWebhook({
       payload: rawPayload,
       headers: request.headers,
@@ -154,12 +167,12 @@ export function createSendSmsHandler(dependencies: SendSmsDependencies) {
       );
     }
 
-    const phone =
-      typeof payload.user?.phone === "string"
-        ? payload.user.phone.trim()
-        : "";
-    const otp =
-      typeof payload.sms?.otp === "string" ? payload.sms.otp.trim() : "";
+    const phone = typeof payload.user?.phone === "string"
+      ? payload.user.phone.trim()
+      : "";
+    const otp = typeof payload.sms?.otp === "string"
+      ? payload.sms.otp.trim()
+      : "";
     if (!phonePattern.test(phone) || !otpPattern.test(otp)) {
       return hookError(
         "Invalid Send SMS Hook payload.",

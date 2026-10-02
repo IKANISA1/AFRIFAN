@@ -3,27 +3,26 @@
  * Centralizes JWT club_id extraction and request validation per RULES.md §6.3.
  */
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
-import { jsonForbidden, jsonUnauthorized } from "./response.ts";
-import { getSupabasePublishableKey, getSupabaseUrl } from "./supabase.ts";
+import { jsonError, jsonForbidden, jsonUnauthorized } from "./response.ts";
+import {
+  assertVerifiedStaffStepUp,
+  hasActiveAdminAssignment,
+  HttpError,
+  metadataBool,
+} from "./auth.ts";
+import { fetchBoundedJson } from "./http.ts";
+import {
+  createAdminClient,
+  getSupabasePublishableKey,
+  getSupabaseUrl,
+} from "./supabase.ts";
 
 export interface ValidatedRequest {
   userId: string;
+  isAnonymous: boolean;
   clubId: string | null;
   roles: string[];
   supabase: ReturnType<typeof createClient> | any;
-}
-
-const GLOBAL_ADMIN_ROLES = new Set(["admin", "super_admin"]);
-const CLUB_ADMIN_ROLES = new Set(["club_admin", "club_moderator"]);
-
-function metadataBool(value: unknown): boolean {
-  if (typeof value === "boolean") return value;
-  if (typeof value === "number") return value !== 0;
-  if (typeof value === "string") {
-    const normalized = value.trim().toLowerCase();
-    return normalized === "true" || normalized === "1";
-  }
-  return false;
 }
 
 function normalizeRole(value: unknown): string | null {
@@ -77,28 +76,9 @@ export function extractTrustedClubId(
   }
   if (typeof value !== "string") return null;
   const trimmed = value.trim();
-  return /^[1-9][0-9]*$/.test(trimmed) ? trimmed : null;
-}
-
-function hasMetadataAdminAccess(
-  appMetadata: Record<string, unknown>,
-  clubId?: number | string | null,
-): boolean {
-  const role = normalizeRole(appMetadata["role"]);
-  if (
-    metadataBool(appMetadata["is_admin"]) ||
-    metadataBool(appMetadata["admin"]) ||
-    (role != null && GLOBAL_ADMIN_ROLES.has(role))
-  ) {
-    return true;
-  }
-
-  if (role != null && CLUB_ADMIN_ROLES.has(role)) {
-    if (clubId == null) return true;
-    return String(appMetadata["club_id"]) === String(clubId);
-  }
-
-  return false;
+  return /^[1-9][0-9]*$/.test(trimmed) && Number.isSafeInteger(Number(trimmed))
+    ? trimmed
+    : null;
 }
 
 /**
@@ -127,23 +107,44 @@ export async function validateRequest(
     global: { headers: { Authorization: authHeader } },
   });
 
-  const authResponse = await fetch(`${supabaseUrl}/auth/v1/user`, {
-    headers: {
-      Authorization: authHeader,
-      apikey: supabasePublishableKey,
-    },
-  });
-
-  if (!authResponse.ok) {
+  let authResponseOk = false;
+  let user: any;
+  try {
+    user = await fetchBoundedJson(
+      async (input, init) => {
+        const response = await fetch(input, init);
+        authResponseOk = response.ok;
+        return response;
+      },
+      `${supabaseUrl}/auth/v1/user`,
+      {
+        headers: {
+          Authorization: authHeader,
+          apikey: supabasePublishableKey,
+        },
+      },
+      { maxBytes: 128 * 1024, timeoutMs: 10_000, acceptErrorResponse: true },
+    );
+  } catch (_) {
+    return jsonError("Sign-in verification is unavailable.", 503);
+  }
+  if (!authResponseOk) {
     return jsonUnauthorized("Invalid or expired token");
   }
-
-  const user = await authResponse.json().catch(() => null);
   if (!user || typeof user !== "object" || typeof user.id !== "string") {
     return jsonUnauthorized("Invalid or expired token");
   }
 
   const appMetadata = (user.app_metadata ?? {}) as Record<string, unknown>;
+  if (
+    ["deletion_pending", "failed", "completed", "closed"].includes(
+      String(appMetadata["account_lifecycle"] ?? ""),
+    )
+  ) {
+    return jsonForbidden(
+      "Account closure is pending. Access has been revoked.",
+    );
+  }
   // User metadata is user-editable and must never establish tenant scope.
   const clubId = extractTrustedClubId(appMetadata);
 
@@ -153,26 +154,49 @@ export async function validateRequest(
 
   const roles = extractRoles(appMetadata);
 
-  if (options?.requireAdmin) {
-    const isAppAdmin = hasMetadataAdminAccess(appMetadata);
-    if (!isAppAdmin) {
-      // For global admin, we would normally check admin_role_assignments if not in metadata,
-      // but if the JWT doesn't have it, we return forbidden. It expects the JWT to be up to date.
-      return jsonForbidden("Admin access required.");
+  if (options?.requireAdmin || options?.requireClubAdmin !== undefined) {
+    const scopedClub = options.requireClubAdmin === undefined
+      ? undefined
+      : extractTrustedClubId({ club_id: options.requireClubAdmin });
+    if (scopedClub === null) return jsonForbidden("Invalid club identifier.");
+    try {
+      // The assignment store is authoritative. JWT roles are presentation hints
+      // and may remain stale after a staff grant is revoked.
+      const adminClient = createAdminClient();
+      if (
+        options.requireAdmin &&
+        !await hasActiveAdminAssignment(adminClient, user.id)
+      ) {
+        return jsonForbidden("Admin access required.");
+      }
+      if (
+        scopedClub !== undefined &&
+        !await hasActiveAdminAssignment(
+          adminClient,
+          user.id,
+          Number(scopedClub),
+        )
+      ) {
+        return jsonForbidden("Club admin access required.");
+      }
+      assertVerifiedStaffStepUp(authHeader, user.id, user.is_anonymous);
+    } catch (error) {
+      return jsonError(
+        error instanceof HttpError
+          ? error.message
+          : "Failed to verify admin access.",
+        error instanceof HttpError ? error.status : 503,
+      );
     }
   }
 
-  if (options?.requireClubAdmin !== undefined) {
-    const isClubAdmin = hasMetadataAdminAccess(
-      appMetadata,
-      options.requireClubAdmin,
-    );
-    if (!isClubAdmin) {
-      return jsonForbidden("Club admin access required.");
-    }
-  }
-
-  return { userId: user.id, clubId, roles, supabase };
+  return {
+    userId: user.id,
+    isAnonymous: user.is_anonymous === true,
+    clubId,
+    roles,
+    supabase,
+  };
 }
 
 /** Type guard: checks if validateRequest returned an error Response. */

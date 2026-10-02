@@ -1,3 +1,4 @@
+import { withEdgeBoundary } from "../_shared/response.ts";
 /**
  * Supabase Auth phone OTP delivery hook.
  *
@@ -26,10 +27,9 @@ import { createSendSmsHandler } from "./handler.ts";
 
 export const handleRequest = createSendSmsHandler({
   sendOtpTemplate,
-  getHookSecret: () =>
-    Deno.env.get("AUTH_HOOK_SEND_SMS_SECRET")?.trim(),
+  getHookSecret: () => Deno.env.get("AUTH_HOOK_SEND_SMS_SECRET")?.trim(),
 });
 
 if (import.meta.main) {
-  Deno.serve(handleRequest);
+  Deno.serve(withEdgeBoundary(handleRequest));
 }

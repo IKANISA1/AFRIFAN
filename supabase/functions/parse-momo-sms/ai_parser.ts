@@ -1,3 +1,4 @@
+import { readBoundedJson } from "../_shared/http.ts";
 export type AiProvider = "openai" | "gemini";
 
 export type RawSmsRecord = {
@@ -182,37 +183,80 @@ export function getModel(provider: AiProvider): string {
   return Deno.env.get("OPENAI_SMS_PARSE_MODEL") ?? "gpt-4o-mini";
 }
 
+/** Send only locally extracted financial facts. Names, phone numbers, account
+ * balances, arbitrary messages and application identifiers stay on our server. */
+export function minimizeSmsForAi(record: RawSmsRecord): string {
+  const body = record.sms_body.replace(
+    /(?:available |new |account |current )?balance\s*(?:is|of|:)?\s*(?:RWF|FRW|Rfr)?\s*[\d,.]+\s*(?:RWF|FRW|Rfr)?/ig,
+    "[omitted]",
+  );
+  const reference =
+    record.detected_tx_id?.match(/^[A-Za-z0-9_-]{4,64}$/)?.[0] ??
+      body.match(
+        /(?:txid|transaction(?: id)?|reference|ref)\s*[:#-]?\s*([A-Za-z0-9_-]{4,64})/i,
+      )?.[1] ?? null;
+  const amount = (() => {
+    const candidate = body.match(
+      /(?:RWF|FRW|Rfr)\s*([\d,]+)|([\d,]+)\s*(?:RWF|FRW|Rfr)/i,
+    );
+    return candidate
+      ? Number((candidate[1] ?? candidate[2]).replaceAll(",", ""))
+      : null;
+  })();
+  const fee =
+    body.match(/(?:fee|charge)\s*(?:of|:)?\s*(?:RWF|FRW|Rfr)?\s*([\d,]+)/i)?.[1]
+      ?.replaceAll(",", "") ?? null;
+  const date =
+    body.match(/\b\d{4}-\d{2}-\d{2}\b|\b\d{2}[/.-]\d{2}[/.-]\d{4}\b/)?.[0] ??
+      null;
+  const time = body.match(/\b\d{2}:\d{2}(?::\d{2})?\b/)?.[0] ?? null;
+  const merchantCode = body.match(
+    /(?:merchant|code|till)\s*(?:number|no\.?|:)?\s*(\d{3,8})(?!\d)/i,
+  )?.[1] ?? null;
+  const categories = [
+    "payment",
+    "transfer",
+    "received",
+    "sent",
+    "deposit",
+    "withdrawal",
+    "cash out",
+    "airtime",
+    "salary",
+    "loan",
+    "refund",
+  ];
+  const category = categories.filter((word) =>
+    body.toLowerCase().includes(word)
+  );
+  return JSON.stringify({
+    reference,
+    amount: Number.isSafeInteger(amount) ? amount : null,
+    currency: "RWF",
+    fee_amount: fee,
+    date,
+    time,
+    merchant_code: merchantCode,
+    transaction_terms: category,
+    provider:
+      record.provider === "mtn_rwanda" || record.provider === "airtel_rwanda"
+        ? record.provider
+        : "unknown",
+  });
+}
 export function buildPrompt(
   record: RawSmsRecord,
-  lessons: string[] = [],
+  _lessons: string[] = [],
 ): string {
   return [
-    "You are an expert financial analyst parsing Mobile Money SMS into normalized records.",
-    "Your goal is 100% accuracy for lending risk assessment.",
-    "Extract exact fields. Do not guess or hallucinate hidden data.",
-    "If a field is missing, return null.",
-    "",
-    "### LEARNED RULES FROM USER FEEDBACK",
-    ...(lessons.length > 0 ? lessons : ["No specific overrides learned yet."]),
-    "",
-    "### CONTEXT",
-    `User ID: ${record.user_id}`,
-    `Sender: ${record.sender}`,
-    `Provider: ${record.provider ?? "unknown"}`,
-    `Country: ${record.country_code ?? "unknown"}`,
-    `Timestamp: ${record.sms_received_at}`,
-    "",
-    "### SMS BODY",
-    record.sms_body,
-    "",
-    "### EXTRACTION RULES",
-    "1. MATHEMATICAL INTEGRITY: Ensure (amount + fee_amount) logic is consistent with the text.",
-    "2. CATEGORIZATION: Use precise categories (salary, merchant_payment, cash_out, airtime, loan_repayment).",
-    "3. BUCKETING: Assign to income, expense, savings, transfer, loan, or fees.",
-    "4. DATETIME: Extract tx_date as YYYY-MM-DD and tx_time as HH:MM:SS.",
-    "5. CONFIDENCE: Set confidence to < 0.8 if the text is ambiguous or truncated.",
-    "6. SUMMARY: Provide a concise user-facing summary in one sentence.",
-    "",
+    "Parse these locally extracted Mobile Money financial facts into the schema.",
+    "Do not invent missing facts. Missing or ambiguous fields must be null.",
+    "Names, personal numbers and account balances have deliberately been omitted. Return null for these fields.",
+    "Use reference as momo_tx_id and preserve the supplied amount and merchant_code exactly.",
+    "Choose direction/category from transaction_terms. Set confidence below 0.8 when ambiguous.",
+    "Summaries may mention only transaction type, amount and currency.",
+    "### MINIMIZED FINANCIAL FACTS",
+    minimizeSmsForAi(record),
     "Return JSON only matching the schema.",
   ].join("\n");
 }
@@ -237,7 +281,10 @@ async function fetchAiJson(
           ...init,
           signal: controller.signal,
         });
-        const responseBody = await response.json();
+        const responseBody = await readBoundedJson(response, {
+          maxBytes: 128 * 1024,
+          timeoutMs,
+        });
         return { response, responseBody };
       })(),
       new Promise<never>((_resolve, reject) => {

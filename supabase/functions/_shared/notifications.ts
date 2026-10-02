@@ -181,6 +181,12 @@ async function queryUserIds(
   if (error) {
     throw new HttpError(500, failureMessage);
   }
+  if (Array.isArray(data) && data.length > 500) {
+    throw new HttpError(
+      413,
+      "Notification audience exceeds the delivery budget.",
+    );
+  }
   return collectUserIds(data);
 }
 
@@ -303,7 +309,7 @@ export async function selectRecipientUserIds(
       .from("user_notification_settings")
       .select("user_id")
       .eq("club_id", clubId)
-      .eq("push_enabled", true),
+      .eq("push_enabled", true).limit(501),
     "Failed to load notification settings recipients.",
   );
 
@@ -311,7 +317,7 @@ export async function selectRecipientUserIds(
     adminClient
       .from("user_fcm_tokens")
       .select("user_id")
-      .eq("club_id", clubId),
+      .eq("club_id", clubId).limit(501),
     "Failed to load registered push tokens.",
   );
 
@@ -328,7 +334,7 @@ export async function selectRecipientUserIds(
           .from("fan_memberships")
           .select("user_id")
           .eq("club_id", clubId)
-          .eq("tier", audience.tier ?? "fan"),
+          .eq("tier", audience.tier ?? "fan").limit(501),
         "Failed to load membership tier recipients.",
       );
       return intersection(enabledUsers, tokenUsers, tierUsers);
@@ -339,7 +345,7 @@ export async function selectRecipientUserIds(
           .from("group_members")
           .select("user_id")
           .eq("club_id", clubId)
-          .eq("group_id", audience.groupId ?? ""),
+          .eq("group_id", audience.groupId ?? "").limit(501),
         "Failed to load group recipients.",
       );
       return intersection(enabledUsers, tokenUsers, groupUsers);
@@ -372,6 +378,7 @@ export function audienceFromRecord(
 export async function dispatchNotification(
   adminClient: AdminClientLike,
   notification: NotificationRecord,
+  options: { deadlineAt?: number } = {},
 ): Promise<NotificationDispatchResult> {
   const audience = audienceFromRecord(notification);
   const recipientUserIds = await selectRecipientUserIds(
@@ -399,8 +406,14 @@ export async function dispatchNotification(
   let failedCount = 0;
   let cleanedTokens = 0;
   const errors: string[] = [];
+  const deadlineAt = options.deadlineAt ?? Date.now() + 45000;
 
   for (let index = 0; index < recipientUserIds.length; index += 10) {
+    if (Date.now() >= deadlineAt) {
+      failedUserCount += recipientUserIds.length - index;
+      errors.push("Notification delivery timed out.");
+      break;
+    }
     const batch = recipientUserIds.slice(index, index + 10);
     const batchResults = await Promise.all(
       batch.map(async (userId) => {
@@ -423,13 +436,14 @@ export async function dispatchNotification(
                 ? { audience_group_id: audience.groupId }
                 : {}),
             },
+            { deadlineAt },
           );
           return { userId, result, error: null };
         } catch (error) {
           return {
             userId,
             result: null,
-            error: error instanceof Error ? error.message : String(error),
+            error: "Notification delivery failed.",
           };
         }
       }),

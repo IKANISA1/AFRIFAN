@@ -1,13 +1,15 @@
-import { createAdminClient, createUserClient } from "./supabase.ts";
+import { createAdminClient } from "./supabase.ts";
+import { createLifecycleUserClient } from "./account_lifecycle_client.ts";
 
 type AuthUserLike = {
   id: string;
   app_metadata?: Record<string, unknown> | null;
+  is_anonymous?: boolean;
 };
 
 type UserClientLike = {
   auth: {
-    getUser(): Promise<{
+    getUser(jwt?: string): Promise<{
       data: { user: AuthUserLike | null };
       error: unknown;
     }>;
@@ -16,14 +18,8 @@ type UserClientLike = {
 
 type AdminClientLike = unknown;
 
-export class HttpError extends Error {
-  constructor(
-    public readonly status: number,
-    message: string,
-  ) {
-    super(message);
-  }
-}
+import { HttpError } from "./http_error.ts";
+export { HttpError } from "./http_error.ts";
 
 export type AuthenticatedCaller = {
   user: AuthUserLike;
@@ -44,7 +40,7 @@ type AdminAuthDependencies = AuthDependencies & {
 function defaultAuthDependencies(): AuthDependencies {
   return {
     createUserClient: (authorization) =>
-      createUserClient(authorization) as unknown as UserClientLike,
+      createLifecycleUserClient(authorization) as unknown as UserClientLike,
   };
 }
 
@@ -81,17 +77,20 @@ function normalizeRole(value: unknown): string | null {
 }
 
 function normalizeClubId(value: unknown): number | null {
-  if (typeof value === "number" && Number.isFinite(value)) {
-    return Math.trunc(value);
+  if (typeof value === "number" && Number.isSafeInteger(value) && value > 0) {
+    return value;
   }
   if (typeof value === "string") {
-    const parsed = Number.parseInt(value.trim(), 10);
-    return Number.isFinite(parsed) ? parsed : null;
+    const trimmed = value.trim();
+    const parsed = /^[1-9][0-9]*$/.test(trimmed) ? Number(trimmed) : NaN;
+    return Number.isSafeInteger(parsed) ? parsed : null;
   }
   return null;
 }
 
-function appMetadataClubId(appMetadata: Record<string, unknown>): number | null {
+function appMetadataClubId(
+  appMetadata: Record<string, unknown>,
+): number | null {
   return normalizeClubId(appMetadata["club_id"]);
 }
 
@@ -118,7 +117,7 @@ function hasMetadataAdminAccess(
   return false;
 }
 
-async function hasActiveAdminAssignment(
+export async function hasActiveAdminAssignment(
   adminClient: AdminClientLike,
   userId: string,
   clubId?: number,
@@ -127,7 +126,7 @@ async function hasActiveAdminAssignment(
     typeof createAdminClient
   >)
     .from("admin_role_assignments")
-    .select("role, club_id, is_active")
+    .select("role, club_id, is_active, revoked_at")
     .eq("user_id", userId)
     .eq("is_active", true);
 
@@ -137,6 +136,7 @@ async function hasActiveAdminAssignment(
 
   const rows = Array.isArray(data) ? data : [];
   for (const row of rows) {
+    if (row["is_active"] !== true || row["revoked_at"] != null) continue;
     const role = normalizeRole(row["role"]);
     if (role == null) {
       continue;
@@ -151,9 +151,6 @@ async function hasActiveAdminAssignment(
     ) {
       return true;
     }
-    if (clubId == null && CLUB_ADMIN_ROLES.has(role)) {
-      return true;
-    }
   }
 
   return false;
@@ -164,6 +161,72 @@ export function getAuthorizationHeader(request: Request): string | null {
     request.headers.get("Authorization");
   const trimmed = value?.trim();
   return trimmed && trimmed.length > 0 ? trimmed : null;
+}
+
+function bearerJwt(authorization: string): string {
+  const matched = /^Bearer ([A-Za-z0-9_.-]{1,16384})$/.exec(authorization);
+  if (!matched) throw new HttpError(401, "Authentication required.");
+  return matched[1];
+}
+
+/**
+ * Decode only the exact bearer JWT already validated by provider getUser, after
+ * current assignment authorization. This is an additional denial check, never
+ * a JWT signature verifier or a substitute for provider identity verification.
+ */
+export function assertVerifiedStaffStepUp(
+  authorization: string,
+  verifiedUserId: string,
+  providerIsAnonymous?: boolean,
+): void {
+  const denied = () =>
+    new HttpError(403, "Verify your authenticator code to continue.");
+  try {
+    const jwt = bearerJwt(authorization);
+    const parts = jwt.split(".");
+    if (
+      parts.length !== 3 || parts.some((part) =>
+        !/^[A-Za-z0-9_-]+$/.test(part)
+      ) || parts[1].length > 8192
+    ) throw denied();
+    const payload = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const bytes = Uint8Array.from(
+      atob(payload.padEnd(Math.ceil(payload.length / 4) * 4, "=")),
+      (character) => character.charCodeAt(0),
+    );
+    const claims: unknown = JSON.parse(
+      new TextDecoder("utf-8", { fatal: true }).decode(bytes),
+    );
+    if (!claims || typeof claims !== "object" || Array.isArray(claims)) {
+      throw denied();
+    }
+    const c = claims as Record<string, unknown>;
+    const now = Math.floor(Date.now() / 1000);
+    if (
+      c.sub !== verifiedUserId || c.role !== "authenticated" ||
+      c.is_anonymous !== false || providerIsAnonymous === true ||
+      c.aal !== "aal2" || !Number.isSafeInteger(c.exp) ||
+      Number(c.exp) <= now || !Array.isArray(c.amr) || c.amr.length === 0 ||
+      c.amr.length > 16
+    ) throw denied();
+    const methods = c.amr as Record<string, unknown>[];
+    if (
+      methods.some((method) =>
+        !method || typeof method !== "object" || Array.isArray(method) ||
+        typeof method.method !== "string" ||
+        !Number.isSafeInteger(method.timestamp) || Number(method.timestamp) < 0
+      )
+    ) throw denied();
+    if (
+      !methods.some((method) =>
+        (method.method === "totp" || method.method === "mfa/totp") &&
+        Number(method.timestamp) >= now - 300 &&
+        Number(method.timestamp) <= now + 30
+      )
+    ) throw denied();
+  } catch {
+    throw denied();
+  }
 }
 
 export async function requireAuthenticatedCaller(
@@ -184,13 +247,23 @@ export async function requireAuthenticatedCaller(
   const {
     data: { user },
     error,
-  } = await userClient.auth.getUser();
+  } = await userClient.auth.getUser(bearerJwt(authorization));
 
-  if (error || !user) {
+  if (error || !user || typeof user.id !== "string" || !user.id) {
     throw new HttpError(401, "Authentication required.");
   }
 
   const appMetadata = (user.app_metadata ?? {}) as Record<string, unknown>;
+  if (
+    ["deletion_pending", "failed", "completed", "closed"].includes(
+      String(appMetadata["account_lifecycle"] ?? ""),
+    )
+  ) {
+    throw new HttpError(
+      403,
+      "Account closure is pending. Access has been revoked.",
+    );
+  }
   const isAppAdmin = hasMetadataAdminAccess(appMetadata);
 
   return {
@@ -198,11 +271,12 @@ export async function requireAuthenticatedCaller(
     userId: user.id,
     appMetadata,
     isAppAdmin,
-    isAdmin: isAppAdmin,
+    // Metadata is a presentation hint, never current authorization.
+    isAdmin: false,
   };
 }
 
-export async function requireAdminCaller(
+export async function requireGlobalAdminCaller(
   request: Request,
   dependencies: Partial<AdminAuthDependencies> = {},
 ): Promise<AuthenticatedCaller> {
@@ -211,13 +285,15 @@ export async function requireAdminCaller(
     ...dependencies,
   };
 
+  const authorization = getAuthorizationHeader(request) ?? "";
   const caller = await requireAuthenticatedCaller(request, deps);
-  if (hasMetadataAdminAccess(caller.appMetadata)) {
-    return caller;
-  }
-
   const adminClient = deps.createAdminClient();
   if (await hasActiveAdminAssignment(adminClient, caller.userId)) {
+    assertVerifiedStaffStepUp(
+      authorization,
+      caller.userId,
+      caller.user.is_anonymous,
+    );
     return {
       ...caller,
       isAdmin: true,
@@ -226,6 +302,9 @@ export async function requireAdminCaller(
 
   throw new HttpError(403, "Admin access required.");
 }
+
+/** Compatibility alias with global-only semantics. Prefer an explicit scope. */
+export const requireAdminCaller = requireGlobalAdminCaller;
 
 export async function requireClubAdminCaller(
   request: Request,
@@ -237,16 +316,20 @@ export async function requireClubAdminCaller(
     ...dependencies,
   };
 
-  const caller = await requireAuthenticatedCaller(request, deps);
-  if (hasMetadataAdminAccess(caller.appMetadata, clubId)) {
-    return {
-      ...caller,
-      isAdmin: true,
-    };
+  if (normalizeClubId(clubId) !== clubId) {
+    throw new HttpError(400, "Invalid club identifier.");
   }
+
+  const authorization = getAuthorizationHeader(request) ?? "";
+  const caller = await requireAuthenticatedCaller(request, deps);
 
   const adminClient = deps.createAdminClient();
   if (await hasActiveAdminAssignment(adminClient, caller.userId, clubId)) {
+    assertVerifiedStaffStepUp(
+      authorization,
+      caller.userId,
+      caller.user.is_anonymous,
+    );
     return {
       ...caller,
       isAdmin: true,

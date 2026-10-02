@@ -1,3 +1,6 @@
+import { errorResponse } from "../_shared/response.ts";
+import { withEdgeBoundary } from "../_shared/response.ts";
+import { readBoundedJson } from "../_shared/http.ts";
 import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
@@ -50,12 +53,7 @@ const UUID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 async function parseRequest(request: Request): Promise<{ ticketId: string }> {
-  let value: unknown;
-  try {
-    value = await request.json();
-  } catch {
-    throw new HttpError(400, "Request body must be valid JSON.");
-  }
+  const value = await readBoundedJson(request);
   if (value == null || typeof value !== "object" || Array.isArray(value)) {
     throw new HttpError(400, "Ticket request is invalid.");
   }
@@ -92,7 +90,7 @@ export function createGoogleWalletTicketPassHandler(
   const deps: Dependencies = { ...defaultDependencies, ...dependencies };
 
   return async (request: Request): Promise<Response> => {
-    if (request.method === "OPTIONS") return corsPreflightResponse();
+    if (request.method === "OPTIONS") return corsPreflightResponse(request);
     if (request.method !== "POST") return jsonError("Method not allowed", 405);
 
     try {
@@ -166,9 +164,12 @@ export function createGoogleWalletTicketPassHandler(
         const code = /^[a-z0-9_]+$/.test(error.message)
           ? error.message.toUpperCase()
           : undefined;
-        return jsonError(error.message, error.status, code);
+        return errorResponse(error, undefined, code);
       }
-      logDiagnostic("error", "google_wallet_ticket_pass_google_wallet_ticket_pass_failed");
+      logDiagnostic(
+        "error",
+        "google_wallet_ticket_pass_google_wallet_ticket_pass_failed",
+      );
       return jsonError(
         "Google Wallet pass could not be prepared.",
         502,
@@ -180,7 +181,7 @@ export function createGoogleWalletTicketPassHandler(
 
 if (import.meta.main) {
   const handler = createGoogleWalletTicketPassHandler();
-  Deno.serve((request: Request) =>
+  Deno.serve(withEdgeBoundary((request: Request) =>
     handler(request).then(
       (response) =>
         new Response(response.body, {
@@ -192,5 +193,5 @@ if (import.meta.main) {
           },
         }),
     )
-  );
+  ));
 }

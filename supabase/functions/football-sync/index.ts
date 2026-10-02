@@ -1,16 +1,31 @@
+import {
+  createFootballCallerClient,
+  currentFootballSyncContext,
+  footballRpc,
+  FootballSyncContext,
+  parseFootballCommand,
+  publicFootballReceipt,
+  publicFootballResult,
+  withFootballSyncContext,
+} from "../_shared/football_sync_command.ts";
+import { enforceRateLimit } from "../_shared/rate_limit.ts";
+import { errorResponse } from "../_shared/response.ts";
+import { withEdgeBoundary } from "../_shared/response.ts";
+import { readBoundedJson } from "../_shared/http.ts";
 import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import {
   HttpError,
-  requireAdminCaller,
   requireCronSecret,
+  requireGlobalAdminCaller,
 } from "../_shared/auth.ts";
 import {
   corsHeaders,
   corsPreflightResponse,
   jsonError,
-  jsonOk,
+  jsonOk as operatorJsonOk,
+  publicOperationData,
 } from "../_shared/response.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
 
@@ -48,92 +63,286 @@ import { downloadLogos } from "./download-logos.ts";
  *   - Admin: Bearer token with admin role
  */
 
-async function handler(request: Request): Promise<Response> {
-  if (request.method === "OPTIONS") {
-    return corsPreflightResponse();
-  }
+const jsonOk = (value: unknown, status = 200) =>
+  operatorJsonOk(publicOperationData(value), status);
 
-  try {
-    // Parse command
-    let command = "";
-    let payload: Record<string, unknown> = {};
+type Dependencies = {
+  requireCronSecret: typeof requireCronSecret;
+  requireGlobalAdminCaller: typeof requireGlobalAdminCaller;
+  createAdminClient: typeof createAdminClient;
+  enforceRateLimit: typeof enforceRateLimit;
+  createFootballCallerClient: typeof createFootballCallerClient;
+};
 
-    if (request.method === "POST") {
+export function createFootballSyncHandler(
+  dependencies: Partial<Dependencies> = {},
+) {
+  const deps: Dependencies = {
+    requireCronSecret,
+    requireGlobalAdminCaller,
+    createAdminClient,
+    enforceRateLimit,
+    createFootballCallerClient,
+    ...dependencies,
+  };
+  return async (request: Request): Promise<Response> => {
+    if (request.method === "OPTIONS") {
+      return corsPreflightResponse(request);
+    }
+
+    try {
+      // Cron authority is independent of an original human command.
+      let cron = true;
+      let actorId = "";
       try {
-        const body = await request.json();
+        deps.requireCronSecret(request);
+      } catch {
+        cron = false;
+        actorId = (await deps.requireGlobalAdminCaller(request)).userId;
+      }
+
+      // Parse command
+      let command = "";
+      let payload: Record<string, unknown> = {};
+
+      if (request.method === "POST") {
+        const body = await readBoundedJson(request, { allowEmpty: true });
         command = typeof body.command === "string" ? body.command : "";
         payload = body;
-      } catch {
-        // Empty body OK for cron
       }
+
+      // Existing query commands remain available only to independent cron.
+      if (!command && cron) {
+        const url = new URL(request.url);
+        command = url.searchParams.get("command") ?? "";
+      }
+
+      if (!cron) {
+        if (request.method !== "POST") {
+          throw new HttpError(
+            400,
+            "Manual football commands require the original POST operation.",
+          );
+        }
+        const original = parseFootballCommand(payload);
+        const caller = deps.createFootballCallerClient(
+          request.headers.get("authorization") ?? "",
+        );
+        const admitted = await footballRpc(
+          caller,
+          original.action === "status"
+            ? "recover_manual_football_sync"
+            : "admit_manual_football_sync",
+          {
+            p_operation_id: original.operationId,
+            ...(original.action === "submit"
+              ? { p_arguments: original.arguments }
+              : {}),
+          },
+        );
+        const publicReceipt = publicFootballReceipt(
+          admitted,
+          original.operationId,
+          actorId,
+        );
+        if (
+          original.action === "status" ||
+          typeof admitted.dispatch_proof_id !== "string"
+        ) return jsonOk({ success: true, data: publicReceipt });
+        const service = deps.createAdminClient();
+        await deps.enforceRateLimit(
+          service,
+          "global-football-sync",
+          "football-sync",
+          { maxRequests: 6, windowSeconds: 60 },
+        );
+        const lease = crypto.randomUUID();
+        const claimed = await footballRpc(
+          service,
+          "claim_manual_football_sync",
+          {
+            p_operation_id: original.operationId,
+            p_lease_token: lease,
+            p_proof_id: admitted.dispatch_proof_id,
+          },
+        );
+        if (claimed.claimed === false) {
+          return jsonOk({ success: true, data: publicReceipt });
+        }
+        if (
+          claimed.claimed !== true ||
+          claimed.operation_id !== original.operationId ||
+          claimed.actor_id !== actorId || claimed.scope !== "global" ||
+          claimed.lease_token !== lease ||
+          claimed.lease_proof_id !== admitted.dispatch_proof_id
+        ) {
+          throw new HttpError(
+            502,
+            "Original football dispatch ownership is invalid.",
+          );
+        }
+        const context = new FootballSyncContext(
+          service,
+          original.operationId,
+          lease,
+          admitted.dispatch_proof_id,
+          Date.parse(String(claimed.deadline_at)),
+          claimed.snapshot as Record<string, unknown>,
+          undefined,
+          claimed.mode === "reconcile_storage"
+            ? "reconcile_storage"
+            : "dispatch",
+        );
+        if (
+          claimed.mode !== "dispatch" && claimed.mode !== "reconcile_storage"
+        ) throw new HttpError(502, "Invalid original football lease mode.");
+        if (claimed.mode === "reconcile_storage") {
+          const count = await context.reconcileStorageUploads(
+            context.createServiceClient(),
+            claimed.recovery_uploads,
+          );
+          const finished = await footballRpc(
+            service,
+            "finish_manual_football_sync",
+            {
+              p_operation_id: original.operationId,
+              p_lease_token: lease,
+              p_result: {
+                success: false,
+                data: { reconciled_storage_count: count },
+              },
+            },
+          );
+          return jsonOk({
+            success: true,
+            data: publicFootballReceipt(
+              finished,
+              original.operationId,
+              actorId,
+              {
+                argumentsSha256: String(
+                  (admitted.command as Record<string, unknown>)
+                    .arguments_sha256,
+                ),
+                snapshotSha256: String(
+                  (admitted.command as Record<string, unknown>).snapshot_sha256,
+                ),
+              },
+            ),
+          });
+        }
+        const args = claimed.arguments as Record<string, unknown>;
+        if (
+          args.command === "register-league" && args.season_year === undefined
+        ) {
+          args.season_year =
+            (claimed.snapshot as Record<string, unknown>).default_season_year;
+        }
+        const response = await withFootballSyncContext(
+          context,
+          () =>
+            executeFootballCommand(
+              String(args.command),
+              context.createServiceClient(),
+              args,
+            ),
+        );
+        const result = await readBoundedJson(response, {
+          maxBytes: 65536,
+          timeoutMs: 5000,
+        });
+        const finished = await footballRpc(
+          service,
+          "finish_manual_football_sync",
+          {
+            p_operation_id: original.operationId,
+            p_lease_token: lease,
+            p_result: publicFootballResult(result),
+          },
+        );
+        return jsonOk({
+          success: response.ok,
+          data: publicFootballReceipt(finished, original.operationId, actorId, {
+            argumentsSha256: String(
+              (admitted.command as Record<string, unknown>).arguments_sha256,
+            ),
+            snapshotSha256: String(
+              (admitted.command as Record<string, unknown>).snapshot_sha256,
+            ),
+          }),
+        });
+      }
+      if (!command) return jsonError("Missing 'command' parameter", 400);
+      const adminClient = deps.createAdminClient();
+      await deps.enforceRateLimit(
+        adminClient,
+        "global-football-sync",
+        "football-sync",
+        {
+          maxRequests: 6,
+          windowSeconds: 60,
+        },
+      );
+
+      return await executeFootballCommand(command, adminClient, payload);
+    } catch (err) {
+      if (err instanceof HttpError) {
+        return errorResponse(err);
+      }
+      logDiagnostic(
+        "error",
+        "football_sync__football_sync_unhandled_error",
+        err,
+      );
+      return jsonError(
+        err instanceof Error ? err.message : "Internal error",
+        500,
+      );
     }
+  };
+}
 
-    // Allow GET with ?command= for admin testing
-    if (!command) {
-      const url = new URL(request.url);
-      command = url.searchParams.get("command") ?? "";
-    }
+async function executeFootballCommand(
+  command: string,
+  adminClient: ReturnType<typeof createAdminClient>,
+  payload: Record<string, unknown>,
+): Promise<Response> {
+  switch (command) {
+    case "discover-leagues":
+      return await handleDiscoverLeagues(payload);
 
-    if (!command) {
-      return jsonError("Missing 'command' parameter", 400);
-    }
+    case "register-league":
+      return await handleRegisterLeague(adminClient, payload);
 
-    // Auth: either cron secret or admin user
-    try {
-      requireCronSecret(request);
-    } catch {
-      // Not cron — require admin auth
-      await requireAdminCaller(request);
-    }
+    case "sync-fixtures":
+      return await handleSyncFixtures(adminClient);
 
-    const adminClient = createAdminClient();
+    case "sync-standings":
+      return await handleSyncStandings(adminClient);
 
-    switch (command) {
-      case "discover-leagues":
-        return await handleDiscoverLeagues(payload);
+    case "sync-live":
+      return await handleSyncLive(adminClient);
 
-      case "register-league":
-        return await handleRegisterLeague(adminClient, payload);
+    case "auto-settle":
+      return await handleAutoSettle(adminClient);
 
-      case "sync-fixtures":
-        return await handleSyncFixtures(adminClient);
+    case "sync-history":
+      return await handleSyncHistory(adminClient, payload);
 
-      case "sync-standings":
-        return await handleSyncStandings(adminClient);
+    case "download-logos":
+      return await handleDownloadLogos(adminClient);
 
-      case "sync-live":
-        return await handleSyncLive(adminClient);
+    case "seed-leagues":
+      return await handleSeedLeagues(adminClient, payload);
 
-      case "auto-settle":
-        return await handleAutoSettle(adminClient);
+    case "full-sync":
+      return await handleFullSync(adminClient);
 
-      case "sync-history":
-        return await handleSyncHistory(adminClient, payload);
+    case "status":
+      return await handleStatus(adminClient);
 
-      case "download-logos":
-        return await handleDownloadLogos(adminClient);
-
-      case "seed-leagues":
-        return await handleSeedLeagues(adminClient, payload);
-
-      case "full-sync":
-        return await handleFullSync(adminClient);
-
-      case "status":
-        return await handleStatus(adminClient);
-
-      default:
-        return jsonError(`Unknown command: ${command}`, 400);
-    }
-  } catch (err) {
-    if (err instanceof HttpError) {
-      return jsonError(err.message, err.status);
-    }
-    logDiagnostic("error", "football_sync__football_sync_unhandled_error", err);
-    return jsonError(
-      err instanceof Error ? err.message : "Internal error",
-      500,
-    );
+    default:
+      return jsonError(`Unknown command: ${command}`, 400);
   }
 }
 
@@ -557,7 +766,10 @@ async function handleSeedLeagues(
     error?: string;
   }> = [];
 
-  for (const target of TARGET_LEAGUES) {
+  const targets = currentFootballSyncContext()?.snapshot.seed_targets as
+    | typeof TARGET_LEAGUES
+    | undefined;
+  for (const target of targets ?? TARGET_LEAGUES) {
     const rateLimit = getRateLimit();
     if (rateLimit.dailyRemaining <= 5) {
       results.push({
@@ -632,7 +844,9 @@ async function handleSeedLeagues(
         sync_live: true,
       });
 
-      const registerBody = await registerResponse.json();
+      const registerBody = await readBoundedJson<
+        { success?: boolean; error?: string }
+      >(registerResponse, { maxBytes: 64 * 1024, timeoutMs: 5000 });
 
       results.push({
         name: target.name,
@@ -645,7 +859,7 @@ async function handleSeedLeagues(
         name: target.name,
         api_league_id: target.api_league_id,
         status: "error",
-        error: err instanceof Error ? err.message : String(err),
+        error: "Football synchronization failed.",
       });
     }
   }
@@ -665,7 +879,8 @@ async function handleSeedLeagues(
 /* ---------- Server ---------- */
 
 if (import.meta.main) {
-  Deno.serve((req: Request) =>
+  const handler = createFootballSyncHandler();
+  Deno.serve(withEdgeBoundary((req: Request) =>
     handler(req).then(
       (res) =>
         new Response(res.body, {
@@ -677,5 +892,5 @@ if (import.meta.main) {
           },
         }),
     )
-  );
+  ));
 }

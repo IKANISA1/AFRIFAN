@@ -1,8 +1,13 @@
 /** Fixed event codes; dynamic labels must never enter diagnostic sinks. */
 export const DIAGNOSTIC_EVENTS: ReadonlySet<string> = new Set([
+  "edge_provider_request_failed",
+  "edge_request_boundary_failed",
   "admin_send_notification_admin_send_notification_failed",
+  "admin_send_notification_command_failed",
   "admin_settle_fixture_admin_settle_fixture_failed",
   "dispatch_scheduled_notifications_dispatch_scheduled_notifications_failed",
+  "dispatch_scheduled_notification_commands_failed",
+  "scheduled_notification_command_uncertain",
   "feature_guard__feature_guard_invalid_access_state_payload_for",
   "feature_guard__feature_guard_rpc_error_for",
   "feature_guard__feature_guard_unexpected_error_checking",

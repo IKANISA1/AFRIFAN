@@ -1,7 +1,10 @@
+import { errorResponse } from "../_shared/response.ts";
+import { withEdgeBoundary } from "../_shared/response.ts";
+import { fetchBoundedJson, readBoundedJson } from "../_shared/http.ts";
 import { diagnosticMetadata, logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
-import { HttpError, requireAdminCaller } from "../_shared/auth.ts";
+import { HttpError, requireGlobalAdminCaller } from "../_shared/auth.ts";
 import {
   corsHeaders,
   corsPreflightResponse,
@@ -151,14 +154,14 @@ type Dependencies = {
   createAdminClient: typeof createAdminClient;
   createFootballAdminClient: typeof createFootballAdminClient;
   fetch: typeof fetch;
-  requireAdminCaller: typeof requireAdminCaller;
+  requireGlobalAdminCaller: typeof requireGlobalAdminCaller;
 };
 
 const defaultDependencies: Dependencies = {
   createAdminClient,
   createFootballAdminClient,
   fetch,
-  requireAdminCaller,
+  requireGlobalAdminCaller,
 };
 
 const openAiFixtureSchema = {
@@ -263,7 +266,7 @@ export function createLiveScoreOpenAiSyncHandler(
   const deps: Dependencies = { ...defaultDependencies, ...dependencies };
 
   return async (request: Request) => {
-    if (request.method === "OPTIONS") return corsPreflightResponse();
+    if (request.method === "OPTIONS") return corsPreflightResponse(request);
     if (request.method === "GET") {
       return jsonOk({ success: true, function: "livescore-openai-sync" });
     }
@@ -287,10 +290,18 @@ export function createLiveScoreOpenAiSyncHandler(
           "No active LiveScore competition sources are configured.",
         );
         await writeSyncLog(adminClient, startedAt, summary, options);
-        return jsonOk({ success: false, dry_run: options.dryRun, summary });
+        return jsonOk({
+          success: false,
+          dry_run: options.dryRun,
+          summary: publicSummary(summary),
+        });
       }
 
-      const payload = await collectFixturesWithOpenAi(deps.fetch, sources, options);
+      const payload = await collectFixturesWithOpenAi(
+        deps.fetch,
+        sources,
+        options,
+      );
       summary.openai_requests_used += 1;
       summary.raw_rows_seen = payload.fixtures.length;
       summary.source_notes.push(...payload.source_notes);
@@ -324,20 +335,37 @@ export function createLiveScoreOpenAiSyncHandler(
       }
 
       await writeSyncLog(adminClient, startedAt, summary, options);
-      return jsonOk({ success: summary.errors.length === 0, dry_run: options.dryRun, summary });
+      return jsonOk({
+        success: summary.errors.length === 0,
+        dry_run: options.dryRun,
+        summary: publicSummary(summary),
+      });
     } catch (error) {
       summary.errors.push(messageOf(error));
       try {
         if (options) {
-          await writeSyncLog(deps.createAdminClient(), startedAt, summary, options);
+          await writeSyncLog(
+            deps.createAdminClient(),
+            startedAt,
+            summary,
+            options,
+          );
         }
       } catch (logError) {
-        logDiagnostic("error", "livescore_openai_sync_livescore_openai_sync_log_failure", logError);
+        logDiagnostic(
+          "error",
+          "livescore_openai_sync_livescore_openai_sync_log_failure",
+          logError,
+        );
       }
 
       const status = error instanceof HttpError ? error.status : 500;
-      logDiagnostic("error", "livescore_openai_sync_livescore_openai_sync_failed", error);
-      return jsonError(messageOf(error), status);
+      logDiagnostic(
+        "error",
+        "livescore_openai_sync_livescore_openai_sync_failed",
+        error,
+      );
+      return errorResponse(error);
     }
   };
 }
@@ -347,10 +375,11 @@ async function authorizeRequest(
   deps: Dependencies,
 ) {
   const providedSecret = request.headers.get("x-cron-secret")?.trim();
-  const configuredSecret =
-    Deno.env.get("LIVESCORE_SYNC_SECRET")?.trim() ||
+  const configuredSecret = Deno.env.get("LIVESCORE_SYNC_SECRET")?.trim() ||
     Deno.env.get("CRON_JOB_SECRET")?.trim();
-  if (providedSecret && configuredSecret && providedSecret === configuredSecret) {
+  if (
+    providedSecret && configuredSecret && providedSecret === configuredSecret
+  ) {
     return;
   }
 
@@ -363,15 +392,11 @@ async function authorizeRequest(
   const serviceRole = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")?.trim();
   if (bearer && serviceRole && bearer === serviceRole) return;
 
-  await deps.requireAdminCaller(request);
+  await deps.requireGlobalAdminCaller(request);
 }
 
 async function readJsonBody(request: Request): Promise<SyncRequest> {
-  try {
-    return await request.json() as SyncRequest;
-  } catch (_) {
-    return {};
-  }
+  return await readBoundedJson<SyncRequest>(request, { allowEmpty: true });
 }
 
 function normalizeRequest(body: SyncRequest): SyncOptions {
@@ -384,7 +409,11 @@ function normalizeRequest(body: SyncRequest): SyncOptions {
     clubId: parsePositiveInteger(body.clubId ?? body.club_id),
     sourceKeys: arrayOfStrings(body.sourceKeys ?? body.source_keys)
       .map((key) => key.toLowerCase()),
-    limit: clamp(parsePositiveInteger(body.limit) ?? 50, 1, MAX_FIXTURES_PER_RUN),
+    limit: clamp(
+      parsePositiveInteger(body.limit) ?? 50,
+      1,
+      MAX_FIXTURES_PER_RUN,
+    ),
     settlePools: parseBoolean(body.settlePools ?? body.settle_pools, true),
   };
 }
@@ -422,7 +451,10 @@ function mapSource(row: Record<string, unknown>): LiveScoreSource | null {
   const sourceKey = asTrimmedString(row.source_key);
   const aliases = arrayOfStrings(row.match_aliases);
   const sourceUrls = arrayOfStrings(row.source_urls).filter(isLiveScoreUrl);
-  if (!displayName || !sourceKey || aliases.length === 0 || sourceUrls.length === 0) {
+  if (
+    !displayName || !sourceKey || aliases.length === 0 ||
+    sourceUrls.length === 0
+  ) {
     return null;
   }
 
@@ -434,7 +466,9 @@ function mapSource(row: Record<string, unknown>): LiveScoreSource | null {
     aliases: aliases.map(normalizeSearchText).filter(Boolean),
     countryAliases: arrayOfStrings(row.country_aliases).map(normalizeSearchText)
       .filter(Boolean),
-    externalIds: arrayOfStrings(row.external_competition_ids).map(normalizeSearchText)
+    externalIds: arrayOfStrings(row.external_competition_ids).map(
+      normalizeSearchText,
+    )
       .filter(Boolean),
     sourceUrls,
     priority: parsePositiveInteger(row.priority) ?? 100,
@@ -447,52 +481,58 @@ async function collectFixturesWithOpenAi(
   options: SyncOptions,
 ): Promise<OpenAiFixturePayload> {
   const apiKey = requireEnv("OPENAI_API_KEY");
-  const model = Deno.env.get("OPENAI_LIVESCORE_MODEL")?.trim() || "gpt-4.1-mini";
+  const model = Deno.env.get("OPENAI_LIVESCORE_MODEL")?.trim() ||
+    "gpt-4.1-mini";
   const tool = Deno.env.get("OPENAI_LIVESCORE_WEB_SEARCH_TOOL")?.trim() ||
     "web_search_preview";
 
-  const response = await fetchFn("https://api.openai.com/v1/responses", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model,
-      tools: [{ type: tool, search_context_size: "medium" }],
-      tool_choice: "auto",
-      max_output_tokens: 6000,
-      input: buildOpenAiPrompt(sources, options),
-      text: {
-        format: {
-          type: "json_schema",
-          name: "livescore_fixture_sync",
-          schema: openAiFixtureSchema,
-          strict: true,
+  const responseBody = await fetchBoundedJson(
+    fetchFn,
+    "https://api.openai.com/v1/responses",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        tools: [{ type: tool, search_context_size: "medium" }],
+        tool_choice: "auto",
+        max_output_tokens: 6000,
+        input: buildOpenAiPrompt(sources, options),
+        text: {
+          format: {
+            type: "json_schema",
+            name: "livescore_fixture_sync",
+            schema: openAiFixtureSchema,
+            strict: true,
+          },
         },
-      },
-      metadata: {
-        product: "africlub",
-        sync_type: SYNC_TYPE,
-      },
-    }),
-  });
-
-  const responseBody = await response.json();
-  if (!response.ok) {
-    throw new Error(`OpenAI LiveScore sync failed with ${response.status}: ${truncateForLog(JSON.stringify(responseBody))}`);
-  }
+        metadata: {
+          product: "africlub",
+          sync_type: SYNC_TYPE,
+        },
+      }),
+    },
+    { maxBytes: 512 * 1024, timeoutMs: 45000 },
+  );
 
   const text = extractOpenAiText(responseBody);
   const parsed = JSON.parse(text) as OpenAiFixturePayload;
   return {
     fixtures: Array.isArray(parsed.fixtures) ? parsed.fixtures : [],
     source_notes: Array.isArray(parsed.source_notes) ? parsed.source_notes : [],
-    access_issues: Array.isArray(parsed.access_issues) ? parsed.access_issues : [],
+    access_issues: Array.isArray(parsed.access_issues)
+      ? parsed.access_issues
+      : [],
   };
 }
 
-function buildOpenAiPrompt(sources: LiveScoreSource[], options: SyncOptions): string {
+function buildOpenAiPrompt(
+  sources: LiveScoreSource[],
+  options: SyncOptions,
+): string {
   const sourceLines = sources.map((source) =>
     [
       `- key: ${source.key}`,
@@ -566,7 +606,9 @@ function normalizeOpenAiFixture(
     shortName: competitionName.length > 24
       ? competitionName.slice(0, 24)
       : competitionName,
-    slug: slugify(`${competitionName}-${raw.competition.country.name ?? "global"}`),
+    slug: slugify(
+      `${competitionName}-${raw.competition.country.name ?? "global"}`,
+    ),
     countryName: asTrimmedString(raw.competition.country.name),
     countryCode: asTrimmedString(raw.competition.country.code),
     logoUrl: urlValue(raw.competition.logo),
@@ -636,17 +678,21 @@ function matchAllowedCompetition(
   sources: LiveScoreSource[],
 ): LiveScoreSource | null {
   const externalIdText = normalizeSearchText(competition.externalId);
-  const haystack = normalizeSearchText([
-    competition.externalId,
-    competition.name,
-    competition.shortName,
-    competition.slug,
-    competition.countryName,
-    competition.countryCode,
-    raw.source_url,
-  ].filter(Boolean).join(" "));
+  const haystack = normalizeSearchText(
+    [
+      competition.externalId,
+      competition.name,
+      competition.shortName,
+      competition.slug,
+      competition.countryName,
+      competition.countryCode,
+      raw.source_url,
+    ].filter(Boolean).join(" "),
+  );
   const countryText = normalizeSearchText(
-    [competition.countryName, competition.countryCode].filter(Boolean).join(" "),
+    [competition.countryName, competition.countryCode].filter(Boolean).join(
+      " ",
+    ),
   );
 
   for (const source of sources) {
@@ -657,7 +703,9 @@ function matchAllowedCompetition(
       return source;
     }
 
-    const aliasMatches = source.aliases.some((alias) => haystack.includes(alias));
+    const aliasMatches = source.aliases.some((alias) =>
+      haystack.includes(alias)
+    );
     if (!aliasMatches) continue;
     if (source.countryAliases.length === 0) return source;
     const countryMatches = source.countryAliases.some(
@@ -691,7 +739,8 @@ function normalizeTeam(
   return {
     externalId: asTrimmedString(team?.id) || slugify(name),
     name,
-    shortName: asTrimmedString(team?.shortName) || name.slice(0, 3).toUpperCase(),
+    shortName: asTrimmedString(team?.shortName) ||
+      name.slice(0, 3).toUpperCase(),
     slug: slugify(name),
     logoUrl: urlValue(team?.logo),
   };
@@ -762,14 +811,24 @@ async function upsertFixtureGraph(
   await upsertOne(
     footballClient,
     "season_teams",
-    { season_id: season.id, team_id: home.id, is_active: true, metadata: { source: PROVIDER } },
+    {
+      season_id: season.id,
+      team_id: home.id,
+      is_active: true,
+      metadata: { source: PROVIDER },
+    },
     "season_id,team_id",
     "id",
   );
   await upsertOne(
     footballClient,
     "season_teams",
-    { season_id: season.id, team_id: away.id, is_active: true, metadata: { source: PROVIDER } },
+    {
+      season_id: season.id,
+      team_id: away.id,
+      is_active: true,
+      metadata: { source: PROVIDER },
+    },
     "season_id,team_id",
     "id",
   );
@@ -868,7 +927,9 @@ async function settlePoolsForFixture(
     .eq("fixture_id", fixtureId)
     .in("status", ["open", "locked"]);
   if (error) {
-    summary.errors.push(`Pool lookup for fixture ${fixtureId}: ${error.message}`);
+    summary.errors.push(
+      `Pool lookup for fixture ${fixtureId}: ${error.message}`,
+    );
     return 0;
   }
 
@@ -894,14 +955,18 @@ async function writeSyncLog(
   options: SyncOptions,
 ) {
   if (options.dryRun) return;
-  const status = summary.errors.length > 0 ? "completed_with_errors" : "completed";
+  const status = summary.errors.length > 0
+    ? "completed_with_errors"
+    : "completed";
   const { error } = await adminClient.from("football_sync_log").insert({
     sync_type: SYNC_TYPE,
     status,
     records_fetched: summary.raw_rows_seen,
     records_upserted: summary.fixtures_upserted,
     api_requests_used: summary.openai_requests_used,
-    error_message: summary.errors.length > 0 ? "Football synchronization completed with errors." : null,
+    error_message: summary.errors.length > 0
+      ? "Football synchronization completed with errors."
+      : null,
     metadata: diagnosticMetadata({
       ...summary,
       error_count: summary.errors.length,
@@ -958,7 +1023,8 @@ function isLiveScoreUrl(value: unknown): value is string {
   if (!text) return false;
   try {
     const url = new URL(text);
-    return url.hostname === "www.livescore.com" || url.hostname.endsWith(".livescore.com");
+    return url.hostname === "www.livescore.com" ||
+      url.hostname.endsWith(".livescore.com");
   } catch (_) {
     return false;
   }
@@ -978,7 +1044,9 @@ function asTrimmedString(value: unknown): string | null {
 
 function arrayOfStrings(value: unknown): string[] {
   if (Array.isArray(value)) {
-    return value.map((item) => asTrimmedString(item)).filter((item): item is string => item != null);
+    return value.map((item) => asTrimmedString(item)).filter((
+      item,
+    ): item is string => item != null);
   }
   const text = asTrimmedString(value);
   return text ? text.split(",").map((item) => item.trim()).filter(Boolean) : [];
@@ -1072,22 +1140,21 @@ function truncateForLog(value: string, maxLength = 1000): string {
   return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 }
 
+function publicSummary(summary: SyncSummary) {
+  return {
+    ...summary,
+    errors: summary.errors.map(() => "Football synchronization failed."),
+    source_notes: [],
+    access_issues: [],
+    source_note_count: summary.source_notes.length,
+    access_issue_count: summary.access_issues.length,
+  };
+}
+
 function messageOf(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
 if (import.meta.main) {
-  const handler = createLiveScoreOpenAiSyncHandler();
-  Deno.serve(async (req: Request) => withCors(await handler(req)));
-}
-
-function withCors(response: Response): Response {
-  return new Response(response.body, {
-    status: response.status,
-    statusText: response.statusText,
-    headers: {
-      ...Object.fromEntries(response.headers.entries()),
-      ...corsHeaders(),
-    },
-  });
+  Deno.serve(withEdgeBoundary(createLiveScoreOpenAiSyncHandler()));
 }

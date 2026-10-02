@@ -1,3 +1,18 @@
+import {
+  assertVerifiedStaffStepUp,
+  getAuthorizationHeader,
+  hasActiveAdminAssignment,
+} from "../_shared/auth.ts";
+import {
+  executeImageGeneration,
+  generationUuid,
+  getImageGenerationStatus,
+} from "../_shared/admin_image_generation.ts";
+import { createLifecycleAdminClient } from "../_shared/account_lifecycle_client.ts";
+import { getSupabaseUrl } from "../_shared/supabase.ts";
+import { errorResponse } from "../_shared/response.ts";
+import { withEdgeBoundary } from "../_shared/response.ts";
+import { readBoundedJson } from "../_shared/http.ts";
 import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
@@ -7,7 +22,7 @@ import {
   jsonError,
   jsonOk,
 } from "../_shared/response.ts";
-import { createAdminClient } from "../_shared/supabase.ts";
+
 import { isErrorResponse, validateRequest } from "../_shared/validation.ts";
 
 type AdminImageKind =
@@ -20,6 +35,8 @@ type AdminImageKind =
   | "notification";
 
 type GenerateAdminImageRequest = {
+  operation_id?: unknown;
+  mode?: unknown;
   clubId?: unknown;
   kind?: unknown;
   prompt?: unknown;
@@ -34,14 +51,6 @@ type ClubBrand = {
   country_name: string | null;
   region: string | null;
   league: string | null;
-};
-
-type GeminiImageResponse = {
-  candidates?: Array<{
-    content?: {
-      parts?: Array<Record<string, unknown>>;
-    };
-  }>;
 };
 
 const supportedKinds = new Set<AdminImageKind>([
@@ -117,12 +126,14 @@ function asTrimmedString(value: unknown) {
 }
 
 function normalizeClubId(value: unknown) {
-  if (typeof value === "number" && Number.isInteger(value) && value > 0) {
+  if (typeof value === "number" && Number.isSafeInteger(value) && value > 0) {
     return value;
   }
   if (typeof value === "string") {
-    const parsed = Number.parseInt(value.trim(), 10);
-    return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
+    const parsed = /^[1-9][0-9]*$/.test(value.trim())
+      ? Number(value.trim())
+      : NaN;
+    return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : null;
   }
   return null;
 }
@@ -141,54 +152,6 @@ function normalizeAspectRatio(value: unknown, fallback: string) {
     return fallback;
   }
   return supportedAspectRatios.has(normalized) ? normalized : fallback;
-}
-
-async function ensureClubAdminAccess(
-  adminClient: ReturnType<typeof createAdminClient>,
-  options: { userId: string; clubId: number },
-) {
-  const [userResponse, assignmentResponse] = await Promise.all([
-    adminClient
-      .from("users")
-      .select("is_admin")
-      .eq("id", options.userId)
-      .maybeSingle(),
-    adminClient
-      .from("admin_role_assignments")
-      .select("role, club_id, is_active, revoked_at")
-      .eq("user_id", options.userId)
-      .eq("is_active", true)
-      .is("revoked_at", null),
-  ]);
-
-  if (userResponse.error) {
-    throw new Error(userResponse.error.message);
-  }
-  if (assignmentResponse.error) {
-    throw new Error(assignmentResponse.error.message);
-  }
-
-  if (userResponse.data?.is_admin === true) {
-    return true;
-  }
-
-  const assignments = Array.isArray(assignmentResponse.data)
-    ? assignmentResponse.data
-    : [];
-
-  return assignments.some((assignment) => {
-    const role = asTrimmedString(assignment.role)?.toLowerCase();
-    if (!role) {
-      return false;
-    }
-    if (role === "admin" || role === "super_admin") {
-      return true;
-    }
-    return (
-      (role === "club_admin" || role === "club_moderator") &&
-      Number(assignment.club_id) === options.clubId
-    );
-  });
 }
 
 function buildPrompt(
@@ -219,188 +182,125 @@ function buildPrompt(
     .join("\n");
 }
 
-function extractInlineImagePart(parts: Array<Record<string, unknown>>) {
-  return parts.find((part) =>
-    Object.hasOwn(part, "inlineData") || Object.hasOwn(part, "inline_data")
-  );
+export function createGenerateAdminImageHandler(dependencies: Partial<{
+  validateRequest: typeof validateRequest;
+  createAdminClient: typeof createLifecycleAdminClient;
+  hasActiveAdminAssignment: typeof hasActiveAdminAssignment;
+  executeImageGeneration: typeof executeImageGeneration;
+  getImageGenerationStatus: typeof getImageGenerationStatus;
+}> = {}) {
+  const deps = {
+    validateRequest,
+    createAdminClient: createLifecycleAdminClient,
+    hasActiveAdminAssignment,
+    executeImageGeneration,
+    getImageGenerationStatus,
+    ...dependencies,
+  };
+  return async (request: Request) => {
+    if (request.method === "OPTIONS") return corsPreflightResponse(request);
+    if (request.method !== "POST") return jsonError("Method not allowed", 405);
+    try {
+      const authorization = getAuthorizationHeader(request) ?? "";
+      const validated = await deps.validateRequest(request);
+      if (isErrorResponse(validated)) return validated;
+      const body = await readBoundedJson(request) as GenerateAdminImageRequest;
+      const clubId = normalizeClubId(body.clubId);
+      const operationId = asTrimmedString(body.operation_id);
+      if (clubId == null || !operationId || !generationUuid.test(operationId)) {
+        return jsonError("clubId and original operation_id are required.", 400);
+      }
+      if (body.mode !== undefined && body.mode !== "status") {
+        return jsonError("Image mode is invalid.", 400);
+      }
+      const hasAccess = await deps.hasActiveAdminAssignment(
+        deps.createAdminClient(),
+        validated.userId,
+        clubId,
+      );
+      if (!hasAccess) return jsonError("Club admin access is required.", 403);
+      assertVerifiedStaffStepUp(
+        authorization,
+        validated.userId,
+        validated.isAnonymous,
+      );
+      if (body.mode === "status") {
+        const receipt = await deps.getImageGenerationStatus(
+          authorization,
+          operationId,
+          validated.userId,
+          clubId,
+          "admin_image",
+        );
+        return receipt
+          ? jsonOk(receipt)
+          : jsonError("Original image operation was not found.", 404);
+      }
+      const kind = normalizeKind(body.kind);
+      const prompt = asTrimmedString(body.prompt);
+      const subject = asTrimmedString(body.subject);
+      if (
+        !kind || !prompt || prompt.length > 4000 || (subject?.length ?? 0) > 500
+      ) return jsonError("Image kind, prompt or subject is invalid.", 400);
+      const aspectRatio = normalizeAspectRatio(
+        body.aspectRatio,
+        kindDirectives[kind].aspectRatio,
+      );
+      const apiKey = Deno.env.get("GEMINI_API_KEY")?.trim();
+      if (!apiKey) {
+        return jsonError(
+          "Image generation is not configured on the server.",
+          503,
+        );
+      }
+      const model = Deno.env.get("GEMINI_IMAGE_MODEL")?.trim() ||
+        "gemini-2.5-flash-image";
+      if (!/^[a-zA-Z0-9._-]{1,120}$/.test(model)) {
+        return jsonError("Image generation is unavailable.", 503);
+      }
+      const receipt = await deps.executeImageGeneration(
+        authorization,
+        {
+          operationId,
+          actorId: validated.userId,
+          clubId,
+          domain: "admin_image",
+          kind,
+          request: { kind, prompt, subject, aspectRatio },
+        },
+        (brand) => ({
+          model,
+          public_origin: getSupabaseUrl().replace(/\/$/, ""),
+          prompt_used: buildPrompt(brand as ClubBrand, kind, prompt, subject),
+          aspect_ratio: aspectRatio,
+        }),
+        apiKey,
+      );
+      return jsonOk(receipt, receipt.status === "completed" ? 200 : 202);
+    } catch (error) {
+      logDiagnostic(
+        "error",
+        "generate_admin_image_generate_admin_image_failed",
+        error,
+      );
+      return errorResponse(error);
+    }
+  };
 }
 
-const handler = async (request: Request) => {
-  if (request.method === "OPTIONS") {
-    return corsPreflightResponse();
-  }
-
-  if (request.method !== "POST") {
-    return jsonError("Method not allowed", 405);
-  }
-
-  try {
-    const validated = await validateRequest(request);
-    if (isErrorResponse(validated)) {
-      return validated;
-    }
-
-    const body = (await request.json()) as GenerateAdminImageRequest;
-    const clubId = normalizeClubId(body.clubId);
-    const kind = normalizeKind(body.kind);
-    const prompt = asTrimmedString(body.prompt);
-
-    if (clubId == null || kind == null || !prompt) {
-      return jsonError("clubId, kind, and prompt are required.", 400);
-    }
-
-    const adminClient = createAdminClient();
-    const hasAccess = await ensureClubAdminAccess(adminClient, {
-      userId: validated.userId,
-      clubId,
-    });
-    if (!hasAccess) {
-      return jsonError("Club admin access is required.", 403);
-    }
-
-    const { data: club, error: clubError } = await adminClient
-      .from("african_football_clubs")
-      .select(
-        "club_name, primary_brand_colors, nickname_brand_identity, country_name, region, league",
-      )
-      .eq("id", clubId)
-      .single();
-
-    if (clubError || !club) {
-      return jsonError("Club not found.", 404);
-    }
-
-    const geminiKey = Deno.env.get("GEMINI_API_KEY")?.trim();
-    if (!geminiKey) {
-      return jsonError(
-        "GEMINI_API_KEY is not configured for this project.",
-        503,
-      );
-    }
-
-    const model = Deno.env.get("GEMINI_IMAGE_MODEL")?.trim() ||
-      "gemini-2.5-flash-image";
-    const aspectRatio = normalizeAspectRatio(
-      body.aspectRatio,
-      kindDirectives[kind].aspectRatio,
-    );
-    const subject = asTrimmedString(body.subject);
-    const resolvedPrompt = buildPrompt(
-      club as ClubBrand,
-      kind,
-      prompt,
-      subject,
-    );
-
-    const geminiResponse = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-goog-api-key": geminiKey,
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              role: "user",
-              parts: [{ text: resolvedPrompt }],
-            },
-          ],
-          generationConfig: {
-            imageConfig: {
-              aspectRatio,
-            },
-          },
-        }),
-      },
-    );
-
-    if (!geminiResponse.ok) {
-      const detail = await geminiResponse.text();
-      return jsonError(
-        `Gemini image generation failed with ${geminiResponse.status}.`,
-        502,
-      );
-    }
-
-    const geminiBody = (await geminiResponse.json()) as GeminiImageResponse;
-    const parts = geminiBody.candidates?.[0]?.content?.parts ?? [];
-    const imagePart = extractInlineImagePart(parts);
-    if (!imagePart) {
-      return jsonError("Gemini did not return an image.", 502);
-    }
-
-    const inlineData = (imagePart.inlineData ?? imagePart.inline_data) as
-      | Record<string, unknown>
-      | undefined;
-    const base64Data = asTrimmedString(inlineData?.data);
-    const mimeType =
-      asTrimmedString(inlineData?.mimeType ?? inlineData?.mime_type) ||
-      "image/png";
-
-    if (!base64Data) {
-      return jsonError("Gemini returned an invalid image payload.", 502);
-    }
-
-    const extension = mimeType.includes("webp")
-      ? "webp"
-      : mimeType.includes("png")
-      ? "png"
-      : "jpg";
-    const clubFolder = `club-${clubId}`;
-    const storagePath = `${clubFolder}/admin/${kind}/${Date.now()}-${
-      crypto.randomUUID().slice(0, 8)
-    }.${extension}`;
-    const imageBytes = Uint8Array.from(
-      atob(base64Data),
-      (char) => char.charCodeAt(0),
-    );
-
-    const { error: uploadError } = await adminClient.storage
-      .from("africlub-product-images")
-      .upload(storagePath, imageBytes, {
-        contentType: mimeType,
-        upsert: false,
-      });
-
-    if (uploadError) {
-      return jsonError(`Storage upload failed: ${uploadError.message}`, 500);
-    }
-
-    const { data: publicUrlData } = adminClient.storage
-      .from("africlub-product-images")
-      .getPublicUrl(storagePath);
-
-    return jsonOk({
-      image_url: publicUrlData.publicUrl,
-      storage_path: storagePath,
-      prompt_used: resolvedPrompt,
-      model,
-      aspect_ratio: aspectRatio,
-      club: (club as ClubBrand).club_name,
-      kind,
-    });
-  } catch (error) {
-    logDiagnostic("error", "generate_admin_image_generate_admin_image_failed", error);
-    return jsonError(
-      error instanceof Error ? error.message : "Image generation failed.",
-      500,
-    );
-  }
-};
-
 if (import.meta.main) {
-  Deno.serve((request) =>
-    handler(request).then((response) =>
-      new Response(response.body, {
-        status: response.status,
-        statusText: response.statusText,
-        headers: {
-          ...Object.fromEntries(response.headers.entries()),
-          ...corsHeaders(),
-        },
-      })
-    )
+  Deno.serve(
+    withEdgeBoundary((request) =>
+      createGenerateAdminImageHandler()(request).then((response) =>
+        new Response(response.body, {
+          status: response.status,
+          statusText: response.statusText,
+          headers: {
+            ...Object.fromEntries(response.headers.entries()),
+            ...corsHeaders(),
+          },
+        })
+      )
+    ),
   );
 }

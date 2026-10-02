@@ -17,6 +17,8 @@ const success = {
 
 Deno.test("send-notification requires an internal secret", async () => {
   const handler = createSendNotificationHandler({
+    createAdminClient: () => ({} as never),
+    enforceRateLimit: async () => {},
     getSecretKeys: () => ["current", "legacy"],
     sendToUser: async () => success,
     sendToTopic: async () => success,
@@ -24,6 +26,7 @@ Deno.test("send-notification requires an internal secret", async () => {
   const response = await handler(
     new Request("https://example.test", {
       method: "POST",
+      headers: { "content-type": "application/json" },
       body: JSON.stringify({ user_id: userId, title: "Title", body: "Body" }),
     }),
   );
@@ -33,6 +36,8 @@ Deno.test("send-notification requires an internal secret", async () => {
 Deno.test("send-notification accepts a controlled current or legacy key", async () => {
   const deliveries: string[] = [];
   const handler = createSendNotificationHandler({
+    createAdminClient: () => ({} as never),
+    enforceRateLimit: async () => {},
     getSecretKeys: () => ["current", "legacy"],
     sendToUser: async (id) => {
       deliveries.push(id);
@@ -44,7 +49,10 @@ Deno.test("send-notification accepts a controlled current or legacy key", async 
     const response = await handler(
       new Request("https://example.test", {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ user_id: userId, title: "Title", body: "Body" }),
       }),
     );
@@ -56,6 +64,8 @@ Deno.test("send-notification accepts a controlled current or legacy key", async 
 Deno.test("send-notification rejects invalid targeting before delivery", async () => {
   let called = false;
   const handler = createSendNotificationHandler({
+    createAdminClient: () => ({} as never),
+    enforceRateLimit: async () => {},
     getSecretKeys: () => ["internal"],
     sendToUser: async () => {
       called = true;
@@ -66,7 +76,10 @@ Deno.test("send-notification rejects invalid targeting before delivery", async (
   const response = await handler(
     new Request("https://example.test", {
       method: "POST",
-      headers: { Authorization: "Bearer internal" },
+      headers: {
+        "content-type": "application/json",
+        Authorization: "Bearer internal",
+      },
       body: JSON.stringify({
         user_id: "not-a-user",
         title: "Title",
@@ -76,4 +89,35 @@ Deno.test("send-notification rejects invalid targeting before delivery", async (
   );
   assertEquals(response.status, 400, "status");
   assertEquals(called, false, "delivery called");
+});
+
+Deno.test("internal notification admission prevents delivery and preserves Retry-After", async () => {
+  let delivered = false;
+  const handler = createSendNotificationHandler({
+    getSecretKeys: () => ["internal"],
+    createAdminClient: () => ({
+      rpc: async () => ({
+        data: [{ allowed: false, retry_after_seconds: 12 }],
+        error: null,
+      }),
+    } as never),
+    sendToUser: async () => {
+      delivered = true;
+      return success;
+    },
+    sendToTopic: async () => success,
+  });
+  const response = await handler(
+    new Request("https://example.test", {
+      method: "POST",
+      headers: {
+        authorization: "Bearer internal",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ user_id: userId, title: "Title", body: "Body" }),
+    }),
+  );
+  assertEquals(response.status, 429, "status");
+  assertEquals(response.headers.get("retry-after"), "12", "retry timing");
+  assertEquals(delivered, false, "delivery");
 });

@@ -1,3 +1,6 @@
+import { errorResponse } from "../_shared/response.ts";
+import { withEdgeBoundary } from "../_shared/response.ts";
+import { readBoundedJson } from "../_shared/http.ts";
 import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
@@ -7,12 +10,12 @@ import {
   recordOperationalHealthEvent,
 } from "../_shared/observability.ts";
 import {
-  corsPreflightResponse,
   corsHeaders,
-  jsonOk,
+  corsPreflightResponse,
   jsonError,
+  jsonOk,
 } from "../_shared/response.ts";
-import { validateRequest, isErrorResponse } from "../_shared/validation.ts";
+import { isErrorResponse, validateRequest } from "../_shared/validation.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
 
 type RecordOperationalHealthDependencies = {
@@ -72,7 +75,9 @@ function normalizeStatus(value: unknown): OperationalEventStatus {
   return "ok";
 }
 
-function normalizeSeverity(value: unknown): OperationalEventSeverity | undefined {
+function normalizeSeverity(
+  value: unknown,
+): OperationalEventSeverity | undefined {
   const normalized = asTrimmedString(value)?.toLowerCase();
   if (normalized == "info") return "info";
   if (normalized == "warning") return "warning";
@@ -107,7 +112,7 @@ export function createRecordOperationalHealthHandler(
 
   return async (request: Request) => {
     if (request.method === "OPTIONS") {
-      return corsPreflightResponse();
+      return corsPreflightResponse(request);
     }
 
     if (request.method !== "POST") {
@@ -119,7 +124,9 @@ export function createRecordOperationalHealthHandler(
       if (isErrorResponse(validated)) return validated;
       const { userId } = validated;
 
-      const body = await request.json() as RecordOperationalHealthRequest;
+      const body = await readBoundedJson(
+        request,
+      ) as RecordOperationalHealthRequest;
       const service = deriveService(body);
       const message = deriveMessage(body);
 
@@ -145,22 +152,29 @@ export function createRecordOperationalHealthHandler(
 
       return jsonOk({ success: true });
     } catch (error) {
-      logDiagnostic("error", "record_operational_health_record_operational_health_error", error);
-      return jsonError(
-        error instanceof Error ? error.message : "Unknown error",
-        500,
+      logDiagnostic(
+        "error",
+        "record_operational_health_record_operational_health_error",
+        error,
       );
+      return errorResponse(error);
     }
   };
 }
 
 if (import.meta.main) {
   const handler = createRecordOperationalHealthHandler();
-  Deno.serve((req: Request) => handler(req).then(
-    (res) => new Response(res.body, {
-      status: res.status,
-      statusText: res.statusText,
-      headers: { ...Object.fromEntries(res.headers.entries()), ...corsHeaders() },
-    })
+  Deno.serve(withEdgeBoundary((req: Request) =>
+    handler(req).then(
+      (res) =>
+        new Response(res.body, {
+          status: res.status,
+          statusText: res.statusText,
+          headers: {
+            ...Object.fromEntries(res.headers.entries()),
+            ...corsHeaders(),
+          },
+        }),
+    )
   ));
 }

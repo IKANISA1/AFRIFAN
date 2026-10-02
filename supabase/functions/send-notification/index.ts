@@ -1,3 +1,9 @@
+import { errorResponse, jsonOk } from "../_shared/response.ts";
+import { HttpError } from "../_shared/auth.ts";
+import { createAdminClient } from "../_shared/supabase.ts";
+import { enforceRateLimit } from "../_shared/rate_limit.ts";
+import { withEdgeBoundary } from "../_shared/response.ts";
+import { readBoundedJson } from "../_shared/http.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import { sendToTopic, sendToUser } from "../_shared/fcm.ts";
@@ -5,6 +11,8 @@ import type { FcmData, FcmNotification, SendResult } from "../_shared/fcm.ts";
 import { getSupabaseSecretKeys } from "../_shared/supabase.ts";
 
 type Dependencies = {
+  createAdminClient: typeof createAdminClient;
+  enforceRateLimit: typeof enforceRateLimit;
   getSecretKeys: () => string[];
   sendToUser: (
     userId: string,
@@ -19,6 +27,8 @@ type Dependencies = {
 };
 
 const defaultDependencies: Dependencies = {
+  createAdminClient,
+  enforceRateLimit,
   getSecretKeys: getSupabaseSecretKeys,
   sendToUser,
   sendToTopic,
@@ -40,11 +50,11 @@ function response(body: unknown, status: number) {
 
 function requiredText(value: unknown, field: string, maximum: number) {
   if (typeof value !== "string") {
-    throw new Error(`${field} is required.`);
+    throw new HttpError(400, `${field} is required.`);
   }
   const text = value.trim();
   if (!text || text.length > maximum) {
-    throw new Error(`${field} is invalid.`);
+    throw new HttpError(400, `${field} is invalid.`);
   }
   return text;
 }
@@ -52,16 +62,16 @@ function requiredText(value: unknown, field: string, maximum: number) {
 function optionalData(value: unknown): FcmData | undefined {
   if (value == null) return undefined;
   if (typeof value !== "object" || Array.isArray(value)) {
-    throw new Error("data is invalid.");
+    throw new HttpError(400, "data is invalid.");
   }
   const entries = Object.entries(value as Record<string, unknown>);
-  if (entries.length > 50) throw new Error("data is invalid.");
+  if (entries.length > 50) throw new HttpError(400, "data is invalid.");
   const data: FcmData = {};
   for (const [key, item] of entries) {
     if (
       !key || key.length > 128 || typeof item !== "string" || item.length > 1024
     ) {
-      throw new Error("data is invalid.");
+      throw new HttpError(400, "data is invalid.");
     }
     data[key] = item;
   }
@@ -98,7 +108,7 @@ export function createSendNotificationHandler(
     }
 
     try {
-      const body = await request.json() as Record<string, unknown>;
+      const body = await readBoundedJson(request) as Record<string, unknown>;
       const type = body.type == null
         ? "user"
         : requiredText(body.type, "type", 16);
@@ -110,7 +120,9 @@ export function createSendNotificationHandler(
         : requiredText(body.image_url, "image_url", 2048);
       if (image != null) {
         const url = new URL(image);
-        if (url.protocol !== "https:") throw new Error("image_url is invalid.");
+        if (url.protocol !== "https:") {
+          throw new HttpError(400, "image_url is invalid.");
+        }
       }
       const notification: FcmNotification = {
         title,
@@ -121,26 +133,48 @@ export function createSendNotificationHandler(
       let result: SendResult;
       if (type === "topic") {
         const topic = requiredText(body.topic, "topic", 200);
-        if (!topicPattern.test(topic)) throw new Error("topic is invalid.");
+        if (!topicPattern.test(topic)) {
+          throw new HttpError(400, "topic is invalid.");
+        }
+        await deps.enforceRateLimit(
+          deps.createAdminClient(),
+          "internal-notification",
+          "send-notification",
+          {
+            maxRequests: 120,
+            windowSeconds: 60,
+          },
+        );
         result = await deps.sendToTopic(topic, notification, data);
       } else if (type === "user") {
         const userId = requiredText(body.user_id, "user_id", 64);
-        if (!uuidPattern.test(userId)) throw new Error("user_id is invalid.");
+        if (!uuidPattern.test(userId)) {
+          throw new HttpError(400, "user_id is invalid.");
+        }
+        await deps.enforceRateLimit(
+          deps.createAdminClient(),
+          "internal-notification",
+          "send-notification",
+          {
+            maxRequests: 120,
+            windowSeconds: 60,
+          },
+        );
         result = await deps.sendToUser(userId, notification, data);
       } else {
-        throw new Error("type is invalid.");
+        throw new HttpError(400, "type is invalid.");
       }
 
-      return response(result, result.success ? 200 : 502);
+      return jsonOk({
+        ...result,
+        errors: result.errors.length ? ["Notification delivery failed."] : [],
+      }, result.success ? 200 : 502);
     } catch (error) {
-      return response(
-        { error: error instanceof Error ? error.message : "Invalid request." },
-        400,
-      );
+      return errorResponse(error);
     }
   };
 }
 
 if (import.meta.main) {
-  Deno.serve(createSendNotificationHandler());
+  Deno.serve(withEdgeBoundary(createSendNotificationHandler()));
 }

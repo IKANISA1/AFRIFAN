@@ -1,3 +1,6 @@
+import { errorResponse } from "../_shared/response.ts";
+import { withEdgeBoundary } from "../_shared/response.ts";
+import { readBoundedJson } from "../_shared/http.ts";
 import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
@@ -119,14 +122,7 @@ function errorCode(error: unknown): string {
 }
 
 async function requestBody(request: Request): Promise<Record<string, unknown>> {
-  try {
-    const body = await request.json();
-    return body != null && typeof body === "object" && !Array.isArray(body)
-      ? body as Record<string, unknown>
-      : {};
-  } catch {
-    return {};
-  }
+  return await readBoundedJson(request, { allowEmpty: true });
 }
 
 export function createSyncGoogleWalletTicketStateHandler(
@@ -135,7 +131,7 @@ export function createSyncGoogleWalletTicketStateHandler(
   const deps: Dependencies = { ...defaultDependencies, ...dependencies };
 
   return async (request: Request): Promise<Response> => {
-    if (request.method === "OPTIONS") return corsPreflightResponse();
+    if (request.method === "OPTIONS") return corsPreflightResponse(request);
     if (request.method !== "POST") return jsonError("Method not allowed", 405);
 
     try {
@@ -211,9 +207,12 @@ export function createSyncGoogleWalletTicketStateHandler(
       });
     } catch (error) {
       if (error instanceof HttpError) {
-        return jsonError(error.message, error.status);
+        return errorResponse(error);
       }
-      logDiagnostic("error", "sync_google_wallet_ticket_state_sync_google_wallet_ticket_state_failed");
+      logDiagnostic(
+        "error",
+        "sync_google_wallet_ticket_state_sync_google_wallet_ticket_state_failed",
+      );
       return jsonError(
         "Google Wallet state synchronization failed.",
         500,
@@ -225,7 +224,7 @@ export function createSyncGoogleWalletTicketStateHandler(
 
 if (import.meta.main) {
   const handler = createSyncGoogleWalletTicketStateHandler();
-  Deno.serve((request: Request) =>
+  Deno.serve(withEdgeBoundary((request: Request) =>
     handler(request).then(
       (response) =>
         new Response(response.body, {
@@ -237,5 +236,5 @@ if (import.meta.main) {
           },
         }),
     )
-  );
+  ));
 }

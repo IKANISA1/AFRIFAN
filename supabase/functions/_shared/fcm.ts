@@ -1,3 +1,4 @@
+import { fetchBoundedJson } from "./http.ts";
 /**
  * Shared Firebase Cloud Messaging (FCM) HTTP v1 sender for Edge Functions.
  *
@@ -132,18 +133,18 @@ export async function getAccessToken(): Promise<string> {
   const sa = getServiceAccount();
   const jwt = await buildJwtAssertion(sa, FCM_SCOPE);
 
-  const response = await fetch(TOKEN_URL, {
+  const data = await fetchBoundedJson<
+    { access_token: string; expires_in?: number }
+  >(fetch, TOKEN_URL, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: `grant_type=${encodeURIComponent(GRANT_TYPE)}&assertion=${encodeURIComponent(jwt)}`,
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`OAuth2 token exchange failed: ${response.status} ${errorText}`);
+    body: `grant_type=${encodeURIComponent(GRANT_TYPE)}&assertion=${
+      encodeURIComponent(jwt)
+    }`,
+  }, { maxBytes: 16384, timeoutMs: 5000 });
+  if (typeof data.access_token !== "string" || !data.access_token) {
+    throw new Error("Notification provider authentication failed.");
   }
-
-  const data = await response.json();
   _cachedToken = {
     token: data.access_token,
     expiresAt: Date.now() + (data.expires_in ?? 3600) * 1000,
@@ -158,37 +159,35 @@ async function sendFcmMessage(
   projectId: string,
   accessToken: string,
   message: Record<string, unknown>,
+  deadlineAt = Date.now() + 5000,
 ): Promise<{ ok: boolean; error?: string; errorCode?: string }> {
-  const url = `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`;
+  const url =
+    `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`;
 
-  const response = await fetch(url, {
+  const data = await fetchBoundedJson<{
+    name?: string;
+    error?: { status?: string; details?: Array<{ errorCode?: string }> };
+  }>(fetch, url, {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ message }),
+  }, {
+    maxBytes: 16384,
+    timeoutMs: Math.min(5000, Math.max(1, deadlineAt - Date.now())),
+    acceptErrorResponse: true,
   });
-
-  if (response.ok) {
-    return { ok: true };
-  }
-
-  const errorBody = await response.text();
-  let errorCode = "UNKNOWN";
-  try {
-    const parsed = JSON.parse(errorBody);
-    errorCode = parsed?.error?.details?.[0]?.errorCode ??
-      parsed?.error?.status ??
-      "UNKNOWN";
-  } catch {
-    // Use raw text.
-  }
-
+  if (typeof data.name === "string" && !data.error) return { ok: true };
+  const providerCode = data.error?.details?.[0]?.errorCode ??
+    data.error?.status;
   return {
     ok: false,
-    error: `${response.status}: ${errorBody}`,
-    errorCode,
+    error: "Notification delivery failed.",
+    errorCode: providerCode === "UNREGISTERED" || providerCode === "NOT_FOUND"
+      ? providerCode
+      : "UNKNOWN",
   };
 }
 
@@ -204,7 +203,9 @@ export async function sendToUser(
   userId: string,
   notification: FcmNotification,
   data?: FcmData,
+  options: { deadlineAt?: number } = {},
 ): Promise<SendResult> {
+  const deadlineAt = options.deadlineAt ?? Date.now() + 30000;
   const result: SendResult = {
     success: false,
     sent_count: 0,
@@ -222,10 +223,11 @@ export async function sendToUser(
   const { data: tokens, error: dbError } = await supabase
     .from("user_fcm_tokens")
     .select("id, token")
-    .eq("user_id", userId);
+    .eq("user_id", userId)
+    .limit(21);
 
   if (dbError) {
-    result.errors.push(`DB error: ${dbError.message}`);
+    result.errors.push("Notification recipients could not be loaded.");
     return result;
   }
 
@@ -234,9 +236,19 @@ export async function sendToUser(
     return result;
   }
 
+  if (tokens.length > 20) {
+    result.errors.push("Notification device budget exceeded.");
+    return result;
+  }
   const staleTokenIds: string[] = [];
 
   for (const row of tokens) {
+    if (Date.now() >= deadlineAt) {
+      result.failed_count += tokens.length - result.sent_count -
+        result.failed_count;
+      result.errors.push("Notification delivery timed out.");
+      break;
+    }
     const message: Record<string, unknown> = {
       token: row.token,
       notification: {
@@ -255,7 +267,12 @@ export async function sendToUser(
       ...(data ? { data } : {}),
     };
 
-    const sendResult = await sendFcmMessage(projectId, accessToken, message);
+    const sendResult = await sendFcmMessage(
+      projectId,
+      accessToken,
+      message,
+      deadlineAt,
+    );
 
     if (sendResult.ok) {
       result.sent_count++;
@@ -282,7 +299,7 @@ export async function sendToUser(
       .in("id", staleTokenIds);
 
     if (deleteError) {
-      result.errors.push(`Stale token cleanup failed: ${deleteError.message}`);
+      result.errors.push("Notification token cleanup failed.");
     } else {
       result.cleaned_tokens = staleTokenIds.length;
     }

@@ -1,152 +1,154 @@
+import { assertEquals, assertRejects } from "jsr:@std/assert";
 import { enforceRateLimit } from "./rate_limit.ts";
 import { HttpError } from "./auth.ts";
 
-function assert(condition: boolean, message: string): void {
-  if (!condition) {
-    throw new Error(message);
-  }
-}
+const config = { maxRequests: 1, windowSeconds: 60 };
 
-function assertEquals<T>(actual: T, expected: T, message: string): void {
-  if (actual !== expected) {
-    throw new Error(`${message}: expected ${expected}, got ${actual}`);
-  }
-}
+Deno.test("admission uses one atomic RPC bound to verified subject and trusted tenant", async () => {
+  const calls: Record<string, unknown>[] = [];
+  await enforceRateLimit(
+    {
+      rpc: async (name, args) => {
+        assertEquals(name, "consume_edge_rate_limit");
+        calls.push(args);
+        return {
+          data: [{ allowed: true, retry_after_seconds: 0 }],
+          error: null,
+        };
+      },
+    },
+    "actor-1",
+    "paid-ai",
+    { ...config, clubId: 7 },
+  );
+  assertEquals(calls, [{
+    p_bucket_key: '["actor-1","paid-ai",7]',
+    p_limit: 1,
+    p_window_seconds: 60,
+  }]);
+});
 
-function buildMockAdminClient(recentCount: number) {
-  const inserts: Record<string, unknown>[] = [];
-
+Deno.test("concurrent callers share one admission decision and only one reaches paid work", async () => {
+  // A serialized RPC substitute tests client integration. Actual lock/concurrency
+  // semantics are tested separately against the isolated PostgreSQL migration.
+  let admitted = 0;
   const client = {
-    from(table: string) {
-      if (table !== "edge_function_rate_events") {
-        throw new Error(`Unexpected table: ${table}`);
-      }
+    rpc: async () => ({
+      data: [{
+        allowed: ++admitted <= 1,
+        retry_after_seconds: admitted <= 1 ? 0 : 60,
+      }],
+      error: null,
+    }),
+  };
+  const decisions = await Promise.allSettled(
+    Array.from(
+      { length: 20 },
+      () => enforceRateLimit(client, "actor-1", "paid-ai", config),
+    ),
+  );
+  assertEquals(
+    decisions.filter((decision) => decision.status === "fulfilled").length,
+    1,
+  );
+  for (
+    const decision of decisions.filter((decision) =>
+      decision.status === "rejected"
+    )
+  ) {
+    assertEquals((decision as PromiseRejectedResult).reason.status, 429);
+    assertEquals(
+      (decision as PromiseRejectedResult).reason.headers["Retry-After"],
+      "60",
+    );
+  }
+});
 
-      return {
-        select(_columns: string, _opts?: Record<string, unknown>) {
-          return {
-            eq(_col: string, _val: string) {
-              return {
-                eq(_col2: string, _val2: string) {
-                  return {
-                    gte(_col3: string, _val3: string) {
-                      return Promise.resolve({
-                        count: recentCount,
-                        error: null,
-                      });
-                    },
-                  };
-                },
-              };
-            },
-          };
-        },
-        insert(payload: Record<string, unknown>) {
-          inserts.push(payload);
-          return Promise.resolve({ error: null });
-        },
-      };
+Deno.test("subject, operation and tenant produce distinct collision-free buckets", async () => {
+  const keys: unknown[] = [];
+  const client = {
+    rpc: async (_name: string, args: Record<string, unknown>) => {
+      keys.push(args.p_bucket_key);
+      return { data: [{ allowed: true, retry_after_seconds: 0 }], error: null };
     },
   };
-
-  return { client: client as any, getInserts: () => inserts };
-}
-
-Deno.test("enforceRateLimit allows requests under the limit", async () => {
-  const { client, getInserts } = buildMockAdminClient(3);
-
-  await enforceRateLimit(client, "user-1", "test-fn", {
-    maxRequests: 10,
-    windowSeconds: 60,
-  });
-
-  assertEquals(getInserts().length, 1, "should record the invocation");
-  assertEquals(
-    getInserts()[0].function_name,
-    "test-fn",
-    "should record the correct function name",
-  );
-});
-
-Deno.test("enforceRateLimit throws 429 when limit is exceeded", async () => {
-  const { client } = buildMockAdminClient(10);
-
-  try {
-    await enforceRateLimit(client, "user-1", "test-fn", {
-      maxRequests: 10,
-      windowSeconds: 60,
+  for (
+    const [actor, operation, club] of [
+      ["actor-1", "sms-ingest", 1],
+      ["actor-2", "sms-ingest", 1],
+      ["actor-1", "parse-momo-sms", 1],
+      ["actor-1", "sms-ingest", 2],
+    ] as const
+  ) {
+    await enforceRateLimit(client, actor, operation, {
+      ...config,
+      clubId: club,
     });
-    throw new Error("expected enforceRateLimit to throw");
-  } catch (error) {
-    assert(error instanceof HttpError, "should throw HttpError");
-    assertEquals((error as HttpError).status, 429, "should return 429");
   }
+  assertEquals(new Set(keys).size, 4);
 });
 
-Deno.test("enforceRateLimit fails open when count query returns zero", async () => {
-  let insertCalled = false;
-
-  // When the count returns 0 (e.g. table is empty or query failed upstream),
-  // the function should proceed and record the invocation.
-  await enforceRateLimit(
-    {} as any,
-    "user-1",
-    "test-fn",
-    { maxRequests: 5, windowSeconds: 60 },
-    {
-      countRecent: async () => 0,
-      recordInvocation: async () => {
-        insertCalled = true;
-      },
-    },
-  );
-
-  assert(insertCalled, "should have recorded the invocation (fail-open)");
-});
-
-Deno.test("enforceRateLimit uses dependency-injected count", async () => {
-  let countCalls = 0;
-  let recordCalls = 0;
-
-  await enforceRateLimit(
-    {} as any,
-    "user-42",
-    "fn-test",
-    { maxRequests: 5, windowSeconds: 120 },
-    {
-      now: () => new Date("2026-03-23T12:00:00.000Z"),
-      countRecent: async () => {
-        countCalls += 1;
-        return 2;
-      },
-      recordInvocation: async () => {
-        recordCalls += 1;
-      },
-    },
-  );
-
-  assertEquals(countCalls, 1, "should call countRecent once");
-  assertEquals(recordCalls, 1, "should call recordInvocation once");
-});
-
-Deno.test("enforceRateLimit blocks with injected over-limit count", async () => {
-  try {
-    await enforceRateLimit(
-      {} as any,
-      "user-42",
-      "fn-test",
-      { maxRequests: 5, windowSeconds: 120 },
+for (
+  const result of [
+    { data: null, error: new Error("private DB detail") },
+    { data: [], error: null },
+    { data: [{ allowed: true }], error: null },
+    { data: [{ allowed: "true", retry_after_seconds: 0 }], error: null },
+    { data: [{ allowed: false, retry_after_seconds: 0 }], error: null },
+    { data: [{ allowed: true, retry_after_seconds: 3 }], error: null },
+  ]
+) {
+  Deno.test(`store error or malformed receipt fails closed: ${JSON.stringify(result.data)}`, async () => {
+    const error = await assertRejects(
+      () =>
+        enforceRateLimit(
+          { rpc: async () => result },
+          "actor-1",
+          "paid-ai",
+          config,
+        ),
+      HttpError,
+    );
+    assertEquals(error.status, 503);
+    assertEquals(error.message.includes("private DB"), false);
+    assertEquals(error.headers["Retry-After"], "5");
+  });
+}
+Deno.test("thrown store failures cannot admit paid work", async () => {
+  const error = await assertRejects(() =>
+    enforceRateLimit(
       {
-        now: () => new Date("2026-03-23T12:00:00.000Z"),
-        countRecent: async () => 5,
-        recordInvocation: async () => {
-          throw new Error("should not record when blocked");
+        rpc: () => {
+          throw new Error("connection failed");
         },
       },
-    );
-    throw new Error("expected enforceRateLimit to throw");
-  } catch (error) {
-    assert(error instanceof HttpError, "should throw HttpError");
-    assertEquals((error as HttpError).status, 429, "should return 429");
+      "actor-1",
+      "paid-ai",
+      config,
+    ), HttpError);
+  assertEquals(error.status, 503);
+});
+Deno.test("invalid budgets never reach the store", async () => {
+  for (
+    const invalid of [
+      { maxRequests: 0, windowSeconds: 60 },
+      { maxRequests: 1001, windowSeconds: 60 },
+      { maxRequests: 1, windowSeconds: 0 },
+      { maxRequests: 1, windowSeconds: 86401 },
+      { ...config, clubId: 0 },
+    ]
+  ) {
+    const error = await assertRejects(() =>
+      enforceRateLimit(
+        {
+          rpc: () => {
+            throw new Error("must not reach store");
+          },
+        },
+        "actor-1",
+        "paid-ai",
+        invalid,
+      ), HttpError);
+    assertEquals(error.status, 503);
   }
 });

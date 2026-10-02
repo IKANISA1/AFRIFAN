@@ -1,13 +1,16 @@
+import { enforceRateLimit } from "../_shared/rate_limit.ts";
+import { errorResponse } from "../_shared/response.ts";
+import { withEdgeBoundary } from "../_shared/response.ts";
 import { logDiagnostic } from "../_shared/diagnostics.ts";
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 import { HttpError, requireCronSecret } from "../_shared/auth.ts";
 import { sendToUser } from "../_shared/fcm.ts";
 import {
-  corsPreflightResponse,
   corsHeaders,
-  jsonOk,
+  corsPreflightResponse,
   jsonError,
+  jsonOk,
 } from "../_shared/response.ts";
 import { createAdminClient } from "../_shared/supabase.ts";
 
@@ -27,9 +30,11 @@ type AdminClientLike = ReturnType<typeof createAdminClient>;
 type Dependencies = {
   createAdminClient: () => AdminClientLike;
   requireCronSecret: typeof requireCronSecret;
+  enforceRateLimit: typeof enforceRateLimit;
 };
 
 const defaultDependencies: Dependencies = {
+  enforceRateLimit,
   createAdminClient,
   requireCronSecret,
 };
@@ -44,7 +49,7 @@ export function createSettlePredictionNotificationsHandler(
 
   return async (request: Request) => {
     if (request.method === "OPTIONS") {
-      return corsPreflightResponse();
+      return corsPreflightResponse(request);
     }
 
     if (request.method !== "POST") {
@@ -55,6 +60,15 @@ export function createSettlePredictionNotificationsHandler(
       deps.requireCronSecret(request);
 
       const adminClient = deps.createAdminClient();
+      await deps.enforceRateLimit(
+        adminClient,
+        "internal-notification-dispatch",
+        "settle-prediction-notifications",
+        {
+          maxRequests: 20,
+          windowSeconds: 60,
+        },
+      );
 
       // 1. Fetch pending prediction notifications
       const { data: pending, error: fetchError } = await adminClient.rpc(
@@ -62,7 +76,10 @@ export function createSettlePredictionNotificationsHandler(
       );
 
       if (fetchError) {
-        throw new HttpError(500, `Failed to fetch pending notifications: ${fetchError.message}`);
+        throw new HttpError(
+          500,
+          `Failed to fetch pending notifications: ${fetchError.message}`,
+        );
       }
 
       const pendingPayload =
@@ -73,13 +90,18 @@ export function createSettlePredictionNotificationsHandler(
       const notifications = Array.isArray(pendingPayload?.notifications)
         ? pendingPayload!.notifications as Record<string, unknown>[]
         : Array.isArray(pending)
-          ? pending as Record<string, unknown>[]
-          : [];
+        ? pending as Record<string, unknown>[]
+        : [];
 
       if (notifications.length === 0) {
         return jsonOk({
           success: true,
-          data: { processed: 0, sent: 0, failed: 0, message: "No pending notifications." },
+          data: {
+            processed: 0,
+            sent: 0,
+            failed: 0,
+            message: "No pending notifications.",
+          },
         });
       }
 
@@ -87,15 +109,19 @@ export function createSettlePredictionNotificationsHandler(
       let failed = 0;
       const sentIds: string[] = [];
 
-      for (const notif of notifications) {
+      const deadlineAt = Date.now() + 45000;
+      let processed = 0;
+      for (const notif of notifications.slice(0, 100)) {
+        if (Date.now() >= deadlineAt) break;
+        processed++;
         const notificationId = notif.id?.toString() ?? "";
         const userId = notif.user_id?.toString() ?? "";
         const title = notif.title?.toString() ?? "Prediction Result";
-        const body = notif.body?.toString() ?? "Your prediction has been settled!";
-        const payload =
-          notif.payload && typeof notif.payload === "object"
-            ? notif.payload as Record<string, unknown>
-            : {};
+        const body = notif.body?.toString() ??
+          "Your prediction has been settled!";
+        const payload = notif.payload && typeof notif.payload === "object"
+          ? notif.payload as Record<string, unknown>
+          : {};
 
         if (!notificationId || !userId) {
           failed++;
@@ -109,20 +135,28 @@ export function createSettlePredictionNotificationsHandler(
             fixture_id: payload.fixture_id?.toString() ?? "",
             result: notif.result?.toString() ?? "unknown",
             route: payload.route?.toString() ?? "",
-          });
+          }, { deadlineAt });
 
           if (result.success) {
             sent++;
             sentIds.push(notificationId);
           } else {
             failed++;
-            logDiagnostic("error", "settle_prediction_notifications_fcm_send_failed_for_user", result.errors);
+            logDiagnostic(
+              "error",
+              "settle_prediction_notifications_fcm_send_failed_for_user",
+              result.errors,
+            );
             // Still mark as sent to avoid infinite retry on token issues
             sentIds.push(notificationId);
           }
         } catch (sendError) {
           failed++;
-          logDiagnostic("error", "settle_prediction_notifications_fcm_dispatch_error_for_user", sendError);
+          logDiagnostic(
+            "error",
+            "settle_prediction_notifications_fcm_dispatch_error_for_user",
+            sendError,
+          );
           // Mark as sent to prevent re-processing on transient errors
           sentIds.push(notificationId);
         }
@@ -136,14 +170,18 @@ export function createSettlePredictionNotificationsHandler(
         );
 
         if (markError) {
-          logDiagnostic("error", "settle_prediction_notifications_failed_to_mark_notifications_as_sent", markError);
+          logDiagnostic(
+            "error",
+            "settle_prediction_notifications_failed_to_mark_notifications_as_sent",
+            markError,
+          );
         }
       }
 
       return jsonOk({
         success: true,
         data: {
-          processed: notifications.length,
+          processed,
           sent,
           failed,
           marked_sent: sentIds.length,
@@ -151,23 +189,22 @@ export function createSettlePredictionNotificationsHandler(
       });
     } catch (error) {
       if (error instanceof HttpError) {
-        return jsonError(error.message, error.status);
+        return errorResponse(error);
       }
 
-      logDiagnostic("error", "settle_prediction_notifications_settle_prediction_notifications_failed", error);
-      return jsonError(
-        error instanceof Error
-          ? error.message
-          : "Prediction notification dispatch failed.",
-        500,
+      logDiagnostic(
+        "error",
+        "settle_prediction_notifications_settle_prediction_notifications_failed",
+        error,
       );
+      return errorResponse(error);
     }
   };
 }
 
 if (import.meta.main) {
   const handler = createSettlePredictionNotificationsHandler();
-  Deno.serve((req: Request) =>
+  Deno.serve(withEdgeBoundary((req: Request) =>
     handler(req).then(
       (res) =>
         new Response(res.body, {
@@ -179,5 +216,5 @@ if (import.meta.main) {
           },
         }),
     )
-  );
+  ));
 }
