@@ -30,8 +30,8 @@ jobs:
       - name: Install Melos and bootstrap workspace
         working-directory: .
         run: |
+          cd "$GITHUB_WORKSPACE"
           flutter pub get
-          cd ../..
           dart run melos bootstrap
 
       - name: Validate signing secrets

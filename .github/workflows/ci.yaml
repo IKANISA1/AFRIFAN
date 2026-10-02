@@ -7,6 +7,9 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -122,6 +125,7 @@ jobs:
           node --test tools/scripts/validate_repository_boundary.test.mjs
           tools/scripts/validate_evidence_provenance.test.mjs
           tools/scripts/validate_supabase_local_only_migrations.test.mjs
+          tools/scripts/validate_supabase_edge_contract.test.mjs
           tools/scripts/validate_design_authority.test.mjs
           tools/scripts/design_registered_media.test.mjs
           tools/scripts/android_release_contract.test.mjs
@@ -181,11 +185,22 @@ jobs:
           dart run tools/scripts/validate_workspace_architecture.dart
           dart run tools/scripts/test_feature_availability_policy.dart
 
+      - name: Verify design authority provisioning regressions
+        run: python3 -m unittest discover -s tools/scripts -p test_provision_design_authority.py
+
+      - name: Provision pinned selected design authority
+        id: revolut-authority
+        uses: ./.github/actions/provision-design-authority
+        with:
+          asset-id: ${{ vars.REVOLUT_DESIGN_ASSET_ID }}
+          bundle-sha256: ${{ vars.REVOLUT_DESIGN_BUNDLE_SHA256 }}
+          github-token: ${{ github.token }}
+
       - name: Generate route inventory and validate design source compliance
         env:
-          # Provision the selected skill package on the runner. Missing or
-          # changed authority bytes fail verification; the repo is no substitute.
-          REVOLUT_DESIGN_ROOT: ${{ vars.REVOLUT_DESIGN_ROOT }}
+          # Read and verify the selected external reference bytes on this runner.
+          # Provisioning confirms source binding; visual approval remains separate.
+          REVOLUT_DESIGN_ROOT: ${{ steps.revolut-authority.outputs.authority-root }}
           EXCEPTIONS_REGISTER: ${{ github.workspace }}/docs/governance/design-exceptions.json
           ROUTE_INVENTORY_JSON: ${{ runner.temp }}/africlub-governance/route/route-inventory.json
           ROUTE_STATE_CLOSURE_JSON: ${{ runner.temp }}/africlub-governance/route/route-state-closure.json

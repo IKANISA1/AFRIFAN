@@ -57,7 +57,7 @@ jobs:
 
       - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed
         with:
-          deno-version: v2.x
+          deno-version: v2.9.6
 
       - name: Validate migration and Edge Function controls
         shell: bash
@@ -66,15 +66,12 @@ jobs:
           node tools/scripts/validate_repository_boundary.mjs
           node tools/scripts/validate_supabase_local_only_migrations.mjs
           node tools/scripts/validate_supabase_edge_contract.mjs
-          deno check $(find supabase/functions -mindepth 2 -maxdepth 2 -name index.ts -print | sort)
-          deno test --allow-env --allow-net --allow-read \
+          node --test tools/scripts/validate_supabase_edge_contract.test.mjs
+          deno check --no-config --import-map supabase/deno.import-map.json --lock supabase/deno.lock --frozen-lockfile $(rg --files supabase/functions | rg "/index.ts$" | sort)
+          deno test --no-config --import-map supabase/deno.import-map.json --lock supabase/deno.lock --frozen-lockfile --allow-env --allow-net --allow-read \
             $(find supabase/functions -type f \( -name '*_test.ts' -o -name '*test.ts' \) -print | sort)
 
-      - name: Run the transactional database contract suite
-        shell: bash
-        run: corepack npm@12.0.2 exec --yes --package=supabase@2.113.0 -- supabase test db --local
-
-      - name: Replay isolated database and concurrency contracts
+      - name: Replay every SQL contract and independent concurrency check
         shell: bash
         run: |
           set -euo pipefail
@@ -152,7 +149,7 @@ jobs:
           dart run melos bootstrap
 
       - name: Analyze every package
-        run: dart run melos exec -- flutter analyze --fatal-infos --fatal-warnings
+        run: dart run melos run analyze --no-select
 
       - name: Test every package serially
         run: >-
