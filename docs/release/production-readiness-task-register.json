@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "purpose": "Auditable living AFRICLUB production-readiness ledger; historical source status and current local verification are independent.",
-  "updated_at_utc": "2026-10-02T10:39:10.361097+00:00",
+  "updated_at_utc": "2026-10-02T10:44:14.684900+00:00",
   "release_decision": "NO-GO",
   "release_accepted": false,
   "applicability": "All 130 recorded tasks remain applicable unless an explicit product-owner scope decision is recorded; none has been excluded.",
@@ -7994,9 +7994,10 @@
           "native-complete-corrected-and-committed-20261002",
           "edge-complete-ci-architecture-and-sql-diagnostic-20261002",
           "complete-provider-database-and-current-native-compile-20261002",
-          "final-ten-target-native-and-current-dependency-graph-20261002"
+          "final-ten-target-native-and-current-dependency-graph-20261002",
+          "published-review-branch-and-actual-hosted-smoke-failure-20261002"
         ],
-        "remaining_acceptance": "All ten local compile targets and final mechanical graph validation pass. Current strict Web freshness exits1 despite matching bytes;17 license-evidence gaps, required exact-candidate CI, signed/device/provider/deployment/rollback and named release acceptance remain open."
+        "remaining_acceptance": "All ten local compile targets and final mechanical graph validation pass. Current strict Web freshness exits1 despite matching bytes;17 license-evidence gaps remain. Actual publishedfb670fea smoke run36996872436 has startup_failure/zero jobs; bounded API diagnostics give no cause. Required executed current-candidate CI, signed/device/provider/deployment/rollback and named release acceptance remain open."
       },
       {
         "id": "B-01",
@@ -8649,9 +8650,10 @@
           "native-complete-corrected-and-committed-20261002",
           "edge-complete-ci-architecture-and-sql-diagnostic-20261002",
           "complete-provider-database-and-current-native-compile-20261002",
-          "final-ten-target-native-and-current-dependency-graph-20261002"
+          "final-ten-target-native-and-current-dependency-graph-20261002",
+          "published-review-branch-and-actual-hosted-smoke-failure-20261002"
         ],
-        "remaining_acceptance": "All ten local compile targets and final mechanical graph validation pass. Current strict Web freshness exits1 despite matching bytes;17 license-evidence gaps, required exact-candidate CI, signed/device/provider/deployment/rollback and named release acceptance remain open."
+        "remaining_acceptance": "All ten local compile targets and final mechanical graph validation pass. Current strict Web freshness exits1 despite matching bytes;17 license-evidence gaps remain. Actual publishedfb670fea smoke run36996872436 has startup_failure/zero jobs; bounded API diagnostics give no cause. Required executed current-candidate CI, signed/device/provider/deployment/rollback and named release acceptance remain open."
       },
       {
         "id": "AR-05",
@@ -10795,6 +10797,50 @@
           "Production Costa configuration, tenant/club/content/payment rights, real MFA/provider/financial reconciliation and operations/restore/load evidence",
           "Signed native artifacts, physical/device/installed-PWA/store tests and receipts for all shipped identities",
           "Full Revolut product/accessibility/fidelity and accountable product/legal/release approval"
+        ],
+        "local_system_complete": false,
+        "release_accepted": false
+      },
+      {
+        "id": "published-review-branch-and-actual-hosted-smoke-failure-20261002",
+        "at_utc": "2026-10-02T10:44:14.684900+00:00",
+        "scope": "Normal review-branch publication with source/tracking/remote parity atfb670fea, baseline main unchanged; actual GitHub workflow_dispatch smoke attempts no jobs due startup_failure. No CI test/toolchain execution or complete-candidate acceptance.",
+        "proof": [
+          {
+            "path": "output/remediation-2026-10-01/current-published-branch-smoke-startup-failure-20261002.json",
+            "sha256": "d3104958d8b2e2326a80891fe244a4038ae0f289ee32396f65aab1a1ce6df9e7"
+          }
+        ],
+        "verified_results": {
+          "published_source_head": "fb670fea42e40b2a440359771f650d1b87f84ae1",
+          "source_tracking_remote_parity": true,
+          "main_unchanged_baseline": "7d9a3e6bc76ab33e545657bcea8033c7eea3e693",
+          "actual_github_run_id": 36996872436,
+          "actual_github_run_url": "https://github.com/IKANISA1/AFRIFAN/actions/runs/36996872436",
+          "actual_github_run_scope": "smoke",
+          "actual_github_run_status": "completed",
+          "actual_github_run_conclusion": "startup_failure",
+          "actual_jobs": 0,
+          "actual_check_runs": 0,
+          "actual_run_log_available": false,
+          "actual_runner_job_executed": false,
+          "runner_21_online_idle": true,
+          "repository_actions_enabled": true,
+          "repository_allowed_actions": "all",
+          "startup_failure_reason_from_bounded_api_diagnostics": "unknown",
+          "default_branch_push_warning_advisories": 30,
+          "default_branch_push_warning_critical": 2,
+          "default_branch_push_warning_high": 14,
+          "default_branch_push_warning_moderate": 11,
+          "default_branch_push_warning_low": 3,
+          "default_branch_warning_is_current_candidate_audit": false,
+          "full_candidate_ci_accepted": false
+        },
+        "remaining": [
+          "Determine actual GitHub startup cause using account/workflow/platform diagnostics; API readbacks provided no reason",
+          "Complete governed current-candidate CI with executed jobs; online runner and source contract checks are insufficient",
+          "Recheck current candidate advisories/SBOM/legal distribution admission; default-branch push warning is a distinct observation",
+          "Current strict Web freshness, signed/device/provider/store/deployment/rollback and accountable approval remain open"
         ],
         "local_system_complete": false,
         "release_accepted": false
