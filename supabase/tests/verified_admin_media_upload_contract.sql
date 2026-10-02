@@ -23,9 +23,18 @@ declare u text:='99969000-0000-4000-8000-'||lpad(n::text,12,'0'); e bigint:=floo
  'aal','aal2','is_anonymous',false,'exp',e+ttl,'session_id','99969000-0000-4000-8000-'||lpad((n+950)::text,12,'0'),
  'amr',jsonb_build_array(jsonb_build_object('method','totp','timestamp',e-age)))::text end,true);
 end $$;
-create function pg_temp.media_admit(n int) returns jsonb language sql as $$
- select public.admit_admin_media_upload(('99969000-0000-4000-8000-'||lpad(n::text,12,'0'))::uuid,9996901,'shop_product','image/png',9,repeat('a',64));
-$$;
+create temp table media_admission_receipts(n int primary key,receipt jsonb);
+grant select,insert,update on media_admission_receipts to authenticated;
+grant select on media_admission_receipts to service_role;
+create function pg_temp.media_admit(n int) returns jsonb language plpgsql as $$declare r jsonb;begin
+ r:=public.admit_admin_media_upload(('99969000-0000-4000-8000-'||lpad(n::text,12,'0'))::uuid,9996901,'shop_product','image/png',9,repeat('a',64));
+ insert into pg_temp.media_admission_receipts(n,receipt) values(n,r) on conflict on constraint media_admission_receipts_pkey do update set receipt=excluded.receipt;
+ return r;end $$;
+create function pg_temp.media_claim(n int,token int) returns jsonb language plpgsql as $$declare proof uuid;r jsonb;begin
+ select (receipt->>'dispatch_proof_id')::uuid into proof from pg_temp.media_admission_receipts where media_admission_receipts.n=media_claim.n;
+ r:=public.claim_admin_media_upload(('99969000-0000-4000-8000-'||lpad(n::text,12,'0'))::uuid,('99969000-0000-4000-8000-'||lpad(token::text,12,'0'))::uuid,proof);
+ if (r->>'claimed')::boolean then perform public.begin_admin_media_upload(('99969000-0000-4000-8000-'||lpad(n::text,12,'0'))::uuid,('99969000-0000-4000-8000-'||lpad(token::text,12,'0'))::uuid);end if;
+ return r;end $$;
 -- Real vendor row/trigger projection, not a hosted provider acknowledgement.
 -- The Edge suite separately verifies actual downloaded bytes against the digest.
 create function pg_temp.media_store(op int,token int,obj int) returns void language plpgsql security definer set search_path='' as $$
@@ -36,10 +45,10 @@ declare u public.admin_media_uploads; begin
  jsonb_build_object('mimetype',u.mime_type,'size',u.byte_length),jsonb_build_object('operation_id',u.operation_id,
  'lease_token','99969000-0000-4000-8000-'||lpad(token::text,12,'0'),'content_sha256',u.content_sha256));
 end $$;
-revoke all on function pg_temp.media_actor(int,int,int,boolean),pg_temp.media_admit(int),pg_temp.media_store(int,int,int)
+revoke all on function pg_temp.media_actor(int,int,int,boolean),pg_temp.media_admit(int),pg_temp.media_claim(int,int),pg_temp.media_store(int,int,int)
  from public,anon,authenticated,service_role;
 grant execute on function pg_temp.media_admit(int) to authenticated;
-grant execute on function pg_temp.media_store(int,int,int) to service_role;
+grant execute on function pg_temp.media_claim(int,int),pg_temp.media_store(int,int,int) to service_role;
 select ok(has_function_privilege('authenticated','public.admit_admin_media_upload(uuid,bigint,text,text,integer,text)','EXECUTE')
  and has_function_privilege('authenticated','public.get_admin_media_upload_status(uuid)','EXECUTE')
  and not has_function_privilege('service_role','public.admit_admin_media_upload(uuid,bigint,text,text,integer,text)','EXECUTE'),'only original caller admits or renews media assurance');
@@ -79,8 +88,8 @@ select throws_ok($$select pg_temp.media_admit(701)$$,'22023','MEDIA_COMMAND_BIND
 reset role;
 select pg_temp.media_actor(1,1,3600,true);
 set local role service_role;
-select is(public.claim_admin_media_upload('99969000-0000-4000-8000-000000000701','99969000-0000-4000-8000-000000000901')->>'status','uploading','service persists bounded lease before remote call');
-select is((public.claim_admin_media_upload('99969000-0000-4000-8000-000000000701','99969000-0000-4000-8000-000000000902')->>'claimed')::boolean,false,'overlapping lease cannot repeat effect');
+select is(pg_temp.media_claim(701,901)->>'status','uploading','service persists bounded lease before remote call');
+select is((pg_temp.media_claim(701,902)->>'claimed')::boolean,false,'overlapping lease cannot repeat effect');
 select throws_ok($$select pg_temp.media_store(701,902,801)$$,'42501','MEDIA_LEASE_LOST','another lease cannot create object');
 select lives_ok($$select pg_temp.media_store(701,901,801)$$,'actual vendor row passes exact lease/authority/object guard');
 reset role;
@@ -100,7 +109,7 @@ select pg_temp.media_actor(1,1,3);
 set local role authenticated; select pg_temp.media_admit(702); reset role;
 select pg_temp.media_actor(1,1,3600,true);
 set local role service_role;
-select public.claim_admin_media_upload('99969000-0000-4000-8000-000000000702','99969000-0000-4000-8000-000000000912');
+select pg_temp.media_claim(702,912);
 select pg_temp.media_store(702,912,802);
 select pg_sleep(3.2);
 select is(public.complete_admin_media_upload('99969000-0000-4000-8000-000000000702','99969000-0000-4000-8000-000000000912','stored','99969000-0000-4000-8000-000000000802',repeat('a',64))->>'status','staged','post-provider proof expiry never claims success or erasure');
@@ -109,7 +118,7 @@ select pg_temp.media_actor(1);
 set local role authenticated; select pg_temp.media_admit(702); reset role;
 select pg_temp.media_actor(1,1,3600,true);
 set local role service_role;
-select public.claim_admin_media_upload('99969000-0000-4000-8000-000000000702','99969000-0000-4000-8000-000000000913');
+select pg_temp.media_claim(702,913);
 select is(public.complete_admin_media_upload('99969000-0000-4000-8000-000000000702','99969000-0000-4000-8000-000000000913','stored','99969000-0000-4000-8000-000000000802',repeat('a',64))->>'status','completed','fresh same-command proof reconciles original stored image');
 reset role;
 select is((select count(*)::int from storage.objects where name='club-9996901/admin/shop_product/99969000-0000-4000-8000-000000000702.png'),1,'fresh reconciliation retains one object');
@@ -118,7 +127,7 @@ select is((select count(*)::int from public.admin_media_upload_proofs where oper
 select pg_temp.media_actor(1,297);
 set local role authenticated; select pg_temp.media_admit(703); reset role;
 select pg_temp.media_actor(1,1,3600,true);
-select public.claim_admin_media_upload('99969000-0000-4000-8000-000000000703','99969000-0000-4000-8000-000000000923');
+select pg_temp.media_claim(703,923);
 create function pg_temp.media_delay() returns trigger language plpgsql as $$ begin
  if new.name='club-9996901/admin/shop_product/99969000-0000-4000-8000-000000000703.png' then perform pg_sleep(3.2); end if;return new;end $$;
 create trigger zz_media_delay before insert on storage.objects for each row execute function pg_temp.media_delay();
@@ -129,16 +138,16 @@ select pg_temp.media_actor(1);
 set local role authenticated; select pg_temp.media_admit(704); reset role;
 delete from auth.sessions where id='99969000-0000-4000-8000-000000000951';
 select pg_temp.media_actor(1,1,3600,true);
-select throws_ok($$select public.claim_admin_media_upload('99969000-0000-4000-8000-000000000704','99969000-0000-4000-8000-000000000924')$$,'42501','MEDIA_SESSION_REVOKED','actual logout denies fresh Storage effects');
+select throws_ok($$select pg_temp.media_claim(704,924)$$,'42501','MEDIA_SESSION_REVOKED','actual logout denies fresh Storage effects');
 insert into auth.sessions(id,user_id,created_at,updated_at,aal,not_after) values('99969000-0000-4000-8000-000000000951','99969000-0000-4000-8000-000000000001',clock_timestamp(),clock_timestamp(),'aal2',clock_timestamp()+interval '1 hour');
 select pg_temp.media_actor(1);
 set local role authenticated; select pg_temp.media_admit(705); reset role;
 select pg_temp.media_actor(1,1,3600,true);
 update public.admin_role_assignments set is_active=false,revoked_at=clock_timestamp() where user_id='99969000-0000-4000-8000-000000000001';
-select throws_ok($$select public.claim_admin_media_upload('99969000-0000-4000-8000-000000000705','99969000-0000-4000-8000-000000000925')$$,'42501','MEDIA_CLUB_AUTHORITY_REQUIRED','current scoped grant revocation denies effects');
+select throws_ok($$select pg_temp.media_claim(705,925)$$,'42501','MEDIA_CLUB_AUTHORITY_REQUIRED','current scoped grant revocation denies effects');
 update public.admin_role_assignments set is_active=true,revoked_at=null where user_id='99969000-0000-4000-8000-000000000001';
 select public.request_account_erasure('99969000-0000-4000-8000-000000000001','99969000-0000-4000-8000-000000000999');
-select throws_ok($$select public.claim_admin_media_upload('99969000-0000-4000-8000-000000000705','99969000-0000-4000-8000-000000000925')$$,'42501','ACCOUNT_CLOSURE_PENDING','closure denies sensitive resume without destroying evidence');
+select throws_ok($$select pg_temp.media_claim(705,925)$$,'42501','ACCOUNT_CLOSURE_PENDING','closure denies sensitive resume without destroying evidence');
 select is((select count(*)::int from public.admin_media_uploads where actor_id='99969000-0000-4000-8000-000000000001'),5,'closure retains original accountable commands');
 select ok(has_function_privilege('authenticated','public.release_unadmitted_admin_media_upload(uuid,bigint)','EXECUTE')
  and not has_function_privilege('service_role','public.release_unadmitted_admin_media_upload(uuid,bigint)','EXECUTE')
@@ -211,7 +220,7 @@ select throws_ok($$update public.admin_media_upload_releases set club_id=9996902
 select throws_ok($$delete from public.admin_media_upload_releases$$,'P0001','MEDIA_COMMAND_IMMUTABLE','maintenance cannot revive released originals by deletion');
 select pg_temp.media_actor(2,1,3600,true);
 set local role service_role;
-select throws_ok($$select public.claim_admin_media_upload('99969000-0000-4000-8000-000000000799','99969000-0000-4000-8000-000000000929')$$,
+select throws_ok($$select pg_temp.media_claim(799,929)$$,
  '42501','MEDIA_ADMISSION_REQUIRED','released unadmitted original has no service claim or remote effect');
 reset role;
 -- An actual write wait expiring the original JWT must roll back the tombstone.

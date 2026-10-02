@@ -112,6 +112,13 @@ insert into expected_authenticated_security_definer_functions (signature) values
   ('admit_admin_media_upload(uuid,bigint,text,text,integer,text)'),
   ('get_admin_media_upload_status(uuid)'),
   ('release_unadmitted_admin_media_upload(uuid,bigint)'),
+  ('admit_admin_image_generation(uuid,bigint,text,jsonb)'),
+  ('get_admin_image_generation_status(uuid,bigint)'),
+  ('commit_admin_image_generation(uuid,bigint)'),
+  ('admit_admin_notification(uuid,bigint,jsonb)'),
+  ('recover_admin_notification(uuid,bigint)'),
+  ('admit_manual_football_sync(uuid,jsonb)'),
+  ('recover_manual_football_sync(uuid)'),
   ('admin_payment_refund_dashboard(bigint)'),
   ('admin_prepare_payment_refund(bigint,uuid,integer,text,uuid)'),
   ('admin_review_payment_refund(uuid,bigint,integer,boolean,uuid)'),
@@ -196,7 +203,7 @@ where p.prosecdef
 
 select is(
   (select count(*)::integer from actual_authenticated_security_definer_functions),
-  81,
+  88,
   'authenticated execution is limited to the governed endpoint count'
 );
 

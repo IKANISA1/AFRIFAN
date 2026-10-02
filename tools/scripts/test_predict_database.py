@@ -103,6 +103,18 @@ def historical_predict_snapshot():
             for name, (table, predicate) in tables.items()}
 
 
+def notification_pre_command_snapshot():
+    """Retain every original column of the two actual pre-command jobs."""
+    return json.loads(sql("select coalesce(jsonb_agg(to_jsonb(n) order by n.id),'[]'::jsonb)::text from public.notifications n where n.id in ('99968900-0000-4000-8000-000000000101','99968900-0000-4000-8000-000000000102');").stdout.strip())
+
+
+def assert_notification_pre_command_preserved(original):
+    current = notification_pre_command_snapshot()
+    assert len(current) == len(original) == 2, 'Existing queued notification disappeared'
+    projected = [{key: row[key] for key in old} for row, old in zip(current, original)]
+    assert projected == original, 'A forward migration changed an original queued notification field'
+
+
 def place(user, match, selection='home'):
     return sql(actor(user) + "select public.predict_place(9946001,'%s','%s');" % (fixture(match), selection), check=False)
 
@@ -214,6 +226,7 @@ try:
     if arguments.through_migration:
         migrations = [p for p in migrations if p.name <= arguments.through_migration]
         print('Diagnostic migration prefix through', arguments.through_migration, '; complete current chain not admitted', flush=True)
+    notification_history = None
     for migration in migrations:
         if migration.name == '20261001230000_free_prediction_entry_policy.sql':
             # Copy only this run's portless, real pre-forward vendor/schema
@@ -241,6 +254,10 @@ try:
                 assert sql("select count(*) from football.predict_pools where club_id=9968001 and economics_version='legacy_paid_v1';").stdout.strip() == '3'
                 assert sql("select count(*) from football.predict_entries where club_id=9968001 and economics_version='legacy_paid_v1';").stdout.strip() == '6'
                 print('PASS isolated pre-forward paid open/settled/void history: every old pool/entry/wallet/ledger field preserved; all historical versions retained', flush=True)
+        if migration.name == '20261001290000_verified_admin_notification_commands.sql':
+            sql((ROOT / 'tools/scripts/fixtures/notification_pre_command_migration.sql').read_text())
+            notification_history = notification_pre_command_snapshot()
+            assert len(notification_history) == 2 and any(row['created_by'] is None for row in notification_history)
         if 'gikundiro_club_identity' in migration.name:
             # Owned ephemeral fixture establishes the source registry before the data migration.
             sql("insert into public.african_football_clubs(id,club_name,country_name,club_slug,currency_code,currency_symbol) overriding system value values (24,'Rayon Sports FC','Rwanda','rayon_sports_rw','RWF','RWF') on conflict do nothing;")
@@ -250,6 +267,12 @@ try:
             with using_database('qa_predict_history'):
                 sql(migration.read_text())
                 assert historical_predict_snapshot() == historical, 'Forward migration changed preserved historical financial rows: ' + migration.name
+        if notification_history is not None:
+            assert_notification_pre_command_preserved(notification_history)
+            assert sql("select count(*) from public.admin_notification_commands where operation_id in ('99968900-0000-4000-8000-000000000101','99968900-0000-4000-8000-000000000102') and notification_id=operation_id and authority_kind='legacy_scheduled' and state='scheduled' and current_proof_id is null and lease_proof_id is null;").stdout.strip() == '2'
+            assert sql("select count(*) from public.admin_notification_proofs where operation_id in ('99968900-0000-4000-8000-000000000101','99968900-0000-4000-8000-000000000102');").stdout.strip() == '0'
+            assert sql("select count(*) from public.admin_notification_devices where operation_id in ('99968900-0000-4000-8000-000000000101','99968900-0000-4000-8000-000000000102');").stdout.strip() == '0'
+            print('PASS existing queued notifications: all original fields and scrubbed creator preserved; only2 independent legacy scheduled commands, no fabricated proof/device attempt', flush=True)
         print('Applied', migration.name, flush=True)
     sql('create extension if not exists pgtap with schema extensions;')
     # Exercise the entire declared database contract suite on this fresh
@@ -290,6 +313,12 @@ try:
 
     from admin_media_upload_concurrency import run_media_upload_concurrency
     run_media_upload_concurrency(sql, operations_after_lock, ROOT)
+    from admin_image_generation_concurrency import run_admin_image_generation_concurrency
+    run_admin_image_generation_concurrency(sql, operations_after_lock, ROOT)
+    from notification_command_concurrency import run_notification_command_concurrency
+    run_notification_command_concurrency(sql, operations_after_lock, ROOT)
+    from football_sync_command_concurrency import run_football_sync_command_concurrency
+    run_football_sync_command_concurrency(sql, operations_after_lock, ROOT)
 
     # Each request actually waits behind an independent transaction. A revoked
     # source or expired signature cannot leave raw evidence or financial effects.
