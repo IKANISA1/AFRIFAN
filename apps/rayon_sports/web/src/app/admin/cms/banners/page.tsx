@@ -11,6 +11,7 @@ import {
   AdminResourceStatusBanner,
   type AdminResourceInteraction,
 } from "@/components/admin/admin-resource-status-banner";
+import { useAdminMediaDraftScope } from "@/lib/use-admin-media-draft-scope";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { showAdminToast } from "@/components/admin/admin-toast";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
@@ -103,6 +104,7 @@ const bannerStatusCopy: Record<
 export default function AdminBannersPage() {
   const { access, client } = useAdminPortal();
   const [form, setForm] = useState<BannerForm>(emptyForm);
+  const draft = useAdminMediaDraftScope(access, "home_banner");
   const [interaction, setInteraction] =
     useState<AdminResourceInteraction>("idle");
 
@@ -169,7 +171,8 @@ export default function AdminBannersPage() {
     pageSize: 25,
   });
 
-  function beginEdit(banner: HomeBanner) {
+  async function beginEdit(banner: HomeBanner) {
+    if (!await draft.canLeaveDraft(form.id || undefined)) return;
     setForm({
       id: banner.id,
       expectedUpdatedAt: banner.updatedAt ?? "",
@@ -188,12 +191,13 @@ export default function AdminBannersPage() {
   }
 
   async function submit(event: React.FormEvent) {
+    if (!await draft.canLeaveDraft(form.id || undefined)) return;
     event.preventDefault();
     if (client == null) return;
 
     showAdminToast(form.id ? "Saving banner..." : "Creating banner...", "info");
     try {
-      await saveAdminBanner(client, access, {
+      await draft.runSave(() => saveAdminBanner(client, access, {
         id: form.id || null,
         expectedUpdatedAt: form.expectedUpdatedAt || null,
         title: form.title,
@@ -205,7 +209,8 @@ export default function AdminBannersPage() {
         sortOrder: form.sortOrder,
         isActive: form.isActive,
         distribution: form.distribution,
-      });
+      }), form.id || undefined);
+      if (!await draft.resetDraft(form.id || undefined)) { showAdminToast("Saved. Recover this composer before starting another draft.", "info"); return; }
       setForm(emptyForm);
       setInteraction("idle");
       await refresh();
@@ -300,21 +305,21 @@ export default function AdminBannersPage() {
             onSubmit={submit}
             className="ui-panel grid gap-4 rounded-[28px] p-6"
           >
+            {draft.error ? <p role="alert">{draft.error}</p> : null}
             <fieldset disabled={mutationLocked} className="contents">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <p className="font-display text-3xl font-medium normal-case leading-none text-[var(--admin-text-strong)]">
                   {form.id ? "Edit banner" : "New banner"}
                 </p>
-                {form.id ? (
+                {form.id || draft.scopeKey ? (
                   <button
                     type="button"
                     onClick={() => {
-                      setForm(emptyForm);
-                      setInteraction("idle");
+                      void draft.resetDraft(form.id || undefined).then(ok => { if (ok) { setForm(emptyForm); setInteraction("idle"); } });
                     }}
                     className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)]"
                   >
-                    Cancel editing
+                    {form.id ? "Cancel editing" : "Clear"}
                   </button>
                 ) : null}
               </div>
@@ -400,6 +405,10 @@ export default function AdminBannersPage() {
                   />
                 </label>
                 <AdminImageField
+                  scopeKey={form.id || draft.scopeKey || "unavailable"}
+                  recoveryOnly={!form.id && draft.legacyUnbound}
+                  onRecoveryResolved={draft.refreshRecovery}
+                  disabled={!draft.ready && !draft.legacyUnbound}
                   label="Banner image"
                   value={form.imageUrl}
                   onChange={(nextValue) =>

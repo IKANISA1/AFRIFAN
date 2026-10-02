@@ -1,22 +1,26 @@
+import type { useAdminMediaDraftScope } from "@/lib/use-admin-media-draft-scope";
 import type { FormEvent } from "react";
 import type { CommunityForm } from "./community-state";
-import { emptyForm } from "./community-state";
 import { AdminImageField } from "@/components/admin/admin-image-field";
 
 interface CommunityContentEditorProps {
+  draft: ReturnType<typeof useAdminMediaDraftScope>;
   form: CommunityForm;
   setForm: (
     update: CommunityForm | ((prev: CommunityForm) => CommunityForm),
   ) => void;
   onSubmit: (formData: FormData) => void;
   disabled?: boolean;
+  onClear: () => Promise<void>;
 }
 
 export function CommunityContentEditor({
   form,
+  draft,
   setForm,
   onSubmit,
   disabled = false,
+  onClear,
 }: CommunityContentEditorProps) {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -26,15 +30,16 @@ export function CommunityContentEditor({
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-4 p-4">
+      {draft.error ? <p role="alert">{draft.error}</p> : null}
       <fieldset disabled={disabled} className="contents">
         <div className="flex items-center justify-between gap-3">
           <p className="font-display text-2xl font-medium normal-case leading-none text-[var(--admin-text-strong)]">
             {form.id ? "Edit FanClubs" : "New FanClubs"}
           </p>
-          {form.id ? (
+          {form.id || draft.scopeKey ? (
             <button
               type="button"
-              onClick={() => setForm(emptyForm)}
+              onClick={() => void onClear()}
               className="admin-action-button min-h-12"
             >
               Clear
@@ -151,6 +156,10 @@ export function CommunityContentEditor({
         </div>
 
         <AdminImageField
+          scopeKey={form.id || draft.scopeKey || "unavailable"}
+          recoveryOnly={!form.id && draft.legacyUnbound}
+          onRecoveryResolved={draft.refreshRecovery}
+          disabled={!draft.ready && !draft.legacyUnbound}
           label="FanClubs banner"
           name="bannerImageUrl"
           value={form.bannerImageUrl}

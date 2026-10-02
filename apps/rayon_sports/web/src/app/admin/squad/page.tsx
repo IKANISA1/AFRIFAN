@@ -16,6 +16,7 @@ import {
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { showAdminToast } from "@/components/admin/admin-toast";
+import { useAdminMediaDraftScope } from "@/lib/use-admin-media-draft-scope";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import type { AdminResourceStatus } from "@/lib/admin-resource-state";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
@@ -87,6 +88,7 @@ const squadStatusCopy: Record<
 export default function AdminSquadPage() {
   const { access, client } = useAdminPortal();
   const [form, setForm] = useState(emptySquadForm);
+  const draft = useAdminMediaDraftScope(access, "squad_player");
   const [filter, setFilter] = useState<PositionFilter>("ALL");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [interaction, setInteraction] =
@@ -125,7 +127,8 @@ export default function AdminSquadPage() {
     resourceLabel: "Squad operations",
   });
 
-  function beginEdit(player: AdminSquadPlayer) {
+  async function beginEdit(player: AdminSquadPlayer) {
+    if (!await draft.canLeaveDraft(form.id || undefined)) return;
     setForm({
       id: player.id,
       expectedUpdatedAt: player.updatedAt,
@@ -141,8 +144,11 @@ export default function AdminSquadPage() {
     setInteraction("selected");
   }
 
-  function beginCreate() {
-    setForm(emptySquadForm);
+  async function beginCreate() {
+    // Reopen the retained unsaved composer for original-command recovery.
+    if (form.id && !await draft.resetDraft(form.id)) return;
+    if (!draft.scopeKey) return;
+    if (form.id) setForm(emptySquadForm);
     setDrawerOpen(true);
     setInteraction("selected");
   }
@@ -504,17 +510,16 @@ export default function AdminSquadPage() {
         </div>
       )}
 
+      {draft.error && !drawerOpen ? <p role="alert">{draft.error}</p> : null}
       <AdminActionDrawer
         isOpen={drawerOpen}
-        onClose={() => {
-          setDrawerOpen(false);
-          setInteraction("idle");
-        }}
+        onClose={async () => { if (await draft.resetDraft(form.id || undefined)) { setForm(emptySquadForm); setDrawerOpen(false); setInteraction("idle"); } }}
         title={form.id ? "Edit player profile" : "Add new player"}
       >
         <SquadEditorForm
           form={form}
           setForm={setForm}
+          draft={draft}
           client={client}
           access={access}
           onSaved={async () => {
@@ -532,10 +537,7 @@ export default function AdminSquadPage() {
           onFailure={(caught) => {
             applyFailure(caught);
           }}
-          onCancel={() => {
-            setDrawerOpen(false);
-            setInteraction("idle");
-          }}
+          onCancel={async () => { if (await draft.resetDraft(form.id || undefined)) { setForm(emptySquadForm); setDrawerOpen(false); setInteraction("idle"); } }}
         />
       </AdminActionDrawer>
     </section>

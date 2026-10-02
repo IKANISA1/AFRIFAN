@@ -13,6 +13,7 @@ import {
   type AdminResourceInteraction,
 } from "@/components/admin/admin-resource-status-banner";
 import { showAdminToast } from "@/components/admin/admin-toast";
+import { useAdminMediaDraftScope } from "@/lib/use-admin-media-draft-scope";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import type { AdminResourceStatus } from "@/lib/admin-resource-state";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
@@ -76,6 +77,7 @@ const matchStatusCopy: Record<
 export default function AdminMatchesPage() {
   const { access, activeClub, client } = useAdminPortal();
   const [form, setForm] = useState(emptyMatchForm);
+  const draft = useAdminMediaDraftScope(access, "match");
   const [filter, setFilter] = useState("ALL");
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [interaction, setInteraction] =
@@ -111,14 +113,18 @@ export default function AdminMatchesPage() {
     resourceLabel: "Match operations",
   });
 
-  function beginEdit(match: AdminMatchItem) {
+  async function beginEdit(match: AdminMatchItem) {
+    if (!await draft.canLeaveDraft(form.id || undefined)) return;
     setForm(matchToFormState(match));
     setDrawerOpen(true);
     setInteraction("selected");
   }
 
-  function beginCreate() {
-    setForm(emptyMatchForm);
+  async function beginCreate() {
+    // Reopen the retained unsaved composer for original-command recovery.
+    if (form.id && !await draft.resetDraft(form.id)) return;
+    if (!draft.scopeKey) return;
+    if (form.id) setForm(emptyMatchForm);
     setDrawerOpen(true);
     setInteraction("selected");
   }
@@ -172,7 +178,7 @@ export default function AdminMatchesPage() {
         actions={
           <button
             onClick={beginCreate}
-            disabled={busy || status === "permission_denied"}
+            disabled={busy || status === "permission_denied" || !draft.scopeKey}
             className="admin-action-button min-h-12 !bg-[var(--admin-accent)] !text-[var(--admin-canvas)] disabled:cursor-not-allowed disabled:!bg-[var(--admin-raised)] disabled:!text-[var(--admin-text-strong)]"
           >
             <Plus size={16} />
@@ -221,14 +227,16 @@ export default function AdminMatchesPage() {
         />
       )}
 
+      {draft.error && !drawerOpen ? <p role="alert">{draft.error}</p> : null}
       <AdminActionDrawer
         isOpen={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        onClose={async () => { if (await draft.resetDraft(form.id || undefined)) { setForm(emptyMatchForm); setDrawerOpen(false); } }}
         title={form.id ? "Edit fixture" : "Create fixture"}
       >
         <MatchForm
           form={form}
           setForm={setForm}
+          draft={draft}
           emptyForm={emptyMatchForm}
           client={client}
           access={access}
@@ -247,10 +255,7 @@ export default function AdminMatchesPage() {
           onFailure={(caught) => {
             applyFailure(caught);
           }}
-          onCancel={() => {
-            setDrawerOpen(false);
-            setInteraction("idle");
-          }}
+          onCancel={async () => { if (await draft.resetDraft(form.id || undefined)) { setForm(emptyMatchForm); setDrawerOpen(false); setInteraction("idle"); } }}
         />
       </AdminActionDrawer>
     </section>

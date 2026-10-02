@@ -1,8 +1,10 @@
 import { registerLocalHttpAssertions, httpFixtureOrigin, httpFixtureClubId } from "../../../../../e2e/fixtures/local-http-route-assertions";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { withFeatureGuard } from "@/lib/server-feature-guard";
 import { AdminMembershipValidationError } from "@/lib/data/admin/membership";
+const notificationForward = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/data/admin/notification-command", () => ({ forwardAdminNotificationCommand: notificationForward }));
 
 const {
   getUser,
@@ -217,6 +219,8 @@ describe("admin resource route", () => {
   });
 
   beforeEach(() => {
+    notificationForward.mockReset();
+    notificationForward.mockResolvedValue({ command: { state: "unknown" }, notification: null, delivery: null });
     predictOperations.dashboard.mockReset();
     predictOperations.mutate.mockReset();
     predictOperations.legacy.mockReset();
@@ -377,6 +381,36 @@ describe("admin resource route", () => {
     await expect(response.json()).resolves.toEqual({
       data: [{ id: "banner-1", title: "Controlled banner" }],
     });
+  });
+
+  it("recovers original notification status without the creation feature guard", async () => {
+    resolveAdminAccessMock.mockResolvedValue({ hasAccess: true, isAuthenticated: true, isSuperAdmin: true,
+      userId: "user-1", role: "super_admin", clubId: httpFixtureClubId(), availableClubIds: [httpFixtureClubId()] });
+    const body = { action: "status", operation_id: "99969000-0000-4000-8000-000000000001", club_id: Number(httpFixtureClubId()) };
+    const guardCalls = vi.mocked(withFeatureGuard).mock.calls.length;
+    const response = await POST(new NextRequest(`${httpFixtureOrigin()}/api/admin/notifications`, {
+      method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body),
+    }), { params: Promise.resolve({ resource: "notifications" }) });
+    expect(response.status).toBe(200);
+    expect(notificationForward).toHaveBeenCalledWith(serverClient, body, expect.objectContaining({ userId: "user-1", isSuperAdmin: true }));
+    expect(vi.mocked(withFeatureGuard).mock.calls.length).toBe(guardCalls);
+  });
+
+  it("keeps notification creation behind its scoped feature guard", async () => {
+    resolveAdminAccessMock.mockResolvedValue({ hasAccess: true, isAuthenticated: true, isSuperAdmin: true,
+      userId: "user-1", role: "super_admin", clubId: httpFixtureClubId(), availableClubIds: [httpFixtureClubId()] });
+    vi.mocked(withFeatureGuard).mockImplementationOnce(async () => NextResponse.json({ error: "Disabled" }, { status: 403 }));
+    const response = await POST(new NextRequest(`${httpFixtureOrigin()}/api/admin/notifications`, {
+      method: "POST", body: JSON.stringify({ action: "submit", operation_id: "99969000-0000-4000-8000-000000000001", club_id: Number(httpFixtureClubId()) }),
+    }), { params: Promise.resolve({ resource: "notifications" }) });
+    expect(response.status).toBe(403); expect(notificationForward).not.toHaveBeenCalled();
+  });
+
+  it("denies club staff both notification creation and status forwarding", async () => {
+    const response = await POST(new NextRequest(`${httpFixtureOrigin()}/api/admin/notifications`, {
+      method: "POST", body: JSON.stringify({ action: "status", operation_id: "99969000-0000-4000-8000-000000000001", club_id: Number(httpFixtureClubId()) }),
+    }), { params: Promise.resolve({ resource: "notifications" }) });
+    expect(response.status).toBe(403); expect(notificationForward).not.toHaveBeenCalled();
   });
 
   it("uses the admin client for contribution group creation", async () => {

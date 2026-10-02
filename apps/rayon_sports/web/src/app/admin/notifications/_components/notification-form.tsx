@@ -9,6 +9,10 @@ interface NotificationFormProps {
   context: AdminNotificationContext;
   submitting: boolean;
   disabled?: boolean;
+  mediaScopeKey: string | null;
+  mediaRecoveryOnly?: boolean;
+  onMediaRecoveryResolved?: () => void;
+  retryOriginal?: boolean;
   onSubmit: () => void;
   onCopyPayload: () => void;
   onInteractionChange?: (interaction: AdminResourceInteraction) => void;
@@ -20,6 +24,10 @@ export function NotificationForm({
   context,
   submitting,
   disabled = false,
+  mediaScopeKey,
+  mediaRecoveryOnly = false,
+  onMediaRecoveryResolved,
+  retryOriginal = false,
   onSubmit,
   onCopyPayload,
   onInteractionChange,
@@ -123,12 +131,10 @@ export function NotificationForm({
             className="dashboard-input"
             disabled={disabled}
           >
-            <option value="ingenzi-imanzi">Ingenzi / Imanzi</option>
-            <option value="inyamibwa">Inyamibwa</option>
-            <option value="imena">Imena</option>
+            <option value="fan">Fan</option>
             <option value="bronze">Bronze</option>
-            <option value="silver">Silver</option>
             <option value="gold">Gold</option>
+            <option value="platinum">Platinum</option>
           </select>
         </label>
       ) : null}
@@ -173,6 +179,9 @@ export function NotificationForm({
         </label>
       ) : null}
       <AdminImageField
+        scopeKey={mediaScopeKey ?? "unavailable"}
+        recoveryOnly={mediaRecoveryOnly}
+        onRecoveryResolved={onMediaRecoveryResolved}
         label="Notification image"
         value={form.imageUrl}
         onChange={(nextValue) =>
@@ -185,7 +194,7 @@ export function NotificationForm({
         subject={form.title}
         previewAlt="Notification preview"
         promptPlaceholder="Example: Simple promotional image for a supporter announcement, bold club colors, clean composition that still reads well when cropped."
-        disabled={disabled}
+        disabled={!mediaScopeKey || (disabled && !mediaRecoveryOnly)}
       />
       <div className="rounded-[24px] border border-border-soft bg-[var(--admin-surface-muted)] px-4 py-4 text-sm text-[var(--admin-text-muted)]">
         Target:{" "}
@@ -204,7 +213,7 @@ export function NotificationForm({
           disabled={submitting || disabled}
           className="rounded-full bg-action-blue px-5 py-3 font-semibold text-white transition hover:bg-action-blue-hover disabled:opacity-60"
         >
-          {form.deliveryMode === "schedule" ? "Schedule notification" : "Send notification"}
+          {retryOriginal ? "Retry original notification" : form.deliveryMode === "schedule" ? "Schedule notification" : "Send notification"}
         </button>
         <button
           type="button"

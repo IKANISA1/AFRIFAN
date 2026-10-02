@@ -13,6 +13,7 @@ import {
 import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { showAdminToast } from "@/components/admin/admin-toast";
+import { useAdminMediaDraftScope } from "@/lib/use-admin-media-draft-scope";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { Skeleton } from "@/components/skeleton";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
@@ -97,6 +98,7 @@ export default function AdminShopPage() {
   const { access, activeClub, client } = useAdminPortal();
   const hydrated = useHydrated();
   const [form, setForm] = useState(emptyForm);
+  const draft = useAdminMediaDraftScope(access, "shop_product");
   const [filter, setFilter] = useState("ALL");
   const [saving, setSaving] = useState(false);
   const [interaction, setInteraction] =
@@ -143,7 +145,8 @@ export default function AdminShopPage() {
       status === "conflict" ||
       status === "security_timeout");
 
-  function beginEdit(product: AdminShopProduct) {
+  async function beginEdit(product: AdminShopProduct) {
+    if (!await draft.canLeaveDraft(form.id || undefined)) return;
     setForm({
       id: product.id,
       expectedUpdatedAt: product.updatedAt,
@@ -162,6 +165,7 @@ export default function AdminShopPage() {
   }
 
   async function submitForm(formData: FormData) {
+    if (!await draft.canLeaveDraft(form.id || undefined)) return;
     if (client == null || mutationLocked) return;
     setSaving(true);
     showAdminToast(
@@ -169,7 +173,7 @@ export default function AdminShopPage() {
       "info",
     );
     try {
-      await saveAdminProduct(client, access, {
+      await draft.runSave(() => saveAdminProduct(client, access, {
         id: form.id || null,
         expectedUpdatedAt: form.expectedUpdatedAt || null,
         name: String(formData.get("name") ?? ""),
@@ -185,7 +189,8 @@ export default function AdminShopPage() {
         isActive: formData.get("isActive") === "on",
         collection: String(formData.get("collection") ?? ""),
         sortOrder: Number(formData.get("sortOrder") ?? 0),
-      });
+      }), form.id || undefined);
+      if (!await draft.resetDraft(form.id || undefined)) { showAdminToast("Saved. Recover this composer before starting another draft.", "info"); return; }
       setForm(emptyForm);
       await refresh();
       showAdminToast("Product saved.", "success");
@@ -334,15 +339,16 @@ export default function AdminShopPage() {
             onSubmit={handleSubmit}
             className="ui-panel grid self-start content-start gap-4 rounded-[32px] p-6"
           >
+            {draft.error ? <p role="alert">{draft.error}</p> : null}
             <fieldset disabled={mutationLocked} className="contents">
               <div className="flex items-center justify-between gap-3">
                 <p className="font-display text-3xl font-medium normal-case leading-none">
                   {form.id ? "Edit product" : "New product"}
                 </p>
-                {form.id ? (
+                {form.id || draft.scopeKey ? (
                   <button
                     type="button"
-                    onClick={() => setForm(emptyForm)}
+                    onClick={async () => { if (await draft.resetDraft(form.id || undefined)) setForm(emptyForm); }}
                     className="rounded-full border border-border-soft px-4 py-2 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)]"
                   >
                     Clear
@@ -446,6 +452,10 @@ export default function AdminShopPage() {
                 />
               </label>
               <AdminImageField
+                scopeKey={form.id || draft.scopeKey || "unavailable"}
+                  recoveryOnly={!form.id && draft.legacyUnbound}
+                  onRecoveryResolved={draft.refreshRecovery}
+                  disabled={!draft.ready && !draft.legacyUnbound}
                 label="Product image"
                 name="imageUrl"
                 value={form.imageUrl}

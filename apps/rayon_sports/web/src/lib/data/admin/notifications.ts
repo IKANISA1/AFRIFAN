@@ -3,7 +3,6 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AdminAccess, AdminNotificationContext, AdminNotificationRecord } from "@/lib/types";
-import { serverSupabaseConfig } from "@/lib/config";
 import { requestAdminApi } from "./http";
 import { requireAdminClubId } from "./helpers";
 
@@ -16,6 +15,9 @@ const notificationStatuses = new Set([
   "delivered",
   "failed",
   "cancelled",
+  "processing",
+  "partial",
+  "unknown",
 ]);
 
 function boundedText(value: unknown, maxLength: number) {
@@ -224,100 +226,5 @@ export async function getAdminNotificationContext(
   });
 }
 
-export async function sendAdminNotification(
-  client: SupabaseClient,
-  payload: { title: string; body: string; audience: "all_fans" | "by_tier" | "by_group"; tier?: string | null; groupId?: string | null; groupName?: string | null; deliveryMode: "send_now" | "schedule"; scheduledAt?: string | null; imageUrl?: string | null },
-  access?: AdminAccess,
-) {
-  if (typeof window !== "undefined") {
-    return requestAdminApi<unknown>("notifications", {
-      method: "POST",
-      body: payload,
-    });
-  }
-  const clubId = requireAdminClubId(
-    access ?? { clubId: null },
-    "send notifications",
-  );
-  const { data: sessionData, error: sessionError } =
-    await client.auth.getSession();
-  if (sessionError) {
-    throw new Error(sessionError.message);
-  }
-
-  const accessToken = sessionData.session?.access_token;
-  if (!accessToken) {
-    throw new Error("Admin authentication is required to send notifications.");
-  }
-
-  const supabaseUrl = serverSupabaseConfig.url;
-  const supabaseAnonKey = serverSupabaseConfig.anonKey;
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("Supabase server configuration is not available.");
-  }
-
-  const functionResponse = await fetch(
-    `${supabaseUrl}/functions/v1/admin-send-notification`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        apikey: supabaseAnonKey,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        club_id: clubId,
-        title: payload.title,
-        body: payload.body,
-        audience: payload.audience,
-        tier: payload.tier,
-        group_id: payload.groupId,
-        group_name: payload.groupName,
-        delivery_mode: payload.deliveryMode,
-        scheduled_at: payload.scheduledAt,
-        image_url: payload.imageUrl,
-      }),
-      cache: "no-store",
-    },
-  );
-
-  const responseText = await functionResponse.text();
-  let raw: { success?: boolean; message?: string; error?: string; data?: unknown } | null = null;
-  if (responseText.trim().length > 0) {
-    try {
-      raw = JSON.parse(responseText) as {
-        success?: boolean;
-        message?: string;
-        error?: string;
-        data?: unknown;
-      };
-    } catch {
-      raw = null;
-    }
-  }
-
-  if (!functionResponse.ok) {
-    throw new Error(
-      raw?.error ||
-        raw?.message ||
-        responseText.trim() ||
-        "Notification delivery failed.",
-    );
-  }
-
-  if (raw && typeof raw === "object") {
-    if (raw.success === true) {
-      return raw.data ?? {};
-    }
-    if (raw.message) {
-      throw new Error(raw.message);
-    }
-    if (raw.error) {
-      throw new Error(raw.error);
-    }
-  }
-
-  throw new Error(
-    "Notification delivery failed. The edge function returned an unexpected response.",
-  );
-}
+export { sendAdminNotification, checkAdminNotificationStatus, readPendingAdminNotification } from "./notification-command";
+export type { AdminNotificationReceipt, AdminNotificationPayload } from "./notification-command";

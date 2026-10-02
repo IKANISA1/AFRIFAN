@@ -1,6 +1,9 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useAdminMediaDraftScope } from "@/lib/use-admin-media-draft-scope";
+import type { StaffCommandReference } from "@/lib/data/admin/staff-command-journal";
+
+import { useCallback, useEffect, useRef, useState } from "react";
 import { BellRing, Clock3, Send } from "lucide-react";
 import { AdminErrorState } from "@/components/admin/admin-error-state";
 import { AdminPageHeader } from "@/components/admin/admin-page-header";
@@ -20,6 +23,9 @@ import {
   getAdminNotificationContext,
   normalizeAdminNotificationContext,
   sendAdminNotification,
+  checkAdminNotificationStatus,
+  readPendingAdminNotification,
+  type AdminNotificationReceipt,
 } from "@/lib/data/admin/notifications";
 import { useAdminResourceState } from "@/lib/use-admin-resource-state";
 import { useHydrated } from "@/lib/use-hydrated";
@@ -80,6 +86,67 @@ const notificationContextIsEmpty = (value: typeof emptyContext) =>
 export default function AdminNotificationsPage() {
   const { access, client } = useAdminPortal();
   const hydrated = useHydrated();
+  const mediaDraft = useAdminMediaDraftScope(access, "notification");
+  const [pending, setPending] = useState<StaffCommandReference | null>(null);
+  const [commandMessage, setCommandMessage] = useState<string | null>(null);
+  const [journalReady, setJournalReady] = useState(false);
+  const commandBusy = useRef(false);
+  const commandEpoch = useRef(0);
+  const owner = `${access.userId ?? ""}:${access.clubId ?? ""}:${access.role ?? ""}`;
+  const latest = useRef({ owner, client, allowed: false });
+  const latestAccess = useRef(access);
+  latestAccess.current = access;
+  latest.current = { owner, client, allowed: access.hasAccess && access.isAuthenticated && access.isSuperAdmin };
+  useEffect(() => {
+    const ownedEpoch = commandEpoch;
+    const epoch = ++ownedEpoch.current;
+    commandBusy.current = false;
+    setSubmitting(false); setForm(emptyForm); setPending(null); setCommandMessage(null); setJournalReady(false);
+    if (!latest.current.allowed || !access.userId || !access.clubId) return;
+    try { setPending(readPendingAdminNotification(latestAccess.current)); setJournalReady(true); }
+    catch { setCommandMessage("The saved notification could not be read. Check browser storage before sending."); }
+    return () => { if (ownedEpoch.current === epoch) ++ownedEpoch.current; };
+  }, [owner, client, access.hasAccess, access.isAuthenticated, access.isSuperAdmin, access.userId, access.clubId]);
+  function ownCommand() {
+    const epoch = commandEpoch.current;
+    return () => commandEpoch.current === epoch && latest.current.owner === owner && latest.current.client === client && latest.current.allowed;
+  }
+  function refreshPending(current: () => boolean) {
+    if (!current()) return;
+    try { setPending(readPendingAdminNotification(access)); }
+    catch { setJournalReady(false); setCommandMessage("The original notification reference needs recovery. No new notification was sent."); }
+  }
+  async function acceptReceipt(receipt: AdminNotificationReceipt | null, current: () => boolean) {
+    if (!current()) return;
+    refreshPending(current);
+    if (!receipt) { setCommandMessage("No saved notification command needs recovery."); return; }
+    const state = receipt.command.state;
+    if (state === "scheduled" || state === "completed") {
+      const message = state === "scheduled" ? "Notification scheduled." : receipt.delivery?.status === "sent"
+        ? "The provider accepted the notification. Device delivery is not confirmed."
+        : receipt.delivery?.status === "partial" ? "The provider accepted part of the notification. Review the delivery queue."
+        : "The notification completed with confirmed delivery failures. Review the queue.";
+      setCommandMessage(message);
+      showAdminToast(message, state === "completed" && receipt.delivery?.status !== "sent" ? "info" : "success");
+      if (await mediaDraft.resetDraft() && current()) setForm(emptyForm);
+      if (!current()) return;
+      setInteraction("idle");
+      await refresh();
+    } else setCommandMessage(state === "not_admitted"
+      ? "The original notification has not been admitted. Re-enter the exact original contents to retry its saved reference."
+      : state === "unknown" ? "Delivery is unconfirmed. The original reference is retained; this notification will not be resent."
+      : state === "blocked" ? "The original notification needs operator review. Keep its reference and check status."
+      : "The original notification is being processed. Check status before sending another notification.");
+  }
+  async function checkSavedCommand() {
+    if (!client || commandBusy.current || !journalReady || !latest.current.allowed) return;
+    const current = ownCommand(), epoch = commandEpoch.current;
+    commandBusy.current = true; setSubmitting(true);
+    try { await acceptReceipt(await checkAdminNotificationStatus(client, access, { isCurrent: current }), current); }
+    catch (caught) { if (current()) { refreshPending(current); setCommandMessage(caught instanceof Error ? caught.message : "The notification status is unavailable. Keep its reference."); } }
+    finally { if (commandEpoch.current === epoch) { commandBusy.current = false; setSubmitting(false); } }
+  }
+
   const [form, setForm] = useState<NotificationFormType>(emptyForm);
   const [submitting, setSubmitting] = useState(false);
   const [interaction, setInteraction] =
@@ -106,7 +173,6 @@ export default function AdminNotificationsPage() {
     busy,
     initialLoading,
     refresh,
-    applyFailure,
   } = useAdminResourceState({
     enabled: hydrated && client != null && access.hasAccess,
     emptyValue: emptyContext,
@@ -118,7 +184,7 @@ export default function AdminNotificationsPage() {
   });
 
   const mutationLocked =
-    submitting || (status !== "ready" && status !== "empty");
+    submitting || !journalReady || !access.isSuperAdmin || !mediaDraft.ready || (status !== "ready" && status !== "empty");
   const unrecoveredFailure =
     !hasConfirmed &&
     (status === "error" ||
@@ -168,7 +234,7 @@ export default function AdminNotificationsPage() {
   }
 
   async function submitNotification() {
-    if (client == null || mutationLocked) return;
+    if (client == null || mutationLocked || commandBusy.current) return;
     const validationError = validatePayload();
     if (validationError) {
       showAdminToast(validationError, "error");
@@ -200,28 +266,21 @@ export default function AdminNotificationsPage() {
       return;
     }
 
+    if (commandBusy.current || !latest.current.allowed) return;
+    const current = ownCommand(), epoch = commandEpoch.current;
+    commandBusy.current = true;
     setSubmitting(true);
-    showAdminToast("Submitting notification...", "info");
+    showAdminToast(pending ? "Checking original notification..." : "Submitting notification...", "info");
     try {
-      const result = (await sendAdminNotification(
-        client,
-        buildPayload(),
-      )) as { delivery?: { status?: string } };
-      await refresh();
-      setForm(emptyForm);
-      setInteraction("idle");
-      showAdminToast(
-        result.delivery?.status === "scheduled"
-          ? "Notification scheduled."
-          : "Notification submitted to the delivery pipeline.",
-        "success",
-      );
+      const result = await mediaDraft.runSave(() => sendAdminNotification(client, buildPayload(), access, { isCurrent: current }));
+      await acceptReceipt(result, current);
     } catch (caught) {
-      applyFailure(caught);
+      if (!current()) return;
+      refreshPending(current);
+      setCommandMessage(caught instanceof Error ? caught.message : "Could not confirm the original notification operation.");
       if (isAdminMutationConflict(caught)) await refresh();
-      showAdminToast("Could not confirm the notification operation.", "error");
     } finally {
-      setSubmitting(false);
+      if (commandEpoch.current === epoch) { commandBusy.current = false; setSubmitting(false); }
     }
   }
 
@@ -245,7 +304,7 @@ export default function AdminNotificationsPage() {
     (notification) => notification.status === "scheduled",
   ).length;
   const failedCount = context.history.filter(
-    (notification) => notification.status === "failed",
+    (notification) => ["failed", "partial", "unknown"].includes(notification.status),
   ).length;
 
   return (
@@ -301,6 +360,16 @@ export default function AdminNotificationsPage() {
         />
       </div>
 
+      {pending || commandMessage ? <AdminSurface title="Original notification command">
+        <div className="grid gap-3" role="status" aria-live="polite">
+          {pending ? <p className="break-all text-sm text-[var(--admin-text-muted)]">Reference: {pending.operationId}</p> : null}
+          <p className="text-sm text-[var(--admin-text-muted)]">{commandMessage ?? "The original notification is retained. Check its status before sending another."}</p>
+          {pending ? <button type="button" className="dashboard-button-secondary min-h-12 justify-self-start"
+            disabled={submitting || !journalReady || !latest.current.allowed} onClick={() => { void checkSavedCommand(); }}>Check notification status</button> : null}
+        </div>
+      </AdminSurface> : null}
+      {mediaDraft.error ? <p role="status" className="text-sm text-[var(--admin-text-muted)]">{mediaDraft.error}</p> : null}
+
       {unrecoveredFailure ? (
         <AdminErrorState
           title={statusCopy[status].label}
@@ -327,6 +396,10 @@ export default function AdminNotificationsPage() {
       ) : (
         <div className="admin-notifications-workspace">
           <NotificationForm
+            mediaScopeKey={mediaDraft.scopeKey}
+            mediaRecoveryOnly={mediaDraft.legacyUnbound}
+            onMediaRecoveryResolved={mediaDraft.refreshRecovery}
+            retryOriginal={pending !== null}
             form={form}
             setForm={setForm}
             context={context}

@@ -65,7 +65,7 @@ describe("normalizeAdminNotificationContext", () => {
           validRecord,
           { ...validRecord, title: "Duplicate" },
           { ...validRecord, id: "notification-2", audience_type: "by_group" },
-          { ...validRecord, id: "notification-3", status: "unknown" },
+          { ...validRecord, id: "notification-3", status: "unsupported-status" },
           { ...validRecord, id: "notification-4", created_at: "not-a-date" },
         ],
       }),
@@ -78,6 +78,12 @@ describe("normalizeAdminNotificationContext", () => {
         }),
       ],
     });
+  });
+  it.each(["unknown", "processing", "partial"])("retains the authoritative %s state and sanitized diagnostics", status => {
+    const result = normalizeAdminNotificationContext({ groups: [], history: [{ ...validRecord, status }] });
+    expect(result.history).toHaveLength(1);
+    expect(result.history[0]).toMatchObject({ status, lastError: "Delivery requires operator review." });
+    expect(JSON.stringify(result)).not.toContain(validRecord.last_error);
   });
 
   it("caps groups at 50 and history at 100 before projection", () => {

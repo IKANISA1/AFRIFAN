@@ -8,6 +8,7 @@ import {
   type AdminResourceInteraction,
 } from "@/components/admin/admin-resource-status-banner";
 import { showAdminToast } from "@/components/admin/admin-toast";
+import { useAdminMediaDraftScope } from "@/lib/use-admin-media-draft-scope";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import type { AdminResourceStatus } from "@/lib/admin-resource-state";
@@ -72,6 +73,7 @@ const cmsStatusCopy: Record<
 export default function AdminCmsPage() {
   const { access, client } = useAdminPortal();
   const [form, setForm] = useState(emptyArticleForm);
+  const draft = useAdminMediaDraftScope(access, "news_article");
   const [interaction, setInteraction] =
     useState<AdminResourceInteraction>("idle");
 
@@ -107,7 +109,8 @@ export default function AdminCmsPage() {
     resourceLabel: "Publishing operations",
   });
 
-  function beginEdit(article: AdminNewsArticle) {
+  async function beginEdit(article: AdminNewsArticle) {
+    if (!await draft.canLeaveDraft(form.id || undefined)) return;
     setForm({
       id: article.id,
       expectedUpdatedAt: article.updatedAt,
@@ -125,11 +128,12 @@ export default function AdminCmsPage() {
   }
 
   async function submitForm(formData: FormData) {
+    if (!await draft.canLeaveDraft(form.id || undefined)) return;
     if (client == null) return;
     showAdminToast(form.id ? "Saving article..." : "Creating article...", "info");
 
     try {
-      await saveAdminArticle(client, access, {
+      await draft.runSave(() => saveAdminArticle(client, access, {
         id: form.id || null,
         expectedUpdatedAt: form.expectedUpdatedAt || null,
         title: String(formData.get("title") ?? ""),
@@ -140,7 +144,8 @@ export default function AdminCmsPage() {
         imageUrl: String(formData.get("imageUrl") ?? ""),
         isPublished: formData.get("isPublished") === "on",
         isFeatured: formData.get("isFeatured") === "on",
-      });
+      }), form.id || undefined);
+      if (!await draft.resetDraft(form.id || undefined)) { showAdminToast("Saved. Recover this composer before starting another draft.", "info"); return; }
       setForm(emptyArticleForm);
       setInteraction("idle");
       await refresh();
@@ -277,9 +282,10 @@ export default function AdminCmsPage() {
           <CMSContentEditor
             form={form}
             setForm={setForm}
+            draft={draft}
             onSubmit={submitForm}
             disabled={mutationLocked}
-            onClear={() => setInteraction("idle")}
+            onClear={async () => { if (await draft.resetDraft(form.id || undefined)) { setForm(emptyArticleForm); setInteraction("idle"); } }}
           />
           <CMSContentList
             articles={articles}

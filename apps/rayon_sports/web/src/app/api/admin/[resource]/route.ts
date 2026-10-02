@@ -1,3 +1,4 @@
+import { forwardAdminNotificationCommand } from "@/lib/data/admin/notification-command";
 import { getAdminRequestContext, parseJsonBody, requiresPlatformAdmin, runAdminResourceOperation, withScopedFeatureGuard } from "@/lib/admin-resource-transport";
 import { adminPredictFailureResponse, handleAdminPredictDelete, handleAdminPredictGet, handleAdminPredictPost } from "@/lib/data/admin/predict-resource-handler";
 import { NextRequest, NextResponse } from "next/server";
@@ -59,7 +60,6 @@ import {
   saveAdminProduct,
   saveAdminSquadPlayer,
   saveAdminStandingRow,
-  sendAdminNotification,
   getAdminOffers,
   saveAdminOffer,
   deleteAdminOffer,
@@ -464,16 +464,13 @@ async function handlePost(
             body as never,
           ),
         });
-      case "notifications":
-        return withScopedFeatureGuard(access, "notifications", async () =>
-          NextResponse.json({
-            data: await sendAdminNotification(
-              serverClient,
-              body as never,
-              access,
-            ),
-          }),
-        );
+      case "notifications": {
+        if (!access.isSuperAdmin) return controlledApiJson({ code: "ADMIN_ACCESS_DENIED", change_confirmed: false,
+          error: "Platform staff access is required for notification commands." }, 403);
+        const run = async () => NextResponse.json({ data: await forwardAdminNotificationCommand(serverClient, body, access) });
+        // Status recovers the original command even when creation is disabled.
+        return body.action === "status" ? run() : withScopedFeatureGuard(access, "notifications", run);
+      }
       case "squad":
         await saveAdminSquadPlayer(adminClient, access, body as never);
         return NextResponse.json({ data: { success: true } });

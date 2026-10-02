@@ -1,4 +1,5 @@
 "use client";
+import type { useAdminMediaDraftScope } from "@/lib/use-admin-media-draft-scope";
 
 import type { Dispatch, SetStateAction } from "react";
 import { AdminImageField } from "@/components/admin/admin-image-field";
@@ -9,6 +10,7 @@ import { emptySquadForm, type SquadForm } from "./squad-form-state";
 import { isAdminMutationConflict } from "@/lib/data/admin/http";
 
 interface SquadFormProps {
+  draft: ReturnType<typeof useAdminMediaDraftScope>;
   form: SquadForm;
   setForm: Dispatch<SetStateAction<SquadForm>>;
   client: ReturnType<typeof useAdminPortal>["client"];
@@ -21,6 +23,7 @@ interface SquadFormProps {
 
 export function SquadEditorForm({
   form,
+  draft,
   setForm,
   client,
   access,
@@ -30,6 +33,7 @@ export function SquadEditorForm({
   onCancel,
 }: SquadFormProps) {
   async function submitForm(formData: FormData) {
+    if (!await draft.canLeaveDraft(form.id || undefined)) return;
     if (client == null) {
       return;
     }
@@ -37,7 +41,7 @@ export function SquadEditorForm({
     showAdminToast(form.id ? "Saving player..." : "Adding player...", "info");
 
     try {
-      await saveAdminSquadPlayer(client, access, {
+      await draft.runSave(() => saveAdminSquadPlayer(client, access, {
         id: form.id || null,
         expectedUpdatedAt: form.expectedUpdatedAt || null,
         name: String(formData.get("name") ?? ""),
@@ -47,7 +51,8 @@ export function SquadEditorForm({
         bio: String(formData.get("bio") ?? ""),
         imageUrl: String(formData.get("imageUrl") ?? ""),
         isActive: formData.get("isActive") === "on",
-      });
+      }), form.id || undefined);
+      if (!await draft.resetDraft(form.id || undefined)) { showAdminToast("Saved. Recover this composer before starting another draft.", "info"); return; }
       setForm(emptySquadForm);
       await onSaved();
       showAdminToast("Player saved.", "success");
@@ -66,6 +71,7 @@ export function SquadEditorForm({
 
   return (
     <form action={submitForm} className="ui-panel grid gap-4 rounded-[32px] p-6">
+      {draft.error ? <p role="alert">{draft.error}</p> : null}
       <div className="flex items-center justify-between gap-3">
         <p className="font-display text-3xl font-medium normal-case leading-none">
           {form.id ? "Edit player" : "New player"}
@@ -80,12 +86,11 @@ export function SquadEditorForm({
               Close
             </button>
           ) : null}
-          {form.id ? (
+          {form.id || draft.scopeKey ? (
             <button
               type="button"
               onClick={() => {
-                setForm(emptySquadForm);
-                showAdminToast("Form cleared.", "info");
+                void draft.resetDraft(form.id || undefined).then(ok => { if (ok) { setForm(emptySquadForm); showAdminToast("Form cleared.", "info"); } });
               }}
               className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)]"
             >
@@ -148,6 +153,10 @@ export function SquadEditorForm({
       </div>
 
       <AdminImageField
+        scopeKey={form.id || draft.scopeKey || "unavailable"}
+          recoveryOnly={!form.id && draft.legacyUnbound}
+          onRecoveryResolved={draft.refreshRecovery}
+          disabled={!draft.ready && !draft.legacyUnbound}
         label="Player image"
         name="imageUrl"
         value={form.imageUrl}

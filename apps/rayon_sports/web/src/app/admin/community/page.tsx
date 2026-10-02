@@ -17,6 +17,7 @@ import { AdminStateCard } from "@/components/admin/admin-state-card";
 import { AdminStatusBadge } from "@/components/admin/admin-status-badge";
 import { handleAdminTabKeyDown } from "@/components/admin/admin-tab-keyboard";
 import { showAdminToast } from "@/components/admin/admin-toast";
+import { useAdminMediaDraftScope } from "@/lib/use-admin-media-draft-scope";
 import { useAdminPortal } from "@/components/admin/admin-portal-provider";
 import { confirmAdminDestructiveAction } from "@/lib/admin-destructive-confirm";
 import type { AdminResourceStatus } from "@/lib/admin-resource-state";
@@ -127,6 +128,7 @@ function CommunityWorkspace() {
     ? requestedTab : "chapters";
   const { access, client, activeClub } = useAdminPortal();
   const hydrated = useHydrated();
+  const draft = useAdminMediaDraftScope(access, "fan_club");
   const [activeTab, setActiveTab] = useState<CommunityTab>(initialTab);
   useEffect(() => { setActiveTab(initialTab); }, [initialTab]);
   const [chapterForm, setChapterForm] =
@@ -282,8 +284,10 @@ function CommunityWorkspace() {
       (item) => item.id === detailContributionId,
     ) ?? null;
 
-  function beginChapterCreate() {
-    setChapterForm(emptyChapterForm);
+  async function beginChapterCreate() {
+    if (chapterForm.id && !await draft.resetDraft(chapterForm.id)) return;
+    if (!draft.scopeKey) return;
+    if (chapterForm.id) setChapterForm(emptyChapterForm);
     setDrawerMode("chapter");
     setDrawerOpen(true);
     setInteraction("selected");
@@ -299,7 +303,8 @@ function CommunityWorkspace() {
     setInteraction("selected");
   }
 
-  function beginChapterEdit(chapter: AdminFanClub) {
+  async function beginChapterEdit(chapter: AdminFanClub) {
+    if (!await draft.canLeaveDraft(chapterForm.id || undefined)) return;
     setChapterForm({
       id: chapter.id,
       expectedUpdatedAt: chapter.updatedAt,
@@ -324,9 +329,10 @@ function CommunityWorkspace() {
     setInteraction("selected");
   }
 
-  function closeEditor() {
+  async function closeEditor() {
+    if (drawerMode === "chapter" && !await draft.resetDraft(chapterForm.id || undefined)) return;
     setDrawerOpen(false);
-    setChapterForm(emptyChapterForm);
+    if (drawerMode === "chapter") setChapterForm(emptyChapterForm);
     setCircleForm(emptyGroupForm);
     setInteraction("idle");
   }
@@ -337,9 +343,10 @@ function CommunityWorkspace() {
   }
 
   async function saveChapter(formData: FormData) {
+    if (!await draft.canLeaveDraft(chapterForm.id || undefined)) return;
     if (client == null) return;
     try {
-      await saveAdminFanClub(client, access, {
+      await draft.runSave(() => saveAdminFanClub(client, access, {
         id: chapterForm.id || null,
         expectedUpdatedAt: chapterForm.expectedUpdatedAt || null,
         name: String(formData.get("name") ?? ""),
@@ -350,8 +357,8 @@ function CommunityWorkspace() {
         rating: Number(formData.get("rating") ?? 0),
         bannerImageUrl: String(formData.get("bannerImageUrl") ?? ""),
         isActive: formData.get("isActive") === "on",
-      });
-      closeEditor();
+      }), chapterForm.id || undefined);
+      await closeEditor();
       await refresh();
       showAdminToast("Community FanClubs saved.", "success");
     } catch (caught) {
@@ -1060,6 +1067,7 @@ function CommunityWorkspace() {
         </>
       )}
 
+      {draft.error && !drawerOpen ? <p role="alert">{draft.error}</p> : null}
       <AdminActionDrawer
         isOpen={drawerOpen}
         onClose={closeEditor}
@@ -1077,6 +1085,8 @@ function CommunityWorkspace() {
           <CommunityContentEditor
             form={chapterForm}
             setForm={setChapterForm}
+            draft={draft}
+            onClear={async () => { if (await draft.resetDraft(chapterForm.id || undefined)) setChapterForm(emptyChapterForm); }}
             disabled={mutationLocked}
             onSubmit={(formData) => void saveChapter(formData)}
           />

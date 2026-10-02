@@ -1,4 +1,5 @@
 "use client";
+import type { useAdminMediaDraftScope } from "@/lib/use-admin-media-draft-scope";
 import { TeamSelect } from "@/components/team-select";
 import { fixtureInitials } from "@/lib/team-identity";
 
@@ -12,6 +13,7 @@ import type { AdminAccess } from "@/lib/types";
 import { isAdminMutationConflict } from "@/lib/data/admin/http";
 
 interface MatchFormProps {
+  draft: ReturnType<typeof useAdminMediaDraftScope>;
   form: MatchFormState;
   setForm: Dispatch<SetStateAction<MatchFormState>>;
   emptyForm: MatchFormState;
@@ -25,6 +27,7 @@ interface MatchFormProps {
 
 export function MatchForm({
   form,
+  draft,
   setForm,
   emptyForm,
   client,
@@ -35,6 +38,7 @@ export function MatchForm({
   onCancel,
 }: MatchFormProps) {
   async function submitForm(formData: FormData) {
+    if (!await draft.canLeaveDraft(form.id || undefined)) return;
     if (client == null) {
       return;
     }
@@ -43,7 +47,7 @@ export function MatchForm({
     showAdminToast(saving, "info");
 
     try {
-      await saveAdminMatch(client, access, {
+      await draft.runSave(() => saveAdminMatch(client, access, {
         id: form.id || null,
         expectedUpdatedAt: form.expectedUpdatedAt || null,
         homeTeam: String(formData.get("homeTeam") ?? ""),
@@ -63,7 +67,8 @@ export function MatchForm({
         liveMinute: form.liveMinute.trim() ? Number(form.liveMinute) : null,
         matchSummary: String(formData.get("matchSummary") ?? ""),
         isFeatured: formData.get("isFeatured") === "on",
-      });
+      }), form.id || undefined);
+      if (!await draft.resetDraft(form.id || undefined)) { showAdminToast("Saved. Recover this composer before starting another draft.", "info"); return; }
       setForm(emptyForm);
       await onSaved();
       showAdminToast("Fixture saved.", "success");
@@ -91,6 +96,7 @@ export function MatchForm({
 
   return (
     <form action={submitForm} className="ui-panel grid gap-4 rounded-[32px] p-6">
+      {draft.error ? <p role="alert">{draft.error}</p> : null}
       <div className="flex items-center justify-between gap-3">
         <p className="font-display text-3xl font-medium normal-case leading-none">
           {form.id ? "Edit fixture" : "New fixture"}
@@ -105,10 +111,10 @@ export function MatchForm({
               Close
             </button>
           ) : null}
-          {form.id ? (
+          {form.id || draft.scopeKey ? (
             <button
               type="button"
-              onClick={() => setForm(emptyForm)}
+              onClick={async () => { if (await draft.resetDraft(form.id || undefined)) setForm(emptyForm); }}
               className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)]"
             >
               Clear
@@ -156,6 +162,10 @@ export function MatchForm({
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <AdminImageField
+          scopeKey={form.id || draft.scopeKey || "unavailable"}
+          recoveryOnly={!form.id && draft.legacyUnbound}
+          onRecoveryResolved={draft.refreshRecovery}
+          disabled={!draft.ready && !draft.legacyUnbound}
           label="Hero image"
           name="imageUrl"
           value={form.imageUrl}

@@ -363,31 +363,11 @@ describe("admin browser API boundary", () => {
     expectFetchCall(fetchMock, `${origin}/api/admin/contributions`, "GET");
   });
 
-  it("sends notifications through the scoped admin API in the browser", async () => {
-    const origin = window.location.origin;
-    const payload = {
-      title: "Kickoff moved",
-      body: "Kickoff is now 18:00",
-      audience: "all_fans" as const,
-      deliveryMode: "send_now" as const,
-    };
-    const expected = {
-      notification: { id: "notification-1" },
-      delivery: { status: "sent" },
-    };
-    const fetchMock = vi
-      .spyOn(globalThis, "fetch")
-      .mockResolvedValue(jsonResponse(expected) as Response);
-
-    await expect(sendAdminNotification(client, payload)).resolves.toEqual(
-      expected,
-    );
-    expectFetchCall(
-      fetchMock,
-      `${origin}/api/admin/notifications`,
-      "POST",
-      JSON.stringify(payload),
-    );
+  it("refuses notification mutation without an explicit verified owner", async () => {
+    const fetchMock = vi.spyOn(globalThis, "fetch");
+    await expect(sendAdminNotification(client, { title: "Kickoff moved", body: "Kickoff is now 18:00",
+      audience: "all_fans", deliveryMode: "send_now" }, { ...access, hasAccess: false })).rejects.toThrow("Current platform staff permission");
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("loads sms monitoring through the scoped admin API in the browser", async () => {

@@ -1,18 +1,20 @@
+import type { useAdminMediaDraftScope } from "@/lib/use-admin-media-draft-scope";
 import type { ArticleForm } from "./cms-state";
-import { emptyArticleForm, wordCount } from "./cms-state";
+import { wordCount } from "./cms-state";
 import { AdminImageField } from "@/components/admin/admin-image-field";
-import { showAdminToast } from "@/components/admin/admin-toast";
 
 interface CMSContentEditorProps {
+  draft: ReturnType<typeof useAdminMediaDraftScope>;
   form: ArticleForm;
   setForm: (update: ArticleForm | ((prev: ArticleForm) => ArticleForm)) => void;
   onSubmit: (formData: FormData) => void;
   disabled?: boolean;
-  onClear?: () => void;
+  onClear: () => Promise<void>;
 }
 
 export function CMSContentEditor({
   form,
+  draft,
   setForm,
   onSubmit,
   disabled = false,
@@ -20,19 +22,16 @@ export function CMSContentEditor({
 }: CMSContentEditorProps) {
   return (
     <form action={onSubmit} className="ui-panel grid gap-4 rounded-[32px] p-6">
+      {draft.error ? <p role="alert">{draft.error}</p> : null}
       <fieldset disabled={disabled} className="contents">
       <div className="flex items-center justify-between gap-3">
         <p className="font-display text-3xl font-medium normal-case leading-none">
           {form.id ? "Edit article" : "New article"}
         </p>
-        {form.id ? (
+        {form.id || draft.scopeKey ? (
           <button
             type="button"
-            onClick={() => {
-              setForm(emptyArticleForm);
-              onClear?.();
-              showAdminToast("Composer reset.", "info");
-            }}
+            onClick={() => void onClear()}
             className="min-h-12 rounded-full border border-border-soft px-4 py-3 text-sm font-semibold text-[var(--admin-text-strong)] transition hover:bg-[var(--admin-surface-hover)]"
           >
             Clear
@@ -82,6 +81,10 @@ export function CMSContentEditor({
           />
         </label>
         <AdminImageField
+          scopeKey={form.id || draft.scopeKey || "unavailable"}
+          recoveryOnly={!form.id && draft.legacyUnbound}
+          onRecoveryResolved={draft.refreshRecovery}
+          disabled={!draft.ready && !draft.legacyUnbound}
           label="Cover image"
           name="imageUrl"
           value={form.imageUrl}
