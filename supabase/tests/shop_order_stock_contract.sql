@@ -92,7 +92,8 @@ insert into public.shop_orders (
   user_id,
   items,
   subtotal,
-  total
+  total,
+  inventory_reserved
 ) values (
   '99000000-0000-4000-8000-000000000093',
   '99000000-0000-4000-8000-000000000091',
@@ -108,7 +109,8 @@ insert into public.shop_orders (
     )
   ),
   30000,
-  30000
+  30000,
+  true
 );
 
 select is(
@@ -126,7 +128,8 @@ insert into public.shop_orders (
   user_id,
   items,
   subtotal,
-  total
+  total,
+  inventory_reserved
 ) values (
   '99000000-0000-4000-8000-000000000094',
   '99000000-0000-4000-8000-000000000091',
@@ -139,7 +142,8 @@ insert into public.shop_orders (
     )
   ),
   20000,
-  20000
+  20000,
+  true
 );
 
 select is(
@@ -157,13 +161,15 @@ insert into public.shop_orders (
   user_id,
   items,
   subtotal,
-  total
+  total,
+  inventory_reserved
 ) values (
   '99000000-0000-4000-8000-000000000095',
   '99000000-0000-4000-8000-000000000091',
   '[]'::jsonb,
   0,
-  0
+  0,
+  true
 );
 
 select is(
@@ -191,7 +197,8 @@ begin
       user_id,
       items,
       subtotal,
-      total
+      total,
+      inventory_reserved
     ) values (
       '99000000-0000-4000-8000-000000000096',
       '99000000-0000-4000-8000-000000000091',
@@ -204,7 +211,8 @@ begin
         )
       ),
       40000,
-      40000
+      40000,
+      true
     );
 
     if (

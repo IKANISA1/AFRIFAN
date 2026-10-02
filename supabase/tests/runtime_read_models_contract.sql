@@ -516,6 +516,10 @@ values (
 )
 on conflict (id) do update set is_admin = excluded.is_admin;
 
+-- Current staff authority comes from the assignment store, not profile flags.
+insert into public.admin_role_assignments (user_id, role, is_active)
+values ('99510400-0000-4000-8000-000000000001', 'admin', true);
+
 insert into public.platform_features (
   id,
   feature_key,
@@ -549,7 +553,7 @@ select set_config(
 );
 select set_config(
   'request.jwt.claims',
-  '{"sub":"99510400-0000-4000-8000-000000000001","role":"authenticated"}',
+  jsonb_build_object('sub','99510400-0000-4000-8000-000000000001','role','authenticated','is_anonymous',false,'aal','aal2','exp',floor(extract(epoch from clock_timestamp()))+3600,'amr',jsonb_build_array(jsonb_build_object('method','totp','timestamp',floor(extract(epoch from clock_timestamp())))))::text,
   true
 );
 set local role authenticated;

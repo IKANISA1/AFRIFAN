@@ -7,7 +7,9 @@ select no_plan();
 select ok(
  has_table_privilege('anon','membership_packages','SELECT') and
  has_table_privilege('authenticated','membership_packages','SELECT') and
- not has_table_privilege('authenticated','membership_packages','INSERT') and
+ (select count(*)=3 from pg_policy where polrelid='public.membership_packages'::regclass
+  and polname in ('staff_step_up_insert','staff_step_up_update','staff_step_up_delete')
+  and not polpermissive and polroles=array['authenticated'::regrole::oid]) and
  not has_table_privilege('authenticated','fan_memberships','INSERT') and
  not has_table_privilege('authenticated','fan_memberships','UPDATE') and
  has_column_privilege('authenticated','fan_memberships','tier','SELECT'),

@@ -21,7 +21,9 @@ select ('99520000-0000-4000-8000-' || lpad(n::text, 12, '0'))::uuid,
   case when n = 4 then 9952002 else 9952001 end
 from generate_series(1, 5) n;
 insert into public.admin_role_assignments (user_id, role, club_id)
-values ('99520000-0000-4000-8000-000000000005', 'club_admin', 9952001);
+values
+  ('99520000-0000-4000-8000-000000000003', 'admin', null),
+  ('99520000-0000-4000-8000-000000000005', 'club_admin', 9952001);
 
 insert into public.partners (id, name, slug)
 values ('99520000-0000-4000-8000-000000000110',

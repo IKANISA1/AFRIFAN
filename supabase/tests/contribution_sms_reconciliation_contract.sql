@@ -113,14 +113,14 @@ select ok(
 select ok(
   (
     select count(*) = 2
-      from pg_policies
+      from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
      where schemaname = 'public'
        and tablename = 'groups'
        and cmd = 'SELECT'
   )
   and (
     select count(*) = 1
-      from pg_policies
+      from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
      where schemaname = 'public'
        and tablename = 'group_members'
        and cmd = 'SELECT'
@@ -128,7 +128,7 @@ select ok(
   )
   and (
     select count(*) = 1
-      from pg_policies
+      from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
      where schemaname = 'public'
        and tablename = 'group_contributions'
        and cmd = 'SELECT'
@@ -136,7 +136,7 @@ select ok(
   )
   and (
     select count(*) = 1
-      from pg_policies
+      from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
      where schemaname = 'public'
        and tablename = 'momo_ledger_entries'
        and cmd = 'SELECT'
@@ -144,7 +144,7 @@ select ok(
   )
   and (
     select count(*) = 1
-      from pg_policies
+      from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
      where schemaname = 'public'
        and tablename = 'momo_reconciliations'
        and cmd = 'SELECT'
@@ -152,7 +152,7 @@ select ok(
   )
   and not exists (
     select 1
-      from pg_policies
+      from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
      where schemaname = 'public'
        and tablename in (
          'group_members',

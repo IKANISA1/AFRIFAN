@@ -104,10 +104,26 @@ create temporary table expected_authenticated_security_definer_functions (
 ) on commit drop;
 
 insert into expected_authenticated_security_definer_functions (signature) values
+  ('account_access_allowed()'),
+  ('assert_account_active()'),
+  ('staff_step_up_allowed()'),
+  ('assert_staff_step_up()'),
+  ('admit_verified_staff_command(uuid,text,uuid,jsonb)'),
+  ('admit_admin_media_upload(uuid,bigint,text,text,integer,text)'),
+  ('get_admin_media_upload_status(uuid)'),
+  ('release_unadmitted_admin_media_upload(uuid,bigint)'),
+  ('admin_payment_refund_dashboard(bigint)'),
+  ('admin_prepare_payment_refund(bigint,uuid,integer,text,uuid)'),
+  ('admin_review_payment_refund(uuid,bigint,integer,boolean,uuid)'),
+  ('admin_dispatch_payment_refund(uuid,bigint,uuid)'),
+  ('admin_recover_payment_refund_operation(bigint,uuid)'),
   ('resolve_club_public_link_v1(bigint,text)'),
   ('club_public_content_manifest_v1(bigint)'),
   ('membership_qualification_v1(bigint)'),
   ('prepare_membership_payment(text)'),
+  ('prepare_shop_checkout_for_club(jsonb,text,text,bigint)'),
+  ('recover_shop_checkout_for_club(text,bigint)'),
+  ('validate_shop_checkout_for_club(uuid,bigint,jsonb)'),
   ('allocate_momo_manual_review(uuid,uuid,text)'),
   ('admin_reject_momo_sms_manual_review(uuid,text)'),
   ('admin_get_shop_products(integer,integer,boolean)'),
@@ -180,7 +196,7 @@ where p.prosecdef
 
 select is(
   (select count(*)::integer from actual_authenticated_security_definer_functions),
-  65,
+  81,
   'authenticated execution is limited to the governed endpoint count'
 );
 

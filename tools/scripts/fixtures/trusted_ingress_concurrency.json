@@ -1,0 +1,37 @@
+{
+  "fixture": "tools/scripts/fixtures/trusted_ingress_concurrency.sql",
+  "expiry": {
+    "hold": "select pg_advisory_xact_lock(hashtextextended('gateway-event:99966000-0000-4000-8000-000000000520',0));",
+    "operation": "set request.jwt.claims='{\"role\":\"service_role\"}'; set role service_role; select public.admit_trusted_sms_gateway_evidence('99966000-0000-4000-8000-000000000510','99966000-0000-4000-8000-000000000530',clock_timestamp(),clock_timestamp()+interval '1 second','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=',jsonb_build_object('protocol','africlub.receiver-settlement.v1','eventId','99966000-0000-4000-8000-000000000520',\n 'checkoutReference','order-99966000-0000-4000-8000-000000000201','providerTransactionId','SYNTHETIC-GATEWAY-TX-201',\n 'receiver','66612345','provider','mtn_rwanda','country','RW','currency','RWF','amount',2500,\n 'settledAt',to_char(clock_timestamp() at time zone 'UTC','YYYY-MM-DD\"T\"HH24:MI:SS.MS\"Z\"'),\n 'payerAccountDigest','1c0926b20c42ad64dbf0c8355f40ad8bd7546775f74183598cc5fb27a494c151',\n 'settlementStatus','settled','settlementRecordId','synthetic-receiver-statement-row-201','settlementRecordDigest',repeat('a',64)));",
+    "before_release": "select pg_sleep(1.2);",
+    "expected_error": "GATEWAY_EXPIRED_EVIDENCE"
+  },
+  "gateway_revocation": {
+    "hold": "select id from public.trusted_sms_gateways where id='99966000-0000-4000-8000-000000000500' for update;",
+    "operation": "set request.jwt.claims='{\"role\":\"service_role\"}'; set role service_role; select public.admit_trusted_sms_gateway_evidence('99966000-0000-4000-8000-000000000510','99966000-0000-4000-8000-000000000530',clock_timestamp(),clock_timestamp()+interval '2 minutes','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=',jsonb_build_object('protocol','africlub.receiver-settlement.v1','eventId','99966000-0000-4000-8000-000000000520',\n 'checkoutReference','order-99966000-0000-4000-8000-000000000201','providerTransactionId','SYNTHETIC-GATEWAY-TX-201',\n 'receiver','66612345','provider','mtn_rwanda','country','RW','currency','RWF','amount',2500,\n 'settledAt',to_char(clock_timestamp() at time zone 'UTC','YYYY-MM-DD\"T\"HH24:MI:SS.MS\"Z\"'),\n 'payerAccountDigest','1c0926b20c42ad64dbf0c8355f40ad8bd7546775f74183598cc5fb27a494c151',\n 'settlementStatus','settled','settlementRecordId','synthetic-receiver-statement-row-201','settlementRecordDigest',repeat('a',64)));",
+    "before_commit": "update public.trusted_sms_gateways set enabled=false where id='99966000-0000-4000-8000-000000000500';",
+    "expected_error": "GATEWAY_NOT_PROVISIONED"
+  },
+  "config_revocation": {
+    "hold": "select id from public.trusted_sms_ingress_config where id for update;",
+    "operation": "set request.jwt.claims='{\"role\":\"service_role\"}'; set role service_role; select public.admit_trusted_sms_gateway_evidence('99966000-0000-4000-8000-000000000510','99966000-0000-4000-8000-000000000530',clock_timestamp(),clock_timestamp()+interval '2 minutes','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=',jsonb_build_object('protocol','africlub.receiver-settlement.v1','eventId','99966000-0000-4000-8000-000000000520',\n 'checkoutReference','order-99966000-0000-4000-8000-000000000201','providerTransactionId','SYNTHETIC-GATEWAY-TX-201',\n 'receiver','66612345','provider','mtn_rwanda','country','RW','currency','RWF','amount',2500,\n 'settledAt',to_char(clock_timestamp() at time zone 'UTC','YYYY-MM-DD\"T\"HH24:MI:SS.MS\"Z\"'),\n 'payerAccountDigest','1c0926b20c42ad64dbf0c8355f40ad8bd7546775f74183598cc5fb27a494c151',\n 'settlementStatus','settled','settlementRecordId','synthetic-receiver-statement-row-201','settlementRecordDigest',repeat('a',64)));",
+    "before_commit": "update public.trusted_sms_ingress_config set enabled=false where id;",
+    "expected_error": "GATEWAY_NOT_PROVISIONED"
+  },
+  "state": "select jsonb_build_object('raw_count',(select count(*) from public.momo_sms_raw where club_id=9996601),'event_count',(select count(*) from public.trusted_sms_gateway_events where club_id=9996601),'ledger_count',(select count(*) from public.momo_ledger_entries where club_id=9996601),'order_state',(select status from public.shop_orders where club_id=9996601),'stock',(select stock from public.shop_products where club_id=9996601));",
+  "expected_state": {
+    "raw_count": 0,
+    "event_count": 0,
+    "ledger_count": 0,
+    "order_state": "pending",
+    "stock": 18
+  },
+  "restore_gateway": "update public.trusted_sms_gateways set enabled=true where id='99966000-0000-4000-8000-000000000500';",
+  "restore_config": "update public.trusted_sms_ingress_config set enabled=true where id;",
+  "subject_expiry": {
+    "hold": "select pg_advisory_xact_lock(hashtextextended('99966000-0000-4000-8000-000000000001',21000));",
+    "operation": "set request.jwt.claims='{\"role\":\"service_role\"}'; set role service_role; select public.admit_trusted_sms_gateway_evidence('99966000-0000-4000-8000-000000000510','99966000-0000-4000-8000-000000000530',clock_timestamp(),clock_timestamp()+interval '1 second','aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa=',jsonb_build_object('protocol','africlub.receiver-settlement.v1','eventId','99966000-0000-4000-8000-000000000520',\n 'checkoutReference','order-99966000-0000-4000-8000-000000000201','providerTransactionId','SYNTHETIC-GATEWAY-TX-201',\n 'receiver','66612345','provider','mtn_rwanda','country','RW','currency','RWF','amount',2500,\n 'settledAt',to_char(clock_timestamp() at time zone 'UTC','YYYY-MM-DD\"T\"HH24:MI:SS.MS\"Z\"'),\n 'payerAccountDigest','1c0926b20c42ad64dbf0c8355f40ad8bd7546775f74183598cc5fb27a494c151',\n 'settlementStatus','settled','settlementRecordId','synthetic-receiver-statement-row-201','settlementRecordDigest',repeat('a',64)));",
+    "before_release": "select pg_sleep(1.2);",
+    "expected_error": "GATEWAY_EXPIRED_EVIDENCE"
+  }
+}

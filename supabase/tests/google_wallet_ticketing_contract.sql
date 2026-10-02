@@ -19,7 +19,7 @@ select ok((select bool_and(prosecdef and proconfig=array['search_path=""']::text
 select ok(exists(select 1 from public.platform_features where feature_key='google_wallet_tickets' and club_id is null and not is_enabled and visibility_state='hidden')
   and exists(select 1 from public.platform_feature_channels c join public.platform_features f on f.id=c.feature_id where f.feature_key='google_wallet_tickets' and f.club_id is null and c.channel='mobile' and not c.is_enabled and not c.is_visible),
   'Wallet remains hidden until explicit activation gates pass');
-select is((select count(*)::integer from pg_policies where schemaname='public' and tablename=any(array['ticket_organizations','ticket_events','ticket_wallet_credentials','google_wallet_ticket_passes','google_wallet_ticket_outbox'])),20,
+select is((select count(*)::integer from (select * from pg_policies where permissive='PERMISSIVE') pg_policies where schemaname='public' and tablename=any(array['ticket_organizations','ticket_events','ticket_wallet_credentials','google_wallet_ticket_passes','google_wallet_ticket_outbox'])),20,
   'all five Wallet tables have explicit command policies');
 select ok(exists(select 1 from pg_trigger where tgrelid='public.tickets'::regclass and tgname='tickets_queue_google_wallet_state' and not tgisinternal),
   'ticket lifecycle synchronizes Wallet state');
@@ -205,7 +205,10 @@ begin
   end if;
 
   perform set_config('request.jwt.claim.sub', v_admin_id::text, true);
-  perform set_config('request.jwt.claims', jsonb_build_object('sub',v_admin_id,'role','authenticated','club_id',v_club_id)::text, true);
+  perform set_config('request.jwt.claims', jsonb_build_object('sub',v_admin_id,'role','authenticated','club_id',v_club_id,
+    'aal','aal2','is_anonymous',false,'exp',floor(extract(epoch from clock_timestamp()))::bigint+3600,
+    'amr',jsonb_build_array(jsonb_build_object('method','totp',
+      'timestamp',floor(extract(epoch from clock_timestamp()))::bigint-1)))::text, true);
   v_result := public.prepare_google_wallet_ticket(v_ticket_id);
   if v_result ->> 'code' <> 'ticket_not_found' then
     raise exception 'Another account must not prepare the ticket: %', v_result;

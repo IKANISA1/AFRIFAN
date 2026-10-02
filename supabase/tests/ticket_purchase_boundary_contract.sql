@@ -88,25 +88,27 @@ select ok(
     'image_rights_approved',
     'UPDATE'
   )
-  and not has_table_privilege('authenticated', 'public.matches', 'DELETE')
+  and has_table_privilege('authenticated', 'public.matches', 'DELETE')
+  and not has_table_privilege('authenticated', 'public.matches', 'INSERT,UPDATE')
+  and exists(select 1 from pg_policies where schemaname='public' and tablename='matches' and policyname='staff_step_up_delete' and permissive='RESTRICTIVE')
   and not has_table_privilege('authenticated', 'public.matches', 'TRUNCATE')
   and has_table_privilege('service_role', 'public.matches', 'INSERT')
   and has_table_privilege('service_role', 'public.matches', 'UPDATE')
   and has_table_privilege('service_role', 'public.matches', 'DELETE')
   and has_table_privilege('service_role', 'public.matches', 'TRUNCATE'),
-  'match ACL preserves public fixtures and scoped editor columns without internal rights fields or broad DML'
+  'match ACL preserves public fixtures and scoped editor columns without internal rights fields or broad insert/update; deletes retain staff assurance'
 );
 
 select ok(
   (
-    select count(*) = 3
-    from pg_policies
+    select count(*) = 4
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'matches'
   )
   and exists (
     select 1
-    from pg_policies
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'matches'
       and policyname = 'matches_public_read'
@@ -115,31 +117,31 @@ select ok(
   )
   and exists (
     select 1
-    from pg_policies
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'matches'
       and policyname = 'matches_admin_insert'
       and cmd = 'INSERT'
-      and with_check ~ 'requesting_club_id'
       and with_check ~ 'is_club_admin'
   )
   and exists (
     select 1
-    from pg_policies
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'matches'
       and policyname = 'matches_admin_update'
       and cmd = 'UPDATE'
-      and qual ~ 'requesting_club_id'
+      and qual ~ 'is_club_admin'
       and with_check ~ 'is_club_admin'
-  ),
-  'matches retain one public read policy and two tenant-admin write policies'
+  )
+  and exists(select 1 from pg_policies where schemaname='public' and tablename='matches' and policyname='matches_admin_delete' and cmd='DELETE' and qual ~ 'is_club_admin'),
+  'matches retain public read plus exact-row assignment insert/update/delete policies'
 );
 
 select ok(
   (
     select count(*) = 2
-    from pg_policies
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'tickets'
       and cmd = 'SELECT'
@@ -147,14 +149,14 @@ select ok(
   )
   and not exists (
     select 1
-    from pg_policies
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'tickets'
       and cmd <> 'SELECT'
   )
   and exists (
     select 1
-    from pg_policies
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'tickets'
       and policyname = 'tickets_select_own'
@@ -163,7 +165,7 @@ select ok(
   )
   and exists (
     select 1
-    from pg_policies
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'tickets'
       and policyname = 'tickets_admin_select'
@@ -401,7 +403,7 @@ select set_config(
 );
 select set_config(
   'request.jwt.claims',
-  '{"sub":"99320000-0000-4000-8000-000000000003","role":"authenticated","club_id":"9932001"}',
+  jsonb_build_object('sub','99320000-0000-4000-8000-000000000003','role','authenticated','club_id','9932001','is_anonymous',false,'aal','aal2','exp',floor(extract(epoch from clock_timestamp()))+3600,'amr',jsonb_build_array(jsonb_build_object('method','totp','timestamp',floor(extract(epoch from clock_timestamp())))))::text,
   true
 );
 set local role authenticated;
@@ -428,28 +430,31 @@ select set_config(
 );
 select set_config(
   'request.jwt.claims',
-  '{"sub":"99320000-0000-4000-8000-000000000002","role":"authenticated","club_id":"9932002"}',
+  jsonb_build_object('sub','99320000-0000-4000-8000-000000000002','role','authenticated','club_id','9932002','is_anonymous',false,'aal','aal2','exp',floor(extract(epoch from clock_timestamp()))+3600,'amr',jsonb_build_array(jsonb_build_object('method','totp','timestamp',floor(extract(epoch from clock_timestamp())))))::text,
   true
 );
 set local role authenticated;
 do $$
 declare
-  changed_count integer;
+  denied boolean := false;
 begin
-  update public.matches as match
-     set match_summary = 'Unauthorized fixture edit'
-   where match.id in (
-     '99320000-0000-4000-8000-000000000110',
-     '99320000-0000-4000-8000-000000000111'
-   );
-  get diagnostics changed_count = row_count;
-
-  if changed_count <> 0 then
-    raise exception 'non-admin match update escaped RLS: changed %', changed_count;
+  begin
+    update public.matches as match
+       set match_summary = 'Unauthorized fixture edit'
+     where match.id in (
+       '99320000-0000-4000-8000-000000000110',
+       '99320000-0000-4000-8000-000000000111'
+     );
+  exception when insufficient_privilege then
+    if sqlerrm<>'STAFF_ADMIN_REQUIRED' then raise; end if;
+    denied := true;
+  end;
+  if not denied then
+    raise exception 'non-admin match mutation was not denied';
   end if;
 end $$;
 reset role;
-select pass('non-admin and cross-club match mutations are denied by RLS');
+select pass('fresh assurance cannot authorize non-admin or cross-club match mutations');
 
 select set_config(
   'request.jwt.claim.sub',

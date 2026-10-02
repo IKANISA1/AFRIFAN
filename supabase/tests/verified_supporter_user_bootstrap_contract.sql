@@ -68,6 +68,10 @@ select ok((select count(*)=3 from pg_proc where oid in
  (to_regprocedure('public.sync_verified_supporter_user(uuid)'),to_regprocedure('public.sync_verified_supporter_user_from_auth()'),
  to_regprocedure('public.sync_verified_supporter_user_from_profile()')) and prosecdef and proconfig=array['search_path=""']),
  'all synchronization functions use a fixed empty search path');
+-- This physical Auth maintenance operation is not issued by the supporter.
+-- Keep every preceding bootstrap/profile/wallet call on its original fan JWT.
+select set_config('request.jwt.claims','{"role":"service_role"}',true);
+select set_config('request.jwt.claim.sub','',true);
 delete from auth.users where id='99880000-0000-4000-8000-000000000001';
 select is((select count(*)::integer from public.users where id='99880000-0000-4000-8000-000000000001'),0,
  'Auth deletion cascades to the operational identity');

@@ -35,35 +35,35 @@ select ok(
   and not has_table_privilege('authenticated', 'public.shop_products', 'SELECT')
   and has_column_privilege('authenticated', 'public.shop_products', 'name', 'SELECT')
   and not has_column_privilege('authenticated', 'public.shop_products', 'image_rights_approved_by', 'SELECT')
-  and not has_table_privilege('authenticated', 'public.shop_products', 'INSERT')
-  and not has_table_privilege('authenticated', 'public.shop_products', 'UPDATE')
-  and not has_table_privilege('authenticated', 'public.shop_products', 'DELETE')
+  and has_column_privilege('authenticated', 'public.shop_products', 'price', 'UPDATE')
+  and not has_column_privilege('authenticated', 'public.shop_products', 'image_rights_approved', 'UPDATE')
+  and not has_column_privilege('authenticated', 'public.shop_products', 'image_rights_approved_by', 'INSERT')
   and not has_table_privilege('authenticated', 'public.shop_products', 'TRUNCATE')
   and has_table_privilege('service_role', 'public.shop_products', 'SELECT')
   and has_table_privilege('service_role', 'public.shop_products', 'INSERT')
   and has_table_privilege('service_role', 'public.shop_products', 'UPDATE')
   and has_table_privilege('service_role', 'public.shop_products', 'DELETE')
   and has_table_privilege('service_role', 'public.shop_products', 'TRUNCATE'),
-  'shop product ACL keeps a safe active catalog projection and server-only administration'
+  'shop product ACL keeps the safe catalog projection, guarded staff columns and private approval fields'
 );
 
 select ok(
   (
     select count(*) = 2
-    from pg_policies
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'shop_orders'
   )
   and not exists (
     select 1
-    from pg_policies
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'shop_orders'
       and policyname like 'rs_shop_orders_%'
   )
   and not exists (
     select 1
-    from pg_policies
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'shop_orders'
       and (cmd <> 'SELECT' or not ('authenticated' = any(roles)))
@@ -73,14 +73,20 @@ select ok(
 
 select ok(
   (
-    select count(*) = 2
-    from pg_policies
+    select count(*) = 3
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'shop_products'
   )
+  and exists(select 1 from pg_policies where schemaname='public' and tablename='shop_products'
+    and policyname='staff_commercial_config' and cmd='ALL' and roles=array['authenticated']::name[]
+    and qual ~ 'club_admin' and qual ~ 'revoked_at' and with_check ~ 'club_admin')
+  and (select count(*)=3 from pg_policy where polrelid='public.shop_products'::regclass
+    and polname in ('staff_step_up_insert','staff_step_up_update','staff_step_up_delete')
+    and not polpermissive and polroles=array['authenticated'::regrole::oid])
   and exists (
     select 1
-    from pg_policies
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'shop_products'
       and policyname = 'shop_products_select_active_anon'
@@ -91,7 +97,7 @@ select ok(
   )
   and exists (
     select 1
-    from pg_policies
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'shop_products'
       and policyname = 'shop_products_select_active_authenticated'
@@ -102,7 +108,7 @@ select ok(
   )
   and not exists (
     select 1
-    from pg_policies
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'shop_products'
       and policyname in (
@@ -111,7 +117,7 @@ select ok(
         'rs_shop_products_select_authenticated'
       )
   ),
-  'catalog policies expose only active public rows and scoped authenticated rows'
+  'catalog policies preserve active public rows and admit only current scoped staff through restrictive assurance'
 );
 
 select ok(

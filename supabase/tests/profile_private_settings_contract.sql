@@ -82,7 +82,7 @@ select ok(
   )
   and (
     select count(*) = 2
-    from pg_policies
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'profiles'
   ),

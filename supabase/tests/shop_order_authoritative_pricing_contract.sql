@@ -42,17 +42,20 @@ select ok(
     'image_rights_approved_by',
     'SELECT'
   )
-  and not has_table_privilege('authenticated', 'public.shop_products', 'INSERT')
-  and not has_table_privilege('authenticated', 'public.shop_products', 'UPDATE')
-  and not has_table_privilege('authenticated', 'public.shop_products', 'DELETE')
+  and has_column_privilege('authenticated', 'public.shop_products', 'price', 'UPDATE')
+  and not has_column_privilege('authenticated', 'public.shop_products', 'image_rights_approved', 'UPDATE')
+  and not has_column_privilege('authenticated', 'public.shop_products', 'image_rights_approved_by', 'INSERT')
+  and (select count(*)=3 from pg_policy where polrelid='public.shop_products'::regclass
+    and polname in ('staff_step_up_insert','staff_step_up_update','staff_step_up_delete')
+    and not polpermissive and polroles=array['authenticated'::regrole::oid])
   and has_table_privilege('service_role', 'public.shop_products', 'UPDATE'),
-  'public catalog exposes an explicit safe projection and no direct client writes'
+  'public catalog preserves its safe projection and only guarded staff columns can be written'
 );
 
 select ok(
   (
     select count(*) = 2
-    from pg_policies
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'shop_orders'
       and cmd = 'SELECT'
@@ -60,14 +63,14 @@ select ok(
   )
   and not exists (
     select 1
-    from pg_policies
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'shop_orders'
       and cmd <> 'SELECT'
   )
   and (
     select count(*) = 2
-    from pg_policies
+    from (select * from pg_policies where permissive='PERMISSIVE') pg_policies
     where schemaname = 'public'
       and tablename = 'shop_products'
       and cmd = 'SELECT'
