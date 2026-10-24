@@ -1,0 +1,40 @@
+{
+  "project_snapshot": "africlub",
+  "original_archive": "/Volumes/PRO-G40/T7-Work-Recovery-2026-10-18/selected-work.tar.gz",
+  "original_archive_sha256": "448246980d705815ee2b1a7061706cd6c28738ed94ea7994e19a8982fc11b4c7",
+  "original_regular_files": 6581,
+  "backup": {
+    "repo": "IKANISA1/AFRIFAN",
+    "release_url": "https://github.com/IKANISA1/AFRIFAN/releases/tag/untagged-132341d0364b85e30ad5",
+    "tag": "local-retirement-20261024-africlub-recovery",
+    "label": "mixed-snapshot-africlub",
+    "files": 6582,
+    "source_bytes": 495845355,
+    "cipher_sha256": "172d31263b7b06899744f0ab3a428e3b95d4eb6b2d614bc8e77b813a41bc45a0",
+    "cipher_hmac_sha256": "36cfcfa8478f8670d5764d2a932ab09bff00713481259cc50e6499266ba89d95",
+    "hmac_key_derivation": "SHA256(UTF8(\"codex-local-retirement-hmac-v1\") + NUL + UTF8(recovery_passphrase))",
+    "encryption": "OpenSSL AES-256-CBC salted PBKDF2-HMAC-SHA256 600000 iterations, then HMAC-SHA256 of ciphertext; verify HMAC BEFORE decryption",
+    "plaintext_gzip_sha256": "666ba895dcc13cd6653f710b63654df118876aa6051f34487695b0347d669d2a",
+    "roundtrip_verified": true,
+    "parts": [
+      {
+        "name": "private-data-mixed-snapshot-africlub.enc.tar.gz.part0001",
+        "bytes": 268435456,
+        "sha256": "2b11e267855cd882b39970f1a968eb0421744bad8b5eec3e1b734b5600045df7",
+        "asset_id": 672273282,
+        "url": "https://github.com/IKANISA1/AFRIFAN/releases/download/untagged-132341d0364b85e30ad5/private-data-mixed-snapshot-africlub.enc.tar.gz.part0001",
+        "verified_server_digest": true
+      },
+      {
+        "name": "private-data-mixed-snapshot-africlub.enc.tar.gz.part0002",
+        "bytes": 942688,
+        "sha256": "97372ffc73699ca2aa6fd288a4bbac2096941bedad42fe63fb8d322021707a5a",
+        "asset_id": 672297529,
+        "url": "https://github.com/IKANISA1/AFRIFAN/releases/download/untagged-132341d0364b85e30ad5/private-data-mixed-snapshot-africlub.enc.tar.gz.part0002",
+        "verified_server_digest": true
+      }
+    ],
+    "complete": true
+  },
+  "provenance": "Original member paths, modes, timestamps and file SHA-256 values are retained in ORIGINAL_ARCHIVE_PROVENANCE.json inside the encrypted snapshot. The original archive stored partial Git metadata without object directories; it was not a standalone complete Git clone."
+}
