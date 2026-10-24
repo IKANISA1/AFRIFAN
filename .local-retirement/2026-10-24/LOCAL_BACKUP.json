@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-24",
+  "project": "AFRICLUB",
+  "source_git_verification": {
+    "repo": "/Volumes/T7/Recovered-G-PRO/AFRICLUB",
+    "verified_utc": "2026-10-24T11:22:23Z",
+    "head": {
+      "exit": 0,
+      "stdout": "0457cf5940977a4ffae560dbbb744c9f49d59e8d",
+      "stderr": ""
+    },
+    "branch": {
+      "exit": 0,
+      "stdout": "main",
+      "stderr": ""
+    },
+    "status": {
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "remote_refs": {
+      "exit": 0,
+      "stdout": "9249a0bc865327fcd69afe4940a5a7894e2cf183\trefs/heads/archive/local-cleanup-20261024/africlub/codex/local-eight-task-candidate-20261001\n54739922c8185fc93ad6861438fd41b5ae0776a6\trefs/heads/archive/local-cleanup-20261024/africlub/codex/local-production-candidate-20261001\n0457cf5940977a4ffae560dbbb744c9f49d59e8d\trefs/heads/main",
+      "stderr": ""
+    },
+    "source_index_parity": {
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "source_worktree_parity": {
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "stash": {
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "all_local_branches_in_remote_main": {
+      "exit": 0,
+      "stdout": "refs/heads/codex/local-eight-task-candidate-20261001 9249a0bc865327fcd69afe4940a5a7894e2cf183\nrefs/heads/codex/local-production-candidate-20261001 54739922c8185fc93ad6861438fd41b5ae0776a6",
+      "stderr": ""
+    }
+  },
+  "private_backups": [
+    {
+      "repo": "IKANISA1/AFRIFAN",
+      "tag": "local-retirement-20261024-africlub-recovery",
+      "label": "africlub",
+      "release_url": "https://github.com/IKANISA1/AFRIFAN/releases/tag/untagged-132341d0364b85e30ad5",
+      "files": 16195,
+      "source_bytes": 1247633443,
+      "cipher_sha256": "7530b94ecaf683a9d6e167e6c3abe9bd92a5b59e3c8b48076dd79eef61baa014",
+      "cipher_hmac_sha256": "9f6a861d381eca132221e8d38f338e59cacbde735d96f00da54e5bd6e46c8ae6",
+      "hmac_key_derivation": "SHA256(UTF8(\"codex-local-retirement-hmac-v1\") + NUL + UTF8(recovery_passphrase))",
+      "encryption": "OpenSSL AES-256-CBC salted PBKDF2-HMAC-SHA256 600000 iterations, then HMAC-SHA256 of ciphertext; verify HMAC BEFORE decryption",
+      "plaintext_gzip_sha256": "148ee27f207cba46b445d3005d7ecb937001ed4b32037e3e9c37b8b4d6244340",
+      "roundtrip_verified": true,
+      "all_original_file_hashes_verified": true,
+      "parts": [
+        {
+          "name": "private-data-africlub.enc.tar.gz.part0001",
+          "bytes": 268435456,
+          "sha256": "0e8a4ccfceb0c52372a694515c7f56be843d70d64b57dfd1a752c20078c4e17c",
+          "asset_id": 672194643,
+          "url": "https://github.com/IKANISA1/AFRIFAN/releases/download/untagged-132341d0364b85e30ad5/private-data-africlub.enc.tar.gz.part0001",
+          "verified_server_digest": true
+        },
+        {
+          "name": "private-data-africlub.enc.tar.gz.part0002",
+          "bytes": 96655424,
+          "sha256": "c8efdde74b46b830716b1343dc60aead038ad6763f1b46be9ba705ab5f375c8b",
+          "asset_id": 672210340,
+          "url": "https://github.com/IKANISA1/AFRIFAN/releases/download/untagged-132341d0364b85e30ad5/private-data-africlub.enc.tar.gz.part0002",
+          "verified_server_digest": true
+        }
+      ],
+      "complete": true
+    }
+  ],
+  "remaining_retirement": "T7 recovery/evidence source archive and local removal remain pending verified remount.",
+  "recovery_key": "Supplied separately in the cleanup chat; never stored in GitHub."
+}
