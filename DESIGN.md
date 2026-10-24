@@ -8,7 +8,7 @@ Admin PWA, native role-guarded administration, and the browser operator console.
 The target is **100% fidelity to the selected Revolut visual typologies and
 colours**, with each product's own identity, content and workflows.
 
-Read the selected [revolut-design skill](</Volumes/PRO-G40/Application Data/Codex/Codex-Home/skills/revolut-design/SKILL.md>)
+Read the selected [revolut-design skill](</Volumes/PRO-G40/Projects/ChatGPT/Revolut/skill/revolut-design/SKILL.md>)
 and its applicable bundled references before changing presentation. Its authority
 order, brand adaptation, native/web/PWA patterns, component contracts, colour
 roles and evidence rules govern every included surface and state.

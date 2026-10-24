@@ -3,12 +3,12 @@
   "design_authority": {
     "skill": "revolut-design",
     "path": "SKILL.md",
-    "root_hint": "/Volumes/PRO-G40/Application Data/Codex/Codex-Home/skills/revolut-design",
-    "sha256": "0941cf390b2e77d605ee4877f960440688166534341ae2a3239a990d40127c50",
+    "root_hint": "/Volumes/PRO-G40/Projects/ChatGPT/Revolut/skill/revolut-design",
+    "sha256": "e593550503309fe1ea94642e8cdc1065d112573b572c11cdbabdd8811f4dc346",
     "bound_files": [
       {
         "path": "SKILL.md",
-        "sha256": "0941cf390b2e77d605ee4877f960440688166534341ae2a3239a990d40127c50"
+        "sha256": "e593550503309fe1ea94642e8cdc1065d112573b572c11cdbabdd8811f4dc346"
       },
       {
         "path": "references/DESIGN.md",
@@ -28,7 +28,7 @@
       },
       {
         "path": "references/current-native-atlas.md",
-        "sha256": "169d63977d9dcb3423f963eef8402d03b276b3b95c4f40cf30c0b54dbe7dcd8b"
+        "sha256": "30ff52be89dae5838258da59ea44bf75ab9716a6335342a68d1ceeaf5ee212e1"
       },
       {
         "path": "references/web-patterns.md",
@@ -48,18 +48,19 @@
       },
       {
         "path": "references/component-contracts.md",
-        "sha256": "e89b52c1fed430ed418315edd60d5ef716d414c2c9c99787c6b5bdbd0189dcfc"
+        "sha256": "355c11ad923328903b40a63ca2ce719d493fb3c69e624fcb0d73c6ae630f6a07"
       },
       {
         "path": "references/quality-standard.md",
-        "sha256": "a0f199ecdbce21b573e07126a7c36dff254490ee154bea1cef3d85c42fccce92"
+        "sha256": "ced82304fee23070e875a45a85e4215629305bb9840636cdd1b6f93a58c31d0a"
       },
       {
         "path": "references/operational-checklist.md",
-        "sha256": "e5854f677f647b842519735a321a2a16f50b988f3e55b6a9147be91fb606315e"
+        "sha256": "d2fc52670574e669b88a8ccd8daa8b531b14fca0220d2217ab5a5d2ba82fa536"
       }
     ],
-    "owner_instruction": "Current owner instruction: use revolut-design as the sole UI/UX and product visual design skill; apply relevant references directly while preserving the target product identity, capabilities and workflows. Do not install, restore or recreate competing UI/design skills or a separately named mandatory mobile design checklist and its gates. Technical/professional skills remain available for their own scopes; their UI/UX work uses Revolut. Report observed implementation evidence and remaining differences plainly."
+    "owner_instruction": "Current owner instruction: use revolut-design as the sole UI/UX and product visual design skill; apply relevant references directly while preserving the target product identity, capabilities and workflows. Do not install, restore or recreate competing UI/design skills or a separately named mandatory mobile design checklist and its gates. Technical/professional skills remain available for their own scopes; their UI/UX work uses Revolut. Report observed implementation evidence and remaining differences plainly.",
+    "provider": "revolut-design@jean-bosco-skills"
   },
   "updated_at": "2026-10-01T19:55:06.031885+00:00",
   "exceptions": [],
@@ -97,7 +98,7 @@
   ],
   "product_adapter": {
     "path": "DESIGN.md",
-    "sha256": "df934a7f3add5db8a4b07336a893c225e2c376602fb1c8350dd893c8ecdbed8c",
+    "sha256": "c8ffcce0a61a723e2f5e817a6312e00866d8facd75edff788c6b4f7bb4f6867e",
     "change_note": "Aligned the active product mapping and source bindings with the owner current sole-authority instruction and actual installed Revolut references. Retired separate mobile checklist requirement removed. Source integrity does not confer visual or release acceptance."
   }
 }
