@@ -28,7 +28,7 @@ dependencies:
   flutter_riverpod: ^2.6.1
   intl: ^0.20.2
   hive: ^2.2.3
-  crypto: ^3.0.7
+  crypto: ^3.0.8
 
 dev_dependencies:
   http: ^1.6.0
