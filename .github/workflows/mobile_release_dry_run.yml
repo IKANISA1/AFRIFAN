@@ -62,7 +62,7 @@ jobs:
         run: bash tools/scripts/dry_run_android_release.sh rayon_sports
 
       - name: Upload Android dry-run artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: rayon-sports-android-dry-run-aab
           path: apps/rayon_sports/build/app/outputs/bundle/release/app-release.aab
@@ -113,7 +113,7 @@ jobs:
         run: bash tools/scripts/dry_run_ios_release.sh rayon_sports
 
       - name: Upload iOS dry-run artifact
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: rayon-sports-ios-dry-run-app
           path: apps/rayon_sports/build/ios/iphoneos/Runner.app.zip
