@@ -26,7 +26,7 @@ dependencies:
     path: ../../core/core_utils
   club_data:
     path: ../../data/club_data
-  crypto: ^3.0.6
+  crypto: ^3.0.8
   flutter_riverpod: ^2.6.1
   go_router: ^14.8.1
   supabase_flutter: ^2.12.2
