@@ -76,7 +76,7 @@ jobs:
         run: flutter build appbundle --release --dart-define-from-file=assets/flavors/production.local.json
 
       - name: Upload signed AAB
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: gikundiro-signed-release-aab
           path: apps/rayon_sports/build/app/outputs/bundle/release/app-release.aab
