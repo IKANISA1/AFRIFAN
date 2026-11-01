@@ -16,7 +16,7 @@ dev_dependencies:
   # Include the published club crest in workspace widget-test asset bundles.
   feat_club:
     path: packages/features/feat_club
-  melos: 8.1.0
+  melos: 8.6.0
   yaml: ^3.1.3
 
 # Dart workspaces treat this root manifest as the primary Flutter package.
