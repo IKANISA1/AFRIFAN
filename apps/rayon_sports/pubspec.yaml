@@ -16,7 +16,7 @@ dependencies:
     path: ../../packages/clubs/club_rayon_sports
   app_registry:
     path: ../../packages/app_registry
-  firebase_core: ^4.5.0
+  firebase_core: ^4.15.2
 
 dev_dependencies:
   integration_test:
