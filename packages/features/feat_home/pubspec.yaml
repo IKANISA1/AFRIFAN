@@ -39,7 +39,7 @@ dev_dependencies:
     sdk: flutter
   core_auth:
     path: ../../core/core_auth
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   test_support:
     path: ../../testing/test_support
 
