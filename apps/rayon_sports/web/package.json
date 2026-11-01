@@ -85,7 +85,7 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^4.1.11",
-    "wrangler": "^4.105.0"
+    "wrangler": "^4.155.0"
   },
   "overrides": {
     "@babel/core": "^7.29.6",
