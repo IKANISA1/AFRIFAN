@@ -28,7 +28,7 @@ jobs:
     runs-on: [self-hosted, macOS, ARM64, africlub-free]
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           clean: true
 
@@ -47,7 +47,7 @@ jobs:
     runs-on: [self-hosted, macOS, ARM64, africlub-free]
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           clean: true
 
@@ -92,7 +92,7 @@ jobs:
     env:
       NEXT_PUBLIC_ANDROID_APP_LINK_SHA256_FINGERPRINTS: B8:B4:84:C9:3D:80:83:12:9C:90:1B:D4:9C:BE:35:65:7B:C1:4D:38:F3:D9:19:04:75:45:83:B5:AB:BC:E5:D9
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           clean: true
 
@@ -133,7 +133,7 @@ jobs:
     runs-on: [self-hosted, macOS, ARM64, africlub-free]
     timeout-minutes: 180
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           clean: true
 
